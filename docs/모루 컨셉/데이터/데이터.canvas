@@ -1,0 +1,11 @@
+{
+	"nodes":[
+		{"id":"fb1a9c96b9e38f1a","x":86,"y":140,"width":400,"height":400,"type":"file","file":"모루 컨셉/데이터/그룹 데이터.md"},
+		{"id":"cccfa1a404e27272","type":"text","text":"데이터","x":-125,"y":-30,"width":250,"height":60},
+		{"id":"84c460e46652beb3","type":"file","file":"모루 컨셉/데이터/제품 데이터.md","x":-361,"y":131,"width":400,"height":400}
+	],
+	"edges":[
+		{"id":"e0bf5209e15c9441","fromNode":"cccfa1a404e27272","fromSide":"bottom","toNode":"84c460e46652beb3","toSide":"top"},
+		{"id":"669465ae2d518d0c","fromNode":"cccfa1a404e27272","fromSide":"bottom","toNode":"fb1a9c96b9e38f1a","toSide":"top"}
+	]
+}
