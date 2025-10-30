@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "하얀마음흑구"
-  text: "표현할 수 있어야 지식이다"
+  name: "김윤덕"
+  text: "소프트웨어 창작자"
   tagline: My great project tagline
   actions:
     - theme: brand
@@ -15,11 +15,10 @@ hero:
       link: /api-examples
 
 features:
-  - title: Feature A
+  - title: 사명
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
+  - title: 비전
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
+  - title: 가치
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
-

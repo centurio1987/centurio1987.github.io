@@ -23,13 +23,26 @@
                   "icon": "lucide-file",
                   "title": "마이 위키"
                 }
+              },
+              {
+                "id": "9b8117f9b6d62307",
+                "type": "leaf",
+                "state": {
+                  "type": "release-notes",
+                  "state": {
+                    "currentVersion": "1.9.14"
+                  },
+                  "icon": "lucide-book-up",
+                  "title": "릴리즈 노트 1.9.14"
+                }
               }
-            ]
+            ],
+            "currentTab": 1
           },
           {
             "id": "8e2d0795156a0dd5",
             "type": "tabs",
-            "dimension": 29.259259259259256,
+            "dimension": 29.25925925925926,
             "children": [
               {
                 "id": "334f34a5435de52e",
@@ -38,7 +51,7 @@
                   "type": "mindmap",
                   "state": {},
                   "icon": "dot-network",
-                  "title": "Mind Map of markdown-examples"
+                  "title": "Mind Map of"
                 }
               }
             ]
@@ -98,7 +111,7 @@
             }
           },
           {
-            "id": "6e4961ea500665f5",
+            "id": "bd76dfb78ea97e63",
             "type": "leaf",
             "state": {
               "type": "mk-path-view",
@@ -249,29 +262,29 @@
     }
   },
   "floating": {
-    "id": "482381a23c37551e",
+    "id": "fab403afaeaf7230",
     "type": "floating",
     "children": [
       {
-        "id": "3d2fdfebc4228db7",
+        "id": "6177d5aaa0368fce",
         "type": "window",
         "children": [
           {
-            "id": "e534946a6f1b7c0b",
+            "id": "4dca566f0a195257",
             "type": "tabs",
             "children": [
               {
-                "id": "dadf430a69424492",
+                "id": "a0e8b0de8bbe45e5",
                 "type": "leaf",
                 "state": {
                   "type": "webviewer",
                   "state": {
-                    "url": "https://publish.obsidian.md/git-doc/Getting+Started#For%20existing%20remote%20repository",
-                    "title": "Getting Started - Git Documentation - Obsidian Publish",
+                    "url": "https://help.obsidian.md/import/notion",
+                    "title": "Import from Notion - Obsidian Help",
                     "mode": "webview"
                   },
                   "icon": "globe-2",
-                  "title": "Getting Started - Git Documentation - Obsidian Publish"
+                  "title": "Import from Notion - Obsidian Help"
                 }
               }
             ]
@@ -280,28 +293,46 @@
         "direction": "vertical",
         "x": 352,
         "y": 103,
-        "width": 1297,
+        "width": 1024,
         "height": 800,
         "maximize": false,
         "zoom": 0
       }
     ]
   },
-  "active": "6e4961ea500665f5",
+  "active": "a0e8b0de8bbe45e5",
   "lastOpenFiles": [
+    "docs/portfolio.md",
+    "docs/resume.md",
+    "docs/assets/resume/technical-essentials-on-aws-certificate.png",
+    "docs/assets/resume/image.png",
+    "docs/image.png",
+    "docs/assets/resume/big-data-on-aws-certificate.png",
+    "docs/assets/resume/topcit-award.png",
+    "docs/assets/resume",
+    "docs/assets/image.png",
+    "docs/assets/TOPCIT(소프트웨어역량평가) 육군참모총장 특별상",
+    "docs/assets",
+    "docs/posts",
+    "docs/draft/제품 프로세스/제품 프로세스 프레임워크.md",
+    "docs/draft/제품 프로세스/제품 정의.md",
+    "docs/draft/제품 프로세스/제품 전략 기획 프로세스.md",
+    "docs/draft/제품 프로세스/제품 전략 관리.md",
+    "docs/draft/제품 프로세스/제품 운영 및 관리.md",
+    "docs/draft/제품 프로세스/제품 개발.md",
+    "docs/draft/제품 프로세스",
+    "docs/draft/모루 컨셉/데이터/그룹 데이터.md",
+    "docs/draft/모루 컨셉/데이터/제품 데이터.md",
+    "docs/draft/모루 컨셉/데이터/데이터.canvas",
+    "docs/draft/모루 컨셉/모루 컨셉.md",
+    "docs/draft/모루 컨셉/데이터.md",
+    "docs/draft/모루 컨셉/데이터",
+    "docs/draft/모루 컨셉",
+    "docs/draft",
     "node_modules/unist-util-stringify-position/lib/index.d.ts",
     "node_modules/unist-util-stringify-position/lib/index.js",
-    "node_modules/unist-util-stringify-position/package.json",
     "node_modules/unist-util-stringify-position/readme.md",
-    "node_modules/unist-util-stringify-position/license",
-    "node_modules/unist-util-stringify-position/index.js",
-    "node_modules/unist-util-stringify-position/lib",
-    "node_modules/unist-util-stringify-position/index.d.ts",
-    "node_modules/unist-util-stringify-position",
-    "node_modules/micromark-util-types/license",
     "node_modules/micromark-util-types/readme.md",
-    "node_modules/micromark-util-types/package.json",
-    "node_modules/micromark-util-types/index.js",
     "node_modules/regex-utilities/README.md",
     "node_modules/is-what/README.md",
     "node_modules/vfile-message/readme.md",
@@ -314,17 +345,6 @@
     "node_modules/@jridgewell/sourcemap-codec/README.md",
     "node_modules/entities/readme.md",
     "node_modules/regex-recursion/README.md",
-    "node_modules/regex/README.md",
-    "node_modules/oniguruma-parser/README.md",
-    "node_modules/copy-anything/README.md",
-    "node_modules/rfdc/readme.md",
-    "node_modules/character-entities-legacy/readme.md",
-    "node_modules/character-entities-html4/readme.md",
-    "node_modules/vfile/readme.md",
-    "node_modules/unist-util-visit/readme.md",
-    "node_modules/unist-util-position/readme.md",
-    "node_modules/trim-lines/readme.md",
-    "node_modules/micromark-util-sanitize-uri/readme.md",
     "모루 컨셉/데이터/데이터.canvas",
     "docs/모루 컨셉/데이터/데이터.canvas",
     "무제.canvas"
