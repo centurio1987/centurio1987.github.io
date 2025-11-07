@@ -1,0 +1,89 @@
+/* Pretendard Variable Font */
+@font-face {
+  font-family: "Pretendard Variable";
+  src: url(/assets/fonts/PretendardVariable.woff2) format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* Paperlogy Fonts */
+@font-face {
+  font-family: "Paperlogy";
+  src: url(/assets/fonts/Paperlogy-1Thin.woff2) format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperlogy";
+  src: url(/assets/fonts/Paperlogy-2ExtraLight.woff2) format("woff2");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperlogy";
+  src: url(/assets/fonts/Paperlogy-3Light.woff2) format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperlogy";
+  src: url(/assets/fonts/Paperlogy-4Regular.woff2) format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperlogy";
+  src: url(/assets/fonts/Paperlogy-5Medium.woff2) format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperlogy";
+  src: url(/assets/fonts/Paperlogy-6SemiBold.woff2) format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperlogy";
+  src: url(/assets/fonts/Paperlogy-7Bold.woff2) format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperlogy";
+  src: url(/assets/fonts/Paperlogy-8ExtraBold.woff2) format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperlogy";
+  src: url(/assets/fonts/Paperlogy-9Black.woff2) format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* FiraCode Variable Font */
+@font-face {
+  font-family: "Fira Code";
+  src: url(/assets/fonts/FiraCode-VF.woff2) format("woff2-variations");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}

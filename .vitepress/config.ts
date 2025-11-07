@@ -3,6 +3,8 @@ import { defineConfig } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   srcDir: "docs",
+  assetsDir: "assets",
+  appearance: "force-dark",
 
   title: "하얀마음흑구",
   description: "표현할 수 있어야 지식이다",
@@ -129,32 +131,32 @@ export default defineConfig({
           items: [],
         },
       ],
-      "/portfolio/": [
-        {
-          text: "백엔드",
-          link: "/portfolio/backends",
-        },
-        {
-          text: "프론트엔드",
-          link: "/portfolio/frontends",
-        },
-        {
-          text: "아키텍트",
-          link: "/portfolio/architect",
-        },
-        {
-          text: "CTO",
-          link: "/portfolio/cto",
-        },
-        {
-          text: "PO",
-          link: "/portfolio/product-owner",
-        },
-        {
-          text: "기획",
-          link: "/portfolio/planning",
-        },
-      ],
+      // "/portfolio/": [
+      //   {
+      //     text: "백엔드",
+      //     link: "/portfolio/backends",
+      //   },
+      //   {
+      //     text: "프론트엔드",
+      //     link: "/portfolio/frontends",
+      //   },
+      //   {
+      //     text: "아키텍트",
+      //     link: "/portfolio/architect",
+      //   },
+      //   {
+      //     text: "CTO",
+      //     link: "/portfolio/cto",
+      //   },
+      //   {
+      //     text: "PO",
+      //     link: "/portfolio/product-owner",
+      //   },
+      //   {
+      //     text: "기획",
+      //     link: "/portfolio/planning",
+      //   },
+      // ],
     },
 
     socialLinks: [

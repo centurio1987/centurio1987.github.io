@@ -1,0 +1,12 @@
+@import url(./fonts.css);
+
+:root {
+  --vp-font-family-base: "Pretandard Variable";
+  --vp-font-family-mono: "Fira Code";
+}
+
+.dark {
+  --vp-c-border: #5c1b0c;
+  --vp-c-divider: #f94920;
+  --vp-c-gutter: #f94920;
+}

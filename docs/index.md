@@ -22,3 +22,38 @@ features:
   - title: 가치
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
+
+<script setup>
+import Button from './components/Button.vue';
+</script>
+<style>
+#background-video {
+  position: fixed;
+  top:0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  object-fit: cover;
+
+  z-index: -1;
+}
+
+#background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  z-index:0;
+}
+
+</style>
+
+<Button></Button>
+
+<div id="background"></div>
+<video autoplay loop muted playsinline id="background-video">
+  <source src="./assets/videos/sample.mp4" type="video/mp4">
+</video>
