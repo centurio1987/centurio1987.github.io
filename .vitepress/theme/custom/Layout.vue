@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <video autoplay playsinline muted loop id="background-video">
     <source src="/docs/assets/videos/sample.mp4"></source>
   </video>
@@ -24,4 +24,4 @@ const { page } = useData();
 
   
 }
-</style>
+</style> -->

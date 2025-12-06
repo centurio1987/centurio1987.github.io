@@ -1,4 +1,5 @@
 @import url(./fonts.css);
+@layer page, component;
 
 :root {
   --vp-font-family-base: "Pretandard Variable";
