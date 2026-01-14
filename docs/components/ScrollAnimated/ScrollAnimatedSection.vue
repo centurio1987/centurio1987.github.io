@@ -1,9 +1,7 @@
 <template>
   <div class="track">
     <div class="sticky-view">
-      <article class="content vp-doc">
-        <slot></slot>
-      </article>
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -13,16 +11,16 @@
 <style scoped>
 @layer component {
   .track {
-    height: 300vh;
+    height: 150vh;
+    position: relative;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 
-    & .sticky-view {
+    & > .sticky-view {
       position: sticky;
       top: 0;
       height: 100vh;
-      display: flex;
-      flex-flow: column;
-      align-items: center;
-      justify-content: start;
+      z-index: 0;
     }
   }
 }

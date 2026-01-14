@@ -1,4 +1,6 @@
 @import url(./fonts.css);
+@import url(./bg.css);
+@import url(./colors.css);
 @layer page, component;
 
 :root {
@@ -10,4 +12,10 @@
   --vp-c-border: #5c1b0c;
   --vp-c-divider: #f94920;
   --vp-c-gutter: #f94920;
+}
+
+body {
+  background: var(--Neutral-15);
+  display: flex;
+  justify-content: center;
 }
