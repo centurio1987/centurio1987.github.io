@@ -7,7 +7,7 @@ export default defineConfig({
   appearance: "force-dark",
 
   title: "하얀마음흑구",
-  description: "표현할 수 있어야 지식이다",
+  description: "진지함 속에서 즐거움을 찾다",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

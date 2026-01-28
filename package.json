@@ -16,6 +16,6 @@
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
-    "gsap": "^3.13.0"
+    "gsap": "^3.14.2"
   }
 }

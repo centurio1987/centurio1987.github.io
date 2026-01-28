@@ -1,19 +1,17 @@
-@layer page {
-  .glassmorphism-bg {
-    /* 1. 배경색: 흰색에 투명도를 주어 뒤가 비치게 함 */
-    background: rgba(255, 255, 255, 0.25);
+.glassmorphism-bg {
+  /* 1. 배경색: 흰색에 투명도를 주어 뒤가 비치게 함 */
+  background: rgba(255, 255, 255, 0.15);
 
-    /* 2. 핵심: 뒤에 있는 요소를 흐리게 만듦 */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* Safari 브라우저 호환성 */
+  /* 2. 핵심: 뒤에 있는 요소를 흐리게 만듦 */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Safari 브라우저 호환성 */
 
-    /* 3. 테두리: 유리의 두께감과 빛 반사 표현 (약한 흰색 테두리) */
-    border: 1px solid rgba(255, 255, 255, 0.3);
+  /* 3. 테두리: 유리의 두께감과 빛 반사 표현 (약한 흰색 테두리) */
+  border: 1px solid rgba(255, 255, 255, 0.3);
 
-    /* 4. 그림자: 깊이감을 주어 배경과 분리 */
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  /* 4. 그림자: 깊이감을 주어 배경과 분리 */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 
-    /* 5. 둥근 모서리: 부드러운 유리 느낌 */
-    border-radius: 16px;
-  }
+  /* 5. 둥근 모서리: 부드러운 유리 느낌 */
+  border-radius: 16px;
 }

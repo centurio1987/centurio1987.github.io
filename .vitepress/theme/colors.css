@@ -208,3 +208,9 @@
   --Opacity-97: 97px;
   --Opacity-100: 100px;
 }
+
+/* Semantic */
+:root {
+  --Primary-Normal: #f94920ff;
+  --BG-Normal: #23130fff;
+}

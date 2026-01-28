@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Black+Ops+One&family=DotGothic16&family=Jersey+10&family=Monoton&family=Notable&family=Sora:wght@100..800&display=swap");
 /* Pretendard Variable Font */
 @font-face {
   font-family: "Pretendard Variable";
@@ -85,5 +86,14 @@
   src: url(/assets/fonts/FiraCode-VF.woff2) format("woff2-variations");
   font-weight: 300 700;
   font-style: normal;
+  font-display: swap;
+}
+
+/* Fixedsys */
+@font-face {
+  font-family: "RoundedFixedsys";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff")
+    format("woff");
+  font-weight: normal;
   font-display: swap;
 }

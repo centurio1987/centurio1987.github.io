@@ -1,7 +1,9 @@
 <template>
-  <div class="track">
-    <div class="sticky-view">
-      <slot></slot>
+  <div class="scroller">
+    <div class="track">
+      <div class="sticky-view">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -10,17 +12,28 @@
 
 <style scoped>
 @layer component {
-  .track {
-    height: 150vh;
-    position: relative;
+  .scroller {
+    height: 100vh;
+    overflow-y: auto;
+
+    scrollbar-width: none;
+
+    scroll-timeline-name: --track;
+    scroll-timeline-axis: y;
+
     scroll-snap-align: start;
     scroll-snap-stop: always;
 
-    & > .sticky-view {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      z-index: 0;
+    & > .track {
+      height: 130vh;
+      position: relative;
+
+      & > .sticky-view {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        z-index: 0;
+      }
     }
   }
 }

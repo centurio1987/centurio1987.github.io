@@ -13,9 +13,13 @@
   --vp-c-divider: #f94920;
   --vp-c-gutter: #f94920;
 }
+@layer page {
+  body {
+    background: var(--Neutral-15);
+    display: flex;
+    justify-content: safe center;
+    overflow-x: auto;
 
-body {
-  background: var(--Neutral-15);
-  display: flex;
-  justify-content: center;
+    font-family: "Pretandard  Variable";
+  }
 }
