@@ -39,7 +39,7 @@ onMounted(() => {
 
   & > .slogan {
     position: absolute;
-    top: 57%;
+    top: 70%;
     left: 51%;
     transform: translateX(-50%);
   }
