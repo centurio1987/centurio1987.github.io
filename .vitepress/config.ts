@@ -6,16 +6,20 @@ export default defineConfig({
   assetsDir: "assets",
   appearance: "force-dark",
 
-  title: "하얀마음흑구",
+  title: "Kim Yoondeok",
   description: "진지함 속에서 즐거움을 찾다",
+  head: [["link", { rel: "icon", href: "/assets/images/logo5-16.ico" }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "Home", link: "/" },
-      { text: "Resume", link: "/resume" },
+      { text: "Resume", link: "/resume2" },
+      { text: "My Journey", link: "/journey" },
       { text: "Portfolio", link: "/portfolio" },
       { text: "Post", link: "/posts" },
     ],
+    siteTitle: "진지함 속에서 즐거움을 찾다",
+    logo: "/assets/images/logo5_64_white.svg",
 
     sidebar: {
       "/posts/": [

@@ -72,7 +72,8 @@ const onCardClick = () => {
       margin: 0;
       grid-area: sub-title;
 
-      color: var(--Primary-Normal);
+      /* color: var(--Primary-Normal); */
+      color: var(--Neutral-90);
       /* font-family: "Sora" sans-serif; */
       font-size: 14pt;
       font-weight: 800;
@@ -81,7 +82,8 @@ const onCardClick = () => {
     & > h1 {
       grid-area: title;
       margin: 0;
-      font-family: "Black Ops One", system-ui;
+      /* font-family: "Black Ops One", system-ui; */
+
       font-size: 32pt;
       font-weight: 800;
     }

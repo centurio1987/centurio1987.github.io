@@ -212,5 +212,6 @@
 /* Semantic */
 :root {
   --Primary-Normal: #f94920ff;
+  /* --Primary-Normal: #23098fff; */
   --BG-Normal: #23130fff;
 }

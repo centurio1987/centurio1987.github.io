@@ -12,6 +12,7 @@
         </PortfolioMain>
       </ScrollAnimatedSection>
     </ScrollAnimatedSectionList>
+    <HomeButton />
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import ScrollAnimatedSectionList from "../ScrollAnimated/ScrollAnimatedSectionLi
 import ScrollAnimatedSection from "../ScrollAnimated/ScrollAnimatedSection.vue";
 import PortfolioEntry from "./PortfolioEntry/PortfolioEntry.vue";
 import PortfolioMain from "./PortfolioMain/PortfolioMain.vue";
+import HomeButton from "./HomeButton.vue";
 </script>
 
 <style scoped>

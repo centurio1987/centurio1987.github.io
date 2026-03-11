@@ -36,7 +36,7 @@ defineEmits<{
   font-weight: 400; */
 
   /* font-family: "Sora"; */
-  font-family: "Black Ops One", system-ui;
+  /* font-family: "Black Ops One", system-ui; */
   font-size: 12pt;
   font-weight: 800;
 

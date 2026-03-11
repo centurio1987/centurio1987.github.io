@@ -3,24 +3,9 @@
 layout: home
 
 hero:
-  name: "김윤덕"
-  text: "소프트웨어 창작자"
-  tagline: My great project tagline
-  actions:
-    - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
-
-features:
-  - title: 사명
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: 비전
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: 가치
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  name: "빵관 토니"
+  text: "Serious Work, Joyful Wit."
+  tagline: 기본은 강한 물살에서 나를 지켜주는 무게추가 된다.
 ---
 
 <script setup>
@@ -51,9 +36,7 @@ import Button from './components/Button.vue';
 
 </style>
 
-<Button></Button>
-
 <div id="background"></div>
 <video autoplay loop muted playsinline id="background-video">
-  <source src="./assets/videos/sample.mp4" type="video/mp4">
+  <source src="./assets/videos/vlog.webm" type="video/webm">
 </video>

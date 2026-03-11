@@ -7,7 +7,6 @@
     </div>
     <div class="title">
       <h1 class="title-header">PROJECT PORTFOLIO</h1>
-      <GearImg class="gear-img" />
     </div>
 
     <p>
@@ -60,7 +59,6 @@ import PortfolioButtonGroup from "./PortfolioButtonGroup.vue";
 import PortfolioButton from "./PortfolioButton.vue";
 import PortfolioCardContainer from "../PortfolioCard/PortfolioCardContainer.vue";
 import { ref } from "vue";
-import GearImg from "./GearImg.vue";
 
 const categories: {
   id: "cto" | "po" | "backend" | "frontend";
@@ -73,14 +71,6 @@ const categories: {
   {
     id: "po",
     value: "PRODUCT OWNER",
-  },
-  {
-    id: "backend",
-    value: "BACKEND ENGINEER",
-  },
-  {
-    id: "frontend",
-    value: "FRONTEND ENGINEER",
   },
 ];
 

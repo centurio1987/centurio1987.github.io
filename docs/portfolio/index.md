@@ -7,7 +7,14 @@ prev: false
 next: false
 ---
 
-<Portfolio>
+<Portfolio />
+
+<script setup>
+import Portfolio from '/components/PortfolioV3/PortfolioV3.vue'
+</script>
+
+<!-- V2 -->
+<!-- <Portfolio>
 <template #cto>
 <PortfolioCard :header="'cto1'" :subHeader="'거버넌스 구축'" :projectType="'governance'" :skillBadges="['vue', 'typescript']" :date="'2025/01 ~ 2025/06'" :tags="['기술', '혁신']">
 
@@ -23,17 +30,17 @@ next: false
 
 # CTO Page3
 
-</PortfolioCard> 
+</PortfolioCard>
 <PortfolioCard :header="'cto4'" :subHeader="'거버넌스 구축4'" :projectType="'governance'" :skillBadges="['vue', 'typescript']" :date="'2025/01 ~ 2025/06'" :tags="['기술', '혁신']">
 
 # CTO Page4
 
-</PortfolioCard> 
+</PortfolioCard>
 <PortfolioCard :header="'cto5'" :subHeader="'거버넌스 구축5'" :projectType="'governance'" :skillBadges="['vue', 'typescript']" :date="'2025/01 ~ 2025/06'" :tags="['기술', '혁신']">
 
 # CTO Page5
 
-</PortfolioCard> 
+</PortfolioCard>
 </template>
 <template #po>
 <PortfolioCard :header="'po1'" :subHeader="'제품 기획'" :projectType="'planning'" :skillBadges="['vue', 'typescript']" :date="'2025/01 ~ 2025/06'" :tags="['기술', '혁신']">
@@ -58,8 +65,9 @@ import PortfolioCarouselContent from '/components/PortfolioCarousel/PortfolioCar
 import ScrollAnimatedSection from '/components/ScrollAnimated/ScrollAnimatedSection.vue'
 </script>
 <style>
-</style>
+</style> -->
 
+<!-- V1 -->
 <!-- ---
 title: 포트폴리오
 layout: portfolio
