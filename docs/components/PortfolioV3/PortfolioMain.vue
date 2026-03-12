@@ -142,6 +142,11 @@
             @click:card="onClickCard"
           />
         </section>
+        <a
+          href="https://pretty-sale-848.notion.site/1b6e54a5ea8081b0aaf4f6beb1fc949f?source=copy_link"
+        >
+          🤣예전 포트폴리오가 궁금하다면?
+        </a>
         <PortfolioCardDialog
           ref="modal"
           :date="selectedCardData?.date"

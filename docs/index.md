@@ -6,6 +6,13 @@ hero:
   name: "빵관 토니"
   text: "Serious Work, Joyful Wit."
   tagline: 기본은 강한 물살에서 나를 지켜주는 무게추가 된다.
+  actions:
+    - theme: brand
+      text: 이력서
+      link: resume2
+    - theme: alt
+      text: 포트폴리오
+      link: portfolio
 ---
 
 <script setup>
@@ -21,7 +28,7 @@ import Button from './components/Button.vue';
 
   object-fit: cover;
 
-  z-index: -1;
+  z-index: -2;
 }
 
 #background {
@@ -31,7 +38,7 @@ import Button from './components/Button.vue';
   width: 100vw;
   height: 100vh;
   background: rgba(0,0,0,0.6);
-  z-index:0;
+  z-index: -1;
 }
 
 </style>
