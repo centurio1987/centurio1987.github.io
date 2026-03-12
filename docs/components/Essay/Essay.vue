@@ -131,7 +131,7 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
 
 // Image imports using new URL for proper Vite handling
 const essayCoverImage = new URL(
-  "../../images/essay_cover.webp",
+  "../../images/essay_cover2.webp",
   import.meta.url,
 ).href;
 

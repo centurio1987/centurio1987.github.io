@@ -3,10 +3,14 @@
     <PortfolioCover />
     <PortfolioCover2 />
     <PortfolioMain />
+    <FloatingNavBtn />
+    <HomeNavBtn />
   </div>
 </template>
 
 <script setup lang="ts">
+import FloatingNavBtn from "./FloatingNavBtn.vue";
+import HomeNavBtn from "./HomeNavBtn.vue";
 import PortfolioCover from "./PortfolioCover.vue";
 import PortfolioCover2 from "./PortfolioCover2.vue";
 import PortfolioMain from "./PortfolioMain.vue";
