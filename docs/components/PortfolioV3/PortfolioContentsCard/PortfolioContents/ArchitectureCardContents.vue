@@ -46,7 +46,6 @@
             <!-- 표준 요약 (Cards) -->
             <div class="space-y-medium">
               <div class="clean-card">
-                <span class="tag-pill mb-small">개발 및 아키텍처</span>
                 <h4 class="card-title">개발 & 애플리케이션 표준</h4>
                 <ul
                   class="text-body space-y-small"
@@ -67,7 +66,6 @@
               </div>
 
               <div class="clean-card">
-                <span class="tag-pill mb-small">운영 및 협업</span>
                 <h4 class="card-title">브랜치 전략 & 코드 컨벤션</h4>
                 <ul
                   class="text-body space-y-small"
@@ -89,7 +87,6 @@
               </div>
 
               <div class="clean-card">
-                <span class="tag-pill mb-small">디자인 시스템</span>
                 <h4 class="card-title">디자인 컴포넌트 & 가이드라인</h4>
                 <ul
                   class="text-body space-y-small"
@@ -532,17 +529,6 @@ strong {
   letter-spacing: -0.01em;
   margin-bottom: 1.25rem;
   color: var(--color-text-main);
-}
-
-.tag-pill {
-  font-size: 0.75rem;
-  padding: 0.3rem 0.8rem;
-  border: var(--border-thin);
-  border-radius: 999px;
-  color: var(--color-text-main);
-  font-weight: 500;
-  display: inline-block;
-  background-color: var(--color-bg-muted);
 }
 
 .highlight-text {

@@ -103,7 +103,7 @@
           <div class="main-content">
             <div class="split-grid">
               <div class="clean-card">
-                <span class="tag-pill mb-medium">성장 관리</span>
+                <h4 class="card-title">성장 관리</h4>
                 <p class="text-body mb-small">
                   팀의 핵심 가치를 충족하기 위해 성장을 지원합니다. 팀원의 현재
                   위치와 지향점을 듣고, <strong>공감에 포커스</strong>를 맞추는
@@ -125,7 +125,7 @@
               </div>
 
               <div class="clean-card">
-                <span class="tag-pill mb-medium">Inspiration 관리</span>
+                <h4 class="card-title">Inspiration 관리</h4>
                 <p class="text-body">
                   업무에 집중할 수 있고 충분히 재미있어야, 개인과 팀이 지속
                   가능한 상태를 유지할 수 있습니다.
@@ -186,7 +186,7 @@
         <p class="footer-logo">Portfolio</p>
         <div class="footer-info">
           <p>Full-Stack Developer</p>
-          <p class="text-gray-light">© 2024 All rights reserved.</p>
+          <p class="text-gray-light">© 2026 All rights reserved.</p>
         </div>
       </div>
     </footer>
@@ -517,17 +517,6 @@ strong {
   letter-spacing: -0.01em;
   margin-bottom: 1.25rem;
   color: var(--color-text-main);
-}
-
-.tag-pill {
-  font-size: 0.75rem;
-  padding: 0.3rem 0.8rem;
-  border: var(--border-thin);
-  border-radius: 999px;
-  color: var(--color-text-main);
-  font-weight: 500;
-  display: inline-block;
-  background-color: var(--color-bg-muted);
 }
 
 .highlight-text {

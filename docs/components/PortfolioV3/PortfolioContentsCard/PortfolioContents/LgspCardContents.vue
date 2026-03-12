@@ -34,56 +34,92 @@
             </p>
           </aside>
 
-          <div class="main-content space-y-medium">
-            <!-- Tech Stack Summary -->
-            <div class="clean-card">
-              <div class="tech-grid-display">
-                <div class="tech-category">
-                  <h4 class="font-bold mb-small">Frontend</h4>
-                  <p class="text-body">
-                    Vue 3 (Composition API), Pinia, Vite, Apollo Client, Vitest,
-                    Storybook
-                  </p>
+          <div class="main-content">
+            <div class="tech-stack-grid">
+              <!-- Left Column -->
+              <div class="tech-stack-col">
+                <div class="tech-stack-card">
+                  <h4 class="tech-stack-heading">⚡ 프론트엔드</h4>
+                  <ul class="tech-stack-list">
+                    <li><strong>Vue 3</strong> (3.3.4) - Composition API</li>
+                    <li><strong>Vue Router</strong> (4.2.4) - 라우팅</li>
+                    <li><strong>Pinia</strong> (2.1.6) - 상태 관리</li>
+                    <li><strong>Vite</strong> (4.4.9) - 빌드 도구</li>
+                    <li><strong>vite-plugin-pwa</strong> - PWA 지원</li>
+                  </ul>
                 </div>
-                <div class="tech-category border-top-light pt-medium">
-                  <h4 class="font-bold mb-small">Backend</h4>
-                  <p class="text-body">
-                    NestJS 10, GraphQL, Prisma ORM, PostgreSQL, Passport (JWT),
-                    CASL
-                  </p>
-                </div>
-                <div class="tech-category border-top-light pt-medium">
-                  <h4 class="font-bold mb-small">Infra & DevOps</h4>
-                  <p class="text-body">
-                    AWS (S3, SES), Docker, Docker Compose, CI/CD, Yarn Berry
-                    (PnP)
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            <!-- Detailed Tech List in Vertical Stack -->
-            <div class="p-medium border-light-bg space-y-medium">
-              <div class="detail-item">
-                <h5 class="font-bold text-main">🔗 API & Data Layer</h5>
-                <p class="text-small text-gray">
-                  GraphQL CodeGen을 통한 타입 안전성 확보, DataLoader 기반 N+1
-                  쿼리 최적화, Prisma 기반의 선언적 DB 관리
-                </p>
+                <div class="tech-stack-card">
+                  <h4 class="tech-stack-heading">🔒 백엔드</h4>
+                  <ul class="tech-stack-list">
+                    <li><strong>NestJS 10</strong> - 서버 프레임워크</li>
+                    <li>
+                      <strong>GraphQL</strong> - Apollo, CodeGen, Subscriptions
+                    </li>
+                    <li><strong>Prisma</strong> (v5.4.1) - ORM</li>
+                    <li><strong>PostgreSQL</strong> - 데이터베이스</li>
+                    <li><strong>Passport &amp; JWT</strong> - 인증</li>
+                    <li><strong>CASL</strong> (v6.5.0) - RBAC 권한 제어</li>
+                  </ul>
+                </div>
+
+                <div class="tech-stack-card">
+                  <h4 class="tech-stack-heading">🧹 코드 품질</h4>
+                  <ul class="tech-stack-list">
+                    <li><strong>TypeScript</strong> (5.2.2) - 정적 타입</li>
+                    <li>
+                      <strong>ESLint &amp; Prettier</strong> - 린팅/포매팅
+                    </li>
+                    <li><strong>Husky &amp; lint-staged</strong> - Git 훅</li>
+                    <li>
+                      <strong>Storybook</strong> (7.4.2) - 컴포넌트 카탈로그
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <div class="detail-item border-top-light pt-small">
-                <h5 class="font-bold text-main">📊 시각화 및 문서화</h5>
-                <p class="text-small text-gray">
-                  Chart.js (Sankey 포함), ExcelJS, jsPDF, html2canvas를 활용한
-                  복잡한 데이터 분석 및 리포팅 도구 구축
-                </p>
-              </div>
-              <div class="detail-item border-top-light pt-small">
-                <h5 class="font-bold text-main">⚡ 성능 및 품질</h5>
-                <p class="text-small text-gray">
-                  Service Worker (PWA), Cache Manager 기반 캐싱,
-                  Jest/Vitest/Cypress를 활용한 TDD 및 E2E 테스트 커버리지 확보
-                </p>
+
+              <!-- Right Column -->
+              <div class="tech-stack-col">
+                <div class="tech-stack-card">
+                  <h4 class="tech-stack-heading">🧪 테스트 &amp; 품질</h4>
+                  <ul class="tech-stack-list">
+                    <li><strong>Jest</strong> - 단위/통합 테스트</li>
+                    <li>
+                      <strong>Vitest</strong> (1.6.0) - Vue 컴포넌트 테스트
+                    </li>
+                    <li><strong>Supertest</strong> - 백엔드 API E2E</li>
+                    <li><strong>Cypress</strong> (13.2.0) - E2E 테스트</li>
+                  </ul>
+                </div>
+
+                <div class="tech-stack-card">
+                  <h4 class="tech-stack-heading">🏗 아키텍처 &amp; 도구</h4>
+                  <ul class="tech-stack-list">
+                    <li>
+                      <strong>Yarn Berry</strong> (v3.6.3) - 패키지 매니저
+                    </li>
+                    <li>
+                      <strong>Docker &amp; Compose</strong> - 개발/배포 환경
+                    </li>
+                    <li><strong>Cache Manager</strong> - 캐싱 전략</li>
+                    <li><strong>Service Worker</strong> - PWA, Prefetching</li>
+                  </ul>
+                </div>
+
+                <div class="tech-stack-card">
+                  <h4 class="tech-stack-heading">
+                    📊 데이터 &amp; ☁️ 클라우드
+                  </h4>
+                  <ul class="tech-stack-list">
+                    <li><strong>ExcelJS</strong> / jsPDF - 문서 생성/처리</li>
+                    <li>
+                      <strong>Chart.js</strong> - 차트/그래프 (Sankey 포함)
+                    </li>
+                    <li><strong>DataLoader</strong> - N+1 쿼리 최적화</li>
+                    <li><strong>AWS SDK</strong> - S3, SES</li>
+                    <li><strong>html2canvas</strong> - HTML→캔버스 변환</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -104,19 +140,19 @@
 
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
-              <h3 class="sub-title">배경 및 목표</h3>
+              <h3 class="sub-title">배경</h3>
               <p class="text-body">
-                고객사의 복잡한 원시 데이터(전력, 연료 등) 기반 다단계 계산
-                절차를 디지털 전환(DX)하는 프로젝트입니다. 기존 엑셀의 복잡한
-                로직을 서비스 내에서 그대로 보존하면서 대시보드 시각화까지
-                연결하는 시스템을 구축했습니다.
+                고객이 복잡한 원시 데이터(전력 사용량, 연료 소비량 등)를
+                기반으로 다단계 계산(배출계수 곱, 재구조화, 부서별 분배)을 거쳐
+                최종 대시보드용 시각화 데이터를 생성하는 절차를 엑셀로 구현하고
+                있었고, 이를 디지털 전환하고 싶어 하셨습니다. 기존 엑셀 로직을
+                서비스에서도 그대로 보존해야 하는 조건도 있었습니다.
               </p>
             </div>
 
             <div class="space-y-medium">
-              <h3 class="sub-title">설계 핵심: ETL 파이프라인 및 SoC</h3>
+              <h3 class="sub-title">설계: ETL 파이프라인</h3>
 
-              <!-- Image Placeholder for ETL -->
               <div class="image-placeholder">
                 <div class="image-inner">
                   <span class="image-text">ETL Pipeline Architecture</span>
@@ -124,40 +160,79 @@
                 </div>
               </div>
 
-              <div class="clean-card">
-                <h4 class="card-title">DataFrameTable 추상화</h4>
-                <p class="text-body">
-                  엑셀의 구조화되지 않은 데이터를 다루기 위해 Pandas의 개념을
-                  차용한 <code>DataFrameTable</code>을 정의했습니다. 2차원
-                  구조에서 셀 참조, 컬럼/로우 단위 연산(Reduce, Element-wise)
-                  인터페이스를 제공하여 엑셀 로직의 정합성을 코드 레벨에서
-                  유지했습니다.
-                </p>
-              </div>
+              <p class="text-body">
+                이 프로젝트의 핵심은 엑셀 로직을 보존하면서도 효과적으로
+                구현하는 것이었습니다. 엑셀 로직은 직관에 의해 구현되고 있어
+                구조화가 어려웠기 때문에, SoC를 통해 엑셀의 어떤 부분이 어떤
+                영역에 매칭되는지 확실히 파악할 수 있도록 했습니다.
+              </p>
             </div>
 
             <div class="space-y-medium">
-              <h3 class="sub-title">구현 성과</h3>
-              <div class="p-medium border-light-bg space-y-small">
-                <ul
-                  class="text-body space-y-small"
-                  style="list-style-type: disc; margin-left: 1.25rem"
-                >
-                  <li>
-                    <strong>Xlsx Parser & Transformer:</strong> Excel.js
-                    기반으로 레이아웃과 스타일을 스캐닝하여 DataFrameTable로
-                    변환하는 최적화된 파서 구현.
-                  </li>
-                  <li>
-                    <strong>Layered Architecture:</strong> 백엔드 레이어드
-                    아키텍처와 프론트엔드 상태 제어 표준을 정의하여 유지보수성
-                    확보.
-                  </li>
-                  <li>
-                    <strong>비즈니스 로직:</strong> 함수 체이닝 방식의 ETL
-                    처리로 MVP 단계에서의 구현 속도와 유연성 동시 확보.
-                  </li>
-                </ul>
+              <h3 class="sub-title">설계: DataFrameTable</h3>
+              <p class="text-body">
+                엑셀 내에는 구조나 목적이 다르지만 테이블 형태로 관리되고
+                있었습니다. 데이터 추출과 변환 과정에서 테이블을 최대한
+                추상화하여 DataFrameTable이라는 개념을 정의했습니다. Pandas의
+                DataFrame 개념을 일부 차용했습니다. 2차원 구조에서 셀을 참조할
+                수 있고, 컬럼과 로우 단위로 계산할 수 있습니다.
+              </p>
+            </div>
+
+            <div class="space-y-medium">
+              <h3 class="sub-title">설계: Architecture &amp; Standard</h3>
+              <p class="text-body">
+                아키텍처와 기술 스택을 정의했습니다. 공통적으로 코드 컨벤션과
+                코드, 모듈, 파일 아키텍처를 정의했습니다. 백엔드에서는 레이어드
+                아키텍처와 세부적인 개발 표준을, 프론트엔드에서는 상태 제어를
+                중심으로 한 개발 표준을 정의했습니다.
+              </p>
+            </div>
+
+            <div class="space-y-medium">
+              <h3 class="sub-title">구현</h3>
+              <div class="p-medium border-light-bg space-y-medium">
+                <div class="update-item">
+                  <h5 class="font-bold text-main">ETL 파이프라인 구현</h5>
+                  <p class="text-body">
+                    배치 프로세스로 규정하고 구현했습니다. 개념적으로는 각
+                    파이프라인을 구분하여 구현했습니다. MVP에서 시작하는 만큼,
+                    별도의 아키텍처나 리소스는 고려하지 않았습니다. 실행 방식도
+                    함수 체이닝을 통해 구현했습니다.
+                  </p>
+                </div>
+                <div class="update-item border-top-light pt-medium">
+                  <h5 class="font-bold text-main">DataFrameTable 구현</h5>
+                  <p class="text-body">
+                    cell, row, column 조회, column, row 단위 reduce,
+                    element-wise 연산, sub-table 추출 등의 인터페이스를 제공하는
+                    DataFrameTable을 구현했습니다.
+                  </p>
+                </div>
+                <div class="update-item border-top-light pt-medium">
+                  <h5 class="font-bold text-main">Xlsx Parser 구현</h5>
+                  <p class="text-body">
+                    Excel.js를 기반으로 use case에 최적화된 parser를
+                    구현했습니다. 셀과 테이블의 스타일을 기반으로 식별하여
+                    스캐닝했습니다.
+                  </p>
+                </div>
+                <div class="update-item border-top-light pt-medium">
+                  <h5 class="font-bold text-main">
+                    Xlsx To DataFrameTable 구현
+                  </h5>
+                  <p class="text-body">
+                    파싱한 데이터를 DataFrameTable로 변환하는 Transformer를
+                    구현했습니다.
+                  </p>
+                </div>
+                <div class="update-item border-top-light pt-medium">
+                  <h5 class="font-bold text-main">비즈니스 로직 구현</h5>
+                  <p class="text-body">
+                    Vue 페이지와 컴포넌트, API, Data Access와 관련된 전반적
+                    로직을 팀원들과 구현했습니다.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -178,9 +253,10 @@
 
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
-              <h3 class="sub-title">차트 데이터 동기화 및 성능 최적화</h3>
+              <h3 class="sub-title">
+                설계: 차트 데이터 동기화 기술을 통한 성능 최적화
+              </h3>
 
-              <!-- Image Placeholder for Sync Tech -->
               <div class="image-placeholder">
                 <div class="image-inner">
                   <span class="image-text">Chart Data Sync Architecture</span>
@@ -188,39 +264,42 @@
                 </div>
               </div>
 
-              <div class="clean-card">
-                <h4 class="card-title">Service Worker & Indexed DB 활용</h4>
-                <p class="text-body mb-small">
-                  대규모 차트 데이터 요청에 따른 서버 부하와 응답 속도 문제를
-                  해결하기 위해 백그라운드 동기화 기술을 도입했습니다.
-                </p>
-                <p class="highlight-text">
-                  요청 시 Indexed DB를 우선 조회하고, 누락된 데이터(년/월
-                  리스트)만 인코딩하여 서버에 요청하는 최적화 알고리즘을
-                  구현했습니다.
-                </p>
-              </div>
+              <p class="text-body mb-small">
+                Service Worker와 Indexed DB를 이용해 백그라운드에서 차트
+                데이터를 동기화합니다. Frontend에서 요청을 보낼 때는 Indexed
+                DB를 먼저 조회하고, 적중하지 않은 경우에만 실제로 서버에
+                데이터를 요청합니다.
+              </p>
+              <p class="highlight-text">
+                동기화 알고리즘은 간단한 방식으로 구현했습니다. Frontend에서
+                기존에 없는 데이터를 식별한 뒤, 필요한 Chart 데이터의 년, 월
+                리스트를 보내면 서버에서 필요한 데이터만 내려줍니다. 트래픽을
+                최적화하기 위해 년, 월 리스트는 인코딩하여 요청합니다. 통신
+                방식은 HTTP와 Socket 방식 두 가지 경로 옵션을 제공했습니다.
+              </p>
             </div>
 
             <div class="space-y-medium">
-              <h3 class="sub-title">주요 업데이트 내역</h3>
+              <h3 class="sub-title">구현</h3>
               <div class="p-medium border-light-bg space-y-medium">
                 <div class="update-item">
                   <h5 class="font-bold text-main">
-                    Prefetching & Wrapper Client
+                    데이터 동기화를 통한 성능 최적화 로직 구현
                   </h5>
                   <p class="text-body">
-                    Service Worker의 Prefetching 기능을 통해 사용자 체감 속도를
-                    높이고, 투명하게 데이터를 스위칭하는 Wrapper Client를
-                    구현했습니다.
+                    Service Worker의 prefetching, 부족한 데이터 식별 및 서버
+                    요청, 동기화를 위한 서버 API, Indexed DB를 먼저 조회한 뒤
+                    서버에 요청하도록 하는 Wrapper Client를 구현했습니다.
                   </p>
                 </div>
                 <div class="update-item border-top-light pt-medium">
-                  <h5 class="font-bold text-main">Legacy Data Transformer</h5>
+                  <h5 class="font-bold text-main">
+                    레거시 엑셀 데이터 Transformer 구현
+                  </h5>
                   <p class="text-body">
-                    시스템 이전 시 필요한 레거시 엑셀 데이터를 최신 규격에 맞게
-                    변환하는 전용 트랜스포머를 개발하여 데이터 연속성을
-                    보장했습니다.
+                    특정 년도 이전 데이터를 시스템에 이전하기 위한 Transformer를
+                    만들었습니다. 기존 Xlsx 형식과 달라 별도로 제작하게
+                    되었습니다.
                   </p>
                 </div>
               </div>
@@ -590,6 +669,53 @@ const lgsp2Image = new URL(
   background-color: var(--color-bg-muted);
   border-radius: 8px;
   border: 1px solid var(--color-border-light);
+}
+
+/* ==========================================================================
+   Tech Stack Grid (2-column compact layout)
+   ========================================================================== */
+.tech-stack-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .tech-stack-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.tech-stack-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.tech-stack-card {
+  padding: 0;
+}
+.tech-stack-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: var(--border-light);
+}
+.tech-stack-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.tech-stack-list li {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-gray);
+}
+.tech-stack-list li strong {
+  color: var(--color-text-main);
+  font-weight: 600;
 }
 
 /* Footer */

@@ -2,7 +2,11 @@
   <article class="card" @click="$emit('click:card', props.id)">
     <!-- Card Header -->
     <div class="card-header">
-      <span class="card-date">{{ date }}</span>
+      <span class="card-date">
+        <template v-for="(part, i) in date.split('&')" :key="i">
+          <br v-if="i > 0" />{{ i > 0 ? "& " : "" }}{{ part.trim() }}
+        </template>
+      </span>
       <div class="card-categories">
         <span v-for="cat in category" :key="cat" class="card-category">{{
           cat
@@ -38,8 +42,8 @@
           </div>
         </div>
       </span>
-      <span>
-        Duration:
+      <span class="duration-info">
+        <span class="duration-label">Duration:</span>
         <span class="card-footer-val">{{ duration }}</span>
       </span>
     </div>
@@ -126,7 +130,8 @@ const onCardClick = () => {
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
@@ -135,12 +140,15 @@ const onCardClick = () => {
   color: var(--text-secondary);
   font-weight: 500;
   letter-spacing: 0.05em;
+  flex-shrink: 0;
+  padding-top: 0.25rem;
 }
 
 .card-categories {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .card-category {
@@ -204,7 +212,8 @@ const onCardClick = () => {
   padding-top: 1rem;
   border-top: 1px solid var(--border-color);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 1rem;
   font-size: 0.6875rem;
   font-weight: 600;
@@ -215,8 +224,10 @@ const onCardClick = () => {
 
 .skill-info {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .skill-display {
@@ -242,6 +253,18 @@ const onCardClick = () => {
 
 .card:hover .skill-logo {
   opacity: 1;
+}
+
+.duration-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  max-width: 10rem;
+}
+
+.duration-label {
+  white-space: nowrap;
 }
 
 .card-footer-val {

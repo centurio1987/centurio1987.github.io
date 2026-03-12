@@ -39,7 +39,6 @@
             <div class="space-y-medium">
               <!-- Date 확장 -->
               <div class="clean-card">
-                <span class="tag-pill mb-small">Date</span>
                 <h4 class="card-title">Date 확장 모듈</h4>
                 <p class="text-body mb-medium">
                   Date 객체를 확장하여 Python의 <code>strftime</code>과 유사한
@@ -58,7 +57,6 @@
 
               <!-- Array Object 확장 -->
               <div class="clean-card">
-                <span class="tag-pill mb-small">Array</span>
                 <h4 class="card-title">Array Object 확장</h4>
                 <p class="text-body mb-medium">
                   JS 기본 배열에 Python 스타일의 <code>zip</code>,
@@ -77,7 +75,6 @@ expect(numExArray.zip([1, 2, 3])).toEqual(
 
               <!-- Error 확장 -->
               <div class="clean-card">
-                <span class="tag-pill mb-small">Error</span>
                 <h4 class="card-title">Error 객체 고도화</h4>
                 <p class="text-body mb-medium">
                   Error 클래스를 확장하여 에러 코드, 발생 인스턴스명, 함수명
@@ -96,7 +93,6 @@ expect(numExArray.zip([1, 2, 3])).toEqual(
 
               <!-- i18n 모듈 -->
               <div class="clean-card">
-                <span class="tag-pill mb-small">i18n</span>
                 <h4 class="card-title">경량 i18n 모듈 구현</h4>
                 <p class="text-body mb-medium">
                   토큰 치환 기능과 중첩 객체 조회를 지원하는 다국어 관리
@@ -115,7 +111,6 @@ expect(i18n.t('profile.welcome2', {
 
               <!-- Cursor Pagination -->
               <div class="clean-card">
-                <span class="tag-pill mb-small">Pagination</span>
                 <h4 class="card-title">Cursor Pagination Manager</h4>
                 <p class="text-body mb-medium">
                   복합 키 기반의 커서 인코딩/디코딩 및 Where 절 파싱 로직을
@@ -151,7 +146,6 @@ const whereClause = CursorManager.generateWherePhraseUnit(decoded, 0, '>');</cod
             <div class="space-y-medium">
               <!-- Infinity Scroll -->
               <div class="clean-card">
-                <span class="tag-pill mb-small">UX</span>
                 <h4 class="card-title">Infinity Scroll List 추상 컴포넌트</h4>
                 <p class="text-body">
                   <code>IntersectionObserver</code>를 캡슐화한 컴포넌트입니다.
@@ -162,7 +156,6 @@ const whereClause = CursorManager.generateWherePhraseUnit(decoded, 0, '>');</cod
 
               <!-- Chart -->
               <div class="clean-card">
-                <span class="tag-pill mb-small">Visualization</span>
                 <h4 class="card-title">Chart.js 추상화 컴포넌트</h4>
                 <p class="text-body mb-medium">
                   Chart.js의 복잡한 옵션을 빌더 패턴으로 생성할 수 있도록
@@ -437,17 +430,6 @@ const whereClause = CursorManager.generateWherePhraseUnit(decoded, 0, '>');</cod
   letter-spacing: -0.01em;
   margin-bottom: 1.25rem;
   color: var(--color-text-main);
-}
-
-.tag-pill {
-  font-size: 0.75rem;
-  padding: 0.3rem 0.8rem;
-  border: var(--border-thin);
-  border-radius: 999px;
-  color: var(--color-text-main);
-  font-weight: 500;
-  display: inline-block;
-  background-color: var(--color-bg-muted);
 }
 
 .highlight-text {

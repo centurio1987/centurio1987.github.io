@@ -177,42 +177,53 @@
             <div class="border-top-thin pt-large">
               <h3 class="sub-title mb-large">구현 및 인프라</h3>
 
-              <div class="cards-grid">
-                <div class="clean-card">
-                  <span class="tag-pill mb-small">도메인 로직</span>
-                  <h4 class="card-title">도메인 및 관련 로직 구현</h4>
-                  <p>
+              <div class="impl-list">
+                <div class="impl-item">
+                  <h4 class="card-title">
+                    <span class="inline-tag">도메인 로직</span>
+                    도메인 및 관련 로직 구현
+                  </h4>
+                  <p class="text-body">
                     설계에 따라 도메인 로직을 구현했습니다. 도메인 로직과 관련한
                     API와 DB 접근 로직을 팀원들과 같이 구현했습니다.
                   </p>
                 </div>
-                <div class="clean-card">
-                  <span class="tag-pill mb-small">Full Stack</span>
-                  <h4 class="card-title">Cutoff & Impact Score 연결</h4>
-                  <p>
+
+                <div class="impl-item">
+                  <h4 class="card-title">
+                    <span class="inline-tag">Full Stack</span>
+                    Cutoff & Impact Score 연결
+                  </h4>
+                  <p class="text-body">
                     GtG 분석의 마지막 단계에서 수행하는 Cutoff와 Impact Score
                     연결과 관련된 시나리오를 Full stack으로 구현했습니다.
                   </p>
                 </div>
-                <div class="clean-card">
-                  <span class="tag-pill mb-small">Frontend</span>
-                  <h4 class="card-title">추상 컴포넌트 설계 및 구현</h4>
-                  <p>
+
+                <div class="impl-item">
+                  <h4 class="card-title">
+                    <span class="inline-tag">Frontend</span>
+                    추상 컴포넌트 설계 및 구현
+                  </h4>
+                  <p class="text-body">
                     디자인 시스템 컴포넌트를 Vue Component로 설계하고 팀원들과
                     같이 구현했습니다. 추상 컴포넌트는 구상 컴포넌트를
                     구현하는데 사용되는 만큼, 인터페이스가 다소 복잡하지만
                     범용성을 추구하도록 설계했습니다.
                   </p>
                 </div>
-              </div>
 
-              <div class="mt-large p-medium border-light-bg space-y-small">
-                <h4 class="font-bold">DevOps</h4>
-                <p class="text-body">
-                  Git Action을 통해 GitOps 환경을 구성했습니다. S3, RDS 등을
-                  포함한 리소스의 Provisioning과 Orchestration은 AWS Console과
-                  AWS CLI를 통해 수행했습니다.
-                </p>
+                <div class="impl-item">
+                  <h4 class="card-title">
+                    <span class="inline-tag">DevOps</span>
+                    GitOps & 인프라
+                  </h4>
+                  <p class="text-body">
+                    Git Action을 통해 GitOps 환경을 구성했습니다. S3, RDS 등을
+                    포함한 리소스의 Provisioning과 Orchestration은 AWS Console과
+                    AWS CLI를 통해 수행했습니다.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -292,36 +303,51 @@
                 </div>
               </div>
 
-              <div class="cards-grid">
-                <div class="clean-card">
-                  <h4 class="card-title text-main">DrawerPlugin Component</h4>
-                  <p>
+              <div class="impl-list">
+                <div class="impl-item">
+                  <h4 class="card-title">
+                    <span class="inline-tag">추상 Component</span>
+                    DrawerPlugin Component
+                  </h4>
+                  <p class="text-body">
                     DrawerPlugin을 구현하기 위한 최소 규격을 구현한 추상
                     Component입니다. 구상 DrawerPlugin은 기능을 구현한 후 사양을
                     pluginInfo 오브젝트에 기입하여 DrawerPlugin의 Prop으로
                     전달합니다.
                   </p>
                 </div>
-                <div class="clean-card">
-                  <h4 class="card-title text-main">DrawerPluginManager</h4>
-                  <p>
+
+                <div class="impl-item">
+                  <h4 class="card-title">
+                    <span class="inline-tag">Vue Plugin</span>
+                    DrawerPluginManager
+                  </h4>
+                  <p class="text-body">
                     구상 DrawerPlugin 목록을 앱에 등록하기 위한 Vue Plugin
                     입니다. pluginInfo 오브젝트 목록을 받아 앱에서 제어할 수
                     있도록 인터페이스를 전역 Provide로 제공합니다.
                   </p>
                 </div>
-                <div class="clean-card">
-                  <h4 class="card-title text-main">승인 체계 Drawer Plugin</h4>
-                  <p>
+
+                <div class="impl-item">
+                  <h4 class="card-title">
+                    <span class="inline-tag">구상 Plugin</span>
+                    승인 체계 Drawer Plugin
+                  </h4>
+                  <p class="text-body">
                     한 고객사의 업무 승인 결재 프로세스를 반영한 기능을 Drawer
                     Plugin으로 구현했습니다. App 전역에서 영향을 미치므로 App의
                     핵심 로직을 변경하지 않고 다른 레이어로서 상호작용 할 수
                     있도록 의도했습니다.
                   </p>
                 </div>
-                <div class="clean-card">
-                  <h4 class="card-title text-main">요청 관리 Drawer Plugin</h4>
-                  <p>
+
+                <div class="impl-item">
+                  <h4 class="card-title">
+                    <span class="inline-tag">구상 Plugin</span>
+                    요청 관리 Drawer Plugin
+                  </h4>
+                  <p class="text-body">
                     고객사 업무 프로세스에서 프로세스 마다 담당 직원이 달라지는
                     부분을 고려한 Customized 기능입니다.
                   </p>
@@ -338,7 +364,7 @@
       <div class="footer-content">
         <p class="footer-logo">Portfolio</p>
         <div class="footer-info">
-          <p class="text-gray-light">© 2024 All rights reserved.</p>
+          <p class="text-gray-light">© 2026 All rights reserved.</p>
         </div>
       </div>
     </footer>
@@ -775,6 +801,48 @@ strong {
   font-size: 1rem;
   margin-bottom: 0.75rem;
   color: var(--color-text-main);
+}
+
+/* Implementation List */
+.impl-list {
+  display: flex;
+  flex-direction: column;
+}
+.impl-item {
+  padding: 1.25rem 0;
+  border-bottom: 1px dashed var(--color-border);
+}
+.impl-item:first-child {
+  padding-top: 0;
+}
+.impl-item:last-child {
+  border-bottom: none;
+}
+.impl-item .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+.impl-item .text-body {
+  margin: 0;
+}
+
+/* Inline Tag */
+.inline-tag {
+  display: inline-block !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  padding: 0.2rem 0.65rem !important;
+  border-radius: 4px !important;
+  background-color: #f0f0f0 !important;
+  color: #555555 !important;
+  letter-spacing: 0.03em !important;
+  white-space: nowrap !important;
+  line-height: 1.3 !important;
+  vertical-align: middle !important;
+  border: 1px solid #e0e0e0 !important;
 }
 
 /* Footer */

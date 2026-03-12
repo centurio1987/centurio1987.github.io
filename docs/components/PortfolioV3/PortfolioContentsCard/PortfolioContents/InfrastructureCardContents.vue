@@ -60,7 +60,7 @@
             <div class="space-y-medium">
               <h3 class="sub-title">과정</h3>
               <div class="clean-card">
-                <span class="tag-pill mb-small">장비 매입과 iPXE 설정</span>
+                <h4 class="card-title">장비 매입과 iPXE 설정</h4>
                 <p class="text-body mb-small">
                   소규모의 내부 서비스인 만큼, 안정성 보다는 성능을
                   고려했습니다. 범용 PC용 부품에 랙 마운트 폼팩터를
@@ -98,7 +98,7 @@
               </div>
 
               <div class="clean-card">
-                <span class="tag-pill mb-small">Host 및 k8s 설정</span>
+                <h4 class="card-title">Host 및 k8s 설정</h4>
                 <p class="text-body">
                   talosOS의 machineConfig와 k8s의 kubeConfig를 설정합니다. 기본
                   설정 베이스에 https 통신을 위한 둘 다 선언적 프로비저닝이 가능
@@ -142,9 +142,7 @@
             <div class="space-y-medium">
               <h3 class="sub-title">전환 과정 및 결과</h3>
               <div class="clean-card">
-                <span class="tag-pill mb-small"
-                  >관심사 기반의 Infrastructure 분리</span
-                >
+                <h4 class="card-title">관심사 기반의 Infrastructure 분리</h4>
                 <p class="text-body">
                   terramate를 사용하면, 하나의 workspace 안에서 Stack이란
                   개념으로 Infrastructure를 계층화 할 수 있습니다. 또한, 여러
@@ -155,7 +153,7 @@
               </div>
 
               <div class="clean-card">
-                <span class="tag-pill mb-small">마이그레이션</span>
+                <h4 class="card-title">마이그레이션</h4>
                 <p class="text-body">
                   console & cli로 관리 되고 있던 infrastructure의 상태를
                   terraform의 state로 import 하였습니다. 상태 그대로를 온전히
@@ -166,7 +164,7 @@
               </div>
 
               <div class="clean-card">
-                <span class="tag-pill mb-small">모듈화</span>
+                <h4 class="card-title">모듈화</h4>
                 <p class="text-body">
                   ecs는 여러 서비스와 상호작용하여 provisioning 됩니다.
                   보편적으로 자주 사용되는 서비스와 변수를 정하여, 하나의
@@ -175,7 +173,7 @@
               </div>
 
               <div class="clean-card">
-                <span class="tag-pill mb-small">플랫폼 엔지니어링</span>
+                <h4 class="card-title">플랫폼 엔지니어링</h4>
                 <p class="text-body mb-small">
                   개발자가 직접 Infrastructure에 접근 하는 것은 업무 맥락 분산,
                   숙련도 부족, 실수에 의한 리스크 문제가 있습니다. 그래서
@@ -240,7 +238,7 @@
             <div class="space-y-medium">
               <h3 class="sub-title">구현 사항</h3>
               <div class="clean-card">
-                <span class="tag-pill mb-small">Keycloak 구성 및 배포</span>
+                <h4 class="card-title">Keycloak 구성 및 배포</h4>
                 <p class="text-body mb-small">
                   처음에는 저희 개발 가치에 따라, 직접 IAM 서비스 구현을
                   고려했지만, oidc와 인가 시스템을 표준에 맞게 구현하기에는
@@ -261,7 +259,7 @@
               </div>
 
               <div class="clean-card">
-                <span class="tag-pill mb-small">리버스 프록시 구현</span>
+                <h4 class="card-title">리버스 프록시 구현</h4>
                 <p class="text-body mb-small">
                   인증 처리를 담당하는 리버스 프록시를 구현합니다. 리버스
                   프록시에서 구현한 기능은 다음과 같습니다.
@@ -291,6 +289,9 @@
     <footer class="global-footer border-top-thin">
       <div class="footer-content">
         <p class="footer-logo">Portfolio</p>
+        <div class="footer-info">
+          <p class="text-gray-light">© 2026 All rights reserved.</p>
+        </div>
       </div>
     </footer>
   </div>
@@ -624,17 +625,6 @@ strong {
   letter-spacing: -0.01em;
   margin-bottom: 1.25rem;
   color: var(--color-text-main);
-}
-
-.tag-pill {
-  font-size: 0.75rem;
-  padding: 0.3rem 0.8rem;
-  border: var(--border-thin);
-  border-radius: 999px;
-  color: var(--color-text-main);
-  font-weight: 500;
-  display: inline-block;
-  background-color: var(--color-bg-muted);
 }
 
 .highlight-text {

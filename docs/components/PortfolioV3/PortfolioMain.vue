@@ -322,7 +322,7 @@ const portfolioData = [
   },
   {
     id: 4,
-    date: "Aug. 2024 ~ Oct. 2024",
+    date: "Aug. 2024 ~ Oct. 2024 & Oct. 2024 ~",
     category: [
       "Architecture",
       "Product Engineering",
