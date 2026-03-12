@@ -290,7 +290,7 @@ onUnmounted(() => {
 }
 
 .main-title {
-  font-size: 25vw;
+  font-size: 20rem;
   display: flex;
   flex-direction: column;
   /* align-items: center; */
@@ -299,7 +299,7 @@ onUnmounted(() => {
 
 @media (min-width: 768px) {
   .main-title {
-    font-size: 20vw;
+    font-size: 15rem;
   }
 }
 

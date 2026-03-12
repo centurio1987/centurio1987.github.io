@@ -120,10 +120,7 @@
               <div class="image-placeholder">
                 <div class="image-inner">
                   <span class="image-text">ETL Pipeline Architecture</span>
-                  <img
-                    src="/assets/images/contents_image/lgsp1.webp"
-                    alt="lgsp1"
-                  />
+                  <img :src="lgsp1Image" alt="lgsp1" />
                 </div>
               </div>
 
@@ -187,10 +184,7 @@
               <div class="image-placeholder">
                 <div class="image-inner">
                   <span class="image-text">Chart Data Sync Architecture</span>
-                  <img
-                    src="/assets/images/contents_image/lgsp2.webp"
-                    alt="lgsp2"
-                  />
+                  <img :src="lgsp2Image" alt="lgsp2" />
                 </div>
               </div>
 
@@ -251,7 +245,15 @@
 </template>
 
 <script setup>
-// Presentation-only static component
+// Image imports using new URL for proper Vite handling
+const lgsp1Image = new URL(
+  "../../../../images/contents_image/lgsp1.webp",
+  import.meta.url,
+).href;
+const lgsp2Image = new URL(
+  "../../../../images/contents_image/lgsp2.webp",
+  import.meta.url,
+).href;
 </script>
 
 <style scoped>

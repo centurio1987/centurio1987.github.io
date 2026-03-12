@@ -133,10 +133,7 @@
                   <span class="image-text"
                     >Collaboration Tool Template System</span
                   >
-                  <img
-                    src="/assets/images/contents_image/prod_ops1.webp"
-                    alt="prod_ops1"
-                  />
+                  <img :src="prodOps1Image" alt="prod_ops1" />
                 </div>
               </div>
 
@@ -158,10 +155,7 @@
                   <span class="image-text"
                     >Knowledge Management Architecture</span
                   >
-                  <img
-                    src="/assets/images/contents_image/prod_ops2.webp"
-                    alt="prod_ops2"
-                  />
+                  <img :src="prodOps2Image" alt="prod_ops2" />
                 </div>
               </div>
 
@@ -370,7 +364,15 @@
 </template>
 
 <script setup>
-// 프레젠테이션용 정적 컴포넌트입니다.
+// Image imports using new URL for proper Vite handling
+const prodOps1Image = new URL(
+  "../../../../images/contents_image/prod_ops1.webp",
+  import.meta.url,
+).href;
+const prodOps2Image = new URL(
+  "../../../../images/contents_image/prod_ops2.webp",
+  import.meta.url,
+).href;
 </script>
 
 <style scoped>

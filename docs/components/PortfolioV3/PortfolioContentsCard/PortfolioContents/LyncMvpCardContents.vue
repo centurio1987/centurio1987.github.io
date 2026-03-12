@@ -119,19 +119,13 @@
                 <div class="image-placeholder">
                   <div class="image-inner">
                     <span class="image-text">Process Definition Interface</span>
-                    <img
-                      src="/assets/images/contents_image/lync_mvp1.webp"
-                      alt="lync_mvp1"
-                    />
+                    <img :src="lyncMvpImage" alt="lync_mvp1" />
                   </div>
                 </div>
                 <div class="image-placeholder mt-medium">
                   <div class="image-inner">
                     <span class="image-text">Interactive Process Mapping</span>
-                    <img
-                      src="/assets/images/contents_image/lync_mvp1.webp"
-                      alt="lync_mvp1"
-                    />
+                    <img :src="lyncMvpImage" alt="lync_mvp1" />
                   </div>
                 </div>
               </div>
@@ -190,7 +184,11 @@
 </template>
 
 <script setup>
-// Presentation-only static component
+// Image imports using new URL for proper Vite handling
+const lyncMvpImage = new URL(
+  "../../../../images/contents_image/lync_mvp1.webp",
+  import.meta.url,
+).href;
 </script>
 
 <style scoped>

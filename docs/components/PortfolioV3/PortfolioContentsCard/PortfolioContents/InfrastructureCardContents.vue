@@ -38,10 +38,7 @@
             <div class="image-placeholder">
               <div class="image-inner">
                 <span class="image-text">On-Premise Architecture Diagram</span>
-                <img
-                  src="/assets/images/contents_image/devops1.webp"
-                  alt="webops1"
-                />
+                <img :src="devopsImage" alt="devops1" />
               </div>
             </div>
 
@@ -300,7 +297,11 @@
 </template>
 
 <script setup>
-// 순수 프레젠테이션용 정적 컴포넌트로 유지합니다.
+// Image imports using new URL for proper Vite handling
+const devopsImage = new URL(
+  "../../../../images/contents_image/devops1.webp",
+  import.meta.url,
+).href;
 </script>
 
 <style scoped>

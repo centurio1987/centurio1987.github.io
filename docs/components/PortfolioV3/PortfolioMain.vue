@@ -242,6 +242,36 @@ import ProdOpsCardContents from "./PortfolioContentsCard/PortfolioContents/ProdO
 import LgspCardContents from "./PortfolioContentsCard/PortfolioContents/LgspCardContents.vue";
 import LyncMvpCardContents from "./PortfolioContentsCard/PortfolioContents/LyncMvpCardContents.vue";
 
+// --- Asset Imports with new URL ---
+const nuxtLogo = new URL("/images/logos/nuxt.svg", import.meta.url).href;
+const nestLogo = new URL("/images/logos/nest.svg", import.meta.url).href;
+const postgresqlLogo = new URL("/images/logos/postgresql.svg", import.meta.url)
+  .href;
+const nextLogo = new URL("/images/logos/next.svg", import.meta.url).href;
+const vueLogo = new URL("/images/logos/vue.svg", import.meta.url).href;
+const terraformLogo = new URL("/images/logos/terraform.svg", import.meta.url)
+  .href;
+const awsLogo = new URL("/images/logos/aws.svg", import.meta.url).href;
+const kubernetesLogo = new URL("/images/logos/kubernetes.svg", import.meta.url)
+  .href;
+const terramateLogo = new URL("/images/logos/terramate.svg", import.meta.url)
+  .href;
+const javascriptLogo = new URL("/images/logos/javascript.svg", import.meta.url)
+  .href;
+const typescriptLogo = new URL("/images/logos/typescript.svg", import.meta.url)
+  .href;
+
+const strategyImage = new URL("/images/strategy.webp", import.meta.url).href;
+const poolmuganImage = new URL("/images/poolmugan.webp", import.meta.url).href;
+const lyncMvpImage = new URL("/images/lync_mvp.webp", import.meta.url).href;
+const lgspImage = new URL("/images/lgsp.webp", import.meta.url).href;
+const prodOpsImage = new URL("/images/prod_ops.webp", import.meta.url).href;
+const devopsImage = new URL("/images/devops.webp", import.meta.url).href;
+const architectureImage = new URL("/images/architecture.webp", import.meta.url)
+  .href;
+const utilsImage = new URL("/images/utils.webp", import.meta.url).href;
+const leadImage = new URL("/images/lead.webp", import.meta.url).href;
+
 // --- 1. 실무용 Mock Data 정의 ---
 const portfolioData = [
   {
@@ -262,20 +292,20 @@ const portfolioData = [
       },
       {
         name: "nuxt",
-        logo: "/assets/logos/nuxt.svg",
+        logo: nuxtLogo,
       },
       {
         name: "nest",
-        logo: "/assets/logos/nest.svg",
+        logo: nestLogo,
       },
       {
         name: "postgresql",
-        logo: "/assets/logos/postgresql.svg",
+        logo: postgresqlLogo,
       },
     ],
     duration: "3.5 Months & Go On",
     contents: LyncCardContents,
-    imageUrl: "/assets/images/strategy.webp",
+    imageUrl: strategyImage,
   },
   {
     id: 2,
@@ -294,7 +324,7 @@ const portfolioData = [
     ],
     contents: PoolmuganStrategyToPlanningCardContents,
     duration: "2 Months",
-    imageUrl: "/assets/images/poolmugan.webp",
+    imageUrl: poolmuganImage,
   },
   {
     id: 3,
@@ -314,20 +344,20 @@ const portfolioData = [
       },
       {
         name: "next",
-        logo: "/assets/logos/next.svg",
+        logo: nextLogo,
       },
       {
         name: "nest",
-        logo: "/assets/logos/nest.svg",
+        logo: nestLogo,
       },
       {
         name: "postgresql",
-        logo: "/assets/logos/postgresql.svg",
+        logo: postgresqlLogo,
       },
     ],
     duration: "4 Weeks",
     contents: LyncMvpCardContents,
-    imageUrl: "/assets/images/lync_mvp.webp",
+    imageUrl: lyncMvpImage,
   },
   {
     id: 4,
@@ -347,20 +377,20 @@ const portfolioData = [
       },
       {
         name: "vue",
-        logo: "/assets/logos/vue.svg",
+        logo: vueLogo,
       },
       {
         name: "nest",
-        logo: "/assets/logos/nest.svg",
+        logo: nestLogo,
       },
       {
         name: "postgresql",
-        logo: "/assets/logos/postgresql.svg",
+        logo: postgresqlLogo,
       },
     ],
     duration: "2 Months",
     contents: LgspCardContents,
-    imageUrl: "/assets/images/lgsp.webp",
+    imageUrl: lgspImage,
   },
   {
     id: 5,
@@ -372,7 +402,7 @@ const portfolioData = [
     skill: [{ name: "Process" }, { name: "Wow" }, { name: "Communication" }],
     duration: "Infinite",
     contents: ProdOpsCardContents,
-    imageUrl: "/assets/images/prod_ops.webp",
+    imageUrl: prodOpsImage,
   },
   {
     id: 6,
@@ -382,14 +412,14 @@ const portfolioData = [
     description:
       "내부 서비스의 정체성 변화에 대응하여 AWS 기반 환경을 On-Premise 베어메탈 환경으로 전환하고, 인프라 전반에 IaC(Terraform/Terramate) 및 독립 IAM(Keycloak) 체계를 구축했습니다. 하드웨어 프로비저닝 자동화(iPXE)부터 선언적 인프라 관리, 표준 보안 프로토콜 도입을 통해 운영 비용을 획기적으로 절감하고 개발자 친화적인 플랫폼 엔지니어링 환경을 완성했습니다.",
     skill: [
-      { name: "Terraform", logo: "/assets/logos/terraform.svg" },
-      { name: "AWS", logo: "/assets/logos/aws.svg" },
-      { name: "Kubernetes", logo: "/assets/logos/kubernetes.svg" },
-      { name: "Terramate", logo: "/assets/logos/terramate.svg" },
+      { name: "Terraform", logo: terraformLogo },
+      { name: "AWS", logo: awsLogo },
+      { name: "Kubernetes", logo: kubernetesLogo },
+      { name: "Terramate", logo: terramateLogo },
     ],
     duration: "Infinite",
     contents: InfrastructureCardContents,
-    imageUrl: "/assets/images/devops.webp",
+    imageUrl: devopsImage,
   },
   {
     id: 7,
@@ -401,7 +431,7 @@ const portfolioData = [
     skill: [{ name: "#" }],
     duration: "Infinite",
     contents: ArchitectureCardContents,
-    imageUrl: "/assets/images/architecture.webp",
+    imageUrl: architectureImage,
   },
   {
     id: 8,
@@ -411,12 +441,12 @@ const portfolioData = [
     description:
       "반복되는 유틸리티 함수와 복잡한 UI 컴포넌트를 표준화하여 팀 내 기술 부채를 줄이고 개발 속도를 개선했습니다. Python 스타일의 내장 객체 확장(Date, Array)부터 비즈니스 핵심 로직(Cursor Pagination, i18n)의 추상화까지, 엄밀한 인터페이스 설계를 통해 누구나 쉽게 고품질의 기능을 구현할 수 있는 환경을 조성했습니다.",
     skill: [
-      { name: "javascript", logo: "/assets/logos/javascript.svg" },
-      { name: "typescript", logo: "/assets/logos/typescript.svg" },
+      { name: "javascript", logo: javascriptLogo },
+      { name: "typescript", logo: typescriptLogo },
     ],
     duration: "Infinite",
     contents: CommonUtilsCardContents,
-    imageUrl: "/assets/images/utils.webp",
+    imageUrl: utilsImage,
   },
   {
     id: 9,
@@ -428,7 +458,7 @@ const portfolioData = [
     skill: [{ name: "Leadership" }],
     duration: "Infinite",
     contents: LeadCardContents,
-    imageUrl: "/assets/images/lead.webp",
+    imageUrl: leadImage,
   },
 ];
 

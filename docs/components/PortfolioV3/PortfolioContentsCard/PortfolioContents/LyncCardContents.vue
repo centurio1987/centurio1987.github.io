@@ -131,10 +131,7 @@
               <div class="image-placeholder mt-large mb-large">
                 <div class="image-inner">
                   <span class="image-text">Domain Modeling Diagram</span>
-                  <img
-                    src="/assets/images/contents_image/lync1.webp"
-                    alt="lync1"
-                  />
+                  <img :src="lync1Image" alt="lync1" />
                 </div>
               </div>
 
@@ -291,10 +288,7 @@
               <div class="image-placeholder mt-large mb-large">
                 <div class="image-inner">
                   <span class="image-text">Plugin Implementation Workflow</span>
-                  <img
-                    src="/assets/images/contents_image/lync2.webp"
-                    alt="lync2"
-                  />
+                  <img :src="lync2Image" alt="lync2" />
                 </div>
               </div>
 
@@ -352,7 +346,15 @@
 </template>
 
 <script setup>
-// 순수 프레젠테이션용 정적 컴포넌트로 유지합니다.
+// Image imports using new URL for proper Vite handling
+const lync1Image = new URL(
+  "../../../../images/contents_image/lync1.webp",
+  import.meta.url,
+).href;
+const lync2Image = new URL(
+  "../../../../images/contents_image/lync2.webp",
+  import.meta.url,
+).href;
 </script>
 
 <style scoped>

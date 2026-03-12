@@ -30,7 +30,7 @@
             <!-- 1. 전면 표지 이미지 (Cover Page) -->
             <div v-if="hasCover" class="cover-page">
               <img
-                src="/assets/images/essay_cover.webp"
+                :src="essayCoverImage"
                 alt="Book Cover"
                 class="cover-image"
               />
@@ -128,6 +128,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
+
+// Image imports using new URL for proper Vite handling
+const essayCoverImage = new URL(
+  "../assets/images/essay_cover.webp",
+  import.meta.url,
+).href;
 
 // --- TypeScript Type Definitions ---
 type Theme = "light" | "sepia" | "dark";

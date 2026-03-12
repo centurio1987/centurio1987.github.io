@@ -266,6 +266,25 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 
+// Image imports using new URL for proper Vite handling
+const profileImage = new URL("../images/profile.webp", import.meta.url).href;
+const bigDataCert = new URL(
+  "../images/resume/big-data-on-aws-certificate.png",
+  import.meta.url,
+).href;
+const deepLearningAws = new URL(
+  "../images/resume/deep-learning-on-aws.png",
+  import.meta.url,
+).href;
+const technicalEssentialsCert = new URL(
+  "../images/resume/technical-essentials-on-aws-certificate.png",
+  import.meta.url,
+).href;
+const topcitAward = new URL(
+  "../images/resume/topcit-award.png",
+  import.meta.url,
+).href;
+
 // --- Type Definitions ---
 interface Contact {
   iconType: "map-pin" | "phone" | "mail" | "link" | "github" | "linkedin";
@@ -334,8 +353,8 @@ const PATHS = {
 
 const resumeData = reactive<ResumeData>({
   name: "김윤덕", // 필요시 본명으로 수정해주세요
-  jobTitle: "CTO / Product Owner",
-  profileImage: "/assets/images/profile.webp",
+  jobTitle: "Product Engineer / Product Owner",
+  profileImage: profileImage,
   contacts: [
     // { iconType: "map-pin", iconPath: PATHS.mapPin, value: "서울특별시 강남구" },
     // { iconType: "phone", iconPath: PATHS.phone, value: "010-" },
@@ -395,19 +414,19 @@ const resumeData = reactive<ResumeData>({
       name: "Big Data on AWS 수료",
       issuer: "Amazon",
       year: "2020.09.04",
-      link: "/assets/images/resume/big-data-on-aws-certificate.png",
+      link: bigDataCert,
     },
     {
       name: "Deep Learning on AWS 수료",
       issuer: "Amazon",
       year: "2020.09.01",
-      link: "/assets/images/resume/deep-learning-on-aws.png",
+      link: deepLearningAws,
     },
     {
       name: "AWS Technical Essentials 수료",
       issuer: "Amazon",
       year: "2020.08.31",
-      link: "/assets/images/resume/technical-essentials-on-aws-certificate.png",
+      link: technicalEssentialsCert,
     },
     { name: "한자자격시험 2급", issuer: "한자교육진흥회", year: "2014.06.01" },
     { name: "TOEIC 915점(만료)", issuer: "ETS", year: "2013.11.01" },
@@ -461,7 +480,7 @@ const resumeData = reactive<ResumeData>({
       category: "정보통신산업진흥원, 한국생산성본부 | 2016.12.01",
       description:
         "한 회에 3500명 정도 응시하는 IT역량평가 시험으로써, TOP 15위 안에 입상함",
-      link: "/assets/images/resume/topcit-award.png",
+      link: topcitAward,
     },
     {
       title: "TOPCIT(소프트웨어역량평가) 숭실대학교 총장상",
