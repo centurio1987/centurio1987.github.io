@@ -8,7 +8,7 @@ export default defineConfig({
 
   title: "Kim Yoondeok",
   description: "진지함 속에서 즐거움을 찾다",
-  head: [["link", { rel: "icon", href: "/assets/images/logo5-16.ico" }]],
+  head: [["link", { rel: "icon", href: "/images/logo5-16.ico" }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -19,7 +19,7 @@ export default defineConfig({
       { text: "Post", link: "/posts" },
     ],
     siteTitle: "진지함 속에서 즐거움을 찾다",
-    logo: "/assets/images/logo5_64_white.svg",
+    logo: "/images/logo5_64_white.svg",
 
     sidebar: {
       "/posts/": [
