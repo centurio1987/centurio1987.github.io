@@ -9,8 +9,6 @@
         </div>
       </div>
 
-      <h1 class="main-logo-title">PORTFOLIO</h1>
-
       <!-- Signature Red Line -->
       <div class="accent-line"></div>
 
@@ -35,12 +33,6 @@
         <h2 class="section-title">Process Facilitation</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">01. 프로세스 촉진</h3>
-            <p class="text-small font-medium mt-small">
-              팀 매니지먼트 & 프로세스 최적화
-            </p>
-          </aside>
 
           <div class="main-content">
             <div class="space-y-medium text-body">
@@ -93,12 +85,6 @@
         <h2 class="section-title">Talent Management</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">02. 인재 관리</h3>
-            <p class="text-small font-medium mt-small">
-              성장 지원 & Inspiration 관리
-            </p>
-          </aside>
 
           <div class="main-content">
             <div class="split-grid">
@@ -153,10 +139,6 @@
         <h2 class="section-title">Communication</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">03. 크로스 팀 소통 및 조율</h3>
-            <p class="text-small font-medium mt-small">가치 사슬 유기적 운영</p>
-          </aside>
 
           <div class="main-content">
             <div class="space-y-medium text-body">
@@ -262,24 +244,24 @@
 .global-header {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
 }
 @media (min-width: 768px) {
   .global-header {
-    padding: 3rem 3rem 2rem;
+    padding: 1.25rem 3rem 1rem;
   }
 }
 @media (min-width: 1024px) {
   .global-header {
-    padding: 4rem 4rem 3rem;
+    padding: 1.5rem 4rem 1.25rem;
   }
 }
 
 .header-top {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 .header-icons {
   display: flex;
@@ -489,16 +471,8 @@ strong {
 }
 @media (min-width: 1024px) {
   .layout-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 4rem;
-  }
-  .sidebar {
-    grid-column: span 3 / span 3;
-  }
-  .main-content {
-    grid-column: span 9 / span 9;
-  }
-}
+  }}
 
 /* ==========================================================================
    Specific Modules

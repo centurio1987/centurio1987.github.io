@@ -9,8 +9,6 @@
         </div>
       </div>
 
-      <h1 class="main-logo-title">PORTFOLIO</h1>
-
       <!-- Signature Red Line -->
       <div class="accent-line"></div>
 
@@ -27,13 +25,6 @@
         <h2 class="section-title">Technical Stack</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">01. 기술 스택 및 역량</h3>
-            <p class="text-small font-medium mt-small">
-              엔터프라이즈급 풀스택 아키텍처 구성
-            </p>
-          </aside>
-
           <div class="main-content">
             <div class="tech-stack-grid">
               <!-- Left Column -->
@@ -133,11 +124,6 @@
         <h2 class="section-title">Initial Development</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">02. 제품 최초 개발</h3>
-            <p class="text-small font-medium mt-small">2024/08 ~ 2024/10</p>
-          </aside>
-
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
               <h3 class="sub-title">배경</h3>
@@ -246,11 +232,6 @@
         <h2 class="section-title">Ops & Updates</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">03. 제품 운영 및 업데이트</h3>
-            <p class="text-small font-medium mt-small">2024/10 ~ Present</p>
-          </aside>
-
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
               <h3 class="sub-title">
@@ -394,19 +375,19 @@ const lgsp2Image = new URL(
 .global-header {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
 }
 @media (min-width: 768px) {
   .global-header {
-    padding: 3rem 3rem 2rem;
+    padding: 1.25rem 3rem 1rem;
   }
 }
 
 .header-top {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 .header-icons {
   display: flex;
@@ -570,12 +551,6 @@ const lgsp2Image = new URL(
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-}
-@media (min-width: 1024px) {
-  .layout-grid {
-    grid-template-columns: 3fr 9fr;
-    gap: 4rem;
-  }
 }
 
 .section-index {

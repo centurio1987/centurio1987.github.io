@@ -9,8 +9,6 @@
         </div>
       </div>
 
-      <h1 class="main-logo-title">PORTFOLIO</h1>
-
       <!-- Signature Red Line -->
       <div class="accent-line"></div>
 
@@ -27,13 +25,6 @@
         <h2 class="section-title">Technical Stack</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">01. 기술 스택 및 역량</h3>
-            <p class="text-small font-medium mt-small">
-              글로벌 서비스 대응을 위한 현대적 기술 스택
-            </p>
-          </aside>
-
           <div class="main-content space-y-medium">
             <!-- Tech Stack Summary -->
             <div class="clean-card">
@@ -89,13 +80,6 @@
         <h2 class="section-title">LCA Analysis Solution</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">02. 제품 LCA 분석 솔루션 (MVP)</h3>
-            <p class="text-small font-medium mt-small">
-              해외 판촉 및 시장 검증 모델
-            </p>
-          </aside>
-
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
               <h3 class="sub-title">배경 및 콘셉트</h3>
@@ -250,19 +234,19 @@ const lyncMvpImage = new URL(
 .global-header {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
 }
 @media (min-width: 768px) {
   .global-header {
-    padding: 3rem 3rem 2rem;
+    padding: 1.25rem 3rem 1rem;
   }
 }
 
 .header-top {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 .header-icons {
   display: flex;
@@ -432,12 +416,6 @@ const lyncMvpImage = new URL(
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-}
-@media (min-width: 1024px) {
-  .layout-grid {
-    grid-template-columns: 3fr 9fr;
-    gap: 4rem;
-  }
 }
 
 .section-index {

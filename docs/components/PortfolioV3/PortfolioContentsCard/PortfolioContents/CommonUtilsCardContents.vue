@@ -9,8 +9,6 @@
         </div>
       </div>
 
-      <h1 class="main-logo-title">PORTFOLIO</h1>
-
       <!-- Signature Red Line -->
       <div class="accent-line"></div>
 
@@ -27,13 +25,6 @@
         <h2 class="section-title">JS Modules</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">01. 공통 라이브러리 추상화</h3>
-            <p class="text-small font-medium mt-small">
-              팀 내에서 자주 사용하는 기능들을 추상화하여 npm package로
-              관리했습니다.
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
@@ -134,13 +125,6 @@ const whereClause = CursorManager.generateWherePhraseUnit(decoded, 0, '>');</cod
         <h2 class="section-title">Vue Components</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">02. UI 컴포넌트 추상화</h3>
-            <p class="text-small font-medium mt-small">
-              반복되는 UI 패턴을 선언적 컴포넌트로 분리하여 생산성을
-              극대화했습니다.
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
@@ -250,19 +234,19 @@ const whereClause = CursorManager.generateWherePhraseUnit(decoded, 0, '>');</cod
 .global-header {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
 }
 @media (min-width: 768px) {
   .global-header {
-    padding: 3rem 3rem 2rem;
+    padding: 1.25rem 3rem 1rem;
   }
 }
 
 .header-top {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 .header-icons {
   display: flex;
@@ -405,16 +389,8 @@ const whereClause = CursorManager.generateWherePhraseUnit(decoded, 0, '>');</cod
 }
 @media (min-width: 1024px) {
   .layout-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 4rem;
-  }
-  .sidebar {
-    grid-column: span 3 / span 3;
-  }
-  .main-content {
-    grid-column: span 9 / span 9;
-  }
-}
+  }}
 
 .section-index {
   font-size: 0.875rem;

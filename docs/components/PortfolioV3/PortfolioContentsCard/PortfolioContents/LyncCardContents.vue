@@ -9,8 +9,6 @@
         </div>
       </div>
 
-      <h1 class="main-logo-title">PORTFOLIO</h1>
-
       <!-- Signature Red Line -->
       <div class="accent-line"></div>
 
@@ -27,13 +25,6 @@
         <h2 class="section-title">Tech Stack</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">01. 기술</h3>
-            <p class="text-small text-gray mt-small">
-              모노레포 기반의 풀스택 웹 애플리케이션 개발을 위한 기술
-              스택입니다.
-            </p>
-          </aside>
 
           <div class="main-content">
             <div class="cards-grid border-top-thin pt-large">
@@ -115,12 +106,6 @@
         <h2 class="section-title">Initial Development</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">02. 제품 최초 개발</h3>
-            <p class="text-small font-medium mt-small">
-              기간: 2024/03 ~ 2024/06
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- 아키텍쳐 설계와 도메인 모델링 -->
@@ -237,10 +222,6 @@
         <h2 class="section-title">Operations & Updates</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">03. 제품 운영 및 업데이트</h3>
-            <p class="text-small font-medium mt-small">기간: 2024/03 ~</p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- Customized Area Plugin 패턴 설계 -->
@@ -448,24 +429,24 @@ const lync2Image = new URL(
 .global-header {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
 }
 @media (min-width: 768px) {
   .global-header {
-    padding: 3rem 3rem 2rem;
+    padding: 1.25rem 3rem 1rem;
   }
 }
 @media (min-width: 1024px) {
   .global-header {
-    padding: 4rem 4rem 3rem;
+    padding: 1.5rem 4rem 1.25rem;
   }
 }
 
 .header-top {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 .header-icons {
   display: flex;
@@ -675,16 +656,8 @@ strong {
 }
 @media (min-width: 1024px) {
   .layout-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 4rem;
-  }
-  .sidebar {
-    grid-column: span 3 / span 3;
-  }
-  .main-content {
-    grid-column: span 9 / span 9;
-  }
-}
+  }}
 
 /* ==========================================================================
    Specific Modules

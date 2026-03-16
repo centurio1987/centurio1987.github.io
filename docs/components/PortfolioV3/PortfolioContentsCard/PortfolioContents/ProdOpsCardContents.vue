@@ -9,8 +9,6 @@
         </div>
       </div>
 
-      <h1 class="main-logo-title">PORTFOLIO</h1>
-
       <!-- Signature Red Line -->
       <div class="accent-line"></div>
 
@@ -27,14 +25,6 @@
         <h2 class="section-title">Communication & WoW</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">
-              01. 커뮤니케이션 &amp; 일하는 방식(WoW) 설계
-            </h3>
-            <p class="text-small font-medium mt-small">
-              문화, 핵심 가치, 커뮤니케이션 원칙, 문서 작성 기준
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- 문화 및 핵심 가치 -->
@@ -139,14 +129,6 @@
         <h2 class="section-title">Tools & Systems</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">
-              02. 협업 도구 템플릿 작성 및 자동화, 지식 관리 체계 구축
-            </h3>
-            <p class="text-small font-medium mt-small">
-              도구 단일화, 템플릿 자동화, 지식 관리 체계
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- 도구 단일화 -->
@@ -247,12 +229,6 @@
         <h2 class="section-title">Process Standard</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">03. 프로세스 설계 철학</h3>
-            <p class="text-small font-medium mt-small">
-              최소 절차, 최대 핵심의 설계 원칙
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
@@ -288,14 +264,6 @@
         <h2 class="section-title">Process Redesign</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">
-              04. 제품 전략-발견-정의-기획 프로세스 문제 원인 분석 및 해결
-            </h3>
-            <p class="text-small font-medium mt-small">
-              PO 전권 인수를 통한 제품 활동 정립
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- 개요 -->
@@ -407,12 +375,6 @@
         <h2 class="section-title">Product Discovery</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">05. 제품 발견 프로세스</h3>
-            <p class="text-small font-medium mt-small">
-              리서치 → 제품 발견 및 제품화 전략
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- 데스크 리서치 -->
@@ -541,12 +503,6 @@
         <h2 class="section-title">Product Planning</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">06. 제품 기획 프로세스</h3>
-            <p class="text-small font-medium mt-small">
-              컨셉 정의 → 제품 디자인
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- 컨셉 정의 -->
@@ -659,10 +615,6 @@
         <h2 class="section-title">Product Development</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">07. 제품 개발 프로세스</h3>
-            <p class="text-small font-medium mt-small">스크럼 기반 개발 체계</p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
@@ -724,12 +676,6 @@
         <h2 class="section-title">Product Operations</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">08. 제품 운영 프로세스</h3>
-            <p class="text-small font-medium mt-small">
-              모니터링 → 티켓 정의 → 구현 → QA → 전달
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- 모니터링 -->
@@ -824,10 +770,6 @@
         <h2 class="section-title">Quality Assurance</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">09. 제품, 업무, 프로세스 QA 프로세스</h3>
-            <p class="text-small font-medium mt-small">다층적 품질 관리 체계</p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- 업무 QA -->
@@ -999,19 +941,19 @@ const prodOps2Image = new URL(
 .global-header {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
 }
 @media (min-width: 768px) {
   .global-header {
-    padding: 3rem 3rem 2rem;
+    padding: 1.25rem 3rem 1rem;
   }
 }
 
 .header-top {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 .header-icons {
   display: flex;
@@ -1172,16 +1114,8 @@ const prodOps2Image = new URL(
 }
 @media (min-width: 1024px) {
   .layout-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 4rem;
-  }
-  .sidebar {
-    grid-column: span 3 / span 3;
-  }
-  .main-content {
-    grid-column: span 9 / span 9;
-  }
-}
+  }}
 
 .section-index {
   font-size: 0.875rem;

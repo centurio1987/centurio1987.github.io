@@ -9,8 +9,6 @@
         </div>
       </div>
 
-      <h1 class="main-logo-title">PORTFOLIO</h1>
-
       <!-- Signature Red Line -->
       <div class="accent-line"></div>
 
@@ -35,12 +33,6 @@
         <h2 class="section-title">Architecture & Standards</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">01. 탄중연 아키텍쳐 및 표준 정의</h3>
-            <p class="text-small font-medium mt-small">
-              개발/디자인 가이드라인 확립
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- 표준 요약 (Cards) -->
@@ -274,24 +266,24 @@
 .global-header {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
 }
 @media (min-width: 768px) {
   .global-header {
-    padding: 3rem 3rem 2rem;
+    padding: 1.25rem 3rem 1rem;
   }
 }
 @media (min-width: 1024px) {
   .global-header {
-    padding: 4rem 4rem 3rem;
+    padding: 1.5rem 4rem 1.25rem;
   }
 }
 
 .header-top {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 .header-icons {
   display: flex;
@@ -501,16 +493,8 @@ strong {
 }
 @media (min-width: 1024px) {
   .layout-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 4rem;
-  }
-  .sidebar {
-    grid-column: span 3 / span 3;
-  }
-  .main-content {
-    grid-column: span 9 / span 9;
-  }
-}
+  }}
 
 /* ==========================================================================
    Specific Modules

@@ -9,8 +9,6 @@
         </div>
       </div>
 
-      <h1 class="main-logo-title">PORTFOLIO</h1>
-
       <!-- Signature Red Line -->
       <div class="accent-line"></div>
 
@@ -26,12 +24,6 @@
         <h2 class="section-title">Infrastructure</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">01. k8s On-Premise 환경 구축</h3>
-            <p class="text-small font-medium mt-small">
-              Bare-metal 서버 매입 및 최적화
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <!-- Image Placeholder -->
@@ -117,12 +109,6 @@
         <h2 class="section-title">IaC Migration</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">02. IaC 마이그레이션</h3>
-            <p class="text-small font-medium mt-small">
-              Terraform & Terramate 기반 선언적 체계 전환
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
@@ -209,12 +195,6 @@
         <h2 class="section-title">IAM & SSO</h2>
 
         <div class="layout-grid">
-          <aside class="sidebar">
-            <h3 class="section-index">03. 독립적인 IAM 환경 구축</h3>
-            <p class="text-small font-medium mt-small">
-              Keycloak 기반 인증 센터 및 리버스 프록시
-            </p>
-          </aside>
 
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
@@ -370,24 +350,24 @@ const devopsImage = new URL(
 .global-header {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: center;
 }
 @media (min-width: 768px) {
   .global-header {
-    padding: 3rem 3rem 2rem;
+    padding: 1.25rem 3rem 1rem;
   }
 }
 @media (min-width: 1024px) {
   .global-header {
-    padding: 4rem 4rem 3rem;
+    padding: 1.5rem 4rem 1.25rem;
   }
 }
 
 .header-top {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 .header-icons {
   display: flex;
@@ -597,16 +577,8 @@ strong {
 }
 @media (min-width: 1024px) {
   .layout-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 4rem;
-  }
-  .sidebar {
-    grid-column: span 3 / span 3;
-  }
-  .main-content {
-    grid-column: span 9 / span 9;
-  }
-}
+  }}
 
 /* ==========================================================================
    Specific Modules

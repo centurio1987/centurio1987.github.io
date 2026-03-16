@@ -107,8 +107,9 @@ const onCardClick = () => {
 <style scoped>
 /* --- Card Item --- */
 .card {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 4;
   padding: 1.5rem;
   border-bottom: 1px solid var(--border-color);
   border-right: 1px solid var(--border-color);
@@ -165,9 +166,10 @@ const onCardClick = () => {
 
 .card-img-container {
   aspect-ratio: 1 / 1;
-  margin-bottom: 1.5rem;
   overflow: hidden;
   background-color: var(--img-bg-color);
+  align-self: start;
+  margin-bottom: 1.25rem;
 }
 
 .card-img {
@@ -186,7 +188,8 @@ const onCardClick = () => {
 }
 
 .card-content {
-  flex-grow: 1;
+  align-self: start;
+  margin-bottom: 1.25rem;
 }
 
 .card-title {
@@ -208,7 +211,7 @@ const onCardClick = () => {
 }
 
 .card-footer {
-  margin-top: 2rem;
+  align-self: end;
   padding-top: 1rem;
   border-top: 1px solid var(--border-color);
   display: flex;
