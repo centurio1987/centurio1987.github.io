@@ -42,10 +42,6 @@
           </div>
         </div>
       </span>
-      <span class="duration-info">
-        <span class="duration-label">Duration:</span>
-        <span class="card-footer-val">{{ duration }}</span>
-      </span>
     </div>
   </article>
   <!-- <PortfolioCardDialog ref="modal" v-bind="$props">
@@ -85,10 +81,6 @@ const props = defineProps({
   },
   skill: {
     type: Array as PropType<Array<{ name: string; logo?: string }>>,
-    required: true,
-  },
-  duration: {
-    type: String,
     required: true,
   },
 });
@@ -256,18 +248,6 @@ const onCardClick = () => {
 
 .card:hover .skill-logo {
   opacity: 1;
-}
-
-.duration-info {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.25rem;
-  flex-shrink: 0;
-  max-width: 10rem;
-}
-
-.duration-label {
-  white-space: nowrap;
 }
 
 .card-footer-val {

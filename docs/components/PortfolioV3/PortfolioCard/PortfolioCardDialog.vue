@@ -15,11 +15,11 @@
 
     <main class="detail-main">
       <header class="detail-header">
-        <div class="detail-categories">
+        <!-- <div class="detail-categories">
           <span v-for="cat in category" :key="cat" class="detail-category">{{
             cat
           }}</span>
-        </div>
+        </div> -->
         <h1 class="detail-title">{{ title }}</h1>
 
         <div class="detail-meta-grid">
@@ -41,10 +41,6 @@
           <div class="meta-column">
             <span class="meta-label">Date</span>
             <span class="meta-value">{{ date }}</span>
-          </div>
-          <div class="meta-column">
-            <span class="meta-label">Reading Time</span>
-            <span class="meta-value">{{ duration }}</span>
           </div>
         </div>
       </header>
@@ -104,9 +100,6 @@ defineProps({
   },
   skill: {
     type: Array as PropType<Array<{ name: string; logo?: string }>>,
-  },
-  duration: {
-    type: String,
   },
 });
 

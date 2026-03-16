@@ -112,7 +112,7 @@
         </section>
 
         <!-- Categories & Filter Section -->
-        <section class="filter-section">
+        <!-- <section class="filter-section">
           <h2 class="filter-title">CATEGORIES</h2>
           <div class="filter-buttons">
             <button
@@ -124,7 +124,7 @@
               {{ category }}
             </button>
           </div>
-        </section>
+        </section> -->
 
         <!-- Grid Section -->
         <section class="portfolio-grid">
@@ -443,6 +443,7 @@ const onClickCard = (id) => {
   selectedCardData.value = portfolioData.find((data) => data.id === id);
 
   modal.value.$el.showModal();
+  modal.value.$el.scrollTop = 0;
 };
 </script>
 
