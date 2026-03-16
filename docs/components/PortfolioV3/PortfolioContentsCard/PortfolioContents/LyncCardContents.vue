@@ -25,7 +25,6 @@
         <h2 class="section-title">Tech Stack</h2>
 
         <div class="layout-grid">
-
           <div class="main-content">
             <div class="cards-grid border-top-thin pt-large">
               <!-- Architecture -->
@@ -106,7 +105,6 @@
         <h2 class="section-title">Initial Development</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- 아키텍쳐 설계와 도메인 모델링 -->
             <div>
@@ -222,7 +220,6 @@
         <h2 class="section-title">Operations & Updates</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- Customized Area Plugin 패턴 설계 -->
             <div>
@@ -353,15 +350,9 @@
 </template>
 
 <script setup>
-// Image imports using new URL for proper Vite handling
-const lync1Image = new URL(
-  "../../../../images/contents_image/lync1.webp",
-  import.meta.url,
-).href;
-const lync2Image = new URL(
-  "../../../../images/contents_image/lync2.webp",
-  import.meta.url,
-).href;
+// Image imports (public directory paths)
+const lync1Image = "/images/contents_image/lync1.webp";
+const lync2Image = "/images/contents_image/lync2.webp";
 </script>
 
 <style scoped>
@@ -657,7 +648,8 @@ strong {
 @media (min-width: 1024px) {
   .layout-grid {
     gap: 4rem;
-  }}
+  }
+}
 
 /* ==========================================================================
    Specific Modules

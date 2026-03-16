@@ -25,7 +25,6 @@
         <h2 class="section-title">Communication & WoW</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- 문화 및 핵심 가치 -->
             <div class="space-y-medium">
@@ -129,7 +128,6 @@
         <h2 class="section-title">Tools & Systems</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- 도구 단일화 -->
             <div class="space-y-medium">
@@ -229,7 +227,6 @@
         <h2 class="section-title">Process Standard</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
               <h3 class="sub-title">설계 철학</h3>
@@ -264,7 +261,6 @@
         <h2 class="section-title">Process Redesign</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- 개요 -->
             <div class="space-y-medium">
@@ -375,7 +371,6 @@
         <h2 class="section-title">Product Discovery</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- 데스크 리서치 -->
             <div class="space-y-medium">
@@ -503,7 +498,6 @@
         <h2 class="section-title">Product Planning</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- 컨셉 정의 -->
             <div class="space-y-medium">
@@ -615,7 +609,6 @@
         <h2 class="section-title">Product Development</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
               <h3 class="sub-title">스크럼</h3>
@@ -676,7 +669,6 @@
         <h2 class="section-title">Product Operations</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- 모니터링 -->
             <div class="space-y-medium">
@@ -770,7 +762,6 @@
         <h2 class="section-title">Quality Assurance</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- 업무 QA -->
             <div class="space-y-medium">
@@ -871,15 +862,9 @@
 </template>
 
 <script setup>
-// Image imports using new URL for proper Vite handling
-const prodOps1Image = new URL(
-  "../../../../images/contents_image/prod_ops1.webp",
-  import.meta.url,
-).href;
-const prodOps2Image = new URL(
-  "../../../../images/contents_image/prod_ops2.webp",
-  import.meta.url,
-).href;
+// Image imports (public directory paths)
+const prodOps1Image = "/images/contents_image/prod_ops1.webp";
+const prodOps2Image = "/images/contents_image/prod_ops2.webp";
 </script>
 
 <style scoped>
@@ -1115,7 +1100,8 @@ const prodOps2Image = new URL(
 @media (min-width: 1024px) {
   .layout-grid {
     gap: 4rem;
-  }}
+  }
+}
 
 .section-index {
   font-size: 0.875rem;

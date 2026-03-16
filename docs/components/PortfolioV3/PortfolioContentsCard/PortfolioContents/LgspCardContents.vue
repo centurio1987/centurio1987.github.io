@@ -305,15 +305,9 @@
 </template>
 
 <script setup>
-// Image imports using new URL for proper Vite handling
-const lgsp1Image = new URL(
-  "../../../../images/contents_image/lgsp1.webp",
-  import.meta.url,
-).href;
-const lgsp2Image = new URL(
-  "../../../../images/contents_image/lgsp2.webp",
-  import.meta.url,
-).href;
+// Image imports (public directory paths)
+const lgsp1Image = "/images/contents_image/lgsp1.webp";
+const lgsp2Image = "/images/contents_image/lgsp2.webp";
 </script>
 
 <style scoped>

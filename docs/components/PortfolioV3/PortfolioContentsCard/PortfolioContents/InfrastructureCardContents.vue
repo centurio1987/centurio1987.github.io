@@ -24,7 +24,6 @@
         <h2 class="section-title">Infrastructure</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <!-- Image Placeholder -->
             <div class="image-placeholder">
@@ -109,7 +108,6 @@
         <h2 class="section-title">IaC Migration</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
               <h3 class="sub-title">배경</h3>
@@ -195,7 +193,6 @@
         <h2 class="section-title">IAM & SSO</h2>
 
         <div class="layout-grid">
-
           <div class="main-content space-y-xlarge">
             <div class="space-y-medium">
               <h3 class="sub-title">배경</h3>
@@ -278,11 +275,8 @@
 </template>
 
 <script setup>
-// Image imports using new URL for proper Vite handling
-const devopsImage = new URL(
-  "../../../../images/contents_image/devops1.webp",
-  import.meta.url,
-).href;
+// Image imports (public directory paths)
+const devopsImage = "/images/contents_image/devops1.webp";
 </script>
 
 <style scoped>
@@ -578,7 +572,8 @@ strong {
 @media (min-width: 1024px) {
   .layout-grid {
     gap: 4rem;
-  }}
+  }
+}
 
 /* ==========================================================================
    Specific Modules

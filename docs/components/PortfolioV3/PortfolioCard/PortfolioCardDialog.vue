@@ -76,7 +76,7 @@
     </main>
 
     <footer class="detail-footer">
-      <button @click="handleBack" class="btn-footer-back">
+      <button @click="onClickBack" class="btn-footer-back">
         Back to Portfolio
       </button>
     </footer>

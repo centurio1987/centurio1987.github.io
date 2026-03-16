@@ -266,24 +266,13 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 
-// Image imports using new URL for proper Vite handling
-const profileImage = new URL("../images/profile.webp", import.meta.url).href;
-const bigDataCert = new URL(
-  "../images/resume/big-data-on-aws-certificate.png",
-  import.meta.url,
-).href;
-const deepLearningAws = new URL(
-  "../images/resume/deep-learning-on-aws.png",
-  import.meta.url,
-).href;
-const technicalEssentialsCert = new URL(
-  "../images/resume/technical-essentials-on-aws-certificate.png",
-  import.meta.url,
-).href;
-const topcitAward = new URL(
-  "../images/resume/topcit-award.png",
-  import.meta.url,
-).href;
+// Image imports (public directory paths)
+const profileImage = "/images/profile.webp";
+const bigDataCert = "/images/resume/big-data-on-aws-certificate.png";
+const deepLearningAws = "/images/resume/deep-learning-on-aws.png";
+const technicalEssentialsCert =
+  "/images/resume/technical-essentials-on-aws-certificate.png";
+const topcitAward = "/images/resume/topcit-award.png";
 
 // --- Type Definitions ---
 interface Contact {

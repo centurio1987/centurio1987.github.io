@@ -129,11 +129,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
 
-// Image imports using new URL for proper Vite handling
-const essayCoverImage = new URL(
-  "../../images/essay_cover2.webp",
-  import.meta.url,
-).href;
+// Image imports (public directory paths)
+const essayCoverImage = "/images/essay_cover2.webp";
 
 // --- TypeScript Type Definitions ---
 type Theme = "light" | "sepia" | "dark";

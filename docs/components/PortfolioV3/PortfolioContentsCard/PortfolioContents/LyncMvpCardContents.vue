@@ -168,11 +168,8 @@
 </template>
 
 <script setup>
-// Image imports using new URL for proper Vite handling
-const lyncMvpImage = new URL(
-  "../../../../images/contents_image/lync_mvp1.webp",
-  import.meta.url,
-).href;
+// Image imports (public directory paths)
+const lyncMvpImage = "/images/contents_image/lync_mvp1.webp";
 </script>
 
 <style scoped>

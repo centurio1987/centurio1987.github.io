@@ -185,53 +185,28 @@ import ProdOpsCardContents from "./PortfolioContentsCard/PortfolioContents/ProdO
 import LgspCardContents from "./PortfolioContentsCard/PortfolioContents/LgspCardContents.vue";
 import LyncMvpCardContents from "./PortfolioContentsCard/PortfolioContents/LyncMvpCardContents.vue";
 
-// --- Asset Imports with new URL ---
-const nuxtLogo = new URL("../../images/logos/nuxt.svg", import.meta.url).href;
-const nestLogo = new URL("../../images/logos/nest.svg", import.meta.url).href;
-const postgresqlLogo = new URL(
-  "../../images/logos/postgresql.svg",
-  import.meta.url,
-).href;
-const nextLogo = new URL("../../images/logos/next.svg", import.meta.url).href;
-const vueLogo = new URL("../../images/logos/vue.svg", import.meta.url).href;
-const terraformLogo = new URL(
-  "../../images/logos/terraform.svg",
-  import.meta.url,
-).href;
-const awsLogo = new URL("../../images/logos/aws.svg", import.meta.url).href;
-const kubernetesLogo = new URL(
-  "../../images/logos/kubernetes.svg",
-  import.meta.url,
-).href;
-const terramateLogo = new URL(
-  "../../images/logos/terramate.svg",
-  import.meta.url,
-).href;
-const javascriptLogo = new URL(
-  "../../images/logos/javascript.svg",
-  import.meta.url,
-).href;
-const typescriptLogo = new URL(
-  "../../images/logos/typescript.svg",
-  import.meta.url,
-).href;
+// --- Asset Imports (public directory paths) ---
+const nuxtLogo = "/images/logos/nuxt.svg";
+const nestLogo = "/images/logos/nest.svg";
+const postgresqlLogo = "/images/logos/postgresql.svg";
+const nextLogo = "/images/logos/next.svg";
+const vueLogo = "/images/logos/vue.svg";
+const terraformLogo = "/images/logos/terraform.svg";
+const awsLogo = "/images/logos/aws.svg";
+const kubernetesLogo = "/images/logos/kubernetes.svg";
+const terramateLogo = "/images/logos/terramate.svg";
+const javascriptLogo = "/images/logos/javascript.svg";
+const typescriptLogo = "/images/logos/typescript.svg";
 
-const strategyImage = new URL("../../images/strategy.webp", import.meta.url)
-  .href;
-const poolmuganImage = new URL("../../images/poolmugan.webp", import.meta.url)
-  .href;
-const lyncMvpImage = new URL("../../images/lync_mvp.webp", import.meta.url)
-  .href;
-const lgspImage = new URL("../../images/lgsp.webp", import.meta.url).href;
-const prodOpsImage = new URL("../../images/prod_ops.webp", import.meta.url)
-  .href;
-const devopsImage = new URL("../../images/devops.webp", import.meta.url).href;
-const architectureImage = new URL(
-  "../../images/architecture.webp",
-  import.meta.url,
-).href;
-const utilsImage = new URL("../../images/utils.webp", import.meta.url).href;
-const leadImage = new URL("../../images/lead.webp", import.meta.url).href;
+const strategyImage = "/images/strategy.webp";
+const poolmuganImage = "/images/poolmugan.webp";
+const lyncMvpImage = "/images/lync_mvp.webp";
+const lgspImage = "/images/lgsp.webp";
+const prodOpsImage = "/images/prod_ops.webp";
+const devopsImage = "/images/devops.webp";
+const architectureImage = "/images/architecture.webp";
+const utilsImage = "/images/utils.webp";
+const leadImage = "/images/lead.webp";
 
 // --- 1. 실무용 Mock Data 정의 ---
 const portfolioData = [
