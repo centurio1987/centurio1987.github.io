@@ -1,6 +1,6 @@
 <template>
   <!-- 루트 컨테이너에 ref를 선언하여 DOM에 직접 접근 -->
-  <div class="portfolio-container" ref="containerRef">
+  <div class="portfolio-container">
     <!-- 노이즈 질감 오버레이 -->
     <div class="grain-overlay"></div>
 
@@ -37,85 +37,10 @@
     </div>
 
     <!-- 인터랙션 감지를 위한 투명 영역 -->
-    <div
-      class="interactive-area"
-      @mousemove="handleMouseMove"
-      @mouseleave="handleMouseLeave"
-    ></div>
   </div>
 </template>
 
-<script setup>
-import { ref, onUnmounted } from "vue";
-
-// DOM 요소 참조
-const containerRef = ref(null);
-
-// 애니메이션 상태 관리 (반응형 상태(ref)로 관리하지 않음으로써 성능 최적화)
-let animationFrameId = null;
-let currentSplit = 50;
-let targetSplit = 50;
-let isAnimating = false;
-
-/**
- * 선형 보간(Lerp) 기반의 부드러운 애니메이션 루프
- * Vue의 렌더링 사이클과 독립적으로 동작하여 60fps를 보장합니다.
- */
-const animateSplit = () => {
-  // 보간 공식: 현재값 += (목표값 - 현재값) * 속도
-  currentSplit += (targetSplit - currentSplit) * 0.1;
-
-  if (containerRef.value) {
-    // 반응형 변수 바인딩 대신 DOM Style 속성에 직접 CSS 변수 주입
-    containerRef.value.style.setProperty("--split-pos", `${currentSplit}%`);
-  }
-
-  // 목표치에 도달하지 않았다면 다음 프레임 요청
-  if (Math.abs(targetSplit - currentSplit) > 0.1) {
-    animationFrameId = requestAnimationFrame(animateSplit);
-  } else {
-    // 목표치 도달 시 애니메이션 정지 및 값 고정
-    currentSplit = targetSplit;
-    if (containerRef.value) {
-      containerRef.value.style.setProperty("--split-pos", `${currentSplit}%`);
-    }
-    isAnimating = false;
-  }
-};
-
-/**
- * 마우스 이동 핸들러
- * @param {MouseEvent} e
- */
-const handleMouseMove = (e) => {
-  // Y 좌표를 퍼센트로 변환 (화면의 20% ~ 80% 구간만 움직이도록 제한)
-  const percent = (e.clientY / window.innerHeight) * 100;
-  targetSplit = Math.max(40, Math.min(60, percent));
-
-  if (!isAnimating) {
-    isAnimating = true;
-    animationFrameId = requestAnimationFrame(animateSplit);
-  }
-};
-
-/**
- * 마우스 이탈 핸들러 (화면 중앙으로 원복)
- */
-const handleMouseLeave = () => {
-  targetSplit = 50;
-  if (!isAnimating) {
-    isAnimating = true;
-    animationFrameId = requestAnimationFrame(animateSplit);
-  }
-};
-
-// 컴포넌트 언마운트 시 메모리 누수 방지를 위한 rAF 정리
-onUnmounted(() => {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-  }
-});
-</script>
+<script setup></script>
 
 <style scoped>
 /* 구글 폰트 임포트 */
@@ -314,11 +239,6 @@ onUnmounted(() => {
 /* 호버 시 텍스트 왜곡 효과 */
 .hover-distort {
   display: inline-block;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.interactive-area:hover ~ .typography-wrapper .hover-distort {
-  transform: scaleY(1.1) skewX(-5deg);
 }
 
 /* 마우스 이벤트를 받을 투명 레이어 */
