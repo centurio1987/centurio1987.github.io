@@ -153,9 +153,7 @@
           :category="selectedCardData?.category"
           :title="selectedCardData?.title"
           :description="selectedCardData?.description"
-          :imageUrl="selectedCardData?.imageUrl"
           :skill="selectedCardData?.skill"
-          :duration="selectedCardData?.duration"
         >
           <KeepAlive>
             <component :is="selectedCardData?.contents" />
@@ -441,9 +439,7 @@ const scrollPage = (direction) => {
 
 const onClickCard = (id) => {
   selectedCardData.value = portfolioData.find((data) => data.id === id);
-
-  modal.value.$el.showModal();
-  modal.value.$el.scrollTop = 0;
+  modal.value?.openDialog();
 };
 </script>
 
