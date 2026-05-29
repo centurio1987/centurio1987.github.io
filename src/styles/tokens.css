@@ -1,0 +1,51 @@
+/* 디자인 컨셉 v0.2 — 흙빛 다색 / 라이트 기본 / 손맛 공예 감성 */
+:root {
+  /* 중립 */
+  --paper: #ece9e1;
+  --surface: #f7f5ef;
+  --subtle: #e2ded2;
+  --border: #d8d4c8;
+  --ink: #1c1b18;
+  --ink-2: #6b665c;
+  --ink-3: #8a857a;
+
+  /* 시그니처 & 팝 */
+  --signature: #4e6ca8;
+  --signature-ink: #27406e;
+  --pop: #d8a33f;
+  --pop-tint: #f0dca8;
+  --pop-ink: #8a6313;
+
+  /* 카테고리 */
+  --cat-planning: #3e6b4f;
+  --cat-architecture: #4e6ca8;
+  --cat-strategy: #a84b4b;
+  --cat-skills: #3e6b6b;
+  --cat-design: #7a5c7e;
+  --cat-research: #b07a2e;
+  --cat-quality: #6b6b3e;
+  --cat-leadership: #b5602e;
+
+  /* 형태 */
+  --stroke: 1.5px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  /* 레이아웃 */
+  --measure: 72ch;
+  --content-max: 720px;
+  --page-pad: clamp(20px, 5vw, 48px);
+
+  /* 타이포 */
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system,
+    sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* 모션 */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 180ms;
+
+  /* 모눈 텍스처 (히어로·푸터 전용) */
+  --grid-line: rgba(28, 27, 24, 0.045);
+}

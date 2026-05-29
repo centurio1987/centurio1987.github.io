@@ -1,0 +1,74 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostList from "../../components/PostList.astro";
+import { CATEGORIES } from "../../lib/categories";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const usedCategories = new Set(posts.map((p) => p.data.category));
+const categories = CATEGORIES.filter((c) => usedCategories.has(c.slug));
+---
+
+<BaseLayout title="글" description="기획 · 아키텍처 · 설계에 관한 글 모음">
+  <section class="wrap">
+    <h1>글</h1>
+    {
+      categories.length > 0 && (
+        <nav class="cats" aria-label="카테고리">
+          {categories.map((c) => (
+            <a
+              href={`/categories/${c.slug}`}
+              class="cat-chip"
+              style={`--cat:${c.color}`}
+            >
+              {c.label}
+            </a>
+          ))}
+        </nav>
+      )
+    }
+    {
+      posts.length > 0 ? (
+        <PostList posts={posts} />
+      ) : (
+        <p class="empty">아직 발행된 글이 없습니다.</p>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .wrap {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 56px var(--page-pad) 0;
+  }
+  h1 {
+    font-size: clamp(30px, 6vw, 40px);
+    margin: 0 0 18px;
+  }
+  .cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .cat-chip {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--ink);
+    color: color-mix(in srgb, var(--cat) 78%, var(--ink));
+    background: color-mix(in srgb, var(--cat) 12%, var(--surface));
+    transition: transform var(--dur) var(--ease);
+  }
+  .cat-chip:hover {
+    transform: translateY(-1px);
+  }
+  .empty {
+    color: var(--ink-2);
+  }
+</style>

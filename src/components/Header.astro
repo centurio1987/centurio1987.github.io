@@ -1,0 +1,54 @@
+---
+import Logo from "./Logo.astro";
+const path = Astro.url.pathname;
+const isPosts = path.startsWith("/posts") || path.startsWith("/categories");
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <Logo size={24} />
+    <nav class="nav" aria-label="주요">
+      <a href="/" class:list={["nav-link", { active: path === "/" }]}>홈</a>
+      <a href="/posts" class:list={["nav-link", { active: isPosts }]}>글</a>
+      <a
+        href="https://github.com/centurio1987"
+        class="nav-link"
+        target="_blank"
+        rel="noopener">GitHub</a
+      >
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--paper) 85%, transparent);
+    backdrop-filter: saturate(1.1) blur(6px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 14px var(--page-pad);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav {
+    display: flex;
+    gap: 18px;
+    font-size: 15px;
+  }
+  .nav-link {
+    color: var(--ink-2);
+    font-weight: 500;
+    transition: color var(--dur) var(--ease);
+  }
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--ink);
+  }
+</style>

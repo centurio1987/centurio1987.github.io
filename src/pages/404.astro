@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Mascot from "../components/motifs/Mascot.astro";
+---
+
+<BaseLayout title="404" description="페이지를 찾지 못했습니다.">
+  <section class="wrap">
+    <Mascot size={96} />
+    <h1>404</h1>
+    <p class="msg">이 페이지는 아직 초안(raw)입니다. 토니가 못 찾았어요.</p>
+    <a href="/" class="home">홈으로 →</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .wrap {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 96px var(--page-pad);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  h1 {
+    font-size: 64px;
+    font-weight: 800;
+    margin: 8px 0 0;
+  }
+  .msg {
+    color: var(--ink-2);
+    margin: 0 0 16px;
+  }
+  .home {
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--pop);
+    border: 2px solid var(--ink);
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+  }
+</style>

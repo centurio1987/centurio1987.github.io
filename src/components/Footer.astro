@@ -1,0 +1,65 @@
+---
+import Mascot from "./motifs/Mascot.astro";
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer grid-texture">
+  <div class="footer-inner">
+    <Mascot size={64} />
+    <p class="tagline">진지하게 만들고, 즐겁게 쓴다.</p>
+    <p class="signature">Serious Work, Joyful Wit. — 빵관 토니</p>
+    <nav class="social" aria-label="소셜">
+      <a href="https://github.com/centurio1987" target="_blank" rel="noopener"
+        >GitHub</a
+      >
+      <a
+        href="https://www.linkedin.com/in/yoondeok-kim-319bb8145"
+        target="_blank"
+        rel="noopener">LinkedIn</a
+      >
+    </nav>
+    <p class="copy">© {year} 김윤덕</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 80px;
+  }
+  .footer-inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 48px var(--page-pad);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .tagline {
+    font-weight: 700;
+    font-size: 17px;
+    margin: 8px 0 0;
+  }
+  .signature {
+    font-size: 14px;
+    color: var(--ink-2);
+    margin: 0;
+  }
+  .social {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .social a {
+    color: var(--signature-ink);
+  }
+  .copy {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-top: 10px;
+  }
+</style>

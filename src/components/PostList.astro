@@ -1,0 +1,103 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCategory } from "../lib/categories";
+import { formatYear, readingTime } from "../lib/format";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+}
+const { posts } = Astro.props;
+---
+
+<ul class="post-list">
+  {
+    posts.map((post) => {
+      const cat = getCategory(post.data.category);
+      const minutes = readingTime(post.body);
+      return (
+        <li class="post-item">
+          <a href={`/posts/${post.id}`} class="post-link">
+            <span class="bullet" style={`--cat:${cat.color}`} aria-hidden="true" />
+            <span class="post-body">
+              <span class="post-meta">
+                <span class="post-cat" style={`--cat:${cat.color}`}>
+                  {cat.label}
+                </span>
+                <span class="dot">·</span>
+                <span>{formatYear(post.data.pubDate)}</span>
+                <span class="dot">·</span>
+                <span>{minutes}분</span>
+              </span>
+              <span class="post-title">{post.data.title}</span>
+              {post.data.description && (
+                <span class="post-desc">{post.data.description}</span>
+              )}
+            </span>
+          </a>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .post-item + .post-item {
+    border-top: 1px dashed var(--border);
+  }
+  .post-link {
+    display: flex;
+    gap: 14px;
+    padding: 18px 0;
+    color: var(--ink);
+  }
+  .bullet {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin-top: 7px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--cat) 45%, var(--surface));
+    border: 1.5px solid var(--ink);
+    transition: background var(--dur) var(--ease);
+  }
+  .post-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .post-cat {
+    color: color-mix(in srgb, var(--cat) 78%, var(--ink));
+  }
+  .dot {
+    color: var(--ink-3);
+  }
+  .post-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    transition: color var(--dur) var(--ease);
+  }
+  .post-desc {
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+  .post-link:hover .bullet {
+    background: var(--cat);
+  }
+  .post-link:hover .post-title {
+    color: var(--signature-ink);
+  }
+</style>

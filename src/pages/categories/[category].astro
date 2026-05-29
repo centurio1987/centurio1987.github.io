@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostList from "../../components/PostList.astro";
+import { CATEGORIES, getCategory } from "../../lib/categories";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  return CATEGORIES.map((cat) => ({
+    params: { category: cat.slug },
+    props: {
+      posts: posts
+        .filter((p) => p.data.category === cat.slug)
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+      category: cat.slug,
+    },
+  }));
+}
+
+const { posts, category } = Astro.props;
+const meta = getCategory(category);
+---
+
+<BaseLayout title={`${meta.label} 글`} description={`${meta.label} 카테고리의 글 모음`}>
+  <section class="wrap">
+    <p class="back"><a href="/posts" class="sketch-link">← 전체 글</a></p>
+    <h1 style={`--cat:${meta.color}`}>
+      <span class="swatch" aria-hidden="true"></span>{meta.label}
+    </h1>
+    {
+      posts.length > 0 ? (
+        <PostList posts={posts} />
+      ) : (
+        <p class="empty">이 카테고리엔 아직 글이 없습니다.</p>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .wrap {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 56px var(--page-pad) 0;
+  }
+  .back {
+    font-size: 14px;
+    margin: 0 0 12px;
+  }
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(28px, 6vw, 38px);
+    margin: 0 0 18px;
+  }
+  .swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cat);
+    border: 1.5px solid var(--ink);
+  }
+  .empty {
+    color: var(--ink-2);
+  }
+</style>

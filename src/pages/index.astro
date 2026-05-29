@@ -1,0 +1,104 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostList from "../components/PostList.astro";
+import Sparkle from "../components/motifs/Sparkle.astro";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const recent = posts.slice(0, 8);
+---
+
+<BaseLayout title="빵관 토니">
+  <section class="hero grid-texture">
+    <div class="hero-inner">
+      <h1>
+        빵관 토니<span class="dot-accent">.</span>
+      </h1>
+      <p class="tagline">진지하게 만들고, 즐겁게 쓴다.</p>
+      <p class="sub">기획 · 아키텍처 · 설계에 관한 기록</p>
+    </div>
+  </section>
+
+  <section class="recent">
+    <div class="recent-head">
+      <Sparkle size={18} />
+      <h2>최근 글</h2>
+    </div>
+    {
+      recent.length > 0 ? (
+        <PostList posts={recent} />
+      ) : (
+        <p class="empty">아직 풀어둔 생각이 없네요. (토니가 초안을 굽는 중)</p>
+      )
+    }
+    {
+      posts.length > recent.length && (
+        <a href="/posts" class="more">글 전체 보기 →</a>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 72px var(--page-pad);
+  }
+  .hero h1 {
+    font-size: clamp(40px, 9vw, 56px);
+    font-weight: 800;
+    margin: 0;
+  }
+  .dot-accent {
+    color: var(--signature);
+  }
+  .tagline {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 12px 0 4px;
+  }
+  .sub {
+    color: var(--ink-2);
+    margin: 0;
+    font-size: 15px;
+  }
+  .recent {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 44px var(--page-pad) 0;
+  }
+  .recent-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .recent-head h2 {
+    font-size: 22px;
+    margin: 0;
+  }
+  .empty {
+    color: var(--ink-2);
+    padding: 24px 0;
+  }
+  .more {
+    display: inline-block;
+    margin-top: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--pop);
+    border: 2px solid var(--ink);
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    transition: transform var(--dur) var(--ease);
+  }
+  .more:hover {
+    transform: translateY(-2px);
+  }
+</style>
