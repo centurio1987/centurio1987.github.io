@@ -6,6 +6,15 @@ out
 dist
 *.tgz
 
+# astro
+.astro
+
+# npm lockfile (CI uses bun)
+package-lock.json
+
+# stray skill backups (cannot be deleted in some sandboxes)
+*.v1bak
+
 # code coverage
 coverage
 *.lcov

@@ -1,55 +1,78 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude when working with code in this repository.
+
+## What this is
+
+A writing-focused personal blog (빵관 토니 — "Serious Work, Joyful Wit"), built with **Astro** and deployed to GitHub Pages. Resume/portfolio/value sections were removed; the site exists to publish posts. Design language is defined in `DESIGN_CONCEPT.md` (v0.2: light, earthy palette, all sans-serif, hand-drawn motifs).
 
 ## Commands
 
-Use **Bun** as the package manager (not npm or yarn).
+CI uses **Bun**; locally either works.
 
 ```bash
-bun install          # Install dependencies
-bun docs:dev         # Start development server
-bun docs:build       # Build for production (outputs to .vitepress/dist)
-bun docs:preview     # Preview the production build
+bun install        # or: npm install
+bun dev            # or: npm run dev      — dev server
+bun run build      # or: npm run build    — static build to dist/
+bun run preview    # or: npm run preview  — preview the build
 ```
 
-There are no test commands — this project has no test suite.
+No test suite. Verify by building (`build`) and previewing.
 
 ## Architecture
 
-This is a **VitePress** personal portfolio site (Vue 3 + TypeScript) deployed to GitHub Pages via GitHub Actions on push to `main`.
-
-### Directory layout
+Astro static site. Source lives entirely under `src/`; `public/` is served at the site root.
 
 ```
-/.vitepress/
-  config.ts          # Site config: nav, sidebar, theme settings
-  theme/
-    index.ts         # Theme entry point — registers global components
-    main.css         # Global styles (glassmorphism, dark theme vars)
-    custom/          # Layout overrides (Layout.vue, PortfolioLayout.vue)
-/docs/
-  components/        # Vue SFCs used in markdown pages
-  posts/             # Markdown articles organized by category
-  public/            # Static assets served as-is (images, videos)
-  *.md               # Top-level pages (index, resume, portfolio, etc.)
+/astro.config.mjs        # site URL, sitemap integration, markdown (Shiki) config
+/src/
+  content.config.ts      # `posts` collection: glob loader + Zod frontmatter schema
+  content/posts/         # published posts (*.md) — THE content
+  lib/
+    categories.ts        # 8 category slugs → {label, color}; single source of truth
+    format.ts            # date / reading-time helpers
+  styles/
+    tokens.css           # design tokens (DESIGN_CONCEPT.md v0.2)
+    global.css           # base styles, fonts (Pretendard/JetBrains Mono), sketch underline
+  layouts/               # BaseLayout, PostLayout
+  components/            # Header, Footer, PostList, CategoryBadge, Logo
+    motifs/              # hand-drawn SVGs: Sparkle, Squiggle, Mascot
+  pages/                 # index, posts/index, posts/[...slug], categories/[category], 404
+/public/                 # favicon, generated post images (/images/<slug>/*.webp)
+/raws/                   # USER-authored idea fragments (input to writing workflow)
+/draft/                  # scaffolds + in-progress posts (pre-publish)
 ```
 
-### Key configuration
+### Content model
 
-- **Forced dark mode**: `appearance: "force-dark"` in `config.ts`
-- **Sidebar**: Korean category names (기획, 아키텍처, 전략, 기술, 설계, 리서치, 품질, 리더십) mapping to `/docs/posts/` subdirectories
-- **Deployment**: `.github/workflows/main.yml` builds with `bun docs:build` and deploys `.vitepress/dist` to GitHub Pages
+Posts are markdown in `src/content/posts/`. Frontmatter schema (`src/content.config.ts`):
+`title` (req), `description`, `pubDate` (req, date), `updatedDate`, `category` (req, enum), `tags` (string[]), `series`, `order`, `draft` (default false).
 
-### Component patterns
+`category` must be one of the slugs in `src/lib/categories.ts`:
+`planning` 기획 · `architecture` 아키텍처 · `strategy` 전략 · `skills` 기술 · `design` 설계 · `research` 리서치 · `quality` 품질 · `leadership` 리더십.
 
-- Vue components live in `/docs/components/` and are registered globally in `.vitepress/theme/index.ts` so they can be used directly in markdown files
-- Styling uses scoped `<style>` blocks with CSS custom properties; glassmorphism effects (backdrop-filter, transparency, borders) are the visual motif
-- GSAP is used for scroll-triggered animations in components like `Value.vue` and `PortfolioV3.vue`
-- Data for sections like the resume (`Resume2.vue`) is defined as typed TypeScript interfaces and arrays inline in the `<script setup>` block
+Posts are **auto-discovered** — no sidebar/nav registration needed. A post's URL is `/posts/<file-slug>`; categories list at `/categories/<slug>`. `draft: true` hides a post from listings.
 
-### Content
+### Design
 
-- Posts are written in Markdown under `/docs/posts/<category>/`
-- New posts must also be registered in the `sidebar` array in `/.vitepress/config.ts` to appear in navigation
-- The `.obsidian/` folder exists because the docs vault doubles as an Obsidian notebook — do not delete it
+All visual decisions follow `DESIGN_CONCEPT.md` and are implemented as CSS variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives at the edges (hero, footer, 404, hover, the Tony mascot). Hand-drawn motifs are SVG components under `src/components/motifs/`.
+
+## Writing workflow (skills in `.claude/skills/`)
+
+```
+raws/<memo>.md   (user writes idea fragments)
+  → post-draft    → draft/<memo>-draft.md   (3 plot candidates + topic cautions)
+  → user picks a plot, writes the body
+  → review-post   (4-axis Korean review: 맞춤법/개연성/테크니컬 라이팅/몰입도)
+  → post-finalize ([[[image clues]]] → public/images webp, tags, series links)
+  → publish-post  → src/content/posts/<slug>.md  (sets Astro frontmatter, deletes draft)
+```
+
+- `init-post` — skip the raws→draft pipeline: scaffold a ready-to-write post directly in `src/content/posts/` (draft:true).
+- `post-finalize` uses `scripts/generate-image.ts` (needs `OPENAI_API_KEY`); images go to `public/images/<slug>/` and are referenced as `/images/<slug>/...`.
+- `publish-post` does NOT edit any nav/sidebar config — the collection auto-discovers.
+
+## Notes
+
+- `.obsidian/` (vault config) may exist — do not delete unless asked; the notes vault is separate from the site build.
+- Deployment: `.github/workflows/main.yml` (Bun + `astro build` → GitHub Pages on push to `main`).

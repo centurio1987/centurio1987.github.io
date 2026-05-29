@@ -1,7 +1,15 @@
 ---
-source: [원본 아이디어 파일 경로]
+source: [원본 아이디어 파일 경로 (예: raws/IDEAS.md)]
 generated: [YYYY-MM-DD]
+category: [planning|architecture|strategy|skills|design|research|quality|leadership]
 ---
+
+<!--
+이 파일은 draft/ 의 작업용 스캐폴드입니다. 정식 글이 아닙니다.
+플롯을 고르고 본문을 채운 뒤 publish-post 로 src/content/posts/ 에 발행합니다.
+발행 시 publish-post 가 아래 frontmatter를 정식 스키마로 변환합니다:
+  title, description, pubDate(YYYY-MM-DD), category, tags[], (선택) series, order, draft
+-->
 
 # [추정 주제 한 줄]
 
