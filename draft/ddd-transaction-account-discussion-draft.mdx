@@ -1,0 +1,163 @@
+---
+source: raws/ddd-transaction-account-discussion.mdx
+generated: 2026-06-10
+category: architecture
+title: "[DDD] Account와 Transaction 분석 패턴: Entry의 진정한 의미와 Aggregate Root 분리"
+---
+
+<!--
+이 파일은 draft/ 의 작업용 스캐폴드입니다. 정식 글이 아닙니다.
+플롯을 고르고 본문을 채운 뒤 publish-post 로 src/content/posts/ 에 발행합니다.
+발행 시 publish-post 가 아래 frontmatter를 정식 스키마로 변환합니다:
+  title, description, pubDate(YYYY-MM-DD), category, tags[], (선택) series, order, draft
+-->
+
+# Account와 Transaction 분석 패턴을 통한 도메인 무결성 설계
+
+> **요약**: 마틴 파울러의 Analysis Patterns 중 Account와 Transaction 패턴을 비교할 때 발생하는 Entry 객체의 모순을 해소하고, 복식부기 모델에서 Transaction을 독립된 Aggregate Root로 다루며 데이터베이스 외래키 매핑까지 어떻게 풀어낼 수 있는지에 대한 설계적 결론을 제시한다.
+
+## 플롯 후보
+
+### Plot A: 개념 정립형 (Concept Definition)
+- **적합한 독자/상황**: DDD 입문자 혹은 회계/결제 시스템 기초 설계자.
+- **구성 흐름**: 
+  1. 문제 제기: 두 패턴 설명에서 나타난 Entry의 불일치
+  2. 원인 분석: 각 패턴이 초점을 맞춘 관점의 차이
+  3. 모순 해소: Association Object로서의 Entry
+  4. 결론: 올바른 개념 통합
+- **이 플롯의 강점**: 파편화된 지식을 하나로 통합하며 명확한 개념 모델을 제공한다.
+- **주의할 점**: 지나치게 이론적인 설명으로 빠져 구현 코드 예시가 부족해지지 않도록 주의.
+
+### Plot B: 의사결정 가이드형 (Decision Guide)
+- **적합한 독자/상황**: 실제 결제/정산 도메인을 설계 중인 개발자.
+- **구성 흐름**: 
+  1. 요구사항: 회계 장부 무결성 보장을 위한 모델 설계
+  2. 딜레마: Transaction과 Account 중 누가 주도권을 가지며, Aggregate Root는 어떻게 나눠야 하는가?
+  3. 의사결정: Transaction을 독립된 AR로 도출하고, Account와 분리.
+  4. 구현 및 DB 매핑: Eventual Consistency와 외래키 구조.
+- **이 플롯의 강점**: 실무에서 바로 써먹을 수 있는 구체적인 설계 가이드와 DB 스키마 팁을 제공한다.
+- **주의할 점**: 개념 자체를 모르는 독자를 위해 초반에 Double-Entry(복식부기)의 필수성을 짧게 짚고 넘어가야 한다.
+
+### Plot C: 진화 과정형 (Evolutionary)
+- **적합한 독자/상황**: 시스템이 복잡해지면서 기존의 단순한 잔액(balance) 컬럼 모델의 한계를 겪어본 개발자.
+- **구성 흐름**: 
+  1. 초기 모델: 단순 잔액 업데이트 모델의 문제점
+  2. 1차 진화: Account 패턴 도입 (Entry 기록 추가)
+  3. 2차 진화: 복식부기와 Transaction 패턴 도입의 필요성
+  4. DDD 관점의 최종 설계: 도메인 서비스가 두 AR(Transaction, Account)을 조율하는 구조.
+- **이 플롯의 강점**: 문제 상황에 공감하며 자연스럽게 패턴의 필요성을 설득할 수 있다.
+- **주의할 점**: 초반부(단순 잔액 모델)가 너무 길어지면 핵심(Transaction AR) 논의가 묻힐 수 있다.
+
+## 주의사항 / 잊지 말아야 할 점
+
+- Transaction과 Account를 하나의 Aggregate Root로 묶는 실수를 경계한다는 점을 명시할 것.
+- Entry는 Transaction에 의해 생성되고 Account로 전달되는 불변 객체(Value Object)라는 점을 강조할 것.
+- Eventual Consistency(최종 일관성) 혹은 Outbox Pattern 도입이 필요한 도메인 복잡성을 다뤄줄 것.
+- DB 매핑 시 Entry가 Transaction과 Account의 외래키를 갖는다는 실무적 구조를 포함할 것.
+
+## 선택한 플롯
+
+<!-- A / B / C 중 하나를 적어주세요. 이후 본문 초안 작성의 기준이 됩니다. -->
+
+
+---
+
+<!-- 원본 MDX의 React 컴포넌트 및 그래프 데이터 보존 구역 -->
+
+<style>
+.tree-container { display: flex; justify-content: center; overflow-x: auto; padding: 40px 20px; background: #fcfcfc; border-radius: 8px; margin-bottom: 30px; }
+.tree ul { padding-top: 20px; position: relative; display: flex; padding-left: 0; margin: 0; }
+.tree li { text-align: center; list-style-type: none; position: relative; padding: 20px 5px 0 5px; }
+.tree li::before, .tree li::after { content: ''; position: absolute; top: 0; right: 50%; border-top: 2px solid #ccc; width: 50%; height: 20px; }
+.tree li::after { right: auto; left: 50%; border-left: 2px solid #ccc; }
+.tree li:only-child::after, .tree li:only-child::before { display: none; }
+.tree li:only-child { padding-top: 0; }
+.tree li:first-child::before, .tree li:last-child::after { border: 0 none; }
+.tree li:last-child::before { border-right: 2px solid #ccc; border-radius: 0 5px 0 0; }
+.tree li:first-child::after { border-radius: 5px 0 0 0; }
+.tree ul ul::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid #ccc; width: 0; height: 20px; }
+.tree-node { border: 1px solid #ccc; padding: 10px; text-decoration: none; color: #333; font-family: sans-serif; font-size: 12px; display: inline-block; border-radius: 6px; background-color: white; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); min-width: 140px; }
+.tree-node:hover { background: #f0f7ff; color: #000; border-color: #2196F3; }
+.tree-node-user { border-top: 4px solid #4CAF50; }
+.tree-node-model { border-top: 4px solid #2196F3; }
+.tree-node-system { border-top: 4px solid #FF9800; }
+</style>
+
+export const TreeNode = ({ node }) => {
+  const isUser = node.source === 'USER' || node.source === 'USER_EXPLICIT';
+  const isModel = node.source === 'MODEL';
+  const nodeClass = `tree-node ${isUser ? 'tree-node-user' : isModel ? 'tree-node-model' : 'tree-node-system'}`;
+  
+  return (
+    <li>
+      <a href={`#${node.id}`} className={nodeClass}>
+        <strong>{node.source}</strong><br/>
+        <span style={{color: '#888', fontSize: '11px'}}>{node.type}</span><br/>
+        <span style={{color: '#bbb', fontSize: '10px'}}>Step {node.step_index}</span>
+      </a>
+      {node.children && node.children.length > 0 && (
+        <ul>
+          {node.children.map(child => <TreeNode key={child.id} node={child} />)}
+        </ul>
+      )}
+    </li>
+  );
+};
+
+export const ConversationTree = ({ roots }) => {
+  return (
+    <div className="tree-container">
+      <div className="tree">
+        <ul>
+          {roots.map(root => <TreeNode key={root.id} node={root} />)}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export const ConversationDetails = ({ nodes }) => {
+  const uniqueNodes = Array.from(new Map(nodes.map(n => [n.id, n])).values());
+  
+  return (
+    <div style={{ marginTop: '40px', fontFamily: 'sans-serif' }}>
+      <h2>대화 상세 내역</h2>
+      {uniqueNodes.map(node => (
+        <div key={node.id} id={node.id} style={{
+          padding: "20px", 
+          border: "1px solid #eee", 
+          borderRadius: "8px", 
+          marginBottom: "20px",
+          background: node.source === 'USER' ? '#fafffa' : node.source === 'MODEL' ? '#f4f9ff' : '#fffaf4'
+        }}>
+          <h3 style={{ margin: '0 0 15px 0', borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>
+            Step {node.step_index} : {node.source} <span style={{fontSize: '14px', color: '#666', fontWeight: 'normal'}}>({node.type})</span>
+          </h3>
+          {node.content && (
+            <div style={{
+              whiteSpace: 'pre-wrap', 
+              wordWrap: 'break-word', 
+              background: '#fff', 
+              border: '1px solid #eee',
+              padding: '15px', 
+              borderRadius: '5px',
+              fontSize: '14px',
+              lineHeight: '1.6',
+              color: '#333'
+            }}>
+              {node.content}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+<!-- 본문을 작성할 때 필요한 경우 <ConversationTree roots={graphData} /> 형태로 삽입하여 렌더링 검증 가능 -->
+
+// 여기서부터는 생략되었던 원본 데이터(graphData, flatNodesData)를 다시 불러오는 예시입니다.
+import { graphData, flatNodesData } from '../raws/ddd-transaction-account-discussion.mdx';
+
+<ConversationTree roots={graphData} />
+<ConversationDetails nodes={flatNodesData} />
