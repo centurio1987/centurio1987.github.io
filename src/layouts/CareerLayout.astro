@@ -1,0 +1,56 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import CareerNav from "../components/CareerNav.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<BaseLayout title={title}>
+  <div class="career-layout">
+    <aside class="sidebar">
+      <div class="sidebar-sticky">
+        <CareerNav />
+      </div>
+    </aside>
+    <article class="content">
+      <slot />
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .career-layout {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 32px var(--page-pad);
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .sidebar-sticky {
+    position: sticky;
+    top: 80px;
+  }
+
+  .content {
+    min-width: 0; /* Prevent grid overflow */
+    background: var(--paper);
+    border-radius: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .career-layout {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .sidebar-sticky {
+      position: static;
+    }
+  }
+</style>
