@@ -6,6 +6,8 @@
 
 이 문서의 토큰은 `src/styles/tokens.css`로 구현되어 있다.
 
+다이어그램 전용 규칙은 `design-concept/DIAGRAM_STYLE_GUIDE.md`를 따른다. React 컴포넌트로 검토 가능한 diagram 자산을 만들거나, 이를 3차 산출물용 이미지로 export할 때 이 문서의 색·타이포·손그림 모티프를 바탕으로 하되 관계와 흐름이 먼저 읽히도록 더 절제해서 적용한다.
+
 ---
 
 ## 1. 컨셉 한 줄
