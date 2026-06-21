@@ -1,0 +1,8 @@
+# Machine-local Codex configuration example.
+#
+# Claude source permission:
+#   Bash(grep -v "\\.md$" -o)
+#
+# Codex has no exact project-config equivalent for this command-specific allow
+# entry. Do not merge this file into shared config.toml. If still required,
+# define and review a personal exec rule under ~/.codex/rules/.

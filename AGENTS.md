@@ -20,7 +20,7 @@ In Plan mode, after writing the plan file and immediately before leaving Plan mo
 
 ## What This Is
 
-A writing-focused personal blog (빵관 토니 — "Serious Work, Joyful Wit"), built with **Astro** and deployed to GitHub Pages. Resume/portfolio/value sections were removed; the site exists to publish posts. Design language is defined in `DESIGN_CONCEPT.md` (v0.2: light, earthy palette, all sans-serif, hand-drawn motifs).
+A writing-focused personal blog (빵관 토니 — "Serious Work, Joyful Wit"), built with **Astro** and deployed to GitHub Pages. Resume/portfolio/value sections were removed; the site exists to publish posts. Design language is defined in `design-concept/DESIGN_CONCEPT.md` (v0.2: light, earthy palette, all sans-serif, hand-drawn motifs).
 
 ## Commands
 
@@ -71,7 +71,7 @@ Posts are auto-discovered. No sidebar/nav registration is needed. A post URL is 
 
 ## Design
 
-All visual decisions follow `DESIGN_CONCEPT.md` and are implemented as CSS variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives at the edges (hero, footer, 404, hover, the Tony mascot). Hand-drawn motifs are SVG components under `src/components/motifs/`.
+All visual decisions follow `design-concept/DESIGN_CONCEPT.md` and are implemented as CSS variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives at the edges (hero, footer, 404, hover, the Tony mascot). Hand-drawn motifs are SVG components under `src/components/motifs/`.
 
 ## Writing Workflow
 
@@ -89,6 +89,22 @@ raws/<memo>.md   (user writes idea fragments)
 - `init-post` — skip the raws→draft pipeline: scaffold a ready-to-write post directly in `src/content/posts/` (`draft: true`).
 - `post-finalize` uses `scripts/generate-image.ts` and requires `OPENAI_API_KEY`; images go to `public/images/<slug>/` and are referenced as `/images/<slug>/...`.
 - `publish-post` does not edit any nav/sidebar config because the Astro collection auto-discovers posts.
+
+### End-to-End Technical Article Publishing
+
+For requests that explicitly ask to write a technical article and publish it end to end, use the
+`tech-article-publisher` subagent. It orchestrates the project-local skills in this order:
+
+```text
+tech-deepdive -> review-post -> quality-gate -> post-finalize -> publish-post
+```
+
+- Do not use the orchestrator for draft-only, review-only, finalize-only, or publish-only requests.
+- Respect every gate: external review, agreed critical review fixes, quality-gate `PASS`, and explicit
+  user approval immediately before publishing.
+- If the quality gate still fails after three rounds, stop publication and report the remaining gaps.
+- For a series, complete one article per pipeline run and ask before starting the next article.
+- When interrupted, report the draft path and the last completed gate so the workflow can resume.
 
 ## Notes
 
