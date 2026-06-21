@@ -23,7 +23,7 @@ argument-hint: <post-file-path>
 
 ## 대상과 경로 규약 (Astro)
 
-- 포스트 본체: `src/content/posts/<slug>.md` (발행 전이면 `draft/<…>.md` 도 가능)
+- 포스트 본체: `src/content/posts/<slug>.md`/`.mdx` (발행 전이면 `draft/<…>.md`/`.mdx` 도 가능)
 - 이미지 저장: `public/images/<post-slug>/<n>.webp`
 - 이미지 참조 경로: `/images/<post-slug>/<n>.webp`  (Astro는 `public/` 를 사이트 루트에 서빙하므로 `public` 접두사를 떼고 `/images/…` 로 시작)
 - 시리즈 링크 경로: `/posts/<slug>`  (Astro 라우팅. `src/content/posts/<slug>.md` → `/posts/<slug>`, 확장자 제거)
@@ -36,7 +36,7 @@ argument-hint: <post-file-path>
 
 > "어느 포스트 파일을 사후처리할까요? (예: `src/content/posts/aggregate-rdb.md`)"
 
-확장자가 `.md` 가 아니면 중단. 공백/한글 경로는 따옴표 처리.
+확장자가 `.md`/`.mdx` 가 아니면 중단. 공백/한글 경로는 따옴표 처리.
 
 ### 2. 파일 읽기 + frontmatter 파싱
 
@@ -62,7 +62,7 @@ argument-hint: <post-file-path>
    ```bash
    bun run scripts/generate-image.ts "<expanded prompt>" "public/images/<post-slug>/<n>.webp"
    ```
-   - `<post-slug>`: 입력 파일명 stem에서 `.md` 와 `-draft` 접미사를 제거한 값.
+   - `<post-slug>`: 입력 파일명 stem에서 `.md`/`.mdx` 와 `-draft` 접미사를 제거한 값.
    - bun 미설치 환경이면 `bunx` 또는 `node`로 대체 실행을 시도하되, 스크립트는 bun 런타임(`#!/usr/bin/env bun`)을 가정한다.
 3. 성공하면 `[[[...]]]` 블록 전체를 다음으로 치환:
    ```markdown
@@ -86,7 +86,7 @@ argument-hint: <post-file-path>
 
 `series` 가 있으면:
 
-1. `src/content/posts/` 전체를 글롭(`rg --files` 또는 `find` + frontmatter 파싱)으로 훑어 같은 `series` 값을 가진 `.md` 를 모은다.
+1. `src/content/posts/` 전체를 글롭(`rg --files` 또는 `find` + frontmatter 파싱)으로 훑어 같은 `series` 값을 가진 `.md`/`.mdx` 를 모은다.
 2. 현재 파일 제외.
 3. 정렬: frontmatter `order`(숫자) 오름차순, 없으면 파일명 사전순.
 4. 본문 끝에 `assets/SERIES_SECTION_TEMPLATE.md` 형식대로 섹션 삽입. 링크는 `/posts/<slug>` 절대 경로.
@@ -110,6 +110,7 @@ frontmatter + 본문을 합쳐 원본 경로에 덮어쓴다. 결과를 짧게 �
 - **태그는 본문 기반.** 제목만 보지 말 것.
 - **`OPENAI_API_KEY` 누락은 빨리 실패.**
 - **재실행 멱등성.** `[[[]]]` 남은 것만 재처리, 시리즈 섹션 교체, 태그 중복 없이 머지.
+- **MDX 안전.** `.mdx` 글은 상단 `import` 문과 `<Component .../>`(React 시뮬레이션) 블록을 frontmatter처럼 보존하고 절대 깨지 말 것. `[[[...]]]` 자리표시자는 산문 영역에만 두며 JSX 블록 내부에는 두지 않는다. 태그 추출 시 import 경로·컴포넌트명 같은 코드 토큰은 키워드로 넣지 않는다.
 
 ## 참조 파일
 

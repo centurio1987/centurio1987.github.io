@@ -13,8 +13,8 @@ argument-hint: <draft-path> [slug]
 
 `draft/` 의 초안을 정식 포스트로 발행한다. 다음을 한 묶음으로 수행한다:
 
-1. `src/content/posts/<slug>.md` 에 정식 포스트 파일 생성 (Astro 스키마 frontmatter)
-2. 원본 draft 파일 제거
+1. `src/content/posts/<slug>.<ext>` (`.md` 또는 MDX면 `.mdx`) 에 정식 포스트 파일 생성 (Astro 스키마 frontmatter)
+2. 원본 draft 파일 제거 (필요 시 co-located 컴포넌트도 함께 이동)
 
 > **VitePress 때와 달리 사이드바 수동 등록 단계는 없다.** Astro 콘텐츠 컬렉션이 `src/content/posts/` 를 자동 탐색하고, 글의 `category` 필드가 분류·목록 그룹핑을 결정한다. `config.ts` 같은 파일을 건드리지 않는다.
 
@@ -25,7 +25,7 @@ argument-hint: <draft-path> [slug]
 **Draft 파일 경로**
 
 - 인자가 있으면 사용.
-- 없으면 `find draft -type f -name '*.md'` 로 후보를 찾는다.
+- 없으면 `find draft -type f \( -name '*.md' -o -name '*.mdx' \)` 로 후보를 찾는다.
   - 1개면 제안하며 확인.
   - 여러 개면 `사용자 확인` 으로 선택.
   - 0개면 직접 경로를 묻는다.
@@ -42,9 +42,11 @@ argument-hint: <draft-path> [slug]
   - "그대로 발행"
   - "취소하고 먼저 정리"
 
-### 3. 슬러그(파일명) 결정
+### 3. 슬러그(파일명)·확장자 결정
 
-`src/content/posts/<slug>.md` 의 `<slug>` 가 곧 URL(`/posts/<slug>`)이 된다.
+`src/content/posts/<slug>.<ext>` 의 `<slug>` 가 곧 URL(`/posts/<slug>`)이 된다.
+
+**확장자**: 본문에 MDX 문법(상단 `import` 문 또는 `<Component client:... />` 같은 JSX/React 시뮬레이션)이 있으면 `.mdx`, 순수 마크다운이면 `.md`. 보통 draft 확장자를 그대로 따른다. `.mdx` 로 발행할 때 import 경로가 `src/content/posts/` 기준으로 올바른지 확인한다(예: co-located 컴포넌트는 발행 위치 기준 상대경로여야 한다).
 
 - 기본 제안: 영문 소문자 + 하이픈 슬러그 (깔끔한 URL 위해 권장). 제목/주제에서 생성.
   - 예: 제목 "DDD 도입 시 RDB 스키마 설계" → `ddd-rdb-schema`
@@ -83,7 +85,7 @@ draft frontmatter에 `category` 가 이미 있으면 재사용하고, 없거나 
 
 ### 6. 변경 적용
 
-1. **포스트 생성** — `apply_patch` 또는 파일 쓰기로 `src/content/posts/<slug>.md` 저장(2~4단계 결과 반영, 스캐폴드 제거 옵션 적용).
+1. **포스트 생성** — `apply_patch` 또는 파일 쓰기로 `src/content/posts/<slug>.<ext>` 저장(2~4단계 결과 반영, 스캐폴드 제거 옵션 적용). MDX면 React 시뮬레이션 컴포넌트(co-located `.tsx`)도 발행 위치에 맞게 두고 import 경로를 갱신한다.
 2. **Draft 제거** — 최종 사용자 확인 후 셸 명령으로 `rm "<draft-path>"`. 공백/한글 경로 따옴표 처리.
 
 config.ts 등 별도 등록 파일 수정은 없다.
