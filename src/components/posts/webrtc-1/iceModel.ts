@@ -52,8 +52,8 @@ function gatherHost(input: IceInput): CandidateRow {
     typePreference: 126,
     gathered: true, // host 후보는 항상 수집된다(네트워크 인터페이스가 있으면).
     note: input.sameLan
-      ? "두 피어가 같은 사설망 → host 후보 쌍이 바로 연결될 여지가 크다."
-      : "host 후보는 수집되지만, 서로 다른 NAT 뒤라면 상대의 사설 IP로는 닿지 못한다.",
+      ? "두 피어가 같은 사설망 → host 후보 쌍이 바로 연결될 여지가 큽니다."
+      : "host 후보는 수집되지만, 서로 다른 NAT 뒤라면 상대의 사설 IP로는 닿지 못합니다.",
   };
 }
 
@@ -63,13 +63,13 @@ function gatherSrflx(input: IceInput): CandidateRow {
   let note: string;
   if (!gathered) {
     note = input.udpBlocked
-      ? "UDP가 막혀 STUN 바인딩 요청이 나가지 못함 → srflx 수집 실패."
-      : "STUN 서버에 도달하지 못해 공인 매핑을 알 수 없음.";
+      ? "UDP가 막혀 STUN 바인딩 요청이 나가지 못해 srflx 수집에 실패합니다."
+      : "STUN 서버에 도달하지 못해 공인 매핑을 알 수 없습니다.";
   } else if (input.mapping === "address-dependent" || input.filtering === "address-dependent") {
     note =
-      "srflx를 수집했지만 NAT 매핑/필터링이 대상 의존적이라, STUN으로 본 매핑이 상대 피어에게 그대로 통하지 않을 수 있다.";
+      "srflx를 수집했지만 NAT 매핑/필터링이 대상 의존적이라, STUN으로 본 매핑이 상대 피어에게 그대로 통하지 않을 수 있습니다.";
   } else {
-    note = "공인 매핑이 대상과 무관하게 유지될 가능성이 높아 직접 경로(P2P) 성사 여지가 있다.";
+    note = "공인 매핑이 대상과 무관하게 유지될 가능성이 높아 직접 경로(P2P) 성사 여지가 있습니다.";
   }
   return { type: "srflx", typePreference: 100, gathered, note };
 }
@@ -82,8 +82,8 @@ function gatherRelay(input: IceInput): CandidateRow {
     typePreference: 0,
     gathered,
     note: gathered
-      ? `TURN(${(input.turn as string).toUpperCase()}) 릴레이 후보 확보 — 다른 경로가 모두 막혀도 마지막 보루.`
-      : "TURN 서버가 구성되지 않아 relay 후보 없음 → 직접 경로가 막히면 연결 실패.",
+      ? `TURN(${(input.turn as string).toUpperCase()}) 릴레이 후보 확보 — 다른 경로가 모두 막혀도 마지막 보루입니다.`
+      : "TURN 서버가 구성되지 않아 relay 후보가 없습니다 → 직접 경로가 막히면 연결에 실패합니다.",
   };
 }
 
@@ -95,7 +95,7 @@ function pickPath(input: IceInput, rows: CandidateRow[]): { selected: CandidateT
   const relay = rows.find((r) => r.type === "relay");
 
   if (input.sameLan && host?.gathered) {
-    return { selected: "host", reason: "같은 사설망이라 host 후보 쌍이 직접 연결될 가능성이 가장 높다." };
+    return { selected: "host", reason: "같은 사설망이라 host 후보 쌍이 직접 연결될 가능성이 가장 높습니다." };
   }
 
   // 직접 경로(srflx)가 통하려면: srflx 수집 + UDP 가능 + 매핑/필터링이 우호적이어야 한다는
@@ -106,20 +106,20 @@ function pickPath(input: IceInput, rows: CandidateRow[]): { selected: CandidateT
     input.mapping === "endpoint-independent" &&
     input.filtering !== "address-dependent";
   if (srflxFavorable) {
-    return { selected: "srflx", reason: "NAT 매핑/필터링이 우호적이라 STUN으로 뚫은 직접 경로가 성사될 여지가 크다." };
+    return { selected: "srflx", reason: "NAT 매핑/필터링이 우호적이라 STUN으로 뚫은 직접 경로가 성사될 여지가 큽니다." };
   }
 
   if (relay?.gathered) {
     return {
       selected: "relay",
       reason:
-        "직접 경로가 불확실하거나 막혀, 이 모델에서는 TURN 릴레이로 떨어진다. (실제로는 srflx가 성공할 수도 있으니 단정 금지)",
+        "직접 경로가 불확실하거나 막혀, 이 모델에서는 TURN 릴레이로 떨어집니다. (실제로는 srflx가 성공할 수도 있으니 단정 금지)",
     };
   }
 
   return {
     selected: "none",
-    reason: "직접 경로가 막혔는데 TURN도 없어, 이 가정 하에서는 연결을 못 맺는다.",
+    reason: "직접 경로가 막혔는데 TURN도 없어, 이 가정 하에서는 연결을 못 맺습니다.",
   };
 }
 
@@ -131,6 +131,6 @@ export function computeIce(input: IceInput): IceResult {
     selected,
     selectedReason: reason,
     caveat:
-      "이 표는 교육용 단순 모델이다. 특히 '대칭 NAT면 무조건 relay'처럼 단정하지 말 것 — 실제 성사 여부는 양쪽 NAT의 mapping/filtering 조합과 홀펀칭 타이밍, 방화벽 정책에 달려 있다.",
+      "이 표는 교육용 단순 모델입니다. 특히 '대칭 NAT면 무조건 relay'처럼 단정하지 마십시오 — 실제 성사 여부는 양쪽 NAT의 mapping/filtering 조합과 홀펀칭 타이밍, 방화벽 정책에 달려 있습니다.",
   };
 }

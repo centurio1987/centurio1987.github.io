@@ -23,7 +23,7 @@ const steps: Step[] = [
     actor: "caller",
     api: "pc.createOffer()",
     signaling: "stable → (아직)",
-    what: "발신자가 자기 미디어·트랜스포트 능력을 모아 Offer SDP를 만든다.",
+    what: "발신자가 자기 미디어·트랜스포트 능력을 모아 Offer SDP를 만듭니다.",
     filled: "m-line(audio/video), codec 후보(Opus·VP8/VP9 등), ICE ufrag/pwd, DTLS fingerprint(setup:actpass)",
   },
   {
@@ -31,7 +31,7 @@ const steps: Step[] = [
     actor: "caller",
     api: "pc.setLocalDescription(offer)",
     signaling: "stable → have-local-offer",
-    what: "발신자가 Offer를 자기 로컬 설명으로 적용한다. 이때부터 ICE 후보 수집이 시작된다(trickle).",
+    what: "발신자가 Offer를 자기 로컬 설명으로 적용합니다. 이때부터 ICE 후보 수집이 시작됩니다(trickle).",
     filled: "로컬 설명 확정 → onicecandidate로 후보가 흘러나오기 시작",
   },
   {
@@ -39,7 +39,7 @@ const steps: Step[] = [
     actor: "caller",
     api: "(시그널링 채널로 Offer 전송)",
     signaling: "have-local-offer",
-    what: "Offer SDP를 WebRTC 밖의 시그널링 경로(WebSocket 등)로 상대에게 보낸다. 이 전송은 WebRTC 표준 밖이다.",
+    what: "Offer SDP를 WebRTC 밖의 시그널링 경로(WebSocket 등)로 상대에게 보냅니다. 이 전송은 WebRTC 표준 밖입니다.",
     filled: "Offer SDP 문자열이 상대에게 도착",
   },
   {
@@ -47,7 +47,7 @@ const steps: Step[] = [
     actor: "callee",
     api: "pc.setRemoteDescription(offer)",
     signaling: "stable → have-remote-offer",
-    what: "수신자가 받은 Offer를 원격 설명으로 적용한다. 상대의 codec·DTLS 역할을 알게 된다.",
+    what: "수신자가 받은 Offer를 원격 설명으로 적용합니다. 상대의 codec·DTLS 역할을 알게 됩니다.",
     filled: "상대의 m-line/codec 파악, DTLS setup 협상(보통 수신자가 active)",
   },
   {
@@ -55,7 +55,7 @@ const steps: Step[] = [
     actor: "callee",
     api: "pc.createAnswer()",
     signaling: "have-remote-offer",
-    what: "수신자가 공통 codec을 골라 Answer SDP를 만든다. 양쪽이 합의 가능한 능력만 남긴다.",
+    what: "수신자가 공통 codec을 골라 Answer SDP를 만듭니다. 양쪽이 합의 가능한 능력만 남깁니다.",
     filled: "교집합 codec 확정, 자신의 ICE ufrag/pwd·DTLS fingerprint",
   },
   {
@@ -63,7 +63,7 @@ const steps: Step[] = [
     actor: "callee",
     api: "pc.setLocalDescription(answer)",
     signaling: "have-remote-offer → stable",
-    what: "수신자가 Answer를 로컬에 적용한다. 수신자 쪽 ICE 후보 수집이 시작된다.",
+    what: "수신자가 Answer를 로컬에 적용합니다. 수신자 쪽 ICE 후보 수집이 시작됩니다.",
     filled: "수신자 협상 완료(stable), onicecandidate 시작",
   },
   {
@@ -71,7 +71,7 @@ const steps: Step[] = [
     actor: "callee",
     api: "(시그널링 채널로 Answer 전송)",
     signaling: "stable",
-    what: "Answer SDP를 시그널링 경로로 발신자에게 돌려보낸다.",
+    what: "Answer SDP를 시그널링 경로로 발신자에게 돌려보냅니다.",
     filled: "Answer SDP가 발신자에게 도착",
   },
   {
@@ -79,7 +79,7 @@ const steps: Step[] = [
     actor: "caller",
     api: "pc.setRemoteDescription(answer)",
     signaling: "have-local-offer → stable",
-    what: "발신자가 Answer를 원격 설명으로 적용한다. 협상이 닫히고, 이제 ICE 연결성 점검·DTLS 핸드셰이크로 넘어간다.",
+    what: "발신자가 Answer를 원격 설명으로 적용합니다. 협상이 닫히고, 이제 ICE 연결성 점검·DTLS 핸드셰이크로 넘어갑니다.",
     filled: "양쪽 stable → 미디어 전에 ICE 점검·DTLS-SRTP 핸드셰이크 진행",
   },
 ];
