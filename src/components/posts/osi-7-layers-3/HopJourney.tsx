@@ -25,7 +25,7 @@ const SEGMENTS: Seg[] = [
     srcMac: "A (aa:..:0a)",
     dstMac: "R1 왼쪽 if (r1:..:01)",
     ttl: 64,
-    note: "A는 목적지가 다른 네트워크임을 알고, 기본 gateway R1의 MAC으로 보낸다. dst IP는 여전히 B.",
+    note: "A는 목적지가 다른 네트워크임을 알고, 기본 gateway R1의 MAC으로 보냅니다. dst IP는 여전히 B.",
   },
   {
     label: "R1 → R2",
@@ -33,7 +33,7 @@ const SEGMENTS: Seg[] = [
     srcMac: "R1 오른쪽 if (r1:..:02)",
     dstMac: "R2 왼쪽 if (r2:..:01)",
     ttl: 63,
-    note: "R1은 프레임을 벗기고 IP를 검사한 뒤 TTL을 1 줄이고, 다음 홉 R2를 향해 새 프레임으로 다시 싼다.",
+    note: "R1은 프레임을 벗기고 IP를 검사한 뒤 TTL을 1 줄이고, 다음 홉 R2를 향해 새 프레임으로 다시 쌉니다.",
   },
   {
     label: "R2 → Host B",
@@ -41,7 +41,7 @@ const SEGMENTS: Seg[] = [
     srcMac: "R2 오른쪽 if (r2:..:02)",
     dstMac: "B (bb:..:14)",
     ttl: 62,
-    note: "R2도 같은 일을 한다. 마지막 구간에서 dst MAC이 비로소 최종 목적지 B가 된다.",
+    note: "R2도 같은 일을 합니다. 마지막 구간에서 dst MAC이 비로소 최종 목적지 B가 됩니다.",
   },
 ];
 

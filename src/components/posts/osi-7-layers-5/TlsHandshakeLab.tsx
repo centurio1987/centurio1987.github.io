@@ -20,7 +20,7 @@ const STEPS: Step[] = [
     dir: null,
     enc: "plain",
     carries: [],
-    note: "이미 Part 4의 3-way handshake로 TCP 연결은 섰다. 하지만 지금 오가는 모든 byte는 평문이다. TLS는 이 위에 '같은 뜻 + 비밀'을 얹는다.",
+    note: "이미 Part 4의 3-way handshake로 TCP 연결은 섰습니다. 하지만 지금 오가는 모든 byte는 평문입니다. TLS는 이 위에 '같은 뜻 + 비밀'을 얹습니다.",
   },
   {
     title: "1. ClientHello →",
@@ -33,7 +33,7 @@ const STEPS: Step[] = [
       "ALPN (h2 / http/1.1 …)",
       "supported_versions: TLS 1.3",
     ],
-    note: "클라이언트가 '이런 암호 쓸 수 있고, 키 교환용 공개값은 이거고, 이 hostname의 인증서를 줘'라고 한 번에 던진다. SNI가 평문이라 어느 사이트로 가는지는 이 단계까지 노출된다.",
+    note: "클라이언트가 '이런 암호 쓸 수 있고, 키 교환용 공개값은 이거고, 이 hostname의 인증서를 줘'라고 한 번에 던집니다. SNI가 평문이라 어느 사이트로 가는지는 이 단계까지 노출됩니다.",
   },
   {
     title: "2. ← ServerHello + (암호화된) 인증서·Finished",
@@ -47,21 +47,21 @@ const STEPS: Step[] = [
       "CertificateVerify (개인키 서명)",
       "Finished",
     ],
-    note: "서버가 cipher 하나를 고르고 자기 key_share를 보낸다. 이 순간 양쪽은 ECDHE로 같은 세션 키를 계산할 수 있다 — 그래서 ServerHello '이후' 메시지(인증서 포함)부터 바로 암호화된다. 인증서로 신원을, CertificateVerify 서명으로 '그 인증서의 개인키를 진짜 가졌음'을 증명한다.",
+    note: "서버가 cipher 하나를 고르고 자기 key_share를 보냅니다. 이 순간 양쪽은 ECDHE로 같은 세션 키를 계산할 수 있습니다 — 그래서 ServerHello '이후' 메시지(인증서 포함)부터 바로 암호화됩니다. 인증서로 신원을, CertificateVerify 서명으로 '그 인증서의 개인키를 진짜 가졌음'을 증명합니다.",
   },
   {
     title: "3. Client Finished →",
     dir: "c2s",
     enc: "encrypted",
     carries: ["Finished (handshake 무결성 확인)"],
-    note: "클라이언트가 인증서 체인·hostname을 검증하고, 자기도 Finished를 보내 handshake가 변조되지 않았음을 확인한다. 메시지 1왕복(1-RTT) 만에 보안 채널이 선다.",
+    note: "클라이언트가 인증서 체인·hostname을 검증하고, 자기도 Finished를 보내 handshake가 변조되지 않았음을 확인합니다. 메시지 1왕복(1-RTT) 만에 보안 채널이 섭니다.",
   },
   {
     title: "4. Application Data ↔ (암호화)",
     dir: "both",
     enc: "encrypted",
     carries: ["HTTP 요청·응답 등 실제 데이터 (전부 암호화)"],
-    note: "이제 HTTP 같은 상위 데이터가 모두 암호화되어 오간다. 기밀성(엿봐도 모름)·무결성(중간 변조 감지)·인증(상대가 그 hostname의 주인)이 함께 보장된다.",
+    note: "이제 HTTP 같은 상위 데이터가 모두 암호화되어 오갑니다. 기밀성(엿봐도 모름)·무결성(중간 변조 감지)·인증(상대가 그 hostname의 주인)이 함께 보장됩니다.",
   },
 ];
 

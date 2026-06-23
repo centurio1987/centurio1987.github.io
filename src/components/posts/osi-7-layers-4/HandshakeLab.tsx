@@ -28,21 +28,21 @@ const STEPS: Step[] = [
     clientState: "SYN-SENT",
     serverState: "LISTEN",
     seg: { dir: "c2s", flags: "SYN", seq: "x", ack: "-" },
-    note: "클라이언트가 초기 순서번호 x(ISN)를 담아 SYN을 보낸다. “이 번호부터 셀게”라는 선언이다. 클라이언트는 SYN-SENT로.",
+    note: "클라이언트가 초기 순서번호 x(ISN)를 담아 SYN을 보냅니다. “이 번호부터 셀게”라는 선언입니다. 클라이언트는 SYN-SENT로.",
   },
   {
     title: "2. ← SYN, ACK",
     clientState: "SYN-SENT",
     serverState: "SYN-RECEIVED",
     seg: { dir: "s2c", flags: "SYN, ACK", seq: "y", ack: "x+1" },
-    note: "서버도 자기 ISN y를 SYN으로 선언하면서, 클라이언트의 x를 잘 받았다고 ack=x+1로 확인한다. 한 세그먼트에 두 일을 겹쳐 담는다.",
+    note: "서버도 자기 ISN y를 SYN으로 선언하면서, 클라이언트의 x를 잘 받았다고 ack=x+1로 확인합니다. 한 세그먼트에 두 일을 겹쳐 담습니다.",
   },
   {
     title: "3. ACK →",
     clientState: "ESTABLISHED",
     serverState: "ESTABLISHED",
     seg: { dir: "c2s", flags: "ACK", seq: "x+1", ack: "y+1" },
-    note: "클라이언트가 서버의 y를 ack=y+1로 확인한다. 이 마지막 ACK이 닿는 순간 양쪽 모두 ESTABLISHED — 이제 데이터를 주고받을 수 있다.",
+    note: "클라이언트가 서버의 y를 ack=y+1로 확인합니다. 이 마지막 ACK이 닿는 순간 양쪽 모두 ESTABLISHED — 이제 데이터를 주고받을 수 있습니다.",
   },
 ];
 

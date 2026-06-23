@@ -18,7 +18,7 @@ export default function EncapsulationLab() {
     [direction],
   );
   const current = ordered[step];
-  const verb = direction === "send" ? "붙인다" : "해석하고 벗긴다";
+  const verb = direction === "send" ? "붙입니다" : "해석하고 벗깁니다";
 
   function changeDirection(next: "send" | "receive") {
     setDirection(next);
@@ -57,7 +57,7 @@ export default function EncapsulationLab() {
       </div>
 
       <p role="status" style={{ margin: "16px 0 4px", lineHeight: 1.6 }}>
-        <strong>L{current.no} {current.name}</strong>: {current.header} 정보를 {verb}. 이 단계에서 보이는 전송 단위는 <strong>{current.unit}</strong>다.
+        <strong>L{current.no} {current.name}</strong>: {current.header} 정보를 {verb}. 이 단계에서 보이는 전송 단위는 <strong>{current.unit}</strong>입니다.
       </p>
       <figcaption style={{ fontSize: 13, color: "#6b6357" }}>
         방향을 바꾸고 각 계층을 눌러 보세요. 실제 구현에서는 L5~L7이 한 애플리케이션 안에 합쳐지는 경우가 많습니다.

@@ -21,7 +21,7 @@ const STEPS: Step[] = [
     from: "내 OS (stub)",
     to: "재귀 resolver",
     ask: "www.example.com 의 IP?",
-    reply: "캐시에 있으면 즉시 응답. 없으면 재귀 resolver가 대신 찾아 나선다.",
+    reply: "캐시에 있으면 즉시 응답. 없으면 재귀 resolver가 대신 찾아 나섭니다.",
   },
   {
     title: "1. Root에게 묻기",
@@ -49,7 +49,7 @@ const STEPS: Step[] = [
     from: "재귀 resolver",
     to: "내 OS (stub)",
     ask: "—",
-    reply: "resolver가 TTL 동안 캐시한 뒤 IP를 돌려준다. 다음 조회는 0번에서 바로 끝난다.",
+    reply: "resolver가 TTL 동안 캐시한 뒤 IP를 돌려줍니다. 다음 조회는 0번에서 바로 끝납니다.",
     cached: true,
   },
 ];

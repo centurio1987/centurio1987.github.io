@@ -2,6 +2,7 @@
 title: "OSI 7계층, 외우지 말고 데이터의 여행으로 이해하기"
 description: "OSI 참조 모델의 일곱 책임, 캡슐화, 장비와 프로토콜, 장애 진단법을 한 번에 연결한다."
 pubDate: 2026-06-20
+updatedDate: 2026-06-23
 category: skills
 tags: ["OSI 7계층", "네트워크 계층", "캡슐화", "TCP/IP", "장애 진단", "패킷 분석"]
 series: "OSI 7계층 해부"
@@ -12,17 +13,21 @@ draft: false
 import EncapsulationLab from "../../components/posts/osi-7-layers-1/EncapsulationLab";
 import LayerTriage from "../../components/posts/osi-7-layers-1/LayerTriage";
 
-브라우저에 주소를 입력하고 Enter를 눌렀다. 잠시 뒤 화면이 뜬다. 그 짧은 순간에 문자열은 암호화되고, 잘게 나뉘고, 주소표를 달고, 프레임에 실린 뒤 전기·빛·전파 신호가 된다. 받는 쪽 종단에서는 그 포장을 역순으로 벗는다.
+![OSI 7계층, 외우지 말고 데이터의 여행으로 이해하기](/images/osi-7-layers-1/hero.png)
 
-이 모든 과정을 한 덩어리로 설명하면 금세 길을 잃는다. OSI(Open Systems Interconnection) 7계층 모델은 복잡한 통신을 **서로 다른 책임을 가진 일곱 층으로 나눠 생각하는 지도**다. 이 글의 목표는 계층 이름을 암기하는 것이 아니다. “지금 어느 책임에서 문제가 났는가?”를 질문할 수 있게 되는 것이다.
+브라우저에 주소를 입력하고 Enter를 누릅니다. 잠시 뒤 화면이 뜹니다. 그 짧은 순간에 여러분이 친 문자열은 암호화되고, 잘게 나뉘고, 주소표를 달고, 프레임에 실린 뒤 전기·빛·전파 신호가 됩니다. 받는 쪽 종단에서는 그 포장을 역순으로 벗습니다.
+
+그런데 어느 날, 그 화면이 끝내 뜨지 않습니다. "인터넷이 안 돼요"라는 한 문장 뒤에는 케이블이 죽은 것부터 인증서가 만료된 것까지 **전혀 다른 여섯 가지 실패**가 숨어 있습니다. 무작정 브라우저를 재시작하고 DNS를 8.8.8.8로 바꾸는 사람과, 어디서 막혔는지 한 계단씩 좁혀 묻는 사람의 차이는 거기서 갈립니다.
+
+이 글을 끝까지 읽으시면, 그 순간 머릿속에 **데이터의 여행 전체**가 그려지게 됩니다. "지금 어느 책임에서 문제가 났는가?"를 아래에서 위로 순서 있게 물을 수 있게 되는 것 — 계층 이름을 암기하는 게 아니라 그 질문을 던질 수 있게 되는 것, 그것이 이 글의 목표입니다.
 
 ## 먼저 바로잡기: OSI는 인터넷 구현 명세가 아니다
 
-“인터넷은 OSI 7계층으로 동작한다”는 설명은 편리하지만 정확하지 않다. ISO/IEC 7498-1의 OSI 모델은 상호 접속 표준을 조정하고 기존 표준이 전체 구조의 어디에 놓이는지 설명하기 위한 **참조 모델**이다. 특정 운영체제의 함수 호출 순서나 패킷의 실제 형식을 강제하지 않는다.
+"인터넷은 OSI 7계층으로 동작한다"는 설명은 편리하지만 정확하지 않습니다. ISO/IEC 7498-1의 OSI 모델은 상호 접속 표준을 조정하고 기존 표준이 전체 구조의 어디에 놓이는지 설명하기 위한 **참조 모델**입니다. 특정 운영체제의 함수 호출 순서나 패킷의 실제 형식을 강제하지 않습니다.
 
-오늘날 인터넷 프로토콜 모음은 보통 Link, Internet, Transport, Application의 네 층으로 설명한다. RFC 1122도 이 구조를 사용하며, 인터넷의 Application 계층이 OSI의 Application과 Presentation 기능을 사실상 함께 맡는다고 설명한다(많은 교재는 Link를 Physical과 Data Link로 한 번 더 쪼개 5계층으로 가르치기도 한다 — 경계를 어디에 긋느냐의 차이일 뿐이다). 따라서 TLS를 무조건 L6, HTTP를 무조건 L7이라고 고정하는 식의 분류는 학습용 근사일 뿐이다. 실제 구현에서는 경계가 겹치고, 터널링처럼 한 계층의 프로토콜이 다른 계층의 payload가 되기도 한다.
+오늘날 인터넷 프로토콜 모음은 보통 Link, Internet, Transport, Application의 네 층으로 설명합니다. RFC 1122도 이 구조를 쓰며, 인터넷의 Application 계층이 OSI의 Application과 Presentation 기능을 사실상 함께 맡는다고 설명합니다(많은 교재는 Link를 Physical과 Data Link로 한 번 더 쪼개 5계층으로 가르치기도 합니다 — 경계를 어디에 긋느냐의 차이일 뿐입니다). 따라서 TLS를 무조건 L6, HTTP를 무조건 L7이라고 고정하는 분류는 학습용 근사일 뿐입니다. 실제 구현에서는 경계가 겹치고, 터널링처럼 한 계층의 프로토콜이 다른 계층의 payload가 되기도 합니다.
 
-그렇다면 OSI가 왜 여전히 쓸모 있을까? **책임의 경계와 관찰 지점을 제공하기 때문**이다. 케이블이 끊긴 문제와 DNS 이름 해석 실패를 같은 방식으로 다루지 않게 해 준다.
+그렇다면 OSI가 왜 여전히 쓸모 있을까요? **책임의 경계와 관찰 지점을 주기 때문입니다.** 케이블이 끊긴 문제와 DNS 이름 해석 실패를 같은 방식으로 다루지 않게 해 줍니다.
 
 ## 한눈에 보는 일곱 책임
 
@@ -36,13 +41,13 @@ import LayerTriage from "../../components/posts/osi-7-layers-1/LayerTriage";
 | L2 Data Link | 같은 링크에서 다음 장치까지 어떻게 보낼까? | Ethernet, Wi-Fi MAC, VLAN, ARP/ND 인접 처리 | Frame |
 | L1 Physical | 비트를 매체 위 신호로 어떻게 바꿀까? | 1000BASE-T, 광 이더넷, 무선 PHY | Bits/Symbols |
 
-PDU(Protocol Data Unit) 이름은 문헌과 문맥에 따라 조금씩 다르다. 중요한 것은 이름 시험이 아니라 **각 계층이 어떤 메타데이터를 붙이고 어떤 범위까지 책임지는가**다.
+PDU(Protocol Data Unit) 이름은 문헌과 문맥에 따라 조금씩 다릅니다. 중요한 건 이름 시험이 아니라 **각 계층이 어떤 메타데이터를 붙이고 어떤 범위까지 책임지는가**입니다.
 
-참조 모델을 "헤더를 붙이는 일곱 단계"로만 보면 절반만 본 것이다. OSI에는 세 가지 문법이 있다. 각 계층은 **바로 위 계층에 service(서비스)를 제공**하고, 그 경계는 **interface(인터페이스)**로 정의되며, 같은 계층끼리(예: 양쪽 호스트의 TCP)는 보이지 않는 **peer(대등) 관계로 protocol을 주고받는다**. 그래서 내 TCP는 상대의 TCP와 "대화"하는 것처럼 동작하지만, 실제 bytes는 아래 계층의 service를 빌려 내려갔다 올라온다. 캡슐화는 이 구조의 물리적 결과일 뿐이다.
+참조 모델을 "헤더를 붙이는 일곱 단계"로만 보면 절반만 본 것입니다. OSI에는 세 가지 문법이 있습니다. 각 계층은 **바로 위 계층에 service(서비스)를 제공**하고, 그 경계는 **interface(인터페이스)**로 정의되며, 같은 계층끼리(예: 양쪽 호스트의 TCP)는 보이지 않는 **peer(대등) 관계로 protocol을 주고받습니다.** 그래서 내 TCP는 상대의 TCP와 "대화"하는 것처럼 동작하지만, 실제 bytes는 아래 계층의 service를 빌려 내려갔다 올라옵니다. 캡슐화는 이 구조의 물리적 결과일 뿐입니다.
 
 ## 핵심 원리: 캡슐화는 책임을 겹겹이 포장하는 일이다
 
-송신 애플리케이션이 만든 데이터는 아래 계층으로 내려갈 때마다 그 계층이 처리에 필요한 header, 때로는 trailer를 얻는다.
+송신 애플리케이션이 만든 데이터는 아래 계층으로 내려갈 때마다 그 계층이 처리에 필요한 header, 때로는 trailer를 얻습니다.
 
 ```text
 HTTP message
@@ -52,81 +57,83 @@ HTTP message
   -> 물리 매체의 신호
 ```
 
-수신 측은 반대로 올라간다. Ethernet 인터페이스는 frame을 검사하고 payload인 IP packet을 넘긴다. IP는 목적지와 상위 프로토콜 번호를 보고 TCP에 넘긴다. TCP는 port를 통해 올바른 프로세스의 socket으로 byte stream을 전달한다. HTTP 구현이 마지막으로 message의 의미를 해석한다.
+![캡슐화: 계층을 내려갈 때마다 헤더가 덧붙고, 맨 아래에서 신호가 된다](/images/osi-7-layers-1/encapsulation.png)
 
-이 구조의 핵심은 **인접 계층의 계약**이다. L3는 HTTP가 JSON을 담았는지 이미지 데이터를 담았는지 몰라도 packet을 전달할 수 있다. L7도 Ethernet FCS 계산법을 몰라도 HTTP 요청을 보낼 수 있다. 각 계층의 변화가 전체를 무너뜨리지 않는 이유다.
+수신 측은 반대로 올라갑니다. Ethernet 인터페이스는 frame을 검사하고 payload인 IP packet을 넘깁니다. IP는 목적지와 상위 프로토콜 번호를 보고 TCP에 넘깁니다. TCP는 port를 통해 올바른 프로세스의 socket으로 byte stream을 전달합니다. HTTP 구현이 마지막으로 message의 의미를 해석합니다.
+
+이 구조의 핵심은 **인접 계층의 계약**입니다. L3는 HTTP가 JSON을 담았는지 이미지 데이터를 담았는지 몰라도 packet을 전달할 수 있습니다. L7도 Ethernet FCS 계산법을 몰라도 HTTP 요청을 보낼 수 있습니다. 각 계층의 변화가 전체를 무너뜨리지 않는 이유가 바로 이것입니다.
 
 <EncapsulationLab client:visible />
 
-시뮬레이터를 송신 방향으로 두고 L7에서 L1까지 눌러 보자. 상위 계층이 의도한 정보는 보존되지만(L6에서 압축·암호화를 거치면 실제 byte 표현은 바뀐다) 각 홉과 종단이 처리할 정보가 덧붙는다. 수신 방향에서는 각 계층이 자기 정보를 소비한 뒤 위 계층에 payload를 넘기는 모습을 확인할 수 있다.
+시뮬레이터를 송신 방향으로 두고 L7에서 L1까지 눌러 보십시오. 상위 계층이 의도한 정보는 보존되지만(L6에서 압축·암호화를 거치면 실제 byte 표현은 바뀝니다) 각 홉과 종단이 처리할 정보가 덧붙습니다. 수신 방향에서는 각 계층이 자기 정보를 소비한 뒤 위 계층에 payload를 넘기는 모습을 확인할 수 있습니다.
 
 ## L1 Physical: 비트가 실제 세계를 만나는 곳
 
-L1은 0과 1을 구리선의 전압 변화, 광섬유의 빛, 무선의 전자기파 같은 물리 신호로 표현한다. connector 형태, 주파수, 변조·부호화, bit rate, 송신 거리 같은 조건이 여기 속한다. IEEE 802.3 Ethernet 표준도 Physical Layer가 frame을 매체에 맞는 modulation으로 encode하고 수신 신호를 decode한다고 설명한다.
+L1은 0과 1을 구리선의 전압 변화, 광섬유의 빛, 무선의 전자기파 같은 물리 신호로 표현합니다. connector 형태, 주파수, 변조·부호화, bit rate, 송신 거리 같은 조건이 여기 속합니다. IEEE 802.3 Ethernet 표준도 Physical Layer가 frame을 매체에 맞는 modulation으로 encode하고 수신 신호를 decode한다고 설명합니다.
 
-L1에서 다루는 요소는 cable, 광 transceiver 부품(SFP/SFP+), media converter, 그리고 repeater·hub 같은 장비다. (SFP/SFP+는 독립 장비라기보다 인터페이스 슬롯에 꽂는 L1 부품으로 보는 편이 정확하다.) 현대 유선망에서 hub와 repeater는 거의 사라졌지만, hub는 들어온 신호를 다른 port로 반복할 뿐 MAC 주소를 보고 목적지를 고르지 않는다. 그래서 hub의 모든 port는 하나의 충돌 영역을 공유한다. 실무에서 직접 만질 일은 드물어도 **L1과 L2의 차이**를 또렷이 보여주는 교육용 기준점이라 짚어 둔다. 정작 현장에서 자주 보는 L1 요소는 광 transceiver와 media converter, 그리고 그들의 광 power·온도 같은 지표다.
+L1에서 다루는 요소는 cable, 광 transceiver 부품(SFP/SFP+), media converter, 그리고 repeater·hub 같은 장비입니다. (SFP/SFP+는 독립 장비라기보다 인터페이스 슬롯에 꽂는 L1 부품으로 보는 편이 정확합니다.) 현대 유선망에서 hub와 repeater는 거의 사라졌지만, hub는 들어온 신호를 다른 port로 반복할 뿐 MAC 주소를 보고 목적지를 고르지 않습니다. 그래서 hub의 모든 port는 하나의 충돌 영역을 공유합니다. 실무에서 직접 만질 일은 드물어도 **L1과 L2의 차이**를 또렷이 보여주는 교육용 기준점이라 짚어 둡니다. 정작 현장에서 자주 보는 L1 요소는 광 transceiver와 media converter, 그리고 그들의 광 power·온도 같은 지표입니다.
 
-**관찰할 것:** link LED, signal level, cable 규격, 광 power, interface의 link up/down 상태, symbol·alignment·carrier error 증가량. (frame 단위의 FCS/CRC 오류는 엄밀히는 L2 책임이다 — L1에서는 신호·심볼 수준의 오류를 본다.)
+**관찰할 것:** link LED, signal level, cable 규격, 광 power, interface의 link up/down 상태, symbol·alignment·carrier error 증가량. (frame 단위의 FCS/CRC 오류는 엄밀히는 L2 책임입니다 — L1에서는 신호·심볼 수준의 오류를 봅니다.)
 
 ## L2 Data Link: 같은 링크의 다음 목적지까지
 
-L2는 하나의 link 또는 broadcast domain 안에서 frame을 전달한다. Ethernet frame에는 출발지와 목적지 MAC 주소, 상위 protocol을 나타내는 EtherType, 오류 검출용 FCS(Frame Check Sequence) 등이 들어간다. switch와 bridge는 source MAC을 학습해 forwarding table을 만들고, destination MAC에 맞는 port로 frame을 보낸다.
+L2는 하나의 link 또는 broadcast domain 안에서 frame을 전달합니다. Ethernet frame에는 출발지와 목적지 MAC 주소, 상위 protocol을 나타내는 EtherType, 오류 검출용 FCS(Frame Check Sequence) 등이 들어갑니다. switch와 bridge는 source MAC을 학습해 forwarding table을 만들고, destination MAC에 맞는 port로 frame을 보냅니다.
 
-여기서 “최종 서버의 MAC 주소”를 항상 쓰는 것은 아니다. 목적지가 다른 IP network에 있다면 host는 **기본 gateway의 L2 주소**로 frame을 보낸다. IP destination은 원격 서버로 유지되지만, Ethernet destination은 첫 번째 router interface가 된다. router를 한 번 지날 때마다 L2 frame은 새로 만들어진다.
+여기서 "최종 서버의 MAC 주소"를 항상 쓰는 것은 아닙니다. 목적지가 다른 IP network에 있다면 host는 **기본 gateway의 L2 주소**로 frame을 보냅니다. IP destination은 원격 서버로 유지되지만, Ethernet destination은 첫 번째 router interface가 됩니다. router를 한 번 지날 때마다 L2 frame은 새로 만들어집니다.
 
-관련 기술은 다음과 같다.
+관련 기술은 다음과 같습니다.
 
-- **Ethernet(IEEE 802.3)**: 유선 LAN의 frame과 여러 PHY 규격을 정의한다.
-- **Wi-Fi(IEEE 802.11)**: 무선 매체 접근과 frame 전달을 정의한다. Ethernet과 같은 L2로 묶어 설명하지만 frame 형식과 매체 접근은 다르다.
-- **VLAN(IEEE 802.1Q)**: 하나의 물리 switch 인프라를 여러 논리 broadcast domain으로 나눈다.
-- **ARP(Address Resolution Protocol) / Neighbor Discovery**: IPv4 주소에 대응하는 같은 링크의 MAC 주소를 알아낸다. IPv6에서는 ICMPv6 기반 Neighbor Discovery(ND)가 이 역할을 한다. 엄밀히는 L3 주소를 L2 주소로 잇는 다리라서 ARP를 흔히 "L2.5", ND는 ICMPv6(L3) 위에서 도는 동작으로 본다. 계층 번호로 다투기보다 **"같은 링크에서 주소를 해석하는 책임"**으로 묶어 이해하는 편이 실용적이다.
-- **STP(Spanning Tree Protocol) 계열**: L2 loop로 인한 broadcast storm을 막기 위해 일부 경로를 논리적으로 차단한다.
+- **Ethernet(IEEE 802.3)**: 유선 LAN의 frame과 여러 PHY 규격을 정의합니다.
+- **Wi-Fi(IEEE 802.11)**: 무선 매체 접근과 frame 전달을 정의합니다. Ethernet과 같은 L2로 묶어 설명하지만 frame 형식과 매체 접근은 다릅니다.
+- **VLAN(IEEE 802.1Q)**: 하나의 물리 switch 인프라를 여러 논리 broadcast domain으로 나눕니다.
+- **ARP(Address Resolution Protocol) / Neighbor Discovery**: IPv4 주소에 대응하는 같은 링크의 MAC 주소를 알아냅니다. IPv6에서는 ICMPv6 기반 Neighbor Discovery(ND)가 이 역할을 합니다. 엄밀히는 L3 주소를 L2 주소로 잇는 다리라서 ARP를 흔히 "L2.5", ND는 ICMPv6(L3) 위에서 도는 동작으로 봅니다. 계층 번호로 다투기보다 **"같은 링크에서 주소를 해석하는 책임"**으로 묶어 이해하는 편이 실용적입니다.
+- **STP(Spanning Tree Protocol) 계열**: L2 loop로 인한 broadcast storm을 막기 위해 일부 경로를 논리적으로 차단합니다.
 
 **관찰할 것:** `ip link`, `arp -a` 또는 `ip neigh`, switch MAC address table, VLAN tagging, interface CRC error.
 
 ## L3 Network: 여러 링크를 건너는 경로
 
-L3는 서로 다른 network 사이에서 packet을 전달한다. IP address는 interface의 논리적 위치를 표현하고, router는 destination prefix와 routing table을 사용해 다음 hop을 정한다. IPv6 명세 RFC 8200은 router를 자신에게 명시적으로 향하지 않은 IPv6 packet을 forwarding하는 node로 정의한다.
+L3는 서로 다른 network 사이에서 packet을 전달합니다. IP address는 interface의 논리적 위치를 표현하고, router는 destination prefix와 routing table을 사용해 다음 hop을 정합니다. IPv6 명세 RFC 8200은 router를 자신에게 명시적으로 향하지 않은 IPv6 packet을 forwarding하는 node로 정의합니다.
 
-router가 packet을 전달할 때 Ethernet frame을 그대로 통과시키는 것이 아니다. 입력 L2 frame을 벗기고 IP header를 검사한 뒤, Hop Limit을 줄이고 출력 interface에 맞는 새로운 L2 frame으로 감싼다. 따라서 일반적인 routed path에서 MAC 주소는 hop마다 바뀌지만 IP source와 destination은 종단까지 유지된다. NAT(Network Address Translation)가 개입하면 IP·port가 변할 수 있다는 예외도 기억해야 한다.
+router가 packet을 전달할 때 Ethernet frame을 그대로 통과시키는 것이 아닙니다. 입력 L2 frame을 벗기고 IP header를 검사한 뒤, Hop Limit을 줄이고 출력 interface에 맞는 새로운 L2 frame으로 감쌉니다. 따라서 일반적인 routed path에서 MAC 주소는 hop마다 바뀌지만 IP source와 destination은 종단까지 유지됩니다. NAT(Network Address Translation)가 개입하면 IP·port가 변할 수 있다는 예외도 기억해야 합니다.
 
-IPv6 packet은 “IPv6 header plus payload”로 정의된다. `Next Header`는 뒤따르는 extension header 또는 TCP·UDP 같은 upper-layer protocol을 가리킨다. 이것은 캡슐화가 교과서 그림이 아니라 실제 bit field로 이어지는 사례다.
+IPv6 packet은 "IPv6 header plus payload"로 정의됩니다. `Next Header`는 뒤따르는 extension header 또는 TCP·UDP 같은 upper-layer protocol을 가리킵니다. 캡슐화가 교과서 그림이 아니라 실제 bit field로 이어지는 사례입니다.
 
 **관찰할 것:** `ip addr`, `ip route`, `ping`, `traceroute`/`tracepath`, TTL 또는 Hop Limit, ICMP 오류, packet capture의 IP header.
 
 ## L4 Transport: host가 아니라 process까지
 
-IP가 packet을 목적 host로 옮겼다면 L4는 데이터를 올바른 application process로 전달한다. port number가 이 multiplexing과 demultiplexing의 핵심 열쇠다.
+IP가 packet을 목적 host로 옮겼다면 L4는 데이터를 올바른 application process로 전달합니다. port number가 이 multiplexing과 demultiplexing의 핵심 열쇠입니다.
 
-다만 "port = process"는 편의상 단순화다. 실제 demultiplexing은 포트 하나가 아니라 **(protocol, 출발지 IP:port, 목적지 IP:port)로 이루어진 socket/connection 단위**로 일어난다. 그래서 같은 목적지 443 port에 수천 개의 connection이 동시에 공존할 수 있고, `SO_REUSEPORT`·로드밸런서·container network namespace 때문에 "포트 ↔ 프로세스"도 일대일이 아니다.
+다만 "port = process"는 편의상 단순화입니다. 실제 demultiplexing은 포트 하나가 아니라 **(protocol, 출발지 IP:port, 목적지 IP:port)로 이루어진 socket/connection 단위**로 일어납니다. 그래서 같은 목적지 443 port에 수천 개의 connection이 동시에 공존할 수 있고, `SO_REUSEPORT`·로드밸런서·container network namespace 때문에 "포트 ↔ 프로세스"도 일대일이 아닙니다.
 
-TCP는 connection-oriented byte stream을 제공한다. sequence number, acknowledgment, retransmission, flow control, congestion control을 사용해 손실·중복·순서 뒤바뀜이 가능한 IP 위에서 신뢰성 있는 stream을 만든다. 반면 UDP는 connection 설정과 재전송을 기본 제공하지 않는 datagram service다. overhead와 지연이 작고 application이 필요한 신뢰성 정책을 직접 선택할 수 있다.
+TCP는 connection-oriented byte stream을 제공합니다. sequence number, acknowledgment, retransmission, flow control, congestion control을 사용해 손실·중복·순서 뒤바뀜이 가능한 IP 위에서 신뢰성 있는 stream을 만듭니다. 반면 UDP는 connection 설정과 재전송을 기본 제공하지 않는 datagram service입니다. overhead와 지연이 작고 application이 필요한 신뢰성 정책을 직접 선택할 수 있습니다.
 
-“UDP는 신뢰성이 없다”에서 멈추면 부족하다. QUIC은 UDP 위에서 connection, reliable stream, congestion control, TLS 보안을 통합한다. 이는 계층 모델이 구현을 금지하는 벽이 아니라 책임을 설명하는 도구임을 보여준다.
+"UDP는 신뢰성이 없다"에서 멈추면 부족합니다. QUIC은 UDP 위에서 connection, reliable stream, congestion control, TLS 보안을 통합합니다. 계층 모델이 구현을 금지하는 벽이 아니라 책임을 설명하는 도구임을 보여주는 사례입니다.
 
 **관찰할 것:** `ss -lntup`, TCP state, retransmission, zero window, port reachability, firewall의 5-tuple 규칙.
 
 ## L5 Session: 대화의 생명주기
 
-L5는 통신 dialog를 만들고 유지하고 종료하며, 중단된 대화를 어디서 재개할지 관리하는 책임으로 설명된다. 고전 OSI 프로토콜에서는 이 책임이 별도 계층으로 명확했지만 현대 인터넷 application에서는 library와 application protocol 안에 섞이는 경우가 많다. 이는 우연이 아니라 인터넷의 설계 철학인 **end-to-end argument**의 결과다 — 세션·표현 같은 기능은 중간 네트워크가 아니라 양 끝 application이 가장 잘 처리할 수 있으니, 굳이 독립 계층으로 못박지 않고 application에 맡긴 것이다.
+L5는 통신 dialog를 만들고 유지하고 종료하며, 중단된 대화를 어디서 재개할지 관리하는 책임으로 설명됩니다. 고전 OSI 프로토콜에서는 이 책임이 별도 계층으로 명확했지만 현대 인터넷 application에서는 library와 application protocol 안에 섞이는 경우가 많습니다. 이는 우연이 아니라 인터넷의 설계 철학인 **end-to-end argument**의 결과입니다 — 세션·표현 같은 기능은 중간 네트워크가 아니라 양 끝 application이 가장 잘 처리할 수 있으니, 굳이 독립 계층으로 못박지 않고 application에 맡긴 것입니다.
 
-예를 들어 로그인 session cookie, RPC connection 상태, SOCKS proxy 세션, database session, 긴 작업의 checkpoint는 “대화의 지속성”이라는 L5 관점으로 분석할 수 있다. 다만 cookie는 그 자체로 독립 프로토콜이 아니라 **HTTP(L7) 헤더에 실리는 상태 관리 메커니즘**이라는 점을 분명히 하자. "session 책임 = L5 프로토콜"처럼 실제 protocol suite의 계층과 OSI 책임 분류를 일대일로 맞붙이려는 순간 설명이 어긋난다.
+예를 들어 로그인 session cookie, RPC connection 상태, SOCKS proxy 세션, database session, 긴 작업의 checkpoint는 "대화의 지속성"이라는 L5 관점으로 분석할 수 있습니다. 다만 cookie는 그 자체로 독립 프로토콜이 아니라 **HTTP(L7) 헤더에 실리는 상태 관리 메커니즘**이라는 점을 분명히 해 둡시다. "session 책임 = L5 프로토콜"처럼 실제 protocol suite의 계층과 OSI 책임 분류를 일대일로 맞붙이려는 순간 설명이 어긋납니다.
 
 **관찰할 것:** session ID의 생성·만료·재발급, reconnect 정책, idempotency, 중단 후 복구 지점.
 
 ## L6 Presentation: 같은 뜻을 같은 bytes로
 
-L6는 데이터 표현의 차이를 흡수한다. character encoding, serialization, compression, encryption 같은 책임이 대표적이다. UTF-8 text, JSON document, JPEG image, TLS record를 떠올리면 된다.
+L6는 데이터 표현의 차이를 흡수합니다. character encoding, serialization, compression, encryption 같은 책임이 대표적입니다. UTF-8 text, JSON document, JPEG image, TLS record를 떠올리시면 됩니다.
 
-TLS를 L6의 대표 protocol로 외우는 설명은 교육적으로는 편하지만 구현상 TLS는 application과 transport 사이에 놓이며 TCP뿐 아니라 다른 transport와 결합하기도 한다. 핵심은 번호가 아니라 **상대가 bytes를 같은 의미로 해석할 수 있게 표현하고 보호하는 책임**이다.
+TLS를 L6의 대표 protocol로 외우는 설명은 교육적으로는 편하지만, 구현상 TLS는 application과 transport 사이에 놓이며 TCP뿐 아니라 다른 transport와 결합하기도 합니다. 핵심은 번호가 아니라 **상대가 bytes를 같은 의미로 해석할 수 있게 표현하고 보호하는 책임**입니다.
 
 **관찰할 것:** charset과 content type, serialization schema/version, certificate chain, cipher negotiation, 압축 불일치.
 
 ## L7 Application: 사용자가 원하는 네트워크 기능
 
-L7은 user 또는 application에 직접 network service를 제공한다. HTTP는 resource 요청·응답, DNS는 이름과 record 조회, SMTP는 mail transfer, SSH는 secure remote login이라는 application-level 의미를 정의한다.
+L7은 user 또는 application에 직접 network service를 제공합니다. HTTP는 resource 요청·응답, DNS는 이름과 record 조회, SMTP는 mail transfer, SSH는 secure remote login이라는 application-level 의미를 정의합니다.
 
-L7 장애는 “network가 안 된다”로 보이기 쉽다. 하지만 TCP connection이 성공해도 HTTP `503`, DNS `SERVFAIL`, TLS hostname mismatch가 발생할 수 있다. 아래 계층의 전달 성공과 application 의미의 성공은 다르다.
+L7 장애는 "network가 안 된다"로 보이기 쉽습니다. 하지만 TCP connection이 성공해도 HTTP `503`, DNS `SERVFAIL`, TLS hostname mismatch가 발생할 수 있습니다. 아래 계층의 전달 성공과 application 의미의 성공은 다릅니다.
 
 **관찰할 것:** `curl -v`, DNS response code, HTTP status/header/body, application log, authentication·authorization, upstream timeout.
 
@@ -141,17 +148,19 @@ L7 장애는 “network가 안 된다”로 보이기 쉽다. 하지만 TCP conn
 | L7 Proxy/WAF(Web Application Firewall) | HTTP/TLS 등 application 의미 | TLS 종료, header 변경, authentication, caching까지 수행할 수 있다. |
 | NIC | PHY와 frame 송수신 | checksum offload, segmentation offload 때문에 capture가 wire의 모습과 다를 수 있다. |
 
-“switch는 L2, router는 L3”은 주 기능을 말하는 약칭이다. 현대 장비는 여러 계층을 동시에 처리한다. 장비 이름보다 **그 순간 어떤 header와 상태를 근거로 결정을 내리는지**를 물어야 정확하다.
+"switch는 L2, router는 L3"은 주 기능을 말하는 약칭입니다. 현대 장비는 여러 계층을 동시에 처리합니다. 장비 이름보다 **그 순간 어떤 header와 상태를 근거로 결정을 내리는지**를 물어야 정확합니다.
 
 ## 실무 워크스루: 웹사이트가 열리지 않는다
 
-계층 모델의 진짜 가치는 장애 상황에서 드러난다. “인터넷이 안 돼요”라는 한 문장 뒤에는 서로 전혀 다른 여섯 가지 실패가 숨어 있다. 무작정 application을 재시작하거나 DNS server를 8.8.8.8로 바꾸는 대신, **아래(L1)에서 위(L7)로 관찰 범위를 좁히는 triage**를 기본기로 삼자. 신호가 죽었는데 HTTP status를 들여다보는 것은 시간 낭비이기 때문이다. (경험이 쌓이면 증상·변경 이력에 따라 top-down이나 "정상이던 기준점과 비교"가 더 빠를 때도 있다. 아래 순서는 길을 잃지 않게 해 주는 학습용 기본값이다.)
+계층 모델의 진짜 가치는 장애 상황에서 드러납니다. "인터넷이 안 돼요"라는 한 문장 뒤에는 서로 전혀 다른 여섯 가지 실패가 숨어 있습니다. 무작정 application을 재시작하거나 DNS server를 8.8.8.8로 바꾸는 대신, **아래(L1)에서 위(L7)로 관찰 범위를 좁히는 triage**를 기본기로 삼으십시오. 신호가 죽었는데 HTTP status를 들여다보는 것은 시간 낭비이기 때문입니다. (경험이 쌓이면 증상·변경 이력에 따라 top-down이나 "정상이던 기준점과 비교"가 더 빠를 때도 있습니다. 아래 순서는 길을 잃지 않게 해 주는 학습용 기본값입니다.)
 
-먼저 증상을 골라 어느 계층부터 의심할지 감을 잡아 보자.
+![장애 진단은 아래(L1)에서 위(L7)로 한 계단씩 좁힌다](/images/osi-7-layers-1/triage-ladder.png)
+
+먼저 증상을 골라 어느 계층부터 의심할지 감을 잡아 보십시오.
 
 <LayerTriage client:visible />
 
-증상 버튼은 “관찰된 현상 → 의심 계층 → 확인 명령”을 한 번에 연결한다. 아래에서는 같은 흐름을 단계별로 더 깊이 따라가며, 각 단계에서 **정상/이상 출력을 어떻게 읽는지**까지 본다. (명령 예시는 Linux 기준이다 — macOS는 `ifconfig`/`route -n get`/`dscacheutil`, Windows는 `ipconfig`/`Get-NetNeighbor`/`Test-NetConnection`이 대응한다.)
+증상 버튼은 "관찰된 현상 → 의심 계층 → 확인 명령"을 한 번에 연결합니다. 아래에서는 같은 흐름을 단계별로 더 깊이 따라가며, 각 단계에서 **정상/이상 출력을 어떻게 읽는지**까지 봅니다. (명령 예시는 Linux 기준입니다 — macOS는 `ifconfig`/`route -n get`/`dscacheutil`, Windows는 `ipconfig`/`Get-NetNeighbor`/`Test-NetConnection`이 대응합니다.)
 
 ### 1. L1 — link가 살아 있는가
 
@@ -159,10 +168,10 @@ L7 장애는 “network가 안 된다”로 보이기 쉽다. 하지만 TCP conn
 ip link show dev eth0
 ```
 
-- **원리**: 신호가 매체에 실리는지부터다. carrier가 없으면 그 위의 모든 것은 의미가 없다.
-- **출력 읽기**: `state UP` + `LOWER_UP`이면 관리 상태와 carrier는 살아 있다는 뜻이다(단 이는 carrier 지표일 뿐, end-to-end 신호 품질이나 Wi-Fi 인증 성공까지 보장하진 않는다). `NO-CARRIER` 또는 `state DOWN`이면 여기서 멈춘다.
+- **원리**: 신호가 매체에 실리는지부터입니다. carrier가 없으면 그 위의 모든 것은 의미가 없습니다.
+- **출력 읽기**: `state UP` + `LOWER_UP`이면 관리 상태와 carrier는 살아 있다는 뜻입니다(단 이는 carrier 지표일 뿐, end-to-end 신호 품질이나 Wi-Fi 인증 성공까지 보장하진 않습니다). `NO-CARRIER` 또는 `state DOWN`이면 여기서 멈춥니다.
 - **흔한 문제**: 빠진 케이블, 죽은 transceiver, Wi-Fi 미연결, 가상 NIC의 host-side link down.
-- **진단·팁**: 간헐적 끊김이면 `ip -s link show dev eth0`로 `errors`·`carrier` 카운터 증가를 본다. 카운터가 계속 오르면 물리 매체(케이블·포트·광 power)를 먼저 의심하되, duplex 협상 오류나 드라이버·firmware 문제도 같은 카운터를 올릴 수 있음을 염두에 둔다.
+- **진단·팁**: 간헐적 끊김이면 `ip -s link show dev eth0`로 `errors`·`carrier` 카운터 증가를 봅니다. 카운터가 계속 오르면 물리 매체(케이블·포트·광 power)를 먼저 의심하되, duplex 협상 오류나 드라이버·firmware 문제도 같은 카운터를 올릴 수 있음을 염두에 둡니다.
 
 ### 2. L2 — 같은 link의 gateway에 닿는가
 
@@ -170,10 +179,10 @@ ip link show dev eth0
 ip neigh show
 ```
 
-- **원리**: 다른 network로 나가려면 먼저 **기본 gateway의 MAC**을 알아야 한다. 이걸 못 구하면 frame을 어디로도 못 보낸다.
-- **출력 읽기**: gateway IP 옆에 `lladdr aa:bb:cc:.. REACHABLE`이면 정상. 계속 `INCOMPLETE`/`FAILED`면 ARP(또는 IPv6 Neighbor Discovery)가 응답을 못 받는 것이다.
-- **흔한 문제**: VLAN tag 불일치, wireless client isolation, switch port 차단, gateway 자체 다운, 잘못된 subnet mask로 gateway가 “다른 네트워크”로 잡힘.
-- **진단·팁**: 이 단계에서 DNS를 바꾸는 것은 헛다리다. `ip addr`로 내 IP/prefix가 gateway와 **같은 링크(on-link)**로 잡히는지부터 확인한다. prefix가 어긋나 gateway가 "다른 네트워크"로 보이면 host는 gateway에게 ARP조차 보내지 않는다. (IPv6의 link-local gateway나 명시적 on-link route 같은 예외도 있으니 "같은 prefix"와 "on-link 도달성"을 같은 것으로 단정하진 말자.)
+- **원리**: 다른 network로 나가려면 먼저 **기본 gateway의 MAC**을 알아야 합니다. 이걸 못 구하면 frame을 어디로도 못 보냅니다.
+- **출력 읽기**: gateway IP 옆에 `lladdr aa:bb:cc:.. REACHABLE`이면 정상입니다. 계속 `INCOMPLETE`/`FAILED`면 ARP(또는 IPv6 Neighbor Discovery)가 응답을 못 받는 것입니다.
+- **흔한 문제**: VLAN tag 불일치, wireless client isolation, switch port 차단, gateway 자체 다운, 잘못된 subnet mask로 gateway가 "다른 네트워크"로 잡힘.
+- **진단·팁**: 이 단계에서 DNS를 바꾸는 것은 헛다리입니다. `ip addr`로 내 IP/prefix가 gateway와 **같은 링크(on-link)**로 잡히는지부터 확인합니다. prefix가 어긋나 gateway가 "다른 네트워크"로 보이면 host는 gateway에게 ARP조차 보내지 않습니다. (IPv6의 link-local gateway나 명시적 on-link route 같은 예외도 있으니 "같은 prefix"와 "on-link 도달성"을 같은 것으로 단정하진 마십시오.)
 
 ### 3. L3 — 주소와 route가 목적지를 향하는가
 
@@ -184,21 +193,21 @@ ping -c 3 1.1.1.1
 tracepath 1.1.1.1
 ```
 
-- **원리**: gateway까지 닿았다면, 이제 여러 network를 건너 목적지로 가는 경로가 맞는지 본다.
-- **출력 읽기**: `default via <gateway>` route가 있어야 한다. `tracepath`가 hop마다 전진하면 경로가 살아 있는 것이다. 단, 응답이 멈춘 hop이 곧 장애 지점은 아니다 — 그 router가 ICMP 응답만 제한했을 뿐 트래픽은 그 너머로 잘 갈 수도 있다. 멈춘 hop은 "장애 위치"가 아니라 "관찰의 한계"로 읽는다.
+- **원리**: gateway까지 닿았다면, 이제 여러 network를 건너 목적지로 가는 경로가 맞는지 봅니다.
+- **출력 읽기**: `default via <gateway>` route가 있어야 합니다. `tracepath`가 hop마다 전진하면 경로가 살아 있는 것입니다. 단, 응답이 멈춘 hop이 곧 장애 지점은 아닙니다 — 그 router가 ICMP 응답만 제한했을 뿐 트래픽은 그 너머로 잘 갈 수도 있습니다. 멈춘 hop은 "장애 위치"가 아니라 "관찰의 한계"로 읽습니다.
 - **흔한 문제**: default route 누락, 잘못 밀린 static route, NAT 뒤에서 source 주소가 엉킴, 비대칭 경로(나가는 길과 돌아오는 길이 달라 응답이 유실).
-- **진단·팁**: `ping` 실패만으로 “서버가 죽었다”고 단정하지 않는다. 많은 곳이 ICMP를 차단한다. route 정보와 실제 service traffic(아래 L4)으로 교차 검증한다.
+- **진단·팁**: `ping` 실패만으로 "서버가 죽었다"고 단정하지 마십시오. 많은 곳이 ICMP를 차단합니다. route 정보와 실제 service traffic(아래 L4)으로 교차 검증합니다.
 
 ### 3.5 잠깐 — 이름이 IP로 풀리는가 (DNS, 사실은 L7)
 
-`nc example.com 443`이나 `curl`은 포트에 닿기 **전에 먼저 DNS로 이름을 IP로 바꾼다**. 그래서 "L4가 안 된다"처럼 보이는 장애가 실은 이름 해석 실패인 경우가 흔하다. 둘을 분리해서 본다.
+`nc example.com 443`이나 `curl`은 포트에 닿기 **전에 먼저 DNS로 이름을 IP로 바꿉니다.** 그래서 "L4가 안 된다"처럼 보이는 장애가 실은 이름 해석 실패인 경우가 흔합니다. 둘을 분리해서 봅니다.
 
 ```bash
 dig +short example.com        # 이름 → IP (systemd 환경은 resolvectl query example.com)
 nc -vz <위에서 나온 IP> 443    # 이름 해석을 빼고 순수 L4만 검사
 ```
 
-`SERVFAIL`/`NXDOMAIN`이면 resolver·zone 쪽 application 문제이고, 이름은 잘 풀리는데 그 IP의 포트가 안 열리면 진짜 아래 L4 단계다. DNS 자체는 application protocol이지만 거의 모든 진단의 길목이라 여기서 먼저 끊고 간다.
+`SERVFAIL`/`NXDOMAIN`이면 resolver·zone 쪽 application 문제이고, 이름은 잘 풀리는데 그 IP의 포트가 안 열리면 진짜 아래 L4 단계입니다. DNS 자체는 application protocol이지만 거의 모든 진단의 길목이라 여기서 먼저 끊고 갑니다.
 
 ### 4. L4 — service port까지 connection이 서는가
 
@@ -207,12 +216,12 @@ nc -vz example.com 443
 ss -tn state syn-sent
 ```
 
-- **원리**: host까지 packet이 갔어도, 원하는 **process의 port**까지 transport가 연결돼야 통신이다.
-- **출력 읽기**: `Connected`(SYN-ACK 수신)면 포트가 열려 있다. `ss`에 `SYN-SENT`만 쌓이면 SYN을 보내고 응답을 못 받는 중이다.
+- **원리**: host까지 packet이 갔어도, 원하는 **process의 port**까지 transport가 연결돼야 통신입니다.
+- **출력 읽기**: `Connected`(SYN-ACK 수신)면 포트가 열려 있습니다. `ss`에 `SYN-SENT`만 쌓이면 SYN을 보내고 응답을 못 받는 중입니다.
 - **흔한 문제와 결정적 단서**:
-  - `Connection refused` → 어딘가에서 **명시적 거절(RST)**을 받았다. 대개는 그 port에 listen하는 process가 없는 서버지만, 방화벽의 `REJECT` 정책이나 중간 장비가 RST를 대신 쏘기도 한다. 그래도 "조용한 무응답"보다는 한참 더 진전된 신호다.
-  - `timeout`(무응답) → 어딘가에서 packet이 **조용히 사라졌다**. firewall drop이 흔한 원인이지만 routing 실패, packet loss, 서버 과부하, 돌아오는 경로(return path) 문제도 같은 증상을 낸다. 단정하지 말고 후보로 둔다.
-- **진단·팁**: `refused`와 `timeout`은 전혀 다른 이야기다. 이 둘을 구분하는 것만으로 "명시적 거절을 받았나, 아니면 어딘가에서 삼켜졌나"를 가른다 — 다음에 어디를 볼지가 갈린다.
+  - `Connection refused` → 어딘가에서 **명시적 거절(RST)**을 받았습니다. 대개는 그 port에 listen하는 process가 없는 서버지만, 방화벽의 `REJECT` 정책이나 중간 장비가 RST를 대신 쏘기도 합니다. 그래도 "조용한 무응답"보다는 한참 더 진전된 신호입니다.
+  - `timeout`(무응답) → 어딘가에서 packet이 **조용히 사라졌습니다.** firewall drop이 흔한 원인이지만 routing 실패, packet loss, 서버 과부하, 돌아오는 경로(return path) 문제도 같은 증상을 냅니다. 단정하지 말고 후보로 둡니다.
+- **진단·팁**: `refused`와 `timeout`은 전혀 다른 이야기입니다. 이 둘을 구분하는 것만으로 "명시적 거절을 받았나, 아니면 어딘가에서 삼켜졌나"를 가릅니다 — 다음에 어디를 볼지가 갈립니다.
 
 ### 5. L6~L7 — TLS와 HTTP 의미가 맞는가
 
@@ -220,77 +229,77 @@ ss -tn state syn-sent
 curl -v https://example.com/
 ```
 
-- **원리**: 여기까지 왔으면 packet은 이미 잘 오갔다. 이제 양쪽이 **bytes를 같은 의미로 해석·보호**하고, application이 기대한 응답을 주는지가 문제다.
-- **출력 읽기**: `SSL certificate verify ok` 후 `HTTP/2 200`이면 정상. 실패는 책임별로 갈린다(이 글의 주제대로 TLS는 L6/L7 경계에 걸친다 — 번호 자체에 집착할 필요는 없다).
+- **원리**: 여기까지 왔으면 packet은 이미 잘 오갔습니다. 이제 양쪽이 **bytes를 같은 의미로 해석·보호**하고, application이 기대한 응답을 주는지가 문제입니다.
+- **출력 읽기**: `SSL certificate verify ok` 후 `HTTP/2 200`이면 정상입니다. 실패는 책임별로 갈립니다(이 글의 주제대로 TLS는 L6/L7 경계에 걸칩니다 — 번호 자체에 집착할 필요는 없습니다).
   - certificate expired / unknown CA / 체인 끊김 → **데이터 표현·보호(대략 L6)**: 인증서 체인, cipher 협상, 또는 로컬 시계 문제.
-  - hostname mismatch / SNI(Server Name Indication) 불일치 → L6과 L7 사이: bytes는 보호됐지만 "이 이름이 맞나"라는 **검증 정책**은 application 쪽으로 번진다.
+  - hostname mismatch / SNI(Server Name Indication) 불일치 → L6과 L7 사이: bytes는 보호됐지만 "이 이름이 맞나"라는 **검증 정책**은 application 쪽으로 번집니다.
   - `301/302` redirect loop, `401`, `404`, `503` → **application 의미(L7)**: 라우팅·인증·upstream.
-- **진단·팁**: 인증서가 만료/미발효로 보이면 서버를 의심하기 전에 `date`로 **내 시계**를 확인한다. 시계가 틀어지면 멀쩡한 인증서도 무효로 보인다. “network 문제”라는 한마디 대신, 정확히 어느 책임의 실패인지 말할 수 있어야 한다.
+- **진단·팁**: 인증서가 만료/미발효로 보이면 서버를 의심하기 전에 `date`로 **내 시계**를 확인합니다. 시계가 틀어지면 멀쩡한 인증서도 무효로 보입니다. "network 문제"라는 한마디 대신, 정확히 어느 책임의 실패인지 말할 수 있어야 합니다.
 
 ### 또 다른 시나리오 1: ping·소량 요청은 되는데 큰 응답에서 멈춘다 (MTU/MSS 블랙홀)
 
-페이지가 “거의” 열리다 특정 시점에 멈추고, `ping`은 멀쩡하며 작은 API 호출만 성공한다면 전형적인 **MTU 블랙홀**이다.
+페이지가 "거의" 열리다 특정 시점에 멈추고, `ping`은 멀쩡하며 작은 API 호출만 성공한다면 전형적인 **MTU 블랙홀**입니다.
 
-1. **원리** — 경로 중간 링크의 MTU(Maximum Transmission Unit)가 작은데(예: VPN·PPPoE 터널로 1500 → 1400), 큰 packet에 `Don't Fragment`가 붙어 있으면 router는 그 packet을 버리고 “Fragmentation Needed” ICMP를 돌려줘야 한다. (여기서 IPv4와 IPv6가 갈린다: IPv4는 DF 비트와 경로상 fragmentation 개념이 있지만, **IPv6 router는 절대 fragment하지 않는다** — 분할이 필요하면 송신 host가 Fragment 확장 헤더를 붙여 직접 쪼개고, 중간 router는 "Packet Too Big" ICMPv6로 알릴 뿐이다. 단 IPv6는 모든 링크가 **최소 1280 byte** MTU를 보장하므로 그 이하로 쪼갤 일은 없다.)
-2. **흔한 문제** — 그 ICMP를 방화벽이 차단하면 송신 측은 줄여야 한다는 신호를 못 받는다. 그래서 작은 packet(handshake·ping)은 통과하고, 데이터가 실린 **큰 packet만 조용히 사라진다**. 연결은 성립하는데 전송이 멈추는 기묘한 증상이 된다.
-3. **진단** — packet 크기를 키워가며 어디서 끊기는지 본다(IPv4 기준. `-4`로 주소군을 고정하지 않으면 호스트가 IPv6로 풀려 header 크기가 달라진다):
+1. **원리** — 경로 중간 링크의 MTU(Maximum Transmission Unit)가 작은데(예: VPN·PPPoE 터널로 1500 → 1400), 큰 packet에 `Don't Fragment`가 붙어 있으면 router는 그 packet을 버리고 "Fragmentation Needed" ICMP를 돌려줘야 합니다. (여기서 IPv4와 IPv6가 갈립니다: IPv4는 DF 비트와 경로상 fragmentation 개념이 있지만, **IPv6 router는 절대 fragment하지 않습니다** — 분할이 필요하면 송신 host가 Fragment 확장 헤더를 붙여 직접 쪼개고, 중간 router는 "Packet Too Big" ICMPv6로 알릴 뿐입니다. 단 IPv6는 모든 링크가 **최소 1280 byte** MTU를 보장하므로 그 이하로 쪼갤 일은 없습니다.)
+2. **흔한 문제** — 그 ICMP를 방화벽이 차단하면 송신 측은 줄여야 한다는 신호를 못 받습니다. 그래서 작은 packet(handshake·ping)은 통과하고, 데이터가 실린 **큰 packet만 조용히 사라집니다.** 연결은 성립하는데 전송이 멈추는 기묘한 증상이 됩니다.
+3. **진단** — packet 크기를 키워가며 어디서 끊기는지 봅니다(IPv4 기준. `-4`로 주소군을 고정하지 않으면 호스트가 IPv6로 풀려 header 크기가 달라집니다):
    ```bash
    ping -4 -M do -s 1472 example.com   # 페이로드 1472 + IP 20 + ICMP 8 = 1500 (IPv4)
    ping -4 -M do -s 1372 example.com   # 더 작은 크기는 되는지
    tracepath example.com               # 경로상 pmtu 변화를 보여줌
    ```
-   큰 크기에서만 실패하면 MTU 문제일 가능성이 높다. 다만 rate limiting, 경로별(ECMP) 차이, 장비 정책도 크기 의존 실패를 만들 수 있으니 단정 전에 한 번 더 확인한다.
-4. **해결·팁** — 경로 MTU에 맞춰 인터페이스 MTU를 낮추거나, 라우터에서 **MSS(Maximum Segment Size) clamping**(`TCPMSS --clamp-mss-to-pmtu`)을 건다. 단 MSS clamping은 **TCP 전용**이고, PMTU 정보가 틀렸거나 경로가 비대칭이면 부정확할 수 있는 우회책이라는 점도 알아 둔다. QUIC 같은 UDP 위 transport는 ICMP에 의존하지 않고 프로브 기반 **DPLPMTUD**(RFC 8899; QUIC은 RFC 9000 §14에서 채택)로 스스로 크기를 탐색한다. 어느 쪽이든 근본 해결은 방화벽이 PMTUD용 ICMP를 통과시키게 하는 것이다 — IPv4는 **ICMP Type 3 Code 4(Fragmentation Needed)**, IPv6는 **ICMPv6 Type 2(Packet Too Big)**. 이 메시지를 막으면 ICMP 기반 Path MTU Discovery 자체가 동작하지 못한다.
+   큰 크기에서만 실패하면 MTU 문제일 가능성이 높습니다. 다만 rate limiting, 경로별(ECMP) 차이, 장비 정책도 크기 의존 실패를 만들 수 있으니 단정 전에 한 번 더 확인합니다.
+4. **해결·팁** — 경로 MTU에 맞춰 인터페이스 MTU를 낮추거나, 라우터에서 **MSS(Maximum Segment Size) clamping**(`TCPMSS --clamp-mss-to-pmtu`)을 겁니다. 단 MSS clamping은 **TCP 전용**이고, PMTU 정보가 틀렸거나 경로가 비대칭이면 부정확할 수 있는 우회책이라는 점도 알아 둡니다. QUIC 같은 UDP 위 transport는 ICMP에 의존하지 않고 프로브 기반 **DPLPMTUD**(RFC 8899; QUIC은 RFC 9000 §14에서 채택)로 스스로 크기를 탐색합니다. 어느 쪽이든 근본 해결은 방화벽이 PMTUD용 ICMP를 통과시키게 하는 것입니다 — IPv4는 **ICMP Type 3 Code 4(Fragmentation Needed)**, IPv6는 **ICMPv6 Type 2(Packet Too Big)**. 이 메시지를 막으면 ICMP 기반 Path MTU Discovery 자체가 동작하지 못합니다.
 
 ### 또 다른 시나리오 2: 특정 사이트만 인증서 오류가 난다
 
-다른 사이트는 멀쩡한데 한 도메인만 TLS에서 막힌다면 L6에 집중한다.
+다른 사이트는 멀쩡한데 한 도메인만 TLS에서 막힌다면 L6에 집중합니다.
 
-1. **원리** — 서버는 SNI로 받은 hostname에 맞는 인증서를 골라 보낸다. 클라이언트는 그 인증서의 이름·체인·유효기간을 검증한다.
+1. **원리** — 서버는 SNI로 받은 hostname에 맞는 인증서를 골라 보냅니다. 클라이언트는 그 인증서의 이름·체인·유효기간을 검증합니다.
 2. **흔한 문제** — ① SNI와 다른 인증서가 응답(가상 호스팅 설정 오류), ② 중간 CA(intermediate) 인증서 누락으로 체인이 끊김(브라우저는 캐시로 넘어가도 `curl`은 실패), ③ 클라이언트 신뢰 저장소에 없는 사설 CA.
 3. **진단**:
    ```bash
    curl -v https://target.example/ 2>&1 | grep -Ei 'subject|issuer|SSL|verify'
    openssl s_client -connect target.example:443 -servername target.example </dev/null
    ```
-   `openssl`은 서버가 실제로 내려보낸 체인 전체를 보여줘서, 체인 누락과 SNI 불일치를 가려낸다.
-4. **해결·팁** — 체인 누락이면 서버에 intermediate를 함께 설치한다. "브라우저에선 되는데 `curl`·서버 간 호출에서만 실패"하는 인증서 오류의 **흔한 원인 하나가 intermediate 누락**이다. 브라우저는 과거에 받아 둔 intermediate를 캐시하거나 AIA(Authority Information Access)로 직접 가져오는 등 검증 경로가 달라 가려지는 것이다. (물론 trust store 차이, TLS 가로채기, 시계, 지원 cipher/버전 차이도 같은 증상을 낼 수 있으니 `openssl` 출력으로 원인을 좁힌다.)
+   `openssl`은 서버가 실제로 내려보낸 체인 전체를 보여줘서, 체인 누락과 SNI 불일치를 가려냅니다.
+4. **해결·팁** — 체인 누락이면 서버에 intermediate를 함께 설치합니다. "브라우저에선 되는데 `curl`·서버 간 호출에서만 실패"하는 인증서 오류의 **흔한 원인 하나가 intermediate 누락**입니다. 브라우저는 과거에 받아 둔 intermediate를 캐시하거나 AIA(Authority Information Access)로 직접 가져오는 등 검증 경로가 달라 가려지는 것입니다. (물론 trust store 차이, TLS 가로채기, 시계, 지원 cipher/버전 차이도 같은 증상을 낼 수 있으니 `openssl` 출력으로 원인을 좁힙니다.)
 
 ### packet capture는 계층을 한 화면에 겹쳐 보여준다
 
-위 단계들이 “어느 계층이 의심되는가”를 좁힌다면, capture는 그 계층들을 한 화면에 겹쳐 **실제 bytes로** 확인시켜 준다.
+위 단계들이 "어느 계층이 의심되는가"를 좁힌다면, capture는 그 계층들을 한 화면에 겹쳐 **실제 bytes로** 확인시켜 줍니다.
 
 ```bash
 sudo tcpdump -ni any -w osi-lab.pcap 'host example.com and port 443'
 ```
 
-Wireshark로 열면 한 줄에 (Ethernet) → IP → TCP → TLS가 중첩된 구조로 보인다. 각 계층의 header를 펼치면 이 글에서 말한 캡슐화가 그림이 아니라 실제 field였음을 눈으로 확인할 수 있다. 두 가지 함정만 기억하자. 첫째, Linux에서 `-i any`로 잡으면 진짜 Ethernet header 대신 **Linux cooked capture(SLL)** 헤더가 보인다 — Ethernet frame 자체를 보려면 `-i eth0`처럼 실제 interface를 지정해야 한다. 둘째, NIC의 checksum·segmentation offload 때문에 host에서 관찰한 checksum이나 segment 크기가 실제 wire와 달라 보일 수 있다. **관찰 도구도 관찰 위치의 영향을 받는다**는 점을 잊지 말자.
+Wireshark로 열면 한 줄에 (Ethernet) → IP → TCP → TLS가 중첩된 구조로 보입니다. 각 계층의 header를 펼치면 이 글에서 말한 캡슐화가 그림이 아니라 실제 field였음을 눈으로 확인할 수 있습니다. 두 가지 함정만 기억하십시오. 첫째, Linux에서 `-i any`로 잡으면 진짜 Ethernet header 대신 **Linux cooked capture(SLL)** 헤더가 보입니다 — Ethernet frame 자체를 보려면 `-i eth0`처럼 실제 interface를 지정해야 합니다. 둘째, NIC의 checksum·segmentation offload 때문에 host에서 관찰한 checksum이나 segment 크기가 실제 wire와 달라 보일 수 있습니다. **관찰 도구도 관찰 위치의 영향을 받는다**는 점을 잊지 마십시오.
 
 ## 자주 틀리는 일곱 가지
 
-1. **“OSI 계층은 packet이 물리적으로 통과하는 일곱 개 프로그램이다.”** 참조 모델의 책임 분리다. 구현은 합쳐지거나 나뉠 수 있다.
-2. **“각 계층에는 protocol 하나만 있다.”** 계층은 책임 범위이며 여러 protocol과 기술이 함께 존재한다.
-3. **“switch는 언제나 L2, load balancer는 언제나 L4다.”** 제품명이 아니라 forwarding decision에 쓰는 정보로 판단해야 한다.
-4. **“MAC 주소는 원격 server까지 유지된다.”** routed hop마다 L2 frame과 source/destination MAC이 바뀐다.
-5. **“ping 성공이면 application도 정상이다.”** L3 reachability 일부만 확인한다. TCP, TLS, application semantics는 별도다.
-6. **“`Connection refused`나 `timeout`이나 결국 연결 안 되는 건 같다.”** 정반대 단서다. refused는 **명시적 거절(RST)**, timeout은 **조용한 무응답**을 뜻하고, "거절을 받았나, 무응답인가"가 다음에 볼 곳을 가른다(각각의 후보 원인과 해석은 위 L4 단계 진단을 참고).
-7. **“연결만 되면 packet 크기는 상관없다.”** MTU가 작은 경로에서 “Fragmentation Needed” ICMP가 차단되면 작은 packet만 통과하고 큰 packet은 사라진다(MTU 블랙홀). 연결은 서는데 전송이 멈추는 증상의 단골 원인이다.
+1. **"OSI 계층은 packet이 물리적으로 통과하는 일곱 개 프로그램이다."** 참조 모델의 책임 분리입니다. 구현은 합쳐지거나 나뉠 수 있습니다.
+2. **"각 계층에는 protocol 하나만 있다."** 계층은 책임 범위이며 여러 protocol과 기술이 함께 존재합니다.
+3. **"switch는 언제나 L2, load balancer는 언제나 L4다."** 제품명이 아니라 forwarding decision에 쓰는 정보로 판단해야 합니다.
+4. **"MAC 주소는 원격 server까지 유지된다."** routed hop마다 L2 frame과 source/destination MAC이 바뀝니다.
+5. **"ping 성공이면 application도 정상이다."** L3 reachability 일부만 확인합니다. TCP, TLS, application semantics는 별도입니다.
+6. **"`Connection refused`나 `timeout`이나 결국 연결 안 되는 건 같다."** 정반대 단서입니다. refused는 **명시적 거절(RST)**, timeout은 **조용한 무응답**을 뜻하고, "거절을 받았나, 무응답인가"가 다음에 볼 곳을 가릅니다(각각의 후보 원인과 해석은 위 L4 단계 진단을 참고하십시오).
+7. **"연결만 되면 packet 크기는 상관없다."** MTU가 작은 경로에서 "Fragmentation Needed" ICMP가 차단되면 작은 packet만 통과하고 큰 packet은 사라집니다(MTU 블랙홀). 연결은 서는데 전송이 멈추는 증상의 단골 원인입니다.
 
 ## 직접 해보기: 한 요청을 계층별로 해부한다
 
-**목표:** `curl` 한 번이 DNS, TCP, TLS, HTTP로 이어지는 증거를 직접 찾는다.
+**목표:** `curl` 한 번이 DNS, TCP, TLS, HTTP로 이어지는 증거를 직접 찾습니다.
 
-1. terminal에서 `curl -v https://example.com/`을 실행하고 DNS 결과, 연결 IP, TLS handshake, HTTP status를 기록한다.
-2. 다른 terminal에서 `sudo tcpdump -ni eth0 'host example.com or port 53'`을 실행한다. 실제 interface를 지정해야 Ethernet header까지 보이고, `port 53`을 함께 걸어야 DNS 질의도 잡힌다. domain filter는 capture 도중 재해석 문제를 만들 수 있으니 먼저 `dig`로 IP를 확인해 `host <IP>`로 거는 편이 안전하다.
-3. capture에서 TCP three-way handshake의 SYN, SYN-ACK, ACK를 찾는다. — `curl`은 기본적으로 TCP(HTTP/1.1·HTTP/2) 위로 붙으므로 handshake가 **보이는 게 정상**이다. 안 보이면 먼저 interface·filter를 의심한다(`-i any`의 cooked capture, 잘못 건 filter, CDN으로 IP가 바뀜). 일부러 `--http3`을 쓰거나 브라우저가 Alt-Svc 캐시로 HTTP/3에 붙은 경우라면 TCP 대신 **UDP/443 위 QUIC**이 보인다. 이때 TCP 3-way handshake는 없지만, QUIC은 연결 수립과 TLS 1.3 키 교환을 1-RTT(또는 0-RTT)에 묶은 **자체 handshake**를 한다 — "handshake가 없다"가 아니라 "TCP의 그것이 아니다".
-4. IP header의 TTL/Hop Limit과 TCP source/destination port를 확인한다.
-5. 같은 LAN의 gateway를 `ip neigh`로 찾아 packet의 원격 IP와 frame의 다음-hop MAC이 서로 다른 이유를 설명해 본다.
+1. terminal에서 `curl -v https://example.com/`을 실행하고 DNS 결과, 연결 IP, TLS handshake, HTTP status를 기록합니다.
+2. 다른 terminal에서 `sudo tcpdump -ni eth0 'host example.com or port 53'`을 실행합니다. 실제 interface를 지정해야 Ethernet header까지 보이고, `port 53`을 함께 걸어야 DNS 질의도 잡힙니다. domain filter는 capture 도중 재해석 문제를 만들 수 있으니 먼저 `dig`로 IP를 확인해 `host <IP>`로 거는 편이 안전합니다.
+3. capture에서 TCP three-way handshake의 SYN, SYN-ACK, ACK를 찾습니다. — `curl`은 기본적으로 TCP(HTTP/1.1·HTTP/2) 위로 붙으므로 handshake가 **보이는 게 정상**입니다. 안 보이면 먼저 interface·filter를 의심합니다(`-i any`의 cooked capture, 잘못 건 filter, CDN으로 IP가 바뀜). 일부러 `--http3`을 쓰거나 브라우저가 Alt-Svc 캐시로 HTTP/3에 붙은 경우라면 TCP 대신 **UDP/443 위 QUIC**이 보입니다. 이때 TCP 3-way handshake는 없지만, QUIC은 연결 수립과 TLS 1.3 키 교환을 1-RTT(또는 0-RTT)에 묶은 **자체 handshake**를 합니다 — "handshake가 없다"가 아니라 "TCP의 그것이 아니다"입니다.
+4. IP header의 TTL/Hop Limit과 TCP source/destination port를 확인합니다.
+5. 같은 LAN의 gateway를 `ip neigh`로 찾아 packet의 원격 IP와 frame의 다음-hop MAC이 서로 다른 이유를 설명해 봅니다.
 
-성공 기준은 명령을 실행한 것이 아니다. **하나의 application 요청에서 계층마다 다른 identifier와 상태를 짚어낼 수 있으면** 성공이다.
+성공 기준은 명령을 실행한 것이 아닙니다. **하나의 application 요청에서 계층마다 다른 identifier와 상태를 짚어낼 수 있으면** 성공입니다.
 
 ## 마무리: 번호보다 질문을 기억하라
 
-OSI 7계층을 이해했다는 것은 “Please Do Not Throw Sausage Pizza Away” 같은 암기 문장을 기억한다는 뜻이 아니다. 다음 질문을 순서 있게 던질 수 있다는 뜻이다.
+OSI 7계층을 이해했다는 것은 "Please Do Not Throw Sausage Pizza Away" 같은 암기 문장을 기억한다는 뜻이 아닙니다. 다음 질문을 순서 있게 던질 수 있다는 뜻입니다.
 
 - signal과 link는 살아 있는가?
 - 같은 link의 next hop까지 frame이 가는가?
@@ -299,7 +308,9 @@ OSI 7계층을 이해했다는 것은 “Please Do Not Throw Sausage Pizza Away�
 - session과 data representation이 양쪽에서 합의됐는가?
 - application protocol이 기대한 의미로 응답하는가?
 
-계층은 현실을 완벽히 자르는 칼이 아니다. 복잡한 현실을 디버깅 가능한 크기로 나누는 지도다. 이 글은 전체 지도를 그렸을 뿐이다 — switch 학습과 flooding, IP 라우팅과 ICMP, TCP 연결 수립/종료, TLS 1.3·QUIC·DNS·HTTP/2의 깊은 동작은 시리즈 뒤편에서 한 계층씩 해부한다. 다음 편에서는 L1과 L2를 묶어 Ethernet frame, switch 학습, VLAN, ARP/Neighbor Discovery가 한 LAN에서 어떻게 맞물리는지 packet 단위로 본다.
+계층은 현실을 완벽히 자르는 칼이 아닙니다. 복잡한 현실을 디버깅 가능한 크기로 나누는 지도입니다. 그러니 다음에 "인터넷이 안 돼요"를 만나면, 증상을 한 덩어리로 보지 마시고 이 사다리의 어느 칸인지부터 가르십시오. 진단의 절반은 거기서 끝납니다.
+
+이 글은 전체 지도를 그렸을 뿐입니다 — switch 학습과 flooding, IP 라우팅과 ICMP, TCP 연결 수립/종료, TLS 1.3·QUIC·DNS·HTTP/2의 깊은 동작은 시리즈 뒤편에서 한 계층씩 해부합니다. 다음 편에서는 L1과 L2를 묶어 Ethernet frame, switch 학습, VLAN, ARP/Neighbor Discovery가 한 LAN에서 어떻게 맞물리는지 packet 단위로 보겠습니다.
 
 ## 근거와 더 읽을 거리
 
@@ -308,7 +319,7 @@ OSI 7계층을 이해했다는 것은 “Please Do Not Throw Sausage Pizza Away�
 - [RFC 8200, Internet Protocol Version 6](https://www.rfc-editor.org/rfc/rfc8200) — IPv6 packet, router, link, upper layer, Next Header의 규범적 정의.
 - [IEEE 802.3-2018 overview](https://standards.ieee.org/standard/802_3-2018.html) — Ethernet MAC/PHY 표준 범위와 Physical Layer 설명.
 - [RFC 9293, Transmission Control Protocol](https://www.rfc-editor.org/rfc/rfc9293) — 현재 TCP 핵심 명세.
-- [RFC 1191, Path MTU Discovery](https://www.rfc-editor.org/rfc/rfc1191) / [RFC 8201, Path MTU Discovery for IPv6](https://www.rfc-editor.org/rfc/rfc8201) — MTU 블랙홀과 “Fragmentation Needed”/“Packet Too Big” ICMP의 근거.
+- [RFC 1191, Path MTU Discovery](https://www.rfc-editor.org/rfc/rfc1191) / [RFC 8201, Path MTU Discovery for IPv6](https://www.rfc-editor.org/rfc/rfc8201) — MTU 블랙홀과 "Fragmentation Needed"/"Packet Too Big" ICMP의 근거.
 - [RFC 6066, TLS Extensions (Server Name Indication)](https://www.rfc-editor.org/rfc/rfc6066) — SNI 기반 인증서 선택의 표준 근거.
 - [RFC 8446, TLS 1.3](https://www.rfc-editor.org/rfc/rfc8446) — 현재 TLS 핵심 명세(키 합의·peer 인증·무결성·ALPN).
 - [RFC 9000, QUIC](https://www.rfc-editor.org/rfc/rfc9000) / [RFC 9001, Using TLS to Secure QUIC](https://www.rfc-editor.org/rfc/rfc9001) / [RFC 9114, HTTP/3](https://www.rfc-editor.org/rfc/rfc9114) — UDP 위 QUIC 자체 handshake와 HTTP/3 경로의 근거.

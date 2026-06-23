@@ -21,7 +21,7 @@ const STAGES: Stage[] = [
     title: "이름을 IP로",
     produces: "www.example.com → 93.184.216.34",
     part: "6편 (이 글)",
-    note: "주소를 모르면 아무 데도 못 간다. 가장 먼저 일어나는 L7 동작.",
+    note: "주소를 모르면 아무 데도 못 갑니다. 가장 먼저 일어나는 L7 동작입니다.",
   },
   {
     layer: "L4",
@@ -29,7 +29,7 @@ const STAGES: Stage[] = [
     title: "연결 수립 (3-way handshake)",
     produces: "SYN → SYN-ACK → ACK, 포트 443 연결",
     part: "4편",
-    note: "그 IP의 443 포트까지 신뢰할 수 있는 byte stream을 연다.",
+    note: "그 IP의 443 포트까지 신뢰할 수 있는 byte stream을 엽니다.",
   },
   {
     layer: "L6",
@@ -37,7 +37,7 @@ const STAGES: Stage[] = [
     title: "보안 채널 수립",
     produces: "ECDHE 키 합의 + 인증서 검증 → 암호화 채널",
     part: "5편",
-    note: "이제부터 오가는 모든 byte는 기밀·무결·인증된다.",
+    note: "이제부터 오가는 모든 byte는 기밀·무결·인증됩니다.",
   },
   {
     layer: "L7",
@@ -45,7 +45,7 @@ const STAGES: Stage[] = [
     title: "요청 전송",
     produces: "GET /  (HTTP/2면 :method=GET, :path=/ 의사헤더)",
     part: "6편 (이 글)",
-    note: "비로소 '내가 원하는 것'을 말한다. 여기까지가 다 이 한마디를 위한 준비였다.",
+    note: "비로소 '내가 원하는 것'을 말합니다. 여기까지가 다 이 한마디를 위한 준비였습니다.",
   },
   {
     layer: "L7",
@@ -53,7 +53,7 @@ const STAGES: Stage[] = [
     title: "응답 수신",
     produces: "200 OK + 헤더 + 본문(HTML)",
     part: "6편 (이 글)",
-    note: "전달의 성공(2xx)과 의미의 성공은 다르다. 503이면 다 와도 실패다.",
+    note: "전달의 성공(2xx)과 의미의 성공은 다릅니다. 503이면 다 와도 실패입니다.",
   },
 ];
 
