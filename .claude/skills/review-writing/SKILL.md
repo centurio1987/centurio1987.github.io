@@ -45,7 +45,8 @@ tech-deepdive → review-post(미시) → [review-writing: 채점→보완→재
 
 ### 2. 채점 (1라운드)
 `assets/WRITING_CHECKLIST.md`의 P(설득)·C(개연)·G(문법 게이트선)·S(구조)·V(문체) 항목을 순서대로 평가한다.
-- 각 항목: **충족 / 미흡 / 해당없음** + **본문 인용 근거**(인용 못 하면 미흡). 문체(V)는 `_shared/STYLE_GUIDE.md`와 대조.
+- 각 항목: **충족 / 미흡 / 해당없음** + **본문 인용 근거**(인용 못 하면 미흡). 문체(V)는 `_shared/STYLE_GUIDE.md`와 대조하고,
+  V5·V6(자연스러운 한국어·영어투)은 `_shared/NATURAL_KOREAN_GUIDE.md`의 안티패턴 카탈로그·자가점검(§A·§C)으로 본문을 훑어 판정한다.
 - 좋은 사례 기준이 필요하면 `assets/WORMWLRM_NOTES.md`를 참조(P2/P3/S2/S3/S4).
 - 판정 규칙(체크리스트와 동일):
   > **PASS** = MUST 전부 충족 · SHOULD 미흡 ≤ 2 · IF-APPLICABLE은 충족 또는 정당한 생략 메모. 그 외 **FAIL**.
@@ -85,6 +86,7 @@ PASS면 다음 단계(`quality-gate`)를 안내한다.
 - `assets/WRITING_CHECKLIST.md` — 설득/개연/문법선/구조/문체 루브릭(MUST/SHOULD/IF-APPLICABLE, PASS/FAIL).
 - `assets/WORMWLRM_NOTES.md` — wormwlrm 3편 스냅샷(좋은 사례 근거).
 - `../_shared/STYLE_GUIDE.md` — 내 문체 기준(V 항목 대조용). **집필(tech-deepdive)과 공유.**
+- `../_shared/NATURAL_KOREAN_GUIDE.md` — 영어투 교정·수사 팔레트(V5·V6 채점 근거). **집필(tech-deepdive)과 공유.**
 
 ## 주의
 - **판정 근거는 본문 인용**. 추측으로 충족 처리하지 않는다.

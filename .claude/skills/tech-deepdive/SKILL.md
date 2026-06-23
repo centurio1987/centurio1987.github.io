@@ -44,6 +44,7 @@ research → ~/blog-research/wiki/angles/<slug>.md   (자료 수집·ingest 완�
   여러 각도로 비춘다(자세한 메뉴는 `assets/SECTION_PATTERNS.md`).
 - **한국어 본문 + 기술 용어 원어**(TCP, MTU, ARP 등은 원어 유지).
 - **내 문체.** `../_shared/STYLE_GUIDE.md`를 따른다 — Part 1(샘플 추출 문체 사실)은 절대 기준, Part 2(일반 글쓰기 규칙)도 준수. 거시 검토(`review-writing`)가 이 가이드로 문체 일치를 채점한다.
+- **자연스러운 한국어.** `../_shared/NATURAL_KOREAN_GUIDE.md`를 따른다 — 번역기에서 갓 뽑은 듯한 영어투(`X라는 신화`=the myth of, `비싼 오해`=costly misconception, 무생물 주어·가주어·이중 피동·`~에 대하여`/`~을 통해` 남발)를 쓰지 않고, 그 뜻을 **한국어 화자라면 어떻게 말할지로 다시 쓴다.** 레지스터(서정/일상/정론)를 의식해 고른다. 검토(`review-writing`)가 이 가이드로 채점한다.
 
 ## 동작 순서
 
@@ -107,6 +108,7 @@ bash .claude/skills/tech-deepdive/scripts/review-article.sh "draft/<stem>.mdx"
 - `assets/ARTICLE_TEMPLATE.mdx` — 심층 글 섹션 스켈레톤
 - `assets/SECTION_PATTERNS.md` — 섹션 유형별 작성 메뉴(목적·필수요소·좋은예/나쁜예) = ORDER 다관점 체크리스트
 - `../_shared/STYLE_GUIDE.md` — 내 문체 가이드(집필 기준, `review-writing`과 공유)
+- `../_shared/NATURAL_KOREAN_GUIDE.md` — 영어투 교정 + 수사 팔레트(자연스러운 한국어, `review-writing`과 공유)
 - `../react-sim/assets/REACT_SIM_GUIDE.md` — React 시뮬레이션 규약(`react-sim` 스킬이 소유, 집필은 명세만 남기고 위탁)
 - `../make-image/assets/IMAGE_GUIDE.md` — 구조형 이미지 규격(`make-image` 스킬이 소유, 집필은 ```figure``` 명세만 남기고 위탁)
 - `scripts/review-article.sh` — codex/agy 외부 검토(누락·모순·사실성)

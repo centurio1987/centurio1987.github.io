@@ -96,15 +96,40 @@ For requests that explicitly ask to write a technical article and publish it end
 `tech-article-publisher` subagent. It orchestrates the project-local skills in this order:
 
 ```text
-tech-deepdive -> review-post -> quality-gate -> post-finalize -> publish-post
+research -> tech-deepdive -> review-post -> review-writing -> quality-gate
+  -> post-finalize -> publish-post -> ship-post
 ```
 
 - Do not use the orchestrator for draft-only, review-only, finalize-only, or publish-only requests.
-- Respect every gate: external review, agreed critical review fixes, quality-gate `PASS`, and explicit
-  user approval immediately before publishing.
-- If the quality gate still fails after three rounds, stop publication and report the remaining gaps.
+- Ask once whether to run automatically or gate each stage. In automatic mode, that choice also approves
+  publication and push, but it never bypasses writing-quality or technical-quality gates.
+- Use `research-gatherer` for source collection and wiki ingest unless the subject is a pure tutorial or
+  personal retrospective where external research adds no value.
+- Respect every gate: external review status, agreed critical review fixes, `review-writing` `PASS`,
+  `quality-gate` `PASS`, and explicit publication approval in interactive mode.
+- If either quality gate still fails after three rounds, stop publication and report the remaining gaps.
+- Delegate React simulations to `react-sim-builder`, structured information graphics to `image-maker`,
+  and guarded commits/pushes to `git-shipper`. Never push directly or use `--force`.
 - For a series, complete one article per pipeline run and ask before starting the next article.
 - When interrupted, report the draft path and the last completed gate so the workflow can resume.
+
+### Migrated Claude Agent Roles
+
+The Claude role definitions under `.claude/agents/` map to these Codex responsibilities:
+
+- `tech-article-publisher`: orchestrate research, writing, reviews, publication, verification, and push.
+- `research-gatherer`: collect cited sources, persist immutable research, and produce an angle page.
+- `post-reviewer`: perform the four-axis sentence-level Korean review and apply only unambiguous fixes.
+- `writing-reviewer`: judge persuasion, logic, structure, and house style without changing technical facts.
+- `quality-gate-checker`: enforce technical depth, completeness, multiple perspectives, accuracy, and build checks.
+- `react-sim-builder`: create co-located React simulations and verify type-check/build results.
+- `image-maker`: render fenced `figure` specifications into structured information images.
+- `git-shipper`: invoke only `scripts/git-commit-push.sh` with explicit paths and report its result.
+
+Claude `sonnet`, `haiku`, and `inherit` model labels are role hints, not valid Codex model identifiers.
+Codex agent configuration must inherit the active OpenAI model unless the user explicitly selects a valid
+OpenAI model. Claude tool allowlists are likewise behavioral constraints to preserve in agent instructions,
+not keys to copy verbatim into Codex configuration.
 
 ## Notes
 

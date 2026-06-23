@@ -83,34 +83,33 @@
 - 지시 (원문 요지):
 
   > ① 집필 전 **자료 수집 단계** 추가 — (1) 내 글 3개로 문체 스타일 가이드 1차 생성(말투·끝맺음·호흡,
-  >   자주 쓰는 표현, 도입/마무리 패턴, 기타 특징) → 품질 게이트웨이(설득력·호소력/개연성/문법·맞춤법/
-  >   글 구조[PREP·3WR·4MAT·서사] + wormwlrm 3편 좋은 사례)용 체크리스트 작성 → 게이트로 스타일 가이드 강화.
-  >   (2) 자료 수집을 skill로 정의(문체 가이드와 무관, 리서치 가이드 참조), sonnet subagent 위탁.
+  > 자주 쓰는 표현, 도입/마무리 패턴, 기타 특징) → 품질 게이트웨이(설득력·호소력/개연성/문법·맞춤법/
+  > 글 구조[PREP·3WR·4MAT·서사] + wormwlrm 3편 좋은 사례)용 체크리스트 작성 → 게이트로 스타일 가이드 강화.
+  > (2) 자료 수집을 skill로 정의(문체 가이드와 무관, 리서치 가이드 참조), sonnet subagent 위탁.
   > ② 내가 쓴 글을 위 체크리스트로 **검토하는 스킬** 별도 제작.
   > ③ **리서치 스킬 + 리서치 가이드**(웹검색·최신 우선·신뢰 소스 5+·충실 정리·소주제 섹션·소스 URL 목록;
-  >   출처없음/광고/추측 금지, 충돌 양쪽 기록). 세부 절차: 수집→`~/blog-research/raws` 저장 → wiki ingest →
-  >   commit&push(haiku subagent).
+  > 출처없음/광고/추측 금지, 충돌 양쪽 기록). 세부 절차: 수집→`~/blog-research/raws` 저장 → wiki ingest →
+  > commit&push(haiku subagent).
   > ④ 집필 과정의 **react 다이어그램 생성은 별도 스킬**로 분리, sonnet subagent 위탁.
   > ⑤ 집필 과정에 **이미지 생성 단계** 추가 — 이미지 가이드(HTML+CSS→Playwright PNG; 본문 4종 비교표/
-  >   단계 다이어그램/핵심 포인트 카드/인용·강조 박스; 대표 1080² 블루-퍼플 그라데이션) + 참조 스킬, sonnet subagent 위탁.
+  > 단계 다이어그램/핵심 포인트 카드/인용·강조 박스; 대표 1080² 블루-퍼플 그라데이션) + 참조 스킬, sonnet subagent 위탁.
   > ⑥ workflow 마지막에 **마무리 스킬**(완성 포스트 배포 → commit&push), haiku subagent 위탁.
 
 - 결과 (산출물은 `.claude/`가 소스 오브 트루스):
-
   - **새 가이드/문서**
     - `.claude/skills/_shared/STYLE_GUIDE.md` — 내 글 3개에서 문체 추출. Part 1(샘플 추출 문체 사실 F1~F6, 근거 인용·보존)
-      + Part 2(일반 글쓰기 규칙 R1~R8). 품질 체크리스트로 Part 2만 1회 강화(Part 1 보존). 집필·검토 둘 다 참조.
+      - Part 2(일반 글쓰기 규칙 R1~R8). 품질 체크리스트로 Part 2만 1회 강화(Part 1 보존). 집필·검토 둘 다 참조.
     - `.claude/skills/review-writing/assets/WRITING_CHECKLIST.md` — 설득력(P)·개연성(C)·문법게이트선(G)·글구조(S)·문체(V)
       루브릭, MUST/SHOULD/IF-APPLICABLE, PASS/FAIL. + `WORMWLRM_NOTES.md`(wormwlrm 3편 스냅샷, 조회일 2026-06-22).
     - `.claude/skills/research/assets/RESEARCH_GUIDE.md` — 웹 수집 규칙(최신성·신뢰 소스 5+·주장↔출처 매핑·금지·산출물 형식).
       ingest/wiki 규약은 `~/blog-research/CLAUDE.md`(LLM Wiki 스키마)에 위임.
     - `.claude/skills/make-image/assets/IMAGE_GUIDE.md` — 구조형 이미지(HTML+CSS→**Node/TS Playwright** PNG; Python 폐기),
-      본문 4종 + 대표 1080² 규격, ```figure``` 명세 마커, 로컬 Pretendard + `document.fonts.ready`.
+      본문 4종 + 대표 1080² 규격, `figure` 명세 마커, 로컬 Pretendard + `document.fonts.ready`.
     - `.claude/skills/react-sim/assets/REACT_SIM_GUIDE.md` — tech-deepdive에서 **이전**(react-sim 소유). 조기 `tsc --noEmit` 추가.
 
   - **새 스킬(SKILL.md, 입출력 계약 명시)**: `research`(웹수집→raws 불변저장→wiki ingest→git-shipper push, 출력=angle 경로,
     조건부 skip) · `review-writing`(WRITING_CHECKLIST 채점·보완 루프, 문체 일치) · `react-sim`(시뮬 명세→co-located `.tsx`+import,
-    즉시 `tsc --noEmit`) · `make-image`(```figure```→render-image.ts→`public/images/<slug>/`→`![alt]` 치환, hard fail·멱등) ·
+    즉시 `tsc --noEmit`) · `make-image`(`figure`→render-image.ts→`public/images/<slug>/`→`![alt]` 치환, hard fail·멱등) ·
     `ship-post`(최종 build 재검증 → git-shipper로 블로그 레포 commit&push).
 
   - **새 서브에이전트(`.claude/agents/`)**: `research-gatherer`(sonnet) · `writing-reviewer`(sonnet) · `react-sim-builder`(sonnet) ·
@@ -123,7 +122,7 @@
   - **기존 파일 수정**: `tech-article-publisher.md` 파이프라인 재배선
     (`research → tech-deepdive(+react-sim/make-image 위탁) → review-post → review-writing → quality-gate → post-finalize → publish-post → ship-post`),
     게이트 D(기술)·E(글쓰기)·입출력 계약·FAIL 흐름·멱등성·리뷰 3단계 책임 경계·push 가드 명문화.
-    `tech-deepdive/SKILL.md`(입력=angle, STYLE_GUIDE 참조, 시뮬/이미지 위탁, ```figure``` 마커) ·
+    `tech-deepdive/SKILL.md`(입력=angle, STYLE_GUIDE 참조, 시뮬/이미지 위탁, `figure` 마커) ·
     `post-finalize/SKILL.md`(`[[[…]]]`=개념·은유 전용, 구조형은 make-image 경계). `tech-deepdive/assets/REACT_SIM_GUIDE.md` 삭제(이전).
 
   - **검증**: `bun run build` 통과(34 페이지, 회귀 없음). render-image 5종(hero+본문4종) 렌더·폰트 육안 확인 후 정리.
@@ -134,3 +133,30 @@
 
   - 계획: `~/.claude/plans/stateful-discovering-fairy.md`(codex/agy 외부검토 반영본).
   <!-- /ORDER:COMMITTED id=ORD-003 -->
+
+<!-- ORDER:COMMITTED id=ORD-004 status=done committed=2026-06-23 -->
+<!-- 봉인 구획: 편집 금지. 철회하려면 신규 지시에 reverts=ORD-004 항목을 추가하세요. -->
+
+### ORD-004 — 자연스러운 한국어 가이드 + 집필/검토 연결
+
+- 지시 (원문):
+
+  > 글을 집필할 때는 자연스러운 한국어를 써야 한다. 예를 들면, "서버 없는 P2P”라는 신화", "비싼 오해" 등의 표현은 영어적 표현에 가깝다. 집필 시, 자연스러운 한국어를 쓰기 위해 다음과 같은 절차를 진행한다.
+  >
+  > 1. "~/blog-research/wiki"에서 자연스러운 한국어를 파악한다.
+  > 2. 자연스러운 수사와 표현을 가이드로 작성한다.
+  > 3. 이후, 집필 agent는 자연스러운 한국어 가이드를 참고한다.
+  > 4. 품질 게이트웨이는 자연스러운 한국어에 대한 체크리스트를 확보하고 검토에 적용한다.
+
+- 결과:
+  - **새 가이드 `.claude/skills/_shared/NATURAL_KOREAN_GUIDE.md`** — 집필·검토 공용(STYLE_GUIDE와 나란히).
+    - Part A: 영어투 안티패턴 카탈로그(A1 직역 비유 `X라는 신화`/`비싼 오해` → 토착 표현, A2 무생물 주어, A3 가주어,
+      A4 명사화, A5 이중 피동, A6 전치사 직역, A7 filler, A8 `들`/`하나의`, A9 `당신`). Part B: 수사 팔레트(서정/일상/정론
+      레지스터, wiki 근거). Part C: 자가 점검 10항(검색용). 근거: `~/blog-research/wiki/{topics/korean-writing-styles,
+      angles/natural-korean-writing}`, raws/003. 동기 사례: `webrtc-1.mdx` 초판 직역 표현.
+  - **집필 연결** — `tech-deepdive/SKILL.md`: ORDER 원칙에 "자연스러운 한국어" 항목 추가 + 참조 파일에 가이드 등재.
+  - **품질 게이트웨이 연결** — `review-writing`: `WRITING_CHECKLIST.md` V 섹션에 **V5(직역 비유 없음, MUST)** ·
+    **V6(영어 문장구조·레지스터 정합, SHOULD)** 추가. `SKILL.md` 채점 절차·참조 파일에 가이드 등재(V5·V6은 §A·§C로 본문 검색 판정).
+  - 범위: 가이드 신설 + 스킬 연결까지. `webrtc-1.mdx`의 기존 직역 표현 교정은 별도(이 가이드를 적용해 후속 처리 가능).
+  - 미적용: `.codex`/`AGENTS.md` 미러(ORD-003과 동일 사유 — `.claude`가 소스 오브 트루스).
+  <!-- /ORDER:COMMITTED id=ORD-004 -->
