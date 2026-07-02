@@ -16,6 +16,7 @@ export interface GraphViewPost {
   title: string;
   categoryLabel: string;
   color: string;
+  tags: string[];
 }
 export interface GraphViewConcept {
   id: string;
@@ -148,6 +149,98 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
   const [selected, setSelected] = useState<string | null>(null);
   const active = hovered ?? selected;
 
+  // ── 필터: 태그 토글(OR) × 키워드 검색(교집합) ──
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState("");
+
+  const [tagsExpanded, setTagsExpanded] = useState(false);
+
+  const allTags = useMemo(() => {
+    const freq = new Map<string, number>();
+    for (const p of data.posts)
+      for (const t of p.tags) freq.set(t, (freq.get(t) ?? 0) + 1);
+    // localeCompare는 서버/브라우저 collation이 달라 hydration mismatch를 낸다 — 코드포인트 비교 고정
+    return [...freq.entries()]
+      .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
+      .map(([t]) => t);
+  }, [data.posts]);
+
+  const TAG_PREVIEW = 14;
+  const shownTags =
+    tagsExpanded || allTags.length <= TAG_PREVIEW
+      ? allTags
+      : allTags.slice(0, TAG_PREVIEW).concat([...selectedTags].filter((t) => !allTags.slice(0, TAG_PREVIEW).includes(t)));
+
+  const visibleIds = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const noFilter = selectedTags.size === 0 && q === "";
+    if (noFilter) return null; // null = 전체 표시
+
+    // 1) 태그 필터 통과한 글
+    const tagPosts = data.posts.filter(
+      (p) => selectedTags.size === 0 || p.tags.some((t) => selectedTags.has(t)),
+    );
+    const tagSlugs = new Set(tagPosts.map((p) => p.slug));
+
+    // 2) 키워드: 글(제목·태그) 또는 개념(라벨) 매칭 + 소속 맥락 유지
+    const ids = new Set<string>();
+    if (q === "") {
+      for (const p of tagPosts) ids.add(`post:${p.slug}`);
+      for (const c of data.concepts)
+        if (c.postSlug && tagSlugs.has(c.postSlug)) ids.add(c.id);
+    } else {
+      const matchedPosts = tagPosts.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.tags.some((t) => t.toLowerCase().includes(q)),
+      );
+      const matchedConcepts = data.concepts.filter(
+        (c) =>
+          (c.postSlug === null || tagSlugs.has(c.postSlug)) &&
+          c.label.toLowerCase().includes(q),
+      );
+      for (const p of matchedPosts) ids.add(`post:${p.slug}`);
+      for (const c of matchedConcepts) {
+        ids.add(c.id);
+        if (c.postSlug) ids.add(`post:${c.postSlug}`); // 매칭 개념의 소속 글
+      }
+      const matchedSlugs = new Set(matchedPosts.map((p) => p.slug));
+      for (const c of data.concepts)
+        if (c.postSlug && matchedSlugs.has(c.postSlug)) ids.add(c.id); // 매칭 글의 개념들
+    }
+    return ids;
+  }, [data, selectedTags, query]);
+
+  const filterActive = visibleIds !== null;
+  const isVisible = (id: string) => visibleIds === null || visibleIds.has(id);
+
+  function toggleTag(tag: string) {
+    setSelectedTags((prev) => {
+      const next = new Set(prev);
+      next.has(tag) ? next.delete(tag) : next.add(tag);
+      return next;
+    });
+    setSelected(null);
+    setHovered(null);
+  }
+  function resetFilters() {
+    setSelectedTags(new Set());
+    setQuery("");
+    setSelected(null);
+    setHovered(null);
+  }
+
+  const visibleCounts = useMemo(() => {
+    let posts = 0;
+    let concepts = 0;
+    for (const n of nodes) {
+      if (!isVisible(n.id)) continue;
+      if (n.kind === "post") posts++;
+      else concepts++;
+    }
+    return { posts, concepts };
+  }, [nodes, visibleIds]);
+
   // 하이라이트 집합: 활성 노드 + 이웃 + 그 사이 엣지
   const { litNodes, litLinks } = useMemo(() => {
     if (!active) return { litNodes: null, litLinks: null };
@@ -190,6 +283,50 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
 
   return (
     <div className="graph-explorer">
+      <div className="graph-toolbar">
+        <input
+          type="search"
+          className="graph-search"
+          placeholder="키워드로 찾기 (제목·태그·개념)"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setSelected(null);
+            setHovered(null);
+          }}
+          aria-label="글·개념 키워드 검색"
+        />
+        {filterActive && (
+          <span className="graph-count">
+            글 {visibleCounts.posts} · 개념 {visibleCounts.concepts}
+            <button type="button" className="graph-reset" onClick={resetFilters}>
+              초기화 ×
+            </button>
+          </span>
+        )}
+      </div>
+      <div className="graph-tags">
+        {shownTags.map((t) => (
+          <button
+            type="button"
+            key={t}
+            className={`tag-chip${selectedTags.has(t) ? " on" : ""}`}
+            onClick={() => toggleTag(t)}
+            aria-pressed={selectedTags.has(t)}
+          >
+            {t}
+          </button>
+        ))}
+        {allTags.length > TAG_PREVIEW && (
+          <button
+            type="button"
+            className="tag-chip tag-more"
+            onClick={() => setTagsExpanded((v) => !v)}
+          >
+            {tagsExpanded ? "접기 ↑" : `+${allTags.length - TAG_PREVIEW} 더 보기`}
+          </button>
+        )}
+      </div>
       <div className="graph-legend" aria-hidden="true">
         {data.legend.map((l) => (
           <span key={l.label} className="legend-chip">
@@ -198,6 +335,9 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           </span>
         ))}
       </div>
+      {filterActive && visibleCounts.posts + visibleCounts.concepts === 0 && (
+        <p className="graph-empty">일치하는 글·개념이 없어요. 다른 키워드나 태그를 시도해 보세요.</p>
+      )}
       <svg
         viewBox={`0 0 ${W} ${H}`}
         role="img"
@@ -211,6 +351,7 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
             const s = l.source as SimNode;
             const t = l.target as SimNode;
             if (s.x == null || t.x == null) return null;
+            if (!isVisible(s.id) || !isVisible(t.id)) return null;
             const lit = litLinks ? litLinks.has(l) : true;
             return (
               <line
@@ -233,9 +374,11 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
         <g>
           {nodes.map((n) => {
             if (n.x == null) return null;
+            if (!isVisible(n.id)) return null;
             const lit = litNodes ? litNodes.has(n.id) : true;
             const showLabel =
               n.kind === "post" ||
+              filterActive || // 필터로 추려진 상태에선 개념 라벨을 모두 노출
               (litNodes ? litNodes.has(n.id) : n.r - 6 >= Math.min(labelThreshold, 8));
             return (
               <g
@@ -279,6 +422,86 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           background: var(--surface);
           border: 1.5px solid var(--border);
           border-radius: var(--card-radius, 12px);
+        }
+        .graph-toolbar {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex-wrap: wrap;
+          margin-bottom: 10px;
+        }
+        .graph-search {
+          flex: 1 1 240px;
+          max-width: 340px;
+          font: inherit;
+          font-size: 14px;
+          color: var(--ink);
+          padding: 8px 14px;
+          background: var(--surface);
+          border: 1.5px solid var(--border);
+          border-radius: 999px;
+          outline: none;
+          transition: border-color var(--dur) var(--ease);
+        }
+        .graph-search:focus {
+          border-color: var(--accent);
+        }
+        .graph-count {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 13px;
+          color: var(--ink-2);
+        }
+        .graph-reset {
+          font: inherit;
+          font-size: 12px;
+          color: var(--ink-2);
+          padding: 3px 10px;
+          border: 1px dashed var(--border);
+          border-radius: 999px;
+          background: var(--surface);
+          cursor: pointer;
+          transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+        }
+        .graph-reset:hover {
+          color: var(--accent);
+          border-color: var(--accent);
+        }
+        .graph-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          margin-bottom: 10px;
+        }
+        .tag-chip {
+          font: inherit;
+          font-size: 12px;
+          color: var(--ink-2);
+          padding: 3px 11px;
+          border: 1px dashed var(--border);
+          border-radius: 999px;
+          background: var(--surface);
+          cursor: pointer;
+          transition: all var(--dur) var(--ease);
+        }
+        .tag-chip:hover {
+          color: var(--ink);
+          border-color: var(--ink-3);
+        }
+        .tag-chip.on {
+          color: var(--accent);
+          border: 1.5px solid var(--accent);
+          background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+        }
+        .tag-more {
+          color: var(--ink-3);
+          border-style: solid;
+        }
+        .graph-empty {
+          margin: 0 0 10px;
+          font-size: 14px;
+          color: var(--ink-3);
         }
         .graph-legend {
           display: flex;
