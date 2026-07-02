@@ -1,9 +1,11 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import CategoryBadge from "../components/CategoryBadge.astro";
+import RelatedPosts from "../components/RelatedPosts.astro";
 import Squiggle from "../components/motifs/Squiggle.astro";
 import { formatDate, readingTime } from "../lib/format";
-import type { CollectionEntry } from "astro:content";
+import { getRelatedPosts } from "../lib/related";
+import { getCollection, type CollectionEntry } from "astro:content";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -11,6 +13,8 @@ interface Props {
 const { post } = Astro.props;
 const { title, description, pubDate, updatedDate, category } = post.data;
 const minutes = readingTime(post.body);
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+const related = getRelatedPosts(post, allPosts);
 ---
 
 <BaseLayout title={title} description={description}>
@@ -35,10 +39,29 @@ const minutes = readingTime(post.body);
         <p class="updated">마지막 수정: {formatDate(updatedDate)}</p>
       )
     }
+    <RelatedPosts items={related} />
   </article>
 </BaseLayout>
 
 <style>
+  /* ── POST HEADER ENTRANCE ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; translate: 0 12px; }
+    to   { opacity: 1; translate: 0 0;    }
+  }
+  .post-meta {
+    animation: fadeUp 240ms var(--ease) both;
+    animation-delay: 0ms;
+  }
+  .post-header h1 {
+    animation: fadeUp 240ms var(--ease) both;
+    animation-delay: 60ms;
+  }
+  .lead {
+    animation: fadeUp 240ms var(--ease) both;
+    animation-delay: 120ms;
+  }
+
   .post {
     max-width: var(--content-max);
     margin: 0 auto;
@@ -53,6 +76,8 @@ const minutes = readingTime(post.body);
     font-weight: 500;
   }
   .post-header h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
     font-size: clamp(28px, 5vw, 38px);
     margin: 16px 0 10px;
   }
@@ -80,11 +105,15 @@ const minutes = readingTime(post.body);
     max-width: var(--measure);
   }
   .prose h2 {
+    font-family: var(--font-body);
     font-size: 26px;
+    font-weight: 700;
     margin: 48px 0 14px;
   }
   .prose h3 {
+    font-family: var(--font-body);
     font-size: 20px;
+    font-weight: 700;
     margin: 36px 0 10px;
   }
   .prose p,
@@ -95,7 +124,7 @@ const minutes = readingTime(post.body);
   .prose blockquote {
     margin: 24px 0;
     padding: 8px 18px;
-    border-left: 3px solid var(--signature);
+    border-left: 3px solid var(--accent);
     background: var(--surface);
     border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     color: var(--ink-2);

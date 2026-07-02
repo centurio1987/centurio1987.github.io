@@ -1,0 +1,109 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostList from "../components/PostList.astro";
+import GraphExplorer from "../components/graph/GraphExplorer.tsx";
+import type { GraphViewData } from "../components/graph/GraphExplorer.tsx";
+import { getCategory } from "../lib/categories";
+import { graphData, hasGraphData } from "../lib/graph";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+const bySlug = new Map(posts.map((p) => [p.id, p]));
+
+// 발행된 글만 그래프에 노출 (draft 글의 개념·엣지는 드롭)
+const viewPosts = posts.map((p) => {
+  const cat = getCategory(p.data.category);
+  return {
+    slug: p.id,
+    title: p.data.title,
+    categoryLabel: cat.label,
+    color: cat.color,
+  };
+});
+const concepts = graphData.concepts
+  .filter((c) => c.postSlug === null || bySlug.has(c.postSlug))
+  .map((c) => ({
+    id: c.id,
+    label: c.label,
+    postSlug: c.postSlug,
+    degree: c.degree,
+    communityName: c.communityName,
+    color: c.postSlug
+      ? getCategory(bySlug.get(c.postSlug)!.data.category).color
+      : "#6B665C",
+  }));
+const nodeIds = new Set([
+  ...viewPosts.map((p) => `post:${p.slug}`),
+  ...concepts.map((c) => c.id),
+]);
+const edges = graphData.conceptEdges.filter(
+  (e) => nodeIds.has(e.source) && nodeIds.has(e.target),
+);
+const legendCats = [...new Set(posts.map((p) => p.data.category))].map((slug) => {
+  const cat = getCategory(slug);
+  return { label: cat.label, color: cat.color };
+});
+
+const viewData: GraphViewData = {
+  posts: viewPosts,
+  concepts,
+  edges,
+  legend: legendCats,
+};
+---
+
+<BaseLayout
+  title="글 지도"
+  description="블로그의 모든 글과 개념을 하나의 지도로 탐색합니다."
+>
+  <section class="graph-page">
+    <header class="graph-header">
+      <h1>글 지도</h1>
+      <p class="lead">
+        글과 글 사이의 개념 연결을 그린 지도입니다. 큰 원이 글, 작은 원이
+        개념이에요. 글을 눌러 바로 이동할 수 있습니다.
+      </p>
+    </header>
+    {
+      hasGraphData ? (
+        <>
+          <GraphExplorer client:load data={viewData} />
+          <noscript>
+            <PostList posts={posts} />
+          </noscript>
+        </>
+      ) : (
+        <>
+          <p class="empty-note">그래프 데이터가 아직 없어요. 대신 전체 글 목록을 보여드릴게요.</p>
+          <PostList posts={posts} />
+        </>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .graph-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 56px var(--page-pad) 64px;
+  }
+  .graph-header h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(28px, 5vw, 38px);
+    margin: 0 0 10px;
+  }
+  .lead {
+    font-size: 17px;
+    color: var(--ink-2);
+    margin: 0 0 24px;
+    max-width: var(--measure);
+  }
+  .empty-note {
+    color: var(--ink-3);
+    margin: 0 0 18px;
+  }
+</style>

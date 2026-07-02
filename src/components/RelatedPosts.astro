@@ -1,0 +1,145 @@
+---
+import Squiggle from "./motifs/Squiggle.astro";
+import { getCategory } from "../lib/categories";
+import type { RelatedItem } from "../lib/related";
+
+interface Props {
+  items: RelatedItem[];
+}
+const { items } = Astro.props;
+
+const REASON_PREFIX: Record<string, string> = {
+  series: "시리즈",
+  concept: "개념",
+  tag: "태그",
+  category: "카테고리",
+  recent: "",
+};
+---
+
+{
+  items.length > 0 && (
+    <aside class="related" aria-label="연관 글">
+      <Squiggle class="related-rule" />
+      <h2 class="related-title">연관 글</h2>
+      <ul class="related-list">
+        {items.map(({ post, reasons }) => {
+          const cat = getCategory(post.data.category);
+          return (
+            <li class="related-item">
+              <a href={`/posts/${post.id}`} class="related-link">
+                <span class="bullet" style={`--cat:${cat.color}`} aria-hidden="true" />
+                <span class="related-body">
+                  <span class="related-post-title">{post.data.title}</span>
+                  {reasons.length > 0 && (
+                    <span class="chips">
+                      {reasons.map((r) => (
+                        <span class:list={["chip", `chip-${r.type}`]} style={`--cat:${cat.color}`}>
+                          {REASON_PREFIX[r.type] && (
+                            <span class="chip-kind">{REASON_PREFIX[r.type]}</span>
+                          )}
+                          {r.label}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <p class="related-more">
+        <a href="/graph">전체 글 지도 보기 →</a>
+      </p>
+    </aside>
+  )
+}
+
+<style>
+  .related {
+    margin-top: 56px;
+  }
+  .related-rule {
+    margin-bottom: 8px;
+  }
+  .related-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 24px;
+    margin: 0 0 6px;
+  }
+  .related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .related-item + .related-item {
+    border-top: 1px dashed var(--border);
+  }
+  .related-link {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    color: var(--ink);
+  }
+  .bullet {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    margin-top: 5px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--cat) 45%, var(--surface));
+    border: 1.5px solid var(--ink);
+    transition: background var(--dur) var(--ease);
+  }
+  .related-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .related-post-title {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    transition: color var(--dur) var(--ease);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    font-size: 12px;
+    color: var(--ink-2);
+    padding: 2px 9px;
+    border-radius: 999px;
+    border: 1px dashed var(--border);
+    background: color-mix(in srgb, var(--cat) 12%, var(--surface));
+  }
+  .chip-kind {
+    color: var(--ink-3);
+    margin-right: 4px;
+  }
+  .chip-tag,
+  .chip-recent {
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  }
+  .related-link:hover .bullet {
+    background: var(--cat);
+  }
+  .related-link:hover .related-post-title {
+    color: var(--accent);
+  }
+  .related-more {
+    margin: 14px 0 0;
+    font-size: 14px;
+  }
+  .related-more a {
+    color: var(--ink-2);
+    transition: color var(--dur) var(--ease);
+  }
+  .related-more a:hover {
+    color: var(--accent);
+  }
+</style>

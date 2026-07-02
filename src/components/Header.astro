@@ -10,6 +10,7 @@ const isPosts = path.startsWith("/posts") || path.startsWith("/categories");
     <nav class="nav" aria-label="주요">
       <a href="/" class:list={["nav-link", { active: path === "/" }]}>홈</a>
       <a href="/posts" class:list={["nav-link", { active: isPosts }]}>블로그</a>
+      <a href="/graph" class:list={["nav-link", { active: path.startsWith("/graph") }]}>지도</a>
       <a href="/career" class:list={["nav-link", { active: path.startsWith("/career") }]}>커리어</a>
       <a
         href="https://github.com/centurio1987"
@@ -40,16 +41,21 @@ const isPosts = path.startsWith("/posts") || path.startsWith("/categories");
   }
   .nav {
     display: flex;
-    gap: 18px;
-    font-size: 15px;
+    gap: 24px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.5px;
   }
   .nav-link {
     color: var(--ink-2);
-    font-weight: 500;
     transition: color var(--dur) var(--ease);
+    padding-bottom: 2px;
   }
-  .nav-link:hover,
+  .nav-link:hover {
+    color: var(--ink);
+  }
   .nav-link.active {
     color: var(--ink);
+    border-bottom: 2px solid var(--accent);
   }
 </style>

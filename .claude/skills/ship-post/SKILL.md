@@ -39,10 +39,16 @@ git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스�
 - **frontmatter 재검증**: `src/content.config.ts` 스키마와 호환되는지(`title`/`pubDate`/`category` 필수, `category`는 `src/lib/categories.ts` enum), `draft: true` 잔존이 없는지.
 - 하나라도 실패하면 **push로 넘어가지 않고** 보고한다.
 
+### 1.5 그래프 데이터 갱신 (non-blocking)
+연관 글/글 지도 기능의 데이터(`src/data/graph.json`)를 새 글 반영본으로 갱신한다.
+- graphify **`--update`** 를 `src/content/posts/`에 실행(증분 LLM 추출, `graphify-out/manifest.json` 기반) → `bun scripts/build-graph-data.ts` → 그래프 데이터가 바뀌었으면 **`bun run build` 한 번 더** 통과 확인.
+- **실패 정책: non-blocking.** graphify 실패(API 키 없음/추출 오류) 시 경고만 남기고 기존 커밋 그래프로 발행을 계속한다 — 기능은 stale 데이터로 degrade될 뿐 글 발행을 막지 않는다.
+- 갱신에 성공했으면 commit 경로에 `graphify-out/`과 `src/data/graph.json`을 추가한다.
+
 ### 2. commit & push (git-shipper / haiku)
 `git-shipper` 서브에이전트(haiku)에 위임한다. git-shipper는 직접 git을 쓰지 않고 **`scripts/git-commit-push.sh`만** 호출한다. 인자:
 - `--repo <블로그 레포 경로>` · `--branch main` · `--message "post: <slug> 발행"`
-- `--` 뒤에 **이번 글 관련 경로만**: `src/content/posts/<slug>.mdx`, `src/components/posts/<slug>/`, `public/images/<slug>/`. **전체 add 금지**.
+- `--` 뒤에 **이번 글 관련 경로만**: `src/content/posts/<slug>.mdx`, `src/components/posts/<slug>/`, `public/images/<slug>/`, (1.5에서 갱신됐으면) `graphify-out/`, `src/data/graph.json`. **전체 add 금지**.
 - 가드(브랜치 일치·secret·대용량·`pull --rebase`·`--force` 금지)는 스크립트가 적용. 자동 모드면 실제 push까지.
 - 스크립트가 비0으로 끝나면 멈추고 원인(브랜치 불일치/secret/충돌 등)을 보고(자동 롤백 안 함).
 

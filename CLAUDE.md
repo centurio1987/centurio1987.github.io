@@ -53,6 +53,20 @@ Posts are markdown in `src/content/posts/`. Frontmatter schema (`src/content.con
 
 Posts are **auto-discovered** — no sidebar/nav registration needed. A post's URL is `/posts/<file-slug>`; categories list at `/categories/<slug>`. `draft: true` hides a post from listings.
 
+### Graph data (연관 글 · /graph 글 지도)
+
+Related-posts sections and the `/graph` explorer are powered by a graphify knowledge graph:
+
+```
+/graphify src/content/posts/          → graphify-out/graph.json (+labels, manifest)  [committed]
+bun scripts/build-graph-data.ts       → src/data/graph.json (distilled)              [committed]
+astro build                           → consumes src/data/graph.json only (no LLM, no key)
+```
+
+- **Contract**: CI/`astro build` never runs graphify — it only imports the committed `src/data/graph.json` (via `src/lib/graph.ts`, a glob loader). If the file is missing, the build still passes: related posts degrade to frontmatter-only ranking (series/tags/category, `src/lib/related.ts`) and `/graph` falls back to a plain post list.
+- **Regeneration** happens at publish time (ship-post step 1.5, non-blocking) or manually with the command pair above. graphify's markdown extraction is LLM-based (`GEMINI_API_KEY`), so it must stay out of CI.
+- `scripts/build-graph-data.ts` is idempotent; commit `graphify-out/` (incl. `manifest.json` for incremental `--update`) together with `src/data/graph.json`.
+
 ### Design
 
 All visual decisions follow `design-concept/DESIGN_CONCEPT.md` and are implemented as CSS variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives at the edges (hero, footer, 404, hover, the Tony mascot). Hand-drawn motifs are SVG components under `src/components/motifs/`.

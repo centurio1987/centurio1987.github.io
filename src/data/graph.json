@@ -1,0 +1,602 @@
+{
+  "generatedAt": "2026-07-02T05:51:44.234Z",
+  "builtAtCommit": "7ff6794329d8c7f013a4ebaa692958cf388c5ade",
+  "posts": [
+    {
+      "slug": "osi-7-layers-1",
+      "conceptCount": 10
+    },
+    {
+      "slug": "osi-7-layers-2",
+      "conceptCount": 4
+    },
+    {
+      "slug": "osi-7-layers-3",
+      "conceptCount": 4
+    },
+    {
+      "slug": "osi-7-layers-4",
+      "conceptCount": 3
+    },
+    {
+      "slug": "osi-7-layers-5",
+      "conceptCount": 2
+    },
+    {
+      "slug": "osi-7-layers-6",
+      "conceptCount": 4
+    },
+    {
+      "slug": "webrtc-1",
+      "conceptCount": 8
+    },
+    {
+      "slug": "welcome",
+      "conceptCount": 0
+    }
+  ],
+  "concepts": [
+    {
+      "id": "osi_7_layers_6_dns_resolve_lab",
+      "label": "DnsResolveLab",
+      "postSlug": "osi-7-layers-6",
+      "community": 3,
+      "communityName": "DNS와 HTTP 여정",
+      "degree": 1
+    },
+    {
+      "id": "osi_7_layers_6_request_journey_lab",
+      "label": "RequestJourneyLab",
+      "postSlug": "osi-7-layers-6",
+      "community": 3,
+      "communityName": "DNS와 HTTP 여정",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_encapsulation",
+      "label": "Encapsulation",
+      "postSlug": "osi-7-layers-1",
+      "community": 1,
+      "communityName": "OSI 모델과 상위 계층",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_l1_physical",
+      "label": "L1 Physical Layer",
+      "postSlug": "osi-7-layers-1",
+      "community": 1,
+      "communityName": "OSI 모델과 상위 계층",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_l2_data_link",
+      "label": "L2 Data Link Layer",
+      "postSlug": "osi-7-layers-1",
+      "community": 2,
+      "communityName": "링크·네트워크 계층",
+      "degree": 4
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_l3_network",
+      "label": "L3 Network Layer",
+      "postSlug": "osi-7-layers-1",
+      "community": 2,
+      "communityName": "링크·네트워크 계층",
+      "degree": 4
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_l4_transport",
+      "label": "L4 Transport Layer",
+      "postSlug": "osi-7-layers-1",
+      "community": 4,
+      "communityName": "전송 계층 프로토콜",
+      "degree": 3
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_l5_session",
+      "label": "L5 Session Layer",
+      "postSlug": "osi-7-layers-1",
+      "community": 1,
+      "communityName": "OSI 모델과 상위 계층",
+      "degree": 2
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_l6_presentation",
+      "label": "L6 Presentation Layer",
+      "postSlug": "osi-7-layers-1",
+      "community": 1,
+      "communityName": "OSI 모델과 상위 계층",
+      "degree": 2
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_l7_application",
+      "label": "L7 Application Layer",
+      "postSlug": "osi-7-layers-1",
+      "community": 1,
+      "communityName": "OSI 모델과 상위 계층",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_osi_model",
+      "label": "OSI Reference Model",
+      "postSlug": "osi-7-layers-1",
+      "community": 1,
+      "communityName": "OSI 모델과 상위 계층",
+      "degree": 8
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_1_tcp_ip_model",
+      "label": "TCP/IP Model",
+      "postSlug": "osi-7-layers-1",
+      "community": 5,
+      "communityName": "TCP/IP 모델",
+      "degree": 0
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_2_arp",
+      "label": "ARP (Address Resolution Protocol)",
+      "postSlug": "osi-7-layers-2",
+      "community": 2,
+      "communityName": "링크·네트워크 계층",
+      "degree": 2
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_2_ethernet",
+      "label": "Ethernet (IEEE 802.3)",
+      "postSlug": "osi-7-layers-2",
+      "community": 2,
+      "communityName": "링크·네트워크 계층",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_2_stp",
+      "label": "STP (Spanning Tree Protocol)",
+      "postSlug": "osi-7-layers-2",
+      "community": 6,
+      "communityName": "STP 스패닝 트리",
+      "degree": 0
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_2_vlan",
+      "label": "VLAN (IEEE 802.1Q)",
+      "postSlug": "osi-7-layers-2",
+      "community": 2,
+      "communityName": "링크·네트워크 계층",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_3_icmp",
+      "label": "ICMP",
+      "postSlug": "osi-7-layers-3",
+      "community": 2,
+      "communityName": "링크·네트워크 계층",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_3_ip",
+      "label": "IP (Internet Protocol)",
+      "postSlug": "osi-7-layers-3",
+      "community": 2,
+      "communityName": "링크·네트워크 계층",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_3_nat",
+      "label": "NAT (Network Address Translation)",
+      "postSlug": "osi-7-layers-3",
+      "community": 7,
+      "communityName": "NAT 주소 변환",
+      "degree": 0
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_3_routing_table",
+      "label": "Routing Table",
+      "postSlug": "osi-7-layers-3",
+      "community": 8,
+      "communityName": "라우팅 테이블",
+      "degree": 0
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_4_quic",
+      "label": "QUIC",
+      "postSlug": "osi-7-layers-4",
+      "community": 4,
+      "communityName": "전송 계층 프로토콜",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_4_tcp",
+      "label": "TCP",
+      "postSlug": "osi-7-layers-4",
+      "community": 4,
+      "communityName": "전송 계층 프로토콜",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_4_udp",
+      "label": "UDP",
+      "postSlug": "osi-7-layers-4",
+      "community": 4,
+      "communityName": "전송 계층 프로토콜",
+      "degree": 2
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_5_cookie",
+      "label": "HTTP Cookie",
+      "postSlug": "osi-7-layers-5",
+      "community": 1,
+      "communityName": "OSI 모델과 상위 계층",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_5_tls",
+      "label": "TLS",
+      "postSlug": "osi-7-layers-5",
+      "community": 1,
+      "communityName": "OSI 모델과 상위 계층",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_6_dns",
+      "label": "DNS (Domain Name System)",
+      "postSlug": "osi-7-layers-6",
+      "community": 3,
+      "communityName": "DNS와 HTTP 여정",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_osi_7_layers_6_http",
+      "label": "HTTP (HyperText Transfer Protocol)",
+      "postSlug": "osi-7-layers-6",
+      "community": 3,
+      "communityName": "DNS와 HTTP 여정",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_webrtc_1_dtls_srtp",
+      "label": "DTLS-SRTP",
+      "postSlug": "webrtc-1",
+      "community": 0,
+      "communityName": "WebRTC 연결 수립",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_webrtc_1_ice",
+      "label": "ICE (Interactive Connectivity Establishment)",
+      "postSlug": "webrtc-1",
+      "community": 0,
+      "communityName": "WebRTC 연결 수립",
+      "degree": 3
+    },
+    {
+      "id": "src_content_posts_webrtc_1_sdp",
+      "label": "SDP (Session Description Protocol)",
+      "postSlug": "webrtc-1",
+      "community": 0,
+      "communityName": "WebRTC 연결 수립",
+      "degree": 1
+    },
+    {
+      "id": "src_content_posts_webrtc_1_stun",
+      "label": "STUN (Session Traversal Utilities for NAT)",
+      "postSlug": "webrtc-1",
+      "community": 0,
+      "communityName": "WebRTC 연결 수립",
+      "degree": 2
+    },
+    {
+      "id": "src_content_posts_webrtc_1_turn",
+      "label": "TURN (Traversal Using Relays around NAT)",
+      "postSlug": "webrtc-1",
+      "community": 0,
+      "communityName": "WebRTC 연결 수립",
+      "degree": 2
+    },
+    {
+      "id": "webrtc_1_ice_traversal_lab",
+      "label": "IceTraversalLab",
+      "postSlug": "webrtc-1",
+      "community": 0,
+      "communityName": "WebRTC 연결 수립",
+      "degree": 1
+    },
+    {
+      "id": "webrtc_1_loopback_negotiation_demo",
+      "label": "LoopbackNegotiationDemo",
+      "postSlug": "webrtc-1",
+      "community": 0,
+      "communityName": "WebRTC 연결 수립",
+      "degree": 1
+    },
+    {
+      "id": "webrtc_1_sdp_negotiation_stepper",
+      "label": "SdpNegotiationStepper",
+      "postSlug": "webrtc-1",
+      "community": 0,
+      "communityName": "WebRTC 연결 수립",
+      "degree": 1
+    }
+  ],
+  "conceptEdges": [
+    {
+      "source": "post:osi-7-layers-6",
+      "target": "osi_7_layers_6_dns_resolve_lab",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-6",
+      "target": "osi_7_layers_6_request_journey_lab",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-6",
+      "target": "src_content_posts_osi_7_layers_6_dns",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-6",
+      "target": "src_content_posts_osi_7_layers_6_http",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:webrtc-1",
+      "target": "src_content_posts_webrtc_1_dtls_srtp",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:webrtc-1",
+      "target": "src_content_posts_webrtc_1_ice",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:webrtc-1",
+      "target": "src_content_posts_webrtc_1_sdp",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:webrtc-1",
+      "target": "src_content_posts_webrtc_1_stun",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:webrtc-1",
+      "target": "src_content_posts_webrtc_1_turn",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:webrtc-1",
+      "target": "webrtc_1_ice_traversal_lab",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:webrtc-1",
+      "target": "webrtc_1_loopback_negotiation_demo",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:webrtc-1",
+      "target": "webrtc_1_sdp_negotiation_stepper",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_1_encapsulation",
+      "target": "src_content_posts_osi_7_layers_1_osi_model",
+      "relation": "conceptually_related_to",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_1_osi_model",
+      "target": "src_content_posts_osi_7_layers_1_l1_physical",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_1_osi_model",
+      "target": "src_content_posts_osi_7_layers_1_l2_data_link",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_1_osi_model",
+      "target": "src_content_posts_osi_7_layers_1_l3_network",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_1_osi_model",
+      "target": "src_content_posts_osi_7_layers_1_l4_transport",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_1_osi_model",
+      "target": "src_content_posts_osi_7_layers_1_l5_session",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_1_osi_model",
+      "target": "src_content_posts_osi_7_layers_1_l6_presentation",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_1_osi_model",
+      "target": "src_content_posts_osi_7_layers_1_l7_application",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_2_arp",
+      "target": "src_content_posts_osi_7_layers_1_l2_data_link",
+      "relation": "conceptually_related_to",
+      "weight": 1,
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_2_arp",
+      "target": "src_content_posts_osi_7_layers_1_l3_network",
+      "relation": "conceptually_related_to",
+      "weight": 1,
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_2_ethernet",
+      "target": "src_content_posts_osi_7_layers_1_l2_data_link",
+      "relation": "implements",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_2_vlan",
+      "target": "src_content_posts_osi_7_layers_1_l2_data_link",
+      "relation": "implements",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_3_icmp",
+      "target": "src_content_posts_osi_7_layers_1_l3_network",
+      "relation": "implements",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_3_ip",
+      "target": "src_content_posts_osi_7_layers_1_l3_network",
+      "relation": "implements",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_4_quic",
+      "target": "src_content_posts_osi_7_layers_4_udp",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_4_tcp",
+      "target": "src_content_posts_osi_7_layers_1_l4_transport",
+      "relation": "implements",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_4_udp",
+      "target": "src_content_posts_osi_7_layers_1_l4_transport",
+      "relation": "implements",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_5_cookie",
+      "target": "src_content_posts_osi_7_layers_1_l5_session",
+      "relation": "conceptually_related_to",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_osi_7_layers_5_tls",
+      "target": "src_content_posts_osi_7_layers_1_l6_presentation",
+      "relation": "implements",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "src_content_posts_webrtc_1_ice",
+      "target": "src_content_posts_webrtc_1_stun",
+      "relation": "conceptually_related_to",
+      "weight": 1,
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "src_content_posts_webrtc_1_ice",
+      "target": "src_content_posts_webrtc_1_turn",
+      "relation": "conceptually_related_to",
+      "weight": 1,
+      "confidence": "INFERRED"
+    }
+  ],
+  "postPairs": [
+    {
+      "a": "osi-7-layers-1",
+      "b": "osi-7-layers-2",
+      "score": 1,
+      "edgeCount": 4,
+      "sharedConcepts": [
+        "L2 Data Link Layer",
+        "L3 Network Layer",
+        "ARP (Address Resolution Protocol)",
+        "Ethernet (IEEE 802.3)",
+        "VLAN (IEEE 802.1Q)"
+      ]
+    },
+    {
+      "a": "osi-7-layers-1",
+      "b": "osi-7-layers-3",
+      "score": 0.5263,
+      "edgeCount": 2,
+      "sharedConcepts": [
+        "L3 Network Layer",
+        "ICMP",
+        "IP (Internet Protocol)"
+      ]
+    },
+    {
+      "a": "osi-7-layers-1",
+      "b": "osi-7-layers-4",
+      "score": 0.5263,
+      "edgeCount": 2,
+      "sharedConcepts": [
+        "L4 Transport Layer",
+        "UDP",
+        "TCP"
+      ]
+    },
+    {
+      "a": "osi-7-layers-1",
+      "b": "osi-7-layers-5",
+      "score": 0.5263,
+      "edgeCount": 2,
+      "sharedConcepts": [
+        "L5 Session Layer",
+        "L6 Presentation Layer",
+        "HTTP Cookie",
+        "TLS"
+      ]
+    }
+  ]
+}
