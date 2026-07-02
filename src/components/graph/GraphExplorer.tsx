@@ -149,7 +149,8 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
   const [selected, setSelected] = useState<string | null>(null);
   const active = hovered ?? selected;
 
-  // ── 필터: 태그 토글(OR) × 키워드 검색(교집합) ──
+  // ── 필터: 카테고리 토글(OR) × 태그 토글(OR) × 키워드 검색(교집합) ──
+  const [selectedCats, setSelectedCats] = useState<Set<string>>(new Set());
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState("");
 
@@ -173,12 +174,15 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
 
   const visibleIds = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const noFilter = selectedTags.size === 0 && q === "";
+    const noFilter =
+      selectedCats.size === 0 && selectedTags.size === 0 && q === "";
     if (noFilter) return null; // null = 전체 표시
 
-    // 1) 태그 필터 통과한 글
+    // 1) 카테고리(OR) × 태그(OR) 필터 통과한 글
     const tagPosts = data.posts.filter(
-      (p) => selectedTags.size === 0 || p.tags.some((t) => selectedTags.has(t)),
+      (p) =>
+        (selectedCats.size === 0 || selectedCats.has(p.categoryLabel)) &&
+        (selectedTags.size === 0 || p.tags.some((t) => selectedTags.has(t))),
     );
     const tagSlugs = new Set(tagPosts.map((p) => p.slug));
 
@@ -209,7 +213,7 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
         if (c.postSlug && matchedSlugs.has(c.postSlug)) ids.add(c.id); // 매칭 글의 개념들
     }
     return ids;
-  }, [data, selectedTags, query]);
+  }, [data, selectedCats, selectedTags, query]);
 
   const filterActive = visibleIds !== null;
   const isVisible = (id: string) => visibleIds === null || visibleIds.has(id);
@@ -223,7 +227,17 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
     setSelected(null);
     setHovered(null);
   }
+  function toggleCat(label: string) {
+    setSelectedCats((prev) => {
+      const next = new Set(prev);
+      next.has(label) ? next.delete(label) : next.add(label);
+      return next;
+    });
+    setSelected(null);
+    setHovered(null);
+  }
   function resetFilters() {
+    setSelectedCats(new Set());
     setSelectedTags(new Set());
     setQuery("");
     setSelected(null);
@@ -281,6 +295,30 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
     return degrees[Math.floor(degrees.length * 0.75)];
   }, [data.concepts]);
 
+  // 필터로 추려진 클러스터를 뷰포트 중앙으로 (레이아웃은 그대로, 뷰만 이동)
+  let viewTransform = "translate(0px, 0px) scale(1)";
+  if (filterActive) {
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+    for (const n of nodes) {
+      if (!isVisible(n.id) || n.x == null || n.y == null) continue;
+      minX = Math.min(minX, n.x - n.r);
+      maxX = Math.max(maxX, n.x + n.r);
+      minY = Math.min(minY, n.y - n.r);
+      maxY = Math.max(maxY, n.y + n.r + 26); // 노드 아래 라벨 여유
+    }
+    if (minX !== Infinity) {
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+      // 라벨(가로 최대 ±150px)이 잘리지 않을 만큼만 확대
+      const fit = Math.min(W / (maxX - minX + 300), H / (maxY - minY + 80));
+      const scale = Math.max(1, Math.min(1.5, fit));
+      viewTransform = `translate(${W / 2}px, ${H / 2}px) scale(${scale}) translate(${-cx}px, ${-cy}px)`;
+    }
+  }
+
   return (
     <div className="graph-explorer">
       <div className="graph-toolbar">
@@ -305,6 +343,20 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           </span>
         )}
       </div>
+      <div className="graph-legend" role="group" aria-label="카테고리 필터">
+        {data.legend.map((l) => (
+          <button
+            type="button"
+            key={l.label}
+            className={`legend-chip${selectedCats.has(l.label) ? " on" : ""}`}
+            onClick={() => toggleCat(l.label)}
+            aria-pressed={selectedCats.has(l.label)}
+          >
+            <span className="legend-dot" style={{ background: l.color }} />
+            {l.label}
+          </button>
+        ))}
+      </div>
       <div className="graph-tags">
         {shownTags.map((t) => (
           <button
@@ -327,14 +379,6 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           </button>
         )}
       </div>
-      <div className="graph-legend" aria-hidden="true">
-        {data.legend.map((l) => (
-          <span key={l.label} className="legend-chip">
-            <span className="legend-dot" style={{ background: l.color }} />
-            {l.label}
-          </span>
-        ))}
-      </div>
       {filterActive && visibleCounts.posts + visibleCounts.concepts === 0 && (
         <p className="graph-empty">일치하는 글·개념이 없어요. 다른 키워드나 태그를 시도해 보세요.</p>
       )}
@@ -346,71 +390,102 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           if (e.target === e.currentTarget) setSelected(null);
         }}
       >
-        <g>
-          {links.map((l, i) => {
-            const s = l.source as SimNode;
-            const t = l.target as SimNode;
-            if (s.x == null || t.x == null) return null;
-            if (!isVisible(s.id) || !isVisible(t.id)) return null;
-            const lit = litLinks ? litLinks.has(l) : true;
-            return (
-              <line
-                key={i}
-                x1={s.x}
-                y1={s.y}
-                x2={t.x}
-                y2={t.y}
-                stroke="var(--ink-3)"
-                strokeWidth={l.ownership ? 1 : 1.5}
-                strokeDasharray={
-                  l.ownership ? "2 5" : l.confidence === "INFERRED" ? "6 4" : undefined
-                }
-                strokeLinecap="round"
-                opacity={lit ? (l.ownership ? 0.35 : 0.3 + 0.4 * Math.min(l.weight, 1)) : 0.06}
-              />
-            );
-          })}
-        </g>
-        <g>
-          {nodes.map((n) => {
-            if (n.x == null) return null;
-            if (!isVisible(n.id)) return null;
-            const lit = litNodes ? litNodes.has(n.id) : true;
-            const showLabel =
-              n.kind === "post" ||
-              filterActive || // 필터로 추려진 상태에선 개념 라벨을 모두 노출
-              (litNodes ? litNodes.has(n.id) : n.r - 6 >= Math.min(labelThreshold, 8));
-            return (
-              <g
-                key={n.id}
-                transform={`translate(${n.x},${n.y})`}
-                opacity={lit ? 1 : 0.2}
-                onMouseEnter={() => setHovered(n.id)}
-                onMouseLeave={() => setHovered(null)}
-                onClick={() => onNodeClick(n)}
-                style={{ cursor: n.kind === "post" ? "pointer" : "default" }}
-              >
-                <circle
-                  r={n.r}
-                  fill={n.color}
-                  fillOpacity={n.kind === "post" ? 1 : 0.45}
-                  stroke="var(--ink)"
-                  strokeWidth={n.kind === "post" ? 2 : 1.2}
+        <g
+          className="graph-viewport"
+          style={{ transform: viewTransform, transformOrigin: "0 0" }}
+        >
+          <g>
+            {links.map((l, i) => {
+              const s = l.source as SimNode;
+              const t = l.target as SimNode;
+              if (s.x == null || t.x == null) return null;
+              if (!isVisible(s.id) || !isVisible(t.id)) return null;
+              const lit = litLinks ? litLinks.has(l) : true;
+              return (
+                <line
+                  key={i}
+                  x1={s.x}
+                  y1={s.y}
+                  x2={t.x}
+                  y2={t.y}
+                  stroke="var(--ink-3)"
+                  strokeWidth={l.ownership ? 1 : 1.5}
+                  strokeDasharray={
+                    l.ownership ? "2 5" : l.confidence === "INFERRED" ? "6 4" : undefined
+                  }
+                  strokeLinecap="round"
+                  opacity={lit ? (l.ownership ? 0.35 : 0.3 + 0.4 * Math.min(l.weight, 1)) : 0.06}
                 />
-                {showLabel && (
-                  <text
-                    y={n.r + 14}
-                    textAnchor="middle"
-                    className={n.kind === "post" ? "node-label-post" : "node-label"}
-                  >
-                    {n.kind === "post" && n.label.length > 24
-                      ? n.label.slice(0, 23) + "…"
-                      : n.label}
-                  </text>
-                )}
-              </g>
-            );
-          })}
+              );
+            })}
+          </g>
+          <g>
+            {nodes.map((n) => {
+              if (n.x == null) return null;
+              if (!isVisible(n.id)) return null;
+              const lit = litNodes ? litNodes.has(n.id) : true;
+              return (
+                <g
+                  key={n.id}
+                  transform={`translate(${n.x},${n.y})`}
+                  opacity={lit ? 1 : 0.2}
+                  onMouseEnter={() => setHovered(n.id)}
+                  onMouseLeave={() => setHovered(null)}
+                  onClick={() => onNodeClick(n)}
+                  style={{ cursor: n.kind === "post" ? "pointer" : "default" }}
+                >
+                  <circle
+                    r={n.r}
+                    fill={n.color}
+                    fillOpacity={n.kind === "post" ? 1 : 0.45}
+                    stroke="var(--ink)"
+                    strokeWidth={n.kind === "post" ? 2 : 1.2}
+                  />
+                </g>
+              );
+            })}
+          </g>
+          {/* 라벨은 별도 레이어 — 개념 라벨 위에 글 제목이 오도록 글 라벨을 맨 나중에 그린다 */}
+          <g aria-hidden="true">
+            {nodes.map((n) => {
+              if (n.x == null || n.kind !== "concept") return null;
+              if (!isVisible(n.id)) return null;
+              const showLabel =
+                filterActive || // 필터로 추려진 상태에선 개념 라벨을 모두 노출
+                (litNodes ? litNodes.has(n.id) : n.r - 6 >= Math.min(labelThreshold, 8));
+              if (!showLabel) return null;
+              const lit = litNodes ? litNodes.has(n.id) : true;
+              return (
+                <text
+                  key={n.id}
+                  x={n.x}
+                  y={(n.y ?? 0) + n.r + 14}
+                  textAnchor="middle"
+                  className="node-label"
+                  opacity={lit ? 1 : 0.2}
+                >
+                  {n.label}
+                </text>
+              );
+            })}
+            {nodes.map((n) => {
+              if (n.x == null || n.kind !== "post") return null;
+              if (!isVisible(n.id)) return null;
+              const lit = litNodes ? litNodes.has(n.id) : true;
+              return (
+                <text
+                  key={n.id}
+                  x={n.x}
+                  y={(n.y ?? 0) + n.r + 14}
+                  textAnchor="middle"
+                  className="node-label-post"
+                  opacity={lit ? 1 : 0.2}
+                >
+                  {n.label.length > 24 ? n.label.slice(0, 23) + "…" : n.label}
+                </text>
+              );
+            })}
+          </g>
         </g>
       </svg>
       <style>{`
@@ -513,12 +588,27 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           display: inline-flex;
           align-items: center;
           gap: 6px;
+          font: inherit;
           font-size: 12px;
           color: var(--ink-2);
-          padding: 2px 10px;
+          padding: 3px 11px;
           border: 1px dashed var(--border);
           border-radius: 999px;
           background: var(--surface);
+          cursor: pointer;
+          transition: all var(--dur) var(--ease);
+        }
+        .legend-chip:hover {
+          color: var(--ink);
+          border-color: var(--ink-3);
+        }
+        .legend-chip.on {
+          color: var(--accent);
+          border: 1.5px solid var(--accent);
+          background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+        }
+        .graph-viewport {
+          transition: transform 0.45s var(--ease, ease);
         }
         .legend-dot {
           width: 10px;
