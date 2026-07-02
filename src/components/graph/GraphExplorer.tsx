@@ -215,8 +215,52 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
     return ids;
   }, [data, selectedCats, selectedTags, query]);
 
+  // 필터 전 기본 뷰: 글에 직접 연결된 1-depth 키워드만 노출.
+  // 명시 엣지로 글과 이어졌거나, 개념-개념 엣지가 전혀 없는 리프(소유 엣지만)면 1-depth.
+  const depth1Concepts = useMemo(() => {
+    const inConceptWeb = new Set<string>();
+    const postAdjacent = new Set<string>();
+    for (const e of data.edges) {
+      const sPost = e.source.startsWith("post:");
+      const tPost = e.target.startsWith("post:");
+      if (sPost && !tPost) postAdjacent.add(e.target);
+      else if (tPost && !sPost) postAdjacent.add(e.source);
+      else if (!sPost && !tPost) {
+        inConceptWeb.add(e.source);
+        inConceptWeb.add(e.target);
+      }
+    }
+    const set = new Set<string>();
+    for (const c of data.concepts)
+      if (postAdjacent.has(c.id) || !inConceptWeb.has(c.id)) set.add(c.id);
+    return set;
+  }, [data]);
+
+  // 하이라이트 집합: 활성 노드 + 이웃 + 그 사이 엣지
+  const { litNodes, litLinks } = useMemo(() => {
+    if (!active) return { litNodes: null, litLinks: null };
+    const litNodes = new Set<string>([active]);
+    const litLinks = new Set<SimLink>();
+    for (const l of links) {
+      const s = (l.source as SimNode).id ?? (l.source as unknown as string);
+      const t = (l.target as SimNode).id ?? (l.target as unknown as string);
+      if (s === active || t === active) {
+        litNodes.add(s);
+        litNodes.add(t);
+        litLinks.add(l);
+      }
+    }
+    return { litNodes, litLinks };
+  }, [active, links]);
+
   const filterActive = visibleIds !== null;
-  const isVisible = (id: string) => visibleIds === null || visibleIds.has(id);
+  // 필터 중엔 필터 결과만, 평상시엔 글 + 1-depth 키워드 + 활성 노드의 이웃만 보인다.
+  const isVisible = (id: string) =>
+    visibleIds
+      ? visibleIds.has(id)
+      : id.startsWith("post:") ||
+        depth1Concepts.has(id) ||
+        (litNodes?.has(id) ?? false);
 
   function toggleTag(tag: string) {
     setSelectedTags((prev) => {
@@ -254,23 +298,6 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
     }
     return { posts, concepts };
   }, [nodes, visibleIds]);
-
-  // 하이라이트 집합: 활성 노드 + 이웃 + 그 사이 엣지
-  const { litNodes, litLinks } = useMemo(() => {
-    if (!active) return { litNodes: null, litLinks: null };
-    const litNodes = new Set<string>([active]);
-    const litLinks = new Set<SimLink>();
-    for (const l of links) {
-      const s = (l.source as SimNode).id ?? (l.source as unknown as string);
-      const t = (l.target as SimNode).id ?? (l.target as unknown as string);
-      if (s === active || t === active) {
-        litNodes.add(s);
-        litNodes.add(t);
-        litLinks.add(l);
-      }
-    }
-    return { litNodes, litLinks };
-  }, [active, links]);
 
   const coarsePointer =
     typeof window !== "undefined" &&
@@ -419,6 +446,30 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
               );
             })}
           </g>
+          {/* 키워드 라벨은 노드 원 아래 레이어 — 글·개념 원을 절대 가리지 않는다 */}
+          <g aria-hidden="true">
+            {nodes.map((n) => {
+              if (n.x == null || n.kind !== "concept") return null;
+              if (!isVisible(n.id)) return null;
+              const showLabel =
+                filterActive || // 필터로 추려진 상태에선 개념 라벨을 모두 노출
+                (litNodes ? litNodes.has(n.id) : n.r - 6 >= Math.min(labelThreshold, 8));
+              if (!showLabel) return null;
+              const lit = litNodes ? litNodes.has(n.id) : true;
+              return (
+                <text
+                  key={n.id}
+                  x={n.x}
+                  y={(n.y ?? 0) + n.r + 14}
+                  textAnchor="middle"
+                  className="node-label"
+                  opacity={lit ? 1 : 0.2}
+                >
+                  {n.label}
+                </text>
+              );
+            })}
+          </g>
           <g>
             {nodes.map((n) => {
               if (n.x == null) return null;
@@ -445,29 +496,8 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
               );
             })}
           </g>
-          {/* 라벨은 별도 레이어 — 개념 라벨 위에 글 제목이 오도록 글 라벨을 맨 나중에 그린다 */}
+          {/* 글 제목 라벨은 맨 위 레이어 */}
           <g aria-hidden="true">
-            {nodes.map((n) => {
-              if (n.x == null || n.kind !== "concept") return null;
-              if (!isVisible(n.id)) return null;
-              const showLabel =
-                filterActive || // 필터로 추려진 상태에선 개념 라벨을 모두 노출
-                (litNodes ? litNodes.has(n.id) : n.r - 6 >= Math.min(labelThreshold, 8));
-              if (!showLabel) return null;
-              const lit = litNodes ? litNodes.has(n.id) : true;
-              return (
-                <text
-                  key={n.id}
-                  x={n.x}
-                  y={(n.y ?? 0) + n.r + 14}
-                  textAnchor="middle"
-                  className="node-label"
-                  opacity={lit ? 1 : 0.2}
-                >
-                  {n.label}
-                </text>
-              );
-            })}
             {nodes.map((n) => {
               if (n.x == null || n.kind !== "post") return null;
               if (!isVisible(n.id)) return null;
