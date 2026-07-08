@@ -90,7 +90,7 @@ research → ~/blog-research/wiki/angles/<slug>.md   (자료 수집·ingest 완�
 ### 4. 외부 검토 (누락·모순·사실성)
 
 ```bash
-bash .claude/skills/tech-deepdive/scripts/review-article.sh "draft/<stem>.mdx"
+bash .Codex/skills/tech-deepdive/scripts/review-article.sh "draft/<stem>.mdx"
 ```
 
 - 스크립트 stdout을 **요약하지 말고 그대로** 사용자에게 보여준다(모델이 짚은 표현이 핵심).

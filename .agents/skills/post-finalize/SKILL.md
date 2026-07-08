@@ -82,7 +82,7 @@ argument-hint: <post-file-path>
 
 빠른 확인:
 ```bash
-python3 .claude/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
+python3 .Codex/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 ```
 `0 markers`면 건너뛴다. 있으면 `meme-inserter`를 호출해 처리하고, 결과(성공/실패 개수)를 최종 보고에 합친다.
 이 스킬 자체가 밈을 생성·검색하지는 않는다 — 위탁만 한다.
