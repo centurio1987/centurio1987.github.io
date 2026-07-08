@@ -1,0 +1,178 @@
+{
+  "next_id": 9,
+  "next_seq": 9,
+  "cards": {
+    "KAN-001": {
+      "col": "review",
+      "title": "GraphQL을 썼을 때 유리한 상황과 아닌 상황",
+      "memo": "draft: draft/graphql-use-cases-draft.md · REST 대비 이득/복잡도 증가 상황, 조직·클라이언트·게이트웨이 판단 기준",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-06-30",
+      "title_hash": "1a6f898fc699671508fffc9cb8edc1214aaaaa63",
+      "memo_hash": "20c1c0f2301236af13f2fd320447047c6ed8c8e6"
+    },
+    "KAN-002": {
+      "col": "review",
+      "title": "도메인 모델과 RDB",
+      "memo": "draft: draft/domain-model-rdb-draft.md · 외래키 신호, 상속/합성 테이블 표현, Aggregate↔테이블 대응, Value 영속화",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-06-30",
+      "title_hash": "29d80948eeecffba1c471bdaca7b980d149a3ec1",
+      "memo_hash": "0b90e4768e4a00b496b71021810034f783a7268c"
+    },
+    "KAN-003": {
+      "col": "review",
+      "title": "DDD에서 Composition과 Aggregation",
+      "memo": "draft: draft/ddd-composition-aggregation-draft.md · Composition=의존 생명주기/Aggregate 소속, Aggregation=참조",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-06-30",
+      "title_hash": "e6d1c545db65e36a98521a490545cdcc02f3345a",
+      "memo_hash": "c6be6906c0a067f4406984dd5874cfa667cb9296"
+    },
+    "KAN-004": {
+      "col": "review",
+      "title": "상속이냐 Composite냐",
+      "memo": "draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-06-30",
+      "title_hash": "ffacd1c4367a205b403d9e356bb27d953043a3c0",
+      "memo_hash": "c0345b59769d2150273e39791aa725308a53efc8"
+    },
+    "KAN-005": {
+      "col": "review",
+      "title": "모델링 철학 고려 사항",
+      "memo": "draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-06-30",
+      "title_hash": "2afdbb227382bf31c20bc44930b07d579a343bad",
+      "memo_hash": "a5d0c8332c09aef1d50f830fbae7f559aadb3b98"
+    },
+    "KAN-006": {
+      "col": "doing",
+      "title": "WebRTC 이해와 최적 활용 사례",
+      "memo": "webrtc-1.mdx 발행됨, 시리즈 진행 중",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-06-30",
+      "title_hash": "7112cac2269654d681b96567a0c1d7919d84be1a",
+      "memo_hash": "70f8191f83e824a8735dec609512d1f72807e9e8"
+    },
+    "KAN-007": {
+      "col": "backlog",
+      "title": "Tauri 소개와 구현 예시",
+      "memo": "앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-06-30",
+      "title_hash": "214c2004b9af5619b82b034bd56d286bc65dd4e8",
+      "memo_hash": "7d4dd0dc344cca4c20837ab6a2d5ce49160ba08a"
+    },
+    "KAN-008": {
+      "col": "backlog",
+      "title": "OCI, CRI",
+      "memo": "Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-06-30",
+      "title_hash": "e173cecc43d9e35ec7f698842f292a31d84e44f9",
+      "memo_hash": "3d762b8cdb4a4199dcd1e005e2e96839814811ee"
+    }
+  },
+  "order": [
+    "KAN-001",
+    "KAN-002",
+    "KAN-003",
+    "KAN-004",
+    "KAN-005",
+    "KAN-006",
+    "KAN-007",
+    "KAN-008"
+  ],
+  "recent": [
+    {
+      "seq": 8,
+      "t": "2026-06-30T14:32",
+      "a": "ai",
+      "id": "KAN-008",
+      "op": "create",
+      "col": "backlog",
+      "title": "OCI, CRI",
+      "memo": "Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교"
+    },
+    {
+      "seq": 7,
+      "t": "2026-06-30T14:32",
+      "a": "ai",
+      "id": "KAN-007",
+      "op": "create",
+      "col": "backlog",
+      "title": "Tauri 소개와 구현 예시",
+      "memo": "앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함"
+    },
+    {
+      "seq": 6,
+      "t": "2026-06-30T14:32",
+      "a": "ai",
+      "id": "KAN-006",
+      "op": "create",
+      "col": "doing",
+      "title": "WebRTC 이해와 최적 활용 사례",
+      "memo": "webrtc-1.mdx 발행됨, 시리즈 진행 중"
+    },
+    {
+      "seq": 5,
+      "t": "2026-06-30T14:32",
+      "a": "ai",
+      "id": "KAN-005",
+      "op": "create",
+      "col": "review",
+      "title": "모델링 철학 고려 사항",
+      "memo": "draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요"
+    },
+    {
+      "seq": 4,
+      "t": "2026-06-30T14:32",
+      "a": "ai",
+      "id": "KAN-004",
+      "op": "create",
+      "col": "review",
+      "title": "상속이냐 Composite냐",
+      "memo": "draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점"
+    },
+    {
+      "seq": 3,
+      "t": "2026-06-30T14:32",
+      "a": "ai",
+      "id": "KAN-003",
+      "op": "create",
+      "col": "review",
+      "title": "DDD에서 Composition과 Aggregation",
+      "memo": "draft: draft/ddd-composition-aggregation-draft.md · Composition=의존 생명주기/Aggregate 소속, Aggregation=참조"
+    },
+    {
+      "seq": 2,
+      "t": "2026-06-30T14:32",
+      "a": "ai",
+      "id": "KAN-002",
+      "op": "create",
+      "col": "review",
+      "title": "도메인 모델과 RDB",
+      "memo": "draft: draft/domain-model-rdb-draft.md · 외래키 신호, 상속/합성 테이블 표현, Aggregate↔테이블 대응, Value 영속화"
+    },
+    {
+      "seq": 1,
+      "t": "2026-06-30T14:32",
+      "a": "ai",
+      "id": "KAN-001",
+      "op": "create",
+      "col": "review",
+      "title": "GraphQL을 썼을 때 유리한 상황과 아닌 상황",
+      "memo": "draft: draft/graphql-use-cases-draft.md · REST 대비 이득/복잡도 증가 상황, 조직·클라이언트·게이트웨이 판단 기준"
+    }
+  ]
+}
