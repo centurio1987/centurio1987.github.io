@@ -1,104 +1,271 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PostList from "../components/PostList.astro";
-import Sparkle from "../components/motifs/Sparkle.astro";
+import { getCategory } from "../lib/categories";
+import { formatMonthYear } from "../lib/format";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-const recent = posts.slice(0, 8);
+const recent = posts.slice(0, 6);
+const hasMore = posts.length > recent.length;
 ---
 
 <BaseLayout title="빵관 토니">
-  <section class="hero grid-texture">
+
+  <!-- ── HERO: Editorial Split ── -->
+  <section class="hero">
     <div class="hero-inner">
-      <h1>
-        빵관 토니<span class="dot-accent">.</span>
-      </h1>
-      <p class="tagline">진지하게 만들고, 즐겁게 쓴다.</p>
-      <p class="sub">기획 · 아키텍처 · 설계에 관한 기록</p>
+
+      <div class="hero-text">
+        <span class="hero-hand">반가워요 :)</span>
+        <h1>
+          빵 굽듯<br />
+          천천히 만드는<br />
+          <span class="accent">토니의 기록</span>
+        </h1>
+        <p class="hero-sub">
+          코드와 빵 사이 어딘가에서, 만든 것과 배운 것을 차곡차곡 굽습니다.
+        </p>
+        <div class="hero-cta">
+          <a href="/posts" class="btn-filled">블로그 전체 보기 →</a>
+        </div>
+      </div>
+
+      <div class="hero-image" aria-hidden="true">
+        <picture>
+          <source srcset="/tony-deco.webp" type="image/webp" />
+          <img src="/tony-deco.png" alt="빵관 토니 마스코트" />
+        </picture>
+      </div>
+
     </div>
   </section>
 
+  <!-- ── RECENT POSTS: List ── -->
   <section class="recent">
     <div class="recent-head">
-      <Sparkle size={18} />
       <h2>최근 글</h2>
+      {hasMore && <a href="/posts" class="view-all">전체 보기 →</a>}
     </div>
-    {
-      recent.length > 0 ? (
-        <PostList posts={recent} />
-      ) : (
-        <p class="empty">아직 풀어둔 생각이 없네요. (토니가 초안을 굽는 중)</p>
-      )
-    }
-    {
-      posts.length > recent.length && (
-        <a href="/posts" class="more">글 전체 보기 →</a>
-      )
-    }
+
+    {recent.length > 0 ? (
+      <ul class="post-list">
+        {recent.map((post) => {
+          const cat = getCategory(post.data.category);
+          return (
+            <li>
+              <a href={`/posts/${post.id}`} class="post-row">
+                <span class="post-label">
+                  {formatMonthYear(post.data.pubDate)} · {cat.label}
+                </span>
+                <span class="post-title">{post.data.title}</span>
+                <span class="post-arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <p class="empty">아직 풀어둔 생각이 없네요. (토니가 초안을 굽는 중)</p>
+    )}
   </section>
+
 </BaseLayout>
 
 <style>
-  .hero {
-    border-bottom: 1px solid var(--border);
+  /* ── HERO ENTRANCE ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; translate: 0 12px; }
+    to   { opacity: 1; translate: 0 0;    }
   }
-  .hero-inner {
-    max-width: var(--content-max);
-    margin: 0 auto;
-    padding: 72px var(--page-pad);
+  .hero-hand {
+    animation: fadeUp 260ms var(--ease) both;
+    animation-delay: 0ms;
   }
   .hero h1 {
-    font-size: clamp(40px, 9vw, 56px);
-    font-weight: 800;
-    margin: 0;
+    animation: fadeUp 260ms var(--ease) both;
+    animation-delay: 60ms;
   }
-  .dot-accent {
-    color: var(--signature);
+  .hero-sub {
+    animation: fadeUp 260ms var(--ease) both;
+    animation-delay: 120ms;
   }
-  .tagline {
-    font-size: 18px;
-    font-weight: 500;
-    margin: 12px 0 4px;
+  .hero-cta {
+    animation: fadeUp 260ms var(--ease) both;
+    animation-delay: 180ms;
   }
-  .sub {
-    color: var(--ink-2);
-    margin: 0;
-    font-size: 15px;
+
+  /* ── HERO ── */
+  .hero {
+    border-bottom: 1.5px solid var(--ink);
+    background: var(--paper);
   }
-  .recent {
-    max-width: var(--content-max);
+  .hero-inner {
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 44px var(--page-pad) 0;
+    padding: 48px var(--page-pad) 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+  .hero-hand {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--accent);
+    display: inline-block;
+    transform: rotate(-3deg);
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 0 0 22px;
+  }
+  .accent {
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.85;
+    color: var(--ink-2);
+    margin: 0 0 30px;
+    max-width: 380px;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn-filled {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    background: var(--accent);
+    color: var(--paper);
+    padding: 13px 24px;
+    border-radius: var(--btn-radius);
+    transition: opacity var(--dur) var(--ease);
+  }
+  .btn-filled:hover {
+    opacity: 0.85;
+    color: var(--paper);
+  }
+  .hero-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-image img {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    object-fit: contain;
+    /* slight upward float to visually center with text */
+    margin-top: -16px;
+  }
+
+  /* ── RECENT POSTS ── */
+  .recent {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 8px var(--page-pad) 64px;
   }
   .recent-head {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    align-items: baseline;
+    justify-content: space-between;
+    border-top: 1.5px solid var(--ink);
+    padding-top: 18px;
+    margin-bottom: 4px;
   }
   .recent-head h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
     font-size: 22px;
+    color: var(--ink);
     margin: 0;
+  }
+  .view-all {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-3);
+    transition: color var(--dur) var(--ease);
+  }
+  .view-all:hover {
+    color: var(--accent);
+  }
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .post-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 18px 4px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink);
+    transition: color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .post-row:hover,
+  .post-row:focus-visible {
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+  .post-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    width: 160px;
+    flex: none;
+    transition: color var(--dur) var(--ease);
+  }
+  .post-title {
+    font-family: var(--font-body);
+    font-size: 19px;
+    flex: 1;
+  }
+  .post-arrow {
+    color: var(--accent);
+    font-size: 18px;
+    flex: none;
   }
   .empty {
     color: var(--ink-2);
     padding: 24px 0;
+    font-family: var(--font-body);
   }
-  .more {
-    display: inline-block;
-    margin-top: 24px;
-    font-weight: 600;
-    color: var(--ink);
-    background: var(--pop);
-    border: 2px solid var(--ink);
-    padding: 9px 18px;
-    border-radius: var(--radius-md);
-    transition: transform var(--dur) var(--ease);
-  }
-  .more:hover {
-    transform: translateY(-2px);
+
+  /* ── 모바일 ── */
+  @media (max-width: 768px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+    }
+    .hero-image {
+      order: -1;
+    }
+    .hero-image img {
+      max-width: 240px;
+      margin: 0 auto;
+    }
+    .post-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 16px 4px;
+    }
+    .post-label {
+      width: auto;
+    }
+    .post-arrow {
+      display: none;
+    }
   }
 </style>

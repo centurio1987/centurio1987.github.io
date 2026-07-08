@@ -10,6 +10,10 @@ export function formatYear(date: Date): string {
   return String(date.getFullYear());
 }
 
+export function formatMonthYear(date: Date): string {
+  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
 // 한국어 기준 대략적 읽기 시간 (분), 분당 약 500자
 export function readingTime(body: string | undefined): number {
   if (!body) return 1;

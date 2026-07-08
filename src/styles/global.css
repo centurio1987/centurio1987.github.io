@@ -1,9 +1,7 @@
 @import "./tokens.css";
 
-/* Pretendard (KO+EN) */
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
-/* JetBrains Mono (코드 전용) */
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap");
+/* Google Fonts — 한국어 전용 폰트 시스템 */
+@import url("https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&family=Space+Mono:wght@400;700&family=Gaegu:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 *,
 *::before,
@@ -19,10 +17,9 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: 18px;
   line-height: 1.7;
-  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -31,13 +28,12 @@ h1,
 h2,
 h3,
 h4 {
-  letter-spacing: -0.02em;
   line-height: 1.25;
   font-weight: 700;
 }
 
 a {
-  color: var(--signature-ink);
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -45,7 +41,7 @@ a {
 .prose a,
 a.sketch-link {
   position: relative;
-  color: var(--signature-ink);
+  color: var(--accent);
   font-weight: 500;
 }
 .prose a::after,
@@ -56,7 +52,7 @@ a.sketch-link::after {
   right: 0;
   bottom: -2px;
   height: 2px;
-  background: var(--signature);
+  background: var(--accent);
   border-radius: 2px;
   transform: scaleX(0);
   transform-origin: left;
@@ -68,7 +64,7 @@ a.sketch-link:hover::after {
 }
 
 code {
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 0.875em;
 }
 
@@ -103,8 +99,8 @@ hr {
 }
 
 ::selection {
-  background: var(--pop-tint);
-  color: var(--pop-ink);
+  background: var(--accent-tint);
+  color: var(--ink);
 }
 
 .visually-hidden {

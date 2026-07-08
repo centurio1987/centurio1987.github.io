@@ -1,17 +1,20 @@
-/* 디자인 컨셉 v0.2 — 흙빛 다색 / 라이트 기본 / 손맛 공예 감성 */
+/* 디자인 컨셉 v0.3 — Editorial Split · Cobalt+Cream · 한국어 폰트 */
 :root {
   /* 중립 */
-  --paper: #ece9e1;
-  --surface: #f7f5ef;
-  --subtle: #e2ded2;
-  --border: #d8d4c8;
-  --ink: #1c1b18;
-  --ink-2: #6b665c;
-  --ink-3: #8a857a;
+  --paper: #F3EEE4;
+  --surface: #F8F3E8;
+  --cream: #EDE6D8;
+  --canvas: #d8d4ca;
+  --subtle: #e8e2d6;
+  --border: #d8d0be;
+  --ink: #20264A;
+  --ink-2: #4a4f6a;
+  --ink-3: #6f7390;
 
-  /* 시그니처 & 팝 */
-  --signature: #4e6ca8;
-  --signature-ink: #27406e;
+  /* 포인트 */
+  --accent: #2B3FD4;
+  --accent-tint: #bcc6ff;
+  --accent-tint2: #dfe3ff;
   --pop: #d8a33f;
   --pop-tint: #f0dca8;
   --pop-ink: #8a6313;
@@ -31,6 +34,8 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --card-radius: 14px;
+  --btn-radius: 999px;
 
   /* 레이아웃 */
   --measure: 72ch;
@@ -38,14 +43,20 @@
   --page-pad: clamp(20px, 5vw, 48px);
 
   /* 타이포 */
-  --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system,
-    sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: 'Jua', sans-serif;
+  --font-body: 'Gowun Dodum', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-hand: 'Gaegu', cursive;
+  --font-code: 'JetBrains Mono', 'Space Mono', ui-monospace, monospace;
+
+  /* 모티프 */
+  --hatch: repeating-linear-gradient(45deg, rgba(43,63,212,.10) 0 1px, transparent 1px 11px);
+  --hatch-border: rgba(43, 63, 212, .30);
 
   /* 모션 */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --dur: 180ms;
 
   /* 모눈 텍스처 (히어로·푸터 전용) */
-  --grid-line: rgba(28, 27, 24, 0.045);
+  --grid-line: rgba(32, 38, 74, 0.05);
 }
