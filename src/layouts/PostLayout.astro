@@ -1,4 +1,6 @@
 ---
+import fs from "node:fs";
+import path from "node:path";
 import BaseLayout from "./BaseLayout.astro";
 import CategoryBadge from "../components/CategoryBadge.astro";
 import RelatedPosts from "../components/RelatedPosts.astro";
@@ -15,9 +17,35 @@ const { title, description, pubDate, updatedDate, category } = post.data;
 const minutes = readingTime(post.body);
 const allPosts = await getCollection("posts", ({ data }) => !data.draft);
 const related = getRelatedPosts(post, allPosts);
+
+const slug = post.id.replace(/\.(md|mdx)$/, "");
+let postImage = "/images/tony-deco.webp";
+const heroPath = path.join(process.cwd(), "public", "images", slug, "hero.webp");
+if (fs.existsSync(heroPath)) {
+  postImage = `/images/${slug}/hero.webp`;
+} else {
+  const imgDir = path.join(process.cwd(), "public", "images", slug);
+  if (fs.existsSync(imgDir)) {
+    const findFirstImage = (dir: string): string | null => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        if (entry.isDirectory()) {
+          const found = findFirstImage(path.join(dir, entry.name));
+          if (found) return found;
+        } else if (/\.(webp|png|jpg|jpeg)$/i.test(entry.name)) {
+          return path.join(dir, entry.name);
+        }
+      }
+      return null;
+    };
+    const found = findFirstImage(imgDir);
+    if (found) {
+      postImage = "/" + path.relative(path.join(process.cwd(), "public"), found).replace(/\\/g, "/");
+    }
+  }
+}
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} image={postImage} type="article">
   <article class="post">
     <header class="post-header">
       <div class="post-meta">
