@@ -10,6 +10,7 @@ export const CATEGORIES: CategoryMeta[] = [
   { slug: "architecture", label: "아키텍처", color: "#4E6CA8" },
   { slug: "strategy", label: "전략", color: "#A84B4B" },
   { slug: "skills", label: "기술", color: "#3E6B6B" },
+  { slug: "learning", label: "학습", color: "#6A6FB3" },
   { slug: "design", label: "설계", color: "#7A5C7E" },
   { slug: "research", label: "리서치", color: "#B07A2E" },
   { slug: "quality", label: "품질", color: "#6B6B3E" },
