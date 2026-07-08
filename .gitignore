@@ -9,6 +9,9 @@ dist
 # astro
 .astro
 
+# Obsidian vault workspace
+.obsidian/
+
 # npm lockfile (CI uses bun)
 package-lock.json
 
