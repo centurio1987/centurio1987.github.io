@@ -13,7 +13,7 @@ draft: false
 import HandshakeLab from "../../components/posts/osi-7-layers-4/HandshakeLab";
 import SlidingWindowLab from "../../components/posts/osi-7-layers-4/SlidingWindowLab";
 
-![L4 해부: 포트와 소켓, 그리고 TCP가 신뢰를 만드는 법](/images/osi-7-layers-4/hero.png)
+![L4 해부: 포트와 소켓, 그리고 TCP가 신뢰를 만드는 법](/images/osi-7-layers-4/hero.webp)
 
 3편에서 패킷은 마침내 목적지 호스트에 도착했습니다. IP는 자기 일을 끝냈습니다 — "이 기계까지" 데이터를 옮겨 놓았으니까요. 그런데 그 기계 안에서는 브라우저, 메신저, 백그라운드 업데이트가 동시에 수십 개의 통신을 하고 있습니다. **이 패킷은 그중 누구의 것일까요?** 그리고 IP는 "보내기만 하고 도착은 책임 안 지는" 계층인데, 우리가 보는 웹페이지는 어떻게 한 글자도 빠짐없이 순서대로 도착할까요?
 
@@ -56,7 +56,7 @@ L4의 두 대표 프로토콜은 정반대 철학을 가집니다.
 - **UDP(User Datagram Protocol)**: 8바이트짜리 최소 헤더(출발지·목적지 port, 길이, checksum)에 데이터를 실어 그냥 보냅니다. 연결 수립도, 재전송도, 순서 보장도 없습니다. 빠르고 가볍지만 **도착은 보장하지 않습니다.**
 - **TCP(Transmission Control Protocol)**: 연결을 먼저 세우고, 순서번호로 정렬하고, 빠진 건 재전송하고, 속도까지 조절합니다. **신뢰할 수 없는 IP 위에 신뢰할 수 있는 byte stream을 만듭니다.**
 
-![TCP와 UDP의 설계 철학 비교](/images/osi-7-layers-4/tcp-vs-udp.png)
+![TCP와 UDP의 설계 철학 비교](/images/osi-7-layers-4/tcp-vs-udp.webp)
 
 나머지 절의 대부분은 TCP가 "어떻게 그 신뢰성을 만드는가"에 대한 것입니다. 그 마법은 세 가지 — **연결 수립, 재전송, 흐름·혼잡 제어**로 나뉩니다.
 
@@ -116,7 +116,7 @@ IP는 segment를 잃어버리거나, 중복시키거나, 순서를 뒤바꿀 수
 
 흐름 제어가 "수신자를 넘치게 하지 마"라면, **혼잡 제어는 "네트워크를 넘치게 하지 마"**입니다. 둘은 자주 혼동되지만 보는 대상이 다릅니다.
 
-![흐름 제어와 혼잡 제어의 차이](/images/osi-7-layers-4/flow-vs-congestion.png)
+![흐름 제어와 혼잡 제어의 차이](/images/osi-7-layers-4/flow-vs-congestion.webp)
 
 - **흐름 제어**: 수신자가 광고하는 윈도우(rwnd)로 제한합니다. 종단 둘 사이의 약속입니다.
 - **혼잡 제어**: 송신자가 스스로 추정하는 혼잡 윈도우(cwnd)로 제한합니다. 네트워크 상태를 손실·지연으로 짐작합니다.

@@ -13,7 +13,7 @@ draft: false
 import SwitchLearningLab from "../../components/posts/osi-7-layers-2/SwitchLearningLab";
 import FrameAnatomy from "../../components/posts/osi-7-layers-2/FrameAnatomy";
 
-![L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가](/images/osi-7-layers-2/hero.png)
+![L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가](/images/osi-7-layers-2/hero.webp)
 
 1편에서 우리는 데이터의 여행 전체를 내려다보는 지도를 그렸습니다. 신호가 죽었는지, 같은 링크의 다음 홉까지 닿는지, 경로가 목적지를 향하는지, 포트가 열렸는지를 순서대로 묻는 법을 익혔습니다. 이제 그 지도에서 가장 아래, 두 층으로 줌인할 차례입니다.
 
@@ -49,7 +49,7 @@ hub는 이 시절의 장비입니다. 들어온 신호를 모든 port로 단순 
 
 switch는 이 그림을 근본적으로 바꿨습니다. switch의 **각 port는 독립된 충돌 영역**이고, port와 호스트가 일대일로 연결되면 양방향이 동시에 가능한 **full-duplex**가 됩니다(10/100BASE-T는 송·수신 쌍이 아예 분리되고, 1000BASE-T는 같은 쌍을 echo cancellation으로 양방향 공유합니다 — 어느 쪽이든 충돌이 없습니다). 충돌이 사라지므로, full-duplex로 협상된 순간 IEEE 802.3은 **CSMA/CD 자체를 끕니다.** "동작은 하되 발동을 안 하는" 휴면이 아니라 알고리즘이 적용되지 않는 상태입니다 — 그래서 현대 switched 네트워크에서 CSMA/CD는 사실상 박물관 유물입니다.
 
-![hub와 switch 비교: 충돌 영역·duplex·전달 방식·broadcast 처리](/images/osi-7-layers-2/hub-vs-switch.png)
+![hub와 switch 비교: 충돌 영역·duplex·전달 방식·broadcast 처리](/images/osi-7-layers-2/hub-vs-switch.webp)
 
 > **여기서 가장 악명 높은 L1 장애가 나옵니다: duplex mismatch.** 한쪽은 full-duplex, 다른 쪽은 half-duplex로 협상되면, full 쪽은 "충돌 없다"고 믿고 아무 때나 보내는데 half 쪽은 그걸 충돌로 감지합니다. 결과는 **late collision, FCS 오류, 그리고 "연결은 되는데 미치도록 느린" 처리량**입니다. ping은 멀쩡한데 대용량 전송만 기어가는 증상의 단골 원인입니다. autonegotiation(IEEE 802.3 Clause 28)을 양쪽 다 켜거나, 양쪽 다 수동 고정해야 합니다. 한쪽만 고정하면 다른 쪽이 duplex를 추론하지 못해 half로 떨어집니다.
 
@@ -86,7 +86,7 @@ L1이 비트를 신호로 옮긴다면, L2는 그 비트들을 **프레임이라
 
 즉 L2 주소는 한 L2 구간에서만 유효한 도착 라벨이고, IP 주소는 종단까지 가는 여권입니다. 이 구분이 L2와 L3를 가르는 가장 중요한 선입니다. (IP도 NAT·터널을 만나면 변할 수 있는데, 그 예외는 다음 편에서 다룹니다.)
 
-![MAC 주소와 IP 주소 비교: 유효 범위·바뀌는 지점·역할](/images/osi-7-layers-2/mac-vs-ip.png)
+![MAC 주소와 IP 주소 비교: 유효 범위·바뀌는 지점·역할](/images/osi-7-layers-2/mac-vs-ip.webp)
 
 ## 핵심 원리: 스위치는 어떻게 "학습"하는가
 

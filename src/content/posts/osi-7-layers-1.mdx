@@ -13,7 +13,7 @@ draft: false
 import EncapsulationLab from "../../components/posts/osi-7-layers-1/EncapsulationLab";
 import LayerTriage from "../../components/posts/osi-7-layers-1/LayerTriage";
 
-![OSI 7계층, 외우지 말고 데이터의 여행으로 이해하기](/images/osi-7-layers-1/hero.png)
+![OSI 7계층, 외우지 말고 데이터의 여행으로 이해하기](/images/osi-7-layers-1/hero.webp)
 
 브라우저에 주소를 입력하고 Enter를 누릅니다. 잠시 뒤 화면이 뜹니다. 그 짧은 순간에 여러분이 친 문자열은 암호화되고, 잘게 나뉘고, 주소표를 달고, 프레임에 실린 뒤 전기·빛·전파 신호가 됩니다. 받는 쪽 종단에서는 그 포장을 역순으로 벗습니다.
 
@@ -57,7 +57,7 @@ HTTP message
   -> 물리 매체의 신호
 ```
 
-![캡슐화: 계층을 내려갈 때마다 헤더가 덧붙고, 맨 아래에서 신호가 된다](/images/osi-7-layers-1/encapsulation.png)
+![캡슐화: 계층을 내려갈 때마다 헤더가 덧붙고, 맨 아래에서 신호가 된다](/images/osi-7-layers-1/encapsulation.webp)
 
 수신 측은 반대로 올라갑니다. Ethernet 인터페이스는 frame을 검사하고 payload인 IP packet을 넘깁니다. IP는 목적지와 상위 프로토콜 번호를 보고 TCP에 넘깁니다. TCP는 port를 통해 올바른 프로세스의 socket으로 byte stream을 전달합니다. HTTP 구현이 마지막으로 message의 의미를 해석합니다.
 
@@ -154,7 +154,7 @@ L7 장애는 "network가 안 된다"로 보이기 쉽습니다. 하지만 TCP co
 
 계층 모델의 진짜 가치는 장애 상황에서 드러납니다. "인터넷이 안 돼요"라는 한 문장 뒤에는 서로 전혀 다른 여섯 가지 실패가 숨어 있습니다. 무작정 application을 재시작하거나 DNS server를 8.8.8.8로 바꾸는 대신, **아래(L1)에서 위(L7)로 관찰 범위를 좁히는 triage**를 기본기로 삼으십시오. 신호가 죽었는데 HTTP status를 들여다보는 것은 시간 낭비이기 때문입니다. (경험이 쌓이면 증상·변경 이력에 따라 top-down이나 "정상이던 기준점과 비교"가 더 빠를 때도 있습니다. 아래 순서는 길을 잃지 않게 해 주는 학습용 기본값입니다.)
 
-![장애 진단은 아래(L1)에서 위(L7)로 한 계단씩 좁힌다](/images/osi-7-layers-1/triage-ladder.png)
+![장애 진단은 아래(L1)에서 위(L7)로 한 계단씩 좁힌다](/images/osi-7-layers-1/triage-ladder.webp)
 
 먼저 증상을 골라 어느 계층부터 의심할지 감을 잡아 보십시오.
 

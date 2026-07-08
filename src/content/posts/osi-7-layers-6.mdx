@@ -13,7 +13,7 @@ draft: false
 import DnsResolveLab from "../../components/posts/osi-7-layers-6/DnsResolveLab";
 import RequestJourneyLab from "../../components/posts/osi-7-layers-6/RequestJourneyLab";
 
-![L7 해부: DNS와 HTTP, 그리고 한 줄의 curl로 끝나는 여행](/images/osi-7-layers-6/hero.png)
+![L7 해부: DNS와 HTTP, 그리고 한 줄의 curl로 끝나는 여행](/images/osi-7-layers-6/hero.webp)
 
 다섯 편에 걸쳐 우리는 신호에서 출발해 프레임·패킷·연결을 지나 표현과 세션까지 올라왔습니다. 그 모든 노고는 사실 **이 마지막 계층 하나를 위한 준비**였습니다. 사용자는 전압도, MAC 주소도, 순서번호도, 인증서도 직접 원하지 않습니다. 그가 원하는 건 "이 페이지를 보여 줘", "이 메일을 보내 줘" 같은 **기능**입니다. 그 기능을 정의하는 곳이 L7(Application)입니다.
 
@@ -76,7 +76,7 @@ Accept: text/html
 
 응답은 **상태 코드**로 시작합니다. 세 자리 숫자의 첫 자리가 부류를 가릅니다.
 
-![HTTP 상태 코드 첫 자리가 가르는 책임](/images/osi-7-layers-6/status-classes.png)
+![HTTP 상태 코드 첫 자리가 가르는 책임](/images/osi-7-layers-6/status-classes.webp)
 
 - **2xx 성공**: `200 OK`, `201 Created`, `204 No Content`.
 - **3xx 그 밖의 처리 필요**: `301`(영구 이동)·`302`(임시)·`307`·`308`은 다른 URL로 보내는 리다이렉트이고, `304 Not Modified`는 리다이렉트가 아니라 "캐시 그대로 써"라는 조건부 요청 응답입니다(아래 캐싱 참고).
@@ -89,7 +89,7 @@ Accept: text/html
 
 여기서 중요한 구분이 있습니다. HTTP의 **의미**(메서드·상태 코드·헤더·캐싱)는 버전과 무관하게 정의됩니다(RFC 9110). 바뀐 건 그 의미를 **wire에 싣는 방식**입니다.
 
-![HTTP/1.1, HTTP/2, HTTP/3의 전송 방식 비교](/images/osi-7-layers-6/http-versions.png)
+![HTTP/1.1, HTTP/2, HTTP/3의 전송 방식 비교](/images/osi-7-layers-6/http-versions.webp)
 
 - **HTTP/1.1**: 텍스트 기반에 연결 재사용(keep-alive)입니다. 요청을 연달아 보내는 pipelining이 규격엔 있지만, **응답을 요청 순서(FIFO: First In, First Out)대로** 받아야 해 앞 요청이 느리면 뒤가 막히는 **head-of-line blocking**이 있고, 그 부작용·중개자 문제로 실제론 거의 안 쓰입니다.
 - **HTTP/2**: 같은 의미를 **바이너리 프레임**으로 싣고, 한 TCP 연결 위에 여러 요청을 **multiplexing**합니다(헤더는 HPACK(Header Compression for HTTP/2)으로 압축). 다만 그 아래 TCP가 단일 byte stream이라, 패킷 하나가 빠지면 모든 stream이 함께 멈추는 **TCP 레벨 HOL blocking**은 남습니다.
