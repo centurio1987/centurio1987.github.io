@@ -1,0 +1,4 @@
+interface:
+  display_name: "Convert Images WebP"
+  short_description: "Convert local image assets to WebP and update references safely."
+  default_prompt: "Convert image assets to WebP using the safe preview-first workflow."
