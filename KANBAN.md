@@ -9,8 +9,6 @@
   - 메모: 앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함
 - `KAN-008` OCI, CRI — 생성:ai · 최종:ai · 갱신:2026-06-30
   - 메모: Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교
-- `KAN-012` 인증·인가 해부 4편 — 실무 베스트 프랙티스 — 생성:ai · 최종:ai · 갱신:2026-07-22
-  - 메모: KAN-009 시리즈. 베스트프랙티스 목록+실습(4-1 nginx auth_request+redis, 4-2 BFF+refresh rotation)+인가모델(RBAC/ABAC)+위협대응. ❌/✅ 비교.
 
 ## 할 일
 
@@ -43,5 +41,7 @@
   - 메모: 2편 발행 완료: src/content/posts/auth-authz-2.mdx (JWT/JWS/JWKS·서명검증 6단계·alg none/confusion·opaque vs JWT·DPoP/mTLS). JwtVerifyLab 시뮬. 빌드 통과.
 - `KAN-011` 인증·인가 해부 3편 — 플로우 — 생성:ai · 최종:ai · 갱신:2026-07-22
   - 메모: 3편 발행 완료: src/content/posts/auth-authz-3.mdx (Authorization Code+PKCE·프론트/백채널·state/nonce·OIDC 로그인·client auth·PAR). PkceFlowStepper 시뮬. 빌드 통과.
+- `KAN-012` 인증·인가 해부 4편 — 실무 베스트 프랙티스 — 생성:ai · 최종:ai · 갱신:2026-07-22
+  - 메모: 4편(마지막) 발행 완료: src/content/posts/auth-authz-4.mdx (nginx auth_request+헤더sanitize·Redis 세션·BFF·refresh 회전·인가 집행·CSRF). AuthRequestLab 시뮬. 빌드 통과. 시리즈 완결.
 
 ## 완료

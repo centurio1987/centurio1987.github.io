@@ -1,6 +1,6 @@
 {
   "next_id": 13,
-  "next_seq": 25,
+  "next_seq": 29,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -119,22 +119,21 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-012": {
-      "col": "backlog",
+      "col": "review",
       "title": "인증·인가 해부 4편 — 실무 베스트 프랙티스",
-      "memo": "KAN-009 시리즈. 베스트프랙티스 목록+실습(4-1 nginx auth_request+redis, 4-2 BFF+refresh rotation)+인가모델(RBAC/ABAC)+위협대응. ❌/✅ 비교.",
+      "memo": "4편(마지막) 발행 완료: src/content/posts/auth-authz-4.mdx (nginx auth_request+헤더sanitize·Redis 세션·BFF·refresh 회전·인가 집행·CSRF). AuthRequestLab 시뮬. 빌드 통과. 시리즈 완결.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-22",
       "title_hash": "454eed2c2b079c587654daea9d523a42da2af63e",
-      "memo_hash": "399cb1314feab0ed568bf963454e194bb6007663",
+      "memo_hash": "2e40ee5f5433a4991314d926eaf15878fbf5d69c",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
     "KAN-007",
     "KAN-008",
-    "KAN-012",
     "KAN-006",
     "KAN-009",
     "KAN-001",
@@ -143,9 +142,48 @@
     "KAN-004",
     "KAN-005",
     "KAN-010",
-    "KAN-011"
+    "KAN-011",
+    "KAN-012"
   ],
   "recent": [
+    {
+      "seq": 28,
+      "t": "2026-07-22T20:29",
+      "a": "ai",
+      "id": "KAN-012",
+      "op": "edit",
+      "field": "memo",
+      "before": "인증·인가 해부 4편(마지막) 집필 중. 베스트프랙티스 목록+실습: nginx auth_request+redis 세션, BFF+refresh rotation, 인가모델(RBAC/ABAC), 위협대응. draft slug: auth-authz-4.",
+      "after": "4편(마지막) 발행 완료: src/content/posts/auth-authz-4.mdx (nginx auth_request+헤더sanitize·Redis 세션·BFF·refresh 회전·인가 집행·CSRF). AuthRequestLab 시뮬. 빌드 통과. 시리즈 완결."
+    },
+    {
+      "seq": 27,
+      "t": "2026-07-22T20:29",
+      "a": "ai",
+      "id": "KAN-012",
+      "op": "move",
+      "from": "doing",
+      "to": "review"
+    },
+    {
+      "seq": 26,
+      "t": "2026-07-22T20:08",
+      "a": "ai",
+      "id": "KAN-012",
+      "op": "edit",
+      "field": "memo",
+      "before": "KAN-009 시리즈. 베스트프랙티스 목록+실습(4-1 nginx auth_request+redis, 4-2 BFF+refresh rotation)+인가모델(RBAC/ABAC)+위협대응. ❌/✅ 비교.",
+      "after": "인증·인가 해부 4편(마지막) 집필 중. 베스트프랙티스 목록+실습: nginx auth_request+redis 세션, BFF+refresh rotation, 인가모델(RBAC/ABAC), 위협대응. draft slug: auth-authz-4."
+    },
+    {
+      "seq": 25,
+      "t": "2026-07-22T20:08",
+      "a": "ai",
+      "id": "KAN-012",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 24,
       "t": "2026-07-22T19:58",
