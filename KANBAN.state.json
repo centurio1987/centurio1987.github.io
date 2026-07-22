@@ -1,6 +1,6 @@
 {
   "next_id": 10,
-  "next_seq": 15,
+  "next_seq": 17,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -53,14 +53,14 @@
       "memo_hash": "a5d0c8332c09aef1d50f830fbae7f559aadb3b98"
     },
     "KAN-006": {
-      "col": "doing",
+      "col": "done",
       "title": "WebRTC 이해와 최적 활용 사례",
-      "memo": "webrtc-1, webrtc-2 발행됨, 3편(토폴로지) 남음",
+      "memo": "webrtc-1/2/3 전편 발행 완료",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-22",
       "title_hash": "7112cac2269654d681b96567a0c1d7919d84be1a",
-      "memo_hash": "38e020a164f292fc77d08d531ce00e51d7dee1e1"
+      "memo_hash": "c0f47f370b9dd2377a1afa3b973677d4a22542a5"
     },
     "KAN-007": {
       "col": "backlog",
@@ -98,15 +98,34 @@
   "order": [
     "KAN-007",
     "KAN-008",
-    "KAN-006",
     "KAN-001",
     "KAN-002",
     "KAN-003",
     "KAN-004",
     "KAN-005",
-    "KAN-009"
+    "KAN-009",
+    "KAN-006"
   ],
   "recent": [
+    {
+      "seq": 16,
+      "t": "2026-07-22T00:00",
+      "a": "ai",
+      "id": "KAN-006",
+      "op": "edit",
+      "field": "memo",
+      "before": "webrtc-1, webrtc-2 발행됨, 3편(토폴로지) 남음",
+      "after": "webrtc-1/2/3 전편 발행 완료"
+    },
+    {
+      "seq": 15,
+      "t": "2026-07-22T00:00",
+      "a": "ai",
+      "id": "KAN-006",
+      "op": "move",
+      "from": "doing",
+      "to": "done"
+    },
     {
       "seq": 14,
       "t": "2026-07-22T18:00",
