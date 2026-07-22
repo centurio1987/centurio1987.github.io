@@ -1,0 +1,267 @@
+---
+title: "인증·인가 해부 3편 — 플로우: 토큰은 어떻게 오는가"
+description: "로그인 버튼을 누르면 URL이 몇 번을 튕긴다. Authorization Code + PKCE와 OIDC 로그인의 리다이렉트 전 과정을, code_verifier부터 토큰 교환까지 실제 요청·응답 데이터로 추적한다."
+pubDate: 2026-07-22
+category: skills
+tags: ["OAuth 2.0", "OpenID Connect", "PKCE", "Authorization Code", "OIDC 로그인", "state", "nonce"]
+series: "인증·인가 해부"
+order: 3
+draft: false
+---
+
+import PkceFlowStepper from "../../components/posts/auth-authz-3/PkceFlowStepper";
+
+![인증·인가 해부 3편 — 플로우: 토큰은 어떻게 오는가](/images/auth-authz-3/hero.webp)
+
+2편에서 우리는 토큰을 **검증**하는 법을 익혔습니다. 그런데 한 가지를 건너뛰었습니다 — 그 토큰은 애초에 **어떻게** 클라이언트 손에 들어왔을까요?
+
+"소셜 로그인"을 눌러 보신 적이 있을 겁니다. 버튼을 누르면 주소창이 IdP(구글·Keycloak)로 튕겼다가, 로그인·동의를 거치고, 다시 우리 앱으로 되돌아옵니다. 그 몇 번의 리다이렉트 동안 무슨 일이 벌어지는지 물으면 대부분 말문이 막힙니다. 그리고 여기서 사고가 납니다 — 옛날 방식(Implicit)은 **토큰을 주소창(URL fragment)에 실어** 돌려줬고, 그 토큰은 브라우저 히스토리·로그·악성 JS 접근으로 새어 나가고, 재생 방어나 sender-constraint도 없었습니다. 어떤 개발자는 SPA에 **client_secret을 박아** 넣었다가, 브라우저 개발자도구를 연 누구에게나 그 비밀을 넘겨줬습니다.
+
+이 글을 끝까지 읽으시면, 그 리다이렉트 춤의 **모든 스텝**이 보이게 됩니다. **Authorization Code + PKCE**가 왜 오늘의 표준이고, `code_verifier`와 `code_challenge`가 무엇을 막으며, `state`와 `nonce`가 각각 어떤 공격을 방어하는지 — 실제 요청·응답 데이터를 손에 쥐고 추적할 수 있게 됩니다.
+
+## 들어가며: 왜 이렇게 여러 번 튕기는가
+
+가장 단순한 질문부터. **왜 그냥 아이디·비밀번호를 우리 앱에 POST하지 않는가?**
+
+1편에서 답했습니다. 그건 **위임(delegation)** 이 아니라 자격증명 통째 넘기기입니다. 사용자는 구글 비밀번호를 우리 앱에 주고 싶지 않습니다(2편에서 본 `grant_type=password`가 금지된 이유이기도 합니다). 그래서 인증은 **IdP에서** 일어나고, 우리 앱은 "이 사용자가 IdP에서 로그인했다"는 **증거(코드→토큰)**만 받습니다. 그 증거를 안전하게 주고받으려다 보니 리다이렉트가 여러 번 필요한 것입니다.
+
+핵심은 **두 개의 채널**입니다.
+
+- **프론트채널(front channel)**: 브라우저 **주소창(리다이렉트)**을 통하는 통로. URL·히스토리·로그에 남습니다. **믿을 수 없는 통로**입니다.
+- **백채널(back channel)**: 리다이렉트가 아니라 **직접 보내는 HTTP 요청**. 서버가 있는 앱은 서버가 IdP에 직접 보내고, 서버 없는 SPA·모바일은 브라우저/앱 런타임이 `fetch`로 직접 보냅니다. 어느 쪽이든 **주소창을 거치지 않는** 통로입니다.
+
+Authorization Code 흐름의 지혜가 여기 있습니다 — 믿을 수 없는 프론트채널로는 **일회용 코드(authorization code)**만 흘리고, **진짜 토큰은 백채널로만** 교환합니다. 토큰이 주소창에 실리지 않는 것, 그것이 폐기된 Implicit 방식 대비 핵심 이점입니다. (코드는 비밀은 아니지만, 토큰으로 바꿀 수 있는 **일회용 credential**이라 보호해야 합니다 — 그 보호 장치가 곧 뒤에 나올 PKCE입니다.)
+
+> 용어 정리: 이 글은 **OAuth 2.0의 Authorization Code 흐름 위에 OIDC 로그인을 얹은** 것을 설명합니다. `access_token`·`scope`·`grant_type`은 OAuth(위임)이고, `id_token`·`nonce`·`openid` scope·Discovery는 OIDC(인증)입니다. 1편의 "OAuth는 위임, OIDC는 인증"을 흐름으로 옮긴 셈입니다.
+
+## 한눈에 보기: Authorization Code + PKCE
+
+전체 흐름은 여섯 스텝입니다. 어느 채널을 쓰는지 함께 보십시오.
+
+| # | 스텝 | 채널 | 오가는 것 |
+|---|---|---|---|
+| 1 | **PKCE 준비** | (클라이언트 내부) | `code_verifier` 생성 → `code_challenge` = S256 해시 |
+| 2 | **인가 요청** | 프론트채널 | `client_id`·`redirect_uri`·`scope`·`state`·`nonce`·`code_challenge` |
+| 3 | **로그인·동의** | (IdP에서) | 사용자 인증, 권한 동의 |
+| 4 | **콜백(코드)** | 프론트채널 | `code`·`state` (토큰 아님) |
+| 5 | **토큰 교환** | **백채널** | `code`·`code_verifier`·`redirect_uri` → 토큰 |
+| 6 | **ID Token 검증** | (클라이언트 내부) | 서명·`iss`·`aud`·`exp`·`nonce` 확인 |
+
+눈여겨 볼 지점. 프론트채널(2·4)에는 **비밀이 흐르지 않습니다** — 코드는 일회용이고, `code_challenge`는 해시라 되돌릴 수 없습니다. 진짜 토큰은 오직 백채널(5)에서만 나옵니다. 마지막 랩에서 이 여섯 스텝을 한 칸씩 밟아 보고, PKCE를 껐을 때 코드 가로채기가 어떻게 성공하는지도 보실 수 있습니다.
+
+## 엄밀한 정의: Authorization Code Grant (RFC 6749)
+
+RFC 6749 §4.1이 정의하는 흐름은 세 번의 홉입니다.
+
+**① 인가 요청(프론트채널)** — 클라이언트가 브라우저를 authorization_endpoint로 리다이렉트합니다. 실제 URL은 이렇습니다(경로 `.../protocol/openid-connect/auth`는 **Keycloak 특유**, 쿼리 파라미터는 **표준**):
+
+```text
+GET https://auth.example.com/realms/demo/protocol/openid-connect/auth
+  ?response_type=code
+  &client_id=photo-app
+  &redirect_uri=https://app.example.com/callback
+  &scope=openid%20profile%20email
+  &state=af0ifjsldkj
+  &nonce=n-0S6_WzA2Mj
+  &code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
+  &code_challenge_method=S256
+```
+
+- **`response_type=code`** (필수, 고정): "코드를 달라". 이것이 Authorization Code 흐름을 지정합니다.
+- **`redirect_uri`**: 코드를 돌려받을 주소. **정확히 사전 등록된 값**이어야 합니다(뒤에서 상술).
+- **`scope=openid ...`**: `openid`가 있으면 OIDC(인증) 요청이 되어 ID Token이 발급됩니다.
+- `state`·`nonce`·`code_challenge`: 각각의 역할은 다음 절들에서.
+
+**② 콜백: 코드(프론트채널)** — 사용자가 IdP에서 로그인·동의하면, IdP는 `redirect_uri`로 브라우저를 되돌리며 **코드**를 붙입니다:
+
+```text
+https://app.example.com/callback
+  ?code=<authorization_code>
+  &state=af0ifjsldkj
+  &session_state=b2c3...      ← Keycloak 특유
+  &iss=https://auth.example.com/realms/demo   ← RFC 9207 (발급자 식별)
+```
+
+코드는 **일회용이며 수명이 짧습니다**(RFC 6749는 최대 10분 권장). `state`는 **요청에서 보낸 값 그대로** 돌아옵니다. `session_state`는 **Keycloak 특유** 필드이고, `iss`는 **RFC 9207**(발급자 식별, mix-up 공격 방어)입니다 — 근래 Keycloak 버전은 이를 붙이며(버전·클라이언트 설정에 따라 다름), 콜백에서 **내가 요청한 발급자와 일치하는지 검증**해야 mix-up 방어가 성립합니다.
+
+**③ 토큰 교환(백채널)** — 이제 클라이언트 **서버**가 IdP에 직접 코드를 토큰으로 바꿉니다:
+
+```bash
+curl -X POST 'https://auth.example.com/realms/demo/protocol/openid-connect/token' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'grant_type=authorization_code' \
+  -d 'code=<authorization_code>' \
+  --data-urlencode 'redirect_uri=https://app.example.com/callback' \
+  -d 'client_id=photo-app' \
+  -d 'code_verifier=<원본 code_verifier>'
+```
+
+`redirect_uri`는 ①과 **동일해야** 합니다. confidential 클라이언트라면 여기에 `client_secret`(또는 HTTP Basic 헤더)을 더합니다. 응답(성공):
+
+```json
+{
+  "access_token": "eyJ...",
+  "expires_in": 300,
+  "refresh_expires_in": 1800,
+  "refresh_token": "eyJ...",
+  "id_token": "eyJ...",
+  "token_type": "Bearer",
+  "not-before-policy": 0,
+  "session_state": "b2c3...",
+  "scope": "openid profile email"
+}
+```
+
+필드를 갈라 보면: `access_token`·`token_type`은 **RFC 6749 필수**, `expires_in`·`refresh_token`·`scope`는 **선택/조건부**(항상 오지는 않습니다 — SPA엔 refresh 토큰이 제한되기도 합니다). **`id_token`은 OIDC**(OpenID Connect) 확장으로, `scope`에 `openid`가 있을 때만 옵니다. `refresh_expires_in`·`not-before-policy`·`session_state`는 **Keycloak 특유** 확장입니다. 토큰이 URL이 아니라 **이 백채널 응답 본문**에서 나온다는 점 — 그것이 이 흐름의 전부입니다.
+
+> ⚠️ 그럼 이 토큰을 **어디에 보관**하나? `localStorage`는 XSS에 취약합니다. 서버 세션·`HttpOnly` 쿠키·메모리 등 저장 전략과 refresh 토큰 회전은 **4편(BFF)**에서 다룹니다. 지금은 "얻는 법"에 집중합니다.
+
+## 핵심 원리: PKCE — 가로챈 코드를 무력화하다
+
+한 가지 허점이 남습니다. 코드는 **프론트채널(브라우저)**로 돌아옵니다. 모바일 앱의 custom URI scheme이나 악성 확장으로 그 코드를 **가로채면**, 공격자가 코드를 토큰으로 교환할 수 있지 않을까요? 특히 비밀을 못 가진 **public 클라이언트**(SPA·모바일)라면 `client_secret`으로 막을 수도 없습니다.
+
+이 코드 가로채기 공격을 막는 것이 **PKCE(Proof Key for Code Exchange, RFC 7636)**입니다. 원리는 "이 코드를 요청한 자만이 교환할 수 있다"를 증명하게 하는 것입니다.
+
+1. 클라이언트가 매 요청마다 무작위 **`code_verifier`**를 만듭니다(43~128자, `A–Z a–z 0–9 - . _ ~`). 최소 256비트 엔트로피 권장.
+2. 그 해시 **`code_challenge` = BASE64URL(SHA256(code_verifier))**를 만들고(`S256`), **인가 요청(②)에 `code_challenge`만** 보냅니다.
+3. 토큰 교환(⑤)에서 **원본 `code_verifier`**를 보냅니다.
+4. IdP는 받은 verifier를 다시 해시해 저장해 둔 challenge와 **대조**하고, 다르면 `invalid_grant`으로 거부합니다.
+
+RFC 7636의 실제 예시로 값을 보면 이렇습니다.
+
+```text
+code_verifier   : dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+code_challenge  : E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM   (= BASE64URL(SHA256(verifier)))
+code_challenge_method : S256
+```
+
+핵심은 여기 있습니다. 프론트채널에 흐른 건 **되돌릴 수 없는 해시(challenge)**뿐입니다. 공격자가 코드를 가로채도, 원본 `code_verifier`가 없으면 토큰 교환이 거부됩니다. 단, 이 방어가 성립하려면 `code_verifier`가 **그 브라우저 세션에 안전히 격리·바인딩**돼 있어야 합니다(아무 데나 두면 그것부터 털립니다).
+
+`code_challenge_method`는 **`S256`만 쓰십시오.** RFC 7636은 "S256을 쓸 수 있으면 반드시 S256"이라 규정하고, RFC 9700·OAuth 2.1 draft는 `plain`(verifier를 그대로 노출)을 **사실상 금지**합니다. **오늘날 PKCE는 public 클라이언트뿐 아니라 모든 클라이언트에 권장됩니다**(OAuth 2.1 draft는 이를 필수화하는 방향).
+
+경계도 분명히 하겠습니다. PKCE는 **코드 가로채기·주입**을 막을 뿐, XSS로 `code_verifier`나 토큰이 털리는 경우, open redirect, 잘못된 토큰 보관은 막지 못합니다. 그건 다른 방어(CSP·저장 전략·redirect 매칭)의 몫입니다.
+
+## state와 nonce: 각각 무엇을 막는가
+
+셋 다 무작위 값이라 자주 뭉뚱그려지지만, 막는 것이 다릅니다. 1편의 예고대로 "관례적 역할"과 "스펙상 효과"를 갈라 보겠습니다.
+
+- **`state`** (CSRF 방어의 표준 관행): 클라이언트가 무작위 값을 넣고, 콜백에서 되돌아온 값을 세션에 저장해 둔 값과 대조합니다. 인가 요청을 사용자 세션에 **묶어** CSRF를 막고, 요청/응답을 상관시키며, mix-up 완화에도 보탬이 됩니다. **여전히 검증해야 하는 필수 관행**입니다.
+- **PKCE** (스펙상 효과): RFC 9700(OAuth 2.0 Security BCP)은 **"PKCE는 인가 응답을 읽을 수 있는 공격자 앞에서도 CSRF를 강하게 방어한다"**고 명시합니다. 즉 PKCE는 코드 주입뿐 아니라 **CSRF까지** 덮습니다. 그렇다고 `state`를 빼도 된다는 뜻이 아니라 — **둘을 함께** 쓰는 것이 권장입니다. PKCE가 암호학적 방어를 더하고, `state`는 세션 상관·상태 복원을 맡습니다.
+- **`nonce`** (OIDC): 클라이언트가 일회용 nonce를 인가 요청에 담으면, IdP는 그 값을 **ID Token의 `nonce` 클레임**에 그대로 넣습니다. 클라이언트는 "요청에 보낸 nonce == ID Token의 nonce"를 검증합니다. 이것이 **ID Token 재생·주입** 공격을 막습니다. (OIDC Core상 순수 Code Flow에서 `nonce`는 OPTIONAL이지만, Implicit/Hybrid에선 필수이고, **로그인 replay 방어를 위해 이 글은 Code Flow에서도 nonce 검증을 권장**합니다.)
+
+정리하면 — `state`=CSRF/상관(필수 관행), PKCE=코드 주입+CSRF(스펙상), `nonce`=ID Token 재생/주입(OIDC, 권장). 셋을 **함께** 씁니다.
+
+## 실무 시나리오 워크스루: OIDC 로그인 한 바퀴
+
+이제 로그인 한 번을 **처음부터 끝까지** 실제 데이터로 밟겠습니다(Keycloak 기준, 17+ 경로).
+
+### 1단계 — Discovery로 엔드포인트를 안다
+
+하드코딩 대신, 발급자의 discovery 문서에서 엔드포인트를 얻습니다(경로 `.well-known/openid-configuration`은 **OIDC 표준**):
+
+```bash
+curl -s 'https://auth.example.com/realms/demo/.well-known/openid-configuration' | jq .
+```
+
+```json
+{
+  "issuer": "https://auth.example.com/realms/demo",
+  "authorization_endpoint": ".../protocol/openid-connect/auth",
+  "token_endpoint": ".../protocol/openid-connect/token",
+  "jwks_uri": ".../protocol/openid-connect/certs",
+  "response_types_supported": ["code", "id_token", "code id_token"],
+  "grant_types_supported": ["authorization_code", "refresh_token", "client_credentials"],
+  "token_endpoint_auth_methods_supported": ["client_secret_basic", "client_secret_post", "private_key_jwt"],
+  "code_challenge_methods_supported": ["plain", "S256"],
+  "id_token_signing_alg_values_supported": ["RS256", "ES256", "PS256"]
+}
+```
+
+`issuer`는 나중에 ID Token의 `iss`와 **정확히 일치**해야 하고, `jwks_uri`는 2편에서 본 서명 검증용 공개키의 출처입니다. `response_types_supported`에 `id_token`·`code id_token`(Hybrid)이 보여도, **신규 앱은 `code`만** 쓰십시오 — 나머지는 서버가 지원할 뿐 권장 옵션이 아닙니다.
+
+### 2~4단계 — 인가 요청 → 로그인 → 코드 콜백
+
+앞의 "엄밀한 정의"에서 본 그대로입니다. 브라우저가 `authorization_endpoint`로 튕기고(`code_challenge` 포함), 사용자가 로그인·동의하면 `redirect_uri`로 `code`가 돌아옵니다. 이때 클라이언트는 콜백에서 두 가지를 **먼저** 확인하고, 다르면 즉시 중단합니다 — **`state`가 내가 보낸 값인지**, 그리고 (`iss`가 있으면) **내가 요청한 발급자인지**(mix-up 방어). 사용자가 동의를 취소하면 코드 대신 `error=access_denied`가 돌아오니, 그 처리도 필요합니다.
+
+### 5단계 — 토큰 교환(백채널)
+
+`state`·`iss` 확인이 끝나면, `code`와 `code_verifier`를 token_endpoint에 보내 토큰을 받습니다(앞의 curl과 응답 JSON 그대로). 이 교환은 흔히 이렇게 실패합니다 — 코드 **재사용**·**만료**, `redirect_uri` **불일치**, `code_verifier` 불일치, 클라이언트 인증 실패. 대부분 HTTP 400 `invalid_grant`으로 떨어지므로, 디버깅 때 이 에러를 이 목록으로 좁히면 빠릅니다.
+
+### 6단계 — ID Token 검증
+
+받은 `id_token`(JWT)을 2편의 방식으로 검증하되, 로그인 특유의 확인이 더해집니다(OIDC Core §3.1.3.7).
+
+- 서명 검증(`jwks_uri`의 키), **`iss` 정확 일치**, **`aud`에 내 `client_id` 포함**, **`exp`** 미만료.
+- **`nonce`**: 내가 보낸 값과 ID Token의 `nonce` 클레임 일치.
+- **`azp`**(authorized party): 있으면 내 `client_id`인지 확인.
+
+여기까지 통과하면 "**방금, 우리 앱을 위해, 이 사용자가** 로그인했다"가 성립합니다. 로그인 완료입니다.
+
+한 가지 오해를 막겠습니다. **ID Token 검증은 "로그인"까지**입니다. 이후 리소스 서버 **API를 호출할 땐 `access_token`을 보내고, 리소스 서버는 그 액세스 토큰을** (2편의 6단계로) 따로 검증합니다 — ID Token으로 API 인가를 대신하지 마십시오. 둘은 audience도, 소비 주체도 다릅니다.
+
+## 클라이언트 인증과 PAR
+
+두 가지를 더 짚겠습니다.
+
+**클라이언트 인증** — confidential 클라이언트는 토큰 교환 때 자신을 증명해야 합니다. 방법(표준 메서드명 / Keycloak authenticator):
+
+- `client_secret_basic`·`client_secret_post`: 공유 비밀(secret)을 헤더/본문으로. 가장 흔하지만 대칭 비밀입니다. (Keycloak: `client-secret`)
+- **`private_key_jwt`**(RFC 7523): 클라이언트가 **개인키로 서명한 JWT**를 `client_assertion`으로 제출(`client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer`). (Keycloak: `client-jwt`)
+- **mTLS**(RFC 8705): 상호 TLS 인증서로 인증. 인증서에 토큰을 묶는 sender-constrained도 가능. (Keycloak: `client-x509`)
+
+RFC 9700은 **비대칭 방식(private_key_jwt·mTLS)**을 권장합니다 — 인가 서버가 대칭 비밀을 저장할 필요가 없어 유출에 강합니다. 그리고 public 클라이언트(SPA·모바일)는 애초에 비밀을 안전히 못 두므로 인증 없이 `client_id`만 쓰되 **PKCE로 보완**합니다.
+
+**PAR(Pushed Authorization Requests, RFC 9126)** — 프론트채널 인가 요청은 파라미터가 URL에 노출되고 무결성 보호가 없습니다(공격자가 `scope`를 바꿔치기할 수 있음). PAR은 클라이언트가 인가 파라미터를 **먼저 백채널로 POST**하고 `request_uri`를 받아, 프론트채널엔 `client_id`와 `request_uri`만 싣습니다:
+
+```text
+GET .../auth?client_id=photo-app&request_uri=urn:ietf:params:oauth:request_uri:bwc4JK-...
+```
+
+파라미터가 백채널에서 고정되니 **무결성**이 보장되고 **프론트채널 노출이 줄어듭니다**. 요청 서명(JAR)·응답 보호(JARM)와 함께 고보안(FAPI) 환경에서 권장됩니다.
+
+## 자주 틀리는 포인트
+
+- ❌ **"토큰을 프론트채널(URL)로 받는다(Implicit)."** → Implicit 그랜트(`response_type=token`)는 토큰 유출·재생에 취약해 **폐기 방향**입니다(RFC 9700). 언제나 **`code`**로 받아 백채널에서 교환하십시오.
+- ❌ **"SPA에 `client_secret`을 넣는다."** → 브라우저에 있는 비밀은 비밀이 아닙니다. SPA·모바일은 **public 클라이언트 + PKCE**로 갑니다.
+- ❌ **"`redirect_uri`를 접두어/와일드카드로 느슨하게 등록한다."** → open redirect·mix-up의 입구입니다. RFC 6749·8252·9700에 걸쳐 **정확 문자열 매칭**이 요구됩니다(네이티브 앱 loopback 등 좁은 예외).
+- ❌ **"PKCE만 있으면 `state`는 빼도 된다"거나 그 반대.** → 서로 대체가 아닙니다. **PKCE(S256)와 `state`를 함께** 쓰고, 콜백에서 `state`를 반드시 검증하십시오.
+- ❌ **"ID Token의 `nonce`는 안 봐도 된다."** → nonce 검증을 빼면 다른 세션의 ID Token 주입을 못 막습니다. Implicit/Hybrid에선 필수, Code Flow에서도 **로그인 replay 방어로 권장**됩니다.
+- ❌ **"코드를 여러 번 써도 되겠지."** → 인가 코드는 **일회용**입니다. 재사용은 거부되며, 재사용 시도는 침해 신호로 다뤄야 합니다.
+
+## 직접 해보기: PKCE 플로우 스테퍼
+
+여섯 스텝을 한 칸씩 밟아 보십시오. 각 스텝에서 **어느 채널로 무슨 데이터가** 오가는지 보이고, **PKCE 끄기**와 **공격자가 코드 가로채기**를 켜면 결과가 어떻게 달라지는지 관찰할 수 있습니다. PKCE가 켜져 있으면, 가로챈 코드는 `code_verifier`가 없어 토큰 교환에서 막힙니다.
+
+<PkceFlowStepper client:visible />
+
+## 마무리
+
+이번 편의 핵심을 압축하면 이렇습니다.
+
+- 인증은 **IdP에서** 일어나고, 우리 앱은 리다이렉트로 **코드→토큰**만 받는다. **믿을 수 없는 프론트채널엔 코드, 진짜 토큰은 백채널**이다.
+- **Authorization Code + PKCE**가 기본이다. `code_challenge`(해시)만 프론트채널에 흘리고 `code_verifier`로 교환자를 증명해, 가로챈 코드를 무력화한다.
+- `state`(CSRF 관례) · **PKCE**(코드 주입+CSRF) · `nonce`(ID Token 재생) — 셋이 막는 것이 다르다.
+- ID Token은 서명·`iss`·`aud`·`exp`에 더해 **`nonce`**까지 검증해야 "방금, 우리 앱을 위한 로그인"이 된다.
+
+실무 결론 하나만 챙기신다면: **Authorization Code + PKCE(S256)를 기본값으로 두고, `redirect_uri`는 정확 매칭, 콜백에선 `state`와 ID Token의 `nonce`를 반드시 검증하라**는 것입니다. 이제 토큰을 **얻고**(3편) **검증하는**(2편) 전 과정을 손에 넣으셨습니다. 다음 4편 「실무 베스트 프랙티스」에서는 이 모두를 실제 시스템에 얹습니다 — nginx `auth_request`로 인증을 위임하고, Redis 세션과 BFF로 토큰을 안전하게 보관하며, 인가 모델(RBAC/ABAC)로 "무엇을 해도 되는가"를 판단하는 실습으로.
+
+## 근거와 더 읽을 거리
+
+**표준·명세(normative)**
+- [RFC 6749 — OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749) · [RFC 7636 — PKCE](https://www.rfc-editor.org/rfc/rfc7636)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) · [OpenID Connect Discovery 1.0](https://openid.net/specs/openid-connect-discovery-1_0.html)
+- [RFC 7523 — private_key_jwt](https://www.rfc-editor.org/rfc/rfc7523) · [RFC 8705 — mTLS](https://www.rfc-editor.org/rfc/rfc8705)
+- [RFC 9126 — Pushed Authorization Requests](https://www.rfc-editor.org/rfc/rfc9126) · [RFC 9207 — Issuer Identification](https://www.rfc-editor.org/rfc/rfc9207) · [RFC 8414 — Authorization Server Metadata](https://www.rfc-editor.org/rfc/rfc8414)
+
+**보안 모범사례(BCP)**
+- [RFC 9700 — OAuth 2.0 Security Best Current Practice](https://www.rfc-editor.org/rfc/rfc9700)
+
+**구현 참고(vendor)**
+- [Keycloak — Securing apps with OpenID Connect](https://www.keycloak.org/securing-apps/oidc-layers)
+
+## 이 시리즈의 다른 글
+
+- [1편 — 로그인 화면 뒤에 숨은 지형도](/posts/auth-authz-1)
+- [2편 — 토큰과 검증: 서명을 믿는다는 것](/posts/auth-authz-2)
+- **3편 — 플로우: 토큰은 어떻게 오는가** (현재 글)
+- 4편 — 실무 베스트 프랙티스: nginx·Redis 세션·BFF·인가 모델 (작성 예정)
