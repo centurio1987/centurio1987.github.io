@@ -1,6 +1,6 @@
 {
   "next_id": 13,
-  "next_seq": 17,
+  "next_seq": 21,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -95,15 +95,15 @@
       "verbatim_hash": "e00ad8b2da2f4d949d35e37413c952bac8fe6b3f"
     },
     "KAN-010": {
-      "col": "backlog",
+      "col": "review",
       "title": "인증·인가 해부 2편 — 토큰과 검증",
-      "memo": "KAN-009 시리즈. JWT/JWS/JWE·JWKS·서명검증·opaque vs jwt·DPoP/mTLS 개요. 실제 디코딩 JWT/JWKS/curl. 시뮬: JWT 서명검증 랩.",
+      "memo": "2편 발행 완료: src/content/posts/auth-authz-2.mdx (JWT/JWS/JWKS·서명검증 6단계·alg none/confusion·opaque vs JWT·DPoP/mTLS). JwtVerifyLab 시뮬. 빌드 통과.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-22",
       "title_hash": "01bade4a0cb447870293c36be38f00a07ae97263",
-      "memo_hash": "dd69bfe6d58f28981eff4e72e23c71b5a542c8d5",
+      "memo_hash": "8ea9a24f44d0a448db6076b64b42e8e396c8abb7",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-011": {
@@ -134,18 +134,56 @@
   "order": [
     "KAN-007",
     "KAN-008",
+    "KAN-011",
+    "KAN-012",
     "KAN-006",
+    "KAN-009",
     "KAN-001",
     "KAN-002",
     "KAN-003",
     "KAN-004",
     "KAN-005",
-    "KAN-009",
-    "KAN-010",
-    "KAN-011",
-    "KAN-012"
+    "KAN-010"
   ],
   "recent": [
+    {
+      "seq": 20,
+      "t": "2026-07-22T18:52",
+      "a": "ai",
+      "id": "KAN-010",
+      "op": "edit",
+      "field": "memo",
+      "before": "인증·인가 해부 2편 집필 중. JWT/JWS/JWE·JWKS·서명검증·opaque vs JWT·DPoP/mTLS. 실제 디코딩 JWT/JWKS/curl + JWT 서명검증 랩. draft slug: auth-authz-2.",
+      "after": "2편 발행 완료: src/content/posts/auth-authz-2.mdx (JWT/JWS/JWKS·서명검증 6단계·alg none/confusion·opaque vs JWT·DPoP/mTLS). JwtVerifyLab 시뮬. 빌드 통과."
+    },
+    {
+      "seq": 19,
+      "t": "2026-07-22T18:52",
+      "a": "ai",
+      "id": "KAN-010",
+      "op": "move",
+      "from": "doing",
+      "to": "review"
+    },
+    {
+      "seq": 18,
+      "t": "2026-07-22T18:31",
+      "a": "ai",
+      "id": "KAN-010",
+      "op": "edit",
+      "field": "memo",
+      "before": "KAN-009 시리즈. JWT/JWS/JWE·JWKS·서명검증·opaque vs jwt·DPoP/mTLS 개요. 실제 디코딩 JWT/JWKS/curl. 시뮬: JWT 서명검증 랩.",
+      "after": "인증·인가 해부 2편 집필 중. JWT/JWS/JWE·JWKS·서명검증·opaque vs JWT·DPoP/mTLS. 실제 디코딩 JWT/JWKS/curl + JWT 서명검증 랩. draft slug: auth-authz-2."
+    },
+    {
+      "seq": 17,
+      "t": "2026-07-22T18:31",
+      "a": "ai",
+      "id": "KAN-010",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 16,
       "t": "2026-07-22T17:39",

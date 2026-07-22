@@ -9,8 +9,6 @@
   - 메모: 앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함
 - `KAN-008` OCI, CRI — 생성:ai · 최종:ai · 갱신:2026-06-30
   - 메모: Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교
-- `KAN-010` 인증·인가 해부 2편 — 토큰과 검증 — 생성:ai · 최종:ai · 갱신:2026-07-22
-  - 메모: KAN-009 시리즈. JWT/JWS/JWE·JWKS·서명검증·opaque vs jwt·DPoP/mTLS 개요. 실제 디코딩 JWT/JWKS/curl. 시뮬: JWT 서명검증 랩.
 - `KAN-011` 인증·인가 해부 3편 — 플로우 — 생성:ai · 최종:ai · 갱신:2026-07-22
   - 메모: KAN-009 시리즈. Authorization Code+PKCE·OIDC 로그인·state/nonce·discovery·client auth·PAR. 실제 authorization/token 요청·응답. 시뮬: OIDC 리다이렉트+PKCE 생성.
 - `KAN-012` 인증·인가 해부 4편 — 실무 베스트 프랙티스 — 생성:ai · 최종:ai · 갱신:2026-07-22
@@ -43,5 +41,7 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-06-30
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+- `KAN-010` 인증·인가 해부 2편 — 토큰과 검증 — 생성:ai · 최종:ai · 갱신:2026-07-22
+  - 메모: 2편 발행 완료: src/content/posts/auth-authz-2.mdx (JWT/JWS/JWKS·서명검증 6단계·alg none/confusion·opaque vs JWT·DPoP/mTLS). JwtVerifyLab 시뮬. 빌드 통과.
 
 ## 완료
