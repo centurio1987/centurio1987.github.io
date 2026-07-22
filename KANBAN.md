@@ -9,12 +9,28 @@
   - 메모: 앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함
 - `KAN-008` OCI, CRI — 생성:ai · 최종:ai · 갱신:2026-06-30
   - 메모: Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교
+- `KAN-010` 인증·인가 해부 2편 — 토큰과 검증 — 생성:ai · 최종:ai · 갱신:2026-07-22
+  - 메모: KAN-009 시리즈. JWT/JWS/JWE·JWKS·서명검증·opaque vs jwt·DPoP/mTLS 개요. 실제 디코딩 JWT/JWKS/curl. 시뮬: JWT 서명검증 랩.
+- `KAN-011` 인증·인가 해부 3편 — 플로우 — 생성:ai · 최종:ai · 갱신:2026-07-22
+  - 메모: KAN-009 시리즈. Authorization Code+PKCE·OIDC 로그인·state/nonce·discovery·client auth·PAR. 실제 authorization/token 요청·응답. 시뮬: OIDC 리다이렉트+PKCE 생성.
+- `KAN-012` 인증·인가 해부 4편 — 실무 베스트 프랙티스 — 생성:ai · 최종:ai · 갱신:2026-07-22
+  - 메모: KAN-009 시리즈. 베스트프랙티스 목록+실습(4-1 nginx auth_request+redis, 4-2 BFF+refresh rotation)+인가모델(RBAC/ABAC)+위협대응. ❌/✅ 비교.
 
 ## 할 일
 
 ## 진행 중
 - `KAN-006` WebRTC 이해와 최적 활용 사례 — 생성:ai · 최종:ai · 갱신:2026-06-30
   - 메모: webrtc-1.mdx 발행됨, 시리즈 진행 중
+- `KAN-009` 인증, 인가 주요 개념과 구현 실습 — 생성:유저 · 최종:ai · 갱신:2026-07-22
+  - 메모: 시리즈 「인증·인가 해부」로 진행. 1편 「지형도」 이번 세션 발행. 개념 인벤토리 A~H + 베스트프랙티스 10항 확정(플랜: snug-gathering-gizmo). 2~4편은 KAN-010~012.
+  - 원문:
+    ```text
+    인증, 인가 주요 개념과 구현 실습
+    - pkce, jwks 등 주요 개념을 설명한다.
+      - 시나리오를 묘사한다. 각 절차에서 어떤 데이터가 오가고 왜 오가는지 설명. 데이터는 추상화된 형식이 아니라 실제 형식을 제시한다.
+    - 주요 사례를 실제 적용하는 베스트 프랙티스와 실습 예제를 제공하고 설명한다.
+      - ex. SSO를 nginx reverse proxy에 구축, session id와 redis를 사용해서 보안과 트래픽을 최적화 하는 인증, 인가 하는 시나리오, OIDC 표준에 따라, 인가 하는 시나리오
+    ```
 
 ## 검토
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-06-30
