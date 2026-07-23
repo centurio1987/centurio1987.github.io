@@ -4,8 +4,13 @@ import path from "node:path";
 import BaseLayout from "./BaseLayout.astro";
 import CategoryBadge from "../components/CategoryBadge.astro";
 import RelatedPosts from "../components/RelatedPosts.astro";
+import AuthorProfile from "../components/AuthorProfile.astro";
+import AiBanner from "../components/AiBanner.astro";
+import PostNav from "../components/PostNav.astro";
+import SeriesEpisodes from "../components/SeriesEpisodes.astro";
 import Squiggle from "../components/motifs/Squiggle.astro";
 import { formatDate, readingTime } from "../lib/format";
+import { getAuthor } from "../lib/authors";
 import { getRelatedPosts } from "../lib/related";
 import { getCollection, type CollectionEntry } from "astro:content";
 
@@ -14,6 +19,7 @@ interface Props {
 }
 const { post } = Astro.props;
 const { title, description, pubDate, updatedDate, category } = post.data;
+const author = getAuthor(post.data.author);
 const minutes = readingTime(post.body);
 const allPosts = await getCollection("posts", ({ data }) => !data.draft);
 const related = getRelatedPosts(post, allPosts);
@@ -47,9 +53,19 @@ if (fs.existsSync(heroPath)) {
 
 <BaseLayout title={title} description={description} image={postImage} type="article">
   <article class="post">
+    {
+      author.isAI && author.banner && (
+        <AiBanner
+          src={author.banner}
+          alt={author.bannerAlt ?? `${author.name} 퍼소나가 집필했습니다`}
+        />
+      )
+    }
     <header class="post-header">
       <div class="post-meta">
         <CategoryBadge category={category} asLink />
+        <span class="dot">·</span>
+        <span class="post-author">{author.name}</span>
         <span class="dot">·</span>
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
         <span class="dot">·</span>
@@ -67,6 +83,11 @@ if (fs.existsSync(heroPath)) {
         <p class="updated">마지막 수정: {formatDate(updatedDate)}</p>
       )
     }
+    <PostNav post={post} allPosts={allPosts} />
+    <SeriesEpisodes post={post} allPosts={allPosts} />
+    <div class="post-author-card">
+      <AuthorProfile authorId={author.id} />
+    </div>
     <RelatedPosts items={related} />
   </article>
 </BaseLayout>
@@ -121,6 +142,9 @@ if (fs.existsSync(heroPath)) {
     margin-top: 48px;
     font-size: 13px;
     color: var(--ink-3);
+  }
+  .post-author-card {
+    margin-top: 56px;
   }
 </style>
 

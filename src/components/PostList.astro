@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getCategory } from "../lib/categories";
+import { getAuthor } from "../lib/authors";
 import { formatYear, readingTime } from "../lib/format";
 
 interface Props {
@@ -13,6 +14,7 @@ const { posts } = Astro.props;
   {
     posts.map((post) => {
       const cat = getCategory(post.data.category);
+      const author = getAuthor(post.data.author);
       const minutes = readingTime(post.body);
       return (
         <li class="post-item">
@@ -22,6 +24,11 @@ const { posts } = Astro.props;
               <span class="post-meta">
                 <span class="post-cat" style={`--cat:${cat.color}`}>
                   {cat.label}
+                </span>
+                <span class="dot">·</span>
+                <span class="post-author">
+                  {author.name}
+                  {author.isAI && <span class="ai-chip">AI</span>}
                 </span>
                 <span class="dot">·</span>
                 <span>{formatYear(post.data.pubDate)}</span>
@@ -83,6 +90,21 @@ const { posts } = Astro.props;
   }
   .dot {
     color: var(--ink-3);
+  }
+  .post-author {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .ai-chip {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--btn-radius);
+    padding: 2px 6px;
   }
   .post-title {
     font-size: 20px;
