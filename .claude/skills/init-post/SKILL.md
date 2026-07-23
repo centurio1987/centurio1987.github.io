@@ -5,7 +5,7 @@ description: >
   `src/content/posts/<slug>.md` 에 생성하는 스킬. frontmatter 스키마를 갖춘 빈 글을 만든다.
   "/init-post <slug> <category>", "새 글 스켈레톤 만들어줘", "빈 포스트 하나 만들어줘"
   같은 표현에 반응한다. 아이디어 메모로 플롯을 잡는 작업은 `post-draft` 가 담당한다.
-argument-hint: <slug> <category> [title]
+argument-hint: <slug> <category> [title] [--talk]
 disable-model-invocation: true
 ---
 
@@ -41,6 +41,17 @@ disable-model-invocation: true
    ```
 
 4. **완료 안내**: 생성 경로와, 발행 준비가 되면 `draft: true` → `false` 로 바꾸거나 그대로 두면 됨을 알린다. 로컬 미리보기는 `npm run dev`. (draft는 기본적으로 목록에서 숨겨진다.)
+
+## 폭신 대담 에피소드 (`--talk`)
+
+`--talk` 플래그가 있거나 "대담", "인터뷰 에피소드", "빵토 교수님" 언급이 있으면 마크다운 스켈레톤 대신 **대담 템플릿 자산을 복사**한다:
+
+1. `src/templates/talk-episode.mdx` 를 `src/content/posts/<slug>.mdx` 로 복사한다 (확장자 `.mdx` 필수).
+2. frontmatter를 인자로 채운다: `title`, `category`, `pubDate`(오늘), 그리고 `order` 는 같은 `series` 글의 최대 order + 1 로 자동 계산한다.
+3. `template: talk` · `series` 값은 템플릿 기본값을 유지한다(사용자가 시리즈명을 지정하면 교체).
+4. 본문 QA 블록의 안내 문구는 그대로 둔다 — 빈 스켈레톤 원칙과 동일.
+
+레이아웃·컴포넌트 자산: `TalkLayout.astro`, `src/components/talk/QA.astro`·`PullQuote.astro`, 설정은 `src/lib/talk.ts`.
 
 ## 카테고리 슬러그
 
