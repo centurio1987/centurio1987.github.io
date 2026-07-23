@@ -1,0 +1,59 @@
+---
+import { TALK } from "../../lib/talk";
+
+/**
+ * 핵심 인용구 하이라이트 (디자인 1a pull quote 패턴)
+ * MDX 사용 예:
+ *   <PullQuote>빵은 발효를 기다리는 시간에 부풀어요.</PullQuote>
+ */
+interface Props {
+  /** 출처 표기 (기본: 빵토 교수님) */
+  by?: string;
+}
+const { by = TALK.interviewee.name } = Astro.props;
+---
+
+<figure class="pull-quote">
+  <blockquote class="pq-text">“<slot />”</blockquote>
+  <figcaption class="pq-by">— {by}</figcaption>
+</figure>
+
+<style>
+  .pull-quote {
+    margin: 32px 0;
+    background: var(--accent);
+    border-radius: 18px;
+    padding: 40px 44px;
+    text-align: center;
+  }
+  .pq-text {
+    font-family: var(--font-display);
+    font-size: 28px;
+    line-height: 1.5;
+    color: var(--paper);
+    letter-spacing: -0.3px;
+    margin: 0;
+    border: none;
+    padding: 0;
+    background: none;
+  }
+  .pq-text :global(p) {
+    display: inline;
+    margin: 0;
+  }
+  .pq-by {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--accent-tint);
+    margin-top: 18px;
+  }
+  @media (max-width: 560px) {
+    .pull-quote {
+      padding: 26px 22px;
+    }
+    .pq-text {
+      font-size: 21px;
+    }
+  }
+</style>
