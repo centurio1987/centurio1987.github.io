@@ -45,7 +45,7 @@ const COORDS: Coord[] = [
     label: "인가",
     axis: "authz",
     question: "그래서 이 행위를 해도 되는가?",
-    tech: "RBAC · ABAC · ReBAC, OAuth scope",
+    tech: "RBAC · ABAC · ReBAC · PBAC, OAuth scope",
     neighbors: ["delegation", "policy"],
   },
   {
