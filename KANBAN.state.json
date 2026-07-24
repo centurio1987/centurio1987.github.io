@@ -1,6 +1,6 @@
 {
-  "next_id": 11,
-  "next_seq": 21,
+  "next_id": 12,
+  "next_seq": 22,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -105,6 +105,18 @@
       "title_hash": "a9fa68e340a9d2de840141d4802fafa8ef19caad",
       "memo_hash": "2db60682ba6721a8ff00a83d1c789a4bebac989e",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-011": {
+      "col": "review",
+      "title": "인증·인가 해부 시리즈(4편) — 퍼소나 배선·표적 보정",
+      "memo": "main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지.",
+      "verbatim": "인증, 인가 주요 개념과 구현 실습\n- pkce, jwks 등 주요 개념을 설명한다.\n- 주요 사례를 실제 적용하는 베스트 프랙티스와 실습 예제.",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-24",
+      "title_hash": "e88b379384119070534b083649bf67dcf124a3e0",
+      "memo_hash": "44ab42a7c0f4b2ea540d553e08ea19d6de1a9be8",
+      "verbatim_hash": "8ffb6ee2be8362818013c6affd4c2817b895e669"
     }
   },
   "order": [
@@ -115,11 +127,23 @@
     "KAN-003",
     "KAN-004",
     "KAN-005",
+    "KAN-010",
     "KAN-009",
     "KAN-006",
-    "KAN-010"
+    "KAN-011"
   ],
   "recent": [
+    {
+      "seq": 21,
+      "t": "2026-07-24T16:36",
+      "a": "ai",
+      "id": "KAN-011",
+      "op": "create",
+      "col": "review",
+      "title": "인증·인가 해부 시리즈(4편) — 퍼소나 배선·표적 보정",
+      "memo": "main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지.",
+      "verbatim": "인증, 인가 주요 개념과 구현 실습\n- pkce, jwks 등 주요 개념을 설명한다.\n- 주요 사례를 실제 적용하는 베스트 프랙티스와 실습 예제."
+    },
     {
       "seq": 20,
       "t": "2026-07-23T12:59",

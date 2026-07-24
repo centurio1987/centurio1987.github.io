@@ -1,0 +1,223 @@
+---
+title: "인증·인가 해부 1편 — 로그인 화면 뒤에 숨은 지형도"
+description: "인증과 인가를 뭉뚱그리는 순간 사고가 난다. 식별·인증·인가·위임·페더레이션·세션·토큰·정책이라는 여덟 좌표로 OAuth·OIDC·SAML·RBAC/ABAC의 지도를 그린다."
+pubDate: 2026-07-22
+category: skills
+author: ppangto
+tags: ["인증", "인가", "OAuth 2.0", "OpenID Connect", "JWT", "세션", "인가 모델"]
+series: "인증·인가 해부"
+order: 1
+draft: false
+---
+
+import AuthzMap from "../../components/posts/auth-authz-1/AuthzMap";
+
+![인증·인가 해부 1편 — 로그인 화면 뒤에 숨은 지형도](/images/auth-authz-1/hero.webp)
+
+"소셜 로그인만 붙이면 인증은 끝"이라고 생각하고 넘어갔습니다. 구글 OAuth로 로그인 버튼을 달았고, 콜백에서 받은 **액세스 토큰**을 세션에 저장한 뒤 "이 토큰이 유효하면 로그인된 사용자"라고 처리했습니다. 토큰이 진짜 구글이 발급한 것인지(**서명**)만 확인했을 뿐, 그 토큰이 **우리 앱을 위해 발급된 것인지(audience)**는 보지 않았습니다. 며칠 뒤, 전혀 다른 앱을 위해 발급된 구글 토큰을 그대로 들고 온 요청이 멀쩡히 로그인 사용자로 인정되는 걸 발견합니다. "분명 구글이 발급한 진짜 토큰인데, 왜 남의 계정으로 로그인된 거지?"
+
+이 글을 끝까지 읽으시면, 그 사고가 왜 필연이었는지가 보이게 됩니다. 인증과 인가는 다른 질문에 답하며, **OAuth 액세스 토큰은 '위임된 인가'를 나타낼 뿐 '누가 로그인했는가'의 증거가 아니라는 것** — 이 지형을 머릿속에 그려 두는 것이 이 시리즈 전체의 출발점입니다. 1편에서는 세부 프로토콜로 들어가기 전에, 인증·인가라는 대륙의 **지도**부터 그립니다.
+
+## 들어가며: "로그인만 붙이면 끝"이라는 착각
+
+인증(認證)과 인가(認可)는 한국어로도 한 글자 차이라 자주 뭉뚱그려집니다. 하지만 둘은 **다른 질문**에 답합니다.
+
+- **인증(Authentication)**: "너는 **누구**냐?" — 요청하는 주체가 자신이 주장하는 그 사람임을 확립하는 일.
+- **인가(Authorization)**: "너는 이걸 **해도 되느냐**?" — 확립된 주체가 특정 리소스·행위에 접근할 권한이 있는지 판단하는 일.
+
+이 둘을 붙여 버리면 앞의 사고가 납니다. "유효한 토큰을 가졌다"(인가의 증표)를 "이 사람은 로그인한 홍길동이다"(인증의 결론)와 같은 것으로 취급했기 때문입니다. 토큰이 진짜인지만 봤을 뿐, **그 토큰이 우리 앱을 위해, 이 사용자를 위해 발급된 것인지**는 보지 않았습니다.
+
+문제는 여기서 그치지 않습니다. 현대 웹 인증·인가에는 서로 다른 시대에 서로 다른 문제를 풀려고 태어난 개념들이 겹겹이 쌓여 있습니다. 세션과 쿠키, JWT 토큰, OAuth, OpenID Connect, SAML, RBAC와 ABAC… 각각을 따로 공부하면 외울 건 많은데 그림이 안 그려집니다. 그래서 이 글은 개별 프로토콜을 파고들기 전에, 이 개념들이 **어느 좌표에 놓이는지**부터 정리합니다.
+
+## 한눈에 보기: 여덟 개의 좌표
+
+인증·인가의 지형은 여덟 개의 좌표로 압축됩니다. 각 좌표가 답하는 질문이 다릅니다.
+
+| 좌표 | 답하는 질문 | 대표 기술 |
+|---|---|---|
+| **식별(Identification)** | 너는 누구라고 **주장**하는가? | 사용자 ID, 이메일 |
+| **인증(Authentication)** | 그 주장을 **증명**할 수 있는가? | 비밀번호, MFA(Multi-Factor Authentication, 다중 인증), Passkey |
+| **인가(Authorization)** | 그래서 이걸 **해도 되는가**? | RBAC(Role-Based Access Control), ABAC(Attribute-Based Access Control), scope |
+| **위임(Delegation)** | 내 권한 일부를 **앱에 맡겨**도 되는가? | OAuth 2.0 |
+| **페더레이션(Federation)** | 다른 곳의 로그인을 **믿어**도 되는가? | OIDC(OpenID Connect), SAML |
+| **세션(Session)** | 로그인 상태를 **서버가** 기억한다 | 세션 ID + 쿠키 |
+| **토큰(Token, 자체 포함)** | 로그인 상태를 **토큰 스스로** 증명한다 | JWT(JSON Web Token) |
+| **정책(Policy)** | 인가 규칙을 **어디에** 둘 것인가 | PDP/PEP, OPA(Open Policy Agent) |
+
+이 여덟 개를 관계로 엮으면 하나의 지도가 됩니다. 이 글 뒷부분의 인터랙티브 지도에서 직접 눌러 보실 수 있습니다. 지금은 "인증과 인가는 다른 축이고, 나머지 여섯은 그 둘을 어떻게 구현·확장하느냐의 문제"라는 골격만 담아 두시면 충분합니다.
+
+## 먼저 바로잡기: OAuth는 로그인이 아니다
+
+가장 뼈아픈 오해부터 깨겠습니다. **OAuth 2.0은 인가 프레임워크이지 인증 프로토콜이 아닙니다.** 문서 제목부터가 "The OAuth 2.0 **Authorization** Framework"(RFC 6749)입니다.
+
+OAuth가 실제로 하는 일은 **위임**입니다. RFC 6749는 OAuth를 "서드파티 애플리케이션이 리소스 소유자를 **대신하여**(on behalf of a resource owner) 제한적으로 리소스에 접근하게 하는" 프레임워크로 정의합니다. 핵심은 사용자가 비밀번호를 앱에 넘겨주지 않고도, **자기 권한의 일부(scope)**만 앱에 위임한다는 것입니다.
+
+발레파킹을 떠올리면 쉽습니다. 발레 요원에게 건네는 열쇠는 시동은 걸 수 있지만 트렁크는 못 열고, 주행 거리도 제한됩니다. 마스터 키(비밀번호)를 통째로 넘기는 것과는 전혀 다릅니다. OAuth 액세스 토큰이 바로 이 발레 키입니다 — RFC 6749는 액세스 토큰을 "클라이언트에게 발급된 **인가**를 나타내는 문자열이며, 클라이언트에게는 보통 불투명(opaque)하다"고 규정합니다. 하나 더, 액세스 토큰은 기본적으로 **bearer 토큰**입니다 — 발레 키를 주운 사람이 곧 운전자가 되듯, **가진 자가 곧 행사자**입니다(탈취 시 재사용을 막는 sender-constrained 토큰(mTLS·DPoP)은 다음 편에서 다룹니다).
+
+그렇다면 왜 이게 로그인이 아닐까요? OAuth 워킹그룹의 공식 문서는 못을 박습니다 — "액세스 토큰을 가졌다는 사실 자체는 클라이언트에게 아무것도 말해 주지 않는다(mere possession of an access token doesn't tell the client anything on its own)." 토큰은 리소스 서버에게 "**무엇을 할 수 있는가**(위임된 인가)"를 나타낼 뿐, 클라이언트에게 "**누가** 지금 로그인했는가"는 말해 주지 않습니다. 게다가 액세스 토큰은 사용자가 자리를 뜬 뒤에도 만료 전까지 유효합니다. 클라이언트가 로그인 상태의 근거로 삼기엔 부적합합니다.
+
+앞의 사고가 바로 이 지점이었습니다. 액세스 토큰의 서명만 확인하고 로그인 판정을 내리면, **다른 앱(다른 audience)을 위해 발급된 토큰**이 그대로 통과됩니다 — 정확히는 **audience 검증 누락으로 인한 토큰 치환**입니다. "누가 로그인했는가"를 알고 싶다면, OAuth 위에 인증을 표준화해 얹은 **OpenID Connect**의 ID Token을 써야 합니다. 이건 뒤에서 다시 정리하겠습니다.
+
+## 엄밀한 정의: 식별·인증·인가
+
+느슨한 정의는 위험합니다. 미국 표준기관 NIST의 디지털 신원 가이드라인(SP 800-63)은 이 개념들을 엄밀히 나눕니다. (2025년 8월 발행된 개정판 **800-63-4**가 이전 800-63-3을 대체했습니다. 아래는 개정판이 바뀌어도 유지되는 개념 정의 수준으로 정리합니다.)
+
+- **식별(Identification)**: 자신이 누구인지 **식별자를 제시**하는 일(이메일·사용자 ID 입력). 아직 증명은 아닙니다.
+- **신원증명(Identity Proofing)**: "주체가 자신이 주장하는 그 사람임을 확립한다(Establishes that a subject is who they claim to be)." 현실 세계의 나와 계정을 연결하는, 식별보다 무거운 절차입니다(예: 신분증 검증).
+- **인증(Authentication)**: "디지털 서비스에 접근하려는 주체가, 자신의 디지털 신원에 연결된 유효한 **인증수단(authenticator)**을 통제하고 있음을 확립한다." 즉 "비밀번호를 안다", "이 기기를 가졌다"를 증명하는 일입니다.
+- **인가(Authorization)**: 접근 권한을 판단하는 일. NIST 800-63의 초점은 신원증명·인증(+연합)이며, **인가 정책 자체는 이 문서가 정의하지 않습니다.** 인증으로 "누구인가"를 확립한 뒤, 인가는 별개의 판단으로 이어집니다.
+
+NIST가 특히 명확하게 갈라 놓은 건, 이 과정들의 **강도(assurance)**를 서로 독립적으로 고를 수 있다는 점입니다.
+
+- **IAL(Identity Assurance Level)**: 신원증명의 엄밀도(자기주장 수준 → 대면 검증).
+- **AAL(Authenticator Assurance Level)**: 인증의 강도(단일 요소 → 하드웨어 기반 + 위장 저항성).
+- **FAL(Federation Assurance Level)**: 연합 환경에서 relying party에 전달되는 어서션의 강도.
+
+세 축은 직교합니다. 신원증명은 최소(IAL1)로 하면서 인증은 강하게(AAL3) 요구할 수 있습니다. "익명 계정이라도 로그인만큼은 하드웨어 키로"가 가능한 이유입니다.
+
+### 위임과 페더레이션: 무엇을 넘기는가
+
+지도에서 자주 헷갈리는 두 좌표가 위임과 페더레이션입니다. 둘 다 "다른 당사자를 끌어들인다"는 점은 같지만, **넘기는 것이 다릅니다.**
+
+- **위임(Delegation)** = **권한**을 넘긴다. 리소스 소유자가 "내 캘린더 읽기 권한"을 앱에 맡깁니다. OAuth의 세계입니다. 넘어가는 건 "무엇을 할 수 있는가"입니다.
+- **페더레이션(Federation)** = **신원**을 공유한다. IdP(Identity Provider)가 검증한 "이 사람은 홍길동"이라는 사실을, 여러 서비스(RP/SP)가 믿고 받아들입니다. OIDC·SAML의 세계입니다. 넘어가는 건 "누구인가"입니다.
+
+OpenID Connect가 영리한 지점이 여기 있습니다. OIDC는 OAuth의 **위임 흐름을 그대로 재사용**하면서, 그 위에 **신원(identity) 계층**을 얹습니다. OIDC Core 1.0의 자기규정은 이렇습니다 — "OpenID Connect 1.0은 OAuth 2.0 프로토콜 **위의 단순한 신원 계층**(a simple identity layer on top of the OAuth 2.0 protocol)이다." 그 결과물이 **ID Token**입니다. OIDC Core는 ID Token을 "Authorization Server가 수행한 End-User 인증에 관한 Claim을 담은 보안 토큰이며 JWT로 표현된다"고 정의합니다. 액세스 토큰이 "무엇을 할 수 있는가(위임)"라면, ID Token은 "누가 로그인했는가(신원)"입니다. 이 신원 계층을 여러 서비스가 공유·신뢰하면 그것이 곧 **페더레이션(SSO, Single Sign-On)**이 됩니다.
+
+단, ID Token도 그냥 믿으면 안 됩니다. 서명과 함께 `iss`(발급자)·`aud`(대상 클라이언트)·`exp`(만료), 그리고 로그인 흐름에서 심은 `nonce`를 검증해야 "**우리 앱을 위한, 방금 그 로그인**"임이 보장됩니다. 앞의 사고가 audience 검증 누락이었듯, ID Token도 `aud`를 빼먹으면 같은 부류의 문제가 납니다(상세 검증은 2편에서).
+
+## 핵심 원리: 로그인 상태를 어디에 두는가
+
+인증에 성공한 다음이 진짜 문제입니다. 매 요청마다 비밀번호를 다시 받을 수는 없으니, "이 사람은 이미 로그인했다"는 상태를 **어딘가 기억**해야 합니다. 이 상태를 어디에 두느냐가 세션과 토큰을 가릅니다.
+
+- **세션(stateful)**: 서버가 로그인 상태를 저장소(메모리·Redis·DB)에 담아 두고, 클라이언트에는 **참조값인 세션 ID**만 쿠키로 줍니다. 매 요청마다 서버가 세션 ID로 저장소를 조회해 "누구"인지 되살립니다.
+- **토큰(stateless)**: 상태를 **토큰 안에** 담아 클라이언트가 들고 다닙니다. 서버는 저장소 조회 없이 토큰의 **서명과 표준 클레임(발급자·대상·만료 등)**을 검증해 신뢰합니다.
+
+여기서 용어를 좁혀 두겠습니다. "토큰"은 넓은 말이라 세션 ID도 일종의 참조 토큰입니다. 이 축에서 말하는 토큰은 상태를 **스스로 담은 자체 포함 토큰(self-contained token)**, 대표적으로 **JWT**를 가리킵니다. 한편 OAuth 액세스 토큰은 **opaque일 수도, JWT일 수도** 있어 검증 방식이 갈립니다 — opaque면 발급 서버에 물어보는 introspection(RFC 7662), JWT면 리소스 서버가 자체 검증(RFC 9068). 이 분기는 2편에서 자세히 봅니다.
+
+실제 데이터로 보면 차이가 분명합니다. 세션 방식에서 서버가 내려 주는 응답 헤더는 이렇게 생겼습니다(실제 형식):
+
+```http
+Set-Cookie: SESSIONID=s%3A9vY...abc; Path=/; HttpOnly; Secure; SameSite=Lax
+```
+
+쿠키 안에는 참조값만 있고, "홍길동, 권한 admin, 만료 10분 뒤" 같은 실제 상태는 서버의 Redis에 있습니다. 반면 JWT 방식에서 클라이언트가 들고 다니는 건 점 두 개로 나뉜 세 토막의 문자열입니다(구조만; 내부 해독은 2편에서 다룹니다):
+
+```text
+eyJhbGciOiJSUzI1NiIsImtpZCI6Ii4uLiJ9  ← 헤더
+.eyJzdWIiOiIxMjM0IiwibmFtZSI6Iuqzteq4uCIsImV4cCI6MTcwMH0  ← 페이로드(상태가 여기 담긴다)
+.MEUCIQD...  ← 서명
+```
+
+이 차이가 트레이드오프를 만듭니다.
+
+- **확장성**: 세션은 매 요청마다 저장소 조회가 필요합니다. 서버가 여러 대면 세션 저장소를 공유해야 합니다. JWT는 각 서버가 로컬에서 서명만 검증하면 되어, 마이크로서비스·수평 확장에 유리합니다.
+- **폐기(revocation)**: 여기서 뒤집힙니다. 세션은 저장소에서 지우면 **즉시** 무효화됩니다. JWT는 발급된 순간부터 만료까지 **스스로 유효**해서, 탈취돼도 만료 전엔 막기 어렵습니다. 로그아웃·강제 만료·기기 추적을 붙이는 순간, JWT도 결국 "어딘가는 무언가를 기억"해야 하고 완전한 stateless가 아니게 됩니다.
+- **저장 위치**: JWT를 브라우저에 둘 때도 딜레마가 있습니다. `localStorage`에 두면 XSS 한 번에 탈취되고, `HttpOnly` 쿠키에 두면 세션처럼 CSRF를 떠안습니다. "stateless라 편하다"가 곧 "안전하다"는 아닙니다(저장 위치 전략은 4편 BFF에서).
+
+그래서 실무의 흔한 절충은 **짧은 수명 액세스 토큰 + refresh 토큰**입니다(refresh 토큰의 저장 위치·보안은 SPA·모바일·서버사이드·BFF에 따라 달라집니다). 이건 4편 실무편에서 실습으로 다룹니다.
+
+### 쿠키 속성과 SameSite의 한계
+
+세션 쿠키에 붙는 세 속성은 각각 다른 위협을 막습니다.
+
+- `Secure`: HTTPS로만 쿠키를 전송(네트워크 가로채기 차단).
+- `HttpOnly`: JavaScript에서 쿠키 접근 차단(XSS로 인한 탈취 차단).
+- `SameSite`: 크로스사이트 요청에 쿠키를 동반할지 제한(CSRF 완화).
+
+여기서 **가장 흔한 착각**을 짚겠습니다. "`SameSite=Lax`면 CSRF는 끝"이라는 생각입니다. 아닙니다. OWASP는 SameSite를 **방어심화(defense-in-depth) 통제일 뿐 제대로 된 CSRF 방어를 대체하지 못한다**고 못 박습니다. `Lax`는 안전 메서드(GET 등)를 쓰는 최상위 내비게이션에는 여전히 쿠키를 허용하므로, 상태 변경 작업이 GET으로 도달 가능하면 뚫립니다. 게다가 SameSite의 'site' 판정은 **등록가능 도메인(registrable domain, Public Suffix List 기준)**이라 `a.example.com`과 `b.example.com`은 **same-site로 취급**됩니다 — 형제 서브도메인이 신뢰 경계가 되지 못한다는 뜻입니다. **SameSite는 CSRF 토큰을 대체하지 말고 함께 써야 합니다.**
+
+## 프로토콜 지도: 무엇이 어디에 있나
+
+이제 좌표 위에 실제 프로토콜을 얹어 보겠습니다. 각각 "무엇을 하는 표준인가"를 한 줄로 잡아 두면, 나중에 세부를 배울 때 길을 잃지 않습니다.
+
+- **OAuth 2.0**(RFC 6749): **위임 인가** 프레임워크. 4개 역할 — 리소스 소유자, 클라이언트(앱), Authorization Server(토큰 발급), Resource Server(리소스 제공).
+- **OpenID Connect**: OAuth 위의 **인증 계층**. ID Token으로 "누가 로그인했는가"를 표준화하며, **페더레이션(SSO)에 널리 쓰이는** 인증 프로토콜. 오늘날 소셜 로그인·웹 SSO의 사실상 표준.
+- **SAML 2.0**: **XML 기반** 엔터프라이즈 SSO 표준. IdP와 SP가 XML **어서션**을 교환. Okta·Entra ID 등 B2B SaaS 페더레이션에서 OIDC와 함께 **지금도 현역**.
+- **Kerberos**: **티켓과 대칭키** 기반 인증. 사내 인트라넷·Windows Active Directory 환경의 중추로, 하이브리드 신원 환경에서도 여전히 쓰입니다.
+- **WebAuthn / FIDO2 / Passkey**: **공개키 기반 패스워드리스** 인증. WebAuthn은 브라우저 API(W3C), FIDO2는 여기에 인증기 프로토콜(CTAP, Client to Authenticator Protocol)을 더한 것, Passkey는 그 자격증명을 가리키는 사용자용 이름. 자격증명의 저장 방식으로 또 갈립니다 — 하드웨어 보안키처럼 특정 기기를 벗어나지 않는 **device-bound(기기 결속형)**와, iCloud 키체인·Google 비밀번호 관리자 등으로 클라우드 계정에 동기화되어 여러 기기에서 함께 쓰는 **synced(동기화형)**입니다. 편의성은 synced가 높지만, 도난·복제 시 영향 범위도 계정 전체로 넓어진다는 트레이드오프가 있습니다.
+
+역할 용어가 프로토콜마다 달라 혼란스럽습니다. 같은 배역을 부르는 이름만 다른 경우가 많으니, 매핑을 잡아 두면 좋습니다.
+
+| 하는 일 | OAuth 2.0 | OIDC | 페더레이션(일반) |
+|---|---|---|---|
+| 로그인하는 사람 | Resource Owner | End-User | Principal |
+| 로그인시키는 앱 | Client | Relying Party(RP) | Service Provider(SP) |
+| 토큰/신원 발급자 | Authorization Server | OpenID Provider(OP) | Identity Provider(IdP) |
+| 리소스 제공 서버 | Resource Server | — | — |
+
+> **표준 상태 주의 — OAuth 2.1**: 종종 "OAuth 2.1"을 확정 표준처럼 인용하지만, **2026년 7월 현재** OAuth 2.1은 **RFC가 아니라 진행 중인 IETF Internet-Draft**(`draft-ietf-oauth-v2-1`)입니다. Internet-Draft는 성격상 계속 개정·대체되므로 특정 리비전 번호로 못박기보다 "현재도 작업 중"이라는 상태로 읽는 편이 안전합니다. 지난 10년의 보안 모범사례를 **통합·단순화하려는 진행 중 작업**으로, PKCE(Proof Key for Code Exchange)를 모든 authorization code 흐름에 필수화하고 Implicit·ROPC(Resource Owner Password Credentials) 그랜트를 제외하는 방향을 담고 있습니다. "확정된 새 버전"이 아니라 "이렇게 통합하려는 방향"으로 읽어야 합니다.
+
+이 시리즈의 대상은 **웹/API 애플리케이션 인증·인가 실무**입니다. 그래서 2편부터는 OAuth·OIDC 계열(토큰·플로우)을 깊게 파고, SAML·Kerberos·WebAuthn은 이 지도에서 위치만 잡고 넘어갑니다.
+
+## 인가의 세계: 규칙을 어떻게 표현하나
+
+인증이 "누구"를 끝내면, 인가는 "그래서 뭘 해도 되나"를 판단합니다. 판단의 근거를 **무엇으로** 삼느냐에 따라 모델이 갈립니다.
+
+| 모델 | 판단 근거 | 예시 | 대표 표준/사례 |
+|---|---|---|---|
+| **RBAC** | **역할(role)** | "editor면 글 수정 가능" | INCITS 359 (ANSI) |
+| **ABAC** | **속성(attribute)** | "부서=재무 && 시간=업무시간이면 열람" | NIST SP 800-162 |
+| **ReBAC**(Relationship-Based Access Control) | **관계(relationship)** | "이 문서의 소유자의 친구면 열람" | Google Zanzibar |
+| **PBAC**(Policy-Based Access Control) | **정책(policy)** 자체 | 정책을 코드로 외부화해 평가 | OPA·Rego(엔진 예) |
+
+RBAC은 가장 단순하고 널리 쓰이지만 "역할 폭발(role explosion)"이라는 한계가 있습니다 — 세밀한 권한을 표현하려다 역할이 수백 개로 불어납니다. ABAC은 맥락(부서·시간·위치)으로 판단해 유연하지만, 정책·속성 관리와 **결정 로깅(decision log)**을 갖추지 않으면 "누가 왜 통과했는지" 감사가 어려워집니다. ReBAC은 "관계"로 판단하며 구글이 Zanzibar로 대규모에 적용했지만, 관계 그래프 운영 부담이 따릅니다. PBAC은 인가 판단을 **정책(policy)**으로 표현하는 모델이고, OPA·Rego 같은 정책 엔진으로 그 정책을 코드로 외부화해 평가합니다(RBAC·ABAC·ReBAC 규칙을 모두 담을 수 있습니다).
+
+구현에서 중요한 두 지점이 **PDP와 PEP**입니다.
+
+- **PEP(Policy Enforcement Point)**: 요청을 가로채 결정을 **강제**하는 지점(API 게이트웨이, 미들웨어 등).
+- **PDP(Policy Decision Point)**: 정책을 **평가**해 허용/거부를 내리는 엔진.
+
+둘을 분리하면 "인가 규칙"을 애플리케이션 코드 곳곳에 흩뿌리지 않고 한곳에서 관리할 수 있습니다(고전 표준으로는 XACML(eXtensible Access Control Markup Language), 근래엔 OPA가 이 자리를 맡습니다). 그리고 어떤 모델을 쓰든 원칙은 하나입니다 — **기본은 거부(deny-by-default)**. 명시적으로 허용된 것만 통과시킵니다.
+
+## 직접 해보기: 인증·인가 지도
+
+지금까지의 여덟 좌표와 프로토콜을 하나의 지도로 묶었습니다. 각 좌표를 눌러 "무슨 질문에 답하는지", "어떤 기술이 여기 사는지", "인접한 좌표는 무엇인지"를 확인해 보십시오. 인증 축과 인가 축이 어떻게 갈라지고, OAuth·OIDC가 그 사이 어디에 놓이는지가 눈에 들어올 겁니다.
+
+<AuthzMap client:visible />
+
+## 자주 틀리는 포인트
+
+지형을 익힐 때 특히 자주 미끄러지는 지점들입니다.
+
+- ❌ **"OAuth로 로그인 붙였다."** → OAuth는 인가(위임)이지 인증이 아닙니다. 로그인(누구인가)이 필요하면 그 위의 **OIDC/ID Token**을 쓰십시오.
+- ❌ **"ID Token으로 API를 호출하면 되겠지."** → 반대입니다. **ID Token은 클라이언트가 '누가 로그인했나'를 확인하는 용도**이고, 리소스 서버 API 인가에는 **액세스 토큰**을 씁니다. 둘을 바꿔 쓰면 audience 검증이 무너집니다(2편에서 상세히).
+- ❌ **"JWT는 stateless라 로그아웃도 깔끔하다."** → 오히려 폐기가 약점입니다. 즉시 무효화가 필요하면 세션이거나, JWT라도 서버측 폐기 장치가 필요합니다.
+- ❌ **"`SameSite` 걸었으니 CSRF는 방어된다."** → SameSite는 보조 통제일 뿐입니다. CSRF 토큰과 **함께** 써야 합니다.
+- ❌ **"인증됐으면 인가된 것 아닌가?"** → 로그인은 신원 확인일 뿐입니다. "무엇을 해도 되는가"는 별개의 판단(인가)이며, 이걸 빠뜨리는 것이 OWASP Top 10:2025 **1위(A01: Broken Access Control)**입니다.
+
+## 마무리
+
+인증·인가가 복잡해 보이는 건, 서로 다른 질문에 답하는 개념들이 한 화면("로그인") 뒤에 겹쳐 있기 때문입니다. 오늘 그린 지도를 요약하면 이렇습니다.
+
+- **인증(누구인가)과 인가(해도 되는가)는 다른 축**이다. 뭉뚱그리면 사고가 난다.
+- **OAuth는 위임(권한), OIDC는 페더레이션(신원)**. 로그인이 필요하면 OAuth가 아니라 OIDC의 ID Token이다.
+- 로그인 상태는 **세션(서버가 기억)** 또는 **토큰(스스로 증명)**으로 유지하며, 확장성과 폐기 사이의 트레이드오프가 있다.
+- 인가는 **RBAC·ABAC·ReBAC·PBAC** 중 무엇으로 규칙을 표현하든, **기본은 거부**다.
+
+실무 결론 하나만 챙기신다면: **"토큰이 유효한가"와 "이 토큰이 우리를 위한, 이 사용자를 위한 것인가"는 다른 질문**입니다. 서명 검증에서 멈추지 마십시오. 다음 2편 「토큰과 검증」에서는 바로 이 지점 — JWT의 실제 구조, JWKS로 공개키를 가져와 서명을 검증하는 법, `iss`·`aud`·`exp`·`kid`를 어떻게 확인하고 어디서 흔히 뚫리는지를 **실제 디코딩된 토큰과 함께** 해부합니다.
+
+## 근거와 더 읽을 거리
+
+**표준·명세(normative)**
+- [RFC 6749 — The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749.html)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+- [NIST SP 800-63-4 — Digital Identity Guidelines (2025, 800-63-3 대체)](https://www.nist.gov/identity-access-management/nist-special-publication-800-63-digital-identity-guidelines)
+- [NIST SP 800-162 — Guide to ABAC](https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-162.pdf)
+- [INCITS 359 (RBAC) — NIST RBAC 프로젝트](https://csrc.nist.gov/projects/role-based-access-control)
+
+**진행 중 표준(draft)**
+- [OAuth 2.1 — draft-ietf-oauth-v2-1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1) · [oauth.net/2.1](https://oauth.net/2.1/)
+
+**보안 지침·해설**
+- [OWASP Top 10:2025 — Introduction](https://owasp.org/Top10/2025/0x00_2025-Introduction/) · [A01:2025 Broken Access Control](https://owasp.org/Top10/2025/)
+- [OWASP — CSRF Prevention / SameSite](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
+- [End User Authentication with OAuth 2.0 (oauth.net)](https://oauth.net/articles/authentication/)
+- [Zanzibar: Google's Consistent, Global Authorization System](https://research.google/pubs/zanzibar-googles-consistent-global-authorization-system/)
+
+## 이 시리즈의 다른 글
+
+- **1편 — 로그인 화면 뒤에 숨은 지형도** (현재 글)
+- 2편 — 토큰과 검증: JWT·JWS·JWKS·서명 검증 (작성 예정)
+- 3편 — 플로우: Authorization Code + PKCE·OIDC 로그인 (작성 예정)
+- 4편 — 실무 베스트 프랙티스: nginx·Redis 세션·BFF·인가 모델 (작성 예정)

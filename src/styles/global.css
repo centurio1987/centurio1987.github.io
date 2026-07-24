@@ -91,6 +91,35 @@ img {
   border-radius: var(--radius-md);
 }
 
+.table-wrap {
+  overflow-x: auto;
+  margin: 28px 0;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+th,
+td {
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--subtle);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+tbody tr:nth-child(even) {
+  background: var(--surface);
+}
+
 hr {
   border: none;
   height: 1px;
