@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import PostLayout from "../../layouts/PostLayout.astro";
+import TalkLayout from "../../layouts/TalkLayout.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
@@ -12,8 +13,9 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const Layout = post.data.template === "talk" ? TalkLayout : PostLayout;
 ---
 
-<PostLayout post={post}>
+<Layout post={post}>
   <Content />
-</PostLayout>
+</Layout>

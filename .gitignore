@@ -12,8 +12,9 @@ dist
 # Obsidian vault workspace
 .obsidian/
 
-# npm lockfile (CI uses bun)
+# npm/pnpm lockfiles (CI uses bun)
 package-lock.json
+pnpm-lock.yaml
 
 # stray skill backups (cannot be deleted in some sandboxes)
 *.v1bak

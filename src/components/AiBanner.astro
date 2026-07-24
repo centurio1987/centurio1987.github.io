@@ -1,0 +1,38 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+
+/**
+ * AI 완전 집필 배너 — author.isAI 인 글 상단에, 해당 퍼소나의 고유 banner로 표시.
+ * 이미지 파일이 없으면 렌더링하지 않는다.
+ */
+interface Props {
+  src: string;
+  alt: string;
+}
+const { src, alt } = Astro.props;
+const exists = fs.existsSync(
+  path.join(process.cwd(), "public", src.replace(/^\//, ""))
+);
+---
+
+{
+  exists && (
+    <figure class="ai-banner">
+      <img src={src} alt={alt} loading="eager" decoding="async" />
+    </figure>
+  )
+}
+
+<style>
+  .ai-banner {
+    margin: 0 0 28px;
+  }
+  .ai-banner img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    border: var(--stroke) solid var(--border);
+  }
+</style>

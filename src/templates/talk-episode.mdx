@@ -1,0 +1,43 @@
+---
+# ── 폭신 대담 에피소드 템플릿 (자산 — 직접 수정하지 말 것) ──────────
+# 사용: init-post 스킬이 이 파일을 src/content/posts/talk-<slug>.mdx 로 복사해
+# 스켈레톤을 만든다. import 경로는 복사 후 위치(src/content/posts/) 기준이다.
+# series + order 가 EP 번호·이전화/다음화·지난 대담 카드 목록을 모두 구동한다.
+title: "여기에 에피소드 제목 (질문형이 좋다)"
+description: "한 줄 리드 — 어떤 고민을 들고 교수님을 찾아갔는지."
+pubDate: 2026-07-10
+category: research # planning|architecture|strategy|skills|learning|design|research|quality|leadership
+author: tony # 인터뷰어(사람)가 작성 주체. AI 완전 집필이면 ppangto
+tags: ["AI대담"]
+series: "폭신함 외길 인생"
+order: 1 # EP 번호
+template: talk # ← 이 값이 대담 레이아웃을 활성화한다
+draft: true
+---
+
+import QA from "../../components/talk/QA.astro";
+import PullQuote from "../../components/talk/PullQuote.astro";
+
+{/* 오늘의 질문 목차는 QA의 q에서 자동 생성된다 — 따로 쓸 필요 없음 */}
+
+<QA n={1} q="첫 번째 질문을 여기에 쓴다">
+  교수님의 답변 첫 문단.
+
+  문단을 나눠도 된다.
+</QA>
+
+<QA n={2} q="두 번째 질문">
+  답변 내용.
+</QA>
+
+<PullQuote>
+  에피소드의 핵심 한 문장을 여기에. 인용구 하이라이트로 크게 표시된다.
+</PullQuote>
+
+<QA n={3} q="세 번째 질문">
+  답변 내용.
+</QA>
+
+## 마치며
+
+대담을 마치고 든 생각 — 회고 한두 문단. (h2 "마치며"는 액센트 보더 스타일이 적용된다)

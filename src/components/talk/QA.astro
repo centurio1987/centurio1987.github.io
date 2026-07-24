@@ -1,0 +1,114 @@
+---
+import { TALK, publicFileExists } from "../../lib/talk";
+
+/**
+ * 폭신 대담 Q&A 블록 (디자인 1a Q&A 패턴)
+ * MDX 사용 예:
+ *   <QA n={1} q="아무것도 안 하면 뒤처지는 것 같아요. 왜 이럴까요?">
+ *     불안은 게으름이 아니라, 그동안 너무 오래 달렸다는 몸의 신호예요.
+ *   </QA>
+ */
+interface Props {
+  n: number;
+  q: string;
+  /** 답변 화자 이름 재정의 (기본: 빵토 교수님) */
+  speaker?: string;
+}
+const { n, q, speaker = TALK.interviewee.name } = Astro.props;
+const num = String(n).padStart(2, "0");
+const avatarOk = publicFileExists(TALK.interviewee.avatar);
+---
+
+<section class="qa">
+  <div class="qa-head">
+    <span class="qa-num">Q.{num}</span>
+    <h3 class="qa-title" id={`q-${num}`} data-qa={num}>{q}</h3>
+  </div>
+  <div class="qa-answer">
+    {
+      avatarOk ? (
+        <img class="qa-avatar" src={TALK.interviewee.avatar} alt={speaker} loading="lazy" decoding="async" />
+      ) : (
+        <span class="qa-avatar qa-avatar--hatch" aria-hidden="true">빵</span>
+      )
+    }
+    <div class="qa-body">
+      <div class="qa-speaker">{speaker}</div>
+      <div class="qa-text"><slot /></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .qa {
+    padding: 28px 0;
+    border-top: 1px solid var(--border);
+  }
+  .qa-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .qa-num {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .qa-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 1.4;
+    color: var(--ink);
+    margin: 0;
+  }
+  .qa-answer {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding-left: 4px;
+  }
+  .qa-avatar {
+    flex: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 18%;
+    background: var(--surface);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  .qa-avatar--hatch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hatch);
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--accent);
+  }
+  .qa-speaker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .qa-text {
+    font-size: 16.5px;
+    line-height: 1.95;
+    color: var(--ink-2);
+  }
+  .qa-text :global(p) {
+    margin: 0 0 12px;
+  }
+  .qa-text :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  @media (max-width: 560px) {
+    .qa-title {
+      font-size: 21px;
+    }
+  }
+</style>

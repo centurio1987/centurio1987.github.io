@@ -1,0 +1,222 @@
+---
+import { getAuthor } from "../lib/authors";
+
+/**
+ * 작성자 프로필 카드 (디자인: 빵관 토니 — 포스트 프로필 컴포넌트)
+ * variant "card"    — A · 가로형 작가 카드 (글 하단용)
+ * variant "compact" — B · 컴팩트 인라인
+ */
+interface Props {
+  authorId: string;
+  variant?: "card" | "compact";
+}
+const { authorId, variant = "card" } = Astro.props;
+const author = getAuthor(authorId);
+const [primary, secondary] = author.links;
+---
+
+{
+  variant === "compact" ? (
+    <aside class="ap-compact">
+      {author.avatar ? (
+        <img class="ap-avatar ap-avatar--sm" src={author.avatar} alt={author.name} />
+      ) : (
+        <span class="ap-avatar ap-avatar--sm ap-avatar--hatch">
+          <span class="ap-initial">{author.name.slice(0, 1)}</span>
+        </span>
+      )}
+      <span class="ap-body">
+        <span class="ap-namerow">
+          <span class="ap-name ap-name--sm">{author.name}</span>
+          <span class="ap-handle">{author.handle}</span>
+        </span>
+        <p class="ap-bio ap-bio--sm">{author.bio}</p>
+      </span>
+      {primary && (
+        <a class="ap-btn ap-btn--sm" href={primary.href}>
+          {primary.label}
+        </a>
+      )}
+    </aside>
+  ) : (
+    <aside class="ap-card">
+      {author.avatar ? (
+        <img class="ap-avatar" src={author.avatar} alt={author.name} />
+      ) : (
+        <span class="ap-avatar ap-avatar--hatch">
+          <span class="ap-initial ap-initial--lg">{author.name.slice(0, 1)}</span>
+        </span>
+      )}
+      <div class="ap-body">
+        <div class="ap-label">Written by</div>
+        <div class="ap-namerow">
+          <span class="ap-name">{author.name}</span>
+          <span class="ap-role">{author.role}</span>
+        </div>
+        <p class="ap-bio">{author.bio}</p>
+        <div class="ap-actions">
+          {primary && (
+            <a class="ap-btn" href={primary.href}>
+              {primary.label}
+            </a>
+          )}
+          {secondary && (
+            <a class="ap-btn ap-btn--outline" href={secondary.href}>
+              {secondary.label} →
+            </a>
+          )}
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+<style>
+  /* ── 공통 ── */
+  .ap-avatar {
+    flex: none;
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--accent);
+    object-fit: cover;
+    background: var(--paper);
+  }
+  .ap-avatar--sm {
+    width: 64px;
+    height: 64px;
+    box-shadow: 0 0 0 2.5px var(--accent);
+  }
+  .ap-avatar--hatch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hatch);
+  }
+  .ap-initial {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--accent);
+  }
+  .ap-initial--lg {
+    font-size: 36px;
+  }
+  .ap-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .ap-namerow {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ap-name {
+    font-family: var(--font-display);
+    font-size: 25px;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .ap-name--sm {
+    font-size: 20px;
+  }
+  .ap-handle {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .ap-role {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+  .ap-bio {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--ink-2);
+    margin: 0;
+    max-width: 440px;
+  }
+  .ap-btn {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    background: var(--accent);
+    color: var(--paper);
+    padding: 9px 18px;
+    border-radius: var(--btn-radius);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity var(--dur) var(--ease);
+  }
+  .ap-btn:hover {
+    opacity: 0.85;
+  }
+  .ap-btn--outline {
+    background: transparent;
+    color: var(--ink);
+    border: var(--stroke) solid var(--ink);
+    padding: calc(9px - var(--stroke)) calc(18px - var(--stroke));
+  }
+
+  /* ── A · 가로형 작가 카드 ── */
+  .ap-card {
+    display: flex;
+    gap: 26px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--paper);
+    border-radius: 18px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 30px 34px;
+  }
+  .ap-card .ap-body {
+    min-width: 240px;
+  }
+  .ap-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .ap-card .ap-namerow {
+    margin-bottom: 10px;
+  }
+  .ap-card .ap-bio {
+    margin-bottom: 16px;
+  }
+  .ap-actions {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+
+  /* ── B · 컴팩트 인라인 ── */
+  .ap-compact {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 22px 24px;
+  }
+  .ap-compact .ap-btn {
+    flex: none;
+    align-self: flex-start;
+    font-size: 11px;
+    padding: 8px 15px;
+  }
+  .ap-bio--sm {
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 560px) {
+    .ap-compact {
+      flex-wrap: wrap;
+    }
+  }
+</style>

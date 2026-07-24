@@ -30,7 +30,7 @@ done
 cd "$REPO"
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "not a git repo: $REPO" >&2; exit 1; }
 
-CUR_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+CUR_BRANCH="$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --abbrev-ref HEAD)"
 if [[ "$CUR_BRANCH" != "$BRANCH" ]]; then
   echo "branch mismatch: on '$CUR_BRANCH', expected '$BRANCH'. 중단(브랜치 안전장치)." >&2
   exit 2
@@ -82,13 +82,21 @@ echo "committed: $(git rev-parse --short HEAD)"
 
 # 원격 동기화 후 push (force 금지)
 if git remote get-url origin >/dev/null 2>&1; then
-  if ! git pull --rebase origin "$BRANCH"; then
-    echo "git pull --rebase 실패(충돌 가능). push 중단. 수동 해결 필요." >&2
-    exit 5
-  fi
-  if ! git push origin "$BRANCH"; then
-    echo "git push 실패(auth/branch-protection/네트워크 등). 상태 확인 필요." >&2
-    exit 6
+  if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+    if ! git pull --rebase origin "$BRANCH"; then
+      echo "git pull --rebase 실패(충돌 가능). push 중단. 수동 해결 필요." >&2
+      exit 5
+    fi
+    if ! git push origin "$BRANCH"; then
+      echo "git push 실패(auth/branch-protection/네트워크 등). 상태 확인 필요." >&2
+      exit 6
+    fi
+  else
+    # 원격에 해당 브랜치가 아직 없음(빈 레포 등) — rebase 대상이 없으므로 최초 push로 브랜치 생성
+    if ! git push -u origin "$BRANCH"; then
+      echo "git push 실패(auth/branch-protection/네트워크 등). 상태 확인 필요." >&2
+      exit 6
+    fi
   fi
   echo "pushed to origin/$BRANCH"
 else

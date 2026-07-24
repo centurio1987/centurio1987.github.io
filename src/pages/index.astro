@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCategory } from "../lib/categories";
+import { getAuthor } from "../lib/authors";
 import { formatMonthYear } from "../lib/format";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
@@ -53,11 +54,12 @@ const hasMore = posts.length > recent.length;
       <ul class="post-list">
         {recent.map((post) => {
           const cat = getCategory(post.data.category);
+          const author = getAuthor(post.data.author);
           return (
             <li>
               <a href={`/posts/${post.id}`} class="post-row">
                 <span class="post-label">
-                  {formatMonthYear(post.data.pubDate)} · {cat.label}
+                  {formatMonthYear(post.data.pubDate)} · {cat.label} · {author.name}
                 </span>
                 <span class="post-title">{post.data.title}</span>
                 <span class="post-arrow" aria-hidden="true">→</span>

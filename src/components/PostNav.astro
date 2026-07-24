@@ -1,0 +1,99 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getPrevNext, getSeriesPosts, episodeNumber } from "../lib/seriesNav";
+
+/**
+ * 이전화/다음화 네비게이션 (디자인: 폭신 대담 — prev/next 카드 패턴)
+ * 시리즈 글은 시리즈 순서(EP), 그 외 글은 발행일 기준으로 동작한다.
+ */
+interface Props {
+  post: CollectionEntry<"posts">;
+  allPosts: CollectionEntry<"posts">[];
+}
+const { post, allPosts } = Astro.props;
+const { prev, next, inSeries } = getPrevNext(post, allPosts);
+const seriesPosts = inSeries ? getSeriesPosts(post, allPosts) : [];
+
+const prevLabel = (p: CollectionEntry<"posts">) =>
+  inSeries ? `← EP.${String(episodeNumber(p, seriesPosts)).padStart(2, "0")} 이전화` : "← 이전 글";
+const nextLabel = (p: CollectionEntry<"posts">) =>
+  inSeries ? `EP.${String(episodeNumber(p, seriesPosts)).padStart(2, "0")} 다음화 →` : "다음 글 →";
+---
+
+{
+  (prev || next) && (
+    <nav class="post-nav" aria-label="이전 글 / 다음 글">
+      {prev ? (
+        <a href={`/posts/${prev.id}`} class="nav-card nav-prev">
+          <span class="nav-label">{prevLabel(prev)}</span>
+          <span class="nav-title">{prev.data.title}</span>
+        </a>
+      ) : (
+        <span class="nav-empty" aria-hidden="true" />
+      )}
+      {next ? (
+        <a href={`/posts/${next.id}`} class="nav-card nav-next">
+          <span class="nav-label">{nextLabel(next)}</span>
+          <span class="nav-title">{next.data.title}</span>
+        </a>
+      ) : (
+        <span class="nav-empty" aria-hidden="true" />
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .post-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 40px;
+  }
+  .nav-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-radius: 14px;
+    padding: 20px 24px;
+    text-decoration: none;
+    transition: translate var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .nav-card:hover {
+    translate: 0 -2px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  }
+  .nav-prev {
+    background: var(--cream);
+  }
+  .nav-next {
+    background: var(--accent);
+    align-items: flex-end;
+    text-align: right;
+  }
+  .nav-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .nav-next .nav-label {
+    color: var(--accent-tint);
+  }
+  .nav-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .nav-next .nav-title {
+    color: var(--paper);
+  }
+  @media (max-width: 560px) {
+    .post-nav {
+      grid-template-columns: 1fr;
+    }
+    .nav-empty {
+      display: none;
+    }
+  }
+</style>

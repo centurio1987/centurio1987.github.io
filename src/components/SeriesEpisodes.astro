@@ -1,0 +1,142 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+import type { CollectionEntry } from "astro:content";
+import { getSeriesPosts, episodeNumber } from "../lib/seriesNav";
+
+/**
+ * 지난 에피소드 카드 목록 (디자인: 폭신 대담 — episodes 카드 그리드 패턴)
+ * 같은 series의 모든 글을 EP 순서로 카드로 보여준다. 시리즈가 없으면 렌더링하지 않는다.
+ */
+interface Props {
+  post: CollectionEntry<"posts">;
+  allPosts: CollectionEntry<"posts">[];
+  title?: string;
+}
+const { post, allPosts, title } = Astro.props;
+const episodes = getSeriesPosts(post, allPosts);
+
+const thumbOf = (p: CollectionEntry<"posts">): string | null => {
+  const slug = p.id.replace(/\.(md|mdx)$/, "");
+  const hero = path.join(process.cwd(), "public", "images", slug, "hero.webp");
+  return fs.existsSync(hero) ? `/images/${slug}/hero.webp` : null;
+};
+---
+
+{
+  episodes.length > 1 && (
+    <section class="episodes" aria-label="시리즈 에피소드">
+      <h2 class="episodes-title">{title ?? `${post.data.series} 다시보기`}</h2>
+      <div class="episodes-grid">
+        {episodes.map((ep) => {
+          const n = String(episodeNumber(ep, episodes)).padStart(2, "0");
+          const thumb = thumbOf(ep);
+          const isCurrent = ep.id === post.id;
+          return (
+            <a
+              href={`/posts/${ep.id}`}
+              class:list={["ep-card", { "is-current": isCurrent }]}
+              aria-current={isCurrent ? "page" : undefined}
+            >
+              {thumb ? (
+                <img class="ep-thumb" src={thumb} alt="" loading="lazy" decoding="async" />
+              ) : (
+                <span class="ep-thumb ep-thumb--hatch" aria-hidden="true" />
+              )}
+              <span class="ep-body">
+                <span class="ep-num">
+                  EP.{n}
+                  {isCurrent && <span class="ep-now">지금 읽는 중</span>}
+                </span>
+                <span class="ep-title">{ep.data.title}</span>
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .episodes {
+    margin-top: 40px;
+    background: var(--cream);
+    border-radius: var(--radius-lg);
+    padding: 30px 32px 36px;
+  }
+  .episodes-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 20px;
+    color: var(--ink);
+    margin: 0 0 18px;
+  }
+  .episodes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .ep-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: translate var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .ep-card:hover {
+    translate: 0 -2px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  }
+  .ep-card.is-current {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  .ep-thumb {
+    display: block;
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+  }
+  .ep-thumb--hatch {
+    background: var(--hatch);
+  }
+  .ep-body {
+    padding: 14px 16px 16px;
+  }
+  .ep-num {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .ep-now {
+    font-size: 10px;
+    background: var(--accent);
+    color: var(--paper);
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+  .ep-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--ink);
+    margin-top: 6px;
+  }
+  @media (max-width: 720px) {
+    .episodes-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 480px) {
+    .episodes-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

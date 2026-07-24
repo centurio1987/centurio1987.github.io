@@ -111,16 +111,21 @@ function compareTable(d: Record<string, unknown>): string {
 // ── step-diagram ─────────────────────────────────────────────────────
 function stepDiagram(d: Record<string, unknown>): string {
   const steps = (d.steps as Array<{ label: string; desc?: string }>) ?? [];
+  // 카드 폭이 고정(1200px)이면 스텝이 많거나(5+) 라벨이 길 때 flex 아이템이
+  // min-content로 밀려 캔버스 폭을 넘고, 스크린샷이 넘친 부분을 잘라버린다
+  // (마지막 카드가 통째로 사라지거나 한 글자씩 세로로 쪼개지는 원인).
+  // 스텝 수에 비례해 캔버스 폭을 늘려 항상 여유 있게 잡는다.
+  const width = Math.max(1200, steps.length * 260 + 160);
   const css = `
 #capture { padding:56px 64px 64px; }
 #capture .s-title { font-size:40px; margin-bottom:40px; }
-#capture .s-row { display:flex; align-items:stretch; gap:0; }
-#capture .s-step { flex:1; background:var(--card); border:1px solid var(--line); border-radius:16px;
+#capture .s-row { display:flex; align-items:stretch; gap:16px; }
+#capture .s-step { flex:1 1 0; min-width:0; background:var(--card); border:1px solid var(--line); border-radius:16px;
   padding:28px 24px; display:flex; flex-direction:column; gap:12px; }
 #capture .s-num { font-family:var(--mono); font-size:22px; color:var(--accent2); }
-#capture .s-label { font-size:28px; font-weight:800; }
-#capture .s-desc { font-size:22px; color:var(--muted); line-height:1.4; }
-#capture .s-arrow { display:flex; align-items:center; color:var(--accent); font-size:40px; padding:0 14px; }
+#capture .s-label { font-size:28px; font-weight:800; overflow-wrap:break-word; }
+#capture .s-desc { font-size:22px; color:var(--muted); line-height:1.4; overflow-wrap:break-word; }
+#capture .s-arrow { flex:0 0 auto; display:flex; align-items:center; color:var(--accent); font-size:40px; padding:0 6px; }
 `;
   const items = steps
     .map((s, i) => {
@@ -130,7 +135,7 @@ function stepDiagram(d: Record<string, unknown>): string {
         <div class="s-label">${esc(s.label)}</div>${desc}</div>${arrow}`;
     })
     .join("");
-  return doc(1200, `
+  return doc(width, `
     <div class="s-title title">${esc(d.title)}</div>
     <div class="s-row">${items}</div>
   `, css);

@@ -57,6 +57,7 @@ flowchart TD
 
 - **개인 레인**: 사용자가 `raws/` 에 쓴 글 → 형식화/검토 → 발행 → 배포. 가볍고 사람 개입 중심.
 - **기술 레인**: 주제 한 줄만 주면 `tech-article-publisher` 에이전트가 자료수집부터 push까지 자동으로 끝낸다.
+- **대담 레인**: `raws/`를 거치지 않고 `/init-post --talk`로 `src/content/posts/`에 바로 MDX를 만든다. 자세한 표는 아래 7번.
 
 ---
 
@@ -115,6 +116,23 @@ flowchart TD
 | `src/data/graph.json` | `astro build` | 각 글의 **연관 글 섹션** + `/graph` **글 지도 탐색기** (LLM·키 불필요) |
 
 > **CI 계약**: `astro build` 는 절대 graphify를 실행하지 않고 커밋된 `src/data/graph.json` 만 읽는다. 파일이 없어도 빌드는 통과(frontmatter 기반 연관도로 degrade). graphify 재생성은 발행 시점 또는 위 명령쌍으로 수동 수행.
+
+### 7. 폭신 대담 에피소드 (인터뷰 시리즈)
+
+빵토 교수님과의 인터뷰 시리즈는 위 두 레인과 시작점부터 다르다. `raws/`를 거치지 않고 `/init-post --talk`로 `src/content/posts/`에 바로 MDX 스켈레톤을 만들며, frontmatter의 `template: talk`가 전용 레이아웃(`TalkLayout.astro`)을 켠다.
+
+| 입력물 | 트리거 | 산출물 |
+|---|---|---|
+| `<slug> <category> [title] --talk` (또는 "대담"/"인터뷰 에피소드"/"빵토 교수님" 언급) | `/init-post --talk` | `src/content/posts/<slug>.mdx` — `template: talk` 프론트매터 + `<QA>`/`<PullQuote>`(이미 import된 상태) 빈 스켈레톤(draft:true), `series`/`order`는 같은 `series`의 최대 order+1로 자동 계산 |
+| 스켈레톤의 `<QA n q>` 블록 | (사용자가 직접 집필) | 인터뷰어 질문 + 빵토 교수님 답변으로 채운 본문 — 컴포넌트는 이미 import돼 있으니 내용만 채우면 됨 |
+| 채운 본문 (`src/content/posts/<slug>.mdx`) | `/review-post` (선택) | 4축 미시 검토 — `.mdx`도 `.md`와 동일하게 지원 |
+| 채운 본문 | `/post-finalize` | 태그 추출, `series` 링크 섹션 삽입(`[[[…]]]` 있으면 이미지 치환도) — `.mdx` 경로 명시 지원 |
+| 완성된 파일 | (수동) `draft: true` → `false` | 발행 상태 전환. **주의**: `/publish-post`는 `draft/` 폴더 초안을 `src/content/posts/`로 옮기는 스킬이라 이미 정식 경로에 있는 대담 파일에는 대상이 아니다 — 잘못 호출해도 대상 파일을 찾지 못해 안전하게 실패한다 |
+| 발행 상태 파일 | `/ship-post` | 빌드 재검증 + commit & push |
+
+예시: `/init-post talk-ep2 research --talk` (또는 자연어로 "빵토 교수님 대담 2화 만들어줘").
+
+레이아웃·컴포넌트·설정 자산: `TalkLayout.astro`, `src/components/talk/QA.astro`·`PullQuote.astro`, `src/lib/talk.ts`(화자·배너 설정), 템플릿 자산 `src/templates/talk-episode.mdx`. 자세한 설정은 [`CLAUDE.md`](./CLAUDE.md)의 폭신 대담 절 참고.
 
 ---
 
