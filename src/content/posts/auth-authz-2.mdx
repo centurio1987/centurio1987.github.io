@@ -176,7 +176,7 @@ curl -X POST 'https://idp.example.com/realms/demo/protocol/openid-connect/token'
   "aud": "account",
   "azp": "photo-app",
   "typ": "Bearer",
-  "exp": 1721650000, "iat": 1721646400,
+  "exp": 1721646700, "iat": 1721646400,
   "jti": "f5f50c31-...",
   "scope": "openid email",
   "realm_access": { "roles": ["offline_access", "default-roles-demo"] },
@@ -190,7 +190,7 @@ curl -X POST 'https://idp.example.com/realms/demo/protocol/openid-connect/token'
 - `iss`·`sub`·`aud`·`exp`·`iat`·`jti`는 RFC 7519 **등록 클레임**. `iss`가 realm URL 형태인 것은 Keycloak 관행입니다.
 - **`scope`**는 RFC 7519 등록 클레임이 **아니라** OAuth/OIDC(및 RFC 9068 프로파일) 맥락의 클레임입니다. **`azp`**(authorized party = 이 토큰을 받은 `client_id`)는 OIDC Core가 ID Token 맥락에서 정의한 클레임인데, Keycloak은 액세스 토큰에도 채웁니다.
 - **`realm_access.roles` / `resource_access.{client}.roles`**는 **Keycloak 특유**의 역할 표현입니다. 어느 쪽을 권한의 권위 있는 원천으로 삼을지는 **프로젝트의 권한 모델에 따라 정해야** 합니다("무조건 둘 다"가 아니라).
-- **`typ: "Bearer"`** — 여기서 표준과 갈립니다. RFC 9068(JWT 액세스 토큰 프로파일)을 **채택하면** `typ`을 **`at+jwt`**로 두고 리소스 서버가 이를 검증해야 합니다(ID Token 오용 방지). Keycloak의 기본 `typ: "Bearer"`는 그 프로파일을 따르지 않는 **벤더 구현 값**일 뿐, "RFC 위반"은 아닙니다. 다만 검증기가 `typ`을 강제한다면 이 차이를 반영해야 합니다.
+- **`typ: "Bearer"`**(페이로드 클레임) — 이건 지금까지 다뤄온 **① 헤더의 `typ`**과는 **다른 자리의 다른 값**입니다. 헤더 `typ`은 이 토큰에서도 그대로 `"JWT"`이고(앞서 본 헤더 예시대로), 페이로드의 `typ: "Bearer"`는 Keycloak이 액세스·리프레시·ID 토큰을 구분하려고 채우는 **벤더 특유 클레임**입니다. 표준과 갈리는 지점은 따로 있습니다 — RFC 9068(JWT 액세스 토큰 프로파일)을 **채택하면** 리소스 서버가 ID Token 오용을 막기 위해 **헤더의 `typ`**을 **`at+jwt`**로 강제해야 합니다. Keycloak 기본값이 헤더 `typ`을 `JWT`로 두는 것은 그 프로파일을 따르지 않는 **벤더 구현**일 뿐, "RFC 위반"은 아닙니다. 다만 검증기가 헤더 `typ`을 강제한다면 이 차이를 반영해야 합니다.
 
 디코딩으로 여기까지 **읽었을 뿐**입니다. 아직 아무것도 검증하지 않았습니다.
 
@@ -208,7 +208,7 @@ curl -s 'https://idp.example.com/realms/demo/protocol/openid-connect/certs'
 
 ## 자주 틀리는 포인트
 
-토큰 검증에서 특히 값비싼 실수들입니다.
+토큰 검증에서 특히 자주 미끄러지는 지점들입니다.
 
 - ❌ **"`jwt.decode()` 했으니 검증했다."** → 디코딩은 검증이 아닙니다. **서명 검증 함수**(`verify`)를 써야 하고, 그 함수에 **공개키와 허용 알고리즘**을 넘겨야 합니다.
 - ❌ **"헤더의 `alg`를 믿고 그대로 검증한다."** → 이게 **`alg:none` 공격**입니다. 공격자가 `alg`를 `none`으로 바꾸면 일부 라이브러리는 서명 없이 통과시킵니다. RFC 8725(BCP)는 **호출자가 허용 알고리즘 집합을 지정**하고 그 외는 거부하라고 못 박습니다. `none`은 허용목록에서 빼야 합니다.

@@ -2,8 +2,8 @@ import { useMemo, useState } from "react";
 
 // JWT 서명 검증 랩 — alg·kid·exp·aud를 바꿔 가며 6단계 검증이 어느 단계에서 왜 막히는지 관찰한다.
 //
-// ⚠️ 교육용 개념 모델: 실제 암호 서명 연산을 수행하지 않는다. RFC 8725(BCP)의 검증 순서
-//   (alg 허용목록 → 서명 → iss → aud → exp/nbf → kid)를 규칙으로 모사해 통과/거부를 판정한다.
+// ⚠️ 교육용 개념 모델: 실제 암호 서명 연산을 수행하지 않는다. RFC 8725(BCP) 원칙에 따른 검증 순서
+//   (alg 허용목록 → kid로 키 선택 → 서명 → iss → aud → exp/nbf)를 규칙으로 모사해 통과/거부를 판정한다.
 
 type Alg = "RS256" | "none" | "HS256";
 type Kid = "match" | "rotated" | "unknown";
