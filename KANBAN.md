@@ -11,6 +11,13 @@
   - 메모: 앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함
 - `KAN-008` OCI, CRI — 생성:ai · 최종:ai · 갱신:2026-06-30
   - 메모: Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교
+- 블로그에 motion 요소들을 추가하고 싶다. 블로그 전체 디자인을 파악하여, motion이 들어가면 좋은 지점들을 포착해라. motion 적용은@centurio1987/bbangto-ui-core, @centurio1987/bbangto-ui-style-guide-catalog 를 설치하여 구현해라.
+- 집필 워크플로 개정
+  - 지금은 집필 과정에서 그림을 chatgpt에게 요청하여 생성하고 있다. 앞으로는 시각화 패키지를 이용해서 직접 시각화를 로직으로 구현 해라. @centurio1987/bbangto-ui-digram 을 이용해라. 
+
+
+
+&nbsp;
 
 ## 할 일
 
@@ -77,3 +84,4 @@
     ```
 - `KAN-006` WebRTC 이해와 최적 활용 사례 — 생성:ai · 최종:ai · 갱신:2026-07-22
   - 메모: webrtc-1/2/3 전편 발행 완료
+
