@@ -48,7 +48,7 @@ Authorization Code 흐름의 지혜가 여기 있습니다 — 믿을 수 없는
 | 5 | **토큰 교환** | **백채널** | `code`·`code_verifier`·`redirect_uri` → 토큰 |
 | 6 | **ID Token 검증** | (클라이언트 내부) | 서명·`iss`·`aud`·`exp`·`nonce` 확인 |
 
-눈여겨 볼 지점. 프론트채널(2·4)에는 **비밀이 흐르지 않습니다** — 코드는 일회용이고, `code_challenge`는 해시라 되돌릴 수 없습니다. 진짜 토큰은 오직 백채널(5)에서만 나옵니다. 마지막 랩에서 이 여섯 스텝을 한 칸씩 밟아 보고, PKCE를 껐을 때 코드 가로채기가 어떻게 성공하는지도 보실 수 있습니다.
+눈여겨볼 지점. 프론트채널(2·4)에는 **비밀이 흐르지 않습니다** — 코드는 일회용이고, `code_challenge`는 해시라 되돌릴 수 없습니다. 진짜 토큰은 오직 백채널(5)에서만 나옵니다. 마지막 랩에서 이 여섯 스텝을 한 칸씩 밟아 보고, PKCE를 껐을 때 코드 가로채기가 어떻게 성공하는지도 보실 수 있습니다.
 
 ## 엄밀한 정의: Authorization Code Grant (RFC 6749)
 
@@ -113,7 +113,7 @@ curl -X POST 'https://auth.example.com/realms/demo/protocol/openid-connect/token
 }
 ```
 
-필드를 갈라 보면: `access_token`·`token_type`은 **RFC 6749 필수**, `expires_in`·`refresh_token`·`scope`는 **선택/조건부**(항상 오지는 않습니다 — SPA엔 refresh 토큰이 제한되기도 합니다). **`id_token`은 OIDC**(OpenID Connect) 확장으로, `scope`에 `openid`가 있을 때만 옵니다. `refresh_expires_in`·`not-before-policy`·`session_state`는 **Keycloak 특유** 확장입니다. 토큰이 URL이 아니라 **이 백채널 응답 본문**에서 나온다는 점 — 그것이 이 흐름의 전부입니다.
+필드를 갈라 보면: `access_token`·`token_type`은 **RFC 6749 필수**, `expires_in`·`refresh_token`·`scope`는 선택/조건부(항상 오지는 않습니다 — SPA엔 refresh 토큰이 제한되기도 합니다). `id_token`은 OIDC(OpenID Connect) 확장으로, `scope`에 `openid`가 있을 때만 옵니다. `refresh_expires_in`·`not-before-policy`·`session_state`는 **Keycloak 특유** 확장입니다. 토큰이 URL이 아니라 이 백채널 응답 본문에서 나온다는 점 — 그것이 이 흐름의 전부입니다.
 
 > ⚠️ 그럼 이 토큰을 **어디에 보관**하나? `localStorage`는 XSS에 취약합니다. 서버 세션·`HttpOnly` 쿠키·메모리 등 저장 전략과 refresh 토큰 회전은 **4편(BFF)**에서 다룹니다. 지금은 "얻는 법"에 집중합니다.
 
@@ -126,7 +126,7 @@ curl -X POST 'https://auth.example.com/realms/demo/protocol/openid-connect/token
 1. 클라이언트가 매 요청마다 무작위 **`code_verifier`**를 만듭니다(43~128자, `A–Z a–z 0–9 - . _ ~`). 최소 256비트 엔트로피 권장.
 2. 그 해시 **`code_challenge` = BASE64URL(SHA256(code_verifier))**를 만들고(`S256`), **인가 요청(②)에 `code_challenge`만** 보냅니다.
 3. 토큰 교환(⑤)에서 **원본 `code_verifier`**를 보냅니다.
-4. IdP는 받은 verifier를 다시 해시해 저장해 둔 challenge와 **대조**하고, 다르면 `invalid_grant`으로 거부합니다.
+4. IdP는 받은 verifier를 다시 해시해 저장해 둔 challenge와 **대조**하고, 다르면 `invalid_grant`로 거부합니다.
 
 RFC 7636의 실제 예시로 값을 보면 이렇습니다.
 
@@ -147,7 +147,7 @@ code_challenge_method : S256
 셋 다 무작위 값이라 자주 뭉뚱그려지지만, 막는 것이 다릅니다. 1편의 예고대로 "관례적 역할"과 "스펙상 효과"를 갈라 보겠습니다.
 
 - **`state`** (CSRF 방어의 표준 관행): 클라이언트가 무작위 값을 넣고, 콜백에서 되돌아온 값을 세션에 저장해 둔 값과 대조합니다. 인가 요청을 사용자 세션에 **묶어** CSRF를 막고, 요청/응답을 상관시키며, mix-up 완화에도 보탬이 됩니다. **여전히 검증해야 하는 필수 관행**입니다.
-- **PKCE** (스펙상 효과): RFC 9700(OAuth 2.0 Security BCP)은 **"PKCE는 인가 응답을 읽을 수 있는 공격자 앞에서도 CSRF를 강하게 방어한다"**고 명시합니다. 즉 PKCE는 코드 주입뿐 아니라 **CSRF까지** 덮습니다. 그렇다고 `state`를 빼도 된다는 뜻이 아니라 — **둘을 함께** 쓰는 것이 권장입니다. PKCE가 암호학적 방어를 더하고, `state`는 세션 상관·상태 복원을 맡습니다.
+- **PKCE** (스펙상 효과): RFC 9700(OAuth 2.0 Security Best Current Practice, BCP)은 **"PKCE는 인가 응답을 읽을 수 있는 공격자 앞에서도 CSRF를 강하게 방어한다"**고 명시합니다. 즉 PKCE는 코드 주입뿐 아니라 **CSRF까지** 덮습니다. 그렇다고 `state`를 빼도 된다는 뜻이 아니라 — **둘을 함께** 쓰는 것이 권장입니다. PKCE가 암호학적 방어를 더하고, `state`는 세션 상관·상태 복원을 맡습니다.
 - **`nonce`** (OIDC): 클라이언트가 일회용 nonce를 인가 요청에 담으면, IdP는 그 값을 **ID Token의 `nonce` 클레임**에 그대로 넣습니다. 클라이언트는 "요청에 보낸 nonce == ID Token의 nonce"를 검증합니다. 이것이 **ID Token 재생·주입** 공격을 막습니다. (OIDC Core상 순수 Code Flow에서 `nonce`는 OPTIONAL이지만, Implicit/Hybrid에선 필수이고, **로그인 replay 방어를 위해 이 글은 Code Flow에서도 nonce 검증을 권장**합니다.)
 
 정리하면 — `state`=CSRF/상관(필수 관행), PKCE=코드 주입+CSRF(스펙상), `nonce`=ID Token 재생/주입(OIDC, 권장). 셋을 **함께** 씁니다.
@@ -186,7 +186,7 @@ curl -s 'https://auth.example.com/realms/demo/.well-known/openid-configuration' 
 
 ### 5단계 — 토큰 교환(백채널)
 
-`state`·`iss` 확인이 끝나면, `code`와 `code_verifier`를 token_endpoint에 보내 토큰을 받습니다(앞의 curl과 응답 JSON 그대로). 이 교환은 흔히 이렇게 실패합니다 — 코드 **재사용**·**만료**, `redirect_uri` **불일치**, `code_verifier` 불일치, 클라이언트 인증 실패. 대부분 HTTP 400 `invalid_grant`으로 떨어지므로, 디버깅 때 이 에러를 이 목록으로 좁히면 빠릅니다.
+`state`·`iss` 확인이 끝나면, `code`와 `code_verifier`를 token_endpoint에 보내 토큰을 받습니다(앞의 curl과 응답 JSON 그대로). 이 교환은 흔히 이렇게 실패합니다 — 코드 **재사용**·**만료**, `redirect_uri` **불일치**, `code_verifier` 불일치, 클라이언트 인증 실패. 대부분 HTTP 400 `invalid_grant`로 떨어지므로, 디버깅 때 이 에러를 이 목록으로 좁히면 빠릅니다.
 
 ### 6단계 — ID Token 검증
 
@@ -218,7 +218,7 @@ RFC 9700은 **비대칭 방식(private_key_jwt·mTLS)**을 권장합니다 — �
 GET .../auth?client_id=photo-app&request_uri=urn:ietf:params:oauth:request_uri:bwc4JK-...
 ```
 
-파라미터가 백채널에서 고정되니 **무결성**이 보장되고 **프론트채널 노출이 줄어듭니다**. 요청 서명(JAR)·응답 보호(JARM)와 함께 고보안(FAPI) 환경에서 권장됩니다.
+파라미터가 백채널에서 고정되니 **무결성**이 보장되고 **프론트채널 노출이 줄어듭니다**. 요청 서명(JAR, JWT-Secured Authorization Request)·응답 보호(JARM, JWT Authorization Response Mode)와 함께 고보안(FAPI, Financial-grade API) 환경에서 권장됩니다.
 
 ## 자주 틀리는 포인트
 
