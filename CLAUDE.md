@@ -87,12 +87,23 @@ raws/<memo>.md   (user writes idea fragments)
   → post-draft    → draft/<memo>-draft.md   (3 plot candidates + topic cautions)
   → user picks a plot, writes the body
   → review-post   (4-axis Korean review: 맞춤법/개연성/테크니컬 라이팅/몰입도)
-  → post-finalize ([[[image clues]]] → public/images webp, tags, series links)
-  → publish-post  → src/content/posts/<slug>.md  (sets Astro frontmatter, deletes draft)
+  → make-image    (```viz``` blocks → bbangto-ui-visualization components; inline SVG + hero webp)
+  → post-finalize (tags, series links, <<meme:>> delegation — NO image generation)
+  → publish-post  → src/content/posts/<slug>.mdx  (sets Astro frontmatter, deletes draft)
 ```
 
+### Visuals: bbangto-ui-visualization (viz engine) — NOT ChatGPT
+
+All structured visuals (diagrams, charts, infographics, and the hero image) are **implemented directly in code** from the user's design-system package **`@centurio1987/bbangto-ui-visualization`** — the blog does **not** call ChatGPT/OpenAI for images (KAN-013).
+
+- Authors leave a fenced ```` ```viz``` ```` block (JSON: `kind` + `data` + `caption`/`alt`). `make-image`/`image-maker` runs `scripts/apply-viz.ts`:
+  - `target:"inline"` (default) → co-located `src/components/posts/<slug>/<Name>.tsx` (wraps a package component in `VizFigure`) + MDX import + `<Name />` — renders as **SSR static SVG, no hydration** (zero-JS paint via the global contract shim `src/styles/viz.css`).
+  - `target:"hero"` → `scripts/render-viz.ts` (SSR → Playwright → cwebp/sharp) writes `public/images/<slug>/hero.webp` (also the OG/series-thumbnail raster).
+- v1 kinds (`src/lib/viz/schema.ts`, Zod): `ProcessSteps` · `Comparison` · `Flowchart` · `Statistics` · `PosterEditorial`. Blog style guide: `src/lib/viz/blogVizStyleGuide.ts` (bound to tokens + `design-concept/DIAGRAM_STYLE_GUIDE.md`).
+- **GitHub Packages**: the package lives on `npm.pkg.github.com`. Project `.npmrc` only maps the `@centurio1987` scope → auth comes from your **global `~/.npmrc`** `read:packages` token, so local dev needs **no per-project setup** (`bun install` just works). CI (`main.yml`, `packages: read`) writes the token to `~/.npmrc` before install (`PACKAGES_READ_TOKEN` PAT if set, else the workflow `GITHUB_TOKEN`). Verify inline paint over **`astro preview` (HTTP)**, not `file://`.
+- **Legacy (retired)**: `[[[…]]]`(OpenAI), ```figure```(make-image HTML templates), `(( ))`(mdx-concept-diagram) → all replaced by ```viz```. `scripts/generate-image.ts` / `render-image.ts` / `image-templates.ts` are deprecated stubs (delete in a follow-up).
+
 - `init-post` — skip the raws→draft pipeline: scaffold a ready-to-write post directly in `src/content/posts/` (draft:true).
-- `post-finalize` uses `scripts/generate-image.ts` (needs `OPENAI_API_KEY`); images go to `public/images/<slug>/` and are referenced as `/images/<slug>/...`.
 - `publish-post` does NOT edit any nav/sidebar config — the collection auto-discovers.
 
 ## Notes

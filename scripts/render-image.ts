@@ -1,5 +1,10 @@
 #!/usr/bin/env bun
-// 구조형 이미지 렌더러: HTML(template) → Playwright(chromium) → PNG.
+// ⚠️ DEPRECATED (KAN-013) — HTML 템플릿 5종 래스터 경로는 은퇴했다.
+//   구조형 시각물은 이제 @centurio1987/bbangto-ui-visualization 컴포넌트로 구현한다:
+//   scripts/apply-viz.ts (inline SSR SVG) + scripts/render-viz.ts (hero webp).
+//   이 파일과 image-templates.ts 는 롤백 유예용으로만 남아 있고 파이프라인에서 호출되지 않는다. 후속 커밋에서 삭제 예정.
+//
+// (레거시) 구조형 이미지 렌더러: HTML(template) → Playwright(chromium) → PNG.
 // 사용법:
 //   bun run scripts/render-image.ts --spec '<json>' --out public/images/<slug>/<name>.png
 //   bun run scripts/render-image.ts --spec-file spec.json --out <path>

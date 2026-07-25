@@ -1,3 +1,4 @@
+// ⚠️ DEPRECATED (KAN-013) — render-image.ts 와 함께 은퇴. viz 엔진(apply-viz/render-viz)으로 대체됨. 후속 커밋에서 삭제 예정.
 // 구조형 이미지 HTML 템플릿 모듈. render-image.ts가 import 한다.
 // 외부 검토 반영: 단순 토큰 치환 대신 타입별 함수 + HTML escaping으로 주입/깨짐을 방지한다.
 // 가이드: .claude/skills/make-image/assets/IMAGE_GUIDE.md

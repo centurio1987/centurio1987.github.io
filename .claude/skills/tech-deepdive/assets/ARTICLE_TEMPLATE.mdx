@@ -11,9 +11,9 @@ draft: true
 
 {/*
   draft 단계 MDX. tech-deepdive 가 생성하고 publish-post 가 정식화한다.
-  - React 시뮬레이션/다이어그램: co-located .tsx 를 import 해서 <Comp client:visible /> 로 삽입.
+  - 인터랙티브 시뮬: co-located .tsx 를 import 해서 <Comp client:visible /> 로 삽입(react-sim).
     (MDX 본문에 인라인으로 정의한 컴포넌트는 client:* 가 hydration 되지 않는다.)
-  - 이미지가 필요한 자리는 [[[이미지 단서]]] 로 남긴다 (산문 영역에만, JSX 밖에).
+  - 구조형 시각물·hero: ```viz``` 명세 블록으로 남긴다 (make-image=viz 엔진이 코드로 구현). ChatGPT 이미지 생성 안 씀.
   아래 섹션은 메뉴다. 주제에 맞지 않는 조건부 섹션은 지우되 왜 뺐는지 메모를 남긴다.
 */}
 
@@ -37,7 +37,11 @@ import LayerSim from "../../components/posts/[slug]/LayerSim";
 
 [표면이 아니라 메커니즘. "왜"까지 파고든다. 비유 → 실제 동작 순으로.]
 
-[[[핵심 동작을 보여주는 다이어그램 단서 — 무엇을 그릴지 구체적으로]]]
+```viz
+{ "kind": "Flowchart", "caption": "핵심 동작 흐름",
+  "data": { "nodes": [ {"id":"a","x":40,"y":40,"width":160,"height":64,"label":"입력"}, {"id":"b","x":320,"y":40,"width":160,"height":64,"label":"처리"} ],
+            "edges": [ {"id":"e1","from":"a","to":"b"} ] } }
+```
 
 ### 시뮬레이션으로 보기
 
@@ -94,7 +98,7 @@ import LayerSim from "../../components/posts/[slug]/LayerSim";
 
 [**결과 비교**: 두 방식이 만들어내는 차이를 재현 가능한 근거로 대조한다.
 근거 수준은 주제에 맞게 — 벤치마크 수치 / 로그·실패 재현 / 정성 비교(+"왜 그런 결과인지" 원리) 중 정직한 것.
-기본은 아래 마크다운 표로 충분하고, 복잡하면 make-image의 compare-table에 위탁한다.]
+기본은 아래 마크다운 표로 충분하고, 복잡하면 make-image의 `Comparison` ```viz``` 에 위탁한다.]
 
 | 구분 | ❌ 안티패턴 | ✅ 베스트 프랙티스 |
 | --- | --- | --- |

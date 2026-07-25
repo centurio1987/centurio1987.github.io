@@ -1,0 +1,41 @@
+/*
+ * viz.css — SSR "contract" shim for @centurio1987/bbangto-ui-visualization
+ * ---------------------------------------------------------------------------
+ * SOURCE: @centurio1987/bbangto-ui-visualization@0.2.0 — dist/index.js
+ *         (CONTRACT_CSS + REDUCED_MOTION_CSS, injected at runtime via
+ *          useInsertionEffect → no-op during SSR).
+ *
+ * WHY: The Provider emits the --bbangto-viz-* custom properties INLINE on its
+ * wrapper element at SSR, but the stylesheet that BINDS those vars to the SVG
+ * parts ([data-viz-part="shape"] { fill: var(--bbangto-viz-shape-fill) } …) is
+ * only injected on the client. For a static, zero-JS Astro build we reproduce
+ * those two sheets here in global CSS so diagrams paint at build time without
+ * hydration.
+ *
+ * KEEP IN SYNC with the package version above. If the package changes
+ * CONTRACT_CSS / REDUCED_MOTION_CSS, re-extract from node_modules and update
+ * here (see scripts/check-viz-contract.* guard, if present).
+ */
+
+/* --- CONTRACT_CSS (id: bbangto-viz-contract) ------------------------------ */
+[data-bbangto-viz-style-guide] [data-viz-part="shape"] {
+  fill: var(--bbangto-viz-shape-fill);
+  stroke: var(--bbangto-viz-shape-stroke);
+  stroke-width: var(--bbangto-viz-shape-stroke-width);
+}
+[data-bbangto-viz-style-guide] [data-bbangto-viz-edge] {
+  stroke: var(--bbangto-viz-edge-stroke);
+  stroke-width: var(--bbangto-viz-edge-width);
+}
+
+/* --- REDUCED_MOTION_CSS (id: bbangto-viz-reduced-motion) ------------------- */
+@media (prefers-reduced-motion: reduce) {
+  [data-bbangto-viz-style-guide] *:not([data-bbangto-viz-animate="essential"]),
+  [data-bbangto-viz-style-guide] *:not([data-bbangto-viz-animate="essential"])::before,
+  [data-bbangto-viz-style-guide] *:not([data-bbangto-viz-animate="essential"])::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

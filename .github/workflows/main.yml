@@ -10,6 +10,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  packages: read
 
 concurrency:
   group: pages
@@ -25,11 +26,18 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+      - name: Configure GitHub Packages auth
+        # Project .npmrc maps @centurio1987 → GitHub Packages; CI has no global ~/.npmrc,
+        # so write the read token here. PACKAGES_READ_TOKEN PAT if set, else the workflow's
+        # GITHUB_TOKEN (works when the package is public or grants this repo packages:read).
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}" >> ~/.npmrc
       - name: Install dependencies
         run: bun install
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+      - name: Check posts for unprocessed markers
+        run: bun scripts/check-post-markers.ts
       - name: Build with Astro
         run: bunx --bun astro build
       - name: Upload artifact

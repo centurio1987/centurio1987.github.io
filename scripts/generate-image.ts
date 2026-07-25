@@ -1,4 +1,9 @@
 #!/usr/bin/env bun
+// ⚠️ DEPRECATED (KAN-013) — OpenAI/ChatGPT 이미지 생성 경로는 은퇴했다.
+//   시각물은 이제 @centurio1987/bbangto-ui-visualization 로 직접 구현한다:
+//   scripts/apply-viz.ts (inline SVG) + scripts/render-viz.ts (hero webp).
+//   이 파일은 롤백 유예용으로만 남겨져 있으며 파이프라인에서 호출되지 않는다. 후속 커밋에서 삭제 예정.
+//
 // Usage: bun run scripts/generate-image.ts "<prompt>" "<output-path>"
 // Requires: OPENAI_API_KEY environment variable
 // Output: webp image saved to <output-path> (parent dirs created as needed)

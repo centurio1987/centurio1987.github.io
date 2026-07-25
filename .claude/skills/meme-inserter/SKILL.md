@@ -9,8 +9,8 @@ description: >-
   없는 자동 발행 환경에선 ②③으로 조용히 폴백한다. 사용자가 "밈 넣어줘", "`<<meme:>>` 자리 채워줘", "움짤 포착해서 넣어줘", "이 글 밈 플레이스홀더
   처리해줘", "/meme-inserter <파일>" 같이 요청하거나, `.md`/`.mdx` 문서에 `<<meme: ... >>` 마커가 있고 이를
   실제 밈 이미지로 바꾸려는 맥락이면 반드시 이 스킬을 사용한다. raws→draft→post 집필 파이프라인에서
-  post-finalize 단계가 이 스킬을 위탁 호출하기도 한다. 개념도(`(( ))` → mdx-concept-diagram),
-  은유 일러스트(`[[[ ]]]` → post-finalize), 구조형 정보 이미지(```figure``` → make-image)와는 마커가
+  post-finalize 단계가 이 스킬을 위탁 호출하기도 한다. 구조형 시각물(```viz``` → make-image/bbangto-ui-visualization),
+  인터랙티브 시뮬(`<Name client:visible />` → react-sim)과는 마커가
   달라 서로 침범하지 않는다. AI로 밈을 "생성"하지는 않고, 실재하는 인터넷 밈을 가져온다.
 argument-hint: <post-or-draft-file-path>
 ---
@@ -30,9 +30,9 @@ AI로 밈을 **생성**하지 않는다. 브라우저 MCP(aside)로 Pinterest를
 | 마커 | 담당 스킬 | 용도 |
 |------|-----------|------|
 | `<<meme: 힌트>>` | **meme-inserter (이 스킬)** | 실재 인터넷 밈 사진·움짤 |
-| `(( ... ))` | mdx-concept-diagram | 순수 React 개념도 |
-| `[[[ ... ]]]` | post-finalize | OpenAI 은유·개념 일러스트 |
-| ` ```figure``` ` | make-image | 비교표·단계 다이어그램 등 구조형 이미지 |
+| ` ```viz``` ` | make-image (viz 엔진) | 다이어그램·차트·인포그래픽·hero (bbangto-ui-visualization) |
+| `<Name client:visible />` | react-sim | 인터랙티브 시뮬레이션 |
+| ~~`(( ))`·`[[[ ]]]`·```figure```~~ | (은퇴) | 모두 ```viz``` 로 대체 |
 
 정규식이 서로 겹치지 않으므로 한 문서에 여러 종류가 섞여 있어도 안전하다. 다른 마커는 절대 손대지 않는다.
 

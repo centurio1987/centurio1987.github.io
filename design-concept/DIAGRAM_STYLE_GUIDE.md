@@ -1,10 +1,10 @@
-# Diagram Style Guide v0.1
+# Diagram Style Guide v0.2
 
-> 적용 대상: `((...))` 자리표시자에서 파생되는 React 기술 다이어그램 컴포넌트와 3차 산출물용 이미지 export
-> 기준 문서: `design-concept/DESIGN_CONCEPT.md` v0.2
+> 적용 대상: 본문 ```` ```viz``` ```` 블록 → **@centurio1987/bbangto-ui-visualization** 컴포넌트(코드로 구현하는 다이어그램·차트·인포그래픽·hero).
+> 기준 문서: `design-concept/DESIGN_CONCEPT.md` v0.3 · 스타일가이드 구현: `src/lib/viz/blogVizStyleGuide.ts` · kind 규격: `.claude/skills/make-image/assets/IMAGE_GUIDE.md`.
 > 목표: **엄밀한 구조를 밝고 손맛 있는 표면으로 설명한다.**
 
-`((...))`는 일반 일러스트가 아니라, 글의 논리 구조를 독자가 빠르게 잡도록 돕는 설명 장치다. ingest 단계에서는 이를 바로 이미지로 만들지 않고, 먼저 검토 가능한 React 컴포넌트 자산으로 만든다. wiki에는 컴포넌트 위치만 기록하고, 2차 산출물에서는 해당 컴포넌트를 대입하며, 3차 산출물 단계에서만 이미지로 export한다.
+viz 시각물은 일반 일러스트가 아니라, 글의 논리 구조를 독자가 빠르게 잡도록 돕는 설명 장치다. `make-image`(viz 엔진)가 ```viz``` 블록을 유저 디자인 시스템 패키지 컴포넌트로 구현한다: 본문은 **SSR 정적 SVG**(무JS 페인트), hero는 **webp 래스터**. **ChatGPT 이미지 생성을 쓰지 않는다**(KAN-013). 아래 §1~§6 디자인 원칙은 `blogVizStyleGuide`(색·폰트)와 kind 선택의 기준이다.
 
 ---
 
@@ -18,12 +18,12 @@
 
 ## 2. 팔레트
 
-기본 배경은 `paper #ECE9E1` 또는 `surface #F7F5EF`만 사용한다.
+기본 배경은 v0.3 토큰 `paper #F3EEE4` 또는 `surface #F8F3E8`만 사용한다(blogVizStyleGuide canvas.bg).
 
 | 역할 | 색 |
 | --- | --- |
-| 배경 | `#ECE9E1` / `#F7F5EF` |
-| 선·외곽 | `#1C1B18` |
+| 배경 | `#F3EEE4` / `#F8F3E8` |
+| 선·외곽 | `#20264A` (ink, navy) |
 | 보조 텍스트·옅은 선 | `#6B665C` |
 | 핵심 흐름 | `#4E6CA8` |
 | 강조·전환점 | `#D8A33F` |
@@ -92,53 +92,41 @@ Aggregate, Entity, Value Object, Policy 같은 도메인 구성요소를 보여�
 
 선택지와 버린 대안을 보여줄 때 쓴다. 선택한 경로는 signature, 보류·위험은 strategy red, 근거는 mustard dot으로 표시한다.
 
-## 7. `((...))` 처리 규칙
+## 7. `viz` 블록 사용 규칙
 
-자리표시자는 단독 블록으로 쓴다.
+집필자는 시각물이 필요한 자리에 단독 ```` ```viz``` ```` 블록(JSON)을 남긴다. `make-image`(apply-viz)가 처리한다.
 
-```markdown
-((
-type: flow
-title: Aggregate 경계가 RDB 스키마로 내려오는 흐름
-focus: 관계의 방향과 경계
-nodes:
-  - 도메인 규칙
-  - Aggregate Root
-  - Repository
-  - RDB Schema
-notes:
-  - 텍스트는 최소화
-  - 핵심 흐름은 좌에서 우로
-))
+````markdown
+```viz
+{ "kind": "Flowchart",
+  "caption": "Aggregate 경계가 RDB 스키마로 내려오는 흐름",
+  "alt": "도메인 규칙 → Aggregate Root → Repository → RDB Schema",
+  "data": {
+    "nodes": [ {"id":"a","x":40,"y":40,"width":170,"height":60,"label":"도메인 규칙"},
+               {"id":"b","x":260,"y":40,"width":170,"height":60,"label":"Aggregate Root"} ],
+    "edges": [ {"id":"e1","from":"a","to":"b"} ] } }
 ```
+````
 
-최소 입력도 허용한다.
+- `target:"inline"`(기본) → co-located `.tsx`(SSR 정적 SVG). `target:"hero"` → `public/images/<slug>/hero.webp`.
+- 텍스트 최소화, 핵심 흐름은 좌→우. kind별 `data` 규격은 `IMAGE_GUIDE.md`.
+- 색은 `blogVizStyleGuide`가 자동 주입한다(아래 §2 역할 팔레트). 블록에서 색을 직접 지정하지 않는다.
 
-```markdown
-((Aggregate Root와 Entity, Value Object의 경계를 설명하는 도메인 모델 다이어그램))
-```
+## 8. 다이어그램 유형 → viz kind 매핑
 
-ingest 단계에서 `((...))`를 발견하면:
+§6 유형을 v1 지원 kind(5종)로 고른다:
 
-1. placeholder 원문을 raw에 보존한다.
-2. React 컴포넌트를 별도 diagram assets 폴더에 생성한다.
-3. wiki에는 컴포넌트를 직접 삽입하지 않고 `visual_refs`/`diagram_refs`에 경로와 상태만 기록한다.
-4. 2차 산출물에서 해당 컴포넌트를 import 또는 embed한다.
-5. 3차 산출물 변환 단계에서 React 렌더 결과를 이미지로 export한다.
+| 유형(§6) | viz kind | 비고 |
+| --- | --- | --- |
+| Concept Map / Domain Model / Architecture Boundary | `Flowchart` | 노드+엣지, 좌표 배치 |
+| Flow / Pipeline / Trade-off·Decision | `Flowchart` 또는 `ProcessSteps` | 순차면 ProcessSteps |
+| 절차·단계 | `ProcessSteps` | horizontal/vertical/zigzag |
+| 좌우 비교 | `Comparison` | split/magnitude |
+| 수치·지표 | `Statistics` | cards/isotype/… |
+| hero 대표 이미지 | `PosterEditorial` | `target:"hero"` → webp |
 
-## 8. React 컴포넌트 작성 템플릿
-
-컴포넌트 구현 시 아래 조건을 유지한다.
-
-```text
-Create a clean technical diagram React component for a Korean engineering/resume output.
-Subject: <placeholder content>
-Style: rigorous content, playful surface; warm paper background; hand-drawn black ink outlines; calm editorial layout.
-Palette: paper #ECE9E1, surface #F7F5EF, ink #1C1B18, slate blue #4E6CA8, mustard #D8A33F, muted earthy accents only.
-Composition: 1536x1024, generous margins, 3-7 simple nodes, readable relationship flow, no dense labels.
-Linework: 1.5-2px rounded ink strokes, slightly irregular hand-drawn feel, minimal shadows, no gradients, no neon, no glossy 3D.
-Text policy: short Korean labels are allowed; avoid dense paragraphs inside nodes.
-```
+색·폰트는 `blogVizStyleGuide`가 주입하므로(§2 팔레트, ink 외곽선, Gowun Dodum/Space Mono) 블록에서 지정하지 않는다.
+~65종 나머지 kind는 후속 확장(패키지에는 C4·ERDiagram·SequenceDiagram·Timeline 등도 있다).
 
 ## 9. 금지 사항
 

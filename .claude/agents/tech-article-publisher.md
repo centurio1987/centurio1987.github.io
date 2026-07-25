@@ -75,8 +75,8 @@ research        → tech-deepdive   → review-post → review-writing → quali
 
 ### 2. 집필 + 외부 검토 — `tech-deepdive` (오케스트레이터 직접)
 - `Skill`로 `tech-deepdive` 호출(인자: **research가 만든 angle 경로**, skip 시엔 글감 메모 경로). 집필은 `_shared/STYLE_GUIDE.md` 문체를 따른다.
-- **시뮬·구조형 이미지 위탁**: 집필 중 시뮬이 필요하면 명세를 남겨 `react-sim-builder`(sonnet)에, 구조형 이미지는
-  ```figure``` 명세 블록을 남겨 `image-maker`(sonnet)에 위탁한다(오케스트레이터가 `Agent`로 호출). 개념·은유 일러스트는 finalize의 `[[[…]]]`로 남긴다.
+- **시뮬·시각물 위탁**: 집필 중 시뮬이 필요하면 명세를 남겨 `react-sim-builder`(sonnet)에, 구조형 시각물·hero 대표 이미지는
+  ```viz``` 명세 블록을 남겨 `image-maker`(viz 엔진, sonnet)에 위탁한다(오케스트레이터가 `Agent`로 호출). 유저 디자인 시스템 패키지로 **직접 구현**하며 **ChatGPT 이미지 생성을 쓰지 않는다**.
 - **AUTO**: 단일/시리즈를 되묻지 않도록 오케스트레이터가 angle/메모를 읽고 **범위를 미리 정해** 지시한다
   (기본: 단일 종합 글. 여러 편 명시·분량 과다면 시리즈로 보고 **1편만**).
 - **게이트 A (외부검토)**: 외부검토가 **둘 다 실패(`[skip]`)** 면 — interactive: 원인(미설치/미인증)을 알리고 "그대로 진행" 택할 때만 다음.
@@ -105,10 +105,9 @@ research        → tech-deepdive   → review-post → review-writing → quali
 - **interactive**: 라운드 1 결과를 보여주고 "자동 보완/항목 선택/여기까지"를 묻는다.
 - **책임 경계**: 깊이·완전성·다관점·정확성만. 문체/설득은 손대지 않는다.
 
-### 6. 개념 이미지·태그·시리즈 — `post-finalize` (오케스트레이터 직접)
-- `Skill`로 `post-finalize` 호출. **`[[[...]]]`(개념·은유 일러스트)** → OpenAI 이미지, 태그 추출, 시리즈 링크 삽입.
-  구조형 이미지는 이미 2단계(make-image)에서 처리됐으므로 finalize는 `[[[…]]]`만 다룬다(경계 분리).
-- `OPENAI_API_KEY` 없을 때: auto면 이미지 단계만 자동 skip, 태그/시리즈는 계속. interactive면 확인.
+### 6. 태그·시리즈·밈 — `post-finalize` (오케스트레이터 직접)
+- `Skill`로 `post-finalize` 호출. 태그 추출, 시리즈 링크 삽입, `<<meme:>>` 위탁, 레거시 마커 경고.
+  **이미지는 생성하지 않는다** — 구조형 시각물·hero는 이미 2단계(make-image = viz 엔진)에서 코드로 구현됐다. `OPENAI_API_KEY` 불요.
 - MDX의 `import`/`<Comp/>` 블록과 frontmatter 보존 확인.
 
 ### 7. 정식 발행 — `publish-post` (오케스트레이터 직접)
@@ -118,7 +117,7 @@ research        → tech-deepdive   → review-post → review-writing → quali
 - `publish-post` → `src/content/posts/`로 발행, draft 제거. co-located 컴포넌트를 발행 위치에 맞게 두고 import 경로 갱신 확인.
 
 ### 8. 마무리 재검증 + 푸시 — `ship-post` (오케스트레이터 직접 + `git-shipper` 위임)
-- `Skill`로 `ship-post` 호출: `bun run build` 통과 + 링크/이미지(잔존 ```figure```·미치환 `[[[…]]]`·깨진 경로)·frontmatter 재검증.
+- `Skill`로 `ship-post` 호출: `bun run build` 통과 + 링크/이미지(미치환 ```viz```·레거시 ```figure```/`[[[…]]]`/`(( ))`·깨진 경로)·frontmatter 재검증.
   깨지면 **push로 넘어가지 않고** 보고.
 - 검증 통과 후 `git-shipper`(haiku)에 위임 — 블로그 레포(`--branch main`), 이번 글 관련 경로만(`src/content/posts/<slug>.mdx`,
   `src/components/posts/<slug>/`, `public/images/<slug>/`) commit&push. 가드 스크립트 항상 적용.
