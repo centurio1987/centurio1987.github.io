@@ -1,6 +1,6 @@
 {
-  "next_id": 12,
-  "next_seq": 22,
+  "next_id": 14,
+  "next_seq": 24,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -117,22 +117,70 @@
       "title_hash": "e88b379384119070534b083649bf67dcf124a3e0",
       "memo_hash": "44ab42a7c0f4b2ea540d553e08ea19d6de1a9be8",
       "verbatim_hash": "8ffb6ee2be8362818013c6affd4c2817b895e669"
+    },
+    "KAN-012": {
+      "col": "backlog",
+      "title": "블로그에 motion 요소들을 추가하고 싶다. 블로그 전체 디자인을 파악하여, motion이 들어가면 좋은 지점들을 포착해라. motion 적용은@centurio1987/bbangto-ui-core, @centurio1987/bbangto-ui-style-guide-catalog 를 설치하여 구현해라.",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-25",
+      "title_hash": "0c6ca431ccabafa79b53669644be081951a9b0ea",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-013": {
+      "col": "backlog",
+      "title": "집필 워크플로 개정",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-25",
+      "title_hash": "a4b55937cebfe175f2aeb8b0f2268c5536d18155",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
     "KAN-007",
     "KAN-008",
+    "KAN-012",
+    "KAN-013",
     "KAN-001",
     "KAN-002",
     "KAN-003",
     "KAN-004",
     "KAN-005",
     "KAN-010",
+    "KAN-011",
     "KAN-009",
-    "KAN-006",
-    "KAN-011"
+    "KAN-006"
   ],
   "recent": [
+    {
+      "seq": 23,
+      "t": "2026-07-25T14:28",
+      "a": "유저",
+      "id": "KAN-013",
+      "op": "create",
+      "col": "backlog",
+      "title": "집필 워크플로 개정",
+      "memo": "",
+      "verbatim": ""
+    },
+    {
+      "seq": 22,
+      "t": "2026-07-25T14:28",
+      "a": "유저",
+      "id": "KAN-012",
+      "op": "create",
+      "col": "backlog",
+      "title": "블로그에 motion 요소들을 추가하고 싶다. 블로그 전체 디자인을 파악하여, motion이 들어가면 좋은 지점들을 포착해라. motion 적용은@centurio1987/bbangto-ui-core, @centurio1987/bbangto-ui-style-guide-catalog 를 설치하여 구현해라.",
+      "memo": "",
+      "verbatim": ""
+    },
     {
       "seq": 21,
       "t": "2026-07-24T16:36",
