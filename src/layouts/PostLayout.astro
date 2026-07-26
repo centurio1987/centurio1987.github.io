@@ -25,7 +25,7 @@ const allPosts = await getCollection("posts", ({ data }) => !data.draft);
 const related = getRelatedPosts(post, allPosts);
 
 const slug = post.id.replace(/\.(md|mdx)$/, "");
-let postImage = "/images/tony-deco.webp";
+let postImage = "/tony-deco.webp";
 const heroPath = path.join(process.cwd(), "public", "images", slug, "hero.webp");
 if (fs.existsSync(heroPath)) {
   postImage = `/images/${slug}/hero.webp`;
