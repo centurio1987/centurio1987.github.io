@@ -1,6 +1,6 @@
 {
   "next_id": 24,
-  "next_seq": 53,
+  "next_seq": 55,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -215,15 +215,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-023": {
-      "col": "doing",
+      "col": "done",
       "title": "graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락)",
-      "memo": "src/data/graph.json이 2026-07-02 생성분(8편: osi 1~~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install \"graphifyy[gemini]\" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채.",
+      "memo": "완료 — graphify 그래프 전량 재추출로 8편→18편 전편 커버(커밋 e093876). 백엔드를 --backend claude-cli 로 전환: 카드에 적힌 gemini 경로는 graphifyy[gemini] 재설치로 openai 모듈은 복구했으나 무료 티어가 5 RPM + 일일 상한이라 18편 추출 시 청크 절반 이상이 429(3회 시도 모두 부분 실패 → 전량 폐기, 커버리지 4~15편). 최종 실행: graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . → 657노드/1064엣지/30커뮤니티 → graphify cluster-only . --backend claude-cli 로 커뮤니티 한국어 라벨링 → bun scripts/build-graph-data.ts → 18편 600개념 1064엣지 9쌍. 글별 개념 11~72개로 균일. 함정 2건 발견·조치: (1) graphify가 source_file 을 스캔루트 상대경로('tauri-2.mdx')로 적어 build-graph-data 의 toPostSlug 정규식(레포루트 경로만 매칭)에 전 글이 매칭 실패 → 두 형태 모두 수용하도록 수정. 이게 없었으면 새 그래프가 통째로 무시됨. (2) --out . 누락 시 src/content/posts/graphify-out/ 로 써서 콘텐츠 디렉터리 오염. 재발 방지: CLAUDE.md·ship-post SKILL(정본+.agents 미러)에 실행 명령·백엔드 선택 근거·부분 실패 결과물 커밋 금지(문서 노드 수 = 글 수로 검증)·--out . 필수를 명시, .gitignore 에 graphify-out/cache/·날짜 백업 제외 추가. 검증: build green(31 pages)·tsc clean·마커 0, /graph 216 서클 렌더·tauri-2 연관 글에 tauri-1 + 그래프 개념 칩 노출 육안 확인. 콘텐츠 디렉터리 오염 없음.",
       "verbatim": "",
       "생성": "유저",
       "최종": "ai",
       "갱신": "2026-07-26",
       "title_hash": "94e649dc7aa0fcb49f3868f9d41b7c059b2a5654",
-      "memo_hash": "a40626ca76696b0a2b92b8b40d99e6e811a73e03",
+      "memo_hash": "29287cccb262a7491af995b5982570833565e530",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
@@ -250,6 +250,25 @@
     "KAN-023"
   ],
   "recent": [
+    {
+      "seq": 54,
+      "t": "2026-07-26T21:01",
+      "a": "ai",
+      "id": "KAN-023",
+      "op": "move",
+      "from": "doing",
+      "to": "done"
+    },
+    {
+      "seq": 53,
+      "t": "2026-07-26T21:01",
+      "a": "ai",
+      "id": "KAN-023",
+      "op": "edit",
+      "field": "memo",
+      "before": "src/data/graph.json이 2026-07-02 생성분(8편: osi 1~~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install \"graphifyy[gemini]\" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채.",
+      "after": "완료 — graphify 그래프 전량 재추출로 8편→18편 전편 커버(커밋 e093876). 백엔드를 --backend claude-cli 로 전환: 카드에 적힌 gemini 경로는 graphifyy[gemini] 재설치로 openai 모듈은 복구했으나 무료 티어가 5 RPM + 일일 상한이라 18편 추출 시 청크 절반 이상이 429(3회 시도 모두 부분 실패 → 전량 폐기, 커버리지 4~15편). 최종 실행: graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . → 657노드/1064엣지/30커뮤니티 → graphify cluster-only . --backend claude-cli 로 커뮤니티 한국어 라벨링 → bun scripts/build-graph-data.ts → 18편 600개념 1064엣지 9쌍. 글별 개념 11~72개로 균일. 함정 2건 발견·조치: (1) graphify가 source_file 을 스캔루트 상대경로('tauri-2.mdx')로 적어 build-graph-data 의 toPostSlug 정규식(레포루트 경로만 매칭)에 전 글이 매칭 실패 → 두 형태 모두 수용하도록 수정. 이게 없었으면 새 그래프가 통째로 무시됨. (2) --out . 누락 시 src/content/posts/graphify-out/ 로 써서 콘텐츠 디렉터리 오염. 재발 방지: CLAUDE.md·ship-post SKILL(정본+.agents 미러)에 실행 명령·백엔드 선택 근거·부분 실패 결과물 커밋 금지(문서 노드 수 = 글 수로 검증)·--out . 필수를 명시, .gitignore 에 graphify-out/cache/·날짜 백업 제외 추가. 검증: build green(31 pages)·tsc clean·마커 0, /graph 216 서클 렌더·tauri-2 연관 글에 tauri-1 + 그래프 개념 칩 노출 육안 확인. 콘텐츠 디렉터리 오염 없음."
+    },
     {
       "seq": 52,
       "t": "2026-07-26T19:49",
@@ -726,26 +745,6 @@
       "col": "review",
       "title": "모델링 철학 고려 사항",
       "memo": "draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요"
-    },
-    {
-      "seq": 4,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-004",
-      "op": "create",
-      "col": "review",
-      "title": "상속이냐 Composite냐",
-      "memo": "draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점"
-    },
-    {
-      "seq": 3,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-003",
-      "op": "create",
-      "col": "review",
-      "title": "DDD에서 Composition과 Aggregation",
-      "memo": "draft: draft/ddd-composition-aggregation-draft.md · Composition=의존 생명주기/Aggregate 소속, Aggregation=참조"
     }
   ]
 }

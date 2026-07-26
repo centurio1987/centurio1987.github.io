@@ -1,2 +1,4 @@
 {"seq": 1, "t": "2026-06-30T14:32", "a": "ai", "id": "KAN-001", "op": "create", "col": "review", "title": "GraphQL을 썼을 때 유리한 상황과 아닌 상황", "memo": "draft: draft/graphql-use-cases-draft.md · REST 대비 이득/복잡도 증가 상황, 조직·클라이언트·게이트웨이 판단 기준"}
 {"seq": 2, "t": "2026-06-30T14:32", "a": "ai", "id": "KAN-002", "op": "create", "col": "review", "title": "도메인 모델과 RDB", "memo": "draft: draft/domain-model-rdb-draft.md · 외래키 신호, 상속/합성 테이블 표현, Aggregate↔테이블 대응, Value 영속화"}
+{"seq": 3, "t": "2026-06-30T14:32", "a": "ai", "id": "KAN-003", "op": "create", "col": "review", "title": "DDD에서 Composition과 Aggregation", "memo": "draft: draft/ddd-composition-aggregation-draft.md · Composition=의존 생명주기/Aggregate 소속, Aggregation=참조"}
+{"seq": 4, "t": "2026-06-30T14:32", "a": "ai", "id": "KAN-004", "op": "create", "col": "review", "title": "상속이냐 Composite냐", "memo": "draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점"}
