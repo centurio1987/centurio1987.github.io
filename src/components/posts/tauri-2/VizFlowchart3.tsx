@@ -10,49 +10,49 @@ export default function VizFlowchart3() {
         accessible="img"
         title={"WebView의 invoke 호출이 Runtime Authority를 거쳐 케이퍼빌리티와 대조된 뒤 통과하거나 거절되는 흐름도"}
         desc={"커맨드 호출의 권한 심사 경로. 시스템 커맨드는 Runtime Authority에서 창별 케이퍼빌리티와 대조되고, 목록에 없으면 실행 전에 거절된다."}
-        viewBox="0 0 620 564"
+        viewBox="0 0 620 452"
         data={{
   "nodes": [
     {
       "id": "call",
-      "x": 150,
-      "y": 24,
-      "width": 300,
-      "height": 68,
-      "label": "WebView — open({ directory: true })"
+      "x": 20,
+      "y": 14,
+      "width": 320,
+      "height": 62,
+      "label": "WebView — invoke: open({ directory: true })"
     },
     {
       "id": "authority",
-      "x": 150,
-      "y": 168,
-      "width": 300,
-      "height": 68,
+      "x": 20,
+      "y": 136,
+      "width": 320,
+      "height": 62,
       "label": "Runtime Authority — 이 창이 쓸 자격이 있나",
       "fill": "#DCE4F2"
     },
     {
       "id": "cap",
-      "x": 150,
-      "y": 312,
-      "width": 300,
-      "height": 68,
+      "x": 20,
+      "y": 258,
+      "width": 320,
+      "height": 62,
       "label": "capabilities/default.json 대조"
     },
     {
       "id": "ok",
       "x": 20,
-      "y": 456,
-      "width": 250,
-      "height": 68,
+      "y": 380,
+      "width": 320,
+      "height": 62,
       "label": "허용 목록에 있음 → Rust 실행"
     },
     {
       "id": "deny",
-      "x": 330,
-      "y": 456,
-      "width": 250,
-      "height": 68,
-      "label": "없음 → not allowed 로 거절",
+      "x": 400,
+      "y": 258,
+      "width": 210,
+      "height": 62,
+      "label": "없음 → not allowed 거절",
       "fill": "#F0DEDE"
     }
   ],
@@ -75,13 +75,15 @@ export default function VizFlowchart3() {
       "id": "e3",
       "from": "cap",
       "to": "ok",
-      "label": "통과"
+      "label": "통과",
+      "routing": "straight"
     },
     {
       "id": "e4",
       "from": "cap",
       "to": "deny",
-      "label": "차단"
+      "label": "차단",
+      "routing": "straight"
     }
   ]
 }}

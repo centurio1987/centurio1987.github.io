@@ -10,7 +10,7 @@ export default function VizComparison4() {
         accessible="img"
         title={"커맨드 반환값 방식과 Channel 스트리밍 방식의 좌우 비교"}
         desc={"같은 작업, 다른 통로. 반환값은 끝나야 한 번 오지만 Channel은 진행 중에 순서대로 흐른다."}
-        viewBox="0 0 760 380"
+        viewBox="0 0 620 250"
         mode="split"
         data={{
   "left": {

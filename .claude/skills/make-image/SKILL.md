@@ -69,6 +69,10 @@ bun scripts/apply-viz.ts <대상 MDX> [--slug <slug>] [--force]
 - `bunx tsc --noEmit` 로 생성된 `.tsx` 타입 확인.
 - `bun run build` 통과 확인(단일 JSX 오류가 전체 빌드 파괴).
 - 인라인 SVG 색 페인트는 **`astro preview`(HTTP)** 로 확인한다. `file://`는 외부 스타일시트 적용 quirk로 색이 안 칠해져 보일 수 있으니 판단 근거로 쓰지 않는다.
+- **렌더 규격(`assets/IMAGE_GUIDE.md` R1~R5)을 실제 화면으로 확인한다.** 빌드 통과는 "그림이 읽힌다"를 보장하지 않는다.
+  viewBox 폭 ≤ 620(글자 크기) · Flowchart 엣지 축정렬 + `routing:"straight"`(화살표가 노드를 관통·꺾임) ·
+  엣지 label 미렌더(정보는 노드 label로) · hero는 썸네일에서 제목이 읽히는 크기. 캡처 스니펫은 R5에 있다.
+  → tauri-1·tauri-2에서 연속으로 지적받은 항목이다. **명세를 쓰는 시점에 지켜라.**
 
 ### 3. 종료 보고
 생성 컴포넌트/webp 경로, 치환 건수, 잔존 viz 0 확인, (있으면) 검증 실패 블록과 원인을 보고한다.

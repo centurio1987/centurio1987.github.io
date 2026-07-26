@@ -4,19 +4,28 @@
  */
 import type { VizSpec } from "./schema";
 
-/** kind별 기본 viewBox (spec.viewBox 우선). */
+/**
+ * kind별 기본 viewBox (spec.viewBox 우선).
+ *
+ * **폭은 620 이하로 유지한다.** 인라인 SVG는 본문 폭(약 632px)에 맞춰
+ * `width:100%`로 스케일되므로, viewBox 폭이 본문보다 넓으면 그만큼 축소 렌더돼
+ * 글자가 작아진다(폭 760 → 0.83배). 620이 본문과 거의 등배다.
+ * 높이도 콘텐츠에 맞춘다 — 남는 세로 여백은 그대로 빈 공간으로 렌더된다.
+ */
 export function defaultViewBox(spec: VizSpec): string {
   if (spec.viewBox) return spec.viewBox;
   switch (spec.kind) {
     case "ProcessSteps":
-      return spec.orientation === "vertical" ? "0 0 480 520" : "0 0 820 220";
+      return spec.orientation === "vertical" ? "0 0 480 520" : "0 0 620 200";
     case "Comparison":
-      return "0 0 760 380";
+      return "0 0 620 260";
     case "Statistics":
-      return "0 0 820 260";
+      return "0 0 620 220";
     case "PosterEditorial":
-      return "0 0 1200 675";
+      // hero 래스터는 deviceScaleFactor 2 → 1200x676(OG 규격). 텍스트는 크게.
+      return "0 0 600 338";
     case "Flowchart": {
+      // 노드 bbox에서 자동 계산 — 저작자가 노드 x/width를 620 안에 배치해야 한다.
       let maxX = 0;
       let maxY = 0;
       for (const n of spec.data.nodes) {

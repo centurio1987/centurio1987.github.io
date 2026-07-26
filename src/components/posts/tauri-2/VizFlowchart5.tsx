@@ -10,92 +10,90 @@ export default function VizFlowchart5() {
         accessible="img"
         title={"WebView에서 invoke로 요청이 들어가 Rust Core가 파일 시스템과 사이드카를 다루고 Channel로 진행 상황을 되돌려 주는 구조도"}
         desc={"완성된 file-scout의 배선. 프런트는 invoke로 요청만 보내고, 모든 OS 접촉과 외부 프로세스 실행은 Core 안에서 일어난다. 진행 상황은 Channel을 타고 역방향으로 흐른다."}
-        viewBox="0 0 640 486"
+        viewBox="0 0 620 400"
         data={{
   "nodes": [
     {
       "id": "ui",
-      "x": 40,
-      "y": 30,
-      "width": 240,
-      "height": 76,
+      "x": 160,
+      "y": 14,
+      "width": 300,
+      "height": 60,
       "label": "WebView — 폴더 선택 · 진행 표시"
     },
     {
-      "id": "cmd",
-      "x": 40,
-      "y": 200,
-      "width": 240,
-      "height": 76,
-      "label": "커맨드 scan_folder · checksum_file",
+      "id": "ipc",
+      "x": 160,
+      "y": 112,
+      "width": 300,
+      "height": 50,
+      "label": "IPC — invoke ↓ · Channel send ↑",
       "fill": "#DCE4F2"
     },
     {
-      "id": "state",
-      "x": 40,
-      "y": 370,
-      "width": 240,
-      "height": 76,
-      "label": "State — 최근 스캔 캐시"
+      "id": "cmd",
+      "x": 180,
+      "y": 210,
+      "width": 260,
+      "height": 68,
+      "label": "Rust 커맨드 scan_folder · checksum_file"
     },
     {
       "id": "fs",
-      "x": 380,
-      "y": 200,
-      "width": 220,
-      "height": 76,
-      "label": "OS 파일 시스템"
+      "x": 4,
+      "y": 218,
+      "width": 150,
+      "height": 52,
+      "label": "OS 파일 시스템 read_dir"
     },
     {
       "id": "side",
-      "x": 380,
-      "y": 370,
-      "width": 220,
-      "height": 76,
-      "label": "사이드카 checksum CLI",
+      "x": 466,
+      "y": 218,
+      "width": 150,
+      "height": 52,
+      "label": "사이드카 CLI spawn",
       "fill": "#EFE2C7"
+    },
+    {
+      "id": "state",
+      "x": 160,
+      "y": 326,
+      "width": 300,
+      "height": 60,
+      "label": "State — 최근 스캔 캐시"
     }
   ],
   "edges": [
     {
       "id": "e1",
       "from": "ui",
-      "to": "cmd",
-      "label": "invoke",
+      "to": "ipc",
       "routing": "straight"
     },
     {
       "id": "e2",
-      "from": "cmd",
-      "to": "state",
-      "label": "캐시 조회·갱신",
+      "from": "ipc",
+      "to": "cmd",
       "routing": "straight"
     },
     {
       "id": "e3",
       "from": "cmd",
       "to": "fs",
-      "label": "read_dir"
+      "routing": "straight"
     },
     {
       "id": "e4",
       "from": "cmd",
       "to": "side",
-      "label": "spawn"
+      "routing": "straight"
     },
     {
       "id": "e5",
-      "from": "side",
-      "to": "cmd",
-      "label": "Stdout",
-      "dashed": true
-    },
-    {
-      "id": "e6",
       "from": "cmd",
-      "to": "ui",
-      "label": "Channel send",
-      "dashed": true
+      "to": "state",
+      "routing": "straight"
     }
   ]
 }}
