@@ -6,7 +6,7 @@
  *  - target:"inline" → co-located React 컴포넌트(.tsx) 생성 + MDX import 삽입
  *                      + 블록을 <Name /> 로 치환 (client directive 없음 = SSR 정적 SVG)
  *  - target:"hero"   → 컴포넌트를 Playwright로 래스터해 public/images/<slug>/<name>.webp 생성
- *                      + 블록을 ![alt](경로) 로 치환   (Phase 4: render-image.ts 위임)
+ *                      + 블록을 ![alt](경로) 로 치환   (hero 래스터는 render-viz.ts 위임)
  *
  * 규격: src/lib/viz/schema.ts (Zod, v1 5종). 스타일: src/lib/viz/blogVizStyleGuide.ts.
  * 렌더 색 바인딩: src/styles/viz.css(전역 shim).
