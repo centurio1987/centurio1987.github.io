@@ -25,14 +25,14 @@
     ```text
     astro 최신 버전을 반영하여 마이그레이션 계획을 세우고, kanban에 추가하라
     ```
-- `KAN-022` OG 이미지 폴백의 readdir 순서 비결정성 (bun/node 런타임 간 결과 상이) — 생성:ai · 최종:ai · 갱신:2026-07-26
-  - 메모: KAN-020 검증 중 발견한 선재 부채(이번 변경과 무관, 의존성 교체 전후 동일하게 재현). src/layouts/PostLayout.astro:35-46 findFirstImage()가 fs.readdirSync 결과를 정렬 없이 순회해 '첫 이미지'를 고른다. readdir 순서는 명세되지 않아 bun과 node의 fs 구현 사이에서 갈리고, hero.webp가 없는 글의 og:image·twitter:image가 런타임에 따라 달라진다. 실측: 동일 커밋·동일 락파일에서 'bun run build'(node 런타임)와 CI 명령 'bunx --bun astro build'(bun 런타임)의 산출물이 2개 글에서 갈림 — algorithm-at-40-prologue는 expectation.webp vs reality-1.webp, aside-arc는 memes/1.webp vs memes/3.webp. 같은 런타임끼리는 재빌드해도 안정적이므로 순수 런타임 의존이다. 현재 배포본은 CI(bun 런타임) 결과이므로 로컬 프리뷰와 실제 OG 카드가 다를 수 있다. 성격은 KAN-017에서 고친 목록 정렬 비결정성과 같은 계열(정렬 타이브레이크 부재). 조치: readdirSync 결과를 name 기준으로 정렬해 순회한다(디렉터리 재귀 순서도 함께 고정). 파일·디렉터리 우선순위를 명시할지, hero.webp 부재 시 어떤 이미지를 대표로 쓸지(파일명 사전순 첫 장이 의도인지)는 확정 필요 — 고치면 위 2개 글의 OG 이미지가 바뀌므로 콘텐츠 가시 변경이라 사용자 확인 후 반영한다. 검증: 정렬 추가 후 'bun run build'와 'bunx --bun astro build' 산출물이 바이트 동일해야 한다.
 
 ## 할 일
 
 ## 진행 중
 - `KAN-007` Tauri 소개와 구현 예시 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리.
+- `KAN-022` OG 이미지 폴백의 readdir 순서 비결정성 (bun/node 런타임 간 결과 상이) — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: KAN-020 검증 중 발견한 선재 부채(이번 변경과 무관, 의존성 교체 전후 동일하게 재현). src/layouts/PostLayout.astro:35-46 findFirstImage()가 fs.readdirSync 결과를 정렬 없이 순회해 '첫 이미지'를 고른다. readdir 순서는 명세되지 않아 bun과 node의 fs 구현 사이에서 갈리고, hero.webp가 없는 글의 og:image·twitter:image가 런타임에 따라 달라진다. 실측: 동일 커밋·동일 락파일에서 'bun run build'(node 런타임)와 CI 명령 'bunx --bun astro build'(bun 런타임)의 산출물이 2개 글에서 갈림 — algorithm-at-40-prologue는 expectation.webp vs reality-1.webp, aside-arc는 memes/1.webp vs memes/3.webp. 같은 런타임끼리는 재빌드해도 안정적이므로 순수 런타임 의존이다. 현재 배포본은 CI(bun 런타임) 결과이므로 로컬 프리뷰와 실제 OG 카드가 다를 수 있다. 성격은 KAN-017에서 고친 목록 정렬 비결정성과 같은 계열(정렬 타이브레이크 부재). 조치: readdirSync 결과를 name 기준으로 정렬해 순회한다(디렉터리 재귀 순서도 함께 고정). 파일·디렉터리 우선순위를 명시할지, hero.webp 부재 시 어떤 이미지를 대표로 쓸지(파일명 사전순 첫 장이 의도인지)는 확정 필요 — 고치면 위 2개 글의 OG 이미지가 바뀌므로 콘텐츠 가시 변경이라 사용자 확인 후 반영한다. 검증: 정렬 추가 후 'bun run build'와 'bunx --bun astro build' 산출물이 바이트 동일해야 한다.
 
 ## 검토
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-06-30
