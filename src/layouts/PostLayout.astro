@@ -161,6 +161,11 @@ if (fs.existsSync(heroPath)) {
   .prose {
     font-size: 18px;
     line-height: 1.8;
+    /* 안전망: 공백 없는 초장문 인라인 런(예: `·`로 이어 붙인 코드 나열)이
+       줄바꿈 기회를 못 찾아 페이지 가로 스크롤을 만드는 것을 막는다. 일반
+       한글/영문은 공백에서 먼저 끊기므로 영향 없고, white-space:pre 인 <pre>
+       코드블록도 래핑을 안 하므로 그대로 내부 가로 스크롤을 유지한다. */
+    overflow-wrap: break-word;
   }
   .prose > * {
     max-width: var(--measure);
