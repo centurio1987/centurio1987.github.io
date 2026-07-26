@@ -19,6 +19,10 @@ pnpm-lock.yaml
 # stray skill backups (cannot be deleted in some sandboxes)
 *.v1bak
 
+# graphify 실행 부산물 — graph.json/labels/report 는 커밋하되 캐시와 날짜 백업은 제외
+graphify-out/cache/
+graphify-out/20*/
+
 # code coverage
 coverage
 *.lcov

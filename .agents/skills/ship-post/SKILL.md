@@ -42,9 +42,14 @@ git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스�
 
 ### 1.5 그래프 데이터 갱신 (non-blocking)
 연관 글/글 지도 기능의 데이터(`src/data/graph.json`)를 새 글 반영본으로 갱신한다.
-- graphify **`--update`** 를 `src/content/posts/`에 실행(증분 LLM 추출, `graphify-out/manifest.json` 기반) → `bun scripts/build-graph-data.ts` → 그래프 데이터가 바뀌었으면 **`bun run build` 한 번 더** 통과 확인.
-- **실패 정책: non-blocking.** graphify 실패(API 키 없음/추출 오류) 시 경고만 남기고 기존 커밋 그래프로 발행을 계속한다 — 기능은 stale 데이터로 degrade될 뿐 글 발행을 막지 않는다.
-- 갱신에 성공했으면 commit 경로에 `graphify-out/`과 `src/data/graph.json`을 추가한다.
+- 아래를 실행 → `bun scripts/build-graph-data.ts` → 그래프 데이터가 바뀌었으면 **`bun run build` 한 번 더** 통과 확인.
+  ```bash
+  graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out .
+  ```
+  `--backend claude-cli`는 API 키가 필요 없다. `--backend gemini`는 무료 티어 5 RPM·일일 상한에 걸려 청크 절반이 429로 죽는다(KAN-023). `--out .`을 빼면 `src/content/posts/`를 오염시킨다.
+- **부분 실패 = 커밋 금지.** `WARNING: n/m semantic chunk(s) failed`가 뜨면 그 결과물을 버리고 기존 커밋 그래프를 유지한다. 부분 그래프를 커밋하면 일부 글이 통째로 그래프에서 사라진다. 전량 성공은 `graphify-out/graph.json`의 문서 노드 수 = 발행 글 수로 확인한다.
+- **실패 정책: non-blocking.** graphify 실패(추출 오류·부분 실패) 시 경고만 남기고 기존 커밋 그래프로 발행을 계속한다 — 기능은 stale 데이터로 degrade될 뿐 글 발행을 막지 않는다.
+- 갱신에 성공했으면 commit 경로에 `graphify-out/`(단 `cache/`·날짜 백업 디렉터리 제외)과 `src/data/graph.json`을 추가한다.
 
 ### 2. commit & push (git-shipper / haiku)
 `git-shipper` 서브에이전트(haiku)에 위임한다. git-shipper는 직접 git을 쓰지 않고 **`scripts/git-commit-push.sh`만** 호출한다. 인자:

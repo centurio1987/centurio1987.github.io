@@ -67,14 +67,19 @@ Posts are **auto-discovered** — no sidebar/nav registration needed. A post's U
 Related-posts sections and the `/graph` explorer are powered by a graphify knowledge graph:
 
 ```
-/graphify src/content/posts/          → graphify-out/graph.json (+labels, manifest)  [committed]
+graphify extract src/content/posts/ \
+  --backend claude-cli --mode deep --token-budget 15000 --out .   → graphify-out/graph.json  [committed]
 bun scripts/build-graph-data.ts       → src/data/graph.json (distilled)              [committed]
 astro build                           → consumes src/data/graph.json only (no LLM, no key)
 ```
 
 - **Contract**: CI/`astro build` never runs graphify — it only imports the committed `src/data/graph.json` (via `src/lib/graph.ts`, a glob loader). If the file is missing, the build still passes: related posts degrade to frontmatter-only ranking (series/tags/category, `src/lib/related.ts`) and `/graph` falls back to a plain post list.
-- **Regeneration** happens at publish time (ship-post step 1.5, non-blocking) or manually with the command pair above. graphify's markdown extraction is LLM-based (`GEMINI_API_KEY`), so it must stay out of CI.
-- `scripts/build-graph-data.ts` is idempotent; commit `graphify-out/` (incl. `manifest.json` for incremental `--update`) together with `src/data/graph.json`.
+- **Regeneration** happens at publish time (ship-post step 1.5, non-blocking) or manually with the command pair above. graphify's markdown extraction is LLM-based, so it must stay out of CI.
+- **Backend (KAN-023에서 확정)**: `--backend claude-cli`(로컬 Claude Code에 위탁, API 키 불필요)를 기본으로 쓴다. `--backend gemini`(`GEMINI_API_KEY`)는 **무료 티어가 5 RPM·일일 상한**이라 18편 전량 추출이 청크 절반 이상 429로 실패한다 — 부분 결과가 조용히 커밋되면 일부 글이 통째로 그래프에서 빠진다. gemini를 쓸 거면 청크 수를 5 이하로 유지(`--token-budget` 기본값)하고 **`N/N done`을 반드시 확인**할 것.
+- **부분 실패는 커밋 금지.** `WARNING: n/m semantic chunk(s) failed`가 뜨면 그 graph.json은 버린다. 전량 성공 여부는 `graphify-out/graph.json`의 문서 노드 수 = 글 수(현재 18)로 검증한다.
+- `--out .`을 빼면 `src/content/posts/graphify-out/`에 써서 **콘텐츠 디렉터리를 오염**시킨다. 항상 붙인다.
+- graphify는 `source_file`을 **스캔 루트 기준 상대경로**로 적는다(위 명령이면 `tauri-2.mdx`). `scripts/build-graph-data.ts`의 `toPostSlug`가 이 형태와 예전 레포루트 형태(`src/content/posts/tauri-2.mdx`)를 모두 받는다.
+- `scripts/build-graph-data.ts`는 멱등. `graphify-out/`과 `src/data/graph.json`을 함께 커밋한다(`cache/`·날짜 백업 디렉터리는 제외).
 
 ### Design
 
