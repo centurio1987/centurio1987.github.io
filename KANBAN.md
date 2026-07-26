@@ -31,8 +31,6 @@
 ## 진행 중
 - `KAN-007` Tauri 소개와 구현 예시 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리.
-- `KAN-022` OG 이미지 폴백의 readdir 순서 비결정성 (bun/node 런타임 간 결과 상이) — 생성:ai · 최종:ai · 갱신:2026-07-26
-  - 메모: KAN-020 검증 중 발견한 선재 부채(이번 변경과 무관, 의존성 교체 전후 동일하게 재현). src/layouts/PostLayout.astro:35-46 findFirstImage()가 fs.readdirSync 결과를 정렬 없이 순회해 '첫 이미지'를 고른다. readdir 순서는 명세되지 않아 bun과 node의 fs 구현 사이에서 갈리고, hero.webp가 없는 글의 og:image·twitter:image가 런타임에 따라 달라진다. 실측: 동일 커밋·동일 락파일에서 'bun run build'(node 런타임)와 CI 명령 'bunx --bun astro build'(bun 런타임)의 산출물이 2개 글에서 갈림 — algorithm-at-40-prologue는 expectation.webp vs reality-1.webp, aside-arc는 memes/1.webp vs memes/3.webp. 같은 런타임끼리는 재빌드해도 안정적이므로 순수 런타임 의존이다. 현재 배포본은 CI(bun 런타임) 결과이므로 로컬 프리뷰와 실제 OG 카드가 다를 수 있다. 성격은 KAN-017에서 고친 목록 정렬 비결정성과 같은 계열(정렬 타이브레이크 부재). 조치: readdirSync 결과를 name 기준으로 정렬해 순회한다(디렉터리 재귀 순서도 함께 고정). 파일·디렉터리 우선순위를 명시할지, hero.webp 부재 시 어떤 이미지를 대표로 쓸지(파일명 사전순 첫 장이 의도인지)는 확정 필요 — 고치면 위 2개 글의 OG 이미지가 바뀌므로 콘텐츠 가시 변경이라 사용자 확인 후 반영한다. 검증: 정렬 추가 후 'bun run build'와 'bunx --bun astro build' 산출물이 바이트 동일해야 한다.
 
 ## 검토
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-06-30
@@ -121,3 +119,5 @@
     취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
     - kan-015 착수해
     ```
+- `KAN-022` OG 이미지 폴백의 readdir 순서 비결정성 (bun/node 런타임 간 결과 상이) — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: 완료(커밋 2e7412e). src/layouts/PostLayout.astro findFirstImage()를 이름 오름차순 정렬로 고정. localeCompare는 ICU 로캘 의존이라 배제하고 코드포인트 비교 사용. 재귀도 2패스로 분리해 '같은 디렉터리 이미지 > 하위 디렉터리' 우선순위를 명시(기존에는 재귀 진입 시점이 readdir 순서에 좌우). 검증: (1) 'bun run build'(node)와 'bunx --bun astro build'(bun) 산출물 30페이지 diff -r 결과 완전 동일 — 카드의 수용 기준 충족. (2) 수정 후 산출물은 수정 전 node 런타임 베이스라인과 바이트 동일 = 정렬 결과가 node 순서와 일치. (3) 현재 배포본(bun 런타임) 대비 차이는 2개 글의 meta 이미지 태그 4개뿐이며, 그 태그를 제외한 나머지는 바이트 동일(본문 img src 불변 — algorithm-at-40-prologue 본문의 reality-1.webp는 그대로). (4) 합성 트리로 node/bun 양쪽 단위 확인 — 최상위 이미지가 하위 디렉터리보다 우선, 디렉터리만 있을 때는 이름순 첫 디렉터리로 재귀. (5) check-post-markers 통과, 빌드 경고 0. || 배포 시 바뀌는 것: algorithm-at-40-prologue OG reality-1.webp→expectation.webp, aside-arc OG memes/3.webp→memes/1.webp. 둘 다 각 글 본문의 '첫 이미지'와 같은 그림이라 대표 이미지로 오히려 적절해진다(1.webp는 본문 거지.webp와 같은 장면의 다른 인코딩). || 부수 발견(미조치): public/images/aside-arc/memes/{1,2,3}.webp는 본문이 참조하지 않는 고아 파일이며 본문의 거지·help-me·페페 이미지와 동일 장면의 리네임 전 원본으로 보인다(해시는 상이). 정렬 규칙상 OG가 이 고아 파일을 고르게 되므로, 정리한다면 OG 이미지가 다시 바뀐다 — 콘텐츠 판단이라 손대지 않음. scripts/check-post-markers.ts:36의 readdir도 정렬이 없으나 오류 보고 순서에만 영향하고 산출물과 무관해 범위에서 제외. TalkLayout·SeriesEpisodes는 existsSync 기반이라 이미 결정적.
