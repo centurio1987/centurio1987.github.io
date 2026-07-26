@@ -22,14 +22,14 @@
     취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
     - kan-015 착수해
     ```
+- `KAN-020` graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락) — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: src/data/graph.json이 2026-07-02 생성분(8편: osi 1~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install "graphifyy[gemini]" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채.
 
 ## 할 일
 
 ## 진행 중
 - `KAN-007` Tauri 소개와 구현 예시 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리.
-- `KAN-016` Tauri 해부 2편 — 예시 프로젝트 구현기 — 생성:ai · 최종:ai · 갱신:2026-07-26
-  - 메모: KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화. 2026-07-26 착수: tech-article-publisher 자동 모드로 research→집필→4축/글쓰기/품질 게이트→발행·푸시 파이프라인 실행 중.
 
 ## 검토
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-06-30
@@ -106,3 +106,5 @@
   - 메모: 선행조건(gating): KAN-014 배포 안정화 검증 완료 후에만 착수. 대상: scripts/generate-image.ts·render-image.ts·image-templates.ts(KAN-013에서 호출 경로 제거+deprecated 주석, 롤백 유예). 조건 충족 시 3파일 삭제 + 잔존 참조 grep 0 확인 + bun run build green + 커밋.
 - `KAN-019` 낡은 미러 문서(AGENTS.md·.agents/·.codex/) viz 파이프라인 동기화 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: KAN-013 viz 이관이 .claude 정본만 갱신하고 다른-런타임 미러는 구 OpenAI/HTML-template 파이프라인 그대로 방치(KAN-015에서 발견). 대상: AGENTS.md(집필 워크플로 섹션 전체 — [[[image clues]]]·generate-image.ts 서술), .agents/skills/make-image/{SKILL.md,assets/IMAGE_GUIDE.md}, .agents/skills/post-finalize/SKILL.md, .codex/skills/post-finalize/SKILL.md, .codex/agents/image-maker.toml. .claude 정본을 기준으로 viz(apply-viz/render-viz)로 서술 이관 + 삭제된 3스크립트 참조 제거. ORDER.md·KANBAN 이력은 보존(수정 안 함). KAN-015가 정본 트리만 정리했으므로 이 카드가 '전체 grep-0'를 마무리.
+- `KAN-016` Tauri 해부 2편 — 예시 프로젝트 구현기 — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: 발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. viz 4종(ProcessSteps/Flowchart×2/Comparison) SSR 정적 SVG + hero.webp + react-sim PermissionGate(client:visible). 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3 반영, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15). 외부검토로 shell:allow-spawn 권한 누락·Windows canonicalize UNC 접두사 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation (push 9857238). bun run build green(31 pages)·마커 0·tsc 통과. 커밋 40b4f5b(브랜치 centurio1987/kan-016). 미결: graphify 그래프 미갱신(선재 부채, KAN-020).

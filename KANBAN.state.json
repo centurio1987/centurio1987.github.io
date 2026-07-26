@@ -1,6 +1,6 @@
 {
-  "next_id": 20,
-  "next_seq": 43,
+  "next_id": 21,
+  "next_seq": 46,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -167,15 +167,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-016": {
-      "col": "doing",
+      "col": "done",
       "title": "Tauri 해부 2편 — 예시 프로젝트 구현기",
-      "memo": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화. 2026-07-26 착수: tech-article-publisher 자동 모드로 research→집필→4축/글쓰기/품질 게이트→발행·푸시 파이프라인 실행 중.",
+      "memo": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. viz 4종(ProcessSteps/Flowchart×2/Comparison) SSR 정적 SVG + hero.webp + react-sim PermissionGate(client:visible). 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3 반영, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15). 외부검토로 shell:allow-spawn 권한 누락·Windows canonicalize UNC 접두사 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation (push 9857238). bun run build green(31 pages)·마커 0·tsc 통과. 커밋 40b4f5b(브랜치 centurio1987/kan-016). 미결: graphify 그래프 미갱신(선재 부채, KAN-020).",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-26",
       "title_hash": "ce4a8b863696e13b5c2168a18b1c3550b4cdd73d",
-      "memo_hash": "dca7ace113b0e876da05f4df829e7d0f1f991013",
+      "memo_hash": "cc05c201522b481633204d38836159cac7cebb9e",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-017": {
@@ -213,6 +213,18 @@
       "title_hash": "a1905a76aa444fc17cbdaba12a13c8c589aa7131",
       "memo_hash": "3a0af3f8a53c24a405525d0bb2274ad85d174594",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-020": {
+      "col": "backlog",
+      "title": "graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락)",
+      "memo": "src/data/graph.json이 2026-07-02 생성분(8편: osi 1~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install \"graphifyy[gemini]\" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-26",
+      "title_hash": "94e649dc7aa0fcb49f3868f9d41b7c059b2a5654",
+      "memo_hash": "14be4120673e76444cd741e8a3c6b1d299acd578",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
@@ -234,9 +246,40 @@
     "KAN-014",
     "KAN-015",
     "KAN-019",
-    "KAN-016"
+    "KAN-016",
+    "KAN-020"
   ],
   "recent": [
+    {
+      "seq": 45,
+      "t": "2026-07-26T19:00",
+      "a": "ai",
+      "id": "KAN-020",
+      "op": "create",
+      "col": "backlog",
+      "title": "graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락)",
+      "memo": "src/data/graph.json이 2026-07-02 생성분(8편: osi 1~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install \"graphifyy[gemini]\" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채.",
+      "verbatim": ""
+    },
+    {
+      "seq": 44,
+      "t": "2026-07-26T19:00",
+      "a": "ai",
+      "id": "KAN-016",
+      "op": "move",
+      "from": "doing",
+      "to": "done"
+    },
+    {
+      "seq": 43,
+      "t": "2026-07-26T19:00",
+      "a": "ai",
+      "id": "KAN-016",
+      "op": "edit",
+      "field": "memo",
+      "before": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화. 2026-07-26 착수: tech-article-publisher 자동 모드로 research→집필→4축/글쓰기/품질 게이트→발행·푸시 파이프라인 실행 중.",
+      "after": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. viz 4종(ProcessSteps/Flowchart×2/Comparison) SSR 정적 SVG + hero.webp + react-sim PermissionGate(client:visible). 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3 반영, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15). 외부검토로 shell:allow-spawn 권한 누락·Windows canonicalize UNC 접두사 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation (push 9857238). bun run build green(31 pages)·마커 0·tsc 통과. 커밋 40b4f5b(브랜치 centurio1987/kan-016). 미결: graphify 그래프 미갱신(선재 부채, KAN-020)."
+    },
     {
       "seq": 42,
       "t": "2026-07-26T18:02",
