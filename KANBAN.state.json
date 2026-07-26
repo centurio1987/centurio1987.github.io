@@ -1,6 +1,6 @@
 {
-  "next_id": 22,
-  "next_seq": 46,
+  "next_id": 23,
+  "next_seq": 47,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -237,6 +237,18 @@
       "title_hash": "7248238794b3b0e141b4a2aef437f831a3a40c79",
       "memo_hash": "2943bc7ca606075acef1f0ee13afd0df5833fa17",
       "verbatim_hash": "3f95ded0a2be283389e9e6998372428589ffa688"
+    },
+    "KAN-022": {
+      "col": "backlog",
+      "title": "OG 이미지 폴백의 readdir 순서 비결정성 (bun/node 런타임 간 결과 상이)",
+      "memo": "KAN-020 검증 중 발견한 선재 부채(이번 변경과 무관, 의존성 교체 전후 동일하게 재현). src/layouts/PostLayout.astro:35-46 findFirstImage()가 fs.readdirSync 결과를 정렬 없이 순회해 '첫 이미지'를 고른다. readdir 순서는 명세되지 않아 bun과 node의 fs 구현 사이에서 갈리고, hero.webp가 없는 글의 og:image·twitter:image가 런타임에 따라 달라진다. 실측: 동일 커밋·동일 락파일에서 'bun run build'(node 런타임)와 CI 명령 'bunx --bun astro build'(bun 런타임)의 산출물이 2개 글에서 갈림 — algorithm-at-40-prologue는 expectation.webp vs reality-1.webp, aside-arc는 memes/1.webp vs memes/3.webp. 같은 런타임끼리는 재빌드해도 안정적이므로 순수 런타임 의존이다. 현재 배포본은 CI(bun 런타임) 결과이므로 로컬 프리뷰와 실제 OG 카드가 다를 수 있다. 성격은 KAN-017에서 고친 목록 정렬 비결정성과 같은 계열(정렬 타이브레이크 부재). 조치: readdirSync 결과를 name 기준으로 정렬해 순회한다(디렉터리 재귀 순서도 함께 고정). 파일·디렉터리 우선순위를 명시할지, hero.webp 부재 시 어떤 이미지를 대표로 쓸지(파일명 사전순 첫 장이 의도인지)는 확정 필요 — 고치면 위 2개 글의 OG 이미지가 바뀌므로 콘텐츠 가시 변경이라 사용자 확인 후 반영한다. 검증: 정렬 추가 후 'bun run build'와 'bunx --bun astro build' 산출물이 바이트 동일해야 한다.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-26",
+      "title_hash": "f371824246d42881bd3fb75589083e26d7b025f5",
+      "memo_hash": "51c8cc3941eb0af0409eff7983499b4c8849ea33",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
@@ -260,9 +272,21 @@
     "KAN-014",
     "KAN-015",
     "KAN-017",
-    "KAN-020"
+    "KAN-020",
+    "KAN-022"
   ],
   "recent": [
+    {
+      "seq": 46,
+      "t": "2026-07-26T18:44",
+      "a": "ai",
+      "id": "KAN-022",
+      "op": "create",
+      "col": "backlog",
+      "title": "OG 이미지 폴백의 readdir 순서 비결정성 (bun/node 런타임 간 결과 상이)",
+      "memo": "KAN-020 검증 중 발견한 선재 부채(이번 변경과 무관, 의존성 교체 전후 동일하게 재현). src/layouts/PostLayout.astro:35-46 findFirstImage()가 fs.readdirSync 결과를 정렬 없이 순회해 '첫 이미지'를 고른다. readdir 순서는 명세되지 않아 bun과 node의 fs 구현 사이에서 갈리고, hero.webp가 없는 글의 og:image·twitter:image가 런타임에 따라 달라진다. 실측: 동일 커밋·동일 락파일에서 'bun run build'(node 런타임)와 CI 명령 'bunx --bun astro build'(bun 런타임)의 산출물이 2개 글에서 갈림 — algorithm-at-40-prologue는 expectation.webp vs reality-1.webp, aside-arc는 memes/1.webp vs memes/3.webp. 같은 런타임끼리는 재빌드해도 안정적이므로 순수 런타임 의존이다. 현재 배포본은 CI(bun 런타임) 결과이므로 로컬 프리뷰와 실제 OG 카드가 다를 수 있다. 성격은 KAN-017에서 고친 목록 정렬 비결정성과 같은 계열(정렬 타이브레이크 부재). 조치: readdirSync 결과를 name 기준으로 정렬해 순회한다(디렉터리 재귀 순서도 함께 고정). 파일·디렉터리 우선순위를 명시할지, hero.webp 부재 시 어떤 이미지를 대표로 쓸지(파일명 사전순 첫 장이 의도인지)는 확정 필요 — 고치면 위 2개 글의 OG 이미지가 바뀌므로 콘텐츠 가시 변경이라 사용자 확인 후 반영한다. 검증: 정렬 추가 후 'bun run build'와 'bunx --bun astro build' 산출물이 바이트 동일해야 한다.",
+      "verbatim": ""
+    },
     {
       "seq": 45,
       "t": "2026-07-26T18:44",
