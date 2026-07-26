@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -41,15 +41,18 @@ jobs:
         run: bun install || npm install --no-audit --no-fund
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Check posts for unprocessed markers
         run: bun scripts/check-post-markers.ts
       - name: Build with Astro
         run: bunx --bun astro build
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        # v4+ excludes dotfiles from the tar by default (v3 included them); dist/ has none
+        # today, but keep v3 parity so a future public/.well-known 류 자산이 조용히 빠지지 않게 한다.
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./dist
+          include-hidden-files: true
 
   deploy:
     environment:
@@ -60,4 +63,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

@@ -31,9 +31,10 @@ git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스�
 ## 동작 순서
 
 ### 1. 최종 재검증
+- **미처리 마커 하드 게이트**: `bun scripts/check-post-markers.ts` 실행 → 발행 글에 `[[[…]]]`·```viz```·```figure```·`<<meme:` 잔존이 있으면 **종료코드 1**. 실패면 **push로 넘어가지 않고** 처리(구조형은 make-image, 밈은 meme-inserter, 레거시는 viz로 대체/제거) 후 재검증. (CI `main.yml`도 동일 가드를 build 전에 돌린다.)
 - **`bun run build`** 실행 → 회귀 없이 통과하는지 확인(JSX/MDX 오류 1건이 전체 빌드를 깬다). 실패면 멈추고 원인 보고.
 - **링크/이미지 재검증**:
-  - 본문에 **잔존 ```figure``` 블록**이나 **미치환 `[[[…]]]`** 가 없는지(이미지 단계 누락 검사).
+  - 참조 이미지 경로가 실제로 존재하는지, co-located `.tsx` import 경로가 발행 위치 기준으로 맞는지.
   - 참조 이미지 경로(`/images/<slug>/…`)가 `public/images/<slug>/`에 실제로 존재하는지.
   - co-located `.tsx` import 경로가 발행 위치 기준으로 맞는지.
 - **frontmatter 재검증**: `src/content.config.ts` 스키마와 호환되는지(`title`/`pubDate`/`category` 필수, `category`는 `src/lib/categories.ts` enum), `draft: true` 잔존이 없는지.

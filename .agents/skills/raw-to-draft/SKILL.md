@@ -37,10 +37,10 @@ raws/<완성 원고>.md    (사용자가 처음부터 끝까지 씀)
   → [raw-to-draft]     draft/<원고>-draft.md   (맞춤법 교정 + frontmatter + 밈)
   → (선택) review-post  4축 검토
   → publish-post        src/content/posts/<slug>.md 발행
-  → (선택) post-finalize [[[...]]] 은유 일러스트·태그·시리즈
+  → (선택) post-finalize 태그·시리즈·밈
 ```
 
-밈(`<<meme:>>`)은 이 단계에서 채우고, 은유·개념 일러스트(`[[[...]]]`)는 손대지 않고 그대로 남겨 발행 후 `post-finalize` 가 처리하게 둔다(이 스킬은 `OPENAI_API_KEY` 를 요구하지 않는다).
+밈(`<<meme:>>`)은 이 단계에서 채우고, 구조형 시각물(```viz```)은 손대지 않고 남겨 `make-image`(viz 엔진)가 처리하게 둔다(이 스킬은 이미지를 생성하지 않고 `OPENAI_API_KEY` 도 요구하지 않는다).
 
 ## 동작 순서
 
@@ -123,9 +123,9 @@ python3 .Codex/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 
 ### 6. 다른 마커는 보존
 
-- `[[[...]]]` (은유·개념 일러스트) → **손대지 않는다.** 발행 후 `post-finalize`(OpenAI) 담당.
-- `(( ... ))` (React 개념도) → 손대지 않는다. `mdx-concept-diagram` 담당.
-- ` ```figure``` ` (구조형 정보 이미지) → 손대지 않는다. `make-image` 담당.
+- ` ```viz``` ` (구조형 시각물·hero) → **손대지 않는다.** `make-image`(viz 엔진, bbangto-ui-visualization) 담당.
+- `<Name client:visible />` (인터랙티브 시뮬) → 손대지 않는다. `react-sim` 담당.
+- 레거시 마커(`[[[...]]]`·`(( ))`·```figure```)가 있으면 손대지 않되, 새로 만들지 말 것 — 은퇴했다(모두 ```viz```로).
 
 정규식이 서로 겹치지 않으므로 한 문서에 섞여 있어도 안전하다.
 
@@ -145,7 +145,7 @@ python3 .Codex/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 > - 맞춤법 교정: 12건 (띄어쓰기 7 / 조사 3 / 오타 2) — 아래 목록
 > - frontmatter: title·pubDate·category(`skills`)·draft:true 설정, tags 4개
 > - 밈: `<<meme:>>` 3개 삽입 (성공 3) / 또는 '마커 없음'
-> - 보존: `[[[...]]]` 1개(post-finalize 예정), 본문 내용·구조 불변
+> - 보존: ```viz``` 블록 1개(make-image 예정), 본문 내용·구조 불변
 > 다음: `review-post` 로 검토하거나 `publish-post` 로 발행"
 
 교정 목록은 `원문 → 수정` 형태로 나열해 사용자가 한눈에 검수할 수 있게 한다.
@@ -158,7 +158,7 @@ python3 .Codex/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 - **판단성 항목은 물어본다.** 신조어/의도적 소문자/구어체는 저자 것으로 보고 임의 수정 금지.
 - **frontmatter 스키마 준수.** `category` enum, `pubDate` 날짜, `draft: true`. 새 카테고리 창작 금지.
 - **본문에 H1 신설 금지.** 제목은 frontmatter로만.
-- **마커 경계 존중.** `<<meme:>>` 만 (위탁으로) 채우고 `[[[ ]]]`·`(( ))`·```figure``` 는 그대로 둔다.
+- **마커 경계 존중.** `<<meme:>>` 만 (위탁으로) 채우고 ```viz```(및 잔존 레거시 마커)는 그대로 둔다.
 - **원본 raws 삭제 금지.** 이 스킬은 복사·형식화만. 봉인은 `seal-raws`.
 - **MDX 안전.** `.mdx` 면 상단 `import`·`<Component />` 블록을 frontmatter처럼 보존하고 깨지 않는다.
 
@@ -173,6 +173,7 @@ python3 .Codex/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 - `post-draft` — raws가 **조각/단서**일 때 플롯 스캐폴드 생성(이 스킬과 반대 입구)
 - `review-post` — 형식화 후 4축(맞춤법/개연성/테크니컬 라이팅/몰입도) 검토
 - `publish-post` — draft → `src/content/posts/` 정식 발행(`draft:false`)
-- `post-finalize` — 발행물 `[[[...]]]` 은유 일러스트·태그·시리즈 링크
+- `post-finalize` — 발행물 태그·시리즈 링크·밈(이미지 생성 없음)
+- `make-image` — ```viz``` 구조형 시각물·hero(bbangto-ui-visualization)
 - `meme-inserter` — `<<meme:>>` 실제 밈 삽입(이 스킬이 위탁)
 - `seal-raws` — 처리 끝난 raws 원본을 `raws/committed/` 로 봉인

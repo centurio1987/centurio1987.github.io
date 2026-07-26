@@ -47,10 +47,9 @@ ORDER가 요구한 "여러 관점"을 섹션 유형으로 환원한 것. 아웃�
 
 ## 7. 다이어그램 (조건부)
 - **목적**: 글로 길게 설명할 구조/흐름을 한눈에.
-- **두 갈래**:
-  - **정적 그림**: `[[[다이어그램 단서]]]` 로 남겨 `post-finalize`가 이미지 생성.
-  - **개념도(코드형)**: 외부 라이브러리 없는 순수 React/JSX(인라인 style) — `mdx-concept-diagram` 스킬 관례와
-    `REACT_SIM_GUIDE.md`를 따른다. 상호작용이 없으면 굳이 `client:*` 불필요.
+- **두 갈래**(마커 비충돌):
+  - **구조형 시각물**(다이어그램·차트·인포그래픽·hero): ```` ```viz``` ```` 명세 블록으로 남겨 `make-image`(viz 엔진, bbangto-ui-visualization)가 코드로 구현. ChatGPT 이미지 생성 안 씀. kind: ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial.
+  - **인터랙티브 시뮬**(움직여야 이해되는 것): 시뮬 명세를 남겨 `react-sim`이 co-located `.tsx`로 구현. `client:visible`.
 - **뺄 때**: 구조가 단순해 산문으로 충분하면 생략.
 
 ## 8. React 시뮬레이션 (조건부, ORDER 명시)

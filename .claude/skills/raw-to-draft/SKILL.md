@@ -145,7 +145,7 @@ python3 .claude/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 > - 맞춤법 교정: 12건 (띄어쓰기 7 / 조사 3 / 오타 2) — 아래 목록
 > - frontmatter: title·pubDate·category(`skills`)·draft:true 설정, tags 4개
 > - 밈: `<<meme:>>` 3개 삽입 (성공 3) / 또는 '마커 없음'
-> - 보존: `[[[...]]]` 1개(post-finalize 예정), 본문 내용·구조 불변
+> - 보존: ```viz``` 블록 1개(make-image 예정), 본문 내용·구조 불변
 > 다음: `review-post` 로 검토하거나 `publish-post` 로 발행"
 
 교정 목록은 `원문 → 수정` 형태로 나열해 사용자가 한눈에 검수할 수 있게 한다.
