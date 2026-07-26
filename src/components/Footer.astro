@@ -1,9 +1,25 @@
 ---
 import Mascot from "./motifs/Mascot.astro";
+import AmbientWaves from "./motion/AmbientWaves.tsx";
+
+interface Props {
+  /**
+   * 배경 파도(Phase C) 마운트 여부. 기본 false — 콘텐츠·포스트 페이지의 푸터는
+   * 아일랜드 0(완전 무JS)을 유지한다. 홈(index)만 opt-in 해서 JS 비용을 '/' 로 가둔다.
+   * (코어 배럴이 tree-shaking되지 않아 Waves 임포트가 67KB gzip 청크를 끌어옴 — 전역 금지.)
+   */
+  ambient?: boolean;
+}
+const { ambient = false } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer grid-texture">
+  {/* 은은한 배경 파도(Phase C·홈 전용). client:media 로 reduced-motion 이면 아일랜드가
+      **하이드레이트조차 안 돼** 코어 청크(67KB gzip)·React 부하가 0이다(무JS 사용자도 정적 푸터). */}
+  {ambient && (
+    <AmbientWaves client:media="(prefers-reduced-motion: no-preference)" />
+  )}
   <div class="footer-inner">
     <Mascot size={64} />
     <p class="tagline">진지하게 만들고, 즐겁게 쓴다.</p>
@@ -26,6 +42,9 @@ const year = new Date().getFullYear();
   .site-footer {
     border-top: 1px solid var(--border);
     margin-top: 80px;
+    /* AmbientWaves 를 절대배치로 담고, 파도가 가장자리를 넘지 않도록 클리핑 */
+    position: relative;
+    overflow: hidden;
   }
   .footer-inner {
     max-width: var(--content-max);
@@ -36,6 +55,9 @@ const year = new Date().getFullYear();
     flex-direction: column;
     align-items: center;
     gap: 6px;
+    /* 콘텐츠를 배경 파도(z-index:0) 위로 */
+    position: relative;
+    z-index: 1;
   }
   .tagline {
     font-family: var(--font-display);

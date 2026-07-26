@@ -130,11 +130,40 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
       .force("center", forceCenter(W / 2, H / 2))
       .force("x", forceX(W / 2).strength(0.06))
       .force("y", forceY(H / 2).strength(0.08));
-    sim.on("tick", () => {
+
+    // 노드를 뷰박스 안으로 클램핑(라벨 여백 포함)
+    const clamp = () => {
       for (const n of nodes) {
         n.x = Math.max(n.r + 4, Math.min(W - n.r - 4, n.x ?? W / 2));
         n.y = Math.max(n.r + 4, Math.min(H - n.r - 4, n.y ?? H / 2));
       }
+    };
+
+    // reduced-motion 가드(Phase C): settle 애니를 생략하고 고정 횟수만큼 즉시 tick 한 뒤
+    // 정지 → 정적 배치 1회 렌더. d3 기본 시드는 결정적이라 배치가 재현 가능하다.
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReduced) {
+      sim.stop(); // 내부 타이머 즉시 정지(rAF/타이머 tick 루프 미실행)
+      // settle 애니를 생략하되, 애니 경로와 **동일하게 매 tick 클램핑**하며 동기로 감는다.
+      // (sim.tick(300)은 tick 사이 훅이 없어 한 번에 감기면 노드가 경계 밖으로 튀었다가
+      //  끝에서 한꺼번에 경계로 눌려 배치가 달라진다 → 반드시 tick마다 clamp.)
+      // 기본 alpha 감쇠의 자연 tick 수(≈300)만큼 감아 애니 최종 배치를 그대로 재현한다.
+      for (let i = 0; i < 300; i++) {
+        sim.tick();
+        clamp();
+      }
+      simDone.current = true;
+      setTick((t) => t + 1); // 정적 배치 1회 렌더
+      return () => {
+        sim.stop();
+      };
+    }
+
+    sim.on("tick", () => {
+      clamp();
       setTick((t) => t + 1);
     });
     sim.on("end", () => {
