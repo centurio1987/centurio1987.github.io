@@ -1,6 +1,6 @@
 {
   "next_id": 24,
-  "next_seq": 81,
+  "next_seq": 83,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -73,14 +73,14 @@
       "memo_hash": "52dd3cd265a84842f059ebd2da50737c6d71300f"
     },
     "KAN-008": {
-      "col": "backlog",
+      "col": "doing",
       "title": "OCI, CRI",
-      "memo": "Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교",
+      "memo": "시리즈 4편 \"컨테이너의 해부\" 확정 · 저자 퍼소나=ppangto-teacher(빵토 선생님, voice: src/lib/personas/ppangto-teacher-voice.md) · EP1 도커 해부(CLI→dockerd→containerd→shim→runc, namespaces/cgroups/OverlayFS) / EP2 OCI 표준(Image·Runtime·Distribution Spec, bundle+config.json, runc·crun·youki) / EP3 CRI(kubelet↔gRPC, dockershim 제거, containerd CRI plugin vs CRI-O, Pod sandbox) / EP4 대안 다면 비교(Podman·Buildah·Skopeo, gVisor·Kata, rootless·daemonless, 빌드 3파전, 선택 기준표). 파이프라인: research 선행 → 편당 tech-deepdive → review-post → review-writing → quality-gate → post-finalize → publish-post → ship-post. 진행=단계별 개입.",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-06-30",
+      "갱신": "2026-07-27",
       "title_hash": "e173cecc43d9e35ec7f698842f292a31d84e44f9",
-      "memo_hash": "3d762b8cdb4a4199dcd1e005e2e96839814811ee"
+      "memo_hash": "b5a24a24a6acf2515b8a71b8312b27d10d72a6c6"
     },
     "KAN-009": {
       "col": "done",
@@ -252,13 +252,13 @@
     }
   },
   "order": [
-    "KAN-008",
     "KAN-001",
     "KAN-002",
     "KAN-003",
     "KAN-004",
     "KAN-005",
     "KAN-010",
+    "KAN-012",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -273,9 +273,28 @@
     "KAN-023",
     "KAN-013",
     "KAN-011",
-    "KAN-012"
+    "KAN-008"
   ],
   "recent": [
+    {
+      "seq": 82,
+      "t": "2026-07-27T01:57",
+      "a": "ai",
+      "id": "KAN-008",
+      "op": "edit",
+      "field": "memo",
+      "before": "Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교",
+      "after": "시리즈 4편 \"컨테이너의 해부\" 확정 · 저자 퍼소나=ppangto-teacher(빵토 선생님, voice: src/lib/personas/ppangto-teacher-voice.md) · EP1 도커 해부(CLI→dockerd→containerd→shim→runc, namespaces/cgroups/OverlayFS) / EP2 OCI 표준(Image·Runtime·Distribution Spec, bundle+config.json, runc·crun·youki) / EP3 CRI(kubelet↔gRPC, dockershim 제거, containerd CRI plugin vs CRI-O, Pod sandbox) / EP4 대안 다면 비교(Podman·Buildah·Skopeo, gVisor·Kata, rootless·daemonless, 빌드 3파전, 선택 기준표). 파이프라인: research 선행 → 편당 tech-deepdive → review-post → review-writing → quality-gate → post-finalize → publish-post → ship-post. 진행=단계별 개입."
+    },
+    {
+      "seq": 81,
+      "t": "2026-07-27T01:57",
+      "a": "ai",
+      "id": "KAN-008",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 80,
       "t": "2026-07-27T00:55",
@@ -745,25 +764,6 @@
       "title": "KAN-013 퍼소나를 정의 했고, 기존 포스트들에는 퍼소나를 나타내는 저자명, 저자의 프로필, 저자 및 포스트 유형을 나타내는 배너가 포함되어 있으나, 집필 workflow에는 그것들을 포함하는 과정이 생략되어 있다. 포스트 레이아웃의 재설계를 포함하여, 원인 분석과 해결 방법에 대한 전략을 구상하라.",
       "memo": "",
       "verbatim": ""
-    },
-    {
-      "seq": 16,
-      "t": "2026-07-22T00:00",
-      "a": "ai",
-      "id": "KAN-006",
-      "op": "edit",
-      "field": "memo",
-      "before": "webrtc-1, webrtc-2 발행됨, 3편(토폴로지) 남음",
-      "after": "webrtc-1/2/3 전편 발행 완료"
-    },
-    {
-      "seq": 15,
-      "t": "2026-07-22T00:00",
-      "a": "ai",
-      "id": "KAN-006",
-      "op": "move",
-      "from": "doing",
-      "to": "done"
     }
   ]
 }

@@ -5,8 +5,6 @@
 
 ## 백로그
 <!-- 아직 착수 결정 전. 우선순위 미정 후보 풀. 백로그→할 일 이동이 "할지 고민" → "하기로 확정" 전환점. -->
-- `KAN-008` OCI, CRI — 생성:ai · 최종:ai · 갱신:2026-06-30
-  - 메모: Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교
 
 ## 할 일
 
@@ -21,6 +19,8 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+- `KAN-008` OCI, CRI — 생성:ai · 최종:ai · 갱신:2026-07-27
+  - 메모: 시리즈 4편 "컨테이너의 해부" 확정 · 저자 퍼소나=ppangto-teacher(빵토 선생님, voice: src/lib/personas/ppangto-teacher-voice.md) · EP1 도커 해부(CLI→dockerd→containerd→shim→runc, namespaces/cgroups/OverlayFS) / EP2 OCI 표준(Image·Runtime·Distribution Spec, bundle+config.json, runc·crun·youki) / EP3 CRI(kubelet↔gRPC, dockershim 제거, containerd CRI plugin vs CRI-O, Pod sandbox) / EP4 대안 다면 비교(Podman·Buildah·Skopeo, gVisor·Kata, rootless·daemonless, 빌드 3파전, 선택 기준표). 파이프라인: research 선행 → 편당 tech-deepdive → review-post → review-writing → quality-gate → post-finalize → publish-post → ship-post. 진행=단계별 개입.
 
 ## 검토
 - `KAN-010` KAN-013 퍼소나를 정의 했고, 기존 포스트들에는 퍼소나를 나타내는 저자명, 저자의 프로필, 저자 및 포스트 유형을 나타내는 배너가 포함되어 있으나, 집필 workflow에는 그것들을 포함하는 과정이 생략되어 있다. 포스트 레이아웃의 재설계를 포함하여, 원인 분석과 해결 방법에 대한 전략을 구상하라. — 생성:유저 · 최종:ai · 갱신:2026-07-23
