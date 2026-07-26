@@ -54,12 +54,12 @@ const hasMore = posts.length > recent.length;
 
     {recent.length > 0 ? (
       <ul class="post-list">
-        {recent.map((post) => {
+        {recent.map((post, i) => {
           const cat = getCategory(post.data.category);
           const author = getAuthor(post.data.author);
           return (
             <li>
-              <a href={`/posts/${post.id}`} class="post-row">
+              <a href={`/posts/${post.id}`} class="post-row" data-reveal="up" style={`--reveal-i:${i}`}>
                 <span class="post-label">
                   {formatMonthYear(post.data.pubDate)} · {cat.label} · {author.name}
                 </span>

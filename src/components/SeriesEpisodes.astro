@@ -28,7 +28,7 @@ const thumbOf = (p: CollectionEntry<"posts">): string | null => {
     <section class="episodes" aria-label="시리즈 에피소드">
       <h2 class="episodes-title">{title ?? `${post.data.series} 다시보기`}</h2>
       <div class="episodes-grid">
-        {episodes.map((ep) => {
+        {episodes.map((ep, i) => {
           const n = String(episodeNumber(ep, episodes)).padStart(2, "0");
           const thumb = thumbOf(ep);
           const isCurrent = ep.id === post.id;
@@ -37,6 +37,8 @@ const thumbOf = (p: CollectionEntry<"posts">): string | null => {
               href={`/posts/${ep.id}`}
               class:list={["ep-card", { "is-current": isCurrent }]}
               aria-current={isCurrent ? "page" : undefined}
+              data-reveal="up"
+              style={`--reveal-i:${i}`}
             >
               {thumb ? (
                 <img class="ep-thumb" src={thumb} alt="" loading="lazy" decoding="async" />

@@ -12,12 +12,12 @@ const { posts } = Astro.props;
 
 <ul class="post-list">
   {
-    posts.map((post) => {
+    posts.map((post, i) => {
       const cat = getCategory(post.data.category);
       const author = getAuthor(post.data.author);
       const minutes = readingTime(post.body);
       return (
-        <li class="post-item">
+        <li class="post-item" data-reveal="up" style={`--reveal-i:${i}`}>
           <a href={`/posts/${post.id}`} class="post-link">
             <span class="bullet" style={`--cat:${cat.color}`} aria-hidden="true" />
             <span class="post-body">

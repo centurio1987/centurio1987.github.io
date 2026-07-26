@@ -24,7 +24,7 @@ const nextLabel = (p: CollectionEntry<"posts">) =>
   (prev || next) && (
     <nav class="post-nav" aria-label="이전 글 / 다음 글">
       {prev ? (
-        <a href={`/posts/${prev.id}`} class="nav-card nav-prev">
+        <a href={`/posts/${prev.id}`} class="nav-card nav-prev" data-reveal="up" style="--reveal-i:0">
           <span class="nav-label">{prevLabel(prev)}</span>
           <span class="nav-title">{prev.data.title}</span>
         </a>
@@ -32,7 +32,7 @@ const nextLabel = (p: CollectionEntry<"posts">) =>
         <span class="nav-empty" aria-hidden="true" />
       )}
       {next ? (
-        <a href={`/posts/${next.id}`} class="nav-card nav-next">
+        <a href={`/posts/${next.id}`} class="nav-card nav-next" data-reveal="up" style="--reveal-i:1">
           <span class="nav-label">{nextLabel(next)}</span>
           <span class="nav-title">{next.data.title}</span>
         </a>

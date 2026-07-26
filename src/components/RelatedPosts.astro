@@ -23,10 +23,10 @@ const REASON_PREFIX: Record<string, string> = {
       <Squiggle class="related-rule" />
       <h2 class="related-title">연관 글</h2>
       <ul class="related-list">
-        {items.map(({ post, reasons }) => {
+        {items.map(({ post, reasons }, i) => {
           const cat = getCategory(post.data.category);
           return (
-            <li class="related-item">
+            <li class="related-item" data-reveal="up" style={`--reveal-i:${i}`}>
               <a href={`/posts/${post.id}`} class="related-link">
                 <span class="bullet" style={`--cat:${cat.color}`} aria-hidden="true" />
                 <span class="related-body">

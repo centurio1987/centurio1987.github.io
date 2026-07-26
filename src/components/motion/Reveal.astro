@@ -1,0 +1,23 @@
+---
+/**
+ * Reveal — data-reveal 진입 리빌 설탕 래퍼.
+ *
+ * motion.css 리빌 계약 + reveal.ts 공유 IO 와 짝. 기존 요소에 직접
+ * `data-reveal`(+ 스태거는 style="--reveal-i:N")를 붙이는 게 기본이지만, 감쌀 요소가
+ * 없을 때 이 래퍼를 쓴다. 무JS/reduced-motion 이면 그냥 정적 컨테이너(항상 보임).
+ *
+ * dir: 진입 방향(up 기본·down·left·right·none·draw). draw 는 SVG stroke 그리기용.
+ * i:   스태거 인덱스(목록에서 0,1,2… — delay cap 4).
+ */
+interface Props {
+  dir?: "up" | "down" | "left" | "right" | "none" | "draw";
+  i?: number | null;
+  as?: keyof HTMLElementTagNameMap;
+  class?: string;
+}
+const { dir = "up", i = null, as = "div", class: className } = Astro.props;
+const Tag = as as any;
+const style = i != null ? `--reveal-i:${i}` : undefined;
+---
+
+<Tag data-reveal={dir} style={style} class={className}><slot /></Tag>

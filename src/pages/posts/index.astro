@@ -19,11 +19,12 @@ const categories = CATEGORIES.filter((c) => usedCategories.has(c.slug));
     {
       categories.length > 0 && (
         <nav class="cats" aria-label="카테고리">
-          {categories.map((c) => (
+          {categories.map((c, i) => (
             <a
               href={`/categories/${c.slug}`}
               class="cat-chip"
-              style={`--cat:${c.color}`}
+              style={`--cat:${c.color};--reveal-i:${i}`}
+              data-reveal="up"
             >
               {c.label}
             </a>

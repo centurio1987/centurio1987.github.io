@@ -44,6 +44,21 @@ const imageUrl = new URL(image, Astro.site).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {/* 리빌 선-부착: 모션 허용 + IO 지원일 때만 reveal-ready 를 페인트 전에 붙여
+        above-the-fold 콘텐츠의 "보였다 숨는" 깜빡임을 막는다. reduced-motion/무JS/IO
+        미지원이면 클래스가 없어 콘텐츠가 항상 보인다(reveal.ts 가 멱등 보강). */}
+    <script is:inline>
+      (function () {
+        try {
+          var reduce = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
+          if (!reduce && "IntersectionObserver" in window) {
+            document.documentElement.classList.add("reveal-ready");
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <Header />
@@ -51,5 +66,9 @@ const imageUrl = new URL(image, Astro.site).href;
       <slot />
     </main>
     <Footer />
+    <script>
+      import { initReveal } from "../lib/motion/reveal";
+      initReveal();
+    </script>
   </body>
 </html>
