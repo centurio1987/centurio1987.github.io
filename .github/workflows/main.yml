@@ -30,24 +30,15 @@ jobs:
         # Project .npmrc maps @centurio1987 → GitHub Packages; CI has no global ~/.npmrc,
         # so write the read token here. PACKAGES_READ_TOKEN PAT if set, else the workflow's
         # GITHUB_TOKEN (works when the package is public or grants this repo packages:read).
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-      - name: DEBUG auth (temporary)
+        # Token into BOTH project .npmrc (bun reads scope+auth here) and ~/.npmrc.
         run: |
-          echo "HOME=$HOME  PWD=$PWD"
-          echo "bun: $(bun --version)"
-          echo "--- ~/.npmrc (token masked) ---"
-          sed -E 's/(_authToken=).*/\1MASKED/' ~/.npmrc || echo "no ~/.npmrc"
-          echo "--- project .npmrc ---"; cat .npmrc || true
-          echo "--- token length check (PACKAGES_READ_TOKEN) ---"
-          T='${{ secrets.PACKAGES_READ_TOKEN }}'; echo "secret token length: ${#T}"; echo "prefix: ${T:0:4}"
-          echo "--- curl tarball WITH secret token ---"
-          curl -s -o /dev/null -w 'HTTP:%{http_code}\n' -H "Authorization: Bearer ${{ secrets.PACKAGES_READ_TOKEN }}" "https://npm.pkg.github.com/download/@centurio1987/bbangto-ui-visualization/0.2.0/8e726e3f89b155ff9162bc9210391a4cc75c6fb4"
-          echo "--- curl tarball with token READ FROM ~/.npmrc (what bun uses) ---"
-          NT=$(awk -F'_authToken=' '/_authToken=/{print $2; exit}' ~/.npmrc)
-          echo "npmrc token length: ${#NT}  prefix: ${NT:0:4}"
-          curl -s -o /dev/null -w 'HTTP:%{http_code}\n' -H "Authorization: Bearer $NT" "https://npm.pkg.github.com/download/@centurio1987/bbangto-ui-visualization/0.2.0/8e726e3f89b155ff9162bc9210391a4cc75c6fb4"
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}" >> ~/.npmrc
       - name: Install dependencies
-        run: bun install
+        # bun's GitHub Packages tarball auth is unreliable on Linux CI (token is valid — curl
+        # returns 302 — but bun 401s on the tarball download). Fall back to npm, which handles
+        # GitHub Packages _authToken reliably. Build still runs via bunx.
+        run: bun install || npm install --no-audit --no-fund
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
