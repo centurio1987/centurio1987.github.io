@@ -34,6 +34,13 @@ const imageUrl = new URL(image, Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {/* 한국어 전용 폰트 시스템. global.css 의 @import 가 아니라 여기 <link> 로 두는
+        이유는 @import 가 부모 CSS 수신 완료 후에야 출발해 요청이 직렬화되기 때문이다
+        (위 preconnect 는 이 <link> 와 짝이다). display=swap 이라 미도착 시 폴백으로 그린다. */}
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&family=Space+Mono:wght@400;700&family=Gaegu:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />

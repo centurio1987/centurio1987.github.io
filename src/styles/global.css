@@ -2,8 +2,11 @@
 @import "./viz.css";
 @import "./motion.css";
 
-/* Google Fonts — 한국어 전용 폰트 시스템 */
-@import url("https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&family=Space+Mono:wght@400;700&family=Gaegu:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap");
+/* Google Fonts(한국어 전용 폰트 시스템)는 여기서 @import 하지 않는다 — CSS 안의
+   @import 는 이 파일을 다 받은 뒤에야 요청이 출발해 폰트 CSS가 직렬로 늘어선다.
+   BaseLayout.astro 의 <link rel="stylesheet"> 로 올려 HTML 파싱 시점에 바로
+   출발시키고(이미 걸려 있는 preconnect 가 그때 제값을 한다), 폰트 패밀리 변경은
+   그쪽 URL 과 아래 --font-* 토큰을 함께 고쳐야 한다. */
 
 *,
 *::before,
