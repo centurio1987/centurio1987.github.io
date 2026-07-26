@@ -10,12 +10,12 @@ export default function TauriRuntimeArchitecture() {
         accessible="img"
         title={"WebView 프로세스에서 IPC 브리지를 거쳐 Rust Core 프로세스로, 다시 OS 자원으로 이어지는 세로 흐름도"}
         desc={"Tauri 런타임: WebView(UI)는 오직 IPC 브리지를 통해서만 Rust Core에 요청하고, OS 자원에 대한 전권은 Core만 가진다."}
-        viewBox="0 0 580 558"
+        viewBox="0 0 560 538"
         data={{
   "nodes": [
     {
       "id": "webview",
-      "x": 200,
+      "x": 110,
       "y": 24,
       "width": 340,
       "height": 84,
@@ -23,16 +23,16 @@ export default function TauriRuntimeArchitecture() {
     },
     {
       "id": "ipc",
-      "x": 200,
+      "x": 110,
       "y": 168,
       "width": 340,
       "height": 74,
       "label": "IPC 브리지 — invoke · emit / listen",
-      "fill": "var(--viz-accent-soft)"
+      "fill": "#DCE4F2"
     },
     {
       "id": "core",
-      "x": 200,
+      "x": 110,
       "y": 300,
       "width": 340,
       "height": 84,
@@ -40,7 +40,7 @@ export default function TauriRuntimeArchitecture() {
     },
     {
       "id": "os",
-      "x": 200,
+      "x": 110,
       "y": 444,
       "width": 340,
       "height": 74,
@@ -52,18 +52,21 @@ export default function TauriRuntimeArchitecture() {
       "id": "e1",
       "from": "webview",
       "to": "ipc",
+      "routing": "straight",
       "label": "요청/구독"
     },
     {
       "id": "e2",
       "from": "ipc",
       "to": "core",
+      "routing": "straight",
       "label": "커맨드 라우팅"
     },
     {
       "id": "e3",
       "from": "core",
       "to": "os",
+      "routing": "straight",
       "label": "full access"
     }
   ]

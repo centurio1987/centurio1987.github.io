@@ -10,8 +10,8 @@ export default function InvokeRoundTrip() {
         accessible="img"
         title={"invoke() 왕복 — 프런트의 호출이 JSON으로 직렬화되어 Core를 거쳐 Rust 함수로, 다시 응답으로 돌아온다."}
         desc={"invoke() 왕복 — 프런트의 호출이 JSON으로 직렬화되어 Core를 거쳐 Rust 함수로, 다시 응답으로 돌아온다."}
-        viewBox="0 0 820 220"
-        orientation="horizontal"
+        viewBox="0 0 560 460"
+        orientation="vertical"
         data={{
   "steps": [
     {

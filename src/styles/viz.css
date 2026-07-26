@@ -28,6 +28,30 @@
   stroke-width: var(--bbangto-viz-edge-width);
 }
 
+/* --- .viz-figure 레이아웃 (블로그 셸) -------------------------------------
+ * VizFigure 가 씌우는 <figure>. 브라우저 기본 figure 마진(좌우 40px)을 제거해
+ * 본문 이미지와 같은 전폭으로 렌더한다(다이어그램이 좁게 축소돼 글씨가 작아지는
+ * 문제 방지). SVG 는 컨테이너 폭에 맞춰 100% 로 그린다. */
+.viz-figure {
+  margin: 28px 0;
+  width: 100%;
+}
+.viz-figure > [data-bbangto-viz-style-guide] {
+  width: 100%;
+}
+.viz-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.viz-figure figcaption {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2, #4a4f6a);
+  text-align: center;
+}
+
 /* --- REDUCED_MOTION_CSS (id: bbangto-viz-reduced-motion) ------------------- */
 @media (prefers-reduced-motion: reduce) {
   [data-bbangto-viz-style-guide] *:not([data-bbangto-viz-animate="essential"]),

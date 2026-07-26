@@ -10,7 +10,7 @@ export default function TauriVsElectron() {
         accessible="img"
         title={"Tauri와 Electron의 렌더러·백엔드·번들·보안·렌더링 일관성을 좌우로 비교한 표"}
         desc={"같은 '웹 기술로 데스크톱 앱'이지만 렌더러·백엔드·보안 기본값이 구조적으로 다르다."}
-        viewBox="0 0 760 380"
+        viewBox="0 0 620 260"
         mode="split"
         data={{
   "left": {
