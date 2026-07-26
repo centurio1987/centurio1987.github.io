@@ -1,0 +1,917 @@
+---
+title: "Tauri 해부 2편 — 개념을 코드로: 폴더 하나 훑는 앱에 command·state·channel·capability·sidecar를 전부 꿰다"
+description: "예시 앱 하나를 처음부터 만들며 Tauri v2의 커맨드·상태·Channel 스트리밍·capabilities 권한·사이드카가 코드 어디에서 맞물리는지 추적한다."
+pubDate: 2026-07-26
+category: skills
+author: ppangto
+tags: ["Tauri", "Rust", "invoke", "Channel", "capabilities", "sidecar", "데스크톱 앱"]
+series: "Tauri 해부"
+order: 2
+draft: false
+---
+import VizProcessSteps2 from "../../components/posts/tauri-2/VizProcessSteps2";
+import VizFlowchart3 from "../../components/posts/tauri-2/VizFlowchart3";
+import VizComparison4 from "../../components/posts/tauri-2/VizComparison4";
+import VizFlowchart5 from "../../components/posts/tauri-2/VizFlowchart5";
+import PermissionGate from "../../components/posts/tauri-2/PermissionGate";
+
+![Tauri 해부 2편 표지 — 개념을 코드로 옮기는 구현기](/images/tauri-2/hero.webp)
+
+[1편](/posts/tauri-1)에서는 Tauri가 렌더러와 Node.js 런타임을 번들에서 빼고 얻는 것, 전권을 쥔 Rust Core가 통제된 WebView를 오케스트레이션하는 구조, 그리고 permissions·scopes·capabilities로 짜인 v2의 보안 모델을 그렸습니다. 구조는 손에 잡히셨을 겁니다.
+
+그런데 막상 에디터를 열면 다른 질문이 옵니다. **그래서 그 개념들은 어느 파일의 몇 번째 줄에 있는가.** 커맨드는 `lib.rs`에 쓰는지 `main.rs`에 쓰는지, 케이퍼빌리티 JSON은 누가 만들어 주는지, 진행률은 반환값으로 주면 되는 것 아닌지, 사이드카 파일 이름 뒤에 붙는다는 그 긴 접미사는 손으로 쳐야 하는지. 개념도와 실제 프로젝트 사이에는 생각보다 넓은 강이 있습니다.
+
+이 글은 그 강을 건너는 다리입니다. 작은 앱 하나를 정해 놓고, 스캐폴딩부터 배포용 빌드까지 **순서대로 만들어 나가면서** 1편의 개념들이 코드의 어느 지점에서 실체가 되는지 짚겠습니다. 다 읽으시면 빈 폴더에서 시작해 커맨드·상태·스트리밍·권한·사이드카를 갖춘 Tauri 앱을 스스로 조립하실 수 있고, 무엇보다 **막혔을 때 에러 문구만 보고 어느 개념이 어긋났는지 짚어내실 수 있게** 됩니다.
+
+> 이 글도 Tauri 2.x 공식 문서(v2.tauri.app)를 1순위 근거로 삼았으며, 조회일은 **2026년 7월 26일**입니다. 공식 문서로 확인되지 않은 대목(권한 누락 시 정확한 에러 문구, 상태 미등록 패닉 메시지 등)은 본문에서 출처 수준을 따로 밝혔습니다. 2.x는 보안·번들러·플러그인 쪽 변화가 잦고 특히 **플러그인은 문서와 API가 각자 움직입니다.** 그러니 이 글을 따라 하실 때는 `tauri`·`tauri-cli`·`@tauri-apps/api`와 각 플러그인의 버전을 프로젝트에 함께 적어 두시길 권합니다. 반년 뒤에 "왜 안 되지"를 푸는 실마리는 대개 그 기록입니다.
+
+## 무엇을 만드나 — `file-scout`
+
+개념을 두루 쓰되 예제가 비대해지지 않을 만큼의 앱이 필요합니다. 이 글에서는 **`file-scout`**이라는 소도구를 만들겠습니다.
+
+폴더를 하나 고르면 그 안의 파일을 훑어 개수와 총 용량을 집계하고, 훑는 동안 진행 상황을 실시간으로 흘려보내며, 원하면 고른 파일의 체크섬을 **외부 CLI 바이너리**에 맡겨 계산해 그 출력까지 실시간으로 중계하는 앱입니다.
+
+미리 밝혀 둘 것이 있습니다. 이 글의 코드는 **개념이 맞물리는 배선을 드러내는 데 초점**을 둡니다. 그래서 훑기는 한 단계 깊이(`read_dir` 한 번)로 두고 재귀는 넣지 않았으며, `do_scan` 같은 보조 함수의 본문은 생략했습니다. 재귀 순회나 정렬 같은 살은 여러분이 붙이시면 됩니다. 이 글이 끝까지 책임지는 것은 **커맨드·상태·채널·권한·사이드카가 서로 이어지는 지점**입니다.
+
+기능은 소박하지만 이 안에 1편에서 개념으로만 봤던 것이 전부 들어갑니다. 폴더를 고르려면 **플러그인**이 필요하고, 플러그인을 부르는 순간 **케이퍼빌리티**의 벽을 만납니다. 훑은 결과를 기억하려면 **상태 관리**가 필요하고, 진행 상황을 흘려보내려면 커맨드의 반환값으로는 부족해 **Channel**을 꺼내야 합니다. 외부 CLI를 앱에 얹으려면 **사이드카**를 배워야 합니다.
+
+만드는 순서는 이렇습니다. 뒤 단계가 앞 단계에서 만든 것을 계속 딛고 올라가도록 짰습니다.
+
+<VizProcessSteps2 />
+
+## 0단계. 스캐폴딩 — 어느 파일에 무엇이 있는가
+
+프로젝트는 공식 스캐폴더로 만듭니다. 패키지 매니저별로 입구가 다를 뿐 결과물은 같습니다.
+
+```bash
+npm create tauri-app@latest
+# 또는
+pnpm create tauri-app
+bunx create-tauri-app
+```
+
+프런트엔드 프레임워크를 대화형으로 고르게 되는데, 템플릿을 미리 알고 있다면 인자로 박아도 됩니다.
+
+```bash
+bunx create-tauri-app file-scout --template vanilla-ts
+```
+
+`vanilla`·`vue`·`svelte`·`react`·`preact`·`solid`·`angular`에 각각 TypeScript 변형이 있고, 프런트까지 Rust로 짜고 싶다면 `yew`·`leptos`·`sycamore`도 있습니다. 이 글의 코드는 프레임워크에 의존하지 않으므로 `vanilla-ts` 기준으로 쓰겠습니다.
+
+만들어진 디렉터리에서 지금부터 계속 손댈 곳만 추리면 이렇습니다.
+
+```
+file-scout/
+├── src/                      # 프런트엔드 (WebView에서 도는 쪽)
+│   └── main.ts
+└── src-tauri/                # Rust Core (OS 전권을 쥔 쪽)
+    ├── Cargo.toml
+    ├── build.rs
+    ├── tauri.conf.json       # 앱 설정 — 식별자·창·번들·사이드카
+    ├── capabilities/
+    │   └── default.json      # 창별 권한 묶음
+    └── src/
+        ├── main.rs           # 데스크톱 진입점
+        └── lib.rs            # 실제 앱 코드
+```
+
+1편에서 그린 신뢰 경계가 여기서 **디렉터리 경계**로 나타납니다. `src/`는 WebView에서 도는 통제된 영역이고, `src-tauri/`는 OS에 전권을 가진 영역입니다. 두 세계가 대화하려면 IPC를 거쳐야 한다는 그 원칙이, 앞으로 우리가 파일을 오갈 때마다 물리적으로 확인됩니다.
+
+여기서 처음 만나는 의문 하나를 먼저 풀고 갑시다. **`main.rs`와 `lib.rs`는 왜 나뉘어 있을까요.** 보통의 Rust 바이너리 프로젝트라면 `main.rs` 하나로 충분합니다.
+
+이유는 모바일입니다. 공식 문서는 모바일 빌드에서 앱을 **라이브러리로 컴파일해 플랫폼 프레임워크가 로드하는 방식**을 쓴다고 설명합니다. 즉 iOS·Android에서는 운영체제 쪽이 앱을 불러 주기 때문에, 우리 코드에는 "여기가 시작점"이라고 선언할 `main` 함수가 설 자리가 없습니다. 그래서 앱의 알맹이는 전부 `lib.rs`의 `run()` 함수에 넣고, `main.rs`는 데스크톱에서만 쓰이는 얇은 껍데기로 남깁니다.
+
+```rust
+// src-tauri/src/main.rs — 손대지 않는 것을 권장합니다.
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
+fn main() {
+    file_scout_lib::run()
+}
+```
+
+```rust
+// src-tauri/src/lib.rs — 앞으로 우리가 코드를 쌓아 갈 곳입니다.
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+`#[cfg_attr(mobile, tauri::mobile_entry_point)]`가 바로 그 장치입니다. 모바일로 빌드할 때만 이 함수에 모바일 진입점 표식을 붙입니다. **앞으로 이 글의 Rust 코드는 예외 없이 `lib.rs`에 들어갑니다.**
+
+다만 구조가 모바일을 향해 열려 있다는 것과 이 글의 앱이 모바일에서 그대로 돈다는 것은 다른 이야기입니다. **이 글은 데스크톱을 전제로 씁니다.** 뒤에 나올 파일 접근이나 사이드카는 모바일에서 권한 모델과 실행 환경이 달라 그대로 옮겨지지 않습니다. 지금 익힐 것은 개념의 배선이고, 모바일 이식은 그다음 이야기입니다.
+
+개발 서버는 이렇게 띄웁니다.
+
+```bash
+npm install
+npm run tauri dev
+```
+
+## 1단계. 첫 커맨드 — `invoke` 한 번 왕복시키기
+
+1편에서 IPC의 두 기본형(Command와 Event)을 봤으니, 이제 Command를 실제로 하나 놓아 보겠습니다. 폴더 경로를 받아 그 안을 훑고 요약을 돌려주는 커맨드입니다.
+
+```rust
+// src-tauri/src/lib.rs
+use serde::Serialize;
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ScanSummary {
+    file_count: usize,
+    total_bytes: u64,
+}
+
+#[tauri::command]
+fn scan_folder(folder_path: String) -> Result<ScanSummary, String> {
+    let entries = std::fs::read_dir(&folder_path).map_err(|e| e.to_string())?;
+
+    let mut file_count = 0usize;
+    let mut total_bytes = 0u64;
+    for entry in entries.flatten() {
+        if let Ok(meta) = entry.metadata() {
+            if meta.is_file() {
+                file_count += 1;
+                total_bytes += meta.len();
+            }
+        }
+    }
+
+    Ok(ScanSummary { file_count, total_bytes })
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![scan_folder])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+프런트에서는 이렇게 부릅니다.
+
+```typescript
+// src/main.ts
+import { invoke } from "@tauri-apps/api/core";
+
+type ScanSummary = { fileCount: number; totalBytes: number };
+
+const summary = await invoke<ScanSummary>("scan_folder", {
+  folderPath: "/Users/me/Downloads",
+});
+console.log(summary.fileCount, summary.totalBytes);
+```
+
+짧은 코드지만 여기에 초심자를 넘어뜨리는 규칙이 네 개 숨어 있습니다. 하나씩 못박아 두겠습니다.
+
+**첫째, 인자 이름이 저절로 바뀝니다.** Rust에서는 `folder_path`인데 JavaScript에서는 `folderPath`로 넘겼습니다. Tauri가 snake_case와 camelCase를 자동으로 이어 주기 때문입니다. 이 변환이 싫다면 애트리뷰트로 끌 수 있습니다.
+
+```rust
+#[tauri::command(rename_all = "snake_case")]
+fn scan_folder(folder_path: String) -> Result<ScanSummary, String> { /* … */ }
+```
+
+이렇게 두면 프런트에서도 `{ folder_path: "…" }`로 넘겨야 합니다. 어느 쪽이든 상관없지만, **한 프로젝트 안에서는 하나로 통일**하십시오. 이 규칙이 섞이면 "인자가 왜 `undefined`지"로 반나절을 씁니다.
+
+**둘째, 오가는 값은 serde를 탑니다.** 인자는 `Deserialize`를, 반환값은 `Serialize`를 구현해야 합니다. 위에서 `ScanSummary`에 `Serialize`를 파생시킨 이유가 그것이고, `#[serde(rename_all = "camelCase")]`를 함께 붙여 프런트가 받는 필드 이름까지 자바스크립트 관례로 맞췄습니다. `Clone`을 같이 파생시킨 것은 5단계에서 이 값을 캐시에 넣으면서 복사해야 하기 때문입니다.
+
+여기서 성능에 관한 주의 하나를 미리 박아 두겠습니다. **`async`를 붙이지 않은 커맨드는 메인 스레드에서 실행됩니다.** 위 `scan_folder`처럼 파일을 훑는 작업을 동기 커맨드로 두면, 폴더가 커질수록 그동안 UI가 굳습니다. 지금은 배선을 보여 주려고 가장 단순한 형태로 뒀을 뿐이고, **실제 앱이라면 `async`로 바꾸거나 무거운 작업을 별도 스레드로 넘겨야 합니다.** 그 방법은 5단계에서 다룹니다.
+
+**셋째, 에러는 `Result`로 내보내면 프런트의 `catch`로 떨어집니다.** 다만 조건이 있습니다. **에러 타입도 `Serialize`를 구현해야 합니다.** 위 코드는 가장 간단한 길인 `map_err(|e| e.to_string())`으로 `String` 에러를 썼습니다. 실무 프로젝트라면 `thiserror`로 에러를 정의하고 직렬화를 직접 구현하는 편이 낫습니다.
+
+```rust
+#[derive(Debug, thiserror::Error)]
+enum Error {
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+}
+
+impl serde::Serialize for Error {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        serializer.serialize_str(self.to_string().as_ref())
+    }
+}
+```
+
+여기까지 하면 커맨드 본문에서 `?` 하나로 에러를 던질 수 있습니다. 프런트에서 에러 **종류별로 분기**하고 싶다면 한 걸음 더 나가, `#[serde(tag = "kind", content = "message")]`를 붙인 열거형으로 직렬화해 `{ kind: "io", message: "…" }` 꼴의 객체를 내려보내는 방법도 공식 문서가 제시합니다.
+
+**넷째, 등록하지 않은 커맨드는 존재하지 않는 것과 같습니다.** `tauri::generate_handler![scan_folder]`가 그 등록입니다. 여기에 이름을 빠뜨리면 1편에서 예고한 그 증상, "command not found"가 뜹니다. 그리고 함정이 하나 더 있습니다. **공식 문서는 `invoke_handler`를 앱 전체에서 한 번만 호출하라고 못박습니다.** 빌더에 이어 붙인다고 컴파일이 막히지는 않지만, 그렇게 하면 앞서 등록한 커맨드가 조용히 사라져 "not found"로 되돌아옵니다. 커맨드가 늘어나면 호출을 늘리는 게 아니라 하나의 배열 안에 이름을 계속 추가해야 합니다.
+
+```rust
+.invoke_handler(tauri::generate_handler![scan_folder, checksum_file, recent_scans])
+```
+
+커맨드를 별도 모듈로 뺄 때 걸리는 가시성 규칙도 미리 알아 두면 좋습니다. `lib.rs`에 직접 쓴 커맨드는 **`pub`을 붙이면 안 되고**, `commands.rs` 같은 별도 모듈에 두면 **`pub`이 필수**입니다. 글루 코드를 생성하는 방식 때문에 생기는 제약인데, 모르고 만나면 원인을 짚기 어려운 컴파일 오류로 나타납니다.
+
+마지막으로, Tauri가 알아서 채워 주는 특별한 인자들이 있습니다. 커맨드 시그니처에 `tauri::AppHandle`이나 `tauri::WebviewWindow`, `tauri::State<'_, T>`를 적어 두면 프런트에서 넘기지 않아도 Tauri가 주입합니다. 5단계에서 이 성질을 그대로 씁니다.
+
+## 2단계. 폴더 고르기 — 플러그인을 붙이고, 처음으로 거절당하기
+
+지금은 폴더 경로를 코드에 박아 두었습니다. 사용자가 직접 고르게 하려면 네이티브 파일 선택 창이 필요하고, 그건 **dialog 플러그인**의 일입니다.
+
+```bash
+npm run tauri add dialog
+```
+
+이 한 줄이 대신 해 주는 일은 셋입니다. `Cargo.toml`에 `tauri-plugin-dialog` 의존성을 넣고, `lib.rs`에 플러그인 초기화 호출을 끼워 넣고, 프런트용 npm 패키지를 설치합니다.
+
+```rust
+// src-tauri/src/lib.rs — 자동으로 추가되는 줄
+tauri::Builder::default()
+    .plugin(tauri_plugin_dialog::init())
+    .invoke_handler(tauri::generate_handler![scan_folder])
+```
+
+프런트 코드도 간단합니다.
+
+```typescript
+// src/main.ts
+import { open } from "@tauri-apps/plugin-dialog";
+
+const folder = await open({ directory: true, multiple: false });
+if (typeof folder === "string") {
+  const summary = await invoke<ScanSummary>("scan_folder", { folderPath: folder });
+}
+```
+
+자, 실행해 봅시다. 그리고 여기서 **여러분은 십중팔구 거절당합니다.**
+
+```
+dialog.open not allowed. Permissions associated with this command: dialog:allow-open
+```
+
+이 문구를 처음 만나면 "설치가 덜 됐나" 싶어 `npm install`을 다시 돌리게 됩니다. 하지만 설치는 멀쩡합니다. 이건 1편에서 설명한 **Runtime Authority가 정상적으로 일한 결과**입니다.
+
+핵심은 이겁니다. **플러그인을 설치하는 것과 그 플러그인의 커맨드를 쓸 권한을 여는 것은 별개의 단계입니다.** `tauri add`는 코드를 배선해 줄 뿐, 권한까지 열어 주지는 않습니다. Tauri v2의 기본값은 "차단"이고, 필요한 것만 개발자가 명시적으로 골라 여는 구조이기 때문입니다. 편의를 위해 자동으로 권한을 열어 준다면 그 순간 "기본 차단"이라는 설계 전체가 무의미해집니다.
+
+그러니 이 에러는 실패가 아니라 **보안 모델이 살아 있다는 신호**로 읽어야 합니다. 그리고 저 문구는 친절합니다. 무엇이 막혔는지(`dialog.open`)와 무엇을 넣어야 풀리는지(`dialog:allow-open`)를 한 줄에 같이 알려 줍니다.
+
+> 위 에러 문구는 Tauri 저장소의 이슈에서 실제로 재현된 사례를 인용한 것입니다(공식 문서 본문에 이 문자열이 명시돼 있지는 않습니다). 버전에 따라 표현이 조금 다를 수 있으나, **"무엇이 막혔는가 + 어떤 permission 식별자가 필요한가"를 함께 알려 주는 구조**는 같습니다.
+
+요청 하나가 어디를 거쳐 어디서 막히는지 그림으로 잡아 두면 앞으로 이 부류의 에러를 훨씬 빨리 읽으실 수 있습니다.
+
+<VizFlowchart3 />
+
+## 3단계. 권한 좁히기 — 케이퍼빌리티 파일을 직접 쓰기
+
+거절당했으니 이제 열어 줄 차례입니다. 열쇠는 `src-tauri/capabilities/default.json`에 있습니다. 스캐폴딩이 만들어 둔 파일에 우리가 필요한 권한을 더합니다.
+
+```json
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "file-scout 메인 창 권한",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:allow-open"
+  ]
+}
+```
+
+필드는 넷만 기억하면 됩니다. `identifier`는 이 묶음의 이름, `description`은 사람이 읽을 설명, **`windows`는 이 권한을 받을 창**, `permissions`는 허용할 커맨드 목록입니다. 여기에 특정 운영체제에서만 적용하는 `platforms`와 허용할 원격 도메인을 못박는 `remote` 필드도 있습니다.
+
+`permissions` 배열에 들어가는 식별자에는 규칙이 있습니다.
+
+- `<플러그인>:default` — 그 플러그인이 정한 기본 권한 묶음
+- `<플러그인>:<커맨드>` — 개별 커맨드 하나
+
+그래서 `dialog:allow-open`은 "dialog 플러그인의 open 커맨드를 허용한다"로 읽힙니다. **퍼미션** 식별자에는 표기 제약도 있습니다 — ASCII 소문자만 쓰고 116자를 넘을 수 없습니다(케이퍼빌리티 자체의 `identifier`와는 다른 층위의 규칙이니 섞어 외우지 마십시오).
+
+위에 넣은 `core:default`는 Tauri 코어가 제공하는 기본 묶음인데, 그 안에 `core:app:default`·`core:event:default`·`core:path:default`·`core:window:default` 등 아홉 개의 하위 묶음이 들어 있습니다. **뒤에서 쓸 이벤트 기능(`core:event:default` = `allow-listen`·`allow-unlisten`·`allow-emit`·`allow-emit-to`)이 여기에 포함**되므로, 지금 넣어 두면 나중에 한 번 덜 막힙니다.
+
+다만 여기서 스스로 모순에 빠지지 않도록 한마디 덧붙이겠습니다. `core:default`는 편하지만 **넓습니다.** 창·웹뷰·메뉴·트레이·리소스까지 아홉 묶음을 한꺼번에 여는 것이니, 최소 권한을 이야기하는 글에서 무심코 쓰기에는 너무 넓습니다. 학습 단계에서는 이대로 두되, 배포용 앱을 다듬을 때는 `core:event:default`·`core:path:default`처럼 **실제로 쓰는 묶음만 골라 넣는 편**이 설계 의도에 맞습니다.
+
+권한 여러 개를 자주 함께 쓴다면 하나의 이름으로 묶어 재사용할 수도 있습니다. 이것이 **퍼미션 세트**입니다.
+
+```toml
+[[set]]
+identifier = "allow-home-read-extended"
+description = "홈 디렉터리 읽기 묶음"
+permissions = ["fs:read-files", "fs:scope-home", "fs:allow-mkdir"]
+```
+
+### 켜고 끄는 것만으로는 부족할 때 — scope
+
+여기까지는 "이 커맨드를 쓸 수 있다/없다"의 이야기입니다. 그런데 파일을 다루는 순간 질문이 한 단계 깊어집니다. **읽는 건 허용하되, 어디까지 읽게 할 것인가.**
+
+이때 쓰는 것이 scope입니다. `permissions` 배열에는 문자열만이 아니라 **객체**도 넣을 수 있고, 그 객체가 인자 검증 규칙을 함께 실어 나릅니다.
+
+```json
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:allow-open",
+    { "identifier": "fs:allow-read-text-file", "allow": [{ "path": "$HOME/**/*" }] },
+    { "identifier": "fs:allow-exists", "allow": [{ "path": "$APPDATA/*" }] }
+  ]
+}
+```
+
+`$HOME`이나 `$APPDATA` 같은 표기는 Tauri가 실행 시점에 실제 경로로 바꿔 주는 **경로 변수**입니다. `$APPCONFIG`·`$APPDATA`·`$APPLOCALDATA`·`$APPCACHE`·`$APPLOG`·`$CACHE`·`$CONFIG`·`$DATA`·`$DESKTOP`·`$DOCUMENT`·`$DOWNLOAD`·`$HOME`·`$PICTURE`·`$PUBLIC`·`$TEMP`·`$RESOURCE` 등이 있습니다. 사용자마다 다른 실제 경로를 코드에 박지 않고도 "홈 아래"를 표현할 수 있게 해 주는 장치입니다.
+
+여기서 케이퍼빌리티 파일을 직접 만져 보시길 권합니다. 아래 시뮬레이션에서 권한을 켜고 끄면서, 같은 호출이 어떤 판정을 받고 어떤 문구로 거절되는지 관찰해 보십시오.
+
+<PermissionGate client:visible />
+
+체크박스로 `permissions`를 켜고 끄며 커맨드를 골라 보십시오. `shell:allow-execute`를 켜면 문자열이 아니라 객체 형태로 바뀌는 것도, `invoke('scan_folder')`만은 권한 없이 항상 통과하는 것도 눈으로 확인하실 수 있습니다.
+
+## 4단계. 경계 설계 — fs 플러그인을 쓸 것인가, 내 커맨드로 읽을 것인가
+
+3단계에서 `fs:allow-read-text-file`에 `$HOME/**/*` scope를 달아 두었습니다. 그런데 우리 앱은 **사용자가 실행 중에 아무 폴더나 고르는** 앱입니다. 사용자가 외장 디스크의 `/Volumes/Backup`을 고르면 어떻게 될까요. 홈 아래가 아니니 scope 밖입니다.
+
+여기서 많은 분이 처음 벽을 느낍니다. **케이퍼빌리티의 scope는 빌드 시점에 파일로 선언되는 정적인 것인데, 사용자가 고르는 경로는 실행 시점에야 정해지는 동적인 것**이기 때문입니다. 미리 적어 둘 수 없는 값을 미리 적으라는 요구처럼 보입니다.
+
+길은 두 갈래입니다.
+
+**갈래 1 — 런타임에 scope를 넓힌다.** fs 플러그인은 Rust 쪽에서 스코프를 실행 중에 확장하는 길을 열어 둡니다. 사용자가 폴더를 고른 직후, 그 경로만 콕 집어 허용 목록에 추가하는 방식입니다.
+
+```rust
+use tauri_plugin_fs::FsExt;
+
+// 사용자가 고른 디렉터리를 그 시점에 scope에 추가한다.
+// 두 번째 인자는 하위 디렉터리까지 함께 열지 여부다.
+let scope = app.fs_scope();
+scope.allow_directory("/Volumes/Backup", false);
+```
+
+이 호출은 Rust 쪽에서만 할 수 있으므로, 흐름은 이렇게 됩니다. 프런트가 dialog로 경로를 받아 **커맨드 하나에 그 경로를 넘기고**, 그 커맨드가 `allow_directory`로 scope를 넓힌 뒤에야 프런트가 fs 플러그인으로 그 경로를 읽을 수 있습니다. 즉 **"허가를 요청하는 왕복"이 한 번 더 생깁니다.** 그리고 이 확장은 앱을 다시 켜면 사라지므로, 최근에 연 폴더를 기억하려면 경로를 따로 저장해 두었다가 시작할 때 다시 열어 주어야 합니다.
+
+**갈래 2 — 애초에 fs 플러그인을 쓰지 않는다.** 파일을 읽는 일을 프런트가 아니라 **우리가 만든 Rust 커맨드**가 하게 하는 것입니다. 1단계의 `scan_folder`가 이미 그렇게 하고 있습니다. 그 커맨드는 `std::fs::read_dir`를 직접 부르지, fs 플러그인을 거치지 않습니다.
+
+그리고 여기서 1편의 한 문장이 실체로 드러납니다. 케이퍼빌리티가 촘촘히 통제하는 대상은 코어와 플러그인이 노출하는 시스템 커맨드입니다. 여러분이 `#[tauri::command]`로 만들어 `generate_handler!`에 등록한 앱 커맨드는 **기본값이 "창에서 호출 가능"**이라, 따로 손대지 않는 한 심사를 거치지 않습니다. `scan_folder`는 Core 프로세스 안에서 돌고, Core는 OS에 전권을 가집니다. **그래서 `scan_folder`에는 `fs:` 권한이 필요 없습니다.**
+
+그렇다면 당연히 이런 반문이 나와야 합니다. **"그럼 커맨드 하나 만들어서 다 읽으면 권한 모델을 우회하는 것 아닌가?"**
+
+정직하게 답하면, 맞습니다. 다만 우회라기보다는 **책임의 이동**으로 보는 편이 정확합니다. 플러그인 커맨드는 Tauri가 대신 심사해 주지만, 내가 만든 커맨드는 그 안에서 **내가 직접 심사해야** 합니다. 신뢰 경계는 사라진 게 아니라 내 코드 안으로 들어온 것입니다.
+
+그러니 `scan_folder`는 이렇게 자기 검증을 갖춰야 합니다.
+
+```rust
+#[tauri::command]
+fn scan_folder(folder_path: String) -> Result<ScanSummary, String> {
+    let path = std::path::Path::new(&folder_path);
+
+    // 내 커맨드에는 Tauri가 scope를 강제해 주지 않는다 — 내가 검증한다.
+    if !path.is_dir() {
+        return Err("디렉터리가 아닙니다".into());
+    }
+    let canonical = path.canonicalize().map_err(|e| e.to_string())?;
+    let home = dirs_next::home_dir().ok_or("홈 디렉터리를 찾지 못했습니다")?;
+    if !canonical.starts_with(&home) {
+        return Err("홈 디렉터리 바깥은 훑지 않습니다".into());
+    }
+
+    // …이하 훑기…
+}
+```
+
+`canonicalize()`를 먼저 부르는 이유가 있습니다. 이 호출이 심볼릭 링크와 `..` 같은 상대 경로 요소를 실제 경로로 풀어 줍니다. 이 과정을 건너뛰고 문자열만 비교하면 `~/Documents/../../etc` 같은 입력에 뚫립니다.
+
+여기에 크로스 플랫폼 함정이 하나 숨어 있습니다. Windows의 `canonicalize()`는 `\\?\C:\Users\me` 같은 확장 길이 경로 접두사를 붙여 돌려줍니다. 반면 `home_dir()`는 접두사 없는 `C:\Users\me`를 줍니다. 두 값을 그대로 `starts_with`로 비교하면 **Windows에서는 정상 경로도 전부 거부됩니다.** 그러니 비교할 두 경로를 **양쪽 다 같은 방식으로 정규화**해 놓고 견주어야 합니다.
+
+```rust
+let canonical = path.canonicalize().map_err(|e| e.to_string())?;
+let home = dirs_next::home_dir()
+    .ok_or("홈 디렉터리를 찾지 못했습니다")?
+    .canonicalize()                      // ← 양쪽을 같은 방식으로 정규화
+    .map_err(|e| e.to_string())?;
+if !canonical.starts_with(&home) {
+    return Err("홈 디렉터리 바깥은 훑지 않습니다".into());
+}
+```
+
+그리고 이 검사를 만능으로 여기지는 마십시오. 검사한 시점과 실제로 읽는 시점 사이에 심볼릭 링크가 바뀌는 경합(TOCTOU, Time-of-Check to Time-of-Use), 순환 링크, 권한 거부, 네트워크 볼륨, macOS의 샌드박스 권한 같은 것이 여전히 남아 있습니다. 위 코드는 **출발점**이지 완성된 방벽이 아닙니다. 스스로 문을 지키기로 했다면, 그 문에 어떤 열쇠들이 있는지도 스스로 세어 봐야 합니다.
+
+**어느 갈래를 택할 것인가.** 판단 기준은 이렇습니다.
+
+| | fs 플러그인 (갈래 1) | 내 커맨드 (갈래 2) |
+| --- | --- | --- |
+| 심사 주체 | Tauri가 scope로 강제 | 내 코드가 직접 |
+| 프런트 코드량 | 적다(플러그인 API 그대로) | 커맨드를 직접 짜야 함 |
+| 동적 경로 | 런타임 scope 확장 필요 | 커맨드 안에서 자유롭게 처리 |
+| 복잡한 로직 | 왕복 여러 번(느림) | Rust에서 한 번에 처리 |
+| 실수했을 때 | Tauri가 막아 줌 | **그대로 뚫림** |
+
+단순한 읽기·쓰기라면 fs 플러그인이 안전하고 빠릅니다. 반면 `file-scout`처럼 **폴더 안의 파일을 하나하나 훑어 집계하는** 일은 파일마다 IPC를 왕복하면 감당이 안 됩니다. 이 글은 그래서 갈래 2를 택하고, 대신 검증 책임을 커맨드 안에 명시적으로 넣습니다.
+
+한 가지 덧붙이면, 갈래 2를 택했다고 해서 Tauri가 앱 커맨드에 대해 아무 장치도 주지 않는 것은 아닙니다. 여러분이 만든 커맨드에 대해서도 **직접 퍼미션을 정의해 케이퍼빌리티로 관리하는 길**이 열려 있습니다. 다만 기본값이 "열림"이라 그 길을 택하지 않으면 아무도 막아 주지 않을 뿐입니다. 창마다 노출 범위를 달리해야 하는 앱이라면 이 확장을 찾아보실 만합니다.
+
+## 5단계. 상태 — 훑은 결과를 기억시키기
+
+같은 폴더를 반복해서 훑는 것은 낭비입니다. 최근 결과를 앱이 기억하게 만들어 봅시다. 1편에서 "Core가 전역 상태를 관리한다"고 했던 그 자리입니다.
+
+Tauri에서 전역 상태는 `manage()`로 등록하고 `State<'_, T>`로 꺼내 씁니다.
+
+```rust
+use std::collections::HashMap;
+use std::sync::Mutex;
+use tauri::{Manager, State};
+
+#[derive(Default)]
+struct ScanCacheInner {
+    entries: HashMap<String, ScanSummary>,
+}
+type ScanCache = Mutex<ScanCacheInner>;
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .setup(|app| {
+            app.manage(ScanCache::default());
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![scan_folder])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+커맨드에서는 인자에 타입만 적어 두면 Tauri가 알아서 넣어 줍니다.
+
+```rust
+#[tauri::command]
+fn scan_folder(folder_path: String, cache: State<'_, ScanCache>) -> Result<ScanSummary, String> {
+    if let Some(hit) = cache.lock().unwrap().entries.get(&folder_path) {
+        return Ok(hit.clone());
+    }
+    let summary = do_scan(&folder_path)?;
+    cache.lock().unwrap().entries.insert(folder_path, summary.clone());
+    Ok(summary)
+}
+```
+
+**왜 `Mutex`로 감싸야 할까요.** Rust는 여러 스레드가 공유하는 값을 그냥 바꾸도록 두지 않습니다. 커맨드는 여러 개가 동시에 실행될 수 있으니 상태는 정의상 공유 자원이고, 따라서 잠금이 필요합니다. `Mutex`는 그 잠금을 제공해 데이터 경합을 막습니다. 참고로 `State`는 내부적으로 이미 `Arc`로 감싸 주므로 **우리가 `Arc`를 덧씌울 필요는 없습니다.**
+
+위 코드에서 `type ScanCache = Mutex<ScanCacheInner>;`로 별칭을 둔 것도 의도가 있습니다. **`State`의 타입이 어긋나면 컴파일이 아니라 런타임에 터지기 때문**입니다. `manage()`에 넣은 타입과 커맨드가 요청한 타입이 정확히 같아야 하는데, `Mutex<T>`를 등록해 놓고 커맨드에서 `State<'_, T>`를 요청하는 실수는 눈에 잘 띄지 않습니다. 별칭 하나를 두 곳에서 함께 쓰면 이 실수 자체가 불가능해집니다.
+
+`manage()`를 아예 잊었다면 앱은 이런 모양으로 죽습니다.
+
+```
+state not managed for field `cache` on command `scan_folder`
+```
+
+> 이 패닉 문구는 공식 문서가 아니라 Tauri 저장소 이슈와 커뮤니티 글에서 재현된 것입니다. 버전에 따라 표현이 다를 수 있지만, "관리되지 않는 상태"를 지목한다는 점은 같습니다. 이 문구를 보면 `.manage()` 호출과 타입을 대조하십시오.
+
+### 함정 ↔ 정석: async 커맨드에서 잠금을 들고 `await`를 넘지 말 것
+
+훑기가 오래 걸리므로 커맨드를 `async`로 바꾸고 싶어집니다. 그런데 여기서 Rust 초심자와 경력자를 가리지 않고 걸리는 함정이 나옵니다.
+
+**❌ 안티패턴 — 컴파일되지 않습니다.**
+
+```rust
+#[tauri::command]
+async fn scan_folder(folder_path: String, cache: State<'_, ScanCache>) -> Result<ScanSummary, String> {
+    let mut guard = cache.lock().unwrap();   // std::sync::MutexGuard
+    let summary = do_scan_async(&folder_path).await?;  // ← 가드를 든 채 await
+    guard.entries.insert(folder_path, summary.clone());
+    Ok(summary)
+}
+```
+
+**결과:** 컴파일 실패입니다. `std::sync::Mutex`가 주는 `MutexGuard`는 `Send`를 구현하지 않기 때문에, `.await` 지점을 건너 살아 있으면 이 future 자체가 스레드 간 이동이 불가능해집니다. Tauri는 async 커맨드를 별도 태스크로 넘겨 실행하므로 future가 `Send`여야 하고, 그래서 빌드가 막힙니다. **테스트를 돌릴 필요도 없이 `cargo build`에서 재현되는, 가장 정직한 종류의 실패**입니다.
+
+**✅ 정석 1 — 잠금 구간을 `await` 바깥으로 밀어낸다.**
+
+```rust
+#[tauri::command]
+async fn scan_folder(folder_path: String, cache: State<'_, ScanCache>) -> Result<ScanSummary, String> {
+    {
+        let guard = cache.lock().unwrap();
+        if let Some(hit) = guard.entries.get(&folder_path) {
+            return Ok(hit.clone());
+        }
+    } // ← 여기서 가드가 떨어진다
+
+    let summary = do_scan_async(&folder_path).await?;
+
+    cache.lock().unwrap().entries.insert(folder_path, summary.clone());
+    Ok(summary)
+}
+```
+
+**✅ 정석 2 — 정말로 잠금을 `await` 너머까지 들고 가야 한다면, 비동기 Mutex를 쓴다.**
+
+```rust
+use tauri::async_runtime::Mutex;   // tokio 기반 async Mutex
+
+#[tauri::command]
+async fn scan_folder(folder_path: String, cache: State<'_, Mutex<ScanCacheInner>>) -> Result<ScanSummary, String> {
+    let mut guard = cache.lock().await;   // .unwrap()이 아니라 .await
+    // …
+    Ok(summary)
+}
+```
+
+**두 정석 중 무엇을 고르나.** 기본은 **정석 1**입니다. tokio 문서도 async mutex의 주 용도를 데이터베이스 커넥션처럼 IO 자원에 대한 공유 접근으로 보며, 잠금 구간이 짧다면 표준 라이브러리 Mutex를 async 코드에서 써도 무방하다고 설명합니다. 비동기 Mutex는 잠금 대기 자체를 `await`로 다루는 만큼 비용이 있으니, "가드를 오래 들고 있어야 하는가"를 먼저 물으십시오. 대부분은 아닙니다.
+
+CPU를 오래 쓰는 작업을 async 커맨드 안에서 그대로 돌리는 것도 같은 부류의 함정입니다. 비동기 런타임의 스레드를 붙잡아 다른 태스크까지 굶기기 때문에, 전용 블로킹 스레드풀로 넘겨야 합니다.
+
+```rust
+#[tauri::command]
+async fn heavy_scan(folder_path: String) -> Result<ScanSummary, String> {
+    // 여기서 Result가 두 겹이라는 점에 주의하십시오.
+    //   spawn_blocking(...)        -> JoinHandle<Result<ScanSummary, String>>
+    //   .await                     -> Result<Result<ScanSummary, String>, JoinError>
+    //   .map_err(...)?             -> 바깥 겹(스레드 자체가 죽었나)을 벗김
+    //   남은 값                     -> Result<ScanSummary, String> = 함수의 반환 타입
+    tauri::async_runtime::spawn_blocking(move || do_scan_blocking(&folder_path))
+        .await
+        .map_err(|e| e.to_string())?
+}
+```
+
+바깥 겹은 "블로킹 스레드가 무사히 끝났는가"를, 안쪽 겹은 "훑기 자체가 성공했는가"를 말합니다. 이 둘을 뭉뚱그리면 스레드가 패닉으로 죽은 것과 폴더를 못 읽은 것이 같은 에러로 보이게 됩니다. 두 겹을 구분해 두는 편이 나중에 원인을 가릴 때 훨씬 편합니다.
+
+마지막으로 async 커맨드의 자잘한 제약 하나. **`&str` 같은 참조 인자를 받을 수 없습니다.** `String`처럼 소유 타입으로 바꾸거나 반환을 `Result`로 감싸면 풀립니다.
+
+## 6단계. 진행률 — 반환값도 이벤트도 아닌 Channel
+
+파일이 수만 개인 폴더를 훑으면 몇 초가 걸립니다. 지금 구조에서는 그동안 화면이 아무것도 못 보여 줍니다. `scan_folder`가 **다 끝난 뒤에** 결과를 한 번 돌려주기 때문입니다.
+
+이건 커맨드 반환값의 성질입니다. 요청 하나에 응답 하나 — 중간이 없습니다. 그러니 진행률을 보여 주려면 다른 통로가 필요합니다.
+
+<VizComparison4 />
+
+후보는 둘입니다. **Event**와 **Channel**. 1편에서 이름만 봤던 그 둘인데, 여기서 선택 기준이 분명해집니다.
+
+Event는 소량의 알림을 여러 구독자에게 흘려보내는 데 맞습니다. 하지만 진행률에는 두 가지가 걸립니다.
+
+첫째, **타입이 느슨합니다.** 여기서 오해를 막아 두겠습니다. 둘 다 결국 직렬화를 거쳐 프로세스 경계를 넘으므로 전송 방식 자체가 다른 것은 아닙니다. 차이는 개발자에게 주어지는 타입 지원에 있습니다. Event는 페이로드를 느슨한 JSON으로 다루게 되는 반면, Channel은 제네릭 `T`로 양쪽 타입을 묶어 줍니다. 컴파일러와 에디터가 실수를 대신 잡아 주느냐 마느냐의 차이입니다.
+
+둘째, 이쪽이 더 결정적인데 — **빠르게 연달아 쏘면 비동기 리스너가 순서대로 처리하지 못할 수 있습니다.** 진행률이 30%, 70%, 50% 순으로 도착하는 UI를 상상해 보십시오.
+
+그래서 Tauri는 이런 용도로 `Channel<T>`를 따로 둡니다. 순서를 보장하고, 제네릭으로 타입을 유지하며, 고빈도·대용량 스트리밍에 맞게 설계된 통로입니다. 공식 문서가 드는 대표 사례가 다운로드 진행률, WebSocket 메시지, 그리고 **자식 프로세스 출력**입니다. 마지막 항목은 7단계에서 우리가 정확히 하게 될 일입니다.
+
+Rust 쪽은 커맨드 인자로 채널을 받는 형태입니다.
+
+```rust
+use serde::Serialize;
+use tauri::ipc::Channel;
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase", rename_all_fields = "camelCase", tag = "event", content = "data")]
+enum ScanEvent {
+    Started { folder: String },
+    Progress { scanned: usize, current: String },
+    Finished { file_count: usize, total_bytes: u64 },
+}
+
+#[tauri::command]
+fn scan_folder_streaming(folder_path: String, on_event: Channel<ScanEvent>) -> Result<(), String> {
+    on_event
+        .send(ScanEvent::Started { folder: folder_path.clone() })
+        .map_err(|e| e.to_string())?;
+
+    let mut scanned = 0usize;
+    let mut total_bytes = 0u64;
+    for entry in std::fs::read_dir(&folder_path).map_err(|e| e.to_string())?.flatten() {
+        let Ok(meta) = entry.metadata() else { continue };
+        if !meta.is_file() {
+            continue;
+        }
+        scanned += 1;
+        total_bytes += meta.len();
+
+        if scanned % 200 == 0 {
+            on_event
+                .send(ScanEvent::Progress {
+                    scanned,
+                    current: entry.file_name().to_string_lossy().into_owned(),
+                })
+                .map_err(|e| e.to_string())?;
+        }
+    }
+
+    on_event
+        .send(ScanEvent::Finished { file_count: scanned, total_bytes })
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+```
+
+`#[serde(tag = "event", content = "data")]`가 핵심 장치입니다. 이 애트리뷰트 덕분에 열거형의 각 갈래가 `{ "event": "progress", "data": { … } }` 꼴로 직렬화되어, 프런트에서 `message.event`만 보고 분기할 수 있습니다. 진행률·시작·종료를 **한 채널에서 타입으로 구분해** 흘려보내는 방식입니다.
+
+`send`는 `&self`로 호출되므로 소유권 걱정 없이 몇 번이든 부를 수 있고, `Serialize`를 구현한 타입이면 무엇이든 실어 보낼 수 있습니다.
+
+프런트에서는 채널 객체를 만들어 **`invoke`의 인자 안에 그대로 얹습니다.**
+
+```typescript
+import { invoke, Channel } from "@tauri-apps/api/core";
+
+type ScanEvent =
+  | { event: "started"; data: { folder: string } }
+  | { event: "progress"; data: { scanned: number; current: string } }
+  | { event: "finished"; data: { fileCount: number; totalBytes: number } };
+
+const onEvent = new Channel<ScanEvent>();
+onEvent.onmessage = (message) => {
+  switch (message.event) {
+    case "started":
+      setStatus(`${message.data.folder} 훑는 중…`);
+      break;
+    case "progress":
+      setStatus(`${message.data.scanned}개 확인 — ${message.data.current}`);
+      break;
+    case "finished":
+      setStatus(`완료: 파일 ${message.data.fileCount}개`);
+      break;
+  }
+};
+
+await invoke("scan_folder_streaming", { folderPath: folder, onEvent });
+```
+
+`onEvent`를 별도 API로 등록하는 게 아니라 **인자 객체의 한 필드로 넘긴다**는 점이 처음엔 낯섭니다. 하지만 이 설계가 자연스럽습니다. 채널은 "이번 호출에 대한 응답 통로"이므로, 그 호출과 함께 건네지는 편이 생명주기가 맞습니다.
+
+한 가지 실무 감각을 덧붙이면, 위 코드에서 `scanned % 200 == 0`으로 **전송 빈도를 의도적으로 줄였습니다.** 파일 하나마다 `send`를 부르면 채널은 순서를 지켜 주지만 프런트가 렌더링에 짓눌립니다. 사람 눈에 필요한 갱신 빈도는 초당 수십 번이면 충분합니다.
+
+## 7단계. 사이드카 — 외부 CLI를 앱 안에 넣기
+
+마지막 기능입니다. 고른 파일의 체크섬을 계산해 보여 주려 합니다. Rust로 직접 짤 수도 있지만, 여기서는 **이미 있는 CLI 도구를 그대로 앱에 얹는** 상황을 다루겠습니다. 실무에서 훨씬 자주 만나는 그림이기 때문입니다. 팀에 이미 검증된 도구가 있는데 그걸 Rust로 다시 짜는 건 낭비입니다.
+
+이렇게 앱에 동봉되는 외부 실행 파일이 **사이드카**입니다.
+
+사이드카로 쓸 바이너리에는 조건이 하나 있습니다. **런타임 의존성까지 포함한 단일 실행 파일**이어야 합니다. 사용자 컴퓨터에 Python이나 Node.js가 깔려 있으리라 기대할 수 없기 때문입니다. Python이면 PyInstaller, Node.js면 단일 실행 파일로 묶는 도구, Go나 Rust라면 애초에 그렇게 나옵니다. 우리 예제의 도구는 파일 경로를 인자로 받아 진행 상황과 결과를 **한 줄씩 stdout으로 뱉는** CLI라고 하겠습니다.
+
+### 왜 파일 이름 뒤에 그 긴 접미사가 붙는가
+
+바이너리를 `src-tauri/binaries/`에 넣고 설정에 등록합니다.
+
+```json
+{
+  "bundle": {
+    "externalBin": ["binaries/checksum"]
+  }
+}
+```
+
+경로는 `tauri.conf.json`이 있는 `src-tauri/` 기준입니다. 그런데 파일을 그냥 `checksum`으로 두면 동작하지 않습니다. **이름 뒤에 타깃 트리플 접미사를 붙여야 합니다.**
+
+```bash
+# Rust 1.84.0 이상
+rustc --print host-tuple
+# → aarch64-apple-darwin
+
+# 그 이전 버전 (Unix)
+rustc -Vv | grep host | cut -f2 -d' '
+```
+
+그 결과를 파일명에 붙입니다.
+
+```
+src-tauri/binaries/checksum-aarch64-apple-darwin        # Apple Silicon macOS
+src-tauri/binaries/checksum-x86_64-unknown-linux-gnu    # Linux
+src-tauri/binaries/checksum-x86_64-pc-windows-msvc.exe  # Windows (.exe는 접미사 뒤)
+```
+
+**왜 이런 규칙이 필요할까요.** 사이드카는 Rust로 컴파일되는 우리 코드와 달리 이미 컴파일이 끝난 기계어 덩어리입니다. Apple Silicon용 바이너리는 Windows에서 실행되지 않습니다. 그런데 Tauri는 하나의 프로젝트에서 여러 플랫폼용 인스톨러를 만들어야 합니다. 그러니 각 플랫폼 빌드가 자기에게 맞는 바이너리를 골라 담을 방법이 필요하고, 그 방법이 파일 이름에 플랫폼을 적어 두는 것입니다. 접미사는 번거로운 규칙이 아니라 **크로스 플랫폼 번들링이 성립하기 위한 최소 장치**입니다.
+
+손으로 이름을 바꾸는 건 실수가 나기 쉬우니 스크립트로 두는 편이 좋습니다. 단, 아래 스크립트는 **지금 이 컴퓨터의 트리플**을 읽는다는 점을 기억해 두십시오.
+
+```javascript
+// scripts/rename-sidecar.mjs
+import { execSync } from "node:child_process";
+import fs from "node:fs";
+
+const ext = process.platform === "win32" ? ".exe" : "";
+const targetTriple = execSync("rustc --print host-tuple").toString().trim();
+
+fs.renameSync(
+  `src-tauri/binaries/checksum${ext}`,
+  `src-tauri/binaries/checksum-${targetTriple}${ext}`
+);
+```
+
+**여기가 CI에서 자주 깨지는 자리입니다.** `rustc --print host-tuple`은 *지금 이 스크립트가 도는 기계*의 트리플을 알려 줄 뿐입니다. 그래서 이 스크립트는 "각 플랫폼에서 각자 빌드한다"는 전제에서만 맞습니다. 한 기계에서 다른 아키텍처용 배포물을 만들려는 순간, 호스트 트리플을 읽어 이름을 붙이면 엉뚱한 바이너리에 엉뚱한 이름이 붙습니다. 그런 파이프라인이라면 호스트를 읽지 말고 **빌드하려는 타깃 트리플을 명시적으로 넘겨** 그 값으로 이름을 짓고, 타깃마다 알맞은 바이너리를 미리 준비해 두어야 합니다.
+
+macOS로 배포한다면 두 가지가 더 붙습니다. 사이드카 파일에 **실행 권한이 살아 있어야** 하고(압축을 풀거나 내려받는 과정에서 곧잘 떨어집니다), 앱 서명·공증 과정에서 **동봉한 바이너리도 함께 다뤄져야** 합니다. 내 컴퓨터에서는 잘 돌던 사이드카가 남의 컴퓨터에서만 실행을 거부당한다면 대개 이 둘 중 하나입니다.
+
+### 실행에도 권한이 필요합니다
+
+외부 프로세스를 띄우는 일이 권한 밖일 리 없습니다. 사이드카는 shell 플러그인이 실행하므로 플러그인을 먼저 붙입니다.
+
+```bash
+npm run tauri add shell
+```
+
+그리고 케이퍼빌리티에 권한을 추가하는데, 여기서는 문자열이 아니라 **객체 형태**를 써야 합니다.
+
+```json
+{
+  "permissions": [
+    "core:default",
+    "dialog:allow-open",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [{ "name": "binaries/checksum", "sidecar": true }]
+    },
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [{ "name": "binaries/checksum", "sidecar": true }]
+    }
+  ]
+}
+```
+
+`"sidecar": true`가 결정적입니다. 이 표시가 있어야 해당 이름이 **사이드카로 인식되어** 실행이 허용됩니다. `name`은 `externalBin`에 적은 문자열과 **정확히 같아야** 합니다.
+
+퍼미션을 둘 다 넣은 데에는 이유가 있습니다. **실행 방식에 따라 필요한 권한이 갈리기 때문**입니다. 한 번 실행하고 끝까지 기다리는 `execute()`에는 `shell:allow-execute`가, 띄워 두고 출력을 받아 보는 `spawn()`에는 `shell:allow-spawn`이 대응합니다. 우리는 곧 출력을 실시간으로 받을 것이므로 `spawn()`을 쓰게 되고, 그래서 `shell:allow-spawn`이 반드시 필요합니다. **실제로 쓰는 쪽만 남기고 나머지는 지우는 것**이 최소 권한에 맞습니다.
+
+권한을 더 좁히고 싶다면 넘길 인자까지 못박을 수 있습니다. 고정 문자열과 정규식 검증기를 섞어 쓰는 방식입니다.
+
+```json
+{
+  "identifier": "shell:allow-execute",
+  "allow": [
+    {
+      "name": "binaries/checksum",
+      "sidecar": true,
+      "args": ["--algo", "sha256", { "validator": "\\S+" }]
+    }
+  ]
+}
+```
+
+이렇게 두면 `--algo sha256 <공백 없는 문자열>` 형태의 호출만 허용됩니다. **인자 배열이 이 정의와 정확히 맞아야 실행됩니다.** 프런트가 침해당하더라도 이 사이드카로 임의의 인자를 밀어 넣지는 못하게 하는 장치입니다.
+
+### 출력을 받아 그대로 Channel에 흘리기
+
+이제 6단계의 Channel과 7단계의 사이드카를 잇습니다. 사이드카를 `spawn()`으로 띄우면 출력이 이벤트 스트림으로 들어오는데, 그 한 줄 한 줄을 그대로 채널에 실어 보내면 됩니다.
+
+```rust
+use tauri::ipc::Channel;
+use tauri_plugin_shell::process::CommandEvent;
+use tauri_plugin_shell::ShellExt;
+
+#[derive(Clone, serde::Serialize)]
+#[serde(rename_all = "camelCase", rename_all_fields = "camelCase", tag = "event", content = "data")]
+enum ChecksumEvent {
+    Line { text: String },
+    Failed { reason: String },
+}
+
+#[tauri::command]
+async fn checksum_file(
+    app: tauri::AppHandle,
+    file_path: String,
+    on_event: Channel<ChecksumEvent>,
+) -> Result<(), String> {
+    let sidecar = app
+        .shell()
+        .sidecar("checksum")
+        .map_err(|e| e.to_string())?
+        .args(["--algo", "sha256", &file_path]);
+
+    // child 는 버리지 말 것 — 프로세스를 끝낼 유일한 손잡이다.
+    let (mut rx, mut child) = sidecar.spawn().map_err(|e| e.to_string())?;
+
+    while let Some(event) = rx.recv().await {
+        match event {
+            CommandEvent::Stdout(bytes) => {
+                let text = String::from_utf8_lossy(&bytes).trim().to_string();
+                if on_event.send(ChecksumEvent::Line { text }).is_err() {
+                    // 프런트가 채널을 놓았다(창을 닫았거나 화면을 떠났다).
+                    // 여기서 죽이지 않으면 사이드카가 고아로 남는다.
+                    let _ = child.kill();
+                    break;
+                }
+            }
+            CommandEvent::Stderr(bytes) => {
+                let reason = String::from_utf8_lossy(&bytes).trim().to_string();
+                let _ = on_event.send(ChecksumEvent::Failed { reason });
+            }
+            _ => {}
+        }
+    }
+    Ok(())
+}
+```
+
+**`spawn()`이 돌려주는 자식 핸들을 `_child`로 버리지 마십시오.** 이것이 실무에서 자주 새는 구멍입니다. 사이드카는 우리 앱과 **별개의 운영체제 프로세스**입니다. 사용자가 중간에 창을 닫거나 작업을 취소해도, 아무도 죽이지 않으면 그 프로세스는 계속 살아 CPU와 메모리를 붙잡습니다. 위 코드가 전송 실패를 감지해 `child.kill()`을 부르는 이유입니다. 앱 종료 경로에서도 같은 정리가 필요합니다.
+
+주목할 점이 하나 더 있습니다. **`sidecar("checksum")`에는 파일 이름만 넘깁니다.** 타깃 트리플 접미사도, 디렉터리 경로도 쓰지 않습니다. 실제 파일을 찾아내는 일은 Tauri가 합니다. 그래서 개발 중에도 배포된 앱에서도 같은 코드가 돕니다.
+
+다만 **이 문자열이 무엇과 일치해야 하는지는 공식 예제들 사이에서도 표기가 갈립니다.** Rust 예제는 위처럼 짧은 이름을 쓰고, JavaScript 예제는 `binaries/`를 포함한 전체 문자열을 씁니다. 케이퍼빌리티의 `name`은 `externalBin`에 적은 문자열과 같아야 하고요. 그러니 사이드카가 권한에서 막히거나 파일을 못 찾는다면, **`externalBin`·케이퍼빌리티의 `name`·호출 인자 세 곳의 문자열을 나란히 놓고 대조**하는 것이 가장 빠른 진단입니다. 셋이 어긋나는 순간이 정확히 실패 지점입니다.
+
+다만 여기는 정직하게 짚고 넘어가야 할 대목입니다. **공식 문서는 이 해결(resolve)의 결과를 보장할 뿐, 개발 모드와 번들에서 내부적으로 어떻게 다르게 찾는지는 설명하지 않습니다.** 실무에서 중요한 것은 그 결과입니다. 개발 중에는 `src-tauri/binaries/` 아래에 접미사가 붙은 파일이 실제로 있어야 하고, 배포에서는 그 파일이 인스톨러에 함께 들어갑니다. **접미사 규칙을 어기면 개발에서든 배포에서든 "못 찾겠다"로 끝납니다.** 사이드카가 안 붙을 때 가장 먼저 볼 곳은 코드가 아니라 파일 이름입니다.
+
+프런트는 6단계와 판박이입니다.
+
+```typescript
+const onEvent = new Channel<ChecksumEvent>();
+onEvent.onmessage = (m) => {
+  if (m.event === "line") appendLog(m.data.text);
+  if (m.event === "failed") showError(m.data.reason);
+};
+
+await invoke("checksum_file", { filePath: picked, onEvent });
+```
+
+프런트에서 직접 사이드카를 부르는 길도 있습니다.
+
+```typescript
+import { Command } from "@tauri-apps/plugin-shell";
+
+const command = Command.sidecar("binaries/checksum", ["--algo", "sha256", picked]);
+const output = await command.execute();
+```
+
+이때 `Command.sidecar()`에 넘기는 문자열은 `externalBin` 배열의 문자열과 **정확히 일치해야** 합니다(위 Rust 예제의 `sidecar("checksum")`과 표기가 다른 이유입니다). 어느 쪽을 택하든, **긴 출력을 실시간으로 다뤄야 한다면 Rust에서 받아 Channel로 중계하는 편**이 낫습니다. 프런트가 프로세스 생명주기까지 직접 관리하지 않아도 되기 때문입니다.
+
+여기까지 오면 `file-scout`의 전체 배선이 완성됩니다.
+
+<VizFlowchart5 />
+
+## 8단계. 배포 빌드
+
+기능이 다 들어갔으니 배포물을 만듭니다.
+
+```bash
+npm run tauri build
+```
+
+이 명령이 프런트엔드를 빌드하고, Rust를 릴리스 모드로 컴파일하고, 플랫폼별 인스톨러까지 만들어 냅니다. 어떤 형식을 만들지는 설정에서 정합니다.
+
+```json
+{
+  "bundle": {
+    "targets": ["dmg", "nsis", "deb", "appimage"],
+    "externalBin": ["binaries/checksum"],
+    "icon": ["icons/icon.icns", "icons/icon.ico"]
+  }
+}
+```
+
+여기서 한 가지 오해를 막아 두겠습니다. **`tauri build`는 크로스 컴파일을 해 주지 않습니다.** macOS에서 돌리면 macOS 배포물이, Windows에서 돌리면 Windows 배포물이 나옵니다. 세 플랫폼을 지원하려면 CI에서 세 러너를 돌리는 것이 일반적인 답이고, 그때 사이드카 바이너리도 **플랫폼별로 각각 준비돼 있어야** 합니다. 앞서 접미사 규칙이 왜 필요한지 다시 확인되는 지점입니다.
+
+설정 파일에서 앞으로 자주 만질 필드만 지도로 정리하면 이렇습니다.
+
+| 필드 | 하는 일 |
+| --- | --- |
+| `identifier` | 역방향 도메인 표기 앱 식별자(필수). 예: `com.example.filescout` |
+| `build.frontendDist` | 프런트 빌드 산출물 경로. 바이너리에 함께 들어간다 |
+| `build.devUrl` | 개발 모드에서 불러올 개발 서버 주소 |
+| `build.beforeDevCommand` | `tauri dev` 전에 실행할 명령(프런트 개발 서버 기동) |
+| `app.windows` | 창 설정 배열. 지정하지 않으면 라벨이 `main`인 창 하나 |
+| `app.security.csp` | 콘텐츠 보안 정책 |
+| `app.security.capabilities` | 활성 케이퍼빌리티. **기본값이 `./capabilities/` 폴더 전체**라 보통 건드릴 일이 없다 |
+| `bundle.targets` | 만들 인스톨러 종류 |
+| `bundle.externalBin` | 사이드카 목록 |
+
+## 자주 오해하는 점
+
+구현 단계에서 특히 자주 어긋나는 것 넷을 모았습니다.
+
+- **"플러그인을 설치했으니 이제 쓸 수 있다"** — 아닙니다. `tauri add`는 배선만 합니다. 권한은 케이퍼빌리티에 **직접 적어야** 열립니다. 이 둘을 한 단계로 착각하는 데서 `not allowed` 에러의 대부분이 나옵니다.
+- **"커맨드를 만들었으니 프런트에서 부를 수 있다"** — `generate_handler!` 배열에 이름을 넣어야 등록됩니다. 그리고 이 등록은 **앱 전체에서 한 번**입니다. 커맨드가 늘면 배열에 이름을 더하는 것이지, `invoke_handler`를 또 부르는 게 아닙니다.
+- **"권한 에러와 등록 누락 에러는 비슷한 문제다"** — 아닙니다. 그리고 이 둘은 문구로 갈립니다. "없다(not found)"는 등록 문제라 `generate_handler!`를 보고, "안 된다(not allowed)"는 권한 문제라 `capabilities/`를 봅니다. 다만 이건 **1차 분류를 위한 기준**이지 만능 판별식은 아닙니다. 플러그인 초기화 누락, Rust 크레이트와 npm 패키지의 버전 불일치, 사이드카 파일 자체가 없는 경우도 비슷한 층위의 실패를 냅니다. 그래도 첫 갈래를 빨리 타는 것만으로 헤매는 시간이 크게 줄어듭니다.
+- **"내 커맨드도 케이퍼빌리티로 막혀 있다"** — 아닙니다. 케이퍼빌리티가 통제하는 주 대상은 코어와 플러그인의 시스템 커맨드입니다. `#[tauri::command]`로 만든 앱 커맨드는 기본적으로 창에서 호출할 수 있습니다. 그래서 4단계에서 말했듯 **그 커맨드 안의 검증은 여러분 몫**입니다. 편한 만큼 위험한 자리입니다.
+
+## 직접 해 보기
+
+읽은 것을 손에 남기려면 다음 과제를 권합니다.
+
+**목표**: 권한이 어긋났을 때의 증상을 직접 만들어 보고, 문구만으로 원인을 짚는 감각을 얻는다.
+
+**준비물**: 위 순서로 만든 `file-scout` 프로젝트, 실행 중인 `npm run tauri dev`.
+
+**절차**
+
+1. `capabilities/default.json`의 `permissions` 배열에서 `dialog:allow-open`을 **지우고** 앱을 다시 띄웁니다. 폴더 선택 버튼을 눌러 개발자 콘솔의 에러 문구를 그대로 적어 둡니다.
+2. 그 문구를 되돌리고, 이번에는 `generate_handler!` 배열에서 `scan_folder`를 **지웁니다.** 스캔을 시도해 이번 에러 문구를 적습니다.
+3. 두 문구를 나란히 놓고 비교합니다. 어느 쪽이 "없다"이고 어느 쪽이 "안 된다"인지 확인합니다.
+4. `.setup()` 안의 `app.manage(ScanCache::default())` 한 줄을 지우고 스캔해 봅니다.
+5. 사이드카 파일에서 타깃 트리플 접미사를 떼어 내고 체크섬을 실행해 봅니다.
+
+**기대 결과**: 1번은 `not allowed`와 필요한 permission 식별자, 2번은 커맨드를 찾지 못했다는 취지의 메시지, 4번은 상태가 관리되지 않는다는 패닉, 5번은 사이드카를 찾지 못하는 실패가 나옵니다.
+
+**관찰 포인트**: 네 가지 실패가 **각각 다른 층에서** 났다는 점입니다. 1번은 권한(케이퍼빌리티), 2번은 등록(`generate_handler!`), 4번은 상태 등록(`manage`), 5번은 파일 이름 규칙(`externalBin`)입니다. 앞으로 만날 대부분의 문제는 이 넷 중 하나입니다. 문구를 보고 어느 층인지 먼저 가르면, 엉뚱한 곳을 뒤지는 시간이 사라집니다.
+
+## 마무리 — 구조는 파일 배치로 나타난다
+
+한 문장으로 압축하면 이렇습니다. **1편에서 그린 신뢰 경계는 코드에서 파일 배치와 설정 파일로 나타나며, 그 경계를 넘는 모든 요청은 등록·권한·타입이라는 세 관문을 통과해야 합니다.**
+
+가져가실 것을 정리합니다.
+
+- **커맨드는 `lib.rs`에, 등록은 `generate_handler!` 배열 하나에.** 인자 이름은 snake_case ↔ camelCase로 자동 변환되고, 에러는 `Serialize` 가능한 타입이어야 프런트의 `catch`로 떨어집니다.
+- **플러그인 설치와 권한 허용은 별개 단계입니다.** `not allowed` 에러는 고장이 아니라 기본 차단 설계가 작동한 결과이며, 문구가 필요한 permission 식별자까지 알려 줍니다.
+- **정적 scope와 사용자가 고르는 동적 경로가 부딪히면** 런타임 scope 확장이나 자체 커맨드 중에 고릅니다. 후자를 고르면 검증 책임이 내 코드로 옮겨 온다는 것을 잊지 마십시오.
+- **진행 상황은 반환값으로 줄 수 없습니다.** 순서 보장과 타입이 필요하면 Event가 아니라 `Channel<T>`이고, 자식 프로세스 출력 중계는 그 대표 용례입니다.
+- **사이드카의 타깃 트리플 접미사는 규칙이 아니라 필요조건입니다.** 플랫폼별 빌드가 자기 바이너리를 골라 담기 위한 최소 장치입니다.
+
+다음으로 파고들 거리도 남겨 둡니다. 케이퍼빌리티의 `platforms`·`remote` 필드로 플랫폼별·원격 콘텐츠별 권한을 가르는 법, 업데이터를 붙여 배포 후 갱신 경로를 만드는 법, 그리고 1편에서 미뤄 둔 **모바일 타깃**이 있습니다. `lib.rs`와 `main.rs`를 나눠 둔 이유가 그때 비로소 값을 합니다.
+
+구조를 알고 코드를 짜 보셨으니, 이제 남은 것은 여러분의 앱입니다. 오늘 만든 여덟 단계를 골격으로 두고 기능을 갈아 끼우면, 그것이 곧 다음 프로젝트의 첫 커밋이 됩니다.
