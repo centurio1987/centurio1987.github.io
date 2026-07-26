@@ -1,6 +1,6 @@
 {
   "next_id": 24,
-  "next_seq": 52,
+  "next_seq": 53,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -215,12 +215,12 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-023": {
-      "col": "backlog",
+      "col": "doing",
       "title": "graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락)",
       "memo": "src/data/graph.json이 2026-07-02 생성분(8편: osi 1~~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install \"graphifyy[gemini]\" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채.",
       "verbatim": "",
       "생성": "유저",
-      "최종": "유저",
+      "최종": "ai",
       "갱신": "2026-07-26",
       "title_hash": "94e649dc7aa0fcb49f3868f9d41b7c059b2a5654",
       "memo_hash": "a40626ca76696b0a2b92b8b40d99e6e811a73e03",
@@ -232,7 +232,6 @@
     "KAN-012",
     "KAN-017",
     "KAN-018",
-    "KAN-023",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -247,9 +246,19 @@
     "KAN-015",
     "KAN-019",
     "KAN-016",
-    "KAN-007"
+    "KAN-007",
+    "KAN-023"
   ],
   "recent": [
+    {
+      "seq": 52,
+      "t": "2026-07-26T19:49",
+      "a": "ai",
+      "id": "KAN-023",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 51,
       "t": "2026-07-26T19:47",
@@ -737,16 +746,6 @@
       "col": "review",
       "title": "DDD에서 Composition과 Aggregation",
       "memo": "draft: draft/ddd-composition-aggregation-draft.md · Composition=의존 생명주기/Aggregate 소속, Aggregation=참조"
-    },
-    {
-      "seq": 2,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-002",
-      "op": "create",
-      "col": "review",
-      "title": "도메인 모델과 RDB",
-      "memo": "draft: draft/domain-model-rdb-draft.md · 외래키 신호, 상속/합성 테이블 표현, Aggregate↔테이블 대응, Value 영속화"
     }
   ]
 }
