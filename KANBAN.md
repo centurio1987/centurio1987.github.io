@@ -19,13 +19,6 @@
     ```
 - `KAN-019` 낡은 미러 문서(AGENTS.md·.agents/·.codex/) viz 파이프라인 동기화 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: KAN-013 viz 이관이 .claude 정본만 갱신하고 다른-런타임 미러는 구 OpenAI/HTML-template 파이프라인 그대로 방치(KAN-015에서 발견). 대상: AGENTS.md(집필 워크플로 섹션 전체 — [[[image clues]]]·generate-image.ts 서술), .agents/skills/make-image/{SKILL.md,assets/IMAGE_GUIDE.md}, .agents/skills/post-finalize/SKILL.md, .codex/skills/post-finalize/SKILL.md, .codex/agents/image-maker.toml. .claude 정본을 기준으로 viz(apply-viz/render-viz)로 서술 이관 + 삭제된 3스크립트 참조 제거. ORDER.md·KANBAN 이력은 보존(수정 안 함). KAN-015가 정본 트리만 정리했으므로 이 카드가 '전체 grep-0'를 마무리.
-- `KAN-020` 전이 의존성 취약점 정리 (js-yaml·sharp/libvips) — 생성:ai · 최종:ai · 갱신:2026-07-26
-  - 메모: KAN-017(astro 7 업그레이드) 중 bun audit로 발견한 별건 부채. 대상: js-yaml@4.1.1(GHSA-52cp-r559-cp3m high · GHSA-h67p-54hq-rp68 moderate, merge-key 체인 quadratic CPU DoS) — astro·@astrojs/markdown-remark·mdx·react가 모두 @astrojs/internal-helpers 경유로 끌어옴. sharp@0.34.5(GHSA-f88m-g3jw-g9cj high, libvips CVE-2026-33327/33328/35590/35591) — astro의 optionalDependency. 중요: 두 항목 모두 astro 5.18.2 시절 락파일과 버전이 동일해 KAN-017이 새로 들여온 것이 아니며, GitHub Dependabot 경보 8건에도 포함되지 않았다(경보는 전부 astro 본체). 즉시 수정 불가 사유: js-yaml 패치가 major 5.x뿐인데 @astrojs/internal-helpers가 ^4.1.1로 고정, sharp도 astro가 ^0.34.0으로 고정 → overrides 강제 시 peer 위반·빌드 리스크. 절차: 상류(@astrojs/internal-helpers·astro)가 범위를 올릴 때까지 대기하거나, overrides로 js-yaml 5.x·sharp 0.35.x를 시험 적용해 bun run build green + 렌더 회귀 없음을 확인한 뒤에만 반영. 정적 빌드 전용 사이트라 두 취약점의 실제 노출면(런타임 YAML 파싱·이미지 처리 입력이 모두 신뢰된 자체 콘텐츠)은 낮으므로 우선순위는 낮게 둔다.
-  - 원문:
-    ```text
-    취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
-    - kan-015 착수해
-    ```
 - `KAN-021` astro 7 네이티브 이관 — 마크다운 파이프라인 unified(호환 shim) → Sätteri — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 전제: 2026-07-26 기준 astro 7.1.3 · @astrojs/mdx 7.0.3 · react 6.0.1 · sitemap 3.7.3 · markdown-remark 7.2.1 모두 레지스트리 최신이라 '버전 올리기'로 할 일은 없다. KAN-017이 astro 7로 올리면서 마크다운은 공식 호환 경로(@astrojs/markdown-remark + processor: unified({rehypePlugins}))로 남겨 뒀으므로, '최신 반영'의 실체는 v7 기본 파이프라인인 Sätteri(Rust)로 이관하는 것이다. 긴급도 낮음 — unified 프로세서는 v7에서 정식 지원이며 deprecated가 아니다(deprecated였던 것은 최상위 markdown.rehypePlugins 옵션뿐이고 KAN-017에서 이미 이관 완료). 따라서 이 카드는 선택 과제이며, 아래 '따옴표 정규화'를 어차피 할 가치가 있을 때 함께 착수하는 것을 권한다. || 사전 스파이크 실측(실제로 config를 Sätteri로 바꿔 빌드·비교 후 원복함, 커밋 없음): (1) 빌드 통과 — 30페이지, 경고 0. (2) rehypeWrapTables는 satteri의 defineHastPlugin으로 기계적 포팅 가능하며 MDX 본문에도 정상 적용됨(table-wrap 10개 일치). 함정: ctx.wrapNode(node, wrapper)의 wrapper는 children:[]로 둬야 한다. 공식 문서 예제대로 children:[node]로 넣으면 표가 두 번 렌더된다(실측: 표 3→6, 2→4개로 중복). (3) shikiConfig는 그대로 동작 — astro가 프로세서에 공통 전달하고 Sätteri가 자체 highlight 플러그인을 붙인다(astro-code 58개 일치). (4) MDX는 @mdx-js/mdx가 아니라 createSatteriMdxProcessor라는 전혀 다른 컴파일 경로를 타지만, React 아일랜드(astro-island 114)·viz SSR SVG(viz-figure 9)·QA 컴포넌트 모두 이상 없음. || 유일한 실질 장애물 = 스마트 따옴표. Sätteri와 unified가 11개 포스트 26곳에서 따옴표 방향을 다르게 판정한다(‘→’ 17건, ”→“ 8건, “→” 1건). 원인: 본문 원문이 전부 ASCII 직선 따옴표('"')이고(원문 내 휘어진 따옴표 0건) 두 엔진이 각자 자동 변환하는데, 따옴표가 **강조** 마커나 ? 에 인접하면 한글 맥락에서 판정이 갈린다. 예: 원문 '위임된 인가' → unified ‘위임된 인가’(정상) vs Sätteri ’위임된 인가’(닫는 따옴표 2개, 오류). 완화책 실측: features:{smartPunctuation:false}는 오히려 악화(휘어진 따옴표가 전부 직선 &quot;로 바뀌어 100여 곳 타이포 downgrade) → 채택 불가. 반면 원문에 휘어진 따옴표를 직접 쓰면 두 엔진 모두 변형 없이 보존함을 프로브로 확인 → 이것이 유효한 해법이며, 부수 효과로 출력이 엔진 비의존이 된다. || 절차: ①package.json에 @astrojs/markdown-satteri 명시 추가(현재는 astro의 전이 의존으로만 존재) ②src/lib/rehype-wrap-tables.mjs를 defineHastPlugin 버전으로 포팅(children:[] 주의) ③astro.config를 processor: satteri({hastPlugins:[...]})로 교체하고 @astrojs/markdown-remark 제거 ④빌드 후 KAN-017과 동일한 회귀 세트로 검증 — 가시 텍스트 다중집합 비교·기능 마커 수(table-wrap/astro-code/astro-island/viz-figure)·Playwright 콘솔에러/하이드레이션/픽셀·지오메트리 ⑤남는 차이는 따옴표 26곳뿐이어야 하며, 각 지점을 원문에 휘어진 따옴표로 확정해 0으로 만든다 ⑥diff가 따옴표 개선분만 남을 때 커밋. 롤백: astro.config 한 파일과 plugin 파일만 되돌리면 즉시 unified로 복귀(의존성은 남겨 둬도 무해). || 기대 이득: 의존성 1개 감소, v7 기본 경로와 일치(향후 astro 업그레이드 시 호환 shim 유지 부담 제거), Rust 엔진 빌드 속도(단 30페이지 규모에서는 유의미한 측정 안 함 — 성능은 착수 근거로 삼지 말 것).
   - 원문:
@@ -38,6 +31,13 @@
 ## 진행 중
 - `KAN-007` Tauri 소개와 구현 예시 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리.
+- `KAN-020` 전이 의존성 취약점 정리 (js-yaml·sharp/libvips) — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: KAN-017(astro 7 업그레이드) 중 bun audit로 발견한 별건 부채. 대상: js-yaml@4.1.1(GHSA-52cp-r559-cp3m high · GHSA-h67p-54hq-rp68 moderate, merge-key 체인 quadratic CPU DoS) — astro·@astrojs/markdown-remark·mdx·react가 모두 @astrojs/internal-helpers 경유로 끌어옴. sharp@0.34.5(GHSA-f88m-g3jw-g9cj high, libvips CVE-2026-33327/33328/35590/35591) — astro의 optionalDependency. 중요: 두 항목 모두 astro 5.18.2 시절 락파일과 버전이 동일해 KAN-017이 새로 들여온 것이 아니며, GitHub Dependabot 경보 8건에도 포함되지 않았다(경보는 전부 astro 본체). 즉시 수정 불가 사유: js-yaml 패치가 major 5.x뿐인데 @astrojs/internal-helpers가 ^4.1.1로 고정, sharp도 astro가 ^0.34.0으로 고정 → overrides 강제 시 peer 위반·빌드 리스크. 절차: 상류(@astrojs/internal-helpers·astro)가 범위를 올릴 때까지 대기하거나, overrides로 js-yaml 5.x·sharp 0.35.x를 시험 적용해 bun run build green + 렌더 회귀 없음을 확인한 뒤에만 반영. 정적 빌드 전용 사이트라 두 취약점의 실제 노출면(런타임 YAML 파싱·이미지 처리 입력이 모두 신뢰된 자체 콘텐츠)은 낮으므로 우선순위는 낮게 둔다.
+  - 원문:
+    ```text
+    취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
+    - kan-015 착수해
+    ```
 
 ## 검토
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-06-30
