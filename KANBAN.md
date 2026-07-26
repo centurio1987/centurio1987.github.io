@@ -9,8 +9,6 @@
   - 메모: Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교
 
 ## 할 일
-- `KAN-012` 블로그에 motion 요소들을 추가하고 싶다. 블로그 전체 디자인을 파악하여, motion이 들어가면 좋은 지점들을 포착해라. motion 적용은@centurio1987/bbangto-ui-core, @centurio1987/bbangto-ui-style-guide-catalog 를 설치하여 구현해라. — 생성:유저 · 최종:ai · 갱신:2026-07-26
-  - 메모: 기획 완료(승인 플랜: ~/.claude/plans/zazzy-enchanting-storm.md). 방향: viz.css 선례 미러 — core MOTION_CSS를 정적 CSS 셸(src/styles/motion.css)로 방출 + 멱등 공유 IntersectionObserver로 가장자리(hero·목록·카드·Squiggle draw-on) 진입 리빌, 콘텐츠 무JS/하이드레이션 0 유지. bbangto-ui-core=모션 엔진, style-guide-catalog 유틸(makeFoundations/makeSemantic/mergeFoundation)로 블로그 전용 bbangtoTonyStyleGuide(코발트+크림·한국어폰트·subtle) 저자화=정적셸+아일랜드 단일 진실원. FoundationProvider 금지(폰트 오염). 독립 배포·롤백 단계: Phase0 설치+스타일가이드 / A 정적셸+리빌(무JS·핵심) / B ClientRouter 크로스페이지 VT+제목 shared-element / C 은은한 배경 아일랜드(Aurora/Waves, reduced시 미마운트)+그래프 reduced-motion 가드 / D CI motion.css drift 가드. 강도=적극적+페이지전환. 외부검토(codex) 지적 9건 반영: reveal 멱등성·스태거 delay cap(min(i,4)*40ms)·name 유일성·persist Header 미적용·번들/접근성/정량 검증. 패키지매니저=bun 확정.
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26
@@ -27,6 +25,8 @@
 ## 검토
 - `KAN-010` KAN-013 퍼소나를 정의 했고, 기존 포스트들에는 퍼소나를 나타내는 저자명, 저자의 프로필, 저자 및 포스트 유형을 나타내는 배너가 포함되어 있으나, 집필 workflow에는 그것들을 포함하는 과정이 생략되어 있다. 포스트 레이아웃의 재설계를 포함하여, 원인 분석과 해결 방법에 대한 전략을 구상하라. — 생성:유저 · 최종:ai · 갱신:2026-07-23
   - 메모: 퍼소나(저자) 시스템 + 포스트 레이아웃 재설계 구현·검증 완료. main 커밋 ecb3f9c·8e58d84·704d581(centurio1987/kan-013 ff). authors.ts 레지스트리(연구원/교수님/선생님)·author 스키마·AI 배너·저자 프로필 카드·목록 AI 칩·폭신 대담(talk) 레이아웃·시리즈 내비 배선. bun run build 통과·렌더 검증(연구원/대담/목록). voice=src/lib/personas/. 미push(배포 전 사용자 리뷰 대기). 열린 사항: 교수님 대담 샘플 미발행, raws 재편·pnpm-lock 보류.
+- `KAN-012` 블로그에 motion 요소들을 추가하고 싶다. 블로그 전체 디자인을 파악하여, motion이 들어가면 좋은 지점들을 포착해라. motion 적용은@centurio1987/bbangto-ui-core, @centurio1987/bbangto-ui-style-guide-catalog 를 설치하여 구현해라. — 생성:유저 · 최종:ai · 갱신:2026-07-27
+  - 메모: 기획 완료(승인 플랜: ~/.claude/plans/zazzy-enchanting-storm.md). 방향: viz.css 선례 미러 — core MOTION_CSS를 정적 CSS 셸(src/styles/motion.css)로 방출 + 멱등 공유 IntersectionObserver로 가장자리(hero·목록·카드·Squiggle draw-on) 진입 리빌, 콘텐츠 무JS/하이드레이션 0 유지. bbangto-ui-core=모션 엔진, style-guide-catalog 유틸(makeFoundations/makeSemantic/mergeFoundation)로 블로그 전용 bbangtoTonyStyleGuide(코발트+크림·한국어폰트·subtle) 저자화=정적셸+아일랜드 단일 진실원. FoundationProvider 금지(폰트 오염). 독립 배포·롤백 단계: Phase0 설치+스타일가이드 / A 정적셸+리빌(무JS·핵심) / B ClientRouter 크로스페이지 VT+제목 shared-element / C 은은한 배경 아일랜드(Aurora/Waves, reduced시 미마운트)+그래프 reduced-motion 가드 / D CI motion.css drift 가드. 강도=적극적+페이지전환. 외부검토(codex) 지적 9건 반영: reveal 멱등성·스태거 delay cap(min(i,4)*40ms)·name 유일성·persist Header 미적용·번들/접근성/정량 검증. 패키지매니저=bun 확정.
 
 ## 완료
 - `KAN-009` KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다. — 생성:유저 · 최종:유저 · 갱신:2026-07-23

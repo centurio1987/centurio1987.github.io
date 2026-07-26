@@ -1,6 +1,6 @@
 {
   "next_id": 24,
-  "next_seq": 80,
+  "next_seq": 81,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -119,13 +119,13 @@
       "verbatim_hash": "8ffb6ee2be8362818013c6affd4c2817b895e669"
     },
     "KAN-012": {
-      "col": "todo",
+      "col": "review",
       "title": "블로그에 motion 요소들을 추가하고 싶다. 블로그 전체 디자인을 파악하여, motion이 들어가면 좋은 지점들을 포착해라. motion 적용은@centurio1987/bbangto-ui-core, @centurio1987/bbangto-ui-style-guide-catalog 를 설치하여 구현해라.",
       "memo": "기획 완료(승인 플랜: ~/.claude/plans/zazzy-enchanting-storm.md). 방향: viz.css 선례 미러 — core MOTION_CSS를 정적 CSS 셸(src/styles/motion.css)로 방출 + 멱등 공유 IntersectionObserver로 가장자리(hero·목록·카드·Squiggle draw-on) 진입 리빌, 콘텐츠 무JS/하이드레이션 0 유지. bbangto-ui-core=모션 엔진, style-guide-catalog 유틸(makeFoundations/makeSemantic/mergeFoundation)로 블로그 전용 bbangtoTonyStyleGuide(코발트+크림·한국어폰트·subtle) 저자화=정적셸+아일랜드 단일 진실원. FoundationProvider 금지(폰트 오염). 독립 배포·롤백 단계: Phase0 설치+스타일가이드 / A 정적셸+리빌(무JS·핵심) / B ClientRouter 크로스페이지 VT+제목 shared-element / C 은은한 배경 아일랜드(Aurora/Waves, reduced시 미마운트)+그래프 reduced-motion 가드 / D CI motion.css drift 가드. 강도=적극적+페이지전환. 외부검토(codex) 지적 9건 반영: reveal 멱등성·스태거 delay cap(min(i,4)*40ms)·name 유일성·persist Header 미적용·번들/접근성/정량 검증. 패키지매니저=bun 확정.",
       "verbatim": "",
       "생성": "유저",
       "최종": "ai",
-      "갱신": "2026-07-26",
+      "갱신": "2026-07-27",
       "title_hash": "0c6ca431ccabafa79b53669644be081951a9b0ea",
       "memo_hash": "2e975ca96a6ce842268d39cec710196b42439b7e",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
@@ -276,6 +276,15 @@
     "KAN-012"
   ],
   "recent": [
+    {
+      "seq": 80,
+      "t": "2026-07-27T00:55",
+      "a": "ai",
+      "id": "KAN-012",
+      "op": "move",
+      "from": "todo",
+      "to": "review"
+    },
     {
       "seq": 79,
       "t": "2026-07-26T23:19",
@@ -755,16 +764,6 @@
       "op": "move",
       "from": "doing",
       "to": "done"
-    },
-    {
-      "seq": 14,
-      "t": "2026-07-22T18:00",
-      "a": "ai",
-      "id": "KAN-006",
-      "op": "edit",
-      "field": "memo",
-      "before": "webrtc-1.mdx 발행됨, 시리즈 진행 중",
-      "after": "webrtc-1, webrtc-2 발행됨, 3편(토폴로지) 남음"
     }
   ]
 }
