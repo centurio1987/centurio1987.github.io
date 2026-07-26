@@ -31,13 +31,6 @@
 ## 진행 중
 - `KAN-007` Tauri 소개와 구현 예시 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리.
-- `KAN-020` 전이 의존성 취약점 정리 (js-yaml·sharp/libvips) — 생성:ai · 최종:ai · 갱신:2026-07-26
-  - 메모: KAN-017(astro 7 업그레이드) 중 bun audit로 발견한 별건 부채. 대상: js-yaml@4.1.1(GHSA-52cp-r559-cp3m high · GHSA-h67p-54hq-rp68 moderate, merge-key 체인 quadratic CPU DoS) — astro·@astrojs/markdown-remark·mdx·react가 모두 @astrojs/internal-helpers 경유로 끌어옴. sharp@0.34.5(GHSA-f88m-g3jw-g9cj high, libvips CVE-2026-33327/33328/35590/35591) — astro의 optionalDependency. 중요: 두 항목 모두 astro 5.18.2 시절 락파일과 버전이 동일해 KAN-017이 새로 들여온 것이 아니며, GitHub Dependabot 경보 8건에도 포함되지 않았다(경보는 전부 astro 본체). 즉시 수정 불가 사유: js-yaml 패치가 major 5.x뿐인데 @astrojs/internal-helpers가 ^4.1.1로 고정, sharp도 astro가 ^0.34.0으로 고정 → overrides 강제 시 peer 위반·빌드 리스크. 절차: 상류(@astrojs/internal-helpers·astro)가 범위를 올릴 때까지 대기하거나, overrides로 js-yaml 5.x·sharp 0.35.x를 시험 적용해 bun run build green + 렌더 회귀 없음을 확인한 뒤에만 반영. 정적 빌드 전용 사이트라 두 취약점의 실제 노출면(런타임 YAML 파싱·이미지 처리 입력이 모두 신뢰된 자체 콘텐츠)은 낮으므로 우선순위는 낮게 둔다.
-  - 원문:
-    ```text
-    취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
-    - kan-015 착수해
-    ```
 
 ## 검토
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-06-30
@@ -114,6 +107,13 @@
   - 메모: 선행조건(gating): KAN-014 배포 안정화 검증 완료 후에만 착수. 대상: scripts/generate-image.ts·render-image.ts·image-templates.ts(KAN-013에서 호출 경로 제거+deprecated 주석, 롤백 유예). 조건 충족 시 3파일 삭제 + 잔존 참조 grep 0 확인 + bun run build green + 커밋.
 - `KAN-017` Dependabot 취약점 8건 해소 (의존성 보안 업데이트) — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 완료 — astro 5.18.2→7.1.3 업그레이드로 Dependabot 8건(high2·moderate4·low2) 전부 해소. 커밋 19d143d. 8건 모두 astro 단일 패키지였고 최상위 요구 패치가 7.1.0이라 메이저 2단계 점프가 불가피. 동반 업: @astrojs/mdx 4→7·react 5→6·sitemap 3.3→3.7.3, markdown-remark 7.2.1 신규. astro7이 마크다운 파이프라인을 remark/rehype→Sätteri로 바꿨으나 rehypeWrapTables 의존 때문에 공식 호환 경로(processor: unified({rehypePlugins}))로 기존 파이프라인 유지(최상위 markdown.rehypePlugins는 deprecated). 부수 수정: 목록 정렬이 pubDate 동점(07-22 6건·06-21 4건)에서 getCollection 반환순에 의존해 비결정적이던 선재 부채를 id 타이브레이크로 고정(seriesNav.ts 관례 준용). 검증: build green 경고0·30페이지, 2회 빌드 산출물 바이트 동일, CI명령(bunx --bun astro build)·check-post-markers·tsc 통과, Playwright 8페이지 콘솔에러0·하이드레이션 정상·깨진이미지0, 포스트 8종 픽셀·레이아웃 지오메트리 베이스라인과 완전 동일(차이는 의도한 목록 3페이지뿐). 남은 부채는 KAN-020으로 분리.
+  - 원문:
+    ```text
+    취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
+    - kan-015 착수해
+    ```
+- `KAN-020` 전이 의존성 취약점 정리 (js-yaml·sharp/libvips) — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: 완료 — bun audit 4건(high 3·moderate 1) 전부 해소, 커밋 60cc722. 카드 작성 시점 판단이 뒤집혔다: '패치가 major 5.x뿐이라 즉시 수정 불가'로 봤으나, 실제로는 세 건 모두 상류가 선언한 semver 범위 안에서 패치본이 나와 있어 major 점프 없이 하한만 올리면 됐다. (1) js-yaml 4.1.1→4.3.0 — GHSA-52cp-r559-cp3m(high)의 4.x 패치가 4.3.0, GHSA-h67p-54hq-rp68(moderate)은 4.2.0. 소비자(astro·@astrojs/internal-helpers)가 ^4.1.1 선언이라 범위 내. (2) sharp 0.34.5→0.35.3 — astro optionalDependency 범위가 실제로는 '^0.34.0 || ^0.35.0'이라(카드에 ^0.34.0 고정으로 잘못 적혀 있었음) 범위 내, libvips 1.2.4→1.3.2. (3) svgo 4.0.1→4.0.2 — GHSA-2p49-hgcm-8545(high, removeScripts 우회), 카드 작성 이후 새로 뜬 경보라 원래 목록에 없던 4번째 건. || 수단은 package.json overrides. 패치본이 전부 범위 내라 이론상 락파일 갱신만으로 충분하지만 bun에 전이 의존성만 범위 내 최신으로 올리는 명령이 없다 — 'bun update <이름>'은 그 패키지를 직접 의존성으로 승격시키고 취약 사본을 nested로 남겨 오히려 미해결이 되고(실측), 인자 없는 'bun update'는 직접 의존성만 갱신한다. overrides는 캐럿 하한이라 상류가 범위를 올리면 무해한 잉여가 되므로 그때 제거 가능. || 검증: audit 4→0, 설치 트리에 중첩 사본 없이 각 1본 평탄, build green 경고0 30페이지, dist가 변경 전 베이스라인과 바이트 단위 동일(글 17편 프론트매터를 js-yaml 4.3.0으로 파싱한 결과 동일 포함), CI명령(bunx --bun astro build) 산출물도 구 의존성 결과와 바이트 동일해 배포 영향 0, CI 폴백 경로인 npm 격리 설치도 동일 해소, check-post-markers 통과, sharp 0.35.3 로드·webp 인코딩 정상(render-viz 폴백), 락파일 변경이 대상 3종+sharp 플랫폼 바이너리로 한정. || 부수 발견(별건 분리): OG 이미지 폴백이 fs.readdirSync 순서에 의존해 bun/node 런타임 간 결과가 갈린다 → 신규 카드로 분리.
   - 원문:
     ```text
     취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
