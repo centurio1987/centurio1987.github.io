@@ -1,6 +1,6 @@
 {
-  "next_id": 20,
-  "next_seq": 39,
+  "next_id": 21,
+  "next_seq": 42,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -179,15 +179,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-017": {
-      "col": "backlog",
+      "col": "done",
       "title": "Dependabot 취약점 8건 해소 (의존성 보안 업데이트)",
-      "memo": "GitHub Dependabot 경고 8건(high 2·moderate 4·low 2) 정리 — push마다 표시됨. 절차: dependabot alerts로 대상 의존성·경로 파악 → 안전 버전으로 업데이트(bun/npm), transitive는 overrides 검토 → bun run build green·회귀 없음 → 커밋. breaking 위험 있는 major 업데이트는 개별 판단(무리한 업그레이드로 빌드 깨뜨리지 않기). 이번 KAN-007/013 배포와 무관하게 발생한 기존 부채.",
+      "memo": "완료 — astro 5.18.2→7.1.3 업그레이드로 Dependabot 8건(high2·moderate4·low2) 전부 해소. 커밋 19d143d. 8건 모두 astro 단일 패키지였고 최상위 요구 패치가 7.1.0이라 메이저 2단계 점프가 불가피. 동반 업: @astrojs/mdx 4→7·react 5→6·sitemap 3.3→3.7.3, markdown-remark 7.2.1 신규. astro7이 마크다운 파이프라인을 remark/rehype→Sätteri로 바꿨으나 rehypeWrapTables 의존 때문에 공식 호환 경로(processor: unified({rehypePlugins}))로 기존 파이프라인 유지(최상위 markdown.rehypePlugins는 deprecated). 부수 수정: 목록 정렬이 pubDate 동점(07-22 6건·06-21 4건)에서 getCollection 반환순에 의존해 비결정적이던 선재 부채를 id 타이브레이크로 고정(seriesNav.ts 관례 준용). 검증: build green 경고0·30페이지, 2회 빌드 산출물 바이트 동일, CI명령(bunx --bun astro build)·check-post-markers·tsc 통과, Playwright 8페이지 콘솔에러0·하이드레이션 정상·깨진이미지0, 포스트 8종 픽셀·레이아웃 지오메트리 베이스라인과 완전 동일(차이는 의도한 목록 3페이지뿐). 남은 부채는 KAN-020으로 분리.",
       "verbatim": "취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘\n- kan-015 착수해",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-26",
       "title_hash": "274ca1274ec0b16617e441dbc5da0534f6f5eb93",
-      "memo_hash": "933e7c03a98bc043f9481db76be7a735a89e38bf",
+      "memo_hash": "474bbda7263445199540a1c89e14f4c820f24581",
       "verbatim_hash": "3b666a98b746094bbdc14618626f3c02ad13ac6f"
     },
     "KAN-018": {
@@ -213,12 +213,26 @@
       "title_hash": "a1905a76aa444fc17cbdaba12a13c8c589aa7131",
       "memo_hash": "3a0af3f8a53c24a405525d0bb2274ad85d174594",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-020": {
+      "col": "backlog",
+      "title": "전이 의존성 취약점 정리 (js-yaml·sharp/libvips)",
+      "memo": "KAN-017(astro 7 업그레이드) 중 bun audit로 발견한 별건 부채. 대상: js-yaml@4.1.1(GHSA-52cp-r559-cp3m high · GHSA-h67p-54hq-rp68 moderate, merge-key 체인 quadratic CPU DoS) — astro·@astrojs/markdown-remark·mdx·react가 모두 @astrojs/internal-helpers 경유로 끌어옴. sharp@0.34.5(GHSA-f88m-g3jw-g9cj high, libvips CVE-2026-33327/33328/35590/35591) — astro의 optionalDependency. 중요: 두 항목 모두 astro 5.18.2 시절 락파일과 버전이 동일해 KAN-017이 새로 들여온 것이 아니며, GitHub Dependabot 경보 8건에도 포함되지 않았다(경보는 전부 astro 본체). 즉시 수정 불가 사유: js-yaml 패치가 major 5.x뿐인데 @astrojs/internal-helpers가 ^4.1.1로 고정, sharp도 astro가 ^0.34.0으로 고정 → overrides 강제 시 peer 위반·빌드 리스크. 절차: 상류(@astrojs/internal-helpers·astro)가 범위를 올릴 때까지 대기하거나, overrides로 js-yaml 5.x·sharp 0.35.x를 시험 적용해 bun run build green + 렌더 회귀 없음을 확인한 뒤에만 반영. 정적 빌드 전용 사이트라 두 취약점의 실제 노출면(런타임 YAML 파싱·이미지 처리 입력이 모두 신뢰된 자체 콘텐츠)은 낮으므로 우선순위는 낮게 둔다.",
+      "verbatim": "취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘\n- kan-015 착수해",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-26",
+      "title_hash": "046cf05e821e23241080da0a4d74b4e98e470bce",
+      "memo_hash": "6c524903a38dff973734603699ff246aaa6b8f44",
+      "verbatim_hash": "3b666a98b746094bbdc14618626f3c02ad13ac6f"
     }
   },
   "order": [
     "KAN-008",
     "KAN-012",
     "KAN-016",
+    "KAN-018",
+    "KAN-019",
     "KAN-007",
     "KAN-001",
     "KAN-002",
@@ -231,12 +245,41 @@
     "KAN-009",
     "KAN-006",
     "KAN-014",
+    "KAN-015",
     "KAN-017",
-    "KAN-018",
-    "KAN-019",
-    "KAN-015"
+    "KAN-020"
   ],
   "recent": [
+    {
+      "seq": 41,
+      "t": "2026-07-26T18:01",
+      "a": "ai",
+      "id": "KAN-020",
+      "op": "create",
+      "col": "backlog",
+      "title": "전이 의존성 취약점 정리 (js-yaml·sharp/libvips)",
+      "memo": "KAN-017(astro 7 업그레이드) 중 bun audit로 발견한 별건 부채. 대상: js-yaml@4.1.1(GHSA-52cp-r559-cp3m high · GHSA-h67p-54hq-rp68 moderate, merge-key 체인 quadratic CPU DoS) — astro·@astrojs/markdown-remark·mdx·react가 모두 @astrojs/internal-helpers 경유로 끌어옴. sharp@0.34.5(GHSA-f88m-g3jw-g9cj high, libvips CVE-2026-33327/33328/35590/35591) — astro의 optionalDependency. 중요: 두 항목 모두 astro 5.18.2 시절 락파일과 버전이 동일해 KAN-017이 새로 들여온 것이 아니며, GitHub Dependabot 경보 8건에도 포함되지 않았다(경보는 전부 astro 본체). 즉시 수정 불가 사유: js-yaml 패치가 major 5.x뿐인데 @astrojs/internal-helpers가 ^4.1.1로 고정, sharp도 astro가 ^0.34.0으로 고정 → overrides 강제 시 peer 위반·빌드 리스크. 절차: 상류(@astrojs/internal-helpers·astro)가 범위를 올릴 때까지 대기하거나, overrides로 js-yaml 5.x·sharp 0.35.x를 시험 적용해 bun run build green + 렌더 회귀 없음을 확인한 뒤에만 반영. 정적 빌드 전용 사이트라 두 취약점의 실제 노출면(런타임 YAML 파싱·이미지 처리 입력이 모두 신뢰된 자체 콘텐츠)은 낮으므로 우선순위는 낮게 둔다.",
+      "verbatim": "취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘\n- kan-015 착수해"
+    },
+    {
+      "seq": 40,
+      "t": "2026-07-26T18:00",
+      "a": "ai",
+      "id": "KAN-017",
+      "op": "move",
+      "from": "backlog",
+      "to": "done"
+    },
+    {
+      "seq": 39,
+      "t": "2026-07-26T18:00",
+      "a": "ai",
+      "id": "KAN-017",
+      "op": "edit",
+      "field": "memo",
+      "before": "GitHub Dependabot 경고 8건(high 2·moderate 4·low 2) 정리 — push마다 표시됨. 절차: dependabot alerts로 대상 의존성·경로 파악 → 안전 버전으로 업데이트(bun/npm), transitive는 overrides 검토 → bun run build green·회귀 없음 → 커밋. breaking 위험 있는 major 업데이트는 개별 판단(무리한 업그레이드로 빌드 깨뜨리지 않기). 이번 KAN-007/013 배포와 무관하게 발생한 기존 부채.",
+      "after": "완료 — astro 5.18.2→7.1.3 업그레이드로 Dependabot 8건(high2·moderate4·low2) 전부 해소. 커밋 19d143d. 8건 모두 astro 단일 패키지였고 최상위 요구 패치가 7.1.0이라 메이저 2단계 점프가 불가피. 동반 업: @astrojs/mdx 4→7·react 5→6·sitemap 3.3→3.7.3, markdown-remark 7.2.1 신규. astro7이 마크다운 파이프라인을 remark/rehype→Sätteri로 바꿨으나 rehypeWrapTables 의존 때문에 공식 호환 경로(processor: unified({rehypePlugins}))로 기존 파이프라인 유지(최상위 markdown.rehypePlugins는 deprecated). 부수 수정: 목록 정렬이 pubDate 동점(07-22 6건·06-21 4건)에서 getCollection 반환순에 의존해 비결정적이던 선재 부채를 id 타이브레이크로 고정(seriesNav.ts 관례 준용). 검증: build green 경고0·30페이지, 2회 빌드 산출물 바이트 동일, CI명령(bunx --bun astro build)·check-post-markers·tsc 통과, Playwright 8페이지 콘솔에러0·하이드레이션 정상·깨진이미지0, 포스트 8종 픽셀·레이아웃 지오메트리 베이스라인과 완전 동일(차이는 의도한 목록 3페이지뿐). 남은 부채는 KAN-020으로 분리."
+    },
     {
       "seq": 38,
       "t": "2026-07-26T17:20",

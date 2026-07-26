@@ -10,13 +10,6 @@
 - `KAN-012` 블로그에 motion 요소들을 추가하고 싶다. 블로그 전체 디자인을 파악하여, motion이 들어가면 좋은 지점들을 포착해라. motion 적용은@centurio1987/bbangto-ui-core, @centurio1987/bbangto-ui-style-guide-catalog 를 설치하여 구현해라. — 생성:유저 · 최종:유저 · 갱신:2026-07-25
 - `KAN-016` Tauri 해부 2편 — 예시 프로젝트 구현기 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화.
-- `KAN-017` Dependabot 취약점 8건 해소 (의존성 보안 업데이트) — 생성:ai · 최종:ai · 갱신:2026-07-26
-  - 메모: GitHub Dependabot 경고 8건(high 2·moderate 4·low 2) 정리 — push마다 표시됨. 절차: dependabot alerts로 대상 의존성·경로 파악 → 안전 버전으로 업데이트(bun/npm), transitive는 overrides 검토 → bun run build green·회귀 없음 → 커밋. breaking 위험 있는 major 업데이트는 개별 판단(무리한 업그레이드로 빌드 깨뜨리지 않기). 이번 KAN-007/013 배포와 무관하게 발생한 기존 부채.
-  - 원문:
-    ```text
-    취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
-    - kan-015 착수해
-    ```
 - `KAN-018` CI Node 20 deprecation 경고 해결 (Actions Node24 이관) — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: main.yml GitHub Actions 실행 시 'Node 20 is deprecated, will run on Node 24' 경고. actions/checkout·configure-pages·upload-pages-artifact·deploy-pages·setup-bun 등 사용 액션을 Node24 지원 최신 메이저 태그로 올려 경고 제거. 동작엔 지장 없으나 정리. 업그레이드 후 auth→install→check-markers→astro build→deploy 전 스텝 green 재확인(액션 major 업 시 입력 스키마 변화 주의).
   - 원문:
@@ -26,6 +19,13 @@
     ```
 - `KAN-019` 낡은 미러 문서(AGENTS.md·.agents/·.codex/) viz 파이프라인 동기화 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: KAN-013 viz 이관이 .claude 정본만 갱신하고 다른-런타임 미러는 구 OpenAI/HTML-template 파이프라인 그대로 방치(KAN-015에서 발견). 대상: AGENTS.md(집필 워크플로 섹션 전체 — [[[image clues]]]·generate-image.ts 서술), .agents/skills/make-image/{SKILL.md,assets/IMAGE_GUIDE.md}, .agents/skills/post-finalize/SKILL.md, .codex/skills/post-finalize/SKILL.md, .codex/agents/image-maker.toml. .claude 정본을 기준으로 viz(apply-viz/render-viz)로 서술 이관 + 삭제된 3스크립트 참조 제거. ORDER.md·KANBAN 이력은 보존(수정 안 함). KAN-015가 정본 트리만 정리했으므로 이 카드가 '전체 grep-0'를 마무리.
+- `KAN-020` 전이 의존성 취약점 정리 (js-yaml·sharp/libvips) — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: KAN-017(astro 7 업그레이드) 중 bun audit로 발견한 별건 부채. 대상: js-yaml@4.1.1(GHSA-52cp-r559-cp3m high · GHSA-h67p-54hq-rp68 moderate, merge-key 체인 quadratic CPU DoS) — astro·@astrojs/markdown-remark·mdx·react가 모두 @astrojs/internal-helpers 경유로 끌어옴. sharp@0.34.5(GHSA-f88m-g3jw-g9cj high, libvips CVE-2026-33327/33328/35590/35591) — astro의 optionalDependency. 중요: 두 항목 모두 astro 5.18.2 시절 락파일과 버전이 동일해 KAN-017이 새로 들여온 것이 아니며, GitHub Dependabot 경보 8건에도 포함되지 않았다(경보는 전부 astro 본체). 즉시 수정 불가 사유: js-yaml 패치가 major 5.x뿐인데 @astrojs/internal-helpers가 ^4.1.1로 고정, sharp도 astro가 ^0.34.0으로 고정 → overrides 강제 시 peer 위반·빌드 리스크. 절차: 상류(@astrojs/internal-helpers·astro)가 범위를 올릴 때까지 대기하거나, overrides로 js-yaml 5.x·sharp 0.35.x를 시험 적용해 bun run build green + 렌더 회귀 없음을 확인한 뒤에만 반영. 정적 빌드 전용 사이트라 두 취약점의 실제 노출면(런타임 YAML 파싱·이미지 처리 입력이 모두 신뢰된 자체 콘텐츠)은 낮으므로 우선순위는 낮게 둔다.
+  - 원문:
+    ```text
+    취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
+    - kan-015 착수해
+    ```
 
 ## 할 일
 
@@ -106,3 +106,10 @@
   - 메모: KAN-013 push·배포 후: GitHub Pages 빌드 green(CI packages:read 인증·미처리마커 가드 통과), viz 인라인 SVG 라이브 렌더·색 페인트 정상, hero webp/OG 카드 정상, 신규 글 파이프라인 1회 실통과 확인. 이상 없으면 다음 삭제 카드 착수 가능.
 - `KAN-015` deprecated 이미지 스크립트 3종 삭제 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 선행조건(gating): KAN-014 배포 안정화 검증 완료 후에만 착수. 대상: scripts/generate-image.ts·render-image.ts·image-templates.ts(KAN-013에서 호출 경로 제거+deprecated 주석, 롤백 유예). 조건 충족 시 3파일 삭제 + 잔존 참조 grep 0 확인 + bun run build green + 커밋.
+- `KAN-017` Dependabot 취약점 8건 해소 (의존성 보안 업데이트) — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: 완료 — astro 5.18.2→7.1.3 업그레이드로 Dependabot 8건(high2·moderate4·low2) 전부 해소. 커밋 19d143d. 8건 모두 astro 단일 패키지였고 최상위 요구 패치가 7.1.0이라 메이저 2단계 점프가 불가피. 동반 업: @astrojs/mdx 4→7·react 5→6·sitemap 3.3→3.7.3, markdown-remark 7.2.1 신규. astro7이 마크다운 파이프라인을 remark/rehype→Sätteri로 바꿨으나 rehypeWrapTables 의존 때문에 공식 호환 경로(processor: unified({rehypePlugins}))로 기존 파이프라인 유지(최상위 markdown.rehypePlugins는 deprecated). 부수 수정: 목록 정렬이 pubDate 동점(07-22 6건·06-21 4건)에서 getCollection 반환순에 의존해 비결정적이던 선재 부채를 id 타이브레이크로 고정(seriesNav.ts 관례 준용). 검증: build green 경고0·30페이지, 2회 빌드 산출물 바이트 동일, CI명령(bunx --bun astro build)·check-post-markers·tsc 통과, Playwright 8페이지 콘솔에러0·하이드레이션 정상·깨진이미지0, 포스트 8종 픽셀·레이아웃 지오메트리 베이스라인과 완전 동일(차이는 의도한 목록 3페이지뿐). 남은 부채는 KAN-020으로 분리.
+  - 원문:
+    ```text
+    취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
+    - kan-015 착수해
+    ```
