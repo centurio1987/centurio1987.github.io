@@ -32,16 +32,6 @@
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
 - `KAN-010` KAN-013 퍼소나를 정의 했고, 기존 포스트들에는 퍼소나를 나타내는 저자명, 저자의 프로필, 저자 및 포스트 유형을 나타내는 배너가 포함되어 있으나, 집필 workflow에는 그것들을 포함하는 과정이 생략되어 있다. 포스트 레이아웃의 재설계를 포함하여, 원인 분석과 해결 방법에 대한 전략을 구상하라. — 생성:유저 · 최종:ai · 갱신:2026-07-23
   - 메모: 퍼소나(저자) 시스템 + 포스트 레이아웃 재설계 구현·검증 완료. main 커밋 ecb3f9c·8e58d84·704d581(centurio1987/kan-013 ff). authors.ts 레지스트리(연구원/교수님/선생님)·author 스키마·AI 배너·저자 프로필 카드·목록 AI 칩·폭신 대담(talk) 레이아웃·시리즈 내비 배선. bun run build 통과·렌더 검증(연구원/대담/목록). voice=src/lib/personas/. 미push(배포 전 사용자 리뷰 대기). 열린 사항: 교수님 대담 샘플 미발행, raws 재편·pnpm-lock 보류.
-- `KAN-011` 인증·인가 해부 시리즈(4편) — 퍼소나 배선·표적 보정 — 생성:ai · 최종:ai · 갱신:2026-07-24
-  - 메모: main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지.
-  - 원문:
-    ```text
-    인증, 인가 주요 개념과 구현 실습
-    - pkce, jwks 등 주요 개념을 설명한다.
-    - 주요 사례를 실제 적용하는 베스트 프랙티스와 실습 예제.
-    ```
-- `KAN-013` 집필 워크플로 개정. 지금은  이미지를 생성할 때 chatgpt에게 요청하고 있다. 이제부터는 직접 시각화를 구현해라. @centurio1987/bbangto-ui-visualization 패키지를 이용해서 구현해라. — 생성:유저 · 최종:ai · 갱신:2026-07-25
-  - 메모: viz 엔진 구현·검증 완료(미push, 배포 전 리뷰 대기). bbangto-ui-visualization(GitHub Packages)로 모든 구조형 시각물·hero를 코드 구현, ChatGPT 이미지 생성 완전 제거. 신규: scripts/apply-viz.ts·render-viz.ts·check-post-markers.ts, src/lib/viz(schema·layout·blogVizStyleGuide), src/components/viz/VizFigure, src/styles/viz.css, .npmrc. v1 kind 5종(ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial). 파이프라인 재배선(make-image=viz엔진·post-finalize OpenAI 제거·image-maker·tech-deepdive·orchestrator·ship-post·CLAUDE.md·DIAGRAM_STYLE_GUIDE). 레거시 스크립트 3종 deprecate(후속 삭제 카드). CI packages:read+미처리마커 가드. E2E(OPENAI 미설정) 통과·무JS SSR SVG 페인트(HTTP) 검증. webrtc-3 라이브 [[[ 마커 결함 수정. 기존 13글 백마이그레이션 별도.
 
 ## 완료
 - `KAN-009` KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다. — 생성:유저 · 최종:유저 · 갱신:2026-07-23
@@ -123,3 +113,13 @@
   - 메모: 1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리·발행 완료(/posts/tauri-2/). 카드 범위(1편) 종료.
 - `KAN-023` graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락) — 생성:유저 · 최종:ai · 갱신:2026-07-26
   - 메모: 완료 — graphify 그래프 전량 재추출로 8편→18편 전편 커버(커밋 e093876). 백엔드를 --backend claude-cli 로 전환: 카드에 적힌 gemini 경로는 graphifyy[gemini] 재설치로 openai 모듈은 복구했으나 무료 티어가 5 RPM + 일일 상한이라 18편 추출 시 청크 절반 이상이 429(3회 시도 모두 부분 실패 → 전량 폐기, 커버리지 4~15편). 최종 실행: graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . → 657노드/1064엣지/30커뮤니티 → graphify cluster-only . --backend claude-cli 로 커뮤니티 한국어 라벨링 → bun scripts/build-graph-data.ts → 18편 600개념 1064엣지 9쌍. 글별 개념 11~72개로 균일. 함정 2건 발견·조치: (1) graphify가 source_file 을 스캔루트 상대경로('tauri-2.mdx')로 적어 build-graph-data 의 toPostSlug 정규식(레포루트 경로만 매칭)에 전 글이 매칭 실패 → 두 형태 모두 수용하도록 수정. 이게 없었으면 새 그래프가 통째로 무시됨. (2) --out . 누락 시 src/content/posts/graphify-out/ 로 써서 콘텐츠 디렉터리 오염. 재발 방지: CLAUDE.md·ship-post SKILL(정본+.agents 미러)에 실행 명령·백엔드 선택 근거·부분 실패 결과물 커밋 금지(문서 노드 수 = 글 수로 검증)·--out . 필수를 명시, .gitignore 에 graphify-out/cache/·날짜 백업 제외 추가. 검증: build green(31 pages)·tsc clean·마커 0, /graph 216 서클 렌더·tauri-2 연관 글에 tauri-1 + 그래프 개념 칩 노출 육안 확인. 콘텐츠 디렉터리 오염 없음.
+- `KAN-013` 집필 워크플로 개정. 지금은  이미지를 생성할 때 chatgpt에게 요청하고 있다. 이제부터는 직접 시각화를 구현해라. @centurio1987/bbangto-ui-visualization 패키지를 이용해서 구현해라. — 생성:유저 · 최종:ai · 갱신:2026-07-26
+  - 메모: viz 엔진 구현·배포·검증 완료(main==origin/main). bbangto-ui-visualization(GitHub Packages)로 모든 구조형 시각물·hero를 코드 구현, ChatGPT 이미지 생성 완전 제거. 신규: scripts/apply-viz.ts·render-viz.ts·check-post-markers.ts, src/lib/viz(schema·layout·blogVizStyleGuide), src/components/viz/VizFigure, src/styles/viz.css, .npmrc. v1 kind 5종(ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial). 파이프라인 재배선(make-image=viz엔진·post-finalize OpenAI 제거·image-maker·tech-deepdive·orchestrator·ship-post·CLAUDE.md·DIAGRAM_STYLE_GUIDE). CI packages:read+미처리마커 가드. [정정] 초기 메모의 '미push·배포 전 리뷰 대기'는 stale — 실제로는 배포 완료: 배포 안정화 검증=KAN-014, 레거시 스크립트 3종 삭제=KAN-015, 미러 문서 viz 동기화=KAN-019, graphify 그래프 재추출=KAN-023 전부 완료로 프로덕션 검증됨. 기존 글 백마이그레이션도 종료 — 발행 18글 전량 미처리 마커 0(check-post-markers ✓, E2E OPENAI 미설정 통과·무JS SSR SVG 페인트 HTTP 검증).
+- `KAN-011` 인증·인가 해부 시리즈(4편) — 퍼소나 배선·표적 보정 — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지. 배포·검증 완료(main==origin/main, auth-authz-1~4 라이브) — 완료 이동.
+  - 원문:
+    ```text
+    인증, 인가 주요 개념과 구현 실습
+    - pkce, jwks 등 주요 개념을 설명한다.
+    - 주요 사례를 실제 적용하는 베스트 프랙티스와 실습 예제.
+    ```

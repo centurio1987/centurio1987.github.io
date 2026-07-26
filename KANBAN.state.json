@@ -1,6 +1,6 @@
 {
   "next_id": 24,
-  "next_seq": 64,
+  "next_seq": 68,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -107,15 +107,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-011": {
-      "col": "review",
+      "col": "done",
       "title": "인증·인가 해부 시리즈(4편) — 퍼소나 배선·표적 보정",
-      "memo": "main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지.",
+      "memo": "main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지. 배포·검증 완료(main==origin/main, auth-authz-1~4 라이브) — 완료 이동.",
       "verbatim": "인증, 인가 주요 개념과 구현 실습\n- pkce, jwks 등 주요 개념을 설명한다.\n- 주요 사례를 실제 적용하는 베스트 프랙티스와 실습 예제.",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-24",
+      "갱신": "2026-07-26",
       "title_hash": "e88b379384119070534b083649bf67dcf124a3e0",
-      "memo_hash": "44ab42a7c0f4b2ea540d553e08ea19d6de1a9be8",
+      "memo_hash": "4fd47774464fa9688577d5c5c53090392e424779",
       "verbatim_hash": "8ffb6ee2be8362818013c6affd4c2817b895e669"
     },
     "KAN-012": {
@@ -131,15 +131,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-013": {
-      "col": "review",
+      "col": "done",
       "title": "집필 워크플로 개정. 지금은  이미지를 생성할 때 chatgpt에게 요청하고 있다. 이제부터는 직접 시각화를 구현해라. @centurio1987/bbangto-ui-visualization 패키지를 이용해서 구현해라.",
-      "memo": "viz 엔진 구현·검증 완료(미push, 배포 전 리뷰 대기). bbangto-ui-visualization(GitHub Packages)로 모든 구조형 시각물·hero를 코드 구현, ChatGPT 이미지 생성 완전 제거. 신규: scripts/apply-viz.ts·render-viz.ts·check-post-markers.ts, src/lib/viz(schema·layout·blogVizStyleGuide), src/components/viz/VizFigure, src/styles/viz.css, .npmrc. v1 kind 5종(ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial). 파이프라인 재배선(make-image=viz엔진·post-finalize OpenAI 제거·image-maker·tech-deepdive·orchestrator·ship-post·CLAUDE.md·DIAGRAM_STYLE_GUIDE). 레거시 스크립트 3종 deprecate(후속 삭제 카드). CI packages:read+미처리마커 가드. E2E(OPENAI 미설정) 통과·무JS SSR SVG 페인트(HTTP) 검증. webrtc-3 라이브 [[[ 마커 결함 수정. 기존 13글 백마이그레이션 별도.",
+      "memo": "viz 엔진 구현·배포·검증 완료(main==origin/main). bbangto-ui-visualization(GitHub Packages)로 모든 구조형 시각물·hero를 코드 구현, ChatGPT 이미지 생성 완전 제거. 신규: scripts/apply-viz.ts·render-viz.ts·check-post-markers.ts, src/lib/viz(schema·layout·blogVizStyleGuide), src/components/viz/VizFigure, src/styles/viz.css, .npmrc. v1 kind 5종(ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial). 파이프라인 재배선(make-image=viz엔진·post-finalize OpenAI 제거·image-maker·tech-deepdive·orchestrator·ship-post·CLAUDE.md·DIAGRAM_STYLE_GUIDE). CI packages:read+미처리마커 가드. [정정] 초기 메모의 '미push·배포 전 리뷰 대기'는 stale — 실제로는 배포 완료: 배포 안정화 검증=KAN-014, 레거시 스크립트 3종 삭제=KAN-015, 미러 문서 viz 동기화=KAN-019, graphify 그래프 재추출=KAN-023 전부 완료로 프로덕션 검증됨. 기존 글 백마이그레이션도 종료 — 발행 18글 전량 미처리 마커 0(check-post-markers ✓, E2E OPENAI 미설정 통과·무JS SSR SVG 페인트 HTTP 검증).",
       "verbatim": "",
       "생성": "유저",
       "최종": "ai",
-      "갱신": "2026-07-25",
+      "갱신": "2026-07-26",
       "title_hash": "4ac98200733dddf8885a98bbf034fa3b032fbe96",
-      "memo_hash": "2a5a3101db2b0155af3d0aa130e315599347cf53",
+      "memo_hash": "6f4cc91d10972ff1f9f624b6a822f9203452cdaa",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-014": {
@@ -273,8 +273,6 @@
     "KAN-004",
     "KAN-005",
     "KAN-010",
-    "KAN-011",
-    "KAN-013",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -286,9 +284,49 @@
     "KAN-022",
     "KAN-016",
     "KAN-007",
-    "KAN-023"
+    "KAN-023",
+    "KAN-013",
+    "KAN-011"
   ],
   "recent": [
+    {
+      "seq": 67,
+      "t": "2026-07-26T21:27",
+      "a": "ai",
+      "id": "KAN-011",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 66,
+      "t": "2026-07-26T21:27",
+      "a": "ai",
+      "id": "KAN-011",
+      "op": "edit",
+      "field": "memo",
+      "before": "main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지.",
+      "after": "main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지. 배포·검증 완료(main==origin/main, auth-authz-1~4 라이브) — 완료 이동."
+    },
+    {
+      "seq": 65,
+      "t": "2026-07-26T21:27",
+      "a": "ai",
+      "id": "KAN-013",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 64,
+      "t": "2026-07-26T21:27",
+      "a": "ai",
+      "id": "KAN-013",
+      "op": "edit",
+      "field": "memo",
+      "before": "viz 엔진 구현·검증 완료(미push, 배포 전 리뷰 대기). bbangto-ui-visualization(GitHub Packages)로 모든 구조형 시각물·hero를 코드 구현, ChatGPT 이미지 생성 완전 제거. 신규: scripts/apply-viz.ts·render-viz.ts·check-post-markers.ts, src/lib/viz(schema·layout·blogVizStyleGuide), src/components/viz/VizFigure, src/styles/viz.css, .npmrc. v1 kind 5종(ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial). 파이프라인 재배선(make-image=viz엔진·post-finalize OpenAI 제거·image-maker·tech-deepdive·orchestrator·ship-post·CLAUDE.md·DIAGRAM_STYLE_GUIDE). 레거시 스크립트 3종 deprecate(후속 삭제 카드). CI packages:read+미처리마커 가드. E2E(OPENAI 미설정) 통과·무JS SSR SVG 페인트(HTTP) 검증. webrtc-3 라이브 [[[ 마커 결함 수정. 기존 13글 백마이그레이션 별도.",
+      "after": "viz 엔진 구현·배포·검증 완료(main==origin/main). bbangto-ui-visualization(GitHub Packages)로 모든 구조형 시각물·hero를 코드 구현, ChatGPT 이미지 생성 완전 제거. 신규: scripts/apply-viz.ts·render-viz.ts·check-post-markers.ts, src/lib/viz(schema·layout·blogVizStyleGuide), src/components/viz/VizFigure, src/styles/viz.css, .npmrc. v1 kind 5종(ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial). 파이프라인 재배선(make-image=viz엔진·post-finalize OpenAI 제거·image-maker·tech-deepdive·orchestrator·ship-post·CLAUDE.md·DIAGRAM_STYLE_GUIDE). CI packages:read+미처리마커 가드. [정정] 초기 메모의 '미push·배포 전 리뷰 대기'는 stale — 실제로는 배포 완료: 배포 안정화 검증=KAN-014, 레거시 스크립트 3종 삭제=KAN-015, 미러 문서 viz 동기화=KAN-019, graphify 그래프 재추출=KAN-023 전부 완료로 프로덕션 검증됨. 기존 글 백마이그레이션도 종료 — 발행 18글 전량 미처리 마커 0(check-post-markers ✓, E2E OPENAI 미설정 통과·무JS SSR SVG 페인트 HTTP 검증)."
+    },
     {
       "seq": 63,
       "t": "2026-07-26T21:09",
@@ -745,44 +783,6 @@
       "col": "review",
       "title": "도메인 모델과 RDB",
       "memo": "draft: draft/domain-model-rdb-draft.md · 외래키 신호, 상속/합성 테이블 표현, Aggregate↔테이블 대응, Value 영속화"
-    },
-    {
-      "seq": 1,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-001",
-      "op": "create",
-      "col": "review",
-      "title": "GraphQL을 썼을 때 유리한 상황과 아닌 상황",
-      "memo": "draft: draft/graphql-use-cases-draft.md · REST 대비 이득/복잡도 증가 상황, 조직·클라이언트·게이트웨이 판단 기준"
-    },
-    {
-      "seq": 54,
-      "t": "2026-07-26T19:22",
-      "a": "ai",
-      "id": "KAN-022",
-      "op": "move",
-      "from": "doing",
-      "to": "done"
-    },
-    {
-      "seq": 53,
-      "t": "2026-07-26T19:22",
-      "a": "ai",
-      "id": "KAN-022",
-      "op": "edit",
-      "field": "memo",
-      "before": "KAN-020 검증 중 발견한 선재 부채(이번 변경과 무관, 의존성 교체 전후 동일하게 재현). src/layouts/PostLayout.astro:35-46 findFirstImage()가 fs.readdirSync 결과를 정렬 없이 순회해 '첫 이미지'를 고른다. readdir 순서는 명세되지 않아 bun과 node의 fs 구현 사이에서 갈리고, hero.webp가 없는 글의 og:image·twitter:image가 런타임에 따라 달라진다. 실측: 동일 커밋·동일 락파일에서 'bun run build'(node 런타임)와 CI 명령 'bunx --bun astro build'(bun 런타임)의 산출물이 2개 글에서 갈림 — algorithm-at-40-prologue는 expectation.webp vs reality-1.webp, aside-arc는 memes/1.webp vs memes/3.webp. 같은 런타임끼리는 재빌드해도 안정적이므로 순수 런타임 의존이다. 현재 배포본은 CI(bun 런타임) 결과이므로 로컬 프리뷰와 실제 OG 카드가 다를 수 있다. 성격은 KAN-017에서 고친 목록 정렬 비결정성과 같은 계열(정렬 타이브레이크 부재). 조치: readdirSync 결과를 name 기준으로 정렬해 순회한다(디렉터리 재귀 순서도 함께 고정). 파일·디렉터리 우선순위를 명시할지, hero.webp 부재 시 어떤 이미지를 대표로 쓸지(파일명 사전순 첫 장이 의도인지)는 확정 필요 — 고치면 위 2개 글의 OG 이미지가 바뀌므로 콘텐츠 가시 변경이라 사용자 확인 후 반영한다. 검증: 정렬 추가 후 'bun run build'와 'bunx --bun astro build' 산출물이 바이트 동일해야 한다.",
-      "after": "완료(커밋 2e7412e). src/layouts/PostLayout.astro findFirstImage()를 이름 오름차순 정렬로 고정. localeCompare는 ICU 로캘 의존이라 배제하고 코드포인트 비교 사용. 재귀도 2패스로 분리해 '같은 디렉터리 이미지 > 하위 디렉터리' 우선순위를 명시(기존에는 재귀 진입 시점이 readdir 순서에 좌우). 검증: (1) 'bun run build'(node)와 'bunx --bun astro build'(bun) 산출물 30페이지 diff -r 결과 완전 동일 — 카드의 수용 기준 충족. (2) 수정 후 산출물은 수정 전 node 런타임 베이스라인과 바이트 동일 = 정렬 결과가 node 순서와 일치. (3) 현재 배포본(bun 런타임) 대비 차이는 2개 글의 meta 이미지 태그 4개뿐이며, 그 태그를 제외한 나머지는 바이트 동일(본문 img src 불변 — algorithm-at-40-prologue 본문의 reality-1.webp는 그대로). (4) 합성 트리로 node/bun 양쪽 단위 확인 — 최상위 이미지가 하위 디렉터리보다 우선, 디렉터리만 있을 때는 이름순 첫 디렉터리로 재귀. (5) check-post-markers 통과, 빌드 경고 0. || 배포 시 바뀌는 것: algorithm-at-40-prologue OG reality-1.webp→expectation.webp, aside-arc OG memes/3.webp→memes/1.webp. 둘 다 각 글 본문의 '첫 이미지'와 같은 그림이라 대표 이미지로 오히려 적절해진다(1.webp는 본문 거지.webp와 같은 장면의 다른 인코딩). || 부수 발견(미조치): public/images/aside-arc/memes/{1,2,3}.webp는 본문이 참조하지 않는 고아 파일이며 본문의 거지·help-me·페페 이미지와 동일 장면의 리네임 전 원본으로 보인다(해시는 상이). 정렬 규칙상 OG가 이 고아 파일을 고르게 되므로, 정리한다면 OG 이미지가 다시 바뀐다 — 콘텐츠 판단이라 손대지 않음. scripts/check-post-markers.ts:36의 readdir도 정렬이 없으나 오류 보고 순서에만 영향하고 산출물과 무관해 범위에서 제외. TalkLayout·SeriesEpisodes는 existsSync 기반이라 이미 결정적."
-    },
-    {
-      "seq": 52,
-      "t": "2026-07-26T19:19",
-      "a": "ai",
-      "id": "KAN-022",
-      "op": "move",
-      "from": "backlog",
-      "to": "doing"
     }
   ]
 }
