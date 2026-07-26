@@ -26,5 +26,10 @@
   "devDependencies": {
     "@types/d3-force": "^3.0.10",
     "playwright": "^1.61.0"
+  },
+  "overrides": {
+    "js-yaml": "^4.3.0",
+    "sharp": "^0.35.0",
+    "svgo": "^4.0.2"
   }
 }
