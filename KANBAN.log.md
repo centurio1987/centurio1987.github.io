@@ -1,6 +1,7 @@
 # KANBAN 변경 이력
 > 최근 50건. 이보다 오래된 이력은 KANBAN.archive.jsonl 로 압축 보관한다.
 
+- #37 2026-07-26 17:19 · ai · KAN-019 생성 "낡은 미러 문서(AGENTS.md·.agents/·.codex/) viz 파이프라인 동기화" → 백로그
 - #36 2026-07-26 17:12 · ai · KAN-015 이동 백로그 → 진행 중
 - #35 2026-07-26 17:11 · ai · KAN-018 생성 "CI Node 20 deprecation 경고 해결 (Actions Node24 이관)" → 백로그
 - #34 2026-07-26 17:10 · ai · KAN-017 생성 "Dependabot 취약점 8건 해소 (의존성 보안 업데이트)" → 백로그

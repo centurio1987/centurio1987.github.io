@@ -1,6 +1,6 @@
 {
-  "next_id": 19,
-  "next_seq": 37,
+  "next_id": 20,
+  "next_seq": 38,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -201,6 +201,18 @@
       "title_hash": "706ea3a3a5e4bf952ee29f6742a3593430f29815",
       "memo_hash": "1df97cf714dab560e4feb2f5649982c10cac816e",
       "verbatim_hash": "3b666a98b746094bbdc14618626f3c02ad13ac6f"
+    },
+    "KAN-019": {
+      "col": "backlog",
+      "title": "낡은 미러 문서(AGENTS.md·.agents/·.codex/) viz 파이프라인 동기화",
+      "memo": "KAN-013 viz 이관이 .claude 정본만 갱신하고 다른-런타임 미러는 구 OpenAI/HTML-template 파이프라인 그대로 방치(KAN-015에서 발견). 대상: AGENTS.md(집필 워크플로 섹션 전체 — [[[image clues]]]·generate-image.ts 서술), .agents/skills/make-image/{SKILL.md,assets/IMAGE_GUIDE.md}, .agents/skills/post-finalize/SKILL.md, .codex/skills/post-finalize/SKILL.md, .codex/agents/image-maker.toml. .claude 정본을 기준으로 viz(apply-viz/render-viz)로 서술 이관 + 삭제된 3스크립트 참조 제거. ORDER.md·KANBAN 이력은 보존(수정 안 함). KAN-015가 정본 트리만 정리했으므로 이 카드가 '전체 grep-0'를 마무리.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-26",
+      "title_hash": "a1905a76aa444fc17cbdaba12a13c8c589aa7131",
+      "memo_hash": "3a0af3f8a53c24a405525d0bb2274ad85d174594",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
@@ -221,9 +233,21 @@
     "KAN-014",
     "KAN-017",
     "KAN-018",
-    "KAN-015"
+    "KAN-015",
+    "KAN-019"
   ],
   "recent": [
+    {
+      "seq": 37,
+      "t": "2026-07-26T17:19",
+      "a": "ai",
+      "id": "KAN-019",
+      "op": "create",
+      "col": "backlog",
+      "title": "낡은 미러 문서(AGENTS.md·.agents/·.codex/) viz 파이프라인 동기화",
+      "memo": "KAN-013 viz 이관이 .claude 정본만 갱신하고 다른-런타임 미러는 구 OpenAI/HTML-template 파이프라인 그대로 방치(KAN-015에서 발견). 대상: AGENTS.md(집필 워크플로 섹션 전체 — [[[image clues]]]·generate-image.ts 서술), .agents/skills/make-image/{SKILL.md,assets/IMAGE_GUIDE.md}, .agents/skills/post-finalize/SKILL.md, .codex/skills/post-finalize/SKILL.md, .codex/agents/image-maker.toml. .claude 정본을 기준으로 viz(apply-viz/render-viz)로 서술 이관 + 삭제된 3스크립트 참조 제거. ORDER.md·KANBAN 이력은 보존(수정 안 함). KAN-015가 정본 트리만 정리했으므로 이 카드가 '전체 grep-0'를 마무리.",
+      "verbatim": ""
+    },
     {
       "seq": 36,
       "t": "2026-07-26T17:12",
