@@ -1,6 +1,6 @@
 {
   "next_id": 20,
-  "next_seq": 43,
+  "next_seq": 44,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -191,7 +191,7 @@
       "verbatim_hash": "3b666a98b746094bbdc14618626f3c02ad13ac6f"
     },
     "KAN-018": {
-      "col": "doing",
+      "col": "done",
       "title": "CI Node 20 deprecation 경고 해결 (Actions Node24 이관)",
       "memo": "완료. main.yml 액션을 node24 런타임 메이저로 상향: actions/checkout v4→v7, actions/configure-pages v5→v6, actions/upload-pages-artifact v3→v5(내부 upload-artifact v4.6.2→v7), actions/deploy-pages v4→v5. oven-sh/setup-bun@v2는 이미 node24(v2.2.0)라 무변경. 입력 스키마는 전 액션 동일하나 upload-pages-artifact v4+가 tar에서 dotfile을 기본 제외하므로 include-hidden-files:true로 v3 동작 유지(현재 dist/엔 dotfile 없음). 커밋 d5d2789 → main ff push. 실행 30195799378 build/deploy 전 스텝 success, Node 20 deprecation 어노테이션 2건 → 0건(직전 런 30194386647 대비).",
       "verbatim": "취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘\n- kan-015 착수해",
@@ -237,6 +237,15 @@
     "KAN-018"
   ],
   "recent": [
+    {
+      "seq": 43,
+      "t": "2026-07-26T18:07",
+      "a": "ai",
+      "id": "KAN-018",
+      "op": "move",
+      "from": "doing",
+      "to": "done"
+    },
     {
       "seq": 42,
       "t": "2026-07-26T18:06",
