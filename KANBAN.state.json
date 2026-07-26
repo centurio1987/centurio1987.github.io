@@ -1,6 +1,6 @@
 {
   "next_id": 20,
-  "next_seq": 41,
+  "next_seq": 43,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -167,15 +167,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-016": {
-      "col": "backlog",
+      "col": "doing",
       "title": "Tauri 해부 2편 — 예시 프로젝트 구현기",
-      "memo": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화.",
+      "memo": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화. 2026-07-26 착수: tech-article-publisher 자동 모드로 research→집필→4축/글쓰기/품질 게이트→발행·푸시 파이프라인 실행 중.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-26",
       "title_hash": "ce4a8b863696e13b5c2168a18b1c3550b4cdd73d",
-      "memo_hash": "d4f6b6d26c02cc33f379a9877ad400448f3866c4",
+      "memo_hash": "dca7ace113b0e876da05f4df829e7d0f1f991013",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-017": {
@@ -218,7 +218,6 @@
   "order": [
     "KAN-008",
     "KAN-012",
-    "KAN-016",
     "KAN-017",
     "KAN-018",
     "KAN-007",
@@ -234,9 +233,29 @@
     "KAN-006",
     "KAN-014",
     "KAN-015",
-    "KAN-019"
+    "KAN-019",
+    "KAN-016"
   ],
   "recent": [
+    {
+      "seq": 42,
+      "t": "2026-07-26T18:02",
+      "a": "ai",
+      "id": "KAN-016",
+      "op": "edit",
+      "field": "memo",
+      "before": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화.",
+      "after": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화. 2026-07-26 착수: tech-article-publisher 자동 모드로 research→집필→4축/글쓰기/품질 게이트→발행·푸시 파이프라인 실행 중."
+    },
+    {
+      "seq": 41,
+      "t": "2026-07-26T18:02",
+      "a": "ai",
+      "id": "KAN-016",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 40,
       "t": "2026-07-26T17:53",
