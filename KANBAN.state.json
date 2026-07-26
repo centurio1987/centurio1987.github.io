@@ -1,54 +1,54 @@
 {
   "next_id": 24,
-  "next_seq": 68,
+  "next_seq": 78,
   "cards": {
     "KAN-001": {
-      "col": "review",
+      "col": "doing",
       "title": "GraphQL을 썼을 때 유리한 상황과 아닌 상황",
       "memo": "draft: draft/graphql-use-cases-draft.md · REST 대비 이득/복잡도 증가 상황, 조직·클라이언트·게이트웨이 판단 기준",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-06-30",
+      "갱신": "2026-07-26",
       "title_hash": "1a6f898fc699671508fffc9cb8edc1214aaaaa63",
       "memo_hash": "20c1c0f2301236af13f2fd320447047c6ed8c8e6"
     },
     "KAN-002": {
-      "col": "review",
+      "col": "doing",
       "title": "도메인 모델과 RDB",
       "memo": "draft: draft/domain-model-rdb-draft.md · 외래키 신호, 상속/합성 테이블 표현, Aggregate↔테이블 대응, Value 영속화",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-06-30",
+      "갱신": "2026-07-26",
       "title_hash": "29d80948eeecffba1c471bdaca7b980d149a3ec1",
       "memo_hash": "0b90e4768e4a00b496b71021810034f783a7268c"
     },
     "KAN-003": {
-      "col": "review",
+      "col": "doing",
       "title": "DDD에서 Composition과 Aggregation",
       "memo": "draft: draft/ddd-composition-aggregation-draft.md · Composition=의존 생명주기/Aggregate 소속, Aggregation=참조",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-06-30",
+      "갱신": "2026-07-26",
       "title_hash": "e6d1c545db65e36a98521a490545cdcc02f3345a",
       "memo_hash": "c6be6906c0a067f4406984dd5874cfa667cb9296"
     },
     "KAN-004": {
-      "col": "review",
+      "col": "doing",
       "title": "상속이냐 Composite냐",
       "memo": "draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-06-30",
+      "갱신": "2026-07-26",
       "title_hash": "ffacd1c4367a205b403d9e356bb27d953043a3c0",
       "memo_hash": "c0345b59769d2150273e39791aa725308a53efc8"
     },
     "KAN-005": {
-      "col": "review",
+      "col": "doing",
       "title": "모델링 철학 고려 사항",
       "memo": "draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-06-30",
+      "갱신": "2026-07-26",
       "title_hash": "2afdbb227382bf31c20bc44930b07d579a343bad",
       "memo_hash": "a5d0c8332c09aef1d50f830fbae7f559aadb3b98"
     },
@@ -109,13 +109,13 @@
     "KAN-011": {
       "col": "done",
       "title": "인증·인가 해부 시리즈(4편) — 퍼소나 배선·표적 보정",
-      "memo": "main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지. 배포·검증 완료(main==origin/main, auth-authz-1~4 라이브) — 완료 이동.",
+      "memo": "main 병합으로 퍼소나(저자) 시스템 반영. 1~~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지. 배포·검증 완료(main==origin/main, auth-authz-1~~4 라이브) — 완료 이동.",
       "verbatim": "인증, 인가 주요 개념과 구현 실습\n- pkce, jwks 등 주요 개념을 설명한다.\n- 주요 사례를 실제 적용하는 베스트 프랙티스와 실습 예제.",
       "생성": "ai",
-      "최종": "ai",
+      "최종": "유저",
       "갱신": "2026-07-26",
       "title_hash": "e88b379384119070534b083649bf67dcf124a3e0",
-      "memo_hash": "4fd47774464fa9688577d5c5c53090392e424779",
+      "memo_hash": "ab610121452d2eb87320d79f6538ef5d6c2d02b7",
       "verbatim_hash": "8ffb6ee2be8362818013c6affd4c2817b895e669"
     },
     "KAN-012": {
@@ -217,61 +217,43 @@
     "KAN-020": {
       "col": "done",
       "title": "전이 의존성 취약점 정리 (js-yaml·sharp/libvips)",
-      "memo": "완료 — bun audit 4건(high 3·moderate 1) 전부 해소, 커밋 60cc722. 카드 작성 시점 판단이 뒤집혔다: '패치가 major 5.x뿐이라 즉시 수정 불가'로 봤으나, 실제로는 세 건 모두 상류가 선언한 semver 범위 안에서 패치본이 나와 있어 major 점프 없이 하한만 올리면 됐다. (1) js-yaml 4.1.1→4.3.0 — GHSA-52cp-r559-cp3m(high)의 4.x 패치가 4.3.0, GHSA-h67p-54hq-rp68(moderate)은 4.2.0. 소비자(astro·@astrojs/internal-helpers)가 ^4.1.1 선언이라 범위 내. (2) sharp 0.34.5→0.35.3 — astro optionalDependency 범위가 실제로는 '^0.34.0 || ^0.35.0'이라(카드에 ^0.34.0 고정으로 잘못 적혀 있었음) 범위 내, libvips 1.2.4→1.3.2. (3) svgo 4.0.1→4.0.2 — GHSA-2p49-hgcm-8545(high, removeScripts 우회), 카드 작성 이후 새로 뜬 경보라 원래 목록에 없던 4번째 건. || 수단은 package.json overrides. 패치본이 전부 범위 내라 이론상 락파일 갱신만으로 충분하지만 bun에 전이 의존성만 범위 내 최신으로 올리는 명령이 없다 — 'bun update <이름>'은 그 패키지를 직접 의존성으로 승격시키고 취약 사본을 nested로 남겨 오히려 미해결이 되고(실측), 인자 없는 'bun update'는 직접 의존성만 갱신한다. overrides는 캐럿 하한이라 상류가 범위를 올리면 무해한 잉여가 되므로 그때 제거 가능. || 검증: audit 4→0, 설치 트리에 중첩 사본 없이 각 1본 평탄, build green 경고0 30페이지, dist가 변경 전 베이스라인과 바이트 단위 동일(글 17편 프론트매터를 js-yaml 4.3.0으로 파싱한 결과 동일 포함), CI명령(bunx --bun astro build) 산출물도 구 의존성 결과와 바이트 동일해 배포 영향 0, CI 폴백 경로인 npm 격리 설치도 동일 해소, check-post-markers 통과, sharp 0.35.3 로드·webp 인코딩 정상(render-viz 폴백), 락파일 변경이 대상 3종+sharp 플랫폼 바이너리로 한정. || 부수 발견(별건 분리): OG 이미지 폴백이 fs.readdirSync 순서에 의존해 bun/node 런타임 간 결과가 갈린다 → 신규 카드로 분리.",
+      "memo": "완료 — bun audit 4건(high 3·moderate 1) 전부 해소, 커밋 60cc722. 카드 작성 시점 판단이 뒤집혔다: '패치가 major 5.x뿐이라 즉시 수정 불가'로 봤으나, 실제로는 세 건 모두 상류가 선언한 semver 범위 안에서 패치본이 나와 있어 major 점프 없이 하한만 올리면 됐다. (1) js-yaml 4.1.1→4.3.0 — GHSA-52cp-r559-cp3m(high)의 4.x 패치가 4.3.0, GHSA-h67p-54hq-rp68(moderate)은 4.2.0. 소비자(astro·@astrojs/internal-helpers)가 ^4.1.1 선언이라 범위 내. (2) sharp 0.34.5→0.35.3 — astro optionalDependency 범위가 실제로는 '^0.34.0 || ^0.35.0'이라(카드에 ^0.34.0 고정으로 잘못 적혀 있었음) 범위 내, libvips 1.2.4→1.3.2. (3) svgo 4.0.1→4.0.2 — GHSA-2p49-hgcm-8545(high, removeScripts 우회), 카드 작성 이후 새로 뜬 경보라 원래 목록에 없던 4번째 건. || 수단은 package.json overrides. 패치본이 전부 범위 내라 이론상 락파일 갱신만으로 충분하지만 bun에 전이 의존성만 범위 내 최신으로 올리는 명령이 없다 — 'bun update &lt;이름&gt;'은 그 패키지를 직접 의존성으로 승격시키고 취약 사본을 nested로 남겨 오히려 미해결이 되고(실측), 인자 없는 'bun update'는 직접 의존성만 갱신한다. overrides는 캐럿 하한이라 상류가 범위를 올리면 무해한 잉여가 되므로 그때 제거 가능. || 검증: audit 4→0, 설치 트리에 중첩 사본 없이 각 1본 평탄, build green 경고0 30페이지, dist가 변경 전 베이스라인과 바이트 단위 동일(글 17편 프론트매터를 js-yaml 4.3.0으로 파싱한 결과 동일 포함), CI명령(bunx --bun astro build) 산출물도 구 의존성 결과와 바이트 동일해 배포 영향 0, CI 폴백 경로인 npm 격리 설치도 동일 해소, check-post-markers 통과, sharp 0.35.3 로드·webp 인코딩 정상(render-viz 폴백), 락파일 변경이 대상 3종+sharp 플랫폼 바이너리로 한정. || 부수 발견(별건 분리): OG 이미지 폴백이 fs.readdirSync 순서에 의존해 bun/node 런타임 간 결과가 갈린다 → 신규 카드로 분리.",
       "verbatim": "취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘\n- kan-015 착수해",
       "생성": "ai",
-      "최종": "ai",
+      "최종": "유저",
       "갱신": "2026-07-26",
       "title_hash": "046cf05e821e23241080da0a4d74b4e98e470bce",
-      "memo_hash": "7c9602244197dbc0957269bf75a4a9e53c7262ec",
+      "memo_hash": "81fc5d588a2ebefb5438f22dcd9bcb8685868952",
       "verbatim_hash": "3b666a98b746094bbdc14618626f3c02ad13ac6f"
-    },
-    "KAN-021": {
-      "col": "backlog",
-      "title": "astro 7 네이티브 이관 — 마크다운 파이프라인 unified(호환 shim) → Sätteri",
-      "memo": "전제: 2026-07-26 기준 astro 7.1.3 · @astrojs/mdx 7.0.3 · react 6.0.1 · sitemap 3.7.3 · markdown-remark 7.2.1 모두 레지스트리 최신이라 '버전 올리기'로 할 일은 없다. KAN-017이 astro 7로 올리면서 마크다운은 공식 호환 경로(@astrojs/markdown-remark + processor: unified({rehypePlugins}))로 남겨 뒀으므로, '최신 반영'의 실체는 v7 기본 파이프라인인 Sätteri(Rust)로 이관하는 것이다. 긴급도 낮음 — unified 프로세서는 v7에서 정식 지원이며 deprecated가 아니다(deprecated였던 것은 최상위 markdown.rehypePlugins 옵션뿐이고 KAN-017에서 이미 이관 완료). 따라서 이 카드는 선택 과제이며, 아래 '따옴표 정규화'를 어차피 할 가치가 있을 때 함께 착수하는 것을 권한다. || 사전 스파이크 실측(실제로 config를 Sätteri로 바꿔 빌드·비교 후 원복함, 커밋 없음): (1) 빌드 통과 — 30페이지, 경고 0. (2) rehypeWrapTables는 satteri의 defineHastPlugin으로 기계적 포팅 가능하며 MDX 본문에도 정상 적용됨(table-wrap 10개 일치). 함정: ctx.wrapNode(node, wrapper)의 wrapper는 children:[]로 둬야 한다. 공식 문서 예제대로 children:[node]로 넣으면 표가 두 번 렌더된다(실측: 표 3→6, 2→4개로 중복). (3) shikiConfig는 그대로 동작 — astro가 프로세서에 공통 전달하고 Sätteri가 자체 highlight 플러그인을 붙인다(astro-code 58개 일치). (4) MDX는 @mdx-js/mdx가 아니라 createSatteriMdxProcessor라는 전혀 다른 컴파일 경로를 타지만, React 아일랜드(astro-island 114)·viz SSR SVG(viz-figure 9)·QA 컴포넌트 모두 이상 없음. || 유일한 실질 장애물 = 스마트 따옴표. Sätteri와 unified가 11개 포스트 26곳에서 따옴표 방향을 다르게 판정한다(‘→’ 17건, ”→“ 8건, “→” 1건). 원인: 본문 원문이 전부 ASCII 직선 따옴표('\"')이고(원문 내 휘어진 따옴표 0건) 두 엔진이 각자 자동 변환하는데, 따옴표가 **강조** 마커나 ? 에 인접하면 한글 맥락에서 판정이 갈린다. 예: 원문 '위임된 인가' → unified ‘위임된 인가’(정상) vs Sätteri ’위임된 인가’(닫는 따옴표 2개, 오류). 완화책 실측: features:{smartPunctuation:false}는 오히려 악화(휘어진 따옴표가 전부 직선 &quot;로 바뀌어 100여 곳 타이포 downgrade) → 채택 불가. 반면 원문에 휘어진 따옴표를 직접 쓰면 두 엔진 모두 변형 없이 보존함을 프로브로 확인 → 이것이 유효한 해법이며, 부수 효과로 출력이 엔진 비의존이 된다. || 절차: ①package.json에 @astrojs/markdown-satteri 명시 추가(현재는 astro의 전이 의존으로만 존재) ②src/lib/rehype-wrap-tables.mjs를 defineHastPlugin 버전으로 포팅(children:[] 주의) ③astro.config를 processor: satteri({hastPlugins:[...]})로 교체하고 @astrojs/markdown-remark 제거 ④빌드 후 KAN-017과 동일한 회귀 세트로 검증 — 가시 텍스트 다중집합 비교·기능 마커 수(table-wrap/astro-code/astro-island/viz-figure)·Playwright 콘솔에러/하이드레이션/픽셀·지오메트리 ⑤남는 차이는 따옴표 26곳뿐이어야 하며, 각 지점을 원문에 휘어진 따옴표로 확정해 0으로 만든다 ⑥diff가 따옴표 개선분만 남을 때 커밋. 롤백: astro.config 한 파일과 plugin 파일만 되돌리면 즉시 unified로 복귀(의존성은 남겨 둬도 무해). || 기대 이득: 의존성 1개 감소, v7 기본 경로와 일치(향후 astro 업그레이드 시 호환 shim 유지 부담 제거), Rust 엔진 빌드 속도(단 30페이지 규모에서는 유의미한 측정 안 함 — 성능은 착수 근거로 삼지 말 것).",
-      "verbatim": "astro 최신 버전을 반영하여 마이그레이션 계획을 세우고, kanban에 추가하라",
-      "생성": "ai",
-      "최종": "ai",
-      "갱신": "2026-07-26",
-      "title_hash": "7248238794b3b0e141b4a2aef437f831a3a40c79",
-      "memo_hash": "2943bc7ca606075acef1f0ee13afd0df5833fa17",
-      "verbatim_hash": "3f95ded0a2be283389e9e6998372428589ffa688"
     },
     "KAN-022": {
       "col": "done",
       "title": "OG 이미지 폴백의 readdir 순서 비결정성 (bun/node 런타임 간 결과 상이)",
-      "memo": "완료(커밋 2e7412e). src/layouts/PostLayout.astro findFirstImage()를 이름 오름차순 정렬로 고정. localeCompare는 ICU 로캘 의존이라 배제하고 코드포인트 비교 사용. 재귀도 2패스로 분리해 '같은 디렉터리 이미지 > 하위 디렉터리' 우선순위를 명시(기존에는 재귀 진입 시점이 readdir 순서에 좌우). 검증: (1) 'bun run build'(node)와 'bunx --bun astro build'(bun) 산출물 30페이지 diff -r 결과 완전 동일 — 카드의 수용 기준 충족. (2) 수정 후 산출물은 수정 전 node 런타임 베이스라인과 바이트 동일 = 정렬 결과가 node 순서와 일치. (3) 현재 배포본(bun 런타임) 대비 차이는 2개 글의 meta 이미지 태그 4개뿐이며, 그 태그를 제외한 나머지는 바이트 동일(본문 img src 불변 — algorithm-at-40-prologue 본문의 reality-1.webp는 그대로). (4) 합성 트리로 node/bun 양쪽 단위 확인 — 최상위 이미지가 하위 디렉터리보다 우선, 디렉터리만 있을 때는 이름순 첫 디렉터리로 재귀. (5) check-post-markers 통과, 빌드 경고 0. || 배포 시 바뀌는 것: algorithm-at-40-prologue OG reality-1.webp→expectation.webp, aside-arc OG memes/3.webp→memes/1.webp. 둘 다 각 글 본문의 '첫 이미지'와 같은 그림이라 대표 이미지로 오히려 적절해진다(1.webp는 본문 거지.webp와 같은 장면의 다른 인코딩). || 부수 발견(미조치): public/images/aside-arc/memes/{1,2,3}.webp는 본문이 참조하지 않는 고아 파일이며 본문의 거지·help-me·페페 이미지와 동일 장면의 리네임 전 원본으로 보인다(해시는 상이). 정렬 규칙상 OG가 이 고아 파일을 고르게 되므로, 정리한다면 OG 이미지가 다시 바뀐다 — 콘텐츠 판단이라 손대지 않음. → 이후 유저가 세 파일을 삭제했고 커밋 b582d5a로 반영, aside-arc OG는 memes/1.webp→memes/help-me.webp가 된다(위 '배포 시 바뀌는 것' 중 aside-arc 항목은 이 값으로 대체). scripts/check-post-markers.ts:36의 readdir도 정렬이 없으나 오류 보고 순서에만 영향하고 산출물과 무관해 범위에서 제외. TalkLayout·SeriesEpisodes는 existsSync 기반이라 이미 결정적.",
+      "memo": "완료(커밋 2e7412e). src/layouts/PostLayout.astro findFirstImage()를 이름 오름차순 정렬로 고정. localeCompare는 ICU 로캘 의존이라 배제하고 코드포인트 비교 사용. 재귀도 2패스로 분리해 '같은 디렉터리 이미지 &gt; 하위 디렉터리' 우선순위를 명시(기존에는 재귀 진입 시점이 readdir 순서에 좌우). 검증: (1) 'bun run build'(node)와 'bunx --bun astro build'(bun) 산출물 30페이지 diff -r 결과 완전 동일 — 카드의 수용 기준 충족. (2) 수정 후 산출물은 수정 전 node 런타임 베이스라인과 바이트 동일 = 정렬 결과가 node 순서와 일치. (3) 현재 배포본(bun 런타임) 대비 차이는 2개 글의 meta 이미지 태그 4개뿐이며, 그 태그를 제외한 나머지는 바이트 동일(본문 img src 불변 — algorithm-at-40-prologue 본문의 reality-1.webp는 그대로). (4) 합성 트리로 node/bun 양쪽 단위 확인 — 최상위 이미지가 하위 디렉터리보다 우선, 디렉터리만 있을 때는 이름순 첫 디렉터리로 재귀. (5) check-post-markers 통과, 빌드 경고 0. || 배포 시 바뀌는 것: algorithm-at-40-prologue OG reality-1.webp→expectation.webp, aside-arc OG memes/3.webp→memes/1.webp. 둘 다 각 글 본문의 '첫 이미지'와 같은 그림이라 대표 이미지로 오히려 적절해진다(1.webp는 본문 거지.webp와 같은 장면의 다른 인코딩). || 부수 발견(미조치): public/images/aside-arc/memes/{1,2,3}.webp는 본문이 참조하지 않는 고아 파일이며 본문의 거지·help-me·페페 이미지와 동일 장면의 리네임 전 원본으로 보인다(해시는 상이). 정렬 규칙상 OG가 이 고아 파일을 고르게 되므로, 정리한다면 OG 이미지가 다시 바뀐다 — 콘텐츠 판단이라 손대지 않음. → 이후 유저가 세 파일을 삭제했고 커밋 b582d5a로 반영, aside-arc OG는 memes/1.webp→memes/help-me.webp가 된다(위 '배포 시 바뀌는 것' 중 aside-arc 항목은 이 값으로 대체). scripts/check-post-markers.ts:36의 readdir도 정렬이 없으나 오류 보고 순서에만 영향하고 산출물과 무관해 범위에서 제외. TalkLayout·SeriesEpisodes는 existsSync 기반이라 이미 결정적.",
       "verbatim": "",
       "생성": "ai",
       "최종": "유저",
       "갱신": "2026-07-26",
       "title_hash": "f371824246d42881bd3fb75589083e26d7b025f5",
-      "memo_hash": "8c0b2fffb158b8a0ae47dee0b231dd012936df9d",
+      "memo_hash": "9a05a8681a3f7799e84fb109aefb446b24a887ea",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-023": {
       "col": "done",
       "title": "graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락)",
-      "memo": "완료 — graphify 그래프 전량 재추출로 8편→18편 전편 커버(커밋 e093876). 백엔드를 --backend claude-cli 로 전환: 카드에 적힌 gemini 경로는 graphifyy[gemini] 재설치로 openai 모듈은 복구했으나 무료 티어가 5 RPM + 일일 상한이라 18편 추출 시 청크 절반 이상이 429(3회 시도 모두 부분 실패 → 전량 폐기, 커버리지 4~15편). 최종 실행: graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . → 657노드/1064엣지/30커뮤니티 → graphify cluster-only . --backend claude-cli 로 커뮤니티 한국어 라벨링 → bun scripts/build-graph-data.ts → 18편 600개념 1064엣지 9쌍. 글별 개념 11~72개로 균일. 함정 2건 발견·조치: (1) graphify가 source_file 을 스캔루트 상대경로('tauri-2.mdx')로 적어 build-graph-data 의 toPostSlug 정규식(레포루트 경로만 매칭)에 전 글이 매칭 실패 → 두 형태 모두 수용하도록 수정. 이게 없었으면 새 그래프가 통째로 무시됨. (2) --out . 누락 시 src/content/posts/graphify-out/ 로 써서 콘텐츠 디렉터리 오염. 재발 방지: CLAUDE.md·ship-post SKILL(정본+.agents 미러)에 실행 명령·백엔드 선택 근거·부분 실패 결과물 커밋 금지(문서 노드 수 = 글 수로 검증)·--out . 필수를 명시, .gitignore 에 graphify-out/cache/·날짜 백업 제외 추가. 검증: build green(31 pages)·tsc clean·마커 0, /graph 216 서클 렌더·tauri-2 연관 글에 tauri-1 + 그래프 개념 칩 노출 육안 확인. 콘텐츠 디렉터리 오염 없음.",
+      "memo": "완료 — graphify 그래프 전량 재추출로 8편→18편 전편 커버(커밋 e093876). 백엔드를 --backend claude-cli 로 전환: 카드에 적힌 gemini 경로는 graphifyy[gemini] 재설치로 openai 모듈은 복구했으나 무료 티어가 5 RPM + 일일 상한이라 18편 추출 시 청크 절반 이상이 429(3회 시도 모두 부분 실패 → 전량 폐기, 커버리지 4~~15편). 최종 실행: graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . → 657노드/1064엣지/30커뮤니티 → graphify cluster-only . --backend claude-cli 로 커뮤니티 한국어 라벨링 → bun scripts/build-graph-data.ts → 18편 600개념 1064엣지 9쌍. 글별 개념 11~~72개로 균일. 함정 2건 발견·조치: (1) graphify가 source_file 을 스캔루트 상대경로('tauri-2.mdx')로 적어 build-graph-data 의 toPostSlug 정규식(레포루트 경로만 매칭)에 전 글이 매칭 실패 → 두 형태 모두 수용하도록 수정. 이게 없었으면 새 그래프가 통째로 무시됨. (2) --out . 누락 시 src/content/posts/graphify-out/ 로 써서 콘텐츠 디렉터리 오염. 재발 방지: CLAUDE.md·ship-post SKILL(정본+.agents 미러)에 실행 명령·백엔드 선택 근거·부분 실패 결과물 커밋 금지(문서 노드 수 = 글 수로 검증)·--out . 필수를 명시, .gitignore 에 graphify-out/cache/·날짜 백업 제외 추가. 검증: build green(31 pages)·tsc clean·마커 0, /graph 216 서클 렌더·tauri-2 연관 글에 tauri-1 + 그래프 개념 칩 노출 육안 확인. 콘텐츠 디렉터리 오염 없음.",
       "verbatim": "",
       "생성": "유저",
-      "최종": "ai",
+      "최종": "유저",
       "갱신": "2026-07-26",
       "title_hash": "94e649dc7aa0fcb49f3868f9d41b7c059b2a5654",
-      "memo_hash": "29287cccb262a7491af995b5982570833565e530",
+      "memo_hash": "d38e3a8d2dfddda97930acd2fdda36fd7e487e5f",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
     "KAN-008",
     "KAN-012",
-    "KAN-021",
-    "KAN-001",
-    "KAN-002",
-    "KAN-003",
-    "KAN-004",
-    "KAN-005",
     "KAN-010",
     "KAN-009",
     "KAN-006",
@@ -286,9 +268,109 @@
     "KAN-007",
     "KAN-023",
     "KAN-013",
-    "KAN-011"
+    "KAN-011",
+    "KAN-001",
+    "KAN-002",
+    "KAN-003",
+    "KAN-004",
+    "KAN-005"
   ],
   "recent": [
+    {
+      "seq": 77,
+      "t": "2026-07-26T21:33",
+      "a": "ai",
+      "id": "KAN-005",
+      "op": "move",
+      "from": "review",
+      "to": "doing"
+    },
+    {
+      "seq": 76,
+      "t": "2026-07-26T21:33",
+      "a": "ai",
+      "id": "KAN-004",
+      "op": "move",
+      "from": "review",
+      "to": "doing"
+    },
+    {
+      "seq": 75,
+      "t": "2026-07-26T21:33",
+      "a": "ai",
+      "id": "KAN-003",
+      "op": "move",
+      "from": "review",
+      "to": "doing"
+    },
+    {
+      "seq": 74,
+      "t": "2026-07-26T21:33",
+      "a": "ai",
+      "id": "KAN-002",
+      "op": "move",
+      "from": "review",
+      "to": "doing"
+    },
+    {
+      "seq": 73,
+      "t": "2026-07-26T21:33",
+      "a": "ai",
+      "id": "KAN-001",
+      "op": "move",
+      "from": "review",
+      "to": "doing"
+    },
+    {
+      "seq": 72,
+      "t": "2026-07-26T21:32",
+      "a": "유저",
+      "id": "KAN-021",
+      "op": "archive",
+      "col": "backlog",
+      "title": "astro 7 네이티브 이관 — 마크다운 파이프라인 unified(호환 shim) → Sätteri",
+      "memo": "전제: 2026-07-26 기준 astro 7.1.3 · @astrojs/mdx 7.0.3 · react 6.0.1 · sitemap 3.7.3 · markdown-remark 7.2.1 모두 레지스트리 최신이라 '버전 올리기'로 할 일은 없다. KAN-017이 astro 7로 올리면서 마크다운은 공식 호환 경로(@astrojs/markdown-remark + processor: unified({rehypePlugins}))로 남겨 뒀으므로, '최신 반영'의 실체는 v7 기본 파이프라인인 Sätteri(Rust)로 이관하는 것이다. 긴급도 낮음 — unified 프로세서는 v7에서 정식 지원이며 deprecated가 아니다(deprecated였던 것은 최상위 markdown.rehypePlugins 옵션뿐이고 KAN-017에서 이미 이관 완료). 따라서 이 카드는 선택 과제이며, 아래 '따옴표 정규화'를 어차피 할 가치가 있을 때 함께 착수하는 것을 권한다. || 사전 스파이크 실측(실제로 config를 Sätteri로 바꿔 빌드·비교 후 원복함, 커밋 없음): (1) 빌드 통과 — 30페이지, 경고 0. (2) rehypeWrapTables는 satteri의 defineHastPlugin으로 기계적 포팅 가능하며 MDX 본문에도 정상 적용됨(table-wrap 10개 일치). 함정: ctx.wrapNode(node, wrapper)의 wrapper는 children:[]로 둬야 한다. 공식 문서 예제대로 children:[node]로 넣으면 표가 두 번 렌더된다(실측: 표 3→6, 2→4개로 중복). (3) shikiConfig는 그대로 동작 — astro가 프로세서에 공통 전달하고 Sätteri가 자체 highlight 플러그인을 붙인다(astro-code 58개 일치). (4) MDX는 @mdx-js/mdx가 아니라 createSatteriMdxProcessor라는 전혀 다른 컴파일 경로를 타지만, React 아일랜드(astro-island 114)·viz SSR SVG(viz-figure 9)·QA 컴포넌트 모두 이상 없음. || 유일한 실질 장애물 = 스마트 따옴표. Sätteri와 unified가 11개 포스트 26곳에서 따옴표 방향을 다르게 판정한다(‘→’ 17건, ”→“ 8건, “→” 1건). 원인: 본문 원문이 전부 ASCII 직선 따옴표('\"')이고(원문 내 휘어진 따옴표 0건) 두 엔진이 각자 자동 변환하는데, 따옴표가 **강조** 마커나 ? 에 인접하면 한글 맥락에서 판정이 갈린다. 예: 원문 '위임된 인가' → unified ‘위임된 인가’(정상) vs Sätteri ’위임된 인가’(닫는 따옴표 2개, 오류). 완화책 실측: features:{smartPunctuation:false}는 오히려 악화(휘어진 따옴표가 전부 직선 &quot;로 바뀌어 100여 곳 타이포 downgrade) → 채택 불가. 반면 원문에 휘어진 따옴표를 직접 쓰면 두 엔진 모두 변형 없이 보존함을 프로브로 확인 → 이것이 유효한 해법이며, 부수 효과로 출력이 엔진 비의존이 된다. || 절차: ①package.json에 @astrojs/markdown-satteri 명시 추가(현재는 astro의 전이 의존으로만 존재) ②src/lib/rehype-wrap-tables.mjs를 defineHastPlugin 버전으로 포팅(children:[] 주의) ③astro.config를 processor: satteri({hastPlugins:[...]})로 교체하고 @astrojs/markdown-remark 제거 ④빌드 후 KAN-017과 동일한 회귀 세트로 검증 — 가시 텍스트 다중집합 비교·기능 마커 수(table-wrap/astro-code/astro-island/viz-figure)·Playwright 콘솔에러/하이드레이션/픽셀·지오메트리 ⑤남는 차이는 따옴표 26곳뿐이어야 하며, 각 지점을 원문에 휘어진 따옴표로 확정해 0으로 만든다 ⑥diff가 따옴표 개선분만 남을 때 커밋. 롤백: astro.config 한 파일과 plugin 파일만 되돌리면 즉시 unified로 복귀(의존성은 남겨 둬도 무해). || 기대 이득: 의존성 1개 감소, v7 기본 경로와 일치(향후 astro 업그레이드 시 호환 shim 유지 부담 제거), Rust 엔진 빌드 속도(단 30페이지 규모에서는 유의미한 측정 안 함 — 성능은 착수 근거로 삼지 말 것)."
+    },
+    {
+      "seq": 71,
+      "t": "2026-07-26T21:32",
+      "a": "유저",
+      "id": "KAN-011",
+      "op": "edit",
+      "field": "memo",
+      "before": "main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지. 배포·검증 완료(main==origin/main, auth-authz-1~4 라이브) — 완료 이동.",
+      "after": "main 병합으로 퍼소나(저자) 시스템 반영. 1~~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지. 배포·검증 완료(main==origin/main, auth-authz-1~~4 라이브) — 완료 이동."
+    },
+    {
+      "seq": 70,
+      "t": "2026-07-26T21:32",
+      "a": "유저",
+      "id": "KAN-023",
+      "op": "edit",
+      "field": "memo",
+      "before": "완료 — graphify 그래프 전량 재추출로 8편→18편 전편 커버(커밋 e093876). 백엔드를 --backend claude-cli 로 전환: 카드에 적힌 gemini 경로는 graphifyy[gemini] 재설치로 openai 모듈은 복구했으나 무료 티어가 5 RPM + 일일 상한이라 18편 추출 시 청크 절반 이상이 429(3회 시도 모두 부분 실패 → 전량 폐기, 커버리지 4~15편). 최종 실행: graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . → 657노드/1064엣지/30커뮤니티 → graphify cluster-only . --backend claude-cli 로 커뮤니티 한국어 라벨링 → bun scripts/build-graph-data.ts → 18편 600개념 1064엣지 9쌍. 글별 개념 11~72개로 균일. 함정 2건 발견·조치: (1) graphify가 source_file 을 스캔루트 상대경로('tauri-2.mdx')로 적어 build-graph-data 의 toPostSlug 정규식(레포루트 경로만 매칭)에 전 글이 매칭 실패 → 두 형태 모두 수용하도록 수정. 이게 없었으면 새 그래프가 통째로 무시됨. (2) --out . 누락 시 src/content/posts/graphify-out/ 로 써서 콘텐츠 디렉터리 오염. 재발 방지: CLAUDE.md·ship-post SKILL(정본+.agents 미러)에 실행 명령·백엔드 선택 근거·부분 실패 결과물 커밋 금지(문서 노드 수 = 글 수로 검증)·--out . 필수를 명시, .gitignore 에 graphify-out/cache/·날짜 백업 제외 추가. 검증: build green(31 pages)·tsc clean·마커 0, /graph 216 서클 렌더·tauri-2 연관 글에 tauri-1 + 그래프 개념 칩 노출 육안 확인. 콘텐츠 디렉터리 오염 없음.",
+      "after": "완료 — graphify 그래프 전량 재추출로 8편→18편 전편 커버(커밋 e093876). 백엔드를 --backend claude-cli 로 전환: 카드에 적힌 gemini 경로는 graphifyy[gemini] 재설치로 openai 모듈은 복구했으나 무료 티어가 5 RPM + 일일 상한이라 18편 추출 시 청크 절반 이상이 429(3회 시도 모두 부분 실패 → 전량 폐기, 커버리지 4~~15편). 최종 실행: graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . → 657노드/1064엣지/30커뮤니티 → graphify cluster-only . --backend claude-cli 로 커뮤니티 한국어 라벨링 → bun scripts/build-graph-data.ts → 18편 600개념 1064엣지 9쌍. 글별 개념 11~~72개로 균일. 함정 2건 발견·조치: (1) graphify가 source_file 을 스캔루트 상대경로('tauri-2.mdx')로 적어 build-graph-data 의 toPostSlug 정규식(레포루트 경로만 매칭)에 전 글이 매칭 실패 → 두 형태 모두 수용하도록 수정. 이게 없었으면 새 그래프가 통째로 무시됨. (2) --out . 누락 시 src/content/posts/graphify-out/ 로 써서 콘텐츠 디렉터리 오염. 재발 방지: CLAUDE.md·ship-post SKILL(정본+.agents 미러)에 실행 명령·백엔드 선택 근거·부분 실패 결과물 커밋 금지(문서 노드 수 = 글 수로 검증)·--out . 필수를 명시, .gitignore 에 graphify-out/cache/·날짜 백업 제외 추가. 검증: build green(31 pages)·tsc clean·마커 0, /graph 216 서클 렌더·tauri-2 연관 글에 tauri-1 + 그래프 개념 칩 노출 육안 확인. 콘텐츠 디렉터리 오염 없음."
+    },
+    {
+      "seq": 69,
+      "t": "2026-07-26T21:32",
+      "a": "유저",
+      "id": "KAN-022",
+      "op": "edit",
+      "field": "memo",
+      "before": "완료(커밋 2e7412e). src/layouts/PostLayout.astro findFirstImage()를 이름 오름차순 정렬로 고정. localeCompare는 ICU 로캘 의존이라 배제하고 코드포인트 비교 사용. 재귀도 2패스로 분리해 '같은 디렉터리 이미지 > 하위 디렉터리' 우선순위를 명시(기존에는 재귀 진입 시점이 readdir 순서에 좌우). 검증: (1) 'bun run build'(node)와 'bunx --bun astro build'(bun) 산출물 30페이지 diff -r 결과 완전 동일 — 카드의 수용 기준 충족. (2) 수정 후 산출물은 수정 전 node 런타임 베이스라인과 바이트 동일 = 정렬 결과가 node 순서와 일치. (3) 현재 배포본(bun 런타임) 대비 차이는 2개 글의 meta 이미지 태그 4개뿐이며, 그 태그를 제외한 나머지는 바이트 동일(본문 img src 불변 — algorithm-at-40-prologue 본문의 reality-1.webp는 그대로). (4) 합성 트리로 node/bun 양쪽 단위 확인 — 최상위 이미지가 하위 디렉터리보다 우선, 디렉터리만 있을 때는 이름순 첫 디렉터리로 재귀. (5) check-post-markers 통과, 빌드 경고 0. || 배포 시 바뀌는 것: algorithm-at-40-prologue OG reality-1.webp→expectation.webp, aside-arc OG memes/3.webp→memes/1.webp. 둘 다 각 글 본문의 '첫 이미지'와 같은 그림이라 대표 이미지로 오히려 적절해진다(1.webp는 본문 거지.webp와 같은 장면의 다른 인코딩). || 부수 발견(미조치): public/images/aside-arc/memes/{1,2,3}.webp는 본문이 참조하지 않는 고아 파일이며 본문의 거지·help-me·페페 이미지와 동일 장면의 리네임 전 원본으로 보인다(해시는 상이). 정렬 규칙상 OG가 이 고아 파일을 고르게 되므로, 정리한다면 OG 이미지가 다시 바뀐다 — 콘텐츠 판단이라 손대지 않음. → 이후 유저가 세 파일을 삭제했고 커밋 b582d5a로 반영, aside-arc OG는 memes/1.webp→memes/help-me.webp가 된다(위 '배포 시 바뀌는 것' 중 aside-arc 항목은 이 값으로 대체). scripts/check-post-markers.ts:36의 readdir도 정렬이 없으나 오류 보고 순서에만 영향하고 산출물과 무관해 범위에서 제외. TalkLayout·SeriesEpisodes는 existsSync 기반이라 이미 결정적.",
+      "after": "완료(커밋 2e7412e). src/layouts/PostLayout.astro findFirstImage()를 이름 오름차순 정렬로 고정. localeCompare는 ICU 로캘 의존이라 배제하고 코드포인트 비교 사용. 재귀도 2패스로 분리해 '같은 디렉터리 이미지 &gt; 하위 디렉터리' 우선순위를 명시(기존에는 재귀 진입 시점이 readdir 순서에 좌우). 검증: (1) 'bun run build'(node)와 'bunx --bun astro build'(bun) 산출물 30페이지 diff -r 결과 완전 동일 — 카드의 수용 기준 충족. (2) 수정 후 산출물은 수정 전 node 런타임 베이스라인과 바이트 동일 = 정렬 결과가 node 순서와 일치. (3) 현재 배포본(bun 런타임) 대비 차이는 2개 글의 meta 이미지 태그 4개뿐이며, 그 태그를 제외한 나머지는 바이트 동일(본문 img src 불변 — algorithm-at-40-prologue 본문의 reality-1.webp는 그대로). (4) 합성 트리로 node/bun 양쪽 단위 확인 — 최상위 이미지가 하위 디렉터리보다 우선, 디렉터리만 있을 때는 이름순 첫 디렉터리로 재귀. (5) check-post-markers 통과, 빌드 경고 0. || 배포 시 바뀌는 것: algorithm-at-40-prologue OG reality-1.webp→expectation.webp, aside-arc OG memes/3.webp→memes/1.webp. 둘 다 각 글 본문의 '첫 이미지'와 같은 그림이라 대표 이미지로 오히려 적절해진다(1.webp는 본문 거지.webp와 같은 장면의 다른 인코딩). || 부수 발견(미조치): public/images/aside-arc/memes/{1,2,3}.webp는 본문이 참조하지 않는 고아 파일이며 본문의 거지·help-me·페페 이미지와 동일 장면의 리네임 전 원본으로 보인다(해시는 상이). 정렬 규칙상 OG가 이 고아 파일을 고르게 되므로, 정리한다면 OG 이미지가 다시 바뀐다 — 콘텐츠 판단이라 손대지 않음. → 이후 유저가 세 파일을 삭제했고 커밋 b582d5a로 반영, aside-arc OG는 memes/1.webp→memes/help-me.webp가 된다(위 '배포 시 바뀌는 것' 중 aside-arc 항목은 이 값으로 대체). scripts/check-post-markers.ts:36의 readdir도 정렬이 없으나 오류 보고 순서에만 영향하고 산출물과 무관해 범위에서 제외. TalkLayout·SeriesEpisodes는 existsSync 기반이라 이미 결정적."
+    },
+    {
+      "seq": 68,
+      "t": "2026-07-26T21:32",
+      "a": "유저",
+      "id": "KAN-020",
+      "op": "edit",
+      "field": "memo",
+      "before": "완료 — bun audit 4건(high 3·moderate 1) 전부 해소, 커밋 60cc722. 카드 작성 시점 판단이 뒤집혔다: '패치가 major 5.x뿐이라 즉시 수정 불가'로 봤으나, 실제로는 세 건 모두 상류가 선언한 semver 범위 안에서 패치본이 나와 있어 major 점프 없이 하한만 올리면 됐다. (1) js-yaml 4.1.1→4.3.0 — GHSA-52cp-r559-cp3m(high)의 4.x 패치가 4.3.0, GHSA-h67p-54hq-rp68(moderate)은 4.2.0. 소비자(astro·@astrojs/internal-helpers)가 ^4.1.1 선언이라 범위 내. (2) sharp 0.34.5→0.35.3 — astro optionalDependency 범위가 실제로는 '^0.34.0 || ^0.35.0'이라(카드에 ^0.34.0 고정으로 잘못 적혀 있었음) 범위 내, libvips 1.2.4→1.3.2. (3) svgo 4.0.1→4.0.2 — GHSA-2p49-hgcm-8545(high, removeScripts 우회), 카드 작성 이후 새로 뜬 경보라 원래 목록에 없던 4번째 건. || 수단은 package.json overrides. 패치본이 전부 범위 내라 이론상 락파일 갱신만으로 충분하지만 bun에 전이 의존성만 범위 내 최신으로 올리는 명령이 없다 — 'bun update <이름>'은 그 패키지를 직접 의존성으로 승격시키고 취약 사본을 nested로 남겨 오히려 미해결이 되고(실측), 인자 없는 'bun update'는 직접 의존성만 갱신한다. overrides는 캐럿 하한이라 상류가 범위를 올리면 무해한 잉여가 되므로 그때 제거 가능. || 검증: audit 4→0, 설치 트리에 중첩 사본 없이 각 1본 평탄, build green 경고0 30페이지, dist가 변경 전 베이스라인과 바이트 단위 동일(글 17편 프론트매터를 js-yaml 4.3.0으로 파싱한 결과 동일 포함), CI명령(bunx --bun astro build) 산출물도 구 의존성 결과와 바이트 동일해 배포 영향 0, CI 폴백 경로인 npm 격리 설치도 동일 해소, check-post-markers 통과, sharp 0.35.3 로드·webp 인코딩 정상(render-viz 폴백), 락파일 변경이 대상 3종+sharp 플랫폼 바이너리로 한정. || 부수 발견(별건 분리): OG 이미지 폴백이 fs.readdirSync 순서에 의존해 bun/node 런타임 간 결과가 갈린다 → 신규 카드로 분리.",
+      "after": "완료 — bun audit 4건(high 3·moderate 1) 전부 해소, 커밋 60cc722. 카드 작성 시점 판단이 뒤집혔다: '패치가 major 5.x뿐이라 즉시 수정 불가'로 봤으나, 실제로는 세 건 모두 상류가 선언한 semver 범위 안에서 패치본이 나와 있어 major 점프 없이 하한만 올리면 됐다. (1) js-yaml 4.1.1→4.3.0 — GHSA-52cp-r559-cp3m(high)의 4.x 패치가 4.3.0, GHSA-h67p-54hq-rp68(moderate)은 4.2.0. 소비자(astro·@astrojs/internal-helpers)가 ^4.1.1 선언이라 범위 내. (2) sharp 0.34.5→0.35.3 — astro optionalDependency 범위가 실제로는 '^0.34.0 || ^0.35.0'이라(카드에 ^0.34.0 고정으로 잘못 적혀 있었음) 범위 내, libvips 1.2.4→1.3.2. (3) svgo 4.0.1→4.0.2 — GHSA-2p49-hgcm-8545(high, removeScripts 우회), 카드 작성 이후 새로 뜬 경보라 원래 목록에 없던 4번째 건. || 수단은 package.json overrides. 패치본이 전부 범위 내라 이론상 락파일 갱신만으로 충분하지만 bun에 전이 의존성만 범위 내 최신으로 올리는 명령이 없다 — 'bun update &lt;이름&gt;'은 그 패키지를 직접 의존성으로 승격시키고 취약 사본을 nested로 남겨 오히려 미해결이 되고(실측), 인자 없는 'bun update'는 직접 의존성만 갱신한다. overrides는 캐럿 하한이라 상류가 범위를 올리면 무해한 잉여가 되므로 그때 제거 가능. || 검증: audit 4→0, 설치 트리에 중첩 사본 없이 각 1본 평탄, build green 경고0 30페이지, dist가 변경 전 베이스라인과 바이트 단위 동일(글 17편 프론트매터를 js-yaml 4.3.0으로 파싱한 결과 동일 포함), CI명령(bunx --bun astro build) 산출물도 구 의존성 결과와 바이트 동일해 배포 영향 0, CI 폴백 경로인 npm 격리 설치도 동일 해소, check-post-markers 통과, sharp 0.35.3 로드·webp 인코딩 정상(render-viz 폴백), 락파일 변경이 대상 3종+sharp 플랫폼 바이너리로 한정. || 부수 발견(별건 분리): OG 이미지 폴백이 fs.readdirSync 순서에 의존해 bun/node 런타임 간 결과가 갈린다 → 신규 카드로 분리."
+    },
     {
       "seq": 67,
       "t": "2026-07-26T21:27",
@@ -683,106 +765,6 @@
       "op": "move",
       "from": "doing",
       "to": "done"
-    },
-    {
-      "seq": 11,
-      "t": "2026-07-22T14:34",
-      "a": "유저",
-      "id": "KAN-009",
-      "op": "edit",
-      "field": "verbatim",
-      "before": "",
-      "after": "KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다.\n\t- 기존 기술 블로그글을 집필하던 AI는 글의 프로필에 나와 있는 것 처럼 **빵토 연구원** 퍼소나로 정의 한다. 퍼소나의 프로필 이미지와 배너 또한, 기존 기술 글에 포함된 것을 빵토 연구원의 것으로서 사용한다.\n\t- **빵토 교수님**과의 인터뷰 시리즈는 **빵토 교수님**이란 퍼소나로 정의한다. 퍼소나에서 사용하는 프로필 이미지와 배너는, 빵토 교수님과의 인터뷰 시리즈에 포함하는 프로필 이미지와 배너를 사용한다.\n\t- **빵토 선생님** 퍼소나를 새로 정의한다.\n\t\t- 빵토 선생님 [프로필 이미지](ChatGPT Image 2026년 7월 22일 오후 02_10_31.png), [배너 이미지](ChatGPT Image 2026년 7월 22일 오후 02_11_10.png)\n\t\t\t- 두 이미지는 webp로 변환후 사용하고 원본은 삭제해라\n\t\t- **빵토 선생님**의 보이스는 아래와 같다.\n\t```markdown\n\t  ## 문체 규칙 10\n\n\t1. **존댓말 설명체.** \"~예요 / ~합니다 / ~봅시다\"로 말을 건다. 격식 논문체(\"~이다\" 일변도) 금지.\n\n\t- 예: \"먼저 수준을 맞추고 갈게요.\" / \"작은 예로 직접 나열해 봅시다.\"\n\n\n\n\t2. **작은 단계로 쪼갠 전개.** 한 절에서 개념 하나만 전진시킨다. 개념을 제시하면 그 직후에\n\n\t바로 예시가 따른다 — \"정의 → 다음 정의\"로 건너뛰지 않는다.\n\n\t- 예: balance factor 정의 직후, 노드 3개짜리 트리로 즉시 계산해 보인다.\n\n\n\n\t3. **모든 핵심 개념 직후 ascii art.** 트리/배열/계산 과정을 ```text 코드 블록 그림으로\n\n\t즉시 보인다. 산문 3~4문단이 그림 없이 이어지면 신호 위반이다.\n\n\t- 예:\n\n\t\t\t```text\n\n\t\t\ti = 6 = 0110₂\n\n\t\t\t-i = 1010₂\n\n\t\t\ti & -i = 0010₂ = 2\n\n\t\t\t```\n\n\n\n\t4. **Before/After 도식.** 상태가 변하는 연산(회전, 분할, 슬라이딩)은 변형 전/후를\n\n\t나란히 그린다.\n\n\t- 예: \"Before: 30-20-10 사슬 → After right rotation: 20이 루트, 10·30이 자식\"\n\n\n\n\t5. **오해 지점 명시 호출.** \"여기서 헷갈리기 쉬운 포인트는 ~입니다\" 문형으로 학습자가\n\n\t간과·오해할 지점을 직접 짚고, 오해가 틀렸음을 구체 반례로 보인다.\n\n\t- 예: \"노드 개수와 높이 차이를 섞는 것입니다 — 왼쪽에 두 개 있으니 차이가 2라고?\"\n\n\n\n\t6. **핵심 라인 포인팅.** 코드를 보인 뒤 \"여기서 가장 중요한 줄은 이겁니다\"로 좁혀 다시\n\n\t보여주고, 그 줄이 왜 중요한지(틀리면 어떻게 되는지)를 설명한다.\n\n\t- 예: \"`x.right = y; y.left = t2;` — 이 두 줄이 회전의 전부입니다.\"\n\n\n\n\t7. **기억법 제공.** 방향·순서처럼 헷갈리는 규칙에는 한 줄 기억법을 인용 블록으로 준다.\n\n\t- 예: \"> 무거운 쪽의 반대 방향으로 회전한다.\"\n\n\n\n\t8. **가벼운 증명, 확실한 납득.** 정당성은 부등식 체인·귀납 골격 등 \"납득 수준\"으로\n\n\t보이되, 성립 이유를 건너뛰지 않는다. 형식 증명 전체가 필요하면 참고 태그로 위임한다.\n\n\t- 예: \"회전 전에도 T1 < x < T2 < y, 회전 후에도 T1 < x < T2 < y — 그대로입니다.\"\n\n\n\n\t9. **중간 확인 질문.** 절 중간에 가벼운 확인 질문을 던지고 바로 답을 이어 보인다(독자가\n\n\t손을 움직일 자리). 문서 끝은 \"## 스스로 점검하기\"의 문제 2~3개로 마무리한다.\n\n\t- 예: \"잠깐, 확인 하나만 해 볼까요? prefixSum(5)는 어떤 칸들을 방문할까요?\"\n\n\n\n\t10. **검증 장치에 대한 존중.** 수치·경로·결과값은 실측(실행/손 검산)으로 확인된 값만 쓴다.\n\n\t\"대충 돌아가는 것처럼 보여도 조용히 망가진다\"는 태도로, 예시 값 하나도 검증 없이 싣지 않는다.\n\n\n\n\t## 금지 목록\n\n\n\n\t- 격식 논문체 일변도, 무생물 주어 남발(\"본 절에서는 ~가 다뤄진다\")\n\n\t- 그림 없는 개념 나열, 예시 없는 정의 연쇄\n\n\t- 코드 직역 설명(\"`const n = ...` — n에 저장합니다\")\n\n\t- 검증되지 않은 수치 예시, 근거 없는 단정\n\n\t- 독자용 문서 안의 집필 메타(\"해당 없음\", \"이 절은 생략한다\" 류)\n\t```"
-    },
-    {
-      "seq": 10,
-      "t": "2026-07-22T14:31",
-      "a": "ai",
-      "id": "KAN-009",
-      "op": "move",
-      "from": "backlog",
-      "to": "doing"
-    },
-    {
-      "seq": 9,
-      "t": "2026-07-22T14:31",
-      "a": "유저",
-      "id": "KAN-009",
-      "op": "create",
-      "col": "backlog",
-      "title": "KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다.",
-      "memo": "",
-      "verbatim": ""
-    },
-    {
-      "seq": 8,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-008",
-      "op": "create",
-      "col": "backlog",
-      "title": "OCI, CRI",
-      "memo": "Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교"
-    },
-    {
-      "seq": 7,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-007",
-      "op": "create",
-      "col": "backlog",
-      "title": "Tauri 소개와 구현 예시",
-      "memo": "앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함"
-    },
-    {
-      "seq": 6,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-006",
-      "op": "create",
-      "col": "doing",
-      "title": "WebRTC 이해와 최적 활용 사례",
-      "memo": "webrtc-1.mdx 발행됨, 시리즈 진행 중"
-    },
-    {
-      "seq": 5,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-005",
-      "op": "create",
-      "col": "review",
-      "title": "모델링 철학 고려 사항",
-      "memo": "draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요"
-    },
-    {
-      "seq": 4,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-004",
-      "op": "create",
-      "col": "review",
-      "title": "상속이냐 Composite냐",
-      "memo": "draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점"
-    },
-    {
-      "seq": 3,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-003",
-      "op": "create",
-      "col": "review",
-      "title": "DDD에서 Composition과 Aggregation",
-      "memo": "draft: draft/ddd-composition-aggregation-draft.md · Composition=의존 생명주기/Aggregate 소속, Aggregation=참조"
-    },
-    {
-      "seq": 2,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-002",
-      "op": "create",
-      "col": "review",
-      "title": "도메인 모델과 RDB",
-      "memo": "draft: draft/domain-model-rdb-draft.md · 외래키 신호, 상속/합성 테이블 표현, Aggregate↔테이블 대응, Value 영속화"
     }
   ]
 }
