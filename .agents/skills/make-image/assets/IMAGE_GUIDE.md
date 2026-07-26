@@ -1,78 +1,105 @@
-# 이미지 가이드 (구조형 이미지)
+# viz 가이드 (구조형 시각물)
 
-`make-image` 스킬이 **HTML+CSS로 그려 Playwright로 PNG 캡처**하는 구조형 이미지의 규격이다. 개념·은유 일러스트
-(자유 회화)는 이 스킬이 아니라 `post-finalize`의 OpenAI `[[[…]]]` 경로가 담당한다(공존). 이 가이드는 **정보 전달용
-도형 이미지**만 다룬다.
+`make-image`(viz 엔진)가 **@centurio1987/bbangto-ui-visualization** 컴포넌트로 구현하는 구조형 시각물의 규격이다.
+저작자는 본문에 ```` ```viz``` ```` 블록(JSON)을 남기고, `scripts/apply-viz.ts`가 이를 처리한다.
 
-> 렌더 런타임은 **Node/TS Playwright**(`scripts/render-image.ts`). 레포가 Bun이므로 Python을 쓰지 않는다.
+- **inline**(기본): co-located `.tsx` → **SSR 정적 SVG**(무JS 페인트, 전역 shim `src/styles/viz.css`).
+- **hero**: 같은 컴포넌트를 `scripts/render-viz.ts`(Playwright)로 **webp 래스터**(OG·시리즈 썸네일용 실제 파일).
+
+스타일은 `src/lib/viz/blogVizStyleGuide.ts`(밝은 흙빛 배경 + 잉크 외곽선 + 역할색)가 주입한다. 디자인 원칙은
+`design-concept/DIAGRAM_STYLE_GUIDE.md`를 따른다: **관계가 주인공, 색은 의미(역할)만, 텍스트 최소화**.
+
+> 인터랙티브(움직여야 이해되는) 것은 `react-sim`, 실재 인터넷 밈은 `meme-inserter`. viz는 정적 구조형만.
 
 ---
 
-## 공통 규칙
+## 공통 필드 (모든 kind)
 
-- 모두 **HTML + CSS**로 만들고, **Playwright(chromium)** 로 PNG 캡처한다.
-- 배경 톤은 **본문과 어울리는 AI/테크 분위기**(다크 블루-퍼플 계열 기본). 본문 팔레트(`src/styles/tokens.css`)와 충돌하지 않게.
-- **텍스트는 최대한 짧게.** 이미지는 보조 수단 — 문장이 아니라 키워드·라벨 위주.
-- 코드 블록 스타일을 디자인 요소로 활용 가능(모노스페이스, 어두운 배경, JetBrains Mono).
-- **폰트는 로컬 Pretendard**를 `@font-face`로 임베드하고, 캡처 전 `document.fonts.ready`를 기다린다(CDN 비결정성·FOUT 방지).
-- 입력은 **JSON 데이터**로 받고, 템플릿 주입 시 **HTML escaping**(`<`, `>`, `&`, 따옴표)을 반드시 적용한다(주입·깨짐 방지).
-- **재생성 멱등**: 같은 출력 경로에 이미 파일이 있으면 덮어쓰지 않는다(명시적 force 시에만).
-
-## 본문 삽입 이미지 종류 (4종 — 글 내용에 맞게 선택)
-
-| 타입 키 | 용도 | 핵심 데이터(JSON) |
+| 필드 | 필수 | 설명 |
 |---|---|---|
-| `compare-table` | 제품/방법을 나란히 비교 | `title`, `columns[]`, `rows[][]` |
-| `step-diagram` | 절차·순서 | `title`, `steps[] {label, desc}` |
-| `point-cards` | 3~5개 요점 정리 | `title`, `cards[] {title, body}` (3~5장) |
-| `quote-box` | 중요한 한 마디 강조 | `quote`, `attribution?` |
+| `kind` | ✓ | 아래 5종 중 하나 |
+| `data` | ✓ | kind별 데이터(아래) |
+| `target` | | `"inline"`(기본) \| `"hero"` |
+| `caption` | | 그림 아래 캡션(figcaption) |
+| `alt` | | 접근성 대체텍스트(SVG `<title>`). 없으면 caption/title에서 유도 |
+| `name` | | 컴포넌트/파일명 힌트(hero면 보통 `"hero"`) |
+| `viewBox` | | 예 `"0 0 820 220"`. 생략 시 kind별 기본값 |
+| `size` | | hero 픽셀 크기 `{"w":1200,"h":675}` |
 
-- 본문 가로폭에 맞춘 **가로형**(예: 1200×675 또는 내용에 따라 가변 높이). 텍스트가 넘치면 폰트·여백을 줄이기보다 항목 수를 제한.
-- 표/카드/스텝은 **본문보다 정보를 압축**한다(이미지에 문단을 넣지 않는다).
+**텍스트는 짧게.** 노드당 1~2줄, 긴 설명은 본문·캡션에 둔다.
 
-## 대표 이미지 (hero) 규격
+---
 
-- 크기: **가로 1080px × 세로 1080px (1:1 정사각형)**.
-- 배경: **어두운 블루-퍼플 그라데이션** (`#1a1a2e → #16213e`).
-- 메인 텍스트: **글 제목** (큰 글씨, 흰색).
-- 보조 텍스트: 카테고리/부제 (작은 글씨, 연한 회색).
-- 모든 텍스트 **가로·세로 중앙 정렬**.
-- 폰트: **Pretendard**(로컬) 또는 시스템 한글 폰트 폴백.
-- **우측 하단 또는 좌상단에 작은 액센트**(도형·코드 심볼·단순 아이콘).
-- 타입 키: `hero`. JSON: `title`, `subtitle?`, `category?`.
+## v1 지원 kind (5종)
+
+### 1. `ProcessSteps` — 순차 단계 (입력→처리→출력, 워크플로)
+```json
+{ "kind":"ProcessSteps", "orientation":"horizontal",
+  "data": { "steps": [ {"title":"요청","description":"클라이언트 입력"}, {"title":"검증"}, {"title":"응답"} ] } }
+```
+- `orientation`: `"horizontal"`(기본) \| `"vertical"` \| `"zigzag"`. `steps[].description` 선택.
+
+### 2. `Comparison` — 좌우 2열 비교 (A vs B) — 구 compare-table 대체
+```json
+{ "kind":"Comparison", "mode":"split",
+  "data": { "left": {"label":"REST","items":["여러 엔드포인트","over-fetching"]},
+            "right": {"label":"GraphQL","items":["단일 엔드포인트","정확한 조회"]} } }
+```
+- `mode`: `"split"`(기본) \| `"magnitude"`(pane에 `value` 숫자로 크기 비교).
+
+### 3. `Flowchart` — 노드+엣지 흐름/아키텍처 (좌표 지정) — 구 step-diagram/개념도 대체
+```json
+{ "kind":"Flowchart", "showGrid": false,
+  "data": {
+    "nodes": [ {"id":"a","x":40,"y":40,"width":150,"height":60,"label":"클라이언트"},
+               {"id":"b","x":320,"y":40,"width":150,"height":60,"label":"서버"} ],
+    "edges": [ {"id":"e1","from":"a","to":"b","label":"요청"} ] } }
+```
+- 노드는 `x/y/width/height` 필수(레이아웃을 저작자가 배치). `shape`/`fill`/`stroke` 선택. viewBox 생략 시 노드 bbox에서 자동 계산.
+
+### 4. `Statistics` — 수치·지표 카드 — 구 point-cards 대체
+```json
+{ "kind":"Statistics", "mode":"cards",
+  "data": { "items": [ {"label":"응답시간","value":120,"unit":"ms"}, {"label":"가용성","value":99.9,"unit":"%","delta":-0.1} ] } }
+```
+- `mode`: `"cards"`(기본) \| `"isotype"` \| `"mosaic"` \| `"waffle"`. `value`는 숫자/문자열, `unit`/`delta`/`count` 선택.
+
+### 5. `PosterEditorial` — hero 대표 이미지 (에디토리얼 포스터) — 구 OpenAI hero 대체
+```json
+{ "kind":"PosterEditorial", "target":"hero", "name":"hero",
+  "alt":"로그인 뒤의 지형도",
+  "data": { "eyebrow":"AUTH 해부 시리즈", "title":"로그인 화면 뒤에 숨은 지형도", "subtitle":"인증과 인가의 경계",
+            "items":["세션 vs 토큰","인증 ≠ 인가"] },
+  "size": { "w":1200, "h":675 } }
+```
+- 보통 `target:"hero"`로 써서 `public/images/<slug>/hero.webp`를 만든다(본문 최상단 + OG + 시리즈 썸네일 겸용).
+
+> 구 make-image 5종(`compare-table`/`step-diagram`/`point-cards`/`quote-box`/`hero`)과 구 `[[[…]]]`·`(( ))`는 위 kind로 매핑되어 은퇴했다.
+
+---
+
+## 역할 팔레트 (blogVizStyleGuide, DIAGRAM_STYLE_GUIDE §2)
+
+배경 paper `#F3EEE4` / surface, 외곽선 ink `#20264A`. 색은 **역할**에만:
+핵심흐름 `#4E6CA8` · 강조 `#D8A33F` · 위험/반례 `#A84B4B` · 도메인 `#3E6B4F` · 기술 `#3E6B6B` · 설계 `#7A5C7E` · 품질 `#6B6B3E` · 리서치 `#B07A2E`.
+그라데이션·네온·유리효과·3D 금지.
+
+---
 
 ## 출력·참조 경로 (Astro)
 
-- 저장: `public/images/<post-slug>/<name>.webp` 또는 `.png`. (대표 이미지는 `<slug>/hero.*` 권장)
-- 본문 참조: `/images/<post-slug>/<name>.*` (Astro가 `public/`를 사이트 루트로 서빙).
-- `<post-slug>`: 입력 파일 stem에서 `.md`/`.mdx`·`-draft` 제거.
+- inline 컴포넌트: `src/components/posts/<slug>/<Name>.tsx`, MDX import `../../components/posts/<slug>/<Name>`.
+- hero 래스터: `public/images/<slug>/hero.webp`, 본문 참조 `/images/<slug>/hero.webp`.
+- `<slug>`: 입력 파일 stem에서 `.md`/`.mdx`·`-draft` 제거.
 
-## 본문 내 명세 마커 (집필자 → make-image)
+## 검증 (필수)
 
-집필 단계(tech-deepdive)는 구조형 이미지가 필요한 자리에 **펜스드 명세 블록**을 남긴다. `post-finalize`의 개념형
-`[[[…]]]` 와 충돌하지 않는다.
+1. `bunx tsc --noEmit` — 생성된 `.tsx` 타입.
+2. `bun run build` — 전체 빌드(단일 JSX 오류가 사이트 전체를 깬다).
+3. 인라인 SVG 색 페인트는 **`astro preview`(HTTP)** 로 확인. `file://`는 외부 스타일시트 quirk로 색이 안 칠해져 보이니 판단 근거로 쓰지 않는다.
 
-````markdown
-```figure
-{ "type": "step-diagram",
-  "name": "tcp-handshake",
-  "alt": "TCP 3-way handshake 단계",
-  "title": "3-way Handshake",
-  "steps": [
-    {"label": "SYN", "desc": "클라이언트→서버 연결 요청"},
-    {"label": "SYN-ACK", "desc": "서버 응답"},
-    {"label": "ACK", "desc": "클라이언트 확인, 연결 수립"}
-  ]
-}
-```
-````
-
-- `make-image`는 이 블록을 파싱→PNG 생성→블록 전체를 `![<alt>](/images/<slug>/<name>.<ext>)`로 치환한다.
-- 치환 후 **잔존 `figure` 블록이 없는지 검사**한다(누락 방지). 필수 이미지 생성 실패는 자동 모드에서 **hard fail**.
-- `type`은 위 5종(`compare-table`/`step-diagram`/`point-cards`/`quote-box`/`hero`)만 허용. 그 외는 오류.
-
-## 사전 요건
+## 사전 요건 (hero 래스터, 발행 시점 로컬만)
 
 - `bun add -d playwright` + `bunx playwright install chromium`.
-- 로컬 Pretendard 폰트 파일(`public/fonts/` 또는 npm `pretendard` 패키지) 접근 가능.
-- 미설치 시 스킬이 설치 안내를 출력하고, 자동 모드에서 **필수 이미지**면 실패 처리(조용한 skip 금지).
+- webp 변환: `cwebp`(libwebp) 또는 `sharp`.
+- CI(astro build)는 커밋된 결과물만 소비하므로 이 도구들이 필요 없다.

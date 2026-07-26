@@ -6,9 +6,10 @@ description: >
   `draft/`에 완성 초안을 만드는 스킬. 엄밀한 정의·장비·프로토콜·실무 시나리오·
   오해 포인트·실습 과제·다이어그램·React 시뮬레이션을 모두 담는다. 단일 글 또는
   순서 있는 시리즈로 쓸 수 있다.
+  구조형 시각물은 본문에 ```` ```viz``` ```` 명세만 남겨 viz 엔진(`scripts/apply-viz.ts`)에 위탁한다(ChatGPT/OpenAI 이미지 생성 안 함).
   "/tech-deepdive <메모>", "이 주제로 기술 글 깊게 써줘", "심층 기술 해설 작성",
   "OSI 7계층 글 써줘" 같은 표현에 반응한다. 4축 검토는 `review-post`,
-  이미지/태그/시리즈 링크는 `post-finalize`, 발행은 `publish-post`가 맡는다.
+  태그/시리즈 링크는 `post-finalize`, 발행은 `publish-post`가 맡는다.
 argument-hint: <idea-file-path (보통 raws/ 하위)>
 ---
 
@@ -69,12 +70,17 @@ raws/<메모>.md
 `assets/ARTICLE_TEMPLATE.mdx`를 베이스로 `draft/<stem>.mdx`에 **섹션을 끝까지** 채운다(시리즈면 `draft/<series-slug>-<order>.mdx`).
 
 - 문체·깊이·구성은 위 "ORDER 원칙"과 `assets/SECTION_PATTERNS.md`를 따른다.
-- **다이어그램·React 시뮬레이션**은 `assets/REACT_SIM_GUIDE.md` 규약대로 작성한다:
-  **글마다 co-located `.tsx` 컴포넌트**(`src/components/posts/<slug>/<Name>.tsx`)를 만들어 MDX 상단에서 `import` 하고
-  `<Name client:visible />`로 삽입한다(인라인 정의는 hydration 안 됨). 외부 라이브러리 금지(inline style),
-  브라우저 API는 `useEffect`/`typeof window` 가드. draft 단계에서는 컴포넌트를 `src/components/posts/<draft-slug>/`에 두고
-  발행 시 `publish-post`가 위치/슬러그를 정리한다.
-- 사진/일러스트가 필요한 자리는 `post-finalize`용 `[[[이미지 단서]]]`로 남긴다(산문 영역에만, JSX 블록 밖에).
+- **시각자료는 종류별로 다른 경로에 위탁한다 — 집필은 "어디에 무엇이 필요한지"만 명세한다**:
+  - **구조형 시각물**(다이어그램·차트·인포그래픽 **그리고 hero 대표 이미지**): 펜스드 ```` ```viz``` ```` 명세 블록(JSON: `kind`+`data`+`caption`/`alt`, hero는 `target:"hero"`)만 남긴다.
+    viz 엔진이 이를 구현한다 — `scripts/apply-viz.ts`(inline → co-located `.tsx` **SSR 정적 SVG**), `scripts/render-viz.ts`(hero → `public/images/<slug>/hero.webp`).
+    유저 디자인 시스템 패키지 `@centurio1987/bbangto-ui-visualization` 컴포넌트로 **직접 구현**하며 **ChatGPT/OpenAI 이미지 생성을 쓰지 않는다**. v1 kind·스키마: `src/lib/viz/schema.ts`.
+  - **React 시뮬레이션**(움직여야 이해되는 것: 상태 변화·단계 진행·파라미터→결과): `assets/REACT_SIM_GUIDE.md` 규약대로
+    **글마다 co-located `.tsx` 컴포넌트**(`src/components/posts/<slug>/<Name>.tsx`)를 만들어 MDX 상단에서 `import` 하고
+    `<Name client:visible />`로 삽입한다(인라인 정의는 hydration 안 됨). 외부 라이브러리 금지(inline style),
+    브라우저 API는 `useEffect`/`typeof window` 가드. draft 단계에서는 컴포넌트를 `src/components/posts/<draft-slug>/`에 두고
+    발행 시 `publish-post`가 위치/슬러그를 정리한다.
+  - 마커는 충돌하지 않는다(```viz``` = 구조형/hero, `<Name client:visible />` = 인터랙티브 시뮬).
+  - **레거시 금지**: ```figure```·`[[[이미지 단서]]]`·`(( ))`는 은퇴했다 — 모두 ```viz``` 로 대체한다(자유 회화형 hero는 `PosterEditorial` 등 포스터 패턴으로).
 - frontmatter는 임시값으로 채우되 `src/content.config.ts` 스키마와 호환되게 둔다(정식화는 `publish-post`).
 
 ### 4. 외부 검토 (누락·모순·사실성)
@@ -91,7 +97,7 @@ bash .codex/skills/tech-deepdive/scripts/review-article.sh "draft/<stem>.mdx"
 ### 5. 완료 안내 + 인계
 
 - 만든 파일 경로(`draft/<stem>.mdx`, co-located 컴포넌트), 외부 검토 결과 요지(미통과면 그 사실)를 보고한다.
-- 다음 단계 안내: `review-post`(4축) → `quality-gate`(품질 체크리스트+보완 루프) → `post-finalize`(이미지/태그/시리즈) → `publish-post`(발행).
+- 다음 단계 안내: `review-post`(4축) → `quality-gate`(품질 체크리스트+보완 루프) → `post-finalize`(태그/시리즈) → `publish-post`(발행).
 - 시리즈면 남은 편 목록과 "다음 편 쓰려면 같은 스킬 재호출"을 안내한다.
 
 ## 참조 파일
@@ -99,6 +105,8 @@ bash .codex/skills/tech-deepdive/scripts/review-article.sh "draft/<stem>.mdx"
 - `assets/ARTICLE_TEMPLATE.mdx` — 심층 글 섹션 스켈레톤
 - `assets/SECTION_PATTERNS.md` — 섹션 유형별 작성 메뉴(목적·필수요소·좋은예/나쁜예) = ORDER 다관점 체크리스트
 - `assets/REACT_SIM_GUIDE.md` — Astro MDX용 자급식 React 시뮬레이션 작성 규약
+- `src/lib/viz/schema.ts` — 구조형 시각물(```viz```) v1 kind·스키마 (viz 엔진이 구현, 집필은 ```viz``` 명세만 남기고 위탁)
+- 시각물 엔진(레포 루트): `scripts/apply-viz.ts`(inline → SSR 정적 SVG), `scripts/render-viz.ts`(hero → webp)
 - `scripts/review-article.sh` — codex/agy 외부 검토(누락·모순·사실성)
 
 ## 카테고리 슬러그 (frontmatter `category`)

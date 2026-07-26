@@ -35,8 +35,8 @@ argument-hint: <slug> <category> [title]
    draft: true
    ---
 
-   <!-- 여기부터 본문을 작성하세요. 이미지가 필요하면 [[[이미지 단서]]] 형식으로 적어두면
-        post-finalize 가 webp 로 생성·치환합니다. -->
+   <!-- 여기부터 본문을 작성하세요. 다이어그램·차트·hero 가 필요하면 ```viz``` 명세 블록으로 적어두면
+        make-image(viz 엔진, bbangto-ui-visualization)가 코드로 구현합니다. kind: ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial. -->
    ```
 
 4. **완료 안내**: 생성 경로와, 발행 준비가 되면 `draft: true` → `false` 로 바꾸거나 그대로 두면 됨을 알린다. 로컬 미리보기는 `npm run dev`. (draft는 기본적으로 목록에서 숨겨진다.)

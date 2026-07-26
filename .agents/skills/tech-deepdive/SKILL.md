@@ -80,10 +80,10 @@ research → ~/blog-research/wiki/angles/<slug>.md   (자료 수집·ingest 완�
 - **시각자료는 종류별로 다른 경로에 위탁한다 — 집필은 "어디에 무엇이 필요한지"만 명세한다**:
   - **React 시뮬레이션**(움직여야 이해되는 것: 상태 변화·단계 진행·파라미터→결과): 시뮬 명세(컴포넌트명·조작 파라미터·관찰 대상·교육 목표)를
     남겨 **`react-sim`(react-sim-builder, sonnet)에 위탁**한다. 규약·실제 `.tsx` 작성·타입검증은 `react-sim`이 소유한다(가이드: `react-sim/assets/REACT_SIM_GUIDE.md`).
-  - **구조형 정보 이미지**(비교표·단계 다이어그램·핵심 포인트 카드·인용 박스·hero): 펜스드 ```` ```figure ```` 명세 블록(JSON: `type`+`name`+`alt`+데이터)을
-    남겨 **`make-image`(image-maker, sonnet)에 위탁**한다(규격: `make-image/assets/IMAGE_GUIDE.md`).
-  - **개념·은유 일러스트**(자유 회화): 산문 영역에 `[[[이미지 단서]]]`로 남긴다 — `post-finalize`의 OpenAI 경로가 처리(JSX 블록 밖에).
-  - 셋은 마커가 충돌하지 않는다(```figure``` = 구조형, `[[[…]]]` = 개념형, `<Name client:visible />` = 시뮬).
+  - **구조형 시각물**(다이어그램·차트·인포그래픽 **그리고 hero 대표 이미지**): 펜스드 ```` ```viz``` ```` 명세 블록(JSON: `kind`+`data`+`caption`/`alt`, hero는 `target:"hero"`)을
+    남겨 **`make-image`(viz 엔진, image-maker, sonnet)에 위탁**한다. 유저 디자인 시스템 패키지 컴포넌트로 **직접 구현**하며 **ChatGPT 이미지 생성을 쓰지 않는다**. kind·규격: `make-image/assets/IMAGE_GUIDE.md`.
+  - 마커는 충돌하지 않는다(```viz``` = 구조형/hero, `<Name client:visible />` = 인터랙티브 시뮬, `<<meme: …>>` = 실재 밈).
+  - **레거시 금지**: ```figure```·`[[[이미지 단서]]]`·`(( ))`는 은퇴했다 — 모두 ```viz``` 로 대체한다(자유 회화형 hero는 `PosterEditorial` 등 포스터 패턴으로).
 - frontmatter는 임시값으로 채우되 `src/content.config.ts` 스키마와 호환되게 둔다(정식화는 `publish-post`).
 - draft 단계 컴포넌트는 `src/components/posts/<draft-slug>/`에 두고 발행 시 `publish-post`가 위치/슬러그를 정리한다.
 
@@ -111,7 +111,8 @@ bash .Codex/skills/tech-deepdive/scripts/review-article.sh "draft/<stem>.mdx"
 - `../_shared/STYLE_GUIDE.md` — 내 문체 가이드(집필 기준, `review-writing`과 공유)
 - `../_shared/NATURAL_KOREAN_GUIDE.md` — 영어투 교정 + 수사 팔레트(자연스러운 한국어, `review-writing`과 공유)
 - `../react-sim/assets/REACT_SIM_GUIDE.md` — React 시뮬레이션 규약(`react-sim` 스킬이 소유, 집필은 명세만 남기고 위탁)
-- `../make-image/assets/IMAGE_GUIDE.md` — 구조형 이미지 규격(`make-image` 스킬이 소유, 집필은 ```figure``` 명세만 남기고 위탁)
+- `../make-image/assets/IMAGE_GUIDE.md` — 구조형 시각물(viz) kind·규격(`make-image` 스킬이 소유, 집필은 ```viz``` 명세만 남기고 위탁)
+- `design-concept/DIAGRAM_STYLE_GUIDE.md` — 다이어그램 디자인 원칙·역할 팔레트
 - `scripts/review-article.sh` — codex/agy 외부 검토(누락·모순·사실성)
 
 ## 카테고리 슬러그 (frontmatter `category`)

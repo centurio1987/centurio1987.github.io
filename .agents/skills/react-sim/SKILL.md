@@ -6,7 +6,7 @@ description: >
   규약대로 co-located `.tsx`를 만들고 MDX에 `import` + `<Name client:visible />`를 삽입한 뒤,
   **작성 즉시 `tsc --noEmit`(또는 `astro check`)로 타입을 검증**하고 최종 `bun run build` 통과를 확인한다.
   "/react-sim <명세>", "이 자리에 시뮬레이션 넣어줘", "TCP 윈도우 슬라이더 만들어줘" 같은 표현에 반응한다.
-  한 장으로 충분한 정적 구조도는 `make-image`, 개념·은유 일러스트는 `post-finalize`(OpenAI)가 맡는다.
+  한 장으로 충분한 정적 구조도는 `make-image`(viz 엔진)가 맡는다.
 argument-hint: <시뮬 명세(JSON/산문) + 대상 MDX 경로>
 ---
 
@@ -64,4 +64,4 @@ tech-deepdive (시뮬 명세 + figure는 make-image로) → [react-sim: .tsx 작
 - **빌드 안전이 최우선**: 작성 직후 `tsc --noEmit`, 최종 `bun run build`. 실패를 완성으로 보고하지 않는다.
 - 인라인 정의 금지(hydration 안 됨). 외부 라이브러리 금지. 브라우저 API는 가드.
 - draft↔발행 import 경로 차이 주의(발행 시 `publish-post`가 정리).
-- 움직일 필요 없는 그림은 이 스킬이 아니라 `make-image`/`[[[…]]]`.
+- 움직일 필요 없는 그림은 이 스킬이 아니라 `make-image`(viz 엔진).

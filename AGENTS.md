@@ -82,12 +82,12 @@ raws/<memo>.md   (user writes idea fragments)
   → post-draft    → draft/<memo>-draft.md   (3 plot candidates + topic cautions)
   → user picks a plot, writes the body
   → review-post   (4-axis Korean review: 맞춤법/개연성/테크니컬 라이팅/몰입도)
-  → post-finalize ([[[image clues]]] → public/images webp, tags, series links)
+  → post-finalize (tags, series links, <<meme:>> delegation — no image generation)
   → publish-post  → src/content/posts/<slug>.md  (sets Astro frontmatter, deletes draft)
 ```
 
 - `init-post` — skip the raws→draft pipeline: scaffold a ready-to-write post directly in `src/content/posts/` (`draft: true`).
-- `post-finalize` uses `scripts/generate-image.ts` and requires `OPENAI_API_KEY`; images go to `public/images/<slug>/` and are referenced as `/images/<slug>/...`.
+- Structured visuals are `viz` blocks implemented by the `image-maker` path (viz engine, `@centurio1987/bbangto-ui-visualization`) via `scripts/apply-viz.ts` → co-located `.tsx` (SSR static SVG) for inline and `scripts/render-viz.ts` → `public/images/<slug>/hero.webp` for hero. No ChatGPT/OpenAI image generation. `post-finalize` no longer generates images; it does tags, series links, and `<<meme:>>` delegation only.
 - `publish-post` does not edit any nav/sidebar config because the Astro collection auto-discovers posts.
 
 ### End-to-End Technical Article Publishing
@@ -123,7 +123,7 @@ The Claude role definitions under `.claude/agents/` map to these Codex responsib
 - `writing-reviewer`: judge persuasion, logic, structure, and house style without changing technical facts.
 - `quality-gate-checker`: enforce technical depth, completeness, multiple perspectives, accuracy, and build checks.
 - `react-sim-builder`: create co-located React simulations and verify type-check/build results.
-- `image-maker`: render fenced `figure` specifications into structured information images.
+- `image-maker`: implement fenced `viz` specifications as structured visuals via the bbangto-ui-visualization viz engine (inline `.tsx` SSR SVG / hero webp); no ChatGPT image generation.
 - `git-shipper`: invoke only `scripts/git-commit-push.sh` with explicit paths and report its result.
 
 Claude `sonnet`, `haiku`, and `inherit` model labels are role hints, not valid Codex model identifiers.
