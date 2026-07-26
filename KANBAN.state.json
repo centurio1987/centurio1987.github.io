@@ -1,6 +1,6 @@
 {
   "next_id": 16,
-  "next_seq": 29,
+  "next_seq": 31,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -63,12 +63,12 @@
       "memo_hash": "c0f47f370b9dd2377a1afa3b973677d4a22542a5"
     },
     "KAN-007": {
-      "col": "backlog",
+      "col": "doing",
       "title": "Tauri 소개와 구현 예시",
       "memo": "앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-06-30",
+      "갱신": "2026-07-26",
       "title_hash": "214c2004b9af5619b82b034bd56d286bc65dd4e8",
       "memo_hash": "7d4dd0dc344cca4c20837ab6a2d5ce49160ba08a"
     },
@@ -143,13 +143,13 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-014": {
-      "col": "backlog",
+      "col": "doing",
       "title": "KAN-013 배포 안정화 검증",
       "memo": "KAN-013 push·배포 후: GitHub Pages 빌드 green(CI packages:read 인증·미처리마커 가드 통과), viz 인라인 SVG 라이브 렌더·색 페인트 정상, hero webp/OG 카드 정상, 신규 글 파이프라인 1회 실통과 확인. 이상 없으면 다음 삭제 카드 착수 가능.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-25",
+      "갱신": "2026-07-26",
       "title_hash": "7dcf41023e43d75c1959f9aa11da602e2d8540da",
       "memo_hash": "8d4d388d2cd179531f6627b60f51b9b2ac78758b",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
@@ -168,9 +168,9 @@
     }
   },
   "order": [
-    "KAN-007",
     "KAN-008",
     "KAN-012",
+    "KAN-015",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -178,13 +178,31 @@
     "KAN-005",
     "KAN-010",
     "KAN-011",
+    "KAN-013",
     "KAN-009",
     "KAN-006",
-    "KAN-013",
-    "KAN-014",
-    "KAN-015"
+    "KAN-007",
+    "KAN-014"
   ],
   "recent": [
+    {
+      "seq": 30,
+      "t": "2026-07-26T13:23",
+      "a": "ai",
+      "id": "KAN-014",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
+    {
+      "seq": 29,
+      "t": "2026-07-26T13:22",
+      "a": "ai",
+      "id": "KAN-007",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 28,
       "t": "2026-07-25T20:44",
