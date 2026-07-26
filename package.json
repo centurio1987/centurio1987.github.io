@@ -14,6 +14,8 @@
     "@astrojs/mdx": "^7.0.3",
     "@astrojs/react": "^6.0.1",
     "@astrojs/sitemap": "^3.7.3",
+    "@centurio1987/bbangto-ui-core": "1.1.1",
+    "@centurio1987/bbangto-ui-style-guide-catalog": "0.3.0",
     "@centurio1987/bbangto-ui-visualization": "^0.2.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

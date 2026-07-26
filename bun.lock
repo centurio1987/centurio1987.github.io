@@ -9,6 +9,8 @@
         "@astrojs/mdx": "^7.0.3",
         "@astrojs/react": "^6.0.1",
         "@astrojs/sitemap": "^3.7.3",
+        "@centurio1987/bbangto-ui-core": "1.1.1",
+        "@centurio1987/bbangto-ui-style-guide-catalog": "0.3.0",
         "@centurio1987/bbangto-ui-visualization": "^0.2.0",
         "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",
@@ -125,6 +127,10 @@
     "@bruits/satteri-win32-x64-msvc": ["@bruits/satteri-win32-x64-msvc@0.9.5", "", { "os": "win32", "cpu": "x64" }, "sha512-5Kw9ZAtTGS8WHizyn+CJhjjfIQrw+7jcZodpmpXJjefnO15M8UexIi6JR2E5thyvsmHyhL6ZDDMUNR4bKJPd4g=="],
 
     "@capsizecss/unpack": ["@capsizecss/unpack@4.0.0", "", { "dependencies": { "fontkitten": "^1.0.0" } }, "sha512-VERIM64vtTP1C4mxQ5thVT9fK0apjPFobqybMtA1UdUujWka24ERHbRHFGmpbbhp73MhV+KSsHQH9C6uOTdEQA=="],
+
+    "@centurio1987/bbangto-ui-core": ["@centurio1987/bbangto-ui-core@1.1.1", "https://npm.pkg.github.com/download/@centurio1987/bbangto-ui-core/1.1.1/f19811843d8e5e259a784e931393cd452dffb59a", { "dependencies": { "@centurio1987/bbangto-ui-tokens": "1.2.0" }, "peerDependencies": { "react": "^18.2.0 || ^19.0.0", "react-dom": "^18.2.0 || ^19.0.0" } }, "sha512-aqvjWtaa+Vj4g59MknIYdn9tdD187uIltYpnd308PhtpCAm5wrH7tTHXbKnYIyQevLlr5EUYHNuzRXzussV6sA=="],
+
+    "@centurio1987/bbangto-ui-style-guide-catalog": ["@centurio1987/bbangto-ui-style-guide-catalog@0.3.0", "https://npm.pkg.github.com/download/@centurio1987/bbangto-ui-style-guide-catalog/0.3.0/dfc12d40b87f440f99ff59eb03da55e1402e14ad", { "dependencies": { "@centurio1987/bbangto-ui-core": "1.1.1", "@centurio1987/bbangto-ui-tokens": "1.2.0" }, "peerDependencies": { "react": "^18.2.0 || ^19.0.0", "react-dom": "^18.2.0 || ^19.0.0" } }, "sha512-+srXPI4uAcpIAqxRchMZc0Jo4Y7JaTjoBjDZe0JL1kp1SSzzxtZ9ESVUjJP3ZI/kQjqwIOFrMDcviMHdgrQ4/Q=="],
 
     "@centurio1987/bbangto-ui-tokens": ["@centurio1987/bbangto-ui-tokens@1.2.0", "https://npm.pkg.github.com/download/@centurio1987/bbangto-ui-tokens/1.2.0/0676067d68ac9a31e1418984b76f120640d21e41", {}, "sha512-mN4JvDRAsu8LrxnSoSknW/oAF6I77Mmjux692kqaGpFcUhvQvZMdgCQ1MZcRssZHd1qiERELn+H+D9s7gCJ5PQ=="],
 
