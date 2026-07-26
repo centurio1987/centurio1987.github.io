@@ -1,32 +1,67 @@
 ---
-import Sparkle from "./motifs/Sparkle.astro";
 interface Props {
   size?: number;
 }
 const { size = 26 } = Astro.props;
+// 얼굴 아바타는 워드마크보다 크게(1.35) 잡는다 — 디자인 피드백 "이미지가 더 커야 한다".
+// 예전 스파클(0.7)·1차 아바타(0.95)보다 확실히 커서 헤더에서 토니 얼굴이 또렷하게 뜬다.
+const faceSize = Math.round(size * 1.35);
 ---
 
-<a href="/" class="logo" aria-label="빵관 토니 — 홈" style={`--logo-size:${size}px`}>
+<a
+  href="/"
+  class="logo"
+  aria-label="빵관 토니 — 홈"
+  style={`--logo-size:${size}px;--face-size:${faceSize}px`}
+>
+  <img
+    class="logo-face"
+    src="/tony-face.webp"
+    width={faceSize}
+    height={faceSize}
+    alt=""
+    aria-hidden="true"
+    decoding="async"
+  />
   <span class="wordmark">빵관 토니</span>
-  <Sparkle size={Math.round(size * 0.7)} class="logo-sparkle" />
 </a>
 
 <style>
   .logo {
     display: inline-flex;
+    /* 아바타·워드마크의 시각 중앙선을 맞춤(디자인 피드백 "텍스트와 중앙선이 맞아야") */
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     color: var(--accent);
   }
   .wordmark {
     font-family: var(--font-display);
     font-weight: 400;
     font-size: var(--logo-size);
+    /* 라인박스를 글리프에 밀착시켜(디스플레이 폰트의 큰 내부 리딩 제거) 원형 아바타
+       중심과 글자 중심이 실제로 정렬되게 한다. */
+    line-height: 1;
   }
-  .logo-sparkle {
+  /* 스파클 SVG → 토니 얼굴 크롭 아바타로 교체(디자인 피드백). 워드마크 '왼쪽'에 원형 배지로
+     두고, 크림 헤더 위에 또렷하게 뜨도록 아주 옅은 잉크 링 + 소프트 섀도로 살짝 띄운다. */
+  .logo-face {
+    width: var(--face-size);
+    height: var(--face-size);
+    flex: none;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow:
+      0 0 0 1px rgba(32, 38, 74, 0.12),
+      0 1px 3px rgba(28, 27, 24, 0.18);
     transition: transform var(--dur) var(--ease);
   }
-  .logo:hover .logo-sparkle {
-    transform: rotate(90deg) scale(1.1);
+  /* 스파클의 rotate(90) 대신 얼굴에 어울리는 살짝 갸웃 + 확대 */
+  .logo:hover .logo-face {
+    transform: rotate(-6deg) scale(1.08);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .logo-face {
+      transition: none;
+    }
   }
 </style>
