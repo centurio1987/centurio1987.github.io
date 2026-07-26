@@ -31,6 +31,21 @@ jobs:
         # so write the read token here. PACKAGES_READ_TOKEN PAT if set, else the workflow's
         # GITHUB_TOKEN (works when the package is public or grants this repo packages:read).
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+      - name: DEBUG auth (temporary)
+        run: |
+          echo "HOME=$HOME  PWD=$PWD"
+          echo "bun: $(bun --version)"
+          echo "--- ~/.npmrc (token masked) ---"
+          sed -E 's/(_authToken=).*/\1MASKED/' ~/.npmrc || echo "no ~/.npmrc"
+          echo "--- project .npmrc ---"; cat .npmrc || true
+          echo "--- token length check (PACKAGES_READ_TOKEN) ---"
+          T='${{ secrets.PACKAGES_READ_TOKEN }}'; echo "secret token length: ${#T}"; echo "prefix: ${T:0:4}"
+          echo "--- curl tarball WITH secret token ---"
+          curl -s -o /dev/null -w 'HTTP:%{http_code}\n' -H "Authorization: Bearer ${{ secrets.PACKAGES_READ_TOKEN }}" "https://npm.pkg.github.com/download/@centurio1987/bbangto-ui-visualization/0.2.0/8e726e3f89b155ff9162bc9210391a4cc75c6fb4"
+          echo "--- curl tarball with token READ FROM ~/.npmrc (what bun uses) ---"
+          NT=$(awk -F'_authToken=' '/_authToken=/{print $2; exit}' ~/.npmrc)
+          echo "npmrc token length: ${#NT}  prefix: ${NT:0:4}"
+          curl -s -o /dev/null -w 'HTTP:%{http_code}\n' -H "Authorization: Bearer $NT" "https://npm.pkg.github.com/download/@centurio1987/bbangto-ui-visualization/0.2.0/8e726e3f89b155ff9162bc9210391a4cc75c6fb4"
       - name: Install dependencies
         run: bun install
       - name: Setup Pages
