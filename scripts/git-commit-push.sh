@@ -39,7 +39,11 @@ fi
 # 지정 경로만 스테이징 (전체 add 금지)
 git reset -q
 for p in "${PATHS[@]}"; do
-  if [[ ! -e "$p" ]]; then echo "path not found: $p" >&2; exit 1; fi
+  if [[ ! -e "$p" ]]; then
+    # File doesn't exist; check if it's tracked by git (could be a deletion)
+    if ! git ls-files -- "$p" >/dev/null 2>&1; then
+      echo "path not found: $p" >&2; exit 1; fi
+  fi
   git add -- "$p"
 done
 
