@@ -8,7 +8,9 @@ import { getCategory } from "../lib/categories";
 import { graphData, hasGraphData } from "../lib/graph";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+  (a, b) =>
+    b.data.pubDate.getTime() - a.data.pubDate.getTime() ||
+    b.id.localeCompare(a.id),
 );
 const bySlug = new Map(posts.map((p) => [p.id, p]));
 

@@ -11,7 +11,11 @@ export async function getStaticPaths() {
     props: {
       posts: posts
         .filter((p) => p.data.category === cat.slug)
-        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+        .sort(
+          (a, b) =>
+            b.data.pubDate.valueOf() - a.data.pubDate.valueOf() ||
+            b.id.localeCompare(a.id),
+        ),
       category: cat.slug,
     },
   }));
