@@ -12,6 +12,13 @@
   - 메모: 선행조건(gating): KAN-014 배포 안정화 검증 완료 후에만 착수. 대상: scripts/generate-image.ts·render-image.ts·image-templates.ts(KAN-013에서 호출 경로 제거+deprecated 주석, 롤백 유예). 조건 충족 시 3파일 삭제 + 잔존 참조 grep 0 확인 + bun run build green + 커밋.
 - `KAN-016` Tauri 해부 2편 — 예시 프로젝트 구현기 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화.
+- `KAN-017` Dependabot 취약점 8건 해소 (의존성 보안 업데이트) — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: GitHub Dependabot 경고 8건(high 2·moderate 4·low 2) 정리 — push마다 표시됨. 절차: dependabot alerts로 대상 의존성·경로 파악 → 안전 버전으로 업데이트(bun/npm), transitive는 overrides 검토 → bun run build green·회귀 없음 → 커밋. breaking 위험 있는 major 업데이트는 개별 판단(무리한 업그레이드로 빌드 깨뜨리지 않기). 이번 KAN-007/013 배포와 무관하게 발생한 기존 부채.
+  - 원문:
+    ```text
+    취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘
+    - kan-015 착수해
+    ```
 
 ## 할 일
 

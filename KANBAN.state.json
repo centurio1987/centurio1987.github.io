@@ -1,6 +1,6 @@
 {
-  "next_id": 17,
-  "next_seq": 34,
+  "next_id": 18,
+  "next_seq": 35,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -177,12 +177,25 @@
       "title_hash": "ce4a8b863696e13b5c2168a18b1c3550b4cdd73d",
       "memo_hash": "d4f6b6d26c02cc33f379a9877ad400448f3866c4",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-017": {
+      "col": "backlog",
+      "title": "Dependabot 취약점 8건 해소 (의존성 보안 업데이트)",
+      "memo": "GitHub Dependabot 경고 8건(high 2·moderate 4·low 2) 정리 — push마다 표시됨. 절차: dependabot alerts로 대상 의존성·경로 파악 → 안전 버전으로 업데이트(bun/npm), transitive는 overrides 검토 → bun run build green·회귀 없음 → 커밋. breaking 위험 있는 major 업데이트는 개별 판단(무리한 업그레이드로 빌드 깨뜨리지 않기). 이번 KAN-007/013 배포와 무관하게 발생한 기존 부채.",
+      "verbatim": "취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘\n- kan-015 착수해",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-26",
+      "title_hash": "274ca1274ec0b16617e441dbc5da0534f6f5eb93",
+      "memo_hash": "933e7c03a98bc043f9481db76be7a735a89e38bf",
+      "verbatim_hash": "3b666a98b746094bbdc14618626f3c02ad13ac6f"
     }
   },
   "order": [
     "KAN-008",
     "KAN-012",
     "KAN-015",
+    "KAN-016",
     "KAN-007",
     "KAN-001",
     "KAN-002",
@@ -195,9 +208,20 @@
     "KAN-009",
     "KAN-006",
     "KAN-014",
-    "KAN-016"
+    "KAN-017"
   ],
   "recent": [
+    {
+      "seq": 34,
+      "t": "2026-07-26T17:10",
+      "a": "ai",
+      "id": "KAN-017",
+      "op": "create",
+      "col": "backlog",
+      "title": "Dependabot 취약점 8건 해소 (의존성 보안 업데이트)",
+      "memo": "GitHub Dependabot 경고 8건(high 2·moderate 4·low 2) 정리 — push마다 표시됨. 절차: dependabot alerts로 대상 의존성·경로 파악 → 안전 버전으로 업데이트(bun/npm), transitive는 overrides 검토 → bun run build green·회귀 없음 → 커밋. breaking 위험 있는 major 업데이트는 개별 판단(무리한 업그레이드로 빌드 깨뜨리지 않기). 이번 KAN-007/013 배포와 무관하게 발생한 기존 부채.",
+      "verbatim": "취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘\n- kan-015 착수해"
+    },
     {
       "seq": 33,
       "t": "2026-07-26T17:02",
