@@ -1,6 +1,6 @@
 {
-  "next_id": 21,
-  "next_seq": 49,
+  "next_id": 24,
+  "next_seq": 52,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -169,13 +169,13 @@
     "KAN-016": {
       "col": "done",
       "title": "Tauri 해부 2편 — 예시 프로젝트 구현기",
-      "memo": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15) — shell:allow-spawn 권한 누락·Windows canonicalize UNC 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation(push 9857238). 커밋 40b4f5b. [디자인 피드백 후속 2887f81] 유저 지적 4건(hero 글씨 작음·Comparison 글씨 작음·화살표 노드 겹침·화살표 이상하게 꺾임)은 모두 1편에서 고쳤던 것의 재발이었고, 원인은 1편 수정이 컴포넌트에만 국소 적용되고 가이드/엔진 기본값에 반영되지 않은 것. 조치: viewBox 폭 620 이하 통일·Flowchart 엣지 축정렬+routing:straight·엣지 label 미렌더라 정보를 노드 label로·hero PosterEditorial 600x338 제목/부제만. 재발 방지로 layout.ts 기본 viewBox 조정 + IMAGE_GUIDE R1~R5 신설 + make-image SKILL 검증 배선(.claude/.agents 미러). Playwright 렌더 캡처로 육안 검증. build green(31 pages). 미결: graphify 그래프 미갱신(KAN-020).",
+      "memo": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15) — shell:allow-spawn 권한 누락·Windows canonicalize UNC 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation(push 9857238). 커밋 40b4f5b. [디자인 피드백 후속 2887f81] 유저 지적 4건(hero 글씨 작음·Comparison 글씨 작음·화살표 노드 겹침·화살표 이상하게 꺾임)은 모두 1편에서 고쳤던 것의 재발이었고, 원인은 1편 수정이 컴포넌트에만 국소 적용되고 가이드/엔진 기본값에 반영되지 않은 것. 조치: viewBox 폭 620 이하 통일·Flowchart 엣지 축정렬+routing:straight·엣지 label 미렌더라 정보를 노드 label로·hero PosterEditorial 600x338 제목/부제만. 재발 방지로 layout.ts 기본 viewBox 조정 + IMAGE_GUIDE R1~~R5 신설 + make-image SKILL 검증 배선(.claude/.agents 미러). Playwright 렌더 캡처로 육안 검증. build green(31 pages). 미결: graphify 그래프 미갱신(KAN-020).",
       "verbatim": "",
       "생성": "ai",
-      "최종": "ai",
+      "최종": "유저",
       "갱신": "2026-07-26",
       "title_hash": "ce4a8b863696e13b5c2168a18b1c3550b4cdd73d",
-      "memo_hash": "c244444162382ead69ebef265681295534675ff6",
+      "memo_hash": "5fab59548ddd9e06732ddc87b9d3f9ff92aea1be",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-017": {
@@ -214,16 +214,16 @@
       "memo_hash": "3a0af3f8a53c24a405525d0bb2274ad85d174594",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
-    "KAN-020": {
+    "KAN-023": {
       "col": "backlog",
       "title": "graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락)",
-      "memo": "src/data/graph.json이 2026-07-02 생성분(8편: osi 1~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install \"graphifyy[gemini]\" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채.",
+      "memo": "src/data/graph.json이 2026-07-02 생성분(8편: osi 1~~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install \"graphifyy[gemini]\" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채.",
       "verbatim": "",
-      "생성": "ai",
-      "최종": "ai",
+      "생성": "유저",
+      "최종": "유저",
       "갱신": "2026-07-26",
       "title_hash": "94e649dc7aa0fcb49f3868f9d41b7c059b2a5654",
-      "memo_hash": "14be4120673e76444cd741e8a3c6b1d299acd578",
+      "memo_hash": "a40626ca76696b0a2b92b8b40d99e6e811a73e03",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
@@ -232,6 +232,7 @@
     "KAN-012",
     "KAN-017",
     "KAN-018",
+    "KAN-023",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -246,10 +247,40 @@
     "KAN-015",
     "KAN-019",
     "KAN-016",
-    "KAN-020",
     "KAN-007"
   ],
   "recent": [
+    {
+      "seq": 51,
+      "t": "2026-07-26T19:47",
+      "a": "유저",
+      "id": "KAN-020",
+      "op": "archive",
+      "col": "backlog",
+      "title": "graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락)",
+      "memo": "src/data/graph.json이 2026-07-02 생성분(8편: osi 1~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install \"graphifyy[gemini]\" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채."
+    },
+    {
+      "seq": 50,
+      "t": "2026-07-26T19:47",
+      "a": "유저",
+      "id": "KAN-016",
+      "op": "edit",
+      "field": "memo",
+      "before": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15) — shell:allow-spawn 권한 누락·Windows canonicalize UNC 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation(push 9857238). 커밋 40b4f5b. [디자인 피드백 후속 2887f81] 유저 지적 4건(hero 글씨 작음·Comparison 글씨 작음·화살표 노드 겹침·화살표 이상하게 꺾임)은 모두 1편에서 고쳤던 것의 재발이었고, 원인은 1편 수정이 컴포넌트에만 국소 적용되고 가이드/엔진 기본값에 반영되지 않은 것. 조치: viewBox 폭 620 이하 통일·Flowchart 엣지 축정렬+routing:straight·엣지 label 미렌더라 정보를 노드 label로·hero PosterEditorial 600x338 제목/부제만. 재발 방지로 layout.ts 기본 viewBox 조정 + IMAGE_GUIDE R1~R5 신설 + make-image SKILL 검증 배선(.claude/.agents 미러). Playwright 렌더 캡처로 육안 검증. build green(31 pages). 미결: graphify 그래프 미갱신(KAN-020).",
+      "after": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15) — shell:allow-spawn 권한 누락·Windows canonicalize UNC 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation(push 9857238). 커밋 40b4f5b. [디자인 피드백 후속 2887f81] 유저 지적 4건(hero 글씨 작음·Comparison 글씨 작음·화살표 노드 겹침·화살표 이상하게 꺾임)은 모두 1편에서 고쳤던 것의 재발이었고, 원인은 1편 수정이 컴포넌트에만 국소 적용되고 가이드/엔진 기본값에 반영되지 않은 것. 조치: viewBox 폭 620 이하 통일·Flowchart 엣지 축정렬+routing:straight·엣지 label 미렌더라 정보를 노드 label로·hero PosterEditorial 600x338 제목/부제만. 재발 방지로 layout.ts 기본 viewBox 조정 + IMAGE_GUIDE R1~~R5 신설 + make-image SKILL 검증 배선(.claude/.agents 미러). Playwright 렌더 캡처로 육안 검증. build green(31 pages). 미결: graphify 그래프 미갱신(KAN-020)."
+    },
+    {
+      "seq": 49,
+      "t": "2026-07-26T19:47",
+      "a": "유저",
+      "id": "KAN-023",
+      "op": "create",
+      "col": "backlog",
+      "title": "graphify 그래프 데이터 갱신 (연관 글·/graph 10편 누락)",
+      "memo": "src/data/graph.json이 2026-07-02 생성분(8편: osi 1~~6·webrtc-1·welcome)에서 멈춰 있어 이후 발행한 10편(webrtc-2/3, auth-authz 1~~4, algorithm-at-40-prologue, aside-arc, tauri-1, tauri-2)이 그래프에 없다. 해당 글들의 연관 글 섹션은 frontmatter 폴백(series/tags/category)으로만 랭킹되고 /graph 지도에도 안 보임. KAN-016 ship-post에서 'graphify --update' 시도했으나 graphify 0.9.4의 markdown 추출기가 openai 패키지를 요구해 전 청크 실패(빌드는 non-blocking 계약대로 green). 절차: uv tool install \"graphifyy[gemini]\" --force 등으로 추출기 의존성 복구 → GEMINI_API_KEY로 graphify src/content/posts/ --update → bun scripts/build-graph-data.ts → graphify-out/(manifest 포함)+src/data/graph.json 함께 커밋 → 연관 글·/graph 렌더 확인. 주의: 실패한 실행이 src/content/posts/ 안에 graphify-out/cache/를 남길 수 있으니 콘텐츠 디렉터리 오염 여부 확인. tauri-1 발행 시점부터 누적된 선재 부채.",
+      "verbatim": ""
+    },
     {
       "seq": 48,
       "t": "2026-07-26T19:40",
@@ -716,16 +747,6 @@
       "col": "review",
       "title": "도메인 모델과 RDB",
       "memo": "draft: draft/domain-model-rdb-draft.md · 외래키 신호, 상속/합성 테이블 표현, Aggregate↔테이블 대응, Value 영속화"
-    },
-    {
-      "seq": 1,
-      "t": "2026-06-30T14:32",
-      "a": "ai",
-      "id": "KAN-001",
-      "op": "create",
-      "col": "review",
-      "title": "GraphQL을 썼을 때 유리한 상황과 아닌 상황",
-      "memo": "draft: draft/graphql-use-cases-draft.md · REST 대비 이득/복잡도 증가 상황, 조직·클라이언트·게이트웨이 판단 기준"
     }
   ]
 }
