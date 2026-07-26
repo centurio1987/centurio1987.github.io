@@ -1,6 +1,6 @@
 {
   "next_id": 21,
-  "next_seq": 48,
+  "next_seq": 49,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -169,13 +169,13 @@
     "KAN-016": {
       "col": "done",
       "title": "Tauri 해부 2편 — 예시 프로젝트 구현기",
-      "memo": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. viz 4종(ProcessSteps/Flowchart×2/Comparison) SSR 정적 SVG + hero.webp + react-sim PermissionGate(client:visible). 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3 반영, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15). 외부검토로 shell:allow-spawn 권한 누락·Windows canonicalize UNC 접두사 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation (push 9857238). bun run build green(31 pages)·마커 0·tsc 통과. 커밋 40b4f5b(브랜치 centurio1987/kan-016). 미결: graphify 그래프 미갱신(선재 부채, KAN-020).",
+      "memo": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15) — shell:allow-spawn 권한 누락·Windows canonicalize UNC 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation(push 9857238). 커밋 40b4f5b. [디자인 피드백 후속 2887f81] 유저 지적 4건(hero 글씨 작음·Comparison 글씨 작음·화살표 노드 겹침·화살표 이상하게 꺾임)은 모두 1편에서 고쳤던 것의 재발이었고, 원인은 1편 수정이 컴포넌트에만 국소 적용되고 가이드/엔진 기본값에 반영되지 않은 것. 조치: viewBox 폭 620 이하 통일·Flowchart 엣지 축정렬+routing:straight·엣지 label 미렌더라 정보를 노드 label로·hero PosterEditorial 600x338 제목/부제만. 재발 방지로 layout.ts 기본 viewBox 조정 + IMAGE_GUIDE R1~R5 신설 + make-image SKILL 검증 배선(.claude/.agents 미러). Playwright 렌더 캡처로 육안 검증. build green(31 pages). 미결: graphify 그래프 미갱신(KAN-020).",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-26",
       "title_hash": "ce4a8b863696e13b5c2168a18b1c3550b4cdd73d",
-      "memo_hash": "cc05c201522b481633204d38836159cac7cebb9e",
+      "memo_hash": "c244444162382ead69ebef265681295534675ff6",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-017": {
@@ -250,6 +250,16 @@
     "KAN-007"
   ],
   "recent": [
+    {
+      "seq": 48,
+      "t": "2026-07-26T19:40",
+      "a": "ai",
+      "id": "KAN-016",
+      "op": "edit",
+      "field": "memo",
+      "before": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. viz 4종(ProcessSteps/Flowchart×2/Comparison) SSR 정적 SVG + hero.webp + react-sim PermissionGate(client:visible). 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3 반영, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15). 외부검토로 shell:allow-spawn 권한 누락·Windows canonicalize UNC 접두사 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation (push 9857238). bun run build green(31 pages)·마커 0·tsc 통과. 커밋 40b4f5b(브랜치 centurio1987/kan-016). 미결: graphify 그래프 미갱신(선재 부채, KAN-020).",
+      "after": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15) — shell:allow-spawn 권한 누락·Windows canonicalize UNC 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation(push 9857238). 커밋 40b4f5b. [디자인 피드백 후속 2887f81] 유저 지적 4건(hero 글씨 작음·Comparison 글씨 작음·화살표 노드 겹침·화살표 이상하게 꺾임)은 모두 1편에서 고쳤던 것의 재발이었고, 원인은 1편 수정이 컴포넌트에만 국소 적용되고 가이드/엔진 기본값에 반영되지 않은 것. 조치: viewBox 폭 620 이하 통일·Flowchart 엣지 축정렬+routing:straight·엣지 label 미렌더라 정보를 노드 label로·hero PosterEditorial 600x338 제목/부제만. 재발 방지로 layout.ts 기본 viewBox 조정 + IMAGE_GUIDE R1~R5 신설 + make-image SKILL 검증 배선(.claude/.agents 미러). Playwright 렌더 캡처로 육안 검증. build green(31 pages). 미결: graphify 그래프 미갱신(KAN-020)."
+    },
     {
       "seq": 47,
       "t": "2026-07-26T19:16",
