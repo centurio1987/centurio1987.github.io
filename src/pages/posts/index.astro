@@ -5,7 +5,9 @@ import PostList from "../../components/PostList.astro";
 import { CATEGORIES } from "../../lib/categories";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  (a, b) =>
+    b.data.pubDate.valueOf() - a.data.pubDate.valueOf() ||
+    b.id.localeCompare(a.id)
 );
 const usedCategories = new Set(posts.map((p) => p.data.category));
 const categories = CATEGORIES.filter((c) => usedCategories.has(c.slug));
