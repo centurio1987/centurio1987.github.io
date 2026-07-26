@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
@@ -44,6 +45,10 @@ const imageUrl = new URL(image, Astro.site).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {/* 크로스 페이지 View Transitions. 콘텐츠는 여전히 SSR이고, 라우터 스크립트만
+        전역 로드된다. Astro가 VT의 reduced-motion 을 자동 존중하며, reveal.ts 는
+        astro:page-load 에 바인딩돼 VT 후 새 페이지의 [data-reveal] 을 재관측한다. */}
+    <ClientRouter />
     {/* 리빌 선-부착: 모션 허용 + IO 지원일 때만 reveal-ready 를 페인트 전에 붙여
         above-the-fold 콘텐츠의 "보였다 숨는" 깜빡임을 막는다. reduced-motion/무JS/IO
         미지원이면 클래스가 없어 콘텐츠가 항상 보인다(reveal.ts 가 멱등 보강). */}

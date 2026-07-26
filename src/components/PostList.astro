@@ -16,6 +16,11 @@ const { posts } = Astro.props;
       const cat = getCategory(post.data.category);
       const author = getAuthor(post.data.author);
       const minutes = readingTime(post.body);
+      // shared-element 제목: 목록 → 글 상세로 전환할 때 제목이 이어지도록 canonical
+      // 이름을 부여한다. PostList 는 주 목록(/posts·/categories/*)에서만 쓰여 한
+      // 페이지에 같은 글이 한 번만 나오므로 name 유일성이 보장된다(RelatedPosts 등
+      // 부차 목록엔 부여하지 않는다). 값은 PostLayout <h1> 과 동일 규칙.
+      const titleTransition = `post-${post.id.replace(/\.(md|mdx)$/, "")}-title`;
       return (
         <li class="post-item" data-reveal="up" style={`--reveal-i:${i}`}>
           <a href={`/posts/${post.id}`} class="post-link">
@@ -35,7 +40,9 @@ const { posts } = Astro.props;
                 <span class="dot">·</span>
                 <span>{minutes}분</span>
               </span>
-              <span class="post-title">{post.data.title}</span>
+              <span class="post-title" transition:name={titleTransition}>
+                {post.data.title}
+              </span>
               {post.data.description && (
                 <span class="post-desc">{post.data.description}</span>
               )}

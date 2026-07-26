@@ -52,7 +52,7 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
         {ep && <span class="kicker-ep">EP.{ep}</span>}
       </div>
       <div class="talk-hand">{TALK.handLead}</div>
-      <h1>{title}</h1>
+      <h1 transition:name={`post-${slug}-title`}>{title}</h1>
       {description && <p class="talk-lead">{description}</p>}
       <div class="talk-meta">
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>

@@ -80,7 +80,7 @@ if (fs.existsSync(heroPath)) {
         <span class="dot">·</span>
         <span>{minutes}분</span>
       </div>
-      <h1>{title}</h1>
+      <h1 transition:name={`post-${slug}-title`}>{title}</h1>
       {description && <p class="lead">{description}</p>}
       <Squiggle class="post-rule" />
     </header>
