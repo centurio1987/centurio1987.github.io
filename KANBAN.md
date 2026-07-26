@@ -24,7 +24,7 @@
 - `KAN-007` Tauri 소개와 구현 예시 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리.
 - `KAN-018` CI Node 20 deprecation 경고 해결 (Actions Node24 이관) — 생성:ai · 최종:ai · 갱신:2026-07-26
-  - 메모: main.yml GitHub Actions 실행 시 'Node 20 is deprecated, will run on Node 24' 경고. actions/checkout·configure-pages·upload-pages-artifact·deploy-pages·setup-bun 등 사용 액션을 Node24 지원 최신 메이저 태그로 올려 경고 제거. 동작엔 지장 없으나 정리. 업그레이드 후 auth→install→check-markers→astro build→deploy 전 스텝 green 재확인(액션 major 업 시 입력 스키마 변화 주의).
+  - 메모: 완료. main.yml 액션을 node24 런타임 메이저로 상향: actions/checkout v4→v7, actions/configure-pages v5→v6, actions/upload-pages-artifact v3→v5(내부 upload-artifact v4.6.2→v7), actions/deploy-pages v4→v5. oven-sh/setup-bun@v2는 이미 node24(v2.2.0)라 무변경. 입력 스키마는 전 액션 동일하나 upload-pages-artifact v4+가 tar에서 dotfile을 기본 제외하므로 include-hidden-files:true로 v3 동작 유지(현재 dist/엔 dotfile 없음). 커밋 d5d2789 → main ff push. 실행 30195799378 build/deploy 전 스텝 success, Node 20 deprecation 어노테이션 2건 → 0건(직전 런 30194386647 대비).
   - 원문:
     ```text
     취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘

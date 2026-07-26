@@ -1,6 +1,6 @@
 {
   "next_id": 20,
-  "next_seq": 42,
+  "next_seq": 43,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -193,13 +193,13 @@
     "KAN-018": {
       "col": "doing",
       "title": "CI Node 20 deprecation 경고 해결 (Actions Node24 이관)",
-      "memo": "main.yml GitHub Actions 실행 시 'Node 20 is deprecated, will run on Node 24' 경고. actions/checkout·configure-pages·upload-pages-artifact·deploy-pages·setup-bun 등 사용 액션을 Node24 지원 최신 메이저 태그로 올려 경고 제거. 동작엔 지장 없으나 정리. 업그레이드 후 auth→install→check-markers→astro build→deploy 전 스텝 green 재확인(액션 major 업 시 입력 스키마 변화 주의).",
+      "memo": "완료. main.yml 액션을 node24 런타임 메이저로 상향: actions/checkout v4→v7, actions/configure-pages v5→v6, actions/upload-pages-artifact v3→v5(내부 upload-artifact v4.6.2→v7), actions/deploy-pages v4→v5. oven-sh/setup-bun@v2는 이미 node24(v2.2.0)라 무변경. 입력 스키마는 전 액션 동일하나 upload-pages-artifact v4+가 tar에서 dotfile을 기본 제외하므로 include-hidden-files:true로 v3 동작 유지(현재 dist/엔 dotfile 없음). 커밋 d5d2789 → main ff push. 실행 30195799378 build/deploy 전 스텝 success, Node 20 deprecation 어노테이션 2건 → 0건(직전 런 30194386647 대비).",
       "verbatim": "취약점 관련 작업이랑 node 20 deprecation 경고 해결 같은 태스크로 정의 해줘\n- kan-015 착수해",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-26",
       "title_hash": "706ea3a3a5e4bf952ee29f6742a3593430f29815",
-      "memo_hash": "1df97cf714dab560e4feb2f5649982c10cac816e",
+      "memo_hash": "f073dd8085573874fb68af8561906c68fb8604db",
       "verbatim_hash": "3b666a98b746094bbdc14618626f3c02ad13ac6f"
     },
     "KAN-019": {
@@ -237,6 +237,16 @@
     "KAN-018"
   ],
   "recent": [
+    {
+      "seq": 42,
+      "t": "2026-07-26T18:06",
+      "a": "ai",
+      "id": "KAN-018",
+      "op": "edit",
+      "field": "memo",
+      "before": "main.yml GitHub Actions 실행 시 'Node 20 is deprecated, will run on Node 24' 경고. actions/checkout·configure-pages·upload-pages-artifact·deploy-pages·setup-bun 등 사용 액션을 Node24 지원 최신 메이저 태그로 올려 경고 제거. 동작엔 지장 없으나 정리. 업그레이드 후 auth→install→check-markers→astro build→deploy 전 스텝 green 재확인(액션 major 업 시 입력 스키마 변화 주의).",
+      "after": "완료. main.yml 액션을 node24 런타임 메이저로 상향: actions/checkout v4→v7, actions/configure-pages v5→v6, actions/upload-pages-artifact v3→v5(내부 upload-artifact v4.6.2→v7), actions/deploy-pages v4→v5. oven-sh/setup-bun@v2는 이미 node24(v2.2.0)라 무변경. 입력 스키마는 전 액션 동일하나 upload-pages-artifact v4+가 tar에서 dotfile을 기본 제외하므로 include-hidden-files:true로 v3 동작 유지(현재 dist/엔 dotfile 없음). 커밋 d5d2789 → main ff push. 실행 30195799378 build/deploy 전 스텝 success, Node 20 deprecation 어노테이션 2건 → 0건(직전 런 30194386647 대비)."
+    },
     {
       "seq": 41,
       "t": "2026-07-26T17:58",
