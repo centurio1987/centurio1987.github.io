@@ -1,6 +1,6 @@
 {
-  "next_id": 16,
-  "next_seq": 31,
+  "next_id": 17,
+  "next_seq": 34,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -65,12 +65,12 @@
     "KAN-007": {
       "col": "doing",
       "title": "Tauri 소개와 구현 예시",
-      "memo": "앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함",
+      "memo": "1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리.",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-26",
       "title_hash": "214c2004b9af5619b82b034bd56d286bc65dd4e8",
-      "memo_hash": "7d4dd0dc344cca4c20837ab6a2d5ce49160ba08a"
+      "memo_hash": "b7e272a20d4410aa13e9f698be4a5ce7fd37506b"
     },
     "KAN-008": {
       "col": "backlog",
@@ -143,7 +143,7 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-014": {
-      "col": "doing",
+      "col": "done",
       "title": "KAN-013 배포 안정화 검증",
       "memo": "KAN-013 push·배포 후: GitHub Pages 빌드 green(CI packages:read 인증·미처리마커 가드 통과), viz 인라인 SVG 라이브 렌더·색 페인트 정상, hero webp/OG 카드 정상, 신규 글 파이프라인 1회 실통과 확인. 이상 없으면 다음 삭제 카드 착수 가능.",
       "verbatim": "",
@@ -165,12 +165,25 @@
       "title_hash": "834f7586d6d9133d911aa05f06d0eb806c1e9331",
       "memo_hash": "b4987ff9a0364b99d6e8c0dab44e04225008eddd",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-016": {
+      "col": "backlog",
+      "title": "Tauri 해부 2편 — 예시 프로젝트 구현기",
+      "memo": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-26",
+      "title_hash": "ce4a8b863696e13b5c2168a18b1c3550b4cdd73d",
+      "memo_hash": "d4f6b6d26c02cc33f379a9877ad400448f3866c4",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
     "KAN-008",
     "KAN-012",
     "KAN-015",
+    "KAN-007",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -181,10 +194,40 @@
     "KAN-013",
     "KAN-009",
     "KAN-006",
-    "KAN-007",
-    "KAN-014"
+    "KAN-014",
+    "KAN-016"
   ],
   "recent": [
+    {
+      "seq": 33,
+      "t": "2026-07-26T17:02",
+      "a": "ai",
+      "id": "KAN-016",
+      "op": "create",
+      "col": "backlog",
+      "title": "Tauri 해부 2편 — 예시 프로젝트 구현기",
+      "memo": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화.",
+      "verbatim": ""
+    },
+    {
+      "seq": 32,
+      "t": "2026-07-26T17:02",
+      "a": "ai",
+      "id": "KAN-007",
+      "op": "edit",
+      "field": "memo",
+      "before": "앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함",
+      "after": "1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리."
+    },
+    {
+      "seq": 31,
+      "t": "2026-07-26T17:02",
+      "a": "ai",
+      "id": "KAN-014",
+      "op": "move",
+      "from": "doing",
+      "to": "done"
+    },
     {
       "seq": 30,
       "t": "2026-07-26T13:23",
