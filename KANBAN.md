@@ -28,8 +28,6 @@
 ## 할 일
 
 ## 진행 중
-- `KAN-007` Tauri 소개와 구현 예시 — 생성:ai · 최종:ai · 갱신:2026-07-26
-  - 메모: 1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리.
 
 ## 검토
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-06-30
@@ -108,3 +106,5 @@
   - 메모: KAN-013 viz 이관이 .claude 정본만 갱신하고 다른-런타임 미러는 구 OpenAI/HTML-template 파이프라인 그대로 방치(KAN-015에서 발견). 대상: AGENTS.md(집필 워크플로 섹션 전체 — [[[image clues]]]·generate-image.ts 서술), .agents/skills/make-image/{SKILL.md,assets/IMAGE_GUIDE.md}, .agents/skills/post-finalize/SKILL.md, .codex/skills/post-finalize/SKILL.md, .codex/agents/image-maker.toml. .claude 정본을 기준으로 viz(apply-viz/render-viz)로 서술 이관 + 삭제된 3스크립트 참조 제거. ORDER.md·KANBAN 이력은 보존(수정 안 함). KAN-015가 정본 트리만 정리했으므로 이 카드가 '전체 grep-0'를 마무리.
 - `KAN-016` Tauri 해부 2편 — 예시 프로젝트 구현기 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: 발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. viz 4종(ProcessSteps/Flowchart×2/Comparison) SSR 정적 SVG + hero.webp + react-sim PermissionGate(client:visible). 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3 반영, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15). 외부검토로 shell:allow-spawn 권한 누락·Windows canonicalize UNC 접두사 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation (push 9857238). bun run build green(31 pages)·마커 0·tsc 통과. 커밋 40b4f5b(브랜치 centurio1987/kan-016). 미결: graphify 그래프 미갱신(선재 부채, KAN-020).
+- `KAN-007` Tauri 소개와 구현 예시 — 생성:ai · 최종:ai · 갱신:2026-07-26
+  - 메모: 1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리·발행 완료(/posts/tauri-2/). 카드 범위(1편) 종료.
