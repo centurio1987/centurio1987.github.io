@@ -1,6 +1,6 @@
 {
   "next_id": 19,
-  "next_seq": 36,
+  "next_seq": 37,
   "cards": {
     "KAN-001": {
       "col": "review",
@@ -155,13 +155,13 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-015": {
-      "col": "backlog",
+      "col": "doing",
       "title": "deprecated 이미지 스크립트 3종 삭제",
       "memo": "선행조건(gating): KAN-014 배포 안정화 검증 완료 후에만 착수. 대상: scripts/generate-image.ts·render-image.ts·image-templates.ts(KAN-013에서 호출 경로 제거+deprecated 주석, 롤백 유예). 조건 충족 시 3파일 삭제 + 잔존 참조 grep 0 확인 + bun run build green + 커밋.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-25",
+      "갱신": "2026-07-26",
       "title_hash": "834f7586d6d9133d911aa05f06d0eb806c1e9331",
       "memo_hash": "b4987ff9a0364b99d6e8c0dab44e04225008eddd",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
@@ -206,7 +206,6 @@
   "order": [
     "KAN-008",
     "KAN-012",
-    "KAN-015",
     "KAN-016",
     "KAN-007",
     "KAN-001",
@@ -221,9 +220,19 @@
     "KAN-006",
     "KAN-014",
     "KAN-017",
-    "KAN-018"
+    "KAN-018",
+    "KAN-015"
   ],
   "recent": [
+    {
+      "seq": 36,
+      "t": "2026-07-26T17:12",
+      "a": "ai",
+      "id": "KAN-015",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 35,
       "t": "2026-07-26T17:11",
