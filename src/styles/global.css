@@ -92,6 +92,14 @@ img {
   border-radius: var(--radius-md);
 }
 
+/* 본문 이미지(히어로·개념 이미지·밈)는 종이 배경과 톤이 겹쳐 흐를 수 있어
+ * 카드 모티프(잉크 외곽선 + 부드러운 그림자)로 지면에서 분리한다.
+ * 배너·아바타는 .prose 밖이라 영향받지 않는다. */
+.prose img {
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 18px rgba(32, 38, 74, 0.1);
+}
+
 .table-wrap {
   overflow-x: auto;
   margin: 28px 0;
