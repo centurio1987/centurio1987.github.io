@@ -29,14 +29,6 @@
     
     현재 블로그 목록의 아이템에는 저자명과 ai 여부 태그만 나타난다. 저자 프로필 사진이 드러날 수 있도록 해라.
     ```
-- `KAN-027` Footer 임시 마스코트 → 등록 저자 전신샷(나란히) + 홈 마스코트 swing 모션 — 생성:유저 · 최종:유저 · 갱신:2026-07-27
-  - 메모: 홈/footer 임시 마스코트(svg.mascot) 교체 — 등록 저자들의 전신샷을 나란히 배치, 홈 히어로 마스코트와 동일한 swing 모션 적용
-  - 원문:
-    ```text
-    대상: footer 마스코트 (footer.site-footer > div.footer-inner > svg.mascot, aria-label 빵관 토니 마스코트 / 홈 http://localhost:4321/).
-    
-    현재 footer의 이미지는 블로그 설계 초기 때 만든 임시 이미지다. 이 이미지를 현재 등록된 저자들의 전신샷이 나란히 있는 형태로 전환 하라. 이 저자들 이미지 또한, 메인 화면 마스코트와 동일한 모션(swing)을 취해야 한다.
-    ```
 - `KAN-029` 글 지도(/graph): 초기엔 글↔글 연관만 표시, 글 노드 호버 시 연관 키워드 노출 — 생성:유저 · 최종:ai · 갱신:2026-07-27
   - 메모: 대상: /graph 글 지도 익스플로러(graphify 지식그래프 src/data/graph.json 소비). 현재는 글(문서) 노드와 개념·키워드 노드가 함께 그려짐. 변경① 초기 뷰를 글 노드와 글↔글 연관 관계(엣지)만으로 한정 — 개념·키워드 노드는 초기 렌더에서 숨김. 변경② 글 노드에 포인터를 올리면(hover) 해당 글의 연관 키워드가 나타나도록 인터랙션 추가.
   - 원문:
@@ -63,6 +55,14 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+- `KAN-027` Footer 임시 마스코트 → 등록 저자 전신샷(나란히) + 홈 마스코트 swing 모션 — 생성:유저 · 최종:ai · 갱신:2026-07-28
+  - 메모: 푸터 임시 마스코트(svg.mascot) → 저자 전신 컷아웃 라인업(src/components/AuthorLineup.astro)으로 교체 완료. 모션은 홈 히어로와 **동일한 스윙 공유** — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화하고, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 추가 — 채운 저자만 라인업에 서고, 나머지는 자산이 생기면 컴포넌트 수정 없이 자동 합류. 컷아웃은 scripts/extract-author-cutout.ts(종이색 flood fill + 최대 연결 컴포넌트)로 데코 원본에서 굽는다 → tony-full.webp(322x440), ppangto-teacher-full.webp(284x440) 생성. 검증: bun run build 통과 · 4인 라인업 데스크톱/모바일 넘침 없음(390px에서 355px) · reduced-motion에서 animation:none. 남은 것: 빵토 연구원·빵토 교수님은 전신 원본이 레포/git 히스토리에 없어 현재 2인만 노출 — 같은 화풍 1254² 전신 이미지 2장을 받으면 스크립트 실행 + fullBody 채우기로 4인 완성(유저 대기 중).
+  - 원문:
+    ```text
+    대상: footer 마스코트 (footer.site-footer > div.footer-inner > svg.mascot, aria-label 빵관 토니 마스코트 / 홈 http://localhost:4321/).
+    
+    현재 footer의 이미지는 블로그 설계 초기 때 만든 임시 이미지다. 이 이미지를 현재 등록된 저자들의 전신샷이 나란히 있는 형태로 전환 하라. 이 저자들 이미지 또한, 메인 화면 마스코트와 동일한 모션(swing)을 취해야 한다.
+    ```
 
 ## 검토
 - `KAN-010` KAN-013 퍼소나를 정의 했고, 기존 포스트들에는 퍼소나를 나타내는 저자명, 저자의 프로필, 저자 및 포스트 유형을 나타내는 배너가 포함되어 있으나, 집필 workflow에는 그것들을 포함하는 과정이 생략되어 있다. 포스트 레이아웃의 재설계를 포함하여, 원인 분석과 해결 방법에 대한 전략을 구상하라. — 생성:유저 · 최종:ai · 갱신:2026-07-23

@@ -1,6 +1,6 @@
 {
   "next_id": 30,
-  "next_seq": 92,
+  "next_seq": 94,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -287,15 +287,15 @@
       "verbatim_hash": "d6e598e9d9c50a3f9ce5b24b1a8a002be9bc944a"
     },
     "KAN-027": {
-      "col": "backlog",
+      "col": "doing",
       "title": "Footer 임시 마스코트 → 등록 저자 전신샷(나란히) + 홈 마스코트 swing 모션",
-      "memo": "홈/footer 임시 마스코트(svg.mascot) 교체 — 등록 저자들의 전신샷을 나란히 배치, 홈 히어로 마스코트와 동일한 swing 모션 적용",
+      "memo": "푸터 임시 마스코트(svg.mascot) → 저자 전신 컷아웃 라인업(src/components/AuthorLineup.astro)으로 교체 완료. 모션은 홈 히어로와 **동일한 스윙 공유** — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화하고, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 추가 — 채운 저자만 라인업에 서고, 나머지는 자산이 생기면 컴포넌트 수정 없이 자동 합류. 컷아웃은 scripts/extract-author-cutout.ts(종이색 flood fill + 최대 연결 컴포넌트)로 데코 원본에서 굽는다 → tony-full.webp(322x440), ppangto-teacher-full.webp(284x440) 생성. 검증: bun run build 통과 · 4인 라인업 데스크톱/모바일 넘침 없음(390px에서 355px) · reduced-motion에서 animation:none. 남은 것: 빵토 연구원·빵토 교수님은 전신 원본이 레포/git 히스토리에 없어 현재 2인만 노출 — 같은 화풍 1254² 전신 이미지 2장을 받으면 스크립트 실행 + fullBody 채우기로 4인 완성(유저 대기 중).",
       "verbatim": "대상: footer 마스코트 (footer.site-footer > div.footer-inner > svg.mascot, aria-label 빵관 토니 마스코트 / 홈 http://localhost:4321/).\n\n현재 footer의 이미지는 블로그 설계 초기 때 만든 임시 이미지다. 이 이미지를 현재 등록된 저자들의 전신샷이 나란히 있는 형태로 전환 하라. 이 저자들 이미지 또한, 메인 화면 마스코트와 동일한 모션(swing)을 취해야 한다.",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-27",
+      "최종": "ai",
+      "갱신": "2026-07-28",
       "title_hash": "1bdb962eef7e00cfa0726a87d74c52d1266eab08",
-      "memo_hash": "f16d5b98eb3feeffbce900174cd34b6da6f8a8df",
+      "memo_hash": "6e8a9a5d5c78709787b0dff6a1fa1fef5401ba29",
       "verbatim_hash": "e24af35bb31a54ab4e6aa09720c2999393b49497"
     },
     "KAN-028": {
@@ -327,7 +327,6 @@
     "KAN-024",
     "KAN-025",
     "KAN-026",
-    "KAN-027",
     "KAN-029",
     "KAN-028",
     "KAN-001",
@@ -351,9 +350,29 @@
     "KAN-007",
     "KAN-023",
     "KAN-013",
-    "KAN-011"
+    "KAN-011",
+    "KAN-027"
   ],
   "recent": [
+    {
+      "seq": 93,
+      "t": "2026-07-28T00:20",
+      "a": "ai",
+      "id": "KAN-027",
+      "op": "edit",
+      "field": "memo",
+      "before": "홈/footer 임시 마스코트(svg.mascot) 교체 — 등록 저자들의 전신샷을 나란히 배치, 홈 히어로 마스코트와 동일한 swing 모션 적용",
+      "after": "푸터 임시 마스코트(svg.mascot) → 저자 전신 컷아웃 라인업(src/components/AuthorLineup.astro)으로 교체 완료. 모션은 홈 히어로와 **동일한 스윙 공유** — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화하고, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 추가 — 채운 저자만 라인업에 서고, 나머지는 자산이 생기면 컴포넌트 수정 없이 자동 합류. 컷아웃은 scripts/extract-author-cutout.ts(종이색 flood fill + 최대 연결 컴포넌트)로 데코 원본에서 굽는다 → tony-full.webp(322x440), ppangto-teacher-full.webp(284x440) 생성. 검증: bun run build 통과 · 4인 라인업 데스크톱/모바일 넘침 없음(390px에서 355px) · reduced-motion에서 animation:none. 남은 것: 빵토 연구원·빵토 교수님은 전신 원본이 레포/git 히스토리에 없어 현재 2인만 노출 — 같은 화풍 1254² 전신 이미지 2장을 받으면 스크립트 실행 + fullBody 채우기로 4인 완성(유저 대기 중)."
+    },
+    {
+      "seq": 92,
+      "t": "2026-07-28T00:20",
+      "a": "ai",
+      "id": "KAN-027",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 91,
       "t": "2026-07-27T23:36",
@@ -825,27 +844,6 @@
       "title": "deprecated 이미지 스크립트 3종 삭제",
       "memo": "선행조건(gating): KAN-014 배포 안정화 검증 완료 후에만 착수. 대상: scripts/generate-image.ts·render-image.ts·image-templates.ts(KAN-013에서 호출 경로 제거+deprecated 주석, 롤백 유예). 조건 충족 시 3파일 삭제 + 잔존 참조 grep 0 확인 + bun run build green + 커밋.",
       "verbatim": ""
-    },
-    {
-      "seq": 27,
-      "t": "2026-07-25T20:43",
-      "a": "ai",
-      "id": "KAN-014",
-      "op": "create",
-      "col": "backlog",
-      "title": "KAN-013 배포 안정화 검증",
-      "memo": "KAN-013 push·배포 후: GitHub Pages 빌드 green(CI packages:read 인증·미처리마커 가드 통과), viz 인라인 SVG 라이브 렌더·색 페인트 정상, hero webp/OG 카드 정상, 신규 글 파이프라인 1회 실통과 확인. 이상 없으면 다음 삭제 카드 착수 가능.",
-      "verbatim": ""
-    },
-    {
-      "seq": 26,
-      "t": "2026-07-25T20:43",
-      "a": "ai",
-      "id": "KAN-013",
-      "op": "edit",
-      "field": "memo",
-      "before": "",
-      "after": "viz 엔진 구현·검증 완료(미push, 배포 전 리뷰 대기). bbangto-ui-visualization(GitHub Packages)로 모든 구조형 시각물·hero를 코드 구현, ChatGPT 이미지 생성 완전 제거. 신규: scripts/apply-viz.ts·render-viz.ts·check-post-markers.ts, src/lib/viz(schema·layout·blogVizStyleGuide), src/components/viz/VizFigure, src/styles/viz.css, .npmrc. v1 kind 5종(ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial). 파이프라인 재배선(make-image=viz엔진·post-finalize OpenAI 제거·image-maker·tech-deepdive·orchestrator·ship-post·CLAUDE.md·DIAGRAM_STYLE_GUIDE). 레거시 스크립트 3종 deprecate(후속 삭제 카드). CI packages:read+미처리마커 가드. E2E(OPENAI 미설정) 통과·무JS SSR SVG 페인트(HTTP) 검증. webrtc-3 라이브 [[[ 마커 결함 수정. 기존 13글 백마이그레이션 별도."
     }
   ]
 }
