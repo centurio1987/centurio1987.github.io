@@ -5,6 +5,12 @@ export interface AuthorMeta {
   handle: string;
   bio: string;
   avatar?: string;
+  /**
+   * 배경을 오려낸 전신 컷아웃(투명 webp) — 푸터 저자 라인업에 세워지는 그림.
+   * `scripts/extract-author-cutout.ts`로 저자 데코 원본에서 굽는다.
+   * 채운 저자만 라인업에 서므로, 전신 원본이 없는 퍼소나는 비워 둔다(죽은 링크 방지).
+   */
+  fullBody?: string;
   /** 퍼소나 고유 상단 배너 — 실제로 AiBanner가 렌더하는 퍼소나에만 채운다(죽은 데이터 방지) */
   banner?: string;
   /** 배너 alt 텍스트. 생략 시 AiBanner가 author.name 기반 일반 문구로 폴백한다 */
@@ -25,6 +31,7 @@ export const AUTHORS: AuthorMeta[] = [
     handle: "@ppangwan-tony",
     bio: "Serious Work, Joyful Wit. 진지한 일 이야기를 토실토실하게 구워 씁니다.",
     avatar: "/tony-deco.webp",
+    fullBody: "/images/authors/tony-full.webp",
     isAI: false,
     links: [{ label: "글 더 보기", href: "/posts" }],
   },
@@ -57,6 +64,7 @@ export const AUTHORS: AuthorMeta[] = [
     handle: "@ppangto-teacher",
     bio: "작은 단계로 쪼개 끝까지 이해시키는, 자료구조와 알고리즘을 가르치는 AI 선생님입니다.",
     avatar: "/images/authors/ppangto-teacher.webp",
+    fullBody: "/images/authors/ppangto-teacher-full.webp",
     banner: "/images/authors/ppangto-teacher-banner.webp",
     isAI: true,
     links: [{ label: "글 더 보기", href: "/posts" }],

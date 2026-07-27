@@ -1,0 +1,79 @@
+---
+import { AUTHORS } from "../lib/authors";
+
+/**
+ * 저자 라인업 — 등록된 저자들의 전신 컷아웃을 한 줄로 세운다(푸터의 임시 마스코트 대체).
+ *
+ * 그림은 authors.ts의 `fullBody`(배경을 오려낸 투명 webp)에서 온다. **채운 저자만 선다** —
+ * 전신 원본이 없는 퍼소나는 조용히 빠지고, 나중에 컷아웃만 구워 넣으면(scripts/extract-author-cutout.ts)
+ * 이 컴포넌트 수정 없이 자동으로 합류한다.
+ *
+ * 모션은 홈 히어로 토니와 동일한 스윙(global.css의 @keyframes tony-sway, 2.8s steps(1) ±4deg).
+ * 다만 넷이 한 몸처럼 동시에 꺾이면 기계적이라, --i로 음수 딜레이를 줘 위상만 어긋낸다
+ * (모션 자체는 그대로 — 딜레이가 음수라 첫 화면부터 이미 흔들리는 중이다).
+ */
+interface Props {
+  /** 그림 한 칸의 높이(px). 폭은 이 값에서 파생된다. */
+  size?: number;
+  class?: string;
+}
+const { size = 112, class: className = "" } = Astro.props;
+
+const lineup = AUTHORS.filter((a) => a.fullBody);
+---
+
+{
+  lineup.length > 0 && (
+    <div
+      class={`author-lineup ${className}`}
+      style={`--figure-h:${size}px`}
+      role="img"
+      aria-label={`빵관 토니 블로그 저자들 — ${lineup.map((a) => a.name).join(", ")}`}
+    >
+      {lineup.map((author, i) => (
+        <span class="figure" style={`--i:${i}`}>
+          <img src={author.fullBody} alt="" loading="lazy" decoding="async" />
+        </span>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .author-lineup {
+    display: flex;
+    align-items: flex-end; /* 같은 바닥선 위에 나란히 선다 */
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .figure {
+    /* 칸을 고정해 이미지 로드 전에도 자리가 흔들리지 않는다(폭은 캐릭터 비율 여유분). */
+    display: block;
+    width: calc(var(--figure-h) * 0.78);
+    height: var(--figure-h);
+  }
+  .figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+    /* 홈 히어로와 같은 스윙. 발끝을 축으로 좌우로 '탁탁'. */
+    transform-origin: bottom center;
+    animation: tony-sway 2.8s steps(1) infinite;
+    /* 위상만 어긋내 옆 사람과 반대로 기울게(0.7s = 반 포즈) */
+    animation-delay: calc(var(--i) * -0.7s);
+  }
+  @media (max-width: 560px) {
+    .author-lineup {
+      --figure-h: 84px;
+      gap: 2px;
+    }
+  }
+  /* 전역 *{animation:none!important}이 이미 커버하지만 Mascot.astro 선례대로 지점 명시 */
+  @media (prefers-reduced-motion: reduce) {
+    .figure img {
+      animation: none;
+    }
+  }
+</style>

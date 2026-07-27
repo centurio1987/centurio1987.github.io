@@ -164,6 +164,23 @@ hr {
   background-size: 24px 24px;
 }
 
+/* 마스코트 '흔들흔들' 스윙 — 홈 히어로 토니와 푸터 저자 라인업이 **같은 모션**을 쓰라고
+   전역에 둔다(둘 중 하나만 손대다 어긋나는 걸 막는다).
+   스무스 스윕이 아니라 좌·우 최대 기울기 두 포즈만 '탁탁' 스냅한다. steps(1)이 각 구간을
+   중간 프레임 없이 한 번에 점프시켜 극단 두 포즈만 보인다. 진폭·체류 시간 모두 좌우 대칭.
+   쓰는 쪽에서 transform-origin: bottom center 를 함께 준다. */
+@keyframes tony-sway {
+  0% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+  100% {
+    transform: rotate(-4deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

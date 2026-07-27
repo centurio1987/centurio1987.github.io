@@ -1,5 +1,5 @@
 ---
-import Mascot from "./motifs/Mascot.astro";
+import AuthorLineup from "./AuthorLineup.astro";
 import AmbientWaves from "./motion/AmbientWaves.tsx";
 
 interface Props {
@@ -21,7 +21,7 @@ const year = new Date().getFullYear();
     <AmbientWaves client:media="(prefers-reduced-motion: no-preference)" />
   )}
   <div class="footer-inner">
-    <Mascot size={64} />
+    <AuthorLineup />
     <p class="tagline">진지하게 만들고, 즐겁게 쓴다.</p>
     <p class="signature">Serious Work, Joyful Wit. — 빵관 토니</p>
     <nav class="social" aria-label="소셜">

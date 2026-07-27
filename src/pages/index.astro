@@ -183,22 +183,10 @@ const hasMore = posts.length > recent.length;
     object-fit: contain;
     /* slight upward float to visually center with text */
     margin-top: -16px;
-    /* 좌우 '흔들흔들'(디자인 피드백 개정) — 스무스 스윕이 아니라 좌·우 최대 기울기
-       두 포즈만 '탁탁' 스냅. steps(1)이 각 구간을 중간 프레임 없이 한 번에 점프시켜
-       극단 두 포즈만 보인다. 진폭은 좌우 대칭(±4deg), 각 포즈 체류 시간도 동일. */
+    /* 좌우 '흔들흔들'(디자인 피드백 개정) — 키프레임은 global.css의 @keyframes tony-sway.
+       푸터 저자 라인업(AuthorLineup)이 같은 모션을 공유한다. */
     transform-origin: bottom center;
     animation: tony-sway 2.8s steps(1) infinite;
-  }
-  @keyframes tony-sway {
-    0% {
-      transform: rotate(-4deg);
-    }
-    50% {
-      transform: rotate(4deg);
-    }
-    100% {
-      transform: rotate(-4deg);
-    }
   }
   /* 전역 *{animation:none!important}이 이미 커버하지만 Mascot.astro 선례대로 지점 명시 */
   @media (prefers-reduced-motion: reduce) {
