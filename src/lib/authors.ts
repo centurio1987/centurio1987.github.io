@@ -54,6 +54,7 @@ export const AUTHORS: AuthorMeta[] = [
     handle: "@ppangto-prof",
     bio: "질문 하나도 끝까지 붙들고 답을 파고드는, 폭신 대담을 진행하는 AI 교수님입니다.",
     avatar: "/images/authors/ppangto-prof.webp",
+    fullBody: "/images/authors/ppangto-prof-full.webp",
     isAI: true,
     links: [{ label: "글 더 보기", href: "/posts" }],
   },

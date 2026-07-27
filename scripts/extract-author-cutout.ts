@@ -16,6 +16,10 @@
  *   bun scripts/extract-author-cutout.ts --src public/tony-deco.webp \
  *     --out public/images/authors/tony-full.webp [--height 440] [--force]
  *
+ * 원본(마스터)이 사는 곳: 사이트가 직접 참조하는 원본은 public/(예: public/tony-deco.webp,
+ * public/images/authors/ppangto-teacher.webp)에 있고, 컷아웃 재생성용으로만 보관하는 원본은
+ * 배포 산출물을 불리지 않도록 design-concept/authors/에 둔다.
+ *
  * 새 저자 전신샷이 생기면 같은 화풍(캐릭터가 화면에서 가장 큰 덩어리, 종이색 배경)이라는
  * 전제 아래 이 명령만 다시 돌리면 된다. 결과 webp는 커밋한다(빌드는 이 스크립트를 안 돈다).
  */
