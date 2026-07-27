@@ -1,6 +1,6 @@
 {
   "next_id": 30,
-  "next_seq": 92,
+  "next_seq": 93,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -311,13 +311,13 @@
       "verbatim_hash": "cc0f62b72cd635be48410fca2b6bc2f1de4007d0"
     },
     "KAN-029": {
-      "col": "backlog",
+      "col": "doing",
       "title": "글 지도(/graph): 초기엔 글↔글 연관만 표시, 글 노드 호버 시 연관 키워드 노출",
       "memo": "대상: /graph 글 지도 익스플로러(graphify 지식그래프 src/data/graph.json 소비). 현재는 글(문서) 노드와 개념·키워드 노드가 함께 그려짐. 변경① 초기 뷰를 글 노드와 글↔글 연관 관계(엣지)만으로 한정 — 개념·키워드 노드는 초기 렌더에서 숨김. 변경② 글 노드에 포인터를 올리면(hover) 해당 글의 연관 키워드가 나타나도록 인터랙션 추가.",
       "verbatim": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
       "생성": "유저",
       "최종": "ai",
-      "갱신": "2026-07-27",
+      "갱신": "2026-07-28",
       "title_hash": "ce0e8390c057356226208a809edafd461ff70b92",
       "memo_hash": "ac5ec57ec45f0296239639abab1225b820f32693",
       "verbatim_hash": "e400d42ef60da268e7fca13532d922af856725ef"
@@ -328,7 +328,6 @@
     "KAN-025",
     "KAN-026",
     "KAN-027",
-    "KAN-029",
     "KAN-028",
     "KAN-001",
     "KAN-002",
@@ -351,9 +350,19 @@
     "KAN-007",
     "KAN-023",
     "KAN-013",
-    "KAN-011"
+    "KAN-011",
+    "KAN-029"
   ],
   "recent": [
+    {
+      "seq": 92,
+      "t": "2026-07-28T00:03",
+      "a": "ai",
+      "id": "KAN-029",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 91,
       "t": "2026-07-27T23:36",
@@ -836,16 +845,6 @@
       "title": "KAN-013 배포 안정화 검증",
       "memo": "KAN-013 push·배포 후: GitHub Pages 빌드 green(CI packages:read 인증·미처리마커 가드 통과), viz 인라인 SVG 라이브 렌더·색 페인트 정상, hero webp/OG 카드 정상, 신규 글 파이프라인 1회 실통과 확인. 이상 없으면 다음 삭제 카드 착수 가능.",
       "verbatim": ""
-    },
-    {
-      "seq": 26,
-      "t": "2026-07-25T20:43",
-      "a": "ai",
-      "id": "KAN-013",
-      "op": "edit",
-      "field": "memo",
-      "before": "",
-      "after": "viz 엔진 구현·검증 완료(미push, 배포 전 리뷰 대기). bbangto-ui-visualization(GitHub Packages)로 모든 구조형 시각물·hero를 코드 구현, ChatGPT 이미지 생성 완전 제거. 신규: scripts/apply-viz.ts·render-viz.ts·check-post-markers.ts, src/lib/viz(schema·layout·blogVizStyleGuide), src/components/viz/VizFigure, src/styles/viz.css, .npmrc. v1 kind 5종(ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial). 파이프라인 재배선(make-image=viz엔진·post-finalize OpenAI 제거·image-maker·tech-deepdive·orchestrator·ship-post·CLAUDE.md·DIAGRAM_STYLE_GUIDE). 레거시 스크립트 3종 deprecate(후속 삭제 카드). CI packages:read+미처리마커 가드. E2E(OPENAI 미설정) 통과·무JS SSR SVG 페인트(HTTP) 검증. webrtc-3 라이브 [[[ 마커 결함 수정. 기존 13글 백마이그레이션 별도."
     }
   ]
 }
