@@ -1,6 +1,6 @@
 {
-  "next_id": 24,
-  "next_seq": 85,
+  "next_id": 25,
+  "next_seq": 86,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -249,6 +249,18 @@
       "title_hash": "94e649dc7aa0fcb49f3868f9d41b7c059b2a5654",
       "memo_hash": "d38e3a8d2dfddda97930acd2fdda36fd7e487e5f",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-024": {
+      "col": "todo",
+      "title": "graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결",
+      "memo": "KAN-008 발행 중 발견. 증상: graphify extract 가 청크 실패 0건으로 성공 보고하는데도 문서 노드가 글 수보다 적다(2026-07-27 기준 18/22). 누락: osi-7-layers-3·4·5·6. 원인: 시리즈 글이 본문에서 서로를 참조하면 osi-7-layers-1.mdx 가 osi_7_layers_3 같은 참조 노드를 먼저 만들고, 이후 osi-7-layers-3.mdx 의 진짜 문서 노드가 같은 ID 로 충돌해 \"the second node will be dropped\" 로 버려진다. 시리즈가 길수록·상호링크가 많을수록 악화. auth-authz·tauri 계열도 동일 충돌 발생. graphify 자체 경고문이 해법을 제시: 하위 폴더별로 extract 후 graphify merge-graphs 로 병합. 할 일: ① 시리즈별(또는 폴더별) 분할 추출 + merge-graphs 파이프라인을 scripts 로 구성 ② ship-post 1.5 단계와 CLAUDE.md 절차를 그 방식으로 교체 ③ 재생성 후 2단계 검증(문서 노드 수 = 글 수, 노드 1개짜리 글 없음) 통과 확인 후 커밋. 참고: 검증 절차는 a058700 에서 2단계로 보완해 둠 — 이 문제를 잡아낸 게 그 ① 검사다. 현재 영향: 연관 글은 frontmatter 랭킹으로, /graph 는 일반 목록으로 폴백하므로 사이트 동작에는 지장 없음(기능 degrade).",
+      "verbatim": "2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라.",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-27",
+      "title_hash": "15f69d28ae498c31a14accf8ca0ca8ddd3f260e2",
+      "memo_hash": "f4fcc95174c79d95d547f1b773a064dfe55d9b04",
+      "verbatim_hash": "cc0f62b72cd635be48410fca2b6bc2f1de4007d0"
     }
   },
   "order": [
@@ -259,6 +271,7 @@
     "KAN-005",
     "KAN-010",
     "KAN-012",
+    "KAN-008",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -273,9 +286,20 @@
     "KAN-023",
     "KAN-013",
     "KAN-011",
-    "KAN-008"
+    "KAN-024"
   ],
   "recent": [
+    {
+      "seq": 85,
+      "t": "2026-07-27T20:23",
+      "a": "ai",
+      "id": "KAN-024",
+      "op": "create",
+      "col": "todo",
+      "title": "graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결",
+      "memo": "KAN-008 발행 중 발견. 증상: graphify extract 가 청크 실패 0건으로 성공 보고하는데도 문서 노드가 글 수보다 적다(2026-07-27 기준 18/22). 누락: osi-7-layers-3·4·5·6. 원인: 시리즈 글이 본문에서 서로를 참조하면 osi-7-layers-1.mdx 가 osi_7_layers_3 같은 참조 노드를 먼저 만들고, 이후 osi-7-layers-3.mdx 의 진짜 문서 노드가 같은 ID 로 충돌해 \"the second node will be dropped\" 로 버려진다. 시리즈가 길수록·상호링크가 많을수록 악화. auth-authz·tauri 계열도 동일 충돌 발생. graphify 자체 경고문이 해법을 제시: 하위 폴더별로 extract 후 graphify merge-graphs 로 병합. 할 일: ① 시리즈별(또는 폴더별) 분할 추출 + merge-graphs 파이프라인을 scripts 로 구성 ② ship-post 1.5 단계와 CLAUDE.md 절차를 그 방식으로 교체 ③ 재생성 후 2단계 검증(문서 노드 수 = 글 수, 노드 1개짜리 글 없음) 통과 확인 후 커밋. 참고: 검증 절차는 a058700 에서 2단계로 보완해 둠 — 이 문제를 잡아낸 게 그 ① 검사다. 현재 영향: 연관 글은 frontmatter 랭킹으로, /graph 는 일반 목록으로 폴백하므로 사이트 동작에는 지장 없음(기능 degrade).",
+      "verbatim": "2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라."
+    },
     {
       "seq": 84,
       "t": "2026-07-27T19:33",
@@ -753,15 +777,6 @@
       "field": "memo",
       "before": "",
       "after": "퍼소나(저자) 시스템 + 포스트 레이아웃 재설계 구현·검증 완료. main 커밋 ecb3f9c·8e58d84·704d581(centurio1987/kan-013 ff). authors.ts 레지스트리(연구원/교수님/선생님)·author 스키마·AI 배너·저자 프로필 카드·목록 AI 칩·폭신 대담(talk) 레이아웃·시리즈 내비 배선. bun run build 통과·렌더 검증(연구원/대담/목록). voice=src/lib/personas/. 미push(배포 전 사용자 리뷰 대기). 열린 사항: 교수님 대담 샘플 미발행, raws 재편·pnpm-lock 보류."
-    },
-    {
-      "seq": 19,
-      "t": "2026-07-23T12:59",
-      "a": "ai",
-      "id": "KAN-010",
-      "op": "move",
-      "from": "backlog",
-      "to": "review"
     }
   ]
 }
