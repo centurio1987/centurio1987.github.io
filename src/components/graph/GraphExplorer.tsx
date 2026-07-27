@@ -17,99 +17,81 @@ export interface GraphViewPost {
   categoryLabel: string;
   color: string;
   tags: string[];
+  /** 호버 시 펼쳐지는 연관 키워드(그래프 개념 상위 N, 없으면 태그) */
+  keywords: string[];
+  /** 제목·태그·전체 개념 라벨을 접어 넣은 검색용 소문자 텍스트 */
+  searchText: string;
 }
-export interface GraphViewConcept {
-  id: string;
-  label: string;
-  postSlug: string | null;
-  degree: number;
-  communityName: string;
-  color: string;
-}
-export interface GraphViewEdge {
+export interface GraphViewLink {
   source: string;
   target: string;
-  relation: string;
-  weight: number;
-  confidence: string;
+  /** 0~1. 선 굵기와 링크 거리를 정한다 */
+  strength: number;
+  kinds: ("concept" | "cites" | "series")[];
+  shared: string[];
+  seriesLabel?: string;
 }
 export interface GraphViewData {
   posts: GraphViewPost[];
-  concepts: GraphViewConcept[];
-  edges: GraphViewEdge[];
+  links: GraphViewLink[];
   legend: { label: string; color: string }[];
 }
 
 interface SimNode extends SimulationNodeDatum {
   id: string;
-  kind: "post" | "concept";
+  slug: string;
   label: string;
+  categoryLabel: string;
   color: string;
   r: number;
-  slug: string | null; // 이동 대상 포스트
-  communityName?: string;
+  keywords: string[];
 }
 interface SimLink extends SimulationLinkDatum<SimNode> {
-  relation: string;
-  weight: number;
-  confidence: string;
-  ownership: boolean;
+  strength: number;
+  seriesOnly: boolean;
 }
 
 const W = 900;
 const H = 640;
 
+// 호버 시 펼쳐지는 키워드 부채(fan) 기하
+const KW_GAP = 22; // 키워드 간 세로 간격
+const KW_BASE = 100; // 노드에서 첫 키워드까지 가로 거리
+const KW_BULGE = 12; // 가운데 키워드를 더 밀어내 호(arc)를 만든다
+const KW_LABEL_W = 150; // 키워드 라벨 폭 추정치(부채가 뷰 밖으로 나가는지 판정용)
+
+const TITLE_MAX = 18; // 제목 라벨은 짧게 — 길면 이웃 노드 라벨과 겹친다
+const TITLE_PAD = 88; // 가운데 정렬 제목이 뷰박스 밖으로 잘리지 않을 좌우 여백
+
+function truncate(s: string, max: number) {
+  return s.length > max ? s.slice(0, max - 1) + "…" : s;
+}
+
 export default function GraphExplorer({ data }: { data: GraphViewData }) {
   const { nodes, links } = useMemo(() => {
-    const nodes: SimNode[] = [
-      ...data.posts.map((p) => ({
-        id: `post:${p.slug}`,
-        kind: "post" as const,
-        label: p.title,
-        color: p.color,
-        r: 20,
-        slug: p.slug,
-      })),
-      ...data.concepts.map((c) => ({
-        id: c.id,
-        kind: "concept" as const,
-        label: c.label,
-        color: c.color,
-        r: 6 + Math.min(c.degree, 8),
-        slug: c.postSlug,
-        communityName: c.communityName,
-      })),
-    ];
+    const degree = new Map<string, number>();
+    for (const l of data.links) {
+      degree.set(l.source, (degree.get(l.source) ?? 0) + 1);
+      degree.set(l.target, (degree.get(l.target) ?? 0) + 1);
+    }
+    const nodes: SimNode[] = data.posts.map((p) => ({
+      id: `post:${p.slug}`,
+      slug: p.slug,
+      label: p.title,
+      categoryLabel: p.categoryLabel,
+      color: p.color,
+      r: 18 + Math.min(degree.get(`post:${p.slug}`) ?? 0, 5) * 1.4,
+      keywords: p.keywords,
+    }));
     const ids = new Set(nodes.map((n) => n.id));
-    const pairSeen = new Set<string>();
-    const links: SimLink[] = [];
-    for (const e of data.edges) {
-      if (!ids.has(e.source) || !ids.has(e.target)) continue;
-      pairSeen.add([e.source, e.target].sort().join("|"));
-      links.push({
-        source: e.source,
-        target: e.target,
-        relation: e.relation,
-        weight: e.weight,
-        confidence: e.confidence,
-        ownership: e.source.startsWith("post:") || e.target.startsWith("post:"),
-      });
-    }
-    // 명시 엣지가 없는 개념도 소속 포스트에 붙인다(소유 엣지 합성).
-    for (const c of data.concepts) {
-      if (!c.postSlug || !ids.has(`post:${c.postSlug}`)) continue;
-      const key = [c.id, `post:${c.postSlug}`].sort().join("|");
-      if (pairSeen.has(key)) continue;
-      pairSeen.add(key);
-      links.push({
-        source: `post:${c.postSlug}`,
-        target: c.id,
-        relation: "owns",
-        weight: 1,
-        confidence: "EXTRACTED",
-        ownership: true,
-      });
-    }
+    const links: SimLink[] = data.links
+      .filter((l) => ids.has(l.source) && ids.has(l.target))
+      .map((l) => ({
+        source: l.source,
+        target: l.target,
+        strength: l.strength,
+        seriesOnly: l.kinds.length === 1 && l.kinds[0] === "series",
+      }));
     return { nodes, links };
   }, [data]);
 
@@ -122,20 +104,22 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
         "link",
         forceLink<SimNode, SimLink>(links)
           .id((d) => d.id)
-          .distance((l) => (l.ownership ? 55 : 110))
-          .strength((l) => (l.ownership ? 0.8 : 0.3)),
+          .distance((l) => 190 - 90 * l.strength)
+          .strength((l) => 0.12 + 0.5 * l.strength),
       )
-      .force("charge", forceManyBody().strength(-120))
-      .force("collide", forceCollide<SimNode>().radius((d) => d.r + 6))
+      .force("charge", forceManyBody().strength(-720))
+      .force("collide", forceCollide<SimNode>().radius((d) => d.r + 46))
       .force("center", forceCenter(W / 2, H / 2))
-      .force("x", forceX(W / 2).strength(0.06))
-      .force("y", forceY(H / 2).strength(0.08));
+      .force("x", forceX(W / 2).strength(0.05))
+      .force("y", forceY(H / 2).strength(0.07));
 
-    // 노드를 뷰박스 안으로 클램핑(라벨 여백 포함)
+    // 노드를 뷰박스 안으로 클램핑. 제목은 노드 아래 가운데 정렬이라 좌우로도
+    // 라벨 절반만큼(TITLE_PAD) 여백을 둬야 가장자리 글 제목이 잘리지 않는다.
     const clamp = () => {
       for (const n of nodes) {
-        n.x = Math.max(n.r + 4, Math.min(W - n.r - 4, n.x ?? W / 2));
-        n.y = Math.max(n.r + 4, Math.min(H - n.r - 4, n.y ?? H / 2));
+        const padX = Math.max(n.r + 8, TITLE_PAD);
+        n.x = Math.max(padX, Math.min(W - padX, n.x ?? W / 2));
+        n.y = Math.max(n.r + 8, Math.min(H - n.r - 26, n.y ?? H / 2));
       }
     };
 
@@ -199,7 +183,13 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
   const shownTags =
     tagsExpanded || allTags.length <= TAG_PREVIEW
       ? allTags
-      : allTags.slice(0, TAG_PREVIEW).concat([...selectedTags].filter((t) => !allTags.slice(0, TAG_PREVIEW).includes(t)));
+      : allTags
+          .slice(0, TAG_PREVIEW)
+          .concat(
+            [...selectedTags].filter(
+              (t) => !allTags.slice(0, TAG_PREVIEW).includes(t),
+            ),
+          );
 
   const visibleIds = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -207,63 +197,17 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
       selectedCats.size === 0 && selectedTags.size === 0 && q === "";
     if (noFilter) return null; // null = 전체 표시
 
-    // 1) 카테고리(OR) × 태그(OR) 필터 통과한 글
-    const tagPosts = data.posts.filter(
-      (p) =>
-        (selectedCats.size === 0 || selectedCats.has(p.categoryLabel)) &&
-        (selectedTags.size === 0 || p.tags.some((t) => selectedTags.has(t))),
-    );
-    const tagSlugs = new Set(tagPosts.map((p) => p.slug));
-
-    // 2) 키워드: 글(제목·태그) 또는 개념(라벨) 매칭 + 소속 맥락 유지
+    // 카테고리(OR) × 태그(OR) × 검색어(제목·태그·개념 라벨) 교집합
     const ids = new Set<string>();
-    if (q === "") {
-      for (const p of tagPosts) ids.add(`post:${p.slug}`);
-      for (const c of data.concepts)
-        if (c.postSlug && tagSlugs.has(c.postSlug)) ids.add(c.id);
-    } else {
-      const matchedPosts = tagPosts.filter(
-        (p) =>
-          p.title.toLowerCase().includes(q) ||
-          p.tags.some((t) => t.toLowerCase().includes(q)),
-      );
-      const matchedConcepts = data.concepts.filter(
-        (c) =>
-          (c.postSlug === null || tagSlugs.has(c.postSlug)) &&
-          c.label.toLowerCase().includes(q),
-      );
-      for (const p of matchedPosts) ids.add(`post:${p.slug}`);
-      for (const c of matchedConcepts) {
-        ids.add(c.id);
-        if (c.postSlug) ids.add(`post:${c.postSlug}`); // 매칭 개념의 소속 글
-      }
-      const matchedSlugs = new Set(matchedPosts.map((p) => p.slug));
-      for (const c of data.concepts)
-        if (c.postSlug && matchedSlugs.has(c.postSlug)) ids.add(c.id); // 매칭 글의 개념들
+    for (const p of data.posts) {
+      if (selectedCats.size > 0 && !selectedCats.has(p.categoryLabel)) continue;
+      if (selectedTags.size > 0 && !p.tags.some((t) => selectedTags.has(t)))
+        continue;
+      if (q !== "" && !p.searchText.includes(q)) continue;
+      ids.add(`post:${p.slug}`);
     }
     return ids;
-  }, [data, selectedCats, selectedTags, query]);
-
-  // 필터 전 기본 뷰: 글에 직접 연결된 1-depth 키워드만 노출.
-  // 명시 엣지로 글과 이어졌거나, 개념-개념 엣지가 전혀 없는 리프(소유 엣지만)면 1-depth.
-  const depth1Concepts = useMemo(() => {
-    const inConceptWeb = new Set<string>();
-    const postAdjacent = new Set<string>();
-    for (const e of data.edges) {
-      const sPost = e.source.startsWith("post:");
-      const tPost = e.target.startsWith("post:");
-      if (sPost && !tPost) postAdjacent.add(e.target);
-      else if (tPost && !sPost) postAdjacent.add(e.source);
-      else if (!sPost && !tPost) {
-        inConceptWeb.add(e.source);
-        inConceptWeb.add(e.target);
-      }
-    }
-    const set = new Set<string>();
-    for (const c of data.concepts)
-      if (postAdjacent.has(c.id) || !inConceptWeb.has(c.id)) set.add(c.id);
-    return set;
-  }, [data]);
+  }, [data.posts, selectedCats, selectedTags, query]);
 
   // 하이라이트 집합: 활성 노드 + 이웃 + 그 사이 엣지
   const { litNodes, litLinks } = useMemo(() => {
@@ -283,13 +227,7 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
   }, [active, links]);
 
   const filterActive = visibleIds !== null;
-  // 필터 중엔 필터 결과만, 평상시엔 글 + 1-depth 키워드 + 활성 노드의 이웃만 보인다.
-  const isVisible = (id: string) =>
-    visibleIds
-      ? visibleIds.has(id)
-      : id.startsWith("post:") ||
-        depth1Concepts.has(id) ||
-        (litNodes?.has(id) ?? false);
+  const isVisible = (id: string) => (visibleIds ? visibleIds.has(id) : true);
 
   function toggleTag(tag: string) {
     setSelectedTags((prev) => {
@@ -317,39 +255,23 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
     setHovered(null);
   }
 
-  const visibleCounts = useMemo(() => {
-    let posts = 0;
-    let concepts = 0;
-    for (const n of nodes) {
-      if (!isVisible(n.id)) continue;
-      if (n.kind === "post") posts++;
-      else concepts++;
-    }
-    return { posts, concepts };
-  }, [nodes, visibleIds]);
+  const visibleCount = visibleIds ? visibleIds.size : nodes.length;
 
   const coarsePointer =
     typeof window !== "undefined" &&
     window.matchMedia("(hover: none)").matches;
 
-  function onNodeClick(n: SimNode) {
-    if (n.kind === "post") {
-      // 터치 기기: 첫 탭은 하이라이트, 같은 노드 두 번째 탭에 이동
-      if (coarsePointer && selected !== n.id) {
-        setSelected(n.id);
-        return;
-      }
-      window.location.assign(`/posts/${n.slug}`);
-    } else {
-      setSelected(selected === n.id ? null : n.id);
-    }
+  function openPost(n: SimNode) {
+    window.location.assign(`/posts/${n.slug}`);
   }
-
-  const labelThreshold = useMemo(() => {
-    const degrees = data.concepts.map((c) => c.degree).sort((a, b) => a - b);
-    if (degrees.length === 0) return Infinity;
-    return degrees[Math.floor(degrees.length * 0.75)];
-  }, [data.concepts]);
+  function onNodeClick(n: SimNode) {
+    // 터치 기기: 첫 탭은 키워드 펼치기, 같은 노드 두 번째 탭에 이동
+    if (coarsePointer && selected !== n.id) {
+      setSelected(n.id);
+      return;
+    }
+    openPost(n);
+  }
 
   // 필터로 추려진 클러스터를 뷰포트 중앙으로 (레이아웃은 그대로, 뷰만 이동)
   let viewTransform = "translate(0px, 0px) scale(1)";
@@ -375,6 +297,56 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
     }
   }
 
+  // ── 활성 글의 연관 키워드 부채 ──
+  // 노드 옆으로 세로 정렬 + 가운데가 볼록한 호. 세로 간격이 고정이라 키워드끼리는 겹치지 않고,
+  // 펼칠 방향(좌/우)은 **뷰박스를 벗어나지 않으면서 다른 글 노드를 적게 덮는 쪽**으로 고른다.
+  // 노드 좌표는 tick마다 제자리에서 바뀌므로(참조 불변) memo 하지 않고 렌더마다 계산한다.
+  function buildKeywordFan() {
+    if (!active) return null;
+    const node = nodes.find((n) => n.id === active);
+    if (!node || node.x == null || node.y == null) return null;
+    if (!isVisible(node.id)) return null;
+    const kws = node.keywords;
+    if (kws.length === 0) return null;
+
+    const mid = (kws.length - 1) / 2;
+    const reach = KW_BASE + KW_BULGE * mid;
+    let shift = 0;
+    const top = node.y - mid * KW_GAP;
+    const bottom = node.y + mid * KW_GAP;
+    if (top < 18) shift = 18 - top;
+    else if (bottom > H - 18) shift = H - 18 - bottom;
+
+    const cost = (s: 1 | -1) => {
+      const far = node.x! + s * (reach + KW_LABEL_W);
+      let c = far < 0 || far > W ? 100 : 0; // 뷰박스 밖은 사실상 금지
+      for (const other of nodes) {
+        if (other.id === node.id || other.x == null || other.y == null) continue;
+        if (!isVisible(other.id)) continue;
+        const dx = (other.x - node.x!) * s;
+        if (dx < KW_BASE - 40 || dx > reach + KW_LABEL_W) continue;
+        if (Math.abs(other.y - (node.y! + shift)) > mid * KW_GAP + 24) continue;
+        c += 1;
+      }
+      return c;
+    };
+    const side: 1 | -1 = cost(1) <= cost(-1) ? 1 : -1;
+
+    return {
+      side,
+      color: node.color,
+      ox: node.x,
+      oy: node.y,
+      r: node.r,
+      items: kws.map((label, i) => ({
+        label,
+        x: node.x! + side * (KW_BASE + KW_BULGE * (mid - Math.abs(i - mid))),
+        y: node.y! + (i - mid) * KW_GAP + shift,
+      })),
+    };
+  }
+  const keywordFan = buildKeywordFan();
+
   return (
     <div className="graph-explorer">
       <div className="graph-toolbar">
@@ -388,11 +360,11 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
             setSelected(null);
             setHovered(null);
           }}
-          aria-label="글·개념 키워드 검색"
+          aria-label="글 키워드 검색"
         />
         {filterActive && (
           <span className="graph-count">
-            글 {visibleCounts.posts} · 개념 {visibleCounts.concepts}
+            글 {visibleCount}
             <button type="button" className="graph-reset" onClick={resetFilters}>
               초기화 ×
             </button>
@@ -435,13 +407,17 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           </button>
         )}
       </div>
-      {filterActive && visibleCounts.posts + visibleCounts.concepts === 0 && (
-        <p className="graph-empty">일치하는 글·개념이 없어요. 다른 키워드나 태그를 시도해 보세요.</p>
+      <p className="graph-hint">
+        선이 굵을수록 두 글의 연관이 강해요. 점선은 같은 시리즈의 이웃 화입니다.
+        글에 포인터를 올리면 연관 키워드가 펼쳐집니다.
+      </p>
+      {filterActive && visibleCount === 0 && (
+        <p className="graph-empty">일치하는 글이 없어요. 다른 키워드나 태그를 시도해 보세요.</p>
       )}
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        role="img"
-        aria-label="블로그 글·개념 지도"
+        role="group"
+        aria-label="블로그 글 지도"
         onClick={(e) => {
           if (e.target === e.currentTarget) setSelected(null);
         }}
@@ -465,37 +441,11 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
                   x2={t.x}
                   y2={t.y}
                   stroke="var(--ink-3)"
-                  strokeWidth={l.ownership ? 1 : 1.5}
-                  strokeDasharray={
-                    l.ownership ? "2 5" : l.confidence === "INFERRED" ? "6 4" : undefined
-                  }
+                  strokeWidth={1 + 2.4 * l.strength}
+                  strokeDasharray={l.seriesOnly ? "6 5" : undefined}
                   strokeLinecap="round"
-                  opacity={lit ? (l.ownership ? 0.35 : 0.3 + 0.4 * Math.min(l.weight, 1)) : 0.06}
+                  opacity={lit ? 0.3 + 0.45 * l.strength : 0.08}
                 />
-              );
-            })}
-          </g>
-          {/* 키워드 라벨은 노드 원 아래 레이어 — 글·개념 원을 절대 가리지 않는다 */}
-          <g aria-hidden="true">
-            {nodes.map((n) => {
-              if (n.x == null || n.kind !== "concept") return null;
-              if (!isVisible(n.id)) return null;
-              const showLabel =
-                filterActive || // 필터로 추려진 상태에선 개념 라벨을 모두 노출
-                (litNodes ? litNodes.has(n.id) : n.r - 6 >= Math.min(labelThreshold, 8));
-              if (!showLabel) return null;
-              const lit = litNodes ? litNodes.has(n.id) : true;
-              return (
-                <text
-                  key={n.id}
-                  x={n.x}
-                  y={(n.y ?? 0) + n.r + 14}
-                  textAnchor="middle"
-                  className="node-label"
-                  opacity={lit ? 1 : 0.2}
-                >
-                  {n.label}
-                </text>
               );
             })}
           </g>
@@ -507,28 +457,38 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
               return (
                 <g
                   key={n.id}
+                  className="post-node"
                   transform={`translate(${n.x},${n.y})`}
-                  opacity={lit ? 1 : 0.2}
+                  opacity={lit ? 1 : 0.14}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${n.label} — ${n.categoryLabel}`}
                   onMouseEnter={() => setHovered(n.id)}
                   onMouseLeave={() => setHovered(null)}
+                  onFocus={() => setHovered(n.id)}
+                  onBlur={() => setHovered(null)}
                   onClick={() => onNodeClick(n)}
-                  style={{ cursor: n.kind === "post" ? "pointer" : "default" }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      openPost(n);
+                    }
+                  }}
                 >
                   <circle
                     r={n.r}
                     fill={n.color}
-                    fillOpacity={n.kind === "post" ? 1 : 0.45}
                     stroke="var(--ink)"
-                    strokeWidth={n.kind === "post" ? 2 : 1.2}
+                    strokeWidth={2}
                   />
                 </g>
               );
             })}
           </g>
-          {/* 글 제목 라벨은 맨 위 레이어 */}
+          {/* 글 제목 라벨 */}
           <g aria-hidden="true">
             {nodes.map((n) => {
-              if (n.x == null || n.kind !== "post") return null;
+              if (n.x == null) return null;
               if (!isVisible(n.id)) return null;
               const lit = litNodes ? litNodes.has(n.id) : true;
               return (
@@ -538,13 +498,53 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
                   y={(n.y ?? 0) + n.r + 14}
                   textAnchor="middle"
                   className="node-label-post"
-                  opacity={lit ? 1 : 0.2}
+                  opacity={lit ? 1 : 0.14}
                 >
-                  {n.label.length > 24 ? n.label.slice(0, 23) + "…" : n.label}
+                  {truncate(n.label, TITLE_MAX)}
                 </text>
               );
             })}
           </g>
+          {/* 연관 키워드 부채 — 활성 글에만, 맨 위 레이어 */}
+          {keywordFan && (
+            <g className="kw-fan" key={active} aria-hidden="true">
+              {keywordFan.items.map((k) => (
+                <line
+                  key={`l-${k.label}`}
+                  x1={keywordFan.ox + keywordFan.side * keywordFan.r}
+                  y1={keywordFan.oy}
+                  x2={k.x}
+                  y2={k.y}
+                  stroke={keywordFan.color}
+                  strokeWidth={1}
+                  strokeLinecap="round"
+                  opacity={0.45}
+                />
+              ))}
+              {keywordFan.items.map((k) => (
+                <circle
+                  key={`c-${k.label}`}
+                  cx={k.x}
+                  cy={k.y}
+                  r={3.5}
+                  fill={keywordFan.color}
+                  stroke="var(--surface)"
+                  strokeWidth={1}
+                />
+              ))}
+              {keywordFan.items.map((k) => (
+                <text
+                  key={`t-${k.label}`}
+                  x={k.x + keywordFan.side * 9}
+                  y={k.y + 4}
+                  textAnchor={keywordFan.side === 1 ? "start" : "end"}
+                  className="kw-label"
+                >
+                  {truncate(k.label, 22)}
+                </text>
+              ))}
+            </g>
+          )}
         </g>
       </svg>
       <style>{`
@@ -632,6 +632,11 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           color: var(--ink-3);
           border-style: solid;
         }
+        .graph-hint {
+          margin: 0 0 10px;
+          font-size: 13px;
+          color: var(--ink-3);
+        }
         .graph-empty {
           margin: 0 0 10px;
           font-size: 14px;
@@ -675,26 +680,47 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           border-radius: 50%;
           border: 1px solid var(--ink);
         }
-        .graph-explorer .node-label,
-        .graph-explorer .node-label-post {
-          pointer-events: none;
+        .graph-explorer .post-node {
+          cursor: pointer;
+          outline: none;
         }
-        .graph-explorer .node-label {
-          font-size: 11px;
-          fill: var(--ink-2);
-          paint-order: stroke;
-          stroke: var(--surface);
-          stroke-width: 3px;
-          stroke-linejoin: round;
+        .graph-explorer .post-node:focus-visible circle {
+          stroke: var(--accent);
+          stroke-width: 3.5;
+        }
+        .graph-explorer .node-label-post,
+        .graph-explorer .kw-label {
+          pointer-events: none;
         }
         .graph-explorer .node-label-post {
           font-family: var(--font-display);
-          font-size: 13px;
+          font-size: 12px;
           fill: var(--ink);
           paint-order: stroke;
           stroke: var(--surface);
           stroke-width: 4px;
           stroke-linejoin: round;
+        }
+        /* 키워드 부채는 표시 전용 — 포인터를 가로채면 호버가 깜빡인다 */
+        .graph-explorer .kw-fan {
+          pointer-events: none;
+          animation: kw-in 200ms var(--ease, ease) both;
+        }
+        .graph-explorer .kw-label {
+          font-size: 11.5px;
+          fill: var(--ink-2);
+          paint-order: stroke;
+          stroke: var(--surface);
+          stroke-width: 4.5px;
+          stroke-linejoin: round;
+        }
+        @keyframes kw-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .graph-explorer .kw-fan { animation: none; }
+          .graph-viewport { transition: none; }
         }
       `}</style>
     </div>

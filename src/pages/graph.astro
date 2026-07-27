@@ -3,7 +3,10 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PostList from "../components/PostList.astro";
 import GraphExplorer from "../components/graph/GraphExplorer.tsx";
-import type { GraphViewData } from "../components/graph/GraphExplorer.tsx";
+import type {
+  GraphViewData,
+  GraphViewLink,
+} from "../components/graph/GraphExplorer.tsx";
 import { getCategory } from "../lib/categories";
 import { graphData, hasGraphData } from "../lib/graph";
 
@@ -14,36 +17,123 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
 );
 const bySlug = new Map(posts.map((p) => [p.id, p]));
 
-// 발행된 글만 그래프에 노출 (draft 글의 개념·엣지는 드롭)
+// ── 글별 키워드(개념) ──
+// KAN-029: 개념은 더 이상 초기 뷰의 노드가 아니다. 글 노드에 포인터를 올렸을 때만
+// 그 글의 연관 키워드로 펼쳐지므로, 글 단위로 접어서 넘긴다(페이로드도 크게 준다).
+const KEYWORDS_PER_POST = 8;
+const conceptsBySlug = new Map<string, Map<string, number>>();
+for (const c of graphData.concepts) {
+  if (!c.postSlug || !bySlug.has(c.postSlug)) continue;
+  let m = conceptsBySlug.get(c.postSlug);
+  if (!m) {
+    m = new Map();
+    conceptsBySlug.set(c.postSlug, m);
+  }
+  m.set(c.label, Math.max(m.get(c.label) ?? 0, c.degree)); // 같은 라벨은 최대 degree로
+}
+
+// ── 글↔글 엣지 ──
+// 세 가지 신호를 한 쌍으로 합친다: ① 개념 공유(graphify postPairs) ② 본문 인용(문서 노드 간
+// 직접 엣지) ③ 같은 시리즈의 이웃 화. 정렬된 (a,b) 를 캐논 키로 써서 중복을 막는다.
+interface PairAgg {
+  a: string;
+  b: string;
+  conceptScore: number;
+  citeCount: number;
+  series: string | null;
+  shared: string[];
+}
+const pairs = new Map<string, PairAgg>();
+function touch(x: string, y: string): PairAgg {
+  const [a, b] = [x, y].sort();
+  const key = `${a}|${b}`;
+  let v = pairs.get(key);
+  if (!v) {
+    v = { a, b, conceptScore: 0, citeCount: 0, series: null, shared: [] };
+    pairs.set(key, v);
+  }
+  return v;
+}
+
+for (const p of graphData.postPairs) {
+  if (!bySlug.has(p.a) || !bySlug.has(p.b)) continue;
+  const v = touch(p.a, p.b);
+  v.conceptScore = Math.max(v.conceptScore, p.score);
+  v.shared = p.sharedConcepts.slice(0, 4);
+}
+for (const e of graphData.conceptEdges) {
+  if (!e.source.startsWith("post:") || !e.target.startsWith("post:")) continue;
+  const a = e.source.slice(5);
+  const b = e.target.slice(5);
+  if (a === b) continue; // 자기 참조(같은 글 안의 references)는 엣지가 아니다
+  if (!bySlug.has(a) || !bySlug.has(b)) continue;
+  touch(a, b).citeCount += 1;
+}
+// 시리즈는 클리크로 이으면 지도가 뭉개진다 — order 순 이웃 화만 체인으로 잇는다.
+const seriesGroups = new Map<string, typeof posts>();
+for (const p of posts) {
+  if (!p.data.series) continue;
+  const g = seriesGroups.get(p.data.series) ?? [];
+  g.push(p);
+  seriesGroups.set(p.data.series, g);
+}
+for (const [name, group] of seriesGroups) {
+  const ordered = [...group].sort(
+    (x, y) =>
+      (x.data.order ?? 0) - (y.data.order ?? 0) || x.id.localeCompare(y.id),
+  );
+  for (let i = 1; i < ordered.length; i++) {
+    touch(ordered[i - 1].id, ordered[i].id).series = name;
+  }
+}
+
+const SERIES_STRENGTH = 0.5;
+const links: GraphViewLink[] = [...pairs.values()]
+  .map((v) => {
+    const cite = v.citeCount ? Math.min(0.35 + 0.08 * v.citeCount, 0.75) : 0;
+    const strength = Math.min(
+      1,
+      Math.max(v.conceptScore, v.series ? SERIES_STRENGTH : 0, cite),
+    );
+    const kinds: GraphViewLink["kinds"] = [];
+    if (v.conceptScore > 0) kinds.push("concept");
+    if (v.citeCount > 0) kinds.push("cites");
+    if (v.series) kinds.push("series");
+    return {
+      source: `post:${v.a}`,
+      target: `post:${v.b}`,
+      strength: Number(strength.toFixed(3)),
+      kinds,
+      shared: v.shared,
+      seriesLabel: v.series ?? undefined,
+    };
+  })
+  .sort((x, y) => (x.source + x.target < y.source + y.target ? -1 : 1));
+
 const viewPosts = posts.map((p) => {
   const cat = getCategory(p.data.category);
+  const byLabel = conceptsBySlug.get(p.id) ?? new Map<string, number>();
+  const ranked = [...byLabel.entries()].sort(
+    (a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1),
+  );
+  // 그래프에 아직 없는 글(추출 대기)은 frontmatter 태그로 degrade — 호버가 빈손이 되지 않게.
+  const keywords = ranked.length
+    ? ranked.slice(0, KEYWORDS_PER_POST).map(([label]) => label)
+    : p.data.tags.slice(0, KEYWORDS_PER_POST);
   return {
     slug: p.id,
     title: p.data.title,
     categoryLabel: cat.label,
     color: cat.color,
     tags: p.data.tags,
+    keywords,
+    // 검색은 개념 노드가 사라져도 유지된다 — 글의 모든 개념 라벨을 검색 텍스트에 접어 넣는다.
+    searchText: [p.data.title, ...p.data.tags, ...ranked.map(([l]) => l)]
+      .join(" ")
+      .toLowerCase(),
   };
 });
-const concepts = graphData.concepts
-  .filter((c) => c.postSlug === null || bySlug.has(c.postSlug))
-  .map((c) => ({
-    id: c.id,
-    label: c.label,
-    postSlug: c.postSlug,
-    degree: c.degree,
-    communityName: c.communityName,
-    color: c.postSlug
-      ? getCategory(bySlug.get(c.postSlug)!.data.category).color
-      : "#6B665C",
-  }));
-const nodeIds = new Set([
-  ...viewPosts.map((p) => `post:${p.slug}`),
-  ...concepts.map((c) => c.id),
-]);
-const edges = graphData.conceptEdges.filter(
-  (e) => nodeIds.has(e.source) && nodeIds.has(e.target),
-);
+
 const legendCats = [...new Set(posts.map((p) => p.data.category))].map((slug) => {
   const cat = getCategory(slug);
   return { label: cat.label, color: cat.color };
@@ -51,22 +141,22 @@ const legendCats = [...new Set(posts.map((p) => p.data.category))].map((slug) =>
 
 const viewData: GraphViewData = {
   posts: viewPosts,
-  concepts,
-  edges,
+  links,
   legend: legendCats,
 };
 ---
 
 <BaseLayout
   title="글 지도"
-  description="블로그의 모든 글과 개념을 하나의 지도로 탐색합니다."
+  description="블로그의 모든 글과 글 사이의 연관을 하나의 지도로 탐색합니다."
 >
   <section class="graph-page">
     <header class="graph-header">
       <h1>글 지도</h1>
       <p class="lead">
-        글과 글 사이의 개념 연결을 그린 지도입니다. 큰 원이 글, 작은 원이
-        개념이에요. 글을 눌러 바로 이동할 수 있습니다.
+        글과 글 사이의 연관을 그린 지도입니다. 원 하나가 글이고, 선은 두 글이
+        이어져 있다는 뜻이에요. 글에 포인터를 올리면 그 글의 연관 키워드가
+        펼쳐지고, 누르면 바로 이동합니다.
       </p>
     </header>
     {

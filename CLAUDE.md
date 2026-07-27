@@ -74,6 +74,7 @@ astro build                           → consumes src/data/graph.json only (no 
 ```
 
 - **Contract**: CI/`astro build` never runs graphify — it only imports the committed `src/data/graph.json` (via `src/lib/graph.ts`, a glob loader). If the file is missing, the build still passes: related posts degrade to frontmatter-only ranking (series/tags/category, `src/lib/related.ts`) and `/graph` falls back to a plain post list.
+- **`/graph` 뷰 규약 (KAN-029)**: 지도에 그려지는 노드는 **글뿐**이다. 개념·키워드 노드는 초기 렌더에 없고, 글 노드에 hover/focus(터치는 첫 탭)했을 때만 그 글의 **연관 키워드 부채**로 펼쳐진다(상위 8개, `degree` 순). 글↔글 엣지는 세 신호를 한 쌍으로 합친 것 — ① 개념 공유(`postPairs.score`) ② 본문 인용(문서 노드 간 직접 엣지, 자기참조 제외) ③ 같은 시리즈의 **이웃 화**(클리크가 아니라 `order` 체인). 그래프에 아직 없는 글은 키워드가 frontmatter `tags`로 degrade 하므로 hover가 빈손이 되지 않는다. 검색은 개념 노드가 사라져도 유지된다(글마다 전체 개념 라벨을 `searchText`로 접어 보냄). 합성·필터링은 `src/pages/graph.astro`, 렌더·인터랙션은 `src/components/graph/GraphExplorer.tsx`.
 - **Regeneration** happens at publish time (ship-post step 1.5, non-blocking) or manually with the command pair above. graphify's markdown extraction is LLM-based, so it must stay out of CI.
 - **Backend (KAN-023에서 확정)**: `--backend claude-cli`(로컬 Claude Code에 위탁, API 키 불필요)를 기본으로 쓴다. `--backend gemini`(`GEMINI_API_KEY`)는 **무료 티어가 5 RPM·일일 상한**이라 18편 전량 추출이 청크 절반 이상 429로 실패한다 — 부분 결과가 조용히 커밋되면 일부 글이 통째로 그래프에서 빠진다. gemini를 쓸 거면 청크 수를 5 이하로 유지(`--token-budget` 기본값)하고 **`N/N done`을 반드시 확인**할 것.
 - **부분 실패는 커밋 금지.** `WARNING: n/m semantic chunk(s) failed`가 뜨면 그 graph.json은 버린다. 이 WARNING이 **단일 판정 기준**이다 — 아래 카운트 검사가 통과해도 뒤집지 않는다.
