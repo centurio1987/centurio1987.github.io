@@ -1,0 +1,433 @@
+---
+title: "쿠버네티스가 도커를 버렸다는 말의 진실"
+description: "kubelet과 런타임 사이의 gRPC 계약 CRI, 파드를 1급으로 다루는 PodSandbox, 그리고 dockershim이 제거된 진짜 이유를 봅니다."
+pubDate: 2026-07-27
+category: skills
+author: ppangto-teacher
+tags: ["CRI", "쿠버네티스", "kubelet", "PodSandbox", "dockershim", "containerd", "CRI-O", "cgroup 드라이버"]
+series: "컨테이너의 해부"
+order: 3
+draft: false
+---
+import VizProcessSteps2 from "../../components/posts/container-anatomy-3/VizProcessSteps2";
+import VizComparison3 from "../../components/posts/container-anatomy-3/VizComparison3";
+import VizFlowchart4 from "../../components/posts/container-anatomy-3/VizFlowchart4";
+
+import CriCallTrace from "../../components/posts/container-anatomy-3/CriCallTrace";
+
+![컨테이너의 해부 3편 표지. kubelet과 런타임 사이의 계약 CRI를 소개한다.](/images/container-anatomy-3/hero.webp)
+
+2022년 5월, 쿠버네티스 1.24가 나오면서 인터넷에 이런 말이 돌았습니다.
+
+> "쿠버네티스가 도커를 버렸다. 이제 도커로 만든 이미지는 못 쓴다."
+
+앞의 절반은 맞고, 뒤의 절반은 **완전히 틀렸습니다.** 쿠버네티스 공식 문서는 이렇게 답합니다.
+
+> **"`docker build`로 만든 이미지는 모든 CRI 구현에서 동작합니다. 기존 이미지는 전부 똑같이 동작합니다."**
+
+왜 이런 오해가 생겼을까요? 이유는 하나입니다. **이미지 포맷과 런타임 인터페이스가 서로 다른 층위라는 걸 몰랐기 때문**입니다. 지난 편에서 본 **OCI(Open Container Initiative)**가 앞의 것이고, 오늘 볼 **CRI(Container Runtime Interface)**가 뒤의 것입니다.
+
+이 글을 끝까지 읽으시면 그 두 층이 어떻게 갈리는지, 파드라는 개념이 어디서 튀어나오는지, 그리고 2022년에 실제로 무엇이 빠진 건지를 정확히 말하실 수 있게 됩니다. 덤으로 쿠버네티스 노드가 이유 없이 불안정해지는 **가장 흔한 설정 실수** 하나도 짚고 가겠습니다.
+
+## 먼저 수준을 맞추고 갈게요 — OCI와 CRI는 경쟁 관계가 아닙니다
+
+시작 전에 이것만 잡고 가면 나머지가 쉬워집니다. 두 약어가 비슷하게 생겨서 자주 섞이는데, **둘은 층이 다릅니다.**
+
+```text
+        [쿠버네티스 세계]
+  kubelet
+     │
+     │  CRI — "파드를 띄워라, 컨테이너를 만들어라"
+     │        (gRPC. 오늘의 주제)
+     ▼
+  containerd / CRI-O
+     │
+     │  OCI — "이 번들을 실행해라"
+     │        (지난 편 주제)
+     ▼
+  runc / crun / runsc
+```
+
+- **OCI**는 *컨테이너를 어떻게 만들고 담고 나르는가*의 표준입니다. 쿠버네티스가 없어도 성립합니다.
+- **CRI**는 *쿠버네티스의 kubelet이 런타임에게 무엇을 시킬 수 있는가*의 인터페이스입니다. 쿠버네티스 전용입니다.
+
+여기서 헷갈리기 쉬운 포인트를 미리 짚겠습니다. **"CRI가 OCI의 상위 호환"이 아닙니다.** 둘은 위아래로 쌓인 서로 다른 계약이고, 하나가 다른 하나를 대체하지 않습니다. 실제로 containerd는 **위로는 CRI를 말하고 아래로는 OCI 런타임을 부릅니다.** 두 언어를 동시에 쓰는 통역사인 셈이죠.
+
+> 기억법: **OCI는 물건의 규격, CRI는 주문서 양식.**
+
+## CRI란 무엇인가
+
+정의부터 정확히 옮기겠습니다. 쿠버네티스 문서의 표현입니다.
+
+> **"Kubernetes Container Runtime Interface(CRI)는 노드 컴포넌트인 kubelet과 컨테이너 런타임 사이의 통신을 위한 주요 gRPC 프로토콜을 정의한다."**
+
+그리고 CRI가 존재하는 이유는 이 한 문장에 담겨 있습니다 — **kubelet이 클러스터 컴포넌트를 다시 컴파일하지 않고도 다양한 컨테이너 런타임을 쓸 수 있게 하는 플러그인 인터페이스.**
+
+### 누가 클라이언트인가
+
+여기가 방향을 거꾸로 알기 쉬운 대목입니다. 잠깐, 확인 하나만 해 볼까요? **kubelet과 런타임 중 누가 서버일까요?**
+
+문서는 이렇게 못박습니다 — **"kubelet은 gRPC로 컨테이너 런타임에 연결할 때 클라이언트 역할을 한다."**
+
+```text
+  kubelet ──── gRPC 요청 ────▶ containerd / CRI-O
+ (클라이언트)                    (서버 — 소켓을 열고 기다린다)
+```
+
+컨트롤 플레인이 명령을 내리는 그림을 떠올리면 반대로 생각하기 쉬운데, **소켓을 열고 기다리는 쪽은 런타임**입니다. kubelet이 찾아가서 두드립니다.
+
+그 소켓 주소는 kubelet의 `--container-runtime-endpoint` 플래그로 지정합니다. 실제 값은 이렇습니다.
+
+```text
+ containerd  →  unix:///run/containerd/containerd.sock
+                (Windows: npipe://./pipe/containerd-containerd)
+
+ CRI-O       →  unix:///var/run/crio/crio.sock
+```
+
+EP1에서 `containerd.sock`을 이미 보셨죠. **같은 소켓입니다.** containerd는 자기 고유 API와 CRI를 같은 자리에서 서빙합니다 — CRI가 containerd 안의 **플러그인**으로 들어 있기 때문입니다.
+
+## 두 개의 서비스
+
+CRI가 규정하는 gRPC 서비스는 딱 둘입니다. 이름이 역할을 그대로 말해 줍니다.
+
+```text
+ RuntimeService  — 파드와 컨테이너를 만들고 굴리고 죽인다
+ ImageService    — 이미지를 받고 지우고 목록을 준다
+```
+
+왜 둘로 나눴을까요? **책임이 다르고, 실패의 성격도 다르기 때문**입니다. 이미지를 받는 일은 네트워크·디스크 문제고, 컨테이너를 띄우는 일은 커널·자원 문제입니다. 나눠 두면 "이미지는 받았는데 못 띄운다"와 "이미지를 못 받는다"를 구분할 수 있습니다.
+
+`RuntimeService`의 메서드를 분류해 보면 이렇습니다. **전부가 아니라 흐름을 잡는 데 필요한 것만 추린 발췌**입니다 — 실제로는 자원 갱신·체크포인트·통계·이벤트 스트리밍 계열 메서드가 더 있고, 버전이 오르며 계속 늘고 있습니다.
+
+| 분류 | 메서드 |
+| --- | --- |
+| **Pod Sandbox** | `RunPodSandbox` · `StopPodSandbox` · `RemovePodSandbox` · `PodSandboxStatus` · `ListPodSandbox` |
+| 컨테이너 | `CreateContainer` · `StartContainer` · `StopContainer` · `RemoveContainer` · `ListContainers` · `ContainerStatus` |
+| 실행·접속 | `ExecSync` · `Exec` · `Attach` · `PortForward` |
+| 모니터링 | `ContainerStats` · `ListContainerStats` |
+| 시스템 | `Version` · `Status` |
+
+`ImageService`는 단출합니다 — `ListImages` · `ImageStatus` · `PullImage` · `RemoveImage` · `ImageFsInfo`.
+
+표에서 "실행·접속" 줄은 조금 특별해서 짚고 갑니다. `Exec`·`Attach`·`PortForward`는 **데이터를 gRPC로 실어 나르지 않습니다.** 런타임은 "이 주소로 붙으세요" 하고 **스트리밍 엔드포인트 URL을 돌려줄 뿐**이고, 실제 입출력은 그 URL로 따로 연결해 흐릅니다. 터미널 세션 같은 장시간 양방향 트래픽을 kubelet의 gRPC 통로에 얹지 않으려는 설계예요. 그래서 스펙 설명도 "스트리밍 엔드포인트를 **준비한다**"고 표현합니다.
+
+자, 이제 **표의 맨 위 분류**를 다시 보세요. 눈에 걸리는 게 있으실 겁니다.
+
+## PodSandbox — 여기가 핵심입니다
+
+**Docker API에는 "파드"라는 1급 개념이 없습니다.** 네트워크 네임스페이스 공유 자체는 도커에서도 됩니다(`--network container:<id>`). 없는 건 **파드 단위의 생명주기·상태·샌드박스 API** — 즉 "이 묶음을 하나로 만들고, 하나로 조회하고, 하나로 지운다"는 개념입니다. 지난 편에서 본 OCI 스펙 어디에도 파드는 없었고요.
+
+그런데 쿠버네티스의 최소 배포 단위는 컨테이너가 아니라 **파드**입니다. 같은 파드의 컨테이너들은 IP를 공유하고 `localhost`로 서로를 부릅니다.
+
+이 간극을 메우는 게 **PodSandbox**입니다. CRI는 파드를 1급 개념으로 올려서, "먼저 파드의 껍데기를 만들고, 그 안에 컨테이너를 채운다"는 2단계를 규정합니다.
+
+### 파드 하나가 뜨는 순서
+
+`nginx`와 사이드카 `log-agent` 두 컨테이너짜리 파드를 띄운다고 해 봅시다. kubelet이 이런 순서로 호출합니다.
+
+```text
+ ① RunPodSandbox
+      └─ 파드의 공유 환경을 만든다
+         · 네트워크 네임스페이스 생성
+         · CNI 플러그인이 veth 를 꽂고 IP 를 할당한다
+         · 이 껍데기가 파드의 "주소"를 갖는다
+              ↓
+ ② PullImage  (nginx)          ← ImageService
+ ③ CreateContainer (nginx)     ← 샌드박스 안에
+ ④ StartContainer  (nginx)
+              ↓
+ ⑤ PullImage  (log-agent)
+ ⑥ CreateContainer (log-agent) ← 같은 샌드박스 안에
+ ⑦ StartContainer  (log-agent)
+```
+
+<VizProcessSteps2 />
+
+여기서 가장 중요한 줄은 **①**입니다. 컨테이너를 만들기 **전에** 파드의 네트워크가 먼저 준비됩니다. 그래서 두 컨테이너가 같은 IP를 갖고 `localhost`로 통신할 수 있는 거예요.
+
+①에 등장한 **CNI(Container Network Interface)**는 컨테이너에 네트워크를 붙이는 일을 표준화한 별도 규약입니다. 이름이 CRI와 한 글자 차이라 섞이기 쉬운데, **CRI는 "컨테이너를 만들어라"를 말하는 규약이고 CNI는 "거기에 랜선을 꽂는" 규약**입니다. 지금 보시는 것처럼 CRI 호출을 처리하는 도중에 CNI가 불려 나옵니다.
+
+그리고 EP1의 조각이 여기서 맞물립니다. `CreateContainer`는 **어느 샌드박스에 넣을지**를 함께 받습니다. containerd의 CRI 플러그인은 그 정보를 `io.kubernetes.cri.sandbox-id`라는 **라벨**로 남기고, EP1에서 본 `io.containerd.runc.v2` shim이 그 라벨을 기준으로 **같은 파드의 컨테이너들을 한 shim으로 묶습니다.**
+
+```text
+ CRI          RunPodSandbox → sandbox-id 발급
+                    │
+                    ▼
+              CreateContainer(sandbox-id)
+                    │
+ containerd         ▼
+              CRI 플러그인이 라벨로 기록
+                io.kubernetes.cri.sandbox-id = <그 id>
+                    │
+                    ▼
+              shim 이 라벨을 보고 같은 파드끼리 묶는다
+```
+
+한 가지 구분해 두실 게 있습니다. **이 묶음 동작은 CRI 규격이 요구하는 게 아닙니다.** containerd와 runc v2 shim의 구현 선택이에요. CRI는 "어느 샌드박스 소속인지"만 알려 주고, 그걸 어떻게 활용할지는 런타임 마음입니다.
+
+> 기억법: **집을 먼저 짓고, 그다음에 사람을 들인다.**
+
+### 일시정지 컨테이너의 정체
+
+일반적인 리눅스 런타임에서 파드를 띄우면 `pause`라는 이름의 컨테이너가 하나 더 보입니다. 이게 샌드박스를 떠받치는 실체예요. (`RunPodSandbox` 요청을 받은 **런타임이 내부적으로** 이 컨테이너를 세웁니다. kubelet이 `CreateContainer`로 따로 요청하는 게 아닙니다.)
+
+네트워크 네임스페이스는 그것을 **붙들고 있는 무언가가 있어야** 유지됩니다. 파드의 앱 컨테이너들은 죽었다 살아났다 하는데, 그때마다 네임스페이스가 사라지면 곤란하겠죠. 그래서 아무 일도 하지 않고 그저 **잠들어 있으면서 네임스페이스를 붙잡아 두는** 컨테이너를 하나 둡니다.
+
+여기서 헷갈리기 쉬운 포인트입니다. `pause` 컨테이너를 "쓸모없는 낭비"로 보기 쉬운데, **앱 컨테이너가 재시작하는 동안에도 파드의 네트워크가 유지되는 이유**가 이 친구입니다.
+
+다만 범위를 정확히 해 두겠습니다. 이건 **일반적인 리눅스 경로**의 이야기입니다. `hostNetwork: true` 파드는 호스트 네임스페이스를 그대로 쓰니 사정이 다르고, 경량 VM(Kata)이나 유저스페이스 커널(gVisor) 같은 격리 방식, 그리고 최신 containerd의 샌드박스 관리 방식에서는 구현이 달라집니다. 그리고 **샌드박스 자체가 재생성되면 파드 IP는 바뀔 수 있습니다** — `pause`가 지켜 주는 건 그 샌드박스가 살아 있는 동안입니다.
+
+### 직접 만져 보기
+
+호출 순서는 말로 들으면 잘 안 잡힙니다. 아래에서 단계를 눌러 가며 파드가 조립되는 걸 보세요.
+
+<CriCallTrace client:visible />
+
+**다음 단계**를 눌러 가며 두 가지를 보세요. 첫째, **1단계가 끝난 시점에 이미 IP가 붙어 있습니다** — 컨테이너는 아직 하나도 없는데요. 둘째, 6단계에서 `log-agent`가 **새 샌드박스를 만들지 않고** 기존 샌드박스 안으로 들어갑니다. 두 컨테이너가 같은 IP를 쓰는 이유가 그림으로 보입니다.
+
+왼쪽 로그의 뱃지도 눈여겨봐 주세요. `Runtime`과 `Image`가 번갈아 나오는데, 앞에서 서비스를 둘로 나눈 이유가 여기서 드러납니다.
+
+## dockershim — 2022년에 실제로 빠진 것
+
+이제 처음의 오해로 돌아갑니다.
+
+### 연대기
+
+```text
+ 2020-12-02   k8s v1.20 — dockershim deprecation 발표
+                          (여기서부터 "도커 버린다" 소문이 돌기 시작)
+       ↓
+ 2022-05-03   k8s 1.24 "Stargazer" — kubelet 에서 dockershim 제거
+                          → containerd / CRI-O 로 이전
+                            또는 cri-dockerd 어댑터 사용
+```
+
+### dockershim이 무엇이었나
+
+**kubelet이 마치 Docker Engine을 CRI 호환 런타임인 것처럼 상대할 수 있게 해 주던 어댑터**입니다. 그리고 그 코드는 **쿠버네티스 저장소 안에** 있었습니다.
+
+왜 그런 게 필요했을까요? **Docker Engine이 CRI를 구현하지 않기 때문**입니다. CRI는 오케스트레이터와 여러 런타임 사이의 상호운용을 위해 만들어진 표준인데, 도커는 CRI가 생기기 전부터 있었고 자기 API를 갖고 있었죠.
+
+```text
+[Before — 1.24 이전]
+  kubelet ──CRI──▶ dockershim ──Docker API──▶ dockerd ──▶ containerd ──▶ shim ──▶ runc
+                   ↑
+          쿠버네티스가 자기 저장소 안에서
+          특정 벤더 전용으로 유지하던 코드
+
+[After — 1.24 이후]
+  kubelet ──CRI──▶ containerd ──▶ shim ──▶ runc
+                   (CRI 플러그인 내장. 중간 단계가 사라짐)
+```
+
+<VizComparison3 />
+
+### 그래서 왜 뺐나
+
+"도커가 나빠서"가 아닙니다. 문제는 **구조**였습니다.
+
+표준 프로젝트가 **특정 벤더 전용 어댑터 코드를 자기 안에 짊어지고** 유지·보수·보안 패치를 계속해야 하는 상황이었습니다. CRI를 만든 목적 자체가 "런타임을 갈아 끼울 수 있게 하자"였는데, 정작 한 런타임만 특별 대우를 받는 코드가 본체에 남아 있었던 거죠.
+
+그리고 위 그림에서 보시듯 **호출 사슬도 한 겹 더 길었습니다.** dockerd는 어차피 containerd를 호출하니, 중간을 걷어내면 같은 일을 더 짧게 할 수 있었습니다.
+
+### 도커를 계속 쓰고 싶다면
+
+`cri-dockerd`라는 대체 어댑터가 있습니다. Mirantis와 Docker가 유지보수를 약속했고, 쿠버네티스 밖에서 별도로 관리됩니다(2026-07-27 기준 v0.4.4). 쿠버네티스 저장소에서 나갔을 뿐 **사라진 게 아닙니다.**
+
+### 그래서 이미지는요?
+
+다시 처음의 문장으로 돌아갑니다.
+
+> **"`docker build`로 만든 이미지는 모든 CRI 구현에서 동작합니다."**
+
+지난 편을 읽으셨다면 이제 **왜** 그런지도 설명하실 수 있습니다. EP2에서 본 대로 Docker 계보와 OCI 계보는 **완전히 같지는 않지만 서로를 받아 줍니다** — media type 라벨이 두 벌일 뿐 구조가 거의 겹치고, containerd·CRI-O 모두 양쪽을 읽습니다. 그리고 dockershim이 빠진 건 **CRI 계층**의 일이지 **이미지 계층**과는 무관합니다.
+
+```text
+ 빠진 것:   kubelet ↔ Docker Engine 사이의 어댑터   (CRI 계층)
+ 안 빠진 것: docker build 가 만드는 이미지 포맷      (OCI 계층)
+```
+
+> 기억법: **주문서 양식이 바뀐 거지, 물건 규격이 바뀐 게 아니다.**
+
+## v1 API — 조용히 노드를 사라지게 만드는 것
+
+버전 이야기를 하나 짚고 가겠습니다. 실무에서 만나면 당황스러운 조항입니다.
+
+> **"Kubernetes v1.26 이상에서 kubelet은 컨테이너 런타임이 `v1` CRI API를 지원할 것을 요구한다. 런타임이 `v1` API를 지원하지 않으면 kubelet은 노드를 등록하지 않는다."**
+
+여기서 가장 중요한 줄은 마지막입니다 — **노드를 등록하지 않습니다.**
+
+`NotReady`로라도 뜨는 게 아니라 **`kubectl get nodes` 목록에 아예 나타나지 않습니다.** 오래된 런타임을 쓰는 노드를 새 클러스터에 붙일 때 만나기 쉬운 상황이에요.
+
+여기서 범위를 정확히 해 두겠습니다. 문서가 보장하는 건 **"노드가 등록되지 않는다"는 결과**까지입니다. kubelet 프로세스가 아예 뜨지 못하고 죽는지, 떠 있으면서 등록만 못 하는지는 **버전과 상황에 따라 다릅니다.** 그러니 "kubelet이 죽어 있을 것"이라고 미리 단정하고 접근하지 마시고, 아래 순서로 좁혀 가시는 편이 안전합니다.
+
+문제는 이 증상이 **다른 원인들과 똑같이 보인다**는 점입니다. 인증서 문제, kubelet 부트스트랩 실패, API 서버 접근 불가, 엔드포인트 경로 오타 — 전부 "노드가 안 보인다"로 나타납니다.
+
+```text
+ ① kubelet 이 살아 있나            systemctl status kubelet
+ ② kubelet 로그에 무엇이 찍혔나     journalctl -u kubelet -n 100
+ ③ 런타임이 v1 을 말하나            crictl version
+ ④ 엔드포인트 경로가 맞나            kubelet 설정의 container-runtime-endpoint
+```
+
+**②를 건너뛰지 마세요.** 살아 있든 죽었든 원인은 대개 로그에 그대로 찍혀 있습니다. 이걸 안 보고 네트워크나 인증서부터 뒤지다 시간을 버리기 쉽습니다.
+
+## 실무 시나리오 — 노드가 이유 없이 불안정하다
+
+CRI 설정에서 가장 흔하게 밟는 함정을 하나 보겠습니다. **cgroup 드라이버 불일치**입니다.
+
+EP1에서 cgroup이 자원 분량을 자르는 축이라고 했죠. 그 cgroup을 **누가 관리하느냐**에는 두 가지 방식이 있습니다.
+
+| 드라이버 | 설명 |
+| --- | --- |
+| `cgroupfs` | **kubelet 자체의 기본값.** cgroup 파일시스템을 직접 조작 |
+| `systemd` | systemd가 init 시스템일 때 **권장** |
+
+한 가지 단서를 답니다. `cgroupfs`가 kubelet의 기본값인 건 맞지만, **오늘날 실제로 설치되는 클러스터 대부분은 `systemd`로 설정돼 있습니다.** systemd 계열 배포판에서는 문서가 `systemd`를 권장하고, `kubeadm` 같은 설치 도구도 그렇게 잡아 줍니다. 그러니 "기본값이 `cgroupfs`니까 내 노드도 그럴 것"이라고 넘겨짚지 마시고 **직접 확인**하시는 편이 좋습니다.
+
+문서의 요구는 단호합니다.
+
+> **"kubelet과 컨테이너 런타임이 같은 cgroup 드라이버를 쓰고 같게 설정되는 것이 결정적으로 중요하다(critical)."**
+
+### 안 맞으면 무슨 일이 벌어지나
+
+```text
+[Before — 드라이버 불일치]
+  kubelet    → cgroupfs 로 자원을 잡는다
+  containerd → systemd 로 자원을 잡는다
+  나머지 프로세스 → systemd
+       ↓
+  cgroup 관리자가 둘이 된다
+       ↓
+  "지금 얼마나 쓰고 있나"에 대한 시야가 두 벌
+       ↓
+  자원 압박이 오면 노드가 불안정해진다
+
+[After — 드라이버 일치]
+  kubelet · containerd · 나머지 전부 → systemd
+       ↓
+  자원 뷰가 하나. 계산이 어긋나지 않는다
+```
+
+문서의 표현을 그대로 옮기면, 드라이버가 갈리면 **"시스템의 가용·사용 자원에 대한 두 개의 뷰"**가 생기고, kubelet·런타임은 `cgroupfs`인데 나머지 프로세스는 `systemd`인 노드는 **"자원 압박 아래에서 불안정해진다"**고 합니다.
+
+**진단**: 노드가 특정 부하에서만 이상하고 로그에 뚜렷한 원인이 없다면 이걸 의심해 볼 만합니다.
+**해결**: systemd 계열 배포판이면 양쪽 다 `systemd`로 맞춥니다. kubelet은 `KubeletConfiguration`의 `cgroupDriver`를, 런타임은 각자 설정 파일을 고칩니다.
+**팁**: 한쪽만 바꾸면 상황이 더 나빠집니다. **둘을 같이** 바꾸셔야 합니다.
+
+> 기억법: **cgroup 드라이버는 한쪽만 고치면 오히려 나빠진다. 둘은 항상 같이 움직인다.**
+
+## 지금 무엇을 쓰나
+
+정리하면 선택지는 이렇습니다.
+
+| 런타임 | 성격 | 비고 |
+| --- | --- | --- |
+| **containerd** | CRI 플러그인 내장 | 가장 널리 쓰임. EP1에서 본 그것 |
+| **CRI-O** | 쿠버네티스 전용으로 설계 | **버전이 쿠버네티스를 따라감**(k8s 1.36 ↔ CRI-O 1.36) |
+| **cri-dockerd** | Docker Engine용 어댑터 | Mirantis·Docker 유지보수 |
+
+CRI-O의 버전 정책이 흥미롭습니다. 쿠버네티스 마이너 버전과 번호를 맞춰서 **어느 조합이 짝인지 한눈에 보이게** 했습니다. **범용 컨테이너 엔진이 아니라 쿠버네티스 부품으로 자기를 규정한 설계**죠. (물론 실제 운영에서는 번호만 맞으면 끝은 아닙니다 — OS 패키지, CNI 플러그인, runc/crun 버전, 보안 정책까지 함께 봐야 합니다. 버전 정렬은 그 고민의 출발점을 줄여 줄 뿐입니다.)
+
+## 오해하기 쉬운 포인트 정리
+
+**오해 1. "쿠버네티스에서 도커 이미지를 못 쓴다."**
+쓸 수 있습니다. 빠진 건 kubelet↔Docker Engine 어댑터지 이미지 포맷이 아닙니다.
+
+**오해 2. "CRI가 OCI를 대체했다."**
+층이 다릅니다. containerd는 위로 CRI를 말하고 아래로 OCI 런타임을 부릅니다. 둘 다 씁니다.
+
+**오해 3. "dockershim 제거 = 도커 프로젝트가 죽었다."**
+로컬 개발에서 도커는 그대로입니다. 바뀐 건 **쿠버네티스 노드에서 컨테이너를 실행하는 경로**뿐입니다.
+
+**오해 4. "파드는 쿠버네티스가 만든 추상일 뿐 런타임과 무관하다."**
+아닙니다. `RunPodSandbox`로 **CRI에 박혀 있는 1급 개념**입니다. 런타임이 직접 파드를 압니다.
+
+**오해 5. "CNI와 CRI는 비슷한 것."**
+지난 편에서 갈라 뒀죠. **CNI는 네트워크를 붙이는 규약, CRI는 런타임에게 일을 시키는 규약**입니다. 파드가 뜰 때 `RunPodSandbox` 처리 과정에서 CNI가 호출되는 관계고요. 다만 정확히 하면 **CRI 스펙이 CNI를 강제하지는 않습니다** — "샌드박스의 네트워크를 준비하라"까지가 CRI의 요구이고, 리눅스 구현들이 그걸 대개 CNI로 해결하는 것뿐입니다.
+
+## 직접 해보기
+
+쿠버네티스 노드에 접근할 수 있다면 CRI를 직접 두드려 볼 수 있습니다. `crictl`은 CRI 전용 디버깅 도구입니다.
+
+1. **런타임이 어떤 CRI 버전을 말하는지 봅니다.**
+   ```bash
+   sudo crictl version
+   ```
+   기대 결과: `RuntimeApiVersion: v1`이 보입니다. 여기가 `v1alpha2`면 앞서 말한 노드 미등록 문제의 후보입니다.
+
+2. **샌드박스와 컨테이너를 따로 조회합니다.**
+   ```bash
+   sudo crictl pods          # PodSandbox 목록
+   sudo crictl ps            # 컨테이너 목록
+   ```
+   관찰 포인트: **두 목록이 따로 있습니다.** `docker ps` 하나로 끝나던 것과 달리, CRI는 파드와 컨테이너를 별개 자원으로 다룹니다. 이게 PodSandbox가 1급이라는 말의 실제 모습입니다.
+
+3. **한 파드의 컨테이너들이 같은 샌드박스에 묶였는지 확인합니다.**
+   ```bash
+   sudo crictl ps -o json | jq -r '.containers[].podSandboxId' | sort | uniq -c
+   ```
+   관찰 포인트: 앞의 숫자가 **그 샌드박스에 든 컨테이너 개수**입니다. `2`가 찍힌 줄이 있다면 컨테이너 두 개가 **같은 `podSandboxId`를 공유**하는 파드고, 본문에서 본 그 구조가 실제로 그렇게 되어 있다는 증거입니다.
+
+4. **cgroup 드라이버가 일치하는지 점검합니다.**
+   ```bash
+   # kubelet 쪽
+   sudo grep -i cgroupdriver /var/lib/kubelet/config.yaml
+
+   # 런타임 쪽 (containerd)
+   sudo grep -i systemdcgroup /etc/containerd/config.toml
+   ```
+   관찰 포인트: 두 값이 **같은 방식**을 가리켜야 합니다. 어긋나 있다면 앞 절의 그 함정입니다.
+
+   런타임 쪽 확인은 **버전마다 자리가 다릅니다.** containerd 1.x와 2.x는 설정 키 경로가 다르고, `crictl info`의 출력 구조도 버전에 따라 달라서 `grep` 한 줄로 항상 잡히지는 않습니다. 안 나오면 설정 파일 전체를 열어 `SystemdCgroup` 항목을 직접 찾으시는 게 확실합니다.
+
+## 스스로 점검하기
+
+1. kubelet과 컨테이너 런타임 중 gRPC 클라이언트는 어느 쪽일까요? 그리고 그렇게 정한 게 왜 자연스러운지 한 문장으로 설명해 보세요.
+2. `RunPodSandbox`가 `CreateContainer`보다 먼저 호출돼야 하는 이유는 무엇일까요?
+3. 새 노드를 붙였는데 `kubectl get nodes`에 아예 보이지 않습니다. CRI 관점에서 의심할 원인 하나를 대 보세요.
+4. 동료가 "1.24부터 도커 이미지를 못 쓰니 전부 다시 빌드해야 한다"고 합니다. 어떻게 바로잡으시겠습니까?
+
+<details>
+<summary>답 확인</summary>
+
+1. **kubelet이 클라이언트**입니다. 런타임이 소켓을 열고 상주하는 데몬이고 kubelet이 필요할 때 찾아가 요청하는 구조라, 서버-클라이언트 방향이 이렇게 잡히는 게 자연스럽습니다.
+2. 샌드박스가 **파드의 공유 환경(네트워크 네임스페이스·IP)을 소유**하기 때문입니다. 컨테이너는 그 환경에 들어가는 것이라 껍데기가 먼저 있어야 합니다.
+3. 런타임이 **`v1` CRI API를 지원하지 않는 경우**입니다. v1.26 이상 kubelet은 이때 노드를 등록하지 않으므로, `NotReady`로도 뜨지 않고 목록에 아예 나타나지 않습니다. 다만 같은 증상을 내는 원인이 여럿이니 kubelet 로그부터 확인하는 게 순서입니다.
+4. 이미지 포맷(OCI)과 런타임 인터페이스(CRI)는 **다른 층위**라고 설명하면 됩니다. 빠진 건 kubelet↔Docker Engine 어댑터이고, 공식 문서도 "`docker build`로 만든 이미지는 모든 CRI 구현에서 동작한다"고 명시합니다. 재빌드는 필요 없습니다.
+
+</details>
+
+## 마무리 — 핵심 다시 짚기
+
+한 문장으로 줄이면 이렇습니다.
+
+> **CRI는 "쿠버네티스가 런타임에게 일을 시키는 양식"이고, OCI는 "그 결과로 만들어지는 물건의 규격"이다.**
+
+- **kubelet이 클라이언트**, 런타임이 서버. 소켓은 `--container-runtime-endpoint`로 지정합니다.
+- 서비스는 둘 — `RuntimeService`(파드·컨테이너)와 `ImageService`(이미지).
+- **PodSandbox가 1급 개념**입니다. 껍데기를 먼저 만들고 컨테이너를 채웁니다. `pause` 컨테이너가 그 껍데기를 붙들어 IP를 지킵니다.
+- **dockershim 제거는 구조 정리**였습니다. 표준 프로젝트가 벤더 전용 코드를 짊어지던 상황을 끝낸 것이고, 이미지 포맷과는 무관합니다.
+- **v1.26+는 `v1` CRI API가 하드 요구**입니다. 안 맞으면 노드가 등록조차 되지 않습니다.
+- **cgroup 드라이버는 kubelet과 런타임이 반드시 일치**해야 합니다.
+
+<VizFlowchart4 />
+
+여기까지 오면 컨테이너 한 개가 뜨는 경로(EP1), 그것이 지키는 표준(EP2), 쿠버네티스가 지시하는 방법(EP3)까지 그려집니다.
+
+그런데 마지막 질문이 남습니다. 지금까지 본 자리마다 **갈아 끼울 수 있는 선택지**가 있었습니다. runc 대신 crun을, containerd 대신 CRI-O를, 도커 대신 Podman을 쓸 수 있죠. 심지어 커널을 공유하지 않는 격리 방식도 있습니다.
+
+**그럼 무엇을 골라야 할까요?** 다음 편에서는 계층별 대안들을 다면 비교하고, 상황별 선택 기준을 정리하겠습니다. "도커 대신 뭘 쓰지"라는 질문이 왜 그 자체로 잘못된 질문인지부터 시작합니다.
+
+## 근거와 더 읽을 거리
+
+본문의 인용과 수치는 아래 1차 자료에서 확인했습니다(조회일 2026-07-27). 쿠버네티스는 릴리스 주기가 빠르니, 실무 적용 시에는 쓰시는 버전의 문서를 다시 확인해 주세요.
+
+- Kubernetes, [Container Runtime Interface (CRI)](https://kubernetes.io/docs/concepts/architecture/cri/) — 정의, gRPC, kubelet=클라이언트, v1.26+ v1 API 요구
+- Kubernetes, [Container Runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) — 소켓 경로, cgroup 드라이버 일치 요구
+- Kubernetes, [1.24 릴리스 공지 "Stargazer"](https://kubernetes.io/blog/2022/05/03/kubernetes-1-24-release-announcement/) — dockershim 제거(2022-05-03)
+- Kubernetes, [Updated: Dockershim Removal FAQ](https://kubernetes.io/blog/2022/02/17/dockershim-faq/) — 제거 이유, "docker build 이미지는 모든 CRI 구현에서 동작"
+- Kubernetes, [cri-api v1 api.proto](https://github.com/kubernetes/cri-api/blob/master/pkg/apis/runtime/v1/api.proto) — RuntimeService·ImageService 메서드
+- CRI-O, [README](https://github.com/cri-o/cri-o) — 소켓 경로, 쿠버네티스 버전 동조
+- containerd, [Getting Started](https://github.com/containerd/containerd/blob/main/docs/getting-started.md) — CRI 플러그인 내장, `crictl` 용도
