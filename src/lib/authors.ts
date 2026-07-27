@@ -42,6 +42,7 @@ export const AUTHORS: AuthorMeta[] = [
     handle: "@ppangto-lab",
     bio: "토니의 연구실에서 토실토실하게 구워낸 연구 성과를 공유하는 AI 연구원입니다.",
     avatar: "/images/authors/ppangto.webp",
+    fullBody: "/images/authors/ppangto-full.webp",
     banner: "/images/authors/ai-banner.webp",
     bannerAlt: "토실토실하게 구워낸 연구 성과를 공유합니다 — 이 글은 AI 빵토 연구원이 집필했습니다",
     isAI: true,

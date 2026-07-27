@@ -62,16 +62,26 @@ function parseArgs(argv: string[]): Args {
 }
 
 /**
- * 종이 배경 판정. 데코 컷의 배경은 따뜻한 베이지 모눈지(#F3EEE4 근방)이고,
- * 캐릭터는 순백에 가까운 스티커 외곽선을 두르고 있어 밝기·채도로 갈린다.
+ * 종이 배경 판정. 데코 컷의 배경은 따뜻한 베이지 모눈지(#F3EEE4 근방)다.
+ *
+ * 밝기만으로는 못 가른다 — 흰 실험복 같은 밝은 의상이 종이와 밝기가 겹친다(둘 다 230대).
+ * 가르는 건 **따뜻함(r−b)**이다. 실측: 종이 243,235,228(r−b=15) · 격자선 232,227,217(r−b=15)
+ * · 흰 가운 238,234,235(r−b=3) · 234,227,227(r−b=7). 종이·격자선은 파랑이 확실히 죽어 있고
+ * 의상의 흰색은 중성이라, r−b 하한이 배경만 통과시킨다(격자선도 같은 색조라 함께 지워진다).
  */
 function isPaper(r: number, g: number, b: number): boolean {
-  const maxc = Math.max(r, g, b);
-  const minc = Math.min(r, g, b);
-  const sat = maxc - minc;
+  const sat = Math.max(r, g, b) - Math.min(r, g, b);
   const bright = (r + g + b) / 3;
   if (bright > 246 && sat < 8) return false; // 순백 = 캐릭터 스티커 외곽선
-  return bright > 200 && bright < 250 && sat >= 6 && sat <= 40 && r >= g && g >= b;
+  return (
+    bright > 200 &&
+    bright < 250 &&
+    sat >= 10 &&
+    sat <= 40 &&
+    r - b >= 10 && // ← 따뜻함. 중성색 흰 의상을 배경으로 오인하지 않게 막는 선
+    r >= g &&
+    g >= b
+  );
 }
 
 interface Box {
@@ -322,14 +332,24 @@ const W = meta.width!;
 const H = meta.height!;
 const buf = await sharp(src).ensureAlpha().raw().toBuffer();
 
-const solidBg = borderIsTransparent(buf, W, H)
-  ? null
-  : uniformBorderColor(buf, W, H);
+const isTransparent = borderIsTransparent(buf, W, H);
+const borderColor = isTransparent ? null : uniformBorderColor(buf, W, H);
 
-const { box, coverage, note } = borderIsTransparent(buf, W, H)
-  ? boxFromAlpha(buf, W, H) //           (B) 이미 투명
+/**
+ * 테두리가 균일해도 그 색이 **종이색이면 (A) 데코 컷**으로 본다.
+ * 데코 원본은 가장자리가 매끈해 균일 판정을 통과해버리는데, (C)의 좁은 허용 오차로는
+ * 종이 질감을 못 지워서 이름표·마스킹테이프가 캐릭터와 한 덩어리로 남는다.
+ * (C)는 종이색 판정이 감당 못 하는 배경(순백 등) 전용이다.
+ */
+const solidBg =
+  borderColor && !isPaper(borderColor[0], borderColor[1], borderColor[2])
+    ? borderColor
+    : null;
+
+const { box, coverage, note } = isTransparent
+  ? boxFromAlpha(buf, W, H) //             (B) 이미 투명
   : solidBg
-    ? cutOutFromSolidBg(buf, W, H, solidBg) // (C) 단색 배경
+    ? cutOutFromSolidBg(buf, W, H, solidBg) // (C) 종이색 아닌 단색 배경
     : cutOutFromDeco(buf, W, H); //           (A) 데코 컷
 
 // 캐릭터가 화면의 극히 일부라면 판정이 틀린 것 → 조용히 이상한 결과를 내지 않는다
