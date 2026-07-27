@@ -76,7 +76,21 @@ astro build                           → consumes src/data/graph.json only (no 
 - **Contract**: CI/`astro build` never runs graphify — it only imports the committed `src/data/graph.json` (via `src/lib/graph.ts`, a glob loader). If the file is missing, the build still passes: related posts degrade to frontmatter-only ranking (series/tags/category, `src/lib/related.ts`) and `/graph` falls back to a plain post list.
 - **Regeneration** happens at publish time (ship-post step 1.5, non-blocking) or manually with the command pair above. graphify's markdown extraction is LLM-based, so it must stay out of CI.
 - **Backend (KAN-023에서 확정)**: `--backend claude-cli`(로컬 Claude Code에 위탁, API 키 불필요)를 기본으로 쓴다. `--backend gemini`(`GEMINI_API_KEY`)는 **무료 티어가 5 RPM·일일 상한**이라 18편 전량 추출이 청크 절반 이상 429로 실패한다 — 부분 결과가 조용히 커밋되면 일부 글이 통째로 그래프에서 빠진다. gemini를 쓸 거면 청크 수를 5 이하로 유지(`--token-budget` 기본값)하고 **`N/N done`을 반드시 확인**할 것.
-- **부분 실패는 커밋 금지.** `WARNING: n/m semantic chunk(s) failed`가 뜨면 그 graph.json은 버린다. 전량 성공 여부는 `graphify-out/graph.json`의 문서 노드 수 = 글 수(현재 18)로 검증한다.
+- **부분 실패는 커밋 금지.** `WARNING: n/m semantic chunk(s) failed`가 뜨면 그 graph.json은 버린다. 이 WARNING이 **단일 판정 기준**이다 — 아래 카운트 검사가 통과해도 뒤집지 않는다.
+- **검증은 두 단계로 한다**(KAN-008에서 1단계만으로는 부족함이 드러남):
+  ```bash
+  python3 -c "
+  import json,glob,os
+  from collections import Counter
+  d=json.load(open('graphify-out/graph.json'))
+  docs={n['source_file'] for n in d['nodes'] if n.get('file_type')=='document'}
+  posts=[os.path.basename(p) for p in glob.glob('src/content/posts/*.md')+glob.glob('src/content/posts/*.mdx')]
+  c=Counter(n['source_file'] for n in d['nodes'] if n.get('source_file','') in posts)
+  print('① 문서 노드', len(docs), '/ 글', len(posts), '| 빠진 글:', sorted(set(posts)-docs) or '없음')
+  print('② 속 빈 글(노드<=1):', [f for f,k in c.items() if k<=1] or '없음')"
+  ```
+  ① **문서 노드 수 = 글 수** · ② **노드가 1개뿐인 글이 없을 것**. ②가 핵심이다 — 청크가 실패하면 글이 그래프에서 *사라지는* 게 아니라 **문서 노드만 남고 개념·관계가 0개인 껍데기**가 되어 ①은 거짓 통과한다. 껍데기 글은 연관 글·`/graph`에서 사실상 투명인간이 된다.
+- 폐기할 때는 `git checkout -- graphify-out/` 로 커밋본을 복원한다(graphify가 tracked 파일을 덮어쓰므로, 안 되돌리면 다음 `git pull --rebase`가 unstaged 변경으로 막힌다).
 - `--out .`을 빼면 `src/content/posts/graphify-out/`에 써서 **콘텐츠 디렉터리를 오염**시킨다. 항상 붙인다.
 - graphify는 `source_file`을 **스캔 루트 기준 상대경로**로 적는다(위 명령이면 `tauri-2.mdx`). `scripts/build-graph-data.ts`의 `toPostSlug`가 이 형태와 예전 레포루트 형태(`src/content/posts/tauri-2.mdx`)를 모두 받는다.
 - `scripts/build-graph-data.ts`는 멱등. `graphify-out/`과 `src/data/graph.json`을 함께 커밋한다(`cache/`·날짜 백업 디렉터리는 제외).
