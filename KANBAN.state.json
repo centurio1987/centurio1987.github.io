@@ -1,6 +1,6 @@
 {
-  "next_id": 29,
-  "next_seq": 88,
+  "next_id": 30,
+  "next_seq": 92,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -309,6 +309,18 @@
       "title_hash": "15f69d28ae498c31a14accf8ca0ca8ddd3f260e2",
       "memo_hash": "01f13be12665d0a3118e05e189fe51a06b8d7b50",
       "verbatim_hash": "cc0f62b72cd635be48410fca2b6bc2f1de4007d0"
+    },
+    "KAN-029": {
+      "col": "backlog",
+      "title": "글 지도(/graph): 초기엔 글↔글 연관만 표시, 글 노드 호버 시 연관 키워드 노출",
+      "memo": "대상: /graph 글 지도 익스플로러(graphify 지식그래프 src/data/graph.json 소비). 현재는 글(문서) 노드와 개념·키워드 노드가 함께 그려짐. 변경① 초기 뷰를 글 노드와 글↔글 연관 관계(엣지)만으로 한정 — 개념·키워드 노드는 초기 렌더에서 숨김. 변경② 글 노드에 포인터를 올리면(hover) 해당 글의 연관 키워드가 나타나도록 인터랙션 추가.",
+      "verbatim": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
+      "생성": "유저",
+      "최종": "ai",
+      "갱신": "2026-07-27",
+      "title_hash": "ce0e8390c057356226208a809edafd461ff70b92",
+      "memo_hash": "ac5ec57ec45f0296239639abab1225b820f32693",
+      "verbatim_hash": "e400d42ef60da268e7fca13532d922af856725ef"
     }
   },
   "order": [
@@ -316,6 +328,8 @@
     "KAN-025",
     "KAN-026",
     "KAN-027",
+    "KAN-029",
+    "KAN-028",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -323,6 +337,7 @@
     "KAN-005",
     "KAN-010",
     "KAN-012",
+    "KAN-008",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -336,11 +351,50 @@
     "KAN-007",
     "KAN-023",
     "KAN-013",
-    "KAN-011",
-    "KAN-008",
-    "KAN-028"
+    "KAN-011"
   ],
   "recent": [
+    {
+      "seq": 91,
+      "t": "2026-07-27T23:36",
+      "a": "ai",
+      "id": "KAN-029",
+      "op": "edit",
+      "field": "verbatim",
+      "before": "",
+      "after": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라."
+    },
+    {
+      "seq": 90,
+      "t": "2026-07-27T23:35",
+      "a": "ai",
+      "id": "KAN-029",
+      "op": "edit",
+      "field": "memo",
+      "before": "",
+      "after": "대상: /graph 글 지도 익스플로러(graphify 지식그래프 src/data/graph.json 소비). 현재는 글(문서) 노드와 개념·키워드 노드가 함께 그려짐. 변경① 초기 뷰를 글 노드와 글↔글 연관 관계(엣지)만으로 한정 — 개념·키워드 노드는 초기 렌더에서 숨김. 변경② 글 노드에 포인터를 올리면(hover) 해당 글의 연관 키워드가 나타나도록 인터랙션 추가."
+    },
+    {
+      "seq": 89,
+      "t": "2026-07-27T23:35",
+      "a": "ai",
+      "id": "KAN-029",
+      "op": "edit",
+      "field": "title",
+      "before": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
+      "after": "글 지도(/graph): 초기엔 글↔글 연관만 표시, 글 노드 호버 시 연관 키워드 노출"
+    },
+    {
+      "seq": 88,
+      "t": "2026-07-27T23:33",
+      "a": "유저",
+      "id": "KAN-029",
+      "op": "create",
+      "col": "backlog",
+      "title": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
+      "memo": "",
+      "verbatim": ""
+    },
     {
       "seq": 87,
       "t": "2026-07-27T23:26",
@@ -792,47 +846,6 @@
       "field": "memo",
       "before": "",
       "after": "viz 엔진 구현·검증 완료(미push, 배포 전 리뷰 대기). bbangto-ui-visualization(GitHub Packages)로 모든 구조형 시각물·hero를 코드 구현, ChatGPT 이미지 생성 완전 제거. 신규: scripts/apply-viz.ts·render-viz.ts·check-post-markers.ts, src/lib/viz(schema·layout·blogVizStyleGuide), src/components/viz/VizFigure, src/styles/viz.css, .npmrc. v1 kind 5종(ProcessSteps/Comparison/Flowchart/Statistics/PosterEditorial). 파이프라인 재배선(make-image=viz엔진·post-finalize OpenAI 제거·image-maker·tech-deepdive·orchestrator·ship-post·CLAUDE.md·DIAGRAM_STYLE_GUIDE). 레거시 스크립트 3종 deprecate(후속 삭제 카드). CI packages:read+미처리마커 가드. E2E(OPENAI 미설정) 통과·무JS SSR SVG 페인트(HTTP) 검증. webrtc-3 라이브 [[[ 마커 결함 수정. 기존 13글 백마이그레이션 별도."
-    },
-    {
-      "seq": 25,
-      "t": "2026-07-25T20:43",
-      "a": "ai",
-      "id": "KAN-013",
-      "op": "move",
-      "from": "backlog",
-      "to": "review"
-    },
-    {
-      "seq": 24,
-      "t": "2026-07-25T20:43",
-      "a": "유저",
-      "id": "KAN-013",
-      "op": "edit",
-      "field": "title",
-      "before": "집필 워크플로 개정",
-      "after": "집필 워크플로 개정. 지금은  이미지를 생성할 때 chatgpt에게 요청하고 있다. 이제부터는 직접 시각화를 구현해라. @centurio1987/bbangto-ui-visualization 패키지를 이용해서 구현해라."
-    },
-    {
-      "seq": 23,
-      "t": "2026-07-25T14:28",
-      "a": "유저",
-      "id": "KAN-013",
-      "op": "create",
-      "col": "backlog",
-      "title": "집필 워크플로 개정",
-      "memo": "",
-      "verbatim": ""
-    },
-    {
-      "seq": 22,
-      "t": "2026-07-25T14:28",
-      "a": "유저",
-      "id": "KAN-012",
-      "op": "create",
-      "col": "backlog",
-      "title": "블로그에 motion 요소들을 추가하고 싶다. 블로그 전체 디자인을 파악하여, motion이 들어가면 좋은 지점들을 포착해라. motion 적용은@centurio1987/bbangto-ui-core, @centurio1987/bbangto-ui-style-guide-catalog 를 설치하여 구현해라.",
-      "memo": "",
-      "verbatim": ""
     }
   ]
 }
