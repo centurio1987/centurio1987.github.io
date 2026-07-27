@@ -39,12 +39,6 @@
     ```
 
 ## 할 일
-- `KAN-028` graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결 — 생성:ai · 최종:ai · 갱신:2026-07-27
-  - 메모: KAN-008 발행 중 발견. 증상: graphify extract 가 청크 실패 0건으로 성공 보고하는데도 문서 노드가 글 수보다 적다(2026-07-27 기준 18/22). 누락: osi-7-layers-3·4·5·6. 원인: 시리즈 글이 본문에서 서로를 참조하면 osi-7-layers-1.mdx 가 osi_7_layers_3 같은 참조 노드를 먼저 만들고, 이후 osi-7-layers-3.mdx 의 진짜 문서 노드가 같은 ID 로 충돌해 "the second node will be dropped" 로 버려진다. 시리즈가 길수록·상호링크 많을수록 악화. auth-authz·tauri 계열도 동일 충돌. graphify 경고문이 해법 제시: 하위 폴더별 extract 후 graphify merge-graphs 병합. 할 일: ① 분할 추출 + merge-graphs 파이프라인을 scripts 로 구성 ② ship-post 1.5 단계와 CLAUDE.md 절차 교체 ③ 재생성 후 2단계 검증(문서 노드 수 = 글 수, 노드 1개짜리 글 없음) 통과 시 커밋. 참고: 검증 2단계화는 c632650 에서 완료 — 이 문제를 잡아낸 게 그 ① 검사다. 현재 영향: 연관 글은 frontmatter 랭킹, /graph 는 일반 목록으로 폴백하므로 사이트 동작 지장 없음(기능 degrade).
-  - 원문:
-    ```text
-    2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라.
-    ```
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26
@@ -57,6 +51,12 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+- `KAN-028` graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: 착수(KAN-028 브랜치). 조사 결과 카드 원안(하위 폴더별 extract + merge-graphs)은 이 레포에서 작동하지 않음: cross-post 링크 62개가 전부 같은 시리즈 안(cross-series 0)이라 시리즈 단위 분할은 충돌을 못 잡고, 파일 단위 분할은 충돌은 잡되 62개 엣지(postPairs 신호 전부)를 잃는다. 게다가 merge-graphs는 prefix_graph_for_global로 모든 ID를 tag::id로 바꿔 build-graph-data.ts·커뮤니티 라벨까지 깨뜨린다. 재해석: 참조 문서 노드와 진짜 문서 노드는 같은 글을 가리키는 같은 실체라 병합이 정답이고, 엣지는 dedup이 survivor로 이미 재배선해 손실이 없다(dedup.py 노드 attribute만 첫 항목 승). 진짜 버그는 build-graph-data.ts가 문서 노드 정체성을 source_file로 판단하는 것 — osi_7_layers_3_post(src=osi-1)가 post:osi-7-layers-1로 매핑돼 글↔글 인용 엣지가 전부 자기루프로 버려진다(KAN-029가 쓰는 신호). 확정 방향(유저 승인): ① build-graph-data.ts 문서 노드 정규화 — 'ID 정확일치(slug|slug_post)' + 'ID접두사 && 라벨↔제목 포함' 2단 결정론 규칙으로 가리키는 글에 귀속, 외부 문서(OWASP·Keycloak 등)는 배제 ② 2단계 검증 스크립트화 ③ 그래프 재생성(container-anatomy 4편 통째 누락분 포함) 후 CLAUDE.md·ship-post 절차 갱신.
+  - 원문:
+    ```text
+    2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라.
+    ```
 
 ## 검토
 - `KAN-010` KAN-013 퍼소나를 정의 했고, 기존 포스트들에는 퍼소나를 나타내는 저자명, 저자의 프로필, 저자 및 포스트 유형을 나타내는 배너가 포함되어 있으나, 집필 workflow에는 그것들을 포함하는 과정이 생략되어 있다. 포스트 레이아웃의 재설계를 포함하여, 원인 분석과 해결 방법에 대한 전략을 구상하라. — 생성:유저 · 최종:ai · 갱신:2026-07-23
