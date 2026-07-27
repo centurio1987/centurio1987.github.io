@@ -1,6 +1,6 @@
 {
   "next_id": 30,
-  "next_seq": 95,
+  "next_seq": 99,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -263,27 +263,27 @@
       "verbatim_hash": "00de9d14642fd81d0e2a3f2894a3c4e7d450244a"
     },
     "KAN-025": {
-      "col": "backlog",
+      "col": "review",
       "title": "글 목록에 저자별 필터 추가 (2축 필터 UX 리서치 + 필터에 저자 프로필 사진)",
-      "memo": "/posts(section.wrap)는 현재 카테고리 필터(nav.cats)만 존재. 저자 필터 추가 + 필터축 2개에 맞는 UX 리서치 + 필터 인터랙션 요소에 저자 프로필 사진 포함",
+      "memo": "구현 완료(검토 대기, 커밋 8711454 계열). /posts 에 카테고리 × 글쓴이 2축 패싯 필터 신설 — src/components/PostFilter.astro. 채택 UX(패싯 필터 베스트프랙티스 리서치 기준): 결과 바로 위 수평 칩바 + 축별 라벨(옵션이 축당 10개 미만이면 사이드바보다 상단 칩바가 표준), 축 내 단일 선택(글 하나에 카테고리·저자가 각 1개뿐이라 같은 축 다중선택은 이득이 작다) + '전체' 해제 옵션, 적용 버튼 없는 즉시 반영, 옵션마다 결과 수 표기하되 반대 축 선택에 따라 갱신, 0건 조합은 흐리게(고른 칩은 제외), 0건이면 목록 대신 안내 문구, 글쓴이 칩에 프로필 사진 리딩 요소(요구사항). 구현: 시각적으로 숨긴 라디오 + label 칩 + :has() 기반 CSS-only 필터라 무JS·하이드레이션 0 에서도 필터가 동작한다(콘텐츠 무JS 원칙 유지). JS 는 URL 쿼리(?cat=&author=) 동기화라는 진행적 향상만 담당 — ClientRouter 가 popstate 를 가로채므로 pushState 대신 replaceState. 카운트는 --pf-n 커스텀 프로퍼티를 content 로 흘려 처리하되 기본값도 CSS 로 방출해야 한다(인라인 style 로 두면 인라인 우선순위가 오버라이드를 이겨 숫자가 영영 안 바뀜 — 1차 구현에서 실제로 난 버그). 기존 /posts 의 카테고리 링크 칩(nav.cats)은 필터로 대체했고, /categories/<slug> 정적 페이지는 유지(글 상단 CategoryBadge 가 계속 링크하므로 고아 아님). 검증(Playwright, 프리뷰 HTTP): 저자 필터 4글·조합 필터 1글·딥링크 ?cat=skills&author=ppangto 15글·0건 조합 빈 상태 전환·카운트 갱신·무JS 컨텍스트에서도 필터 동작·Tab 6회로 라디오 그룹 진입 후 화살표 키 즉시 필터·포커스 링 노출·모바일 390px 축 라벨 상단 배치·콘솔 에러 0·/categories,/graph,홈 회귀 없음. KAN-029(graph) 위로 리베이스한 뒤 재검증: build green 35 pages, tsc clean, check-post-markers 통과.",
       "verbatim": "대상: /posts 글 목록 (section.wrap — 현재 카테고리 필터 nav.cats 만 존재).\n\n지금은 블로그 글 목록에 카테고리 별 필터만 존재한다. 여기에 저자 별 필터도 추가 해라. 필터 분류가 2개이기 때문에 지금과 다른 UX를 채택해야 할 수 있다. 리서치를 통해, 가장 적절한 UX 패턴을 채택해라.\n\n선택 인터렉션 요소에는 저자의 프로필 사진을 포함해야 한다.",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-27",
+      "최종": "ai",
+      "갱신": "2026-07-28",
       "title_hash": "74306bde12180b801f2182fcdc9e7410fd24d10d",
-      "memo_hash": "09df547509b3a751c42de9bfa006f9d3619b3d18",
+      "memo_hash": "ab45823297123ee04268d4676b7cf195c2bf4de4",
       "verbatim_hash": "1feb5b97852f147ab93d2e718e39b1145949541f"
     },
     "KAN-026": {
-      "col": "backlog",
+      "col": "review",
       "title": "글 목록 아이템에 저자 프로필 사진 노출",
-      "memo": "/posts 목록 아이템(span.post-author)에 현재 저자명 + AI 태그만 노출됨 → 저자 프로필 사진도 드러나게",
+      "memo": "구현 완료(검토 대기). PostList 아이템의 저자 표기(span.post-author)에 원형 프로필 사진을 이름 앞 리딩 요소로 추가 — src/components/PostList.astro. 22px 원형 + accent 링, 이름이 바로 옆 텍스트로 있으므로 alt 를 비워 장식 처리(스크린리더 중복 낭독 방지), avatar 없는 저자용 해칭+이니셜 폴백 유지, lazy/async 디코딩. 성능 부수 작업: 원본 아바타가 512~1254px(40~150KB)라 20px 자리에 그대로 쓰면 낭비 — scripts/make-author-avatars.ts(sharp, 멱등)로 64px webp 사본을 만들고 authors.ts 에 avatarSm 필드를 배선(4장 합계 355KB→5.6KB). 규약은 /images/authors/<id>-sm.webp — 경로를 바꾸면 스크립트와 authors.ts 를 함께 고쳐야 한다. PostList 는 /posts·/categories/*·/graph 폴백이 공유하므로 세 곳 모두에 동일 적용(의도). 같은 커밋에서 필터용 data-cat·data-author 속성도 아이템에 부여(KAN-025). 검증: 세 페이지 깨진 이미지 0·콘솔 에러 0, build green.",
       "verbatim": "대상: /posts 글 목록 아이템의 저자 표기 (li.post-item > a.post-link > span.post-body > span.post-meta > span.post-author, 예: 빵토 연구원 AI).\n\n현재 블로그 목록의 아이템에는 저자명과 ai 여부 태그만 나타난다. 저자 프로필 사진이 드러날 수 있도록 해라.",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-27",
+      "최종": "ai",
+      "갱신": "2026-07-28",
       "title_hash": "7daeb206c9449ec42d753c2b9dec0e4f8b057612",
-      "memo_hash": "8c979d6db474413677e57b184767afdf93cac094",
+      "memo_hash": "cb9a8c514fc43f891146280caef0eea19708fc34",
       "verbatim_hash": "d6e598e9d9c50a3f9ce5b24b1a8a002be9bc944a"
     },
     "KAN-027": {
@@ -325,8 +325,6 @@
   },
   "order": [
     "KAN-024",
-    "KAN-025",
-    "KAN-026",
     "KAN-027",
     "KAN-028",
     "KAN-001",
@@ -337,6 +335,7 @@
     "KAN-010",
     "KAN-012",
     "KAN-008",
+    "KAN-029",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -351,9 +350,48 @@
     "KAN-023",
     "KAN-013",
     "KAN-011",
-    "KAN-029"
+    "KAN-025",
+    "KAN-026"
   ],
   "recent": [
+    {
+      "seq": 98,
+      "t": "2026-07-28T00:24",
+      "a": "ai",
+      "id": "KAN-026",
+      "op": "edit",
+      "field": "memo",
+      "before": "/posts 목록 아이템(span.post-author)에 현재 저자명 + AI 태그만 노출됨 → 저자 프로필 사진도 드러나게",
+      "after": "구현 완료(검토 대기). PostList 아이템의 저자 표기(span.post-author)에 원형 프로필 사진을 이름 앞 리딩 요소로 추가 — src/components/PostList.astro. 22px 원형 + accent 링, 이름이 바로 옆 텍스트로 있으므로 alt 를 비워 장식 처리(스크린리더 중복 낭독 방지), avatar 없는 저자용 해칭+이니셜 폴백 유지, lazy/async 디코딩. 성능 부수 작업: 원본 아바타가 512~1254px(40~150KB)라 20px 자리에 그대로 쓰면 낭비 — scripts/make-author-avatars.ts(sharp, 멱등)로 64px webp 사본을 만들고 authors.ts 에 avatarSm 필드를 배선(4장 합계 355KB→5.6KB). 규약은 /images/authors/<id>-sm.webp — 경로를 바꾸면 스크립트와 authors.ts 를 함께 고쳐야 한다. PostList 는 /posts·/categories/*·/graph 폴백이 공유하므로 세 곳 모두에 동일 적용(의도). 같은 커밋에서 필터용 data-cat·data-author 속성도 아이템에 부여(KAN-025). 검증: 세 페이지 깨진 이미지 0·콘솔 에러 0, build green."
+    },
+    {
+      "seq": 97,
+      "t": "2026-07-28T00:24",
+      "a": "ai",
+      "id": "KAN-025",
+      "op": "edit",
+      "field": "memo",
+      "before": "/posts(section.wrap)는 현재 카테고리 필터(nav.cats)만 존재. 저자 필터 추가 + 필터축 2개에 맞는 UX 리서치 + 필터 인터랙션 요소에 저자 프로필 사진 포함",
+      "after": "구현 완료(검토 대기, 커밋 8711454 계열). /posts 에 카테고리 × 글쓴이 2축 패싯 필터 신설 — src/components/PostFilter.astro. 채택 UX(패싯 필터 베스트프랙티스 리서치 기준): 결과 바로 위 수평 칩바 + 축별 라벨(옵션이 축당 10개 미만이면 사이드바보다 상단 칩바가 표준), 축 내 단일 선택(글 하나에 카테고리·저자가 각 1개뿐이라 같은 축 다중선택은 이득이 작다) + '전체' 해제 옵션, 적용 버튼 없는 즉시 반영, 옵션마다 결과 수 표기하되 반대 축 선택에 따라 갱신, 0건 조합은 흐리게(고른 칩은 제외), 0건이면 목록 대신 안내 문구, 글쓴이 칩에 프로필 사진 리딩 요소(요구사항). 구현: 시각적으로 숨긴 라디오 + label 칩 + :has() 기반 CSS-only 필터라 무JS·하이드레이션 0 에서도 필터가 동작한다(콘텐츠 무JS 원칙 유지). JS 는 URL 쿼리(?cat=&author=) 동기화라는 진행적 향상만 담당 — ClientRouter 가 popstate 를 가로채므로 pushState 대신 replaceState. 카운트는 --pf-n 커스텀 프로퍼티를 content 로 흘려 처리하되 기본값도 CSS 로 방출해야 한다(인라인 style 로 두면 인라인 우선순위가 오버라이드를 이겨 숫자가 영영 안 바뀜 — 1차 구현에서 실제로 난 버그). 기존 /posts 의 카테고리 링크 칩(nav.cats)은 필터로 대체했고, /categories/<slug> 정적 페이지는 유지(글 상단 CategoryBadge 가 계속 링크하므로 고아 아님). 검증(Playwright, 프리뷰 HTTP): 저자 필터 4글·조합 필터 1글·딥링크 ?cat=skills&author=ppangto 15글·0건 조합 빈 상태 전환·카운트 갱신·무JS 컨텍스트에서도 필터 동작·Tab 6회로 라디오 그룹 진입 후 화살표 키 즉시 필터·포커스 링 노출·모바일 390px 축 라벨 상단 배치·콘솔 에러 0·/categories,/graph,홈 회귀 없음. KAN-029(graph) 위로 리베이스한 뒤 재검증: build green 35 pages, tsc clean, check-post-markers 통과."
+    },
+    {
+      "seq": 96,
+      "t": "2026-07-28T00:24",
+      "a": "ai",
+      "id": "KAN-026",
+      "op": "move",
+      "from": "backlog",
+      "to": "review"
+    },
+    {
+      "seq": 95,
+      "t": "2026-07-28T00:24",
+      "a": "ai",
+      "id": "KAN-025",
+      "op": "move",
+      "from": "backlog",
+      "to": "review"
+    },
     {
       "seq": 94,
       "t": "2026-07-28T00:15",
@@ -805,43 +843,6 @@
       "title": "Tauri 해부 2편 — 예시 프로젝트 구현기",
       "memo": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화.",
       "verbatim": ""
-    },
-    {
-      "seq": 32,
-      "t": "2026-07-26T17:02",
-      "a": "ai",
-      "id": "KAN-007",
-      "op": "edit",
-      "field": "memo",
-      "before": "앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함",
-      "after": "1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리."
-    },
-    {
-      "seq": 31,
-      "t": "2026-07-26T17:02",
-      "a": "ai",
-      "id": "KAN-014",
-      "op": "move",
-      "from": "doing",
-      "to": "done"
-    },
-    {
-      "seq": 30,
-      "t": "2026-07-26T13:23",
-      "a": "ai",
-      "id": "KAN-014",
-      "op": "move",
-      "from": "backlog",
-      "to": "doing"
-    },
-    {
-      "seq": 29,
-      "t": "2026-07-26T13:22",
-      "a": "ai",
-      "id": "KAN-007",
-      "op": "move",
-      "from": "backlog",
-      "to": "doing"
     }
   ]
 }
