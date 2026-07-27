@@ -1,0 +1,378 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostList from "./PostList.astro";
+import { getCategory } from "../lib/categories";
+import { getAuthor, AUTHORS } from "../lib/authors";
+
+/**
+ * PostFilter — 카테고리 × 글쓴이 2축 패싯 필터가 붙은 글 목록 (KAN-025).
+ *
+ * ── 채택한 UX 패턴 (리서치 근거)
+ *  · 결과 바로 위 수평 칩바 + 축별 라벨: 옵션이 축당 10개 미만이면 사이드바보다
+ *    상단 칩바가 표준. 축을 라벨로 분리해야 "카테고리 AND 글쓴이"임이 읽힌다.
+ *  · 축 내 단일 선택(+ "전체"): 글 하나에 카테고리도 저자도 1개뿐이라 같은 축 다중
+ *    선택은 OR 확장일 뿐 이득이 작다. 라디오로 두면 키보드 화살표 이동이 공짜다.
+ *  · 즉시 반영(데스크톱 실시간 필터링) — 적용 버튼 없음.
+ *  · 옵션마다 결과 수를 붙이고 반대 축 선택에 따라 갱신, 0건 조합은 흐리게.
+ *  · 글쓴이 칩에는 프로필 사진을 리딩 요소로(요구사항이자 아바타 칩의 정석).
+ *
+ * ── 구현: JS 없이 도는 필터
+ * 시각적으로 숨긴 라디오 + <label> 칩이고, 걸러내기는 `:has()` 기반 CSS 다.
+ * 따라서 무JS·하이드레이션 0 에서도 필터가 그대로 동작한다(이 블로그의 콘텐츠
+ * 무JS 원칙). JS 는 URL 쿼리(?cat=&author=) 동기화라는 진행적 향상만 맡는다.
+ * 필터 상태에 따라 값이 바뀌는 카운트는 CSS 커스텀 프로퍼티(--pf-n)를 content 로
+ * 흘려보내 처리한다 — 실제 존재하는 조합만 규칙으로 방출한다.
+ */
+interface Props {
+  posts: CollectionEntry<"posts">[];
+}
+const { posts } = Astro.props;
+
+const ALL = "__all__";
+
+// 실제 글이 있는 값만 노출한다(빈 축 값은 죽은 선택지).
+const catSlugs = [...new Set(posts.map((p) => p.data.category))];
+const authorIds = AUTHORS.map((a) => a.id).filter((id) =>
+  posts.some((p) => getAuthor(p.data.author).id === id),
+);
+
+const cats = catSlugs.map((slug) => ({ slug, ...getCategory(slug) }));
+const authors = authorIds.map((id) => getAuthor(id));
+
+/** (카테고리, 글쓴이) 조합의 글 수. ALL 은 해당 축 무관. */
+function count(cat: string, author: string): number {
+  return posts.filter(
+    (p) =>
+      (cat === ALL || p.data.category === cat) &&
+      (author === ALL || getAuthor(p.data.author).id === author),
+  ).length;
+}
+
+const catOptions = [{ value: ALL, label: "전체", color: "" }, ...cats.map((c) => ({ value: c.slug, label: c.label, color: c.color }))];
+const authorOptions = [
+  { value: ALL, label: "전체", avatar: undefined as string | undefined, isAI: false },
+  ...authors.map((a) => ({
+    value: a.id,
+    label: a.name,
+    avatar: a.avatarSm ?? a.avatar,
+    isAI: a.isAI,
+  })),
+];
+
+const catId = (v: string) => `pf-cat-${v === ALL ? "all" : v}`;
+const authorId = (v: string) => `pf-author-${v === ALL ? "all" : v}`;
+const q = (s: string) => JSON.stringify(String(s)); // CSS content 용 문자열 리터럴
+
+// ── 생성 CSS ────────────────────────────────────────────────────────────────
+// Astro 스코프 스타일은 이 컴포넌트가 직접 그린 요소에만 붙으므로, PostList 가
+// 그리는 .post-item 을 건드리는 규칙은 여기서 전역(is:inline)으로 방출한다.
+// 모든 선택자를 .pf-wrap 하위로 가둬 /categories·/graph 의 목록에는 새지 않는다.
+const rules: string[] = [];
+
+// ① 걸러내기 — 선택된 값과 다른 글을 숨긴다(축 하나당 규칙 1개).
+for (const c of cats) {
+  rules.push(
+    `.pf-wrap:has(#${catId(c.slug)}:checked) .post-item:not([data-cat="${c.slug}"]){display:none}`,
+  );
+}
+for (const a of authors) {
+  rules.push(
+    `.pf-wrap:has(#${authorId(a.id)}:checked) .post-item:not([data-author="${a.id}"]){display:none}`,
+  );
+}
+
+// ② 카운트 — 반대 축 선택에 따라 각 칩의 숫자를 갱신한다.
+//    기본값(반대 축 = 전체)도 반드시 CSS 로 방출한다. style="" 인라인으로 두면
+//    인라인 우선순위가 아래 오버라이드를 이겨 숫자가 영영 안 바뀐다.
+for (const c of catOptions) {
+  rules.push(
+    `.pf-wrap label[for="${catId(c.value)}"]{--pf-n:${q(count(c.value, ALL))}}`,
+  );
+}
+for (const a of authorOptions) {
+  rules.push(
+    `.pf-wrap label[for="${authorId(a.value)}"]{--pf-n:${q(count(ALL, a.value))}}`,
+  );
+}
+// 아래 오버라이드는 :has(#id) 덕에 위 기본값보다 특이도가 높다(ID 1 vs 0).
+for (const a of authorOptions) {
+  if (a.value === ALL) continue;
+  for (const c of catOptions) {
+    rules.push(
+      `.pf-wrap:has(#${authorId(a.value)}:checked) label[for="${catId(c.value)}"]{--pf-n:${q(count(c.value, a.value))}}`,
+    );
+  }
+}
+for (const c of catOptions) {
+  if (c.value === ALL) continue;
+  for (const a of authorOptions) {
+    rules.push(
+      `.pf-wrap:has(#${catId(c.value)}:checked) label[for="${authorId(a.value)}"]{--pf-n:${q(count(c.value, a.value))}}`,
+    );
+  }
+}
+
+// ③ 0건 조합은 흐리게(선택은 막지 않는다 — 누르면 아래 빈 상태가 설명한다).
+for (const c of cats) {
+  for (const a of authors) {
+    if (count(c.slug, a.id) > 0) continue;
+    // :not(:checked) — 지금 고른 칩까지 흐려지면 무엇을 고른 상태인지 안 보인다.
+    rules.push(
+      `.pf-wrap:has(#${authorId(a.id)}:checked) #${catId(c.slug)}:not(:checked)+label,` +
+        `.pf-wrap:has(#${catId(c.slug)}:checked) #${authorId(a.id)}:not(:checked)+label{opacity:.42}`,
+    );
+    // ④ 결과 0건 — 목록을 감추고 안내를 띄운다.
+    rules.push(
+      `.pf-wrap:has(#${catId(c.slug)}:checked):has(#${authorId(a.id)}:checked) .post-list{display:none}`,
+    );
+    rules.push(
+      `.pf-wrap:has(#${catId(c.slug)}:checked):has(#${authorId(a.id)}:checked) .pf-empty{display:block}`,
+    );
+  }
+}
+// ⑤ 목록 구분선 — PostList 는 `.post-item + .post-item` 로 선을 긋는데, 필터가 앞쪽
+//    항목을 숨기면 "첫 보이는 항목"에 선이 붙었다 말았다 한다. 여기서는 모든 항목에
+//    선을 줘 필터 상태와 무관하게 같은 리듬을 유지한다(그래서 .pf 는 밑선을 안 긋는다).
+rules.push(`.pf-wrap .post-item{border-top:1px dashed var(--border)}`);
+
+const generatedCss = rules.join("\n");
+---
+
+<div class="pf-wrap">
+  <form class="pf" data-post-filter>
+    {/* fieldset/legend 는 브라우저마다 flex 배치가 갈려 role=radiogroup + 보이는
+        라벨로 묶는다. 화살표 키 이동은 input[name] 그룹이 그대로 제공한다. */}
+    <div class="pf-axis" role="radiogroup" aria-labelledby="pf-cat-legend">
+      <span class="pf-legend" id="pf-cat-legend">카테고리</span>
+      <div class="pf-chips">
+        {
+          catOptions.map((o) => (
+            <>
+              <input
+                class="pf-radio"
+                type="radio"
+                name="cat"
+                id={catId(o.value)}
+                value={o.value === ALL ? "" : o.value}
+                checked={o.value === ALL}
+              />
+              <label
+                class="pf-chip"
+                for={catId(o.value)}
+                style={o.color ? `--cat:${o.color}` : undefined}
+              >
+                {o.label}
+                <span class="pf-count" aria-hidden="true" />
+              </label>
+            </>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="pf-axis" role="radiogroup" aria-labelledby="pf-author-legend">
+      <span class="pf-legend" id="pf-author-legend">글쓴이</span>
+      <div class="pf-chips">
+        {
+          authorOptions.map((o) => (
+            <>
+              <input
+                class="pf-radio"
+                type="radio"
+                name="author"
+                id={authorId(o.value)}
+                value={o.value === ALL ? "" : o.value}
+                checked={o.value === ALL}
+              />
+              <label class="pf-chip pf-chip--author" for={authorId(o.value)}>
+                {o.avatar && (
+                  <img class="pf-avatar" src={o.avatar} alt="" width="22" height="22" decoding="async" />
+                )}
+                {o.label}
+                {o.isAI && <span class="pf-ai">AI</span>}
+                <span class="pf-count" aria-hidden="true" />
+              </label>
+            </>
+          ))
+        }
+      </div>
+    </div>
+  </form>
+
+  <PostList posts={posts} />
+
+  <p class="pf-empty" role="status">
+    고른 조합에 해당하는 글이 아직 없어요. 다른 카테고리나 글쓴이를 골라보세요.
+  </p>
+</div>
+
+<style is:inline set:html={generatedCss}></style>
+
+<style>
+  .pf {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 0 4px;
+    padding: 0 0 14px;
+  }
+  .pf-axis {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+  }
+  .pf-legend {
+    flex: none;
+    width: 52px;
+    padding-top: 7px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: var(--ink-3);
+  }
+  .pf-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+  /* 라디오는 눈에서만 감춘다 — 포커스·키보드 화살표 이동은 그대로 산다 */
+  .pf-radio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .pf-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--ink-2);
+    background: var(--surface);
+    cursor: pointer;
+    transition:
+      transform var(--dur) var(--ease),
+      background var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+  .pf-chip--author {
+    padding-left: 5px;
+  }
+  .pf-chip:hover {
+    transform: translateY(-1px);
+  }
+  .pf-count::after {
+    content: var(--pf-n, "");
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-3);
+  }
+  .pf-avatar {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--paper);
+  }
+  .pf-ai {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 2px 5px;
+  }
+  /* 선택 상태 — 카테고리 칩은 자기 색, 글쓴이 칩은 포인트 색으로 채운다 */
+  .pf-radio:checked + .pf-chip {
+    border-color: var(--ink);
+    color: color-mix(in srgb, var(--cat, var(--accent)) 78%, var(--ink));
+    background: color-mix(in srgb, var(--cat, var(--accent)) 14%, var(--surface));
+  }
+  .pf-radio:checked + .pf-chip .pf-count::after {
+    color: inherit;
+  }
+  .pf-radio:focus-visible + .pf-chip {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .pf-empty {
+    display: none;
+    margin: 22px 0 0;
+    color: var(--ink-2);
+  }
+  @media (max-width: 560px) {
+    .pf-axis {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+    .pf-legend {
+      width: auto;
+      padding-top: 0;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * 진행적 향상 — 필터 상태를 URL 쿼리(?cat=&author=)에 동기화한다.
+   * 걸러내기 자체는 CSS 가 하므로 이 스크립트가 없어도(무JS·실패) 필터는 동작한다.
+   *
+   * pushState 대신 replaceState 를 쓴다: ClientRouter(View Transitions)가 popstate 를
+   * 자기 라우팅으로 가로채기 때문에 필터마다 히스토리를 쌓으면 뒤로가기가 페이지
+   * 재요청으로 튄다. 공유 가능한 URL 이라는 실익은 replaceState 로 충분하다.
+   */
+  function syncPostFilter() {
+    const form = document.querySelector<HTMLFormElement>("[data-post-filter]");
+    if (!form) return;
+
+    // ① URL → 라디오 (직접 붙여넣은 링크로 들어온 경우)
+    const params = new URLSearchParams(location.search);
+    for (const axis of ["cat", "author"] as const) {
+      const want = params.get(axis);
+      if (!want) continue;
+      const radio = form.querySelector<HTMLInputElement>(
+        `input[name="${axis}"][value="${CSS.escape(want)}"]`,
+      );
+      if (radio) radio.checked = true;
+    }
+
+    // ② 라디오 → URL
+    if (form.dataset.bound) return;
+    form.dataset.bound = "1";
+    // 라디오만 있는 폼이라 Enter 가 암묵적 제출로 새 요청을 띄울 수 있다 — 막는다.
+    form.addEventListener("submit", (e) => e.preventDefault());
+    form.addEventListener("change", () => {
+      const next = new URLSearchParams(location.search);
+      for (const axis of ["cat", "author"] as const) {
+        const value = new FormData(form).get(axis);
+        if (value) next.set(axis, String(value));
+        else next.delete(axis);
+      }
+      const qs = next.toString();
+      history.replaceState(
+        history.state,
+        "",
+        `${location.pathname}${qs ? `?${qs}` : ""}`,
+      );
+    });
+  }
+
+  syncPostFilter();
+  document.addEventListener("astro:page-load", syncPostFilter);
+</script>

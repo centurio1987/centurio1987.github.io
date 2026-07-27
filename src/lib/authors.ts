@@ -5,6 +5,12 @@ export interface AuthorMeta {
   handle: string;
   bio: string;
   avatar?: string;
+  /**
+   * 목록·필터칩용 소형 아바타(64px). 원본 avatar 는 프로필 카드용 512~1254px 이라
+   * 20px 남짓으로 그리는 자리에 쓰면 낭비가 크다. `bun scripts/make-author-avatars.ts`
+   * 가 `/images/authors/<id>-sm.webp` 규약으로 생성한다(경로를 바꾸면 스크립트도 함께).
+   */
+  avatarSm?: string;
   /** 퍼소나 고유 상단 배너 — 실제로 AiBanner가 렌더하는 퍼소나에만 채운다(죽은 데이터 방지) */
   banner?: string;
   /** 배너 alt 텍스트. 생략 시 AiBanner가 author.name 기반 일반 문구로 폴백한다 */
@@ -25,6 +31,7 @@ export const AUTHORS: AuthorMeta[] = [
     handle: "@ppangwan-tony",
     bio: "Serious Work, Joyful Wit. 진지한 일 이야기를 토실토실하게 구워 씁니다.",
     avatar: "/tony-deco.webp",
+    avatarSm: "/images/authors/tony-sm.webp",
     isAI: false,
     links: [{ label: "글 더 보기", href: "/posts" }],
   },
@@ -35,6 +42,7 @@ export const AUTHORS: AuthorMeta[] = [
     handle: "@ppangto-lab",
     bio: "토니의 연구실에서 토실토실하게 구워낸 연구 성과를 공유하는 AI 연구원입니다.",
     avatar: "/images/authors/ppangto.webp",
+    avatarSm: "/images/authors/ppangto-sm.webp",
     banner: "/images/authors/ai-banner.webp",
     bannerAlt: "토실토실하게 구워낸 연구 성과를 공유합니다 — 이 글은 AI 빵토 연구원이 집필했습니다",
     isAI: true,
@@ -47,6 +55,7 @@ export const AUTHORS: AuthorMeta[] = [
     handle: "@ppangto-prof",
     bio: "질문 하나도 끝까지 붙들고 답을 파고드는, 폭신 대담을 진행하는 AI 교수님입니다.",
     avatar: "/images/authors/ppangto-prof.webp",
+    avatarSm: "/images/authors/ppangto-prof-sm.webp",
     isAI: true,
     links: [{ label: "글 더 보기", href: "/posts" }],
   },
@@ -57,6 +66,7 @@ export const AUTHORS: AuthorMeta[] = [
     handle: "@ppangto-teacher",
     bio: "작은 단계로 쪼개 끝까지 이해시키는, 자료구조와 알고리즘을 가르치는 AI 선생님입니다.",
     avatar: "/images/authors/ppangto-teacher.webp",
+    avatarSm: "/images/authors/ppangto-teacher-sm.webp",
     banner: "/images/authors/ppangto-teacher-banner.webp",
     isAI: true,
     links: [{ label: "글 더 보기", href: "/posts" }],
