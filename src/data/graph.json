@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T11:56:39.885Z",
+  "generatedAt": "2026-07-27T15:30:44.870Z",
   "builtAtCommit": "7c75039c74564205f0ad0e70c9cba0e9fac0a2b1",
   "posts": [
     {
@@ -5993,7 +5993,7 @@
     },
     {
       "source": "auth_authz_3_id_token_validation",
-      "target": "post:auth-authz-1",
+      "target": "post:auth-authz-2",
       "relation": "references",
       "weight": 0.9,
       "confidence": "EXTRACTED"
@@ -6329,7 +6329,7 @@
     },
     {
       "source": "auth_authz_4_pkce_authorization_code",
-      "target": "post:auth-authz-4",
+      "target": "post:auth-authz-3",
       "relation": "references",
       "weight": 0.8,
       "confidence": "INFERRED"
@@ -6343,7 +6343,7 @@
     },
     {
       "source": "auth_authz_4_rbac_abac",
-      "target": "post:auth-authz-4",
+      "target": "post:auth-authz-1",
       "relation": "references",
       "weight": 0.8,
       "confidence": "INFERRED"
@@ -6399,7 +6399,7 @@
     },
     {
       "source": "auth_authz_4_token_validation_six_steps",
-      "target": "post:auth-authz-4",
+      "target": "post:auth-authz-2",
       "relation": "references",
       "weight": 0.8,
       "confidence": "INFERRED"
@@ -7526,7 +7526,7 @@
     },
     {
       "source": "osi_7_layers_3_pmtud",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-1",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -7778,7 +7778,7 @@
     },
     {
       "source": "osi_7_layers_4_port_and_socket",
-      "target": "post:osi-7-layers-4",
+      "target": "post:osi-7-layers-3",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -7967,7 +7967,7 @@
     },
     {
       "source": "osi_7_layers_4_troubleshooting_walkthrough",
-      "target": "post:osi-7-layers-4",
+      "target": "post:osi-7-layers-1",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8093,7 +8093,7 @@
     },
     {
       "source": "osi_7_layers_5_quic_connection_migration",
-      "target": "post:osi-7-layers-5",
+      "target": "post:osi-7-layers-4",
       "relation": "references",
       "weight": 0.9,
       "confidence": "EXTRACTED"
@@ -8212,7 +8212,7 @@
     },
     {
       "source": "osi_7_layers_5_tls_handshake",
-      "target": "post:osi-7-layers-5",
+      "target": "post:osi-7-layers-4",
       "relation": "conceptually_related_to",
       "weight": 0.8,
       "confidence": "EXTRACTED"
@@ -8261,7 +8261,7 @@
     },
     {
       "source": "osi_7_layers_6_content_negotiation",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-5",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8289,7 +8289,7 @@
     },
     {
       "source": "osi_7_layers_6_delivery_vs_meaning",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-1",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8331,7 +8331,7 @@
     },
     {
       "source": "osi_7_layers_6_dns",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-1",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8366,7 +8366,7 @@
     },
     {
       "source": "osi_7_layers_6_dns_transport",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-4",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8492,7 +8492,7 @@
     },
     {
       "source": "osi_7_layers_6_http_caching",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-5",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8506,7 +8506,7 @@
     },
     {
       "source": "osi_7_layers_6_http_methods",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-4",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8534,7 +8534,7 @@
     },
     {
       "source": "osi_7_layers_6_iterative_query",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-3",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8576,21 +8576,21 @@
     },
     {
       "source": "osi_7_layers_6_layered_questions",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-3",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "osi_7_layers_6_layered_questions",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-4",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "osi_7_layers_6_layered_questions",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-5",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8632,14 +8632,14 @@
     },
     {
       "source": "osi_7_layers_6_quic",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-4",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "osi_7_layers_6_quic",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-5",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8667,14 +8667,14 @@
     },
     {
       "source": "osi_7_layers_6_sni_host_header",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-5",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "osi_7_layers_6_statelessness",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-5",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -8786,13 +8786,6 @@
     },
     {
       "source": "post:auth-authz-1",
-      "target": "auth_authz_1_jwt",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
       "target": "auth_authz_1_nist_sp_800_63_4",
       "relation": "cites",
       "weight": 1,
@@ -8814,13 +8807,6 @@
     },
     {
       "source": "post:auth-authz-1",
-      "target": "auth_authz_1_pkce",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
       "target": "auth_authz_1_policy",
       "relation": "references",
       "weight": 1,
@@ -8835,13 +8821,6 @@
     },
     {
       "source": "post:auth-authz-1",
-      "target": "auth_authz_1_session",
-      "relation": "references",
-      "weight": 0.85,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
       "target": "auth_authz_1_token",
       "relation": "references",
       "weight": 1,
@@ -8849,171 +8828,192 @@
     },
     {
       "source": "post:auth-authz-1",
-      "target": "auth_authz_2_decode_vs_verify",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_2_jku_x5u_injection",
-      "relation": "references",
-      "weight": 0.9,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_2_jwt",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_2_jwtverifylab",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_2_key_rotation",
-      "relation": "references",
-      "weight": 0.9,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_2_keycloak",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_2_sender_constrained",
-      "relation": "references",
-      "weight": 0.6,
-      "confidence": "AMBIGUOUS"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_2_token_endpoint",
-      "relation": "references",
-      "weight": 0.6,
-      "confidence": "AMBIGUOUS"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_2_verification_six_steps",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_3_authorization_code_flow",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_3_pkce",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_3_rfc6749",
-      "relation": "cites",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_3_rfc7636",
-      "relation": "cites",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_3_rfc9700",
-      "relation": "cites",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "auth_authz_3_token_exchange",
-      "relation": "conceptually_related_to",
-      "weight": 0.6,
-      "confidence": "AMBIGUOUS"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "post:auth-authz-1",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "post:auth-authz-1",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "post:auth-authz-1",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "post:auth-authz-1",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "post:auth-authz-1",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
-      "target": "post:auth-authz-1",
-      "relation": "references",
-      "weight": 0.9,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:auth-authz-1",
       "target": "post:auth-authz-2",
-      "relation": "cites",
+      "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:auth-authz-1",
       "target": "post:auth-authz-3",
-      "relation": "cites",
+      "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:auth-authz-1",
+      "target": "post:auth-authz-4",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "auth_authz_1_jwt",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "auth_authz_2_decode_vs_verify",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "auth_authz_2_jku_x5u_injection",
+      "relation": "references",
+      "weight": 0.9,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "auth_authz_2_jwt",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "auth_authz_2_jwtverifylab",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "auth_authz_2_key_rotation",
+      "relation": "references",
+      "weight": 0.9,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "auth_authz_2_keycloak",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "auth_authz_2_verification_six_steps",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "post:auth-authz-2",
+      "relation": "cites",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "post:auth-authz-3",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-2",
+      "target": "post:auth-authz-4",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-3",
+      "target": "auth_authz_1_pkce",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-3",
+      "target": "auth_authz_2_token_endpoint",
+      "relation": "references",
+      "weight": 0.6,
+      "confidence": "AMBIGUOUS"
+    },
+    {
+      "source": "post:auth-authz-3",
+      "target": "auth_authz_3_authorization_code_flow",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-3",
+      "target": "auth_authz_3_pkce",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-3",
+      "target": "auth_authz_3_rfc6749",
+      "relation": "cites",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-3",
+      "target": "auth_authz_3_rfc7636",
+      "relation": "cites",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-3",
+      "target": "auth_authz_3_rfc9700",
+      "relation": "cites",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-3",
+      "target": "post:auth-authz-3",
+      "relation": "cites",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-3",
+      "target": "post:auth-authz-4",
+      "relation": "references",
+      "weight": 0.9,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-3",
       "target": "src_components_posts_auth_authz_3_pkceflowstepper_pkceflowstepper",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-4",
+      "target": "auth_authz_1_session",
+      "relation": "references",
+      "weight": 0.85,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:auth-authz-4",
+      "target": "auth_authz_2_sender_constrained",
+      "relation": "references",
+      "weight": 0.6,
+      "confidence": "AMBIGUOUS"
+    },
+    {
+      "source": "post:auth-authz-4",
+      "target": "auth_authz_3_token_exchange",
+      "relation": "conceptually_related_to",
+      "weight": 0.6,
+      "confidence": "AMBIGUOUS"
     },
     {
       "source": "post:auth-authz-4",
@@ -9059,21 +9059,21 @@
     },
     {
       "source": "post:auth-authz-4",
-      "target": "post:auth-authz-4",
+      "target": "post:auth-authz-1",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:auth-authz-4",
-      "target": "post:auth-authz-4",
+      "target": "post:auth-authz-2",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:auth-authz-4",
-      "target": "post:auth-authz-4",
+      "target": "post:auth-authz-3",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -9143,24 +9143,10 @@
     },
     {
       "source": "post:osi-7-layers-1",
-      "target": "osi_7_layers_1_l2_data_link",
-      "relation": "references",
-      "weight": 0.9,
-      "confidence": "INFERRED"
-    },
-    {
-      "source": "post:osi-7-layers-1",
       "target": "osi_7_layers_1_l3_network",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-1",
-      "target": "osi_7_layers_1_l3_network",
-      "relation": "references",
-      "weight": 0.9,
-      "confidence": "INFERRED"
     },
     {
       "source": "post:osi-7-layers-1",
@@ -9171,24 +9157,10 @@
     },
     {
       "source": "post:osi-7-layers-1",
-      "target": "osi_7_layers_1_l4_transport",
-      "relation": "references",
-      "weight": 0.9,
-      "confidence": "INFERRED"
-    },
-    {
-      "source": "post:osi-7-layers-1",
       "target": "osi_7_layers_1_l5_session",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-1",
-      "target": "osi_7_layers_1_l5_session",
-      "relation": "references",
-      "weight": 0.9,
-      "confidence": "INFERRED"
     },
     {
       "source": "post:osi-7-layers-1",
@@ -9199,24 +9171,10 @@
     },
     {
       "source": "post:osi-7-layers-1",
-      "target": "osi_7_layers_1_l6_presentation",
-      "relation": "references",
-      "weight": 0.9,
-      "confidence": "INFERRED"
-    },
-    {
-      "source": "post:osi-7-layers-1",
       "target": "osi_7_layers_1_l7_application",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-1",
-      "target": "osi_7_layers_1_l7_application",
-      "relation": "references",
-      "weight": 0.9,
-      "confidence": "INFERRED"
     },
     {
       "source": "post:osi-7-layers-1",
@@ -9248,38 +9206,45 @@
     },
     {
       "source": "post:osi-7-layers-1",
-      "target": "post:osi-7-layers-1",
+      "target": "post:osi-7-layers-2",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:osi-7-layers-1",
-      "target": "post:osi-7-layers-1",
+      "target": "post:osi-7-layers-3",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:osi-7-layers-1",
-      "target": "post:osi-7-layers-1",
+      "target": "post:osi-7-layers-4",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:osi-7-layers-1",
-      "target": "post:osi-7-layers-1",
+      "target": "post:osi-7-layers-5",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:osi-7-layers-1",
-      "target": "post:osi-7-layers-1",
+      "target": "post:osi-7-layers-6",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-2",
+      "target": "osi_7_layers_1_l2_data_link",
+      "relation": "references",
+      "weight": 0.9,
+      "confidence": "INFERRED"
     },
     {
       "source": "post:osi-7-layers-2",
@@ -9360,13 +9325,6 @@
     },
     {
       "source": "post:osi-7-layers-2",
-      "target": "osi_7_layers_2_router_reframing",
-      "relation": "conceptually_related_to",
-      "weight": 0.7,
-      "confidence": "INFERRED"
-    },
-    {
-      "source": "post:osi-7-layers-2",
       "target": "osi_7_layers_2_switchlearninglab",
       "relation": "references",
       "weight": 1,
@@ -9374,157 +9332,178 @@
     },
     {
       "source": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-1",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-3",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-4",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-5",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-6",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-3",
+      "target": "osi_7_layers_1_l3_network",
+      "relation": "references",
+      "weight": 0.9,
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "post:osi-7-layers-3",
+      "target": "osi_7_layers_2_router_reframing",
+      "relation": "conceptually_related_to",
+      "weight": 0.7,
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "post:osi-7-layers-3",
       "target": "osi_7_layers_3_network_layer",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
-      "target": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
+      "target": "post:osi-7-layers-1",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
-      "target": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
+      "target": "post:osi-7-layers-4",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
-      "target": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
+      "target": "post:osi-7-layers-5",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
-      "target": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
+      "target": "post:osi-7-layers-6",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
-      "target": "post:osi-7-layers-2",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-2",
-      "target": "post:osi-7-layers-2",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-2",
-      "target": "post:osi-7-layers-2",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-2",
-      "target": "post:osi-7-layers-2",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-2",
-      "target": "post:osi-7-layers-2",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc1624",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc1812",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc1918",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc2663",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc3022",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc4443",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc4632",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc791",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc792",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "rfc8200",
       "relation": "cites",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "src_components_posts_osi_7_layers_3_hopjourney",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
-      "source": "post:osi-7-layers-2",
+      "source": "post:osi-7-layers-3",
       "target": "src_components_posts_osi_7_layers_3_routingtablelab",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-4",
+      "target": "osi_7_layers_1_l4_transport",
+      "relation": "references",
+      "weight": 0.9,
+      "confidence": "INFERRED"
     },
     {
       "source": "post:osi-7-layers-4",
@@ -9549,7 +9528,21 @@
     },
     {
       "source": "post:osi-7-layers-4",
-      "target": "post:osi-7-layers-4",
+      "target": "post:osi-7-layers-1",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-4",
+      "target": "post:osi-7-layers-2",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-4",
+      "target": "post:osi-7-layers-3",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -9563,21 +9556,7 @@
     },
     {
       "source": "post:osi-7-layers-4",
-      "target": "post:osi-7-layers-4",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-4",
-      "target": "post:osi-7-layers-4",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-4",
-      "target": "post:osi-7-layers-4",
+      "target": "post:osi-7-layers-6",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -9595,6 +9574,20 @@
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-5",
+      "target": "osi_7_layers_1_l5_session",
+      "relation": "references",
+      "weight": 0.9,
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "post:osi-7-layers-5",
+      "target": "osi_7_layers_1_l6_presentation",
+      "relation": "references",
+      "weight": 0.9,
+      "confidence": "INFERRED"
     },
     {
       "source": "post:osi-7-layers-5",
@@ -9633,6 +9626,27 @@
     },
     {
       "source": "post:osi-7-layers-5",
+      "target": "post:osi-7-layers-1",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-5",
+      "target": "post:osi-7-layers-2",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-5",
+      "target": "post:osi-7-layers-3",
+      "relation": "references",
+      "weight": 1,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-5",
       "target": "post:osi-7-layers-4",
       "relation": "references",
       "weight": 1,
@@ -9640,28 +9654,7 @@
     },
     {
       "source": "post:osi-7-layers-5",
-      "target": "post:osi-7-layers-5",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-5",
-      "target": "post:osi-7-layers-5",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-5",
-      "target": "post:osi-7-layers-5",
-      "relation": "references",
-      "weight": 1,
-      "confidence": "EXTRACTED"
-    },
-    {
-      "source": "post:osi-7-layers-5",
-      "target": "post:osi-7-layers-5",
+      "target": "post:osi-7-layers-6",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -9679,6 +9672,13 @@
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
+    },
+    {
+      "source": "post:osi-7-layers-6",
+      "target": "osi_7_layers_1_l7_application",
+      "relation": "references",
+      "weight": 0.9,
+      "confidence": "INFERRED"
     },
     {
       "source": "post:osi-7-layers-6",
@@ -9836,7 +9836,7 @@
     },
     {
       "source": "post:osi-7-layers-6",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-1",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -9850,21 +9850,21 @@
     },
     {
       "source": "post:osi-7-layers-6",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-3",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:osi-7-layers-6",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-4",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
     },
     {
       "source": "post:osi-7-layers-6",
-      "target": "post:osi-7-layers-2",
+      "target": "post:osi-7-layers-5",
       "relation": "references",
       "weight": 1,
       "confidence": "EXTRACTED"
@@ -12331,70 +12331,208 @@
     {
       "a": "auth-authz-1",
       "b": "auth-authz-2",
-      "score": 0.4257,
-      "edgeCount": 8,
+      "score": 0.2657,
+      "edgeCount": 2,
       "sharedConcepts": [
-        "검증 6단계 (alg·kid·서명·iss·aud·exp)",
-        "JWT (JSON Web Token)",
-        "JwtVerifyLab (인터랙티브 검증 랩)",
-        "Keycloak (발급자 구현 예)",
-        "jku·x5u 키 주입·SSRF",
-        "키 로테이션과 JWKS 캐싱"
+        "JWT (JSON Web Token)"
       ]
     },
     {
       "a": "auth-authz-1",
       "b": "auth-authz-3",
-      "score": 0.4363,
-      "edgeCount": 8,
+      "score": 0.2657,
+      "edgeCount": 2,
       "sharedConcepts": [
-        "PKCE (Proof Key for Code Exchange)",
-        "RFC 9700 — OAuth 2.0 Security Best Current Practice",
-        "Authorization Code Grant 흐름",
-        "ID Token 검증 (iss·aud·exp·nonce·azp)",
-        "PkceFlowStepper (PKCE 플로우 스테퍼 시뮬)",
-        "RFC 6749 — OAuth 2.0 Authorization Framework"
+        "PKCE (Proof Key for Code Exchange)"
+      ]
+    },
+    {
+      "a": "auth-authz-1",
+      "b": "auth-authz-4",
+      "score": 0.4703,
+      "edgeCount": 4,
+      "sharedConcepts": [
+        "세션 (Session, stateful)",
+        "RBAC/ABAC 역할·속성 기반 접근제어"
+      ]
+    },
+    {
+      "a": "auth-authz-2",
+      "b": "auth-authz-3",
+      "score": 0.2462,
+      "edgeCount": 2,
+      "sharedConcepts": [
+        "ID Token 검증 (iss·aud·exp·nonce·azp)"
+      ]
+    },
+    {
+      "a": "auth-authz-2",
+      "b": "auth-authz-4",
+      "score": 0.3678,
+      "edgeCount": 3,
+      "sharedConcepts": [
+        "토큰 6단계 검증(서명·iss·aud·exp·kid)"
+      ]
+    },
+    {
+      "a": "auth-authz-3",
+      "b": "auth-authz-4",
+      "score": 0.3427,
+      "edgeCount": 3,
+      "sharedConcepts": [
+        "Authorization Code + PKCE(S256)"
+      ]
+    },
+    {
+      "a": "osi-7-layers-1",
+      "b": "osi-7-layers-2",
+      "score": 0.3867,
+      "edgeCount": 3,
+      "sharedConcepts": [
+        "L2 Data Link — 같은 링크의 다음 목적지"
+      ]
+    },
+    {
+      "a": "osi-7-layers-1",
+      "b": "osi-7-layers-3",
+      "score": 0.5126,
+      "edgeCount": 4,
+      "sharedConcepts": [
+        "L3 Network — 여러 링크를 건너는 경로",
+        "PMTUD와 MTU 블랙홀"
+      ]
+    },
+    {
+      "a": "osi-7-layers-1",
+      "b": "osi-7-layers-4",
+      "score": 0.5126,
+      "edgeCount": 4,
+      "sharedConcepts": [
+        "L4 Transport — process까지의 전달",
+        "실무 워크스루: refused vs timeout, 포트 고갈, 느린 전송"
+      ]
+    },
+    {
+      "a": "osi-7-layers-1",
+      "b": "osi-7-layers-5",
+      "score": 0.4937,
+      "edgeCount": 4,
+      "sharedConcepts": [
+        "L6 Presentation — 같은 뜻을 같은 bytes로",
+        "L5 Session — 대화의 생명주기"
+      ]
+    },
+    {
+      "a": "osi-7-layers-1",
+      "b": "osi-7-layers-6",
+      "score": 0.6245,
+      "edgeCount": 5,
+      "sharedConcepts": [
+        "DNS (Domain Name System)",
+        "L7 Application — 사용자가 원하는 네트워크 기능",
+        "전달의 성공 ≠ 의미의 성공"
       ]
     },
     {
       "a": "osi-7-layers-2",
       "b": "osi-7-layers-3",
-      "score": 0.8696,
-      "edgeCount": 16,
+      "score": 0.4413,
+      "edgeCount": 4,
       "sharedConcepts": [
         "TTL / Hop Limit",
-        "HopJourney (홉별 헤더 변화 시뮬레이션)",
-        "PMTUD와 MTU 블랙홀",
         "서브넷 판정 (같은 동네인가 gateway로 가는가)",
-        "RoutingTableLab (라우팅 테이블 시뮬레이션)",
-        "L3 네트워크 계층"
+        "Router의 프레임 재작성"
       ]
     },
     {
       "a": "osi-7-layers-2",
+      "b": "osi-7-layers-4",
+      "score": 0.2797,
+      "edgeCount": 2,
+      "sharedConcepts": []
+    },
+    {
+      "a": "osi-7-layers-2",
+      "b": "osi-7-layers-5",
+      "score": 0.2797,
+      "edgeCount": 2,
+      "sharedConcepts": []
+    },
+    {
+      "a": "osi-7-layers-2",
       "b": "osi-7-layers-6",
-      "score": 1,
-      "edgeCount": 20,
+      "score": 0.4056,
+      "edgeCount": 3,
       "sharedConcepts": [
-        "DNS (Domain Name System)",
+        "번호가 아니라 순서 있는 질문 (시리즈 결론)"
+      ]
+    },
+    {
+      "a": "osi-7-layers-3",
+      "b": "osi-7-layers-4",
+      "score": 0.4056,
+      "edgeCount": 3,
+      "sharedConcepts": [
+        "포트와 소켓 (5-tuple 식별)"
+      ]
+    },
+    {
+      "a": "osi-7-layers-3",
+      "b": "osi-7-layers-5",
+      "score": 0.2797,
+      "edgeCount": 2,
+      "sharedConcepts": []
+    },
+    {
+      "a": "osi-7-layers-3",
+      "b": "osi-7-layers-6",
+      "score": 0.5175,
+      "edgeCount": 4,
+      "sharedConcepts": [
         "번호가 아니라 순서 있는 질문 (시리즈 결론)",
-        "HTTP 메서드와 안전·멱등성",
-        "HTTP 캐싱: Cache-Control · ETag · 304",
-        "QUIC (UDP 위 독립 stream)",
-        "전달의 성공 ≠ 의미의 성공"
+        "반복 질의 (root → TLD → 권한 서버)"
       ]
     },
     {
       "a": "osi-7-layers-4",
       "b": "osi-7-layers-5",
-      "score": 0.0559,
-      "edgeCount": 1,
-      "sharedConcepts": []
+      "score": 0.3364,
+      "edgeCount": 3,
+      "sharedConcepts": [
+        "TLS 1.3 handshake",
+        "QUIC connection migration (Connection ID)"
+      ]
+    },
+    {
+      "a": "osi-7-layers-4",
+      "b": "osi-7-layers-6",
+      "score": 0.7622,
+      "edgeCount": 6,
+      "sharedConcepts": [
+        "번호가 아니라 순서 있는 질문 (시리즈 결론)",
+        "HTTP 메서드와 안전·멱등성",
+        "QUIC (UDP 위 독립 stream)",
+        "DNS 전송: UDP 53 · TC 비트 · TCP 53 · EDNS0"
+      ]
+    },
+    {
+      "a": "osi-7-layers-5",
+      "b": "osi-7-layers-6",
+      "score": 1,
+      "edgeCount": 8,
+      "sharedConcepts": [
+        "번호가 아니라 순서 있는 질문 (시리즈 결론)",
+        "HTTP 캐싱: Cache-Control · ETag · 304",
+        "QUIC (UDP 위 독립 stream)",
+        "SNI와 Host/:authority (한 IP의 어느 사이트인지)",
+        "HTTP 무상태성 (전송 연결 유지와 별개)",
+        "콘텐츠 협상 (Accept · Accept-Language · Accept-Encoding)"
+      ]
     },
     {
       "a": "tauri-1",
       "b": "tauri-2",
-      "score": 0.0916,
+      "score": 0.2294,
       "edgeCount": 2,
       "sharedConcepts": [
         "디렉터리로 드러나는 신뢰 경계 (src ↔ src-tauri)"
@@ -12403,21 +12541,21 @@
     {
       "a": "webrtc-1",
       "b": "webrtc-2",
-      "score": 0.0447,
+      "score": 0.1119,
       "edgeCount": 1,
       "sharedConcepts": []
     },
     {
       "a": "webrtc-1",
       "b": "webrtc-3",
-      "score": 0.0419,
+      "score": 0.1049,
       "edgeCount": 1,
       "sharedConcepts": []
     },
     {
       "a": "webrtc-2",
       "b": "webrtc-3",
-      "score": 0.1061,
+      "score": 0.2657,
       "edgeCount": 2,
       "sharedConcepts": [
         "SFU / Selective Forwarding Middlebox",
