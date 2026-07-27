@@ -1,0 +1,592 @@
+---
+title: "docker run 한 줄에, 몇 개의 프로그램이 움직일까요"
+description: "docker CLI부터 커널의 namespace·cgroup까지, 컨테이너 하나가 뜨기까지 릴레이하는 다섯 층을 하나씩 열어 봅니다."
+pubDate: 2026-07-27
+category: skills
+author: ppangto-teacher
+tags: ["컨테이너 런타임", "Docker", "containerd", "containerd-shim", "runc", "OverlayFS", "namespace", "cgroup"]
+series: "컨테이너의 해부"
+order: 1
+draft: false
+---
+import VizProcessSteps2 from "../../components/posts/container-anatomy-1/VizProcessSteps2";
+import VizComparison3 from "../../components/posts/container-anatomy-1/VizComparison3";
+import VizFlowchart4 from "../../components/posts/container-anatomy-1/VizFlowchart4";
+
+import OverlayLab from "../../components/posts/container-anatomy-1/OverlayLab";
+
+![컨테이너의 해부 1편 표지. docker run 한 줄 뒤에서 움직이는 다섯 계층을 소개한다.](/images/container-anatomy-1/hero.webp)
+
+터미널에 `docker run -d nginx`를 치고 Enter를 누릅니다. 1초쯤 뒤에 컨테이너가 뜹니다.
+
+그 1초 동안 무슨 일이 일어났을까요? "도커가 컨테이너를 띄웠죠"라는 대답은 틀리진 않습니다. 다만 아무것도 설명하지 않습니다. 실제로는 **다섯 개의 서로 다른 사용자 공간 프로그램**이 순서대로 바통을 넘겼고, 그중 셋은 이름조차 들어본 적 없으실 겁니다.
+
+이게 왜 중요할까요? 이 릴레이 구조를 알아야만 다음 질문들에 답할 수 있기 때문입니다.
+
+- 도커 데몬을 재시작했는데 왜 실행 중이던 컨테이너는 안 죽었을까요?
+- 1GB짜리 로그 파일에 한 줄 덧붙였을 뿐인데 왜 컨테이너 용량이 1GB 늘었을까요?
+- Dockerfile에서 `RUN rm secret.key`로 지웠는데 왜 이미지에서 그 파일이 나올까요?
+
+이 글을 끝까지 읽으시면 저 세 질문에 **구조로** 답하실 수 있게 됩니다. 명령어를 외우는 게 아니라, 어느 층에서 무슨 일이 벌어지는지를 그릴 수 있게 되는 것 — 그게 이 글의 목표입니다.
+
+## 먼저 수준을 맞추고 갈게요 — 컨테이너는 작은 가상 머신이 아닙니다
+
+본론에 들어가기 전에 두 가지만 맞추고 갑니다. 하나는 **이 글이 서 있는 자리**, 하나는 **가장 흔한 오해**입니다.
+
+먼저 자리부터. 이 글은 **리눅스 호스트에서 root로 도는 Docker Engine**, 기본 스토리지 드라이버 **overlay2**, containerd **runtime v2**를 전제로 합니다. macOS·Windows의 Docker Desktop은 안쪽에 리눅스 VM을 두기 때문에 본문의 경로나 `ps`로 보이는 프로세스가 그대로 맞지 않고, rootless 모드도 다릅니다. 그리고 `docker run` 한 줄에는 이미지 pull·스냅샷 구성·네트워크 연결 같은 축도 함께 움직이는데, 이 글은 그중 **"컨테이너 프로세스가 어떻게 태어나는가"라는 실행 경로 하나**만 끝까지 따라갑니다.
+
+이제 오해를 바로잡을 차례입니다. 컨테이너를 "가벼운 VM"으로 이해하고 계신다면, 앞으로 나올 이야기의 절반이 안 맞아떨어질 겁니다.
+
+가상 머신은 **가짜 하드웨어 위에 진짜 커널을 하나 더** 올립니다. 컨테이너는 그렇지 않습니다. 호스트의 커널을 **그대로 씁니다.** 다만 커널이 그 프로세스에게 "세상을 좁게 보여줄" 뿐입니다.
+
+```text
+ [가상 머신]                        [컨테이너]
+
+  앱                                 앱
+  ─────                              ─────
+  게스트 커널   ← 커널이 하나 더       (없음)
+  ─────
+  하이퍼바이저                        ─────
+  ─────                              호스트 커널  ← 이거 하나를 같이 씀
+  호스트 커널                         ─────
+```
+
+그러니까 컨테이너는 **특별하게 포장된, 그냥 리눅스 프로세스**입니다. `ps aux`를 호스트에서 치면 컨테이너 안의 프로세스가 그대로 보입니다. 숨어 있는 게 아니라 시야가 제한된 것뿐이에요.
+
+> 기억법: **VM은 커널을 복제하고, 컨테이너는 커널을 공유한다.**
+
+## 계층 지도 한 장
+
+이제 전체 그림을 먼저 드릴게요. 길을 잃지 않도록, 앞으로 이 그림의 한 칸씩 열어 볼 겁니다.
+
+```text
+ docker (CLI)
+     │  REST API  ─ UNIX 소켓 또는 네트워크
+     ▼
+ dockerd (데몬)
+     │  gRPC  ─ /run/containerd/containerd.sock
+     ▼
+ containerd (데몬)
+     │  ttRPC  ─ 소켓
+     ▼
+ containerd-shim-runc-v2 (shim)      ← 여기가 이 글의 핵심
+     │  fork / exec
+     ▼
+ runc (런타임 엔진)
+     │  clone() · cgroup 쓰기 · pivot_root
+     ▼
+ Linux 커널  (namespace · cgroup · overlayfs)
+```
+
+화살표마다 프로토콜이 다르다는 점을 눈여겨봐 주세요. 층마다 만든 조직이 다르고, 지키는 약속도 다릅니다. "도커"는 단일 프로그램이 아니라 **조립품**입니다.
+
+이 그림은 **자리 배치도**이지 시간 순서표가 아닙니다. 실제로는 shim이 소켓을 여는 준비 단계와, 그 소켓으로 명령을 받아 runc를 부르는 실행 단계가 나뉘어 있어요. 그 순서는 3층에서 따로 풀겠습니다. 누가 어디 있는지를 봤으니, 이번엔 **무슨 순서로 움직이는지**를 한 줄로 세워 볼게요.
+
+<VizProcessSteps2 />
+
+## 1층 — docker CLI와 dockerd
+
+첫 칸은 쉽습니다. 도커는 **client-server 모델**이에요.
+
+공식 문서의 표현을 그대로 옮기면, "Docker 클라이언트가 Docker 데몬에게 말을 걸고, 데몬이 컨테이너의 빌드·실행·배포라는 무거운 일을 한다"입니다. 둘은 **REST API**로 대화하고, 그 통로는 **UNIX 소켓 또는 네트워크 인터페이스**입니다.
+
+즉 여러분이 치는 `docker`는 **명령을 HTTP 요청으로 바꿔 던지는 얇은 클라이언트**일 뿐입니다. 컨테이너를 만드는 주체가 아니에요.
+
+직접 확인해 볼까요? 도커가 깔린 리눅스에서 이렇게 쳐 보시면 됩니다.
+
+```bash
+curl --unix-socket /var/run/docker.sock http://localhost/version
+```
+
+`docker version`과 거의 같은 내용이 JSON으로 돌아옵니다. `docker` 명령 없이도 데몬과 대화가 되죠. 이게 1층의 전부입니다.
+
+여기서 헷갈리기 쉬운 포인트는 **"도커 데몬이 컨테이너의 부모 프로세스일 것"이라는 짐작**입니다. 아닙니다. 데몬은 요청을 받아 아래층에 넘길 뿐이고, 실제로 컨테이너 프로세스를 품는 건 한참 아래에 있는 다른 프로그램입니다. 잠시 뒤에 확인합니다.
+
+## 2층 — containerd, 직접 띄우지 않는 관리자
+
+dockerd가 요청을 넘기는 상대가 **containerd**입니다. 이름은 낯설어도, 여러분의 서버에서 이미 돌고 있을 가능성이 아주 높습니다. 도커도 쿠버네티스도 이걸 품고 있거든요.
+
+containerd는 자기 자신을 "단순성·견고성·이식성에 중점을 둔 **업계 표준 컨테이너 런타임**"이라고 소개합니다. Linux·Windows용 데몬이지만, **개발자가 직접 쓰기보다 더 큰 시스템에 임베드되도록 설계**됐다는 점이 특징이에요. 그래서 눈에 안 띕니다.
+
+담당하는 일은 이렇습니다.
+
+- 이미지 전송·저장
+- 컨테이너 실행과 감독(supervision)
+- 저수준 스토리지
+- 네트워크 연결(attachment)
+
+한 가지 단서를 달아 두겠습니다. 이건 containerd라는 프로젝트가 **일반적으로 제공하는 기능 목록**입니다. Docker Engine 경로에서는 브리지 네트워크·포트 publish·iptables 규칙 같은 네트워크 설정을 **dockerd 쪽(libnetwork)이 담당**합니다. "containerd가 네트워크를 담당한다"고 뭉뚱그리면 도커에서의 실제 책임 분담과 어긋납니다.
+
+그런데 여기서 이 글의 첫 번째 반전이 나옵니다. containerd 공식 문서의 문장을 그대로 옮길게요.
+
+> **"containerd, the daemon, does not directly launch containers."**
+> (데몬인 containerd는 컨테이너를 직접 띄우지 않는다.)
+
+컨테이너 런타임이라면서 컨테이너를 안 띄운다니, 이상하죠? 문서는 이어서 containerd가 "컨테이너와 콘텐츠의 활동을 조율하는 **상위 관리자 또는 허브**"이며, 실제로 컨테이너를 시작·정지·관리하는 건 **"런타임"이라 불리는 하위 프로그램**이라고 설명합니다.
+
+그러면 containerd가 하는 일은 정확히 무엇일까요? 문서가 알려주는 순서는 이렇습니다.
+
+```text
+1. 클라이언트가 containerd 에게 "컨테이너 만들어 줘" 요청
+2. containerd 가 컨테이너의 파일시스템을 깔아 놓고(lay out),
+   필요한 설정 정보를 만든다
+3. containerd 가 API 를 통해 "런타임"을 호출한다
+        └─ 여기서부터 containerd 의 손을 떠난다
+```
+
+**밥상은 containerd가 차리고, 먹이는 건 다른 프로그램**이라고 보시면 됩니다.
+
+## 3층 — shim, 이 글에서 가장 중요한 한 겹
+
+자, 여기가 핵심입니다. 천천히 갈게요.
+
+containerd는 런타임을 호출한다고 했는데, **직접 부르지 않습니다.** containerd는 런타임이 **소켓을 열어 두고**(Unix 계열은 Unix 도메인 소켓, Windows는 named pipe) 그 소켓으로 **ttRPC** 명령을 기다릴 것이라고 기대합니다.
+
+여기서 ttRPC가 처음 나왔으니 짚고 갈게요. **ttRPC는 containerd 프로젝트가 만든 gRPC의 경량판**입니다. 프로젝트 스스로를 "저메모리 환경을 위한 GRPC"라고 소개하는데, 이유가 있습니다. gRPC 라이브러리는 패키지를 불러오는 데도, 실행 중에도 메모리를 꽤 씁니다. 서비스가 몇 개일 땐 괜찮지만 **한 머신에 서비스를 아주 많이 띄우거나 메모리가 작은 머신에서는 문제**가 됩니다. 그래서 ttRPC는 **같은 gRPC 정의(protobuf)를 그대로 쓰면서** 바이너리 크기와 메모리 사용량을 줄였습니다.
+
+왜 하필 여기에 이게 쓰였는지 생각해 보면 이해가 빨라집니다. 잠시 뒤에 보시겠지만 shim은 **컨테이너마다(혹은 파드마다) 하나씩 뜨는 프로세스**입니다. 컨테이너를 100개 돌리면 shim도 그만큼 뜹니다. 이 자리에 무거운 gRPC를 쓰면 그 오버헤드가 100배로 곱해지죠. **"작은 프로세스가 아주 많이 뜨는 자리"라서 경량 프로토콜을 골랐다** — 이게 ttRPC가 여기 있는 이유입니다.
+
+이 소켓을 여는 프로그램이 **shim**입니다.
+
+```text
+ containerd  ──ttRPC(소켓)──▶  shim  ──fork/exec──▶  runc
+                               │
+                               └─ 소켓을 열고 기다리는 게 이 친구의 일
+```
+
+### 왜 굳이 둘로 쪼갰을까요
+
+containerd 문서는 런타임 구현에 두 가지 흔한 방식이 있다고 말합니다.
+
+1. 소켓도 듣고 컨테이너도 만드는 **바이너리 하나**
+2. 소켓을 듣는 **shim 바이너리** + 컨테이너를 만드는 **런타임 엔진**을 분리
+
+그리고 2번을 쓰는 이유를 이렇게 밝힙니다 — **OCI(Open Container Initiative) 런타임 스펙 같은 특정 규격을 구현한 서로 다른 런타임들을 끼워 넣기 쉬워지기 때문**입니다. ttRPC 프로토콜 처리는 shim 하나가 맡고, 그 아래 엔진은 OCI 런타임 스펙만 지키면 무엇이든 갈아 끼울 수 있게 되는 거예요.
+
+> 기억법: **shim은 통역사, 엔진은 일꾼.** 통역사를 그대로 두고 일꾼만 바꿀 수 있다.
+
+(OCI 런타임 스펙이 정확히 무엇을 규정하는지는 다음 편에서 통째로 다룹니다. 지금은 "엔진들이 공통으로 지키는 약속"으로만 알고 계셔도 충분합니다.)
+
+### 이름 규칙 — `containerd-shim-runc-v2`는 어디서 온 이름인가
+
+로그나 프로세스 목록에서 `containerd-shim-runc-v2`라는 긴 이름을 보신 적 있으실 겁니다. 이건 아무렇게나 붙인 이름이 아니라 **기계적으로 계산된 이름**입니다.
+
+containerd는 런타임 이름이 **URI처럼 생긴 경우** 이렇게 변환합니다. (containerd 1.6.0부터는 런타임 이름 자리에 **실행 파일 경로를 직접** 줄 수도 있습니다. 그때는 아래 변환을 거치지 않고 그 경로를 그대로 씁니다.)
+
+```text
+ io.containerd.runc.v2          ← 런타임 이름
+      │
+      │ ① 모든 . 을 - 로 바꾼다
+      ▼
+ io-containerd-runc-v2
+      │
+      │ ② 마지막 2개 요소만 취한다
+      ▼
+ runc-v2
+      │
+      │ ③ 앞에 containerd-shim 을 붙인다
+      ▼
+ containerd-shim-runc-v2        ← PATH 에서 이 실행 파일을 찾는다
+```
+
+문서는 `containerd-shim-` 접두사를 **일부러 유지한다**고 밝힙니다. 사용자가 `ps aux | grep containerd-shim`으로 돌아가는 shim들을 볼 수 있게 하려고요. 즉 저 긴 이름은 여러분이 찾아보라고 남겨둔 단서입니다.
+
+잠깐, 확인 하나만 해 볼까요? 런타임 이름이 `io.containerd.kata.v2`라면 어떤 바이너리를 찾을까요?
+
+점을 하이픈으로 바꾸고 → 마지막 두 요소 `kata-v2`를 취하고 → 앞에 붙이면, **`containerd-shim-kata-v2`**입니다. URI 형태를 쓰는 한 이 변환은 기계적으로 적용됩니다.
+
+### shim이 존재하는 진짜 이유 — 재시작해도 살아남는 것
+
+이제 처음에 던진 질문에 답할 차례입니다. **도커 데몬을 재시작했는데 왜 컨테이너가 안 죽을까요?**
+
+shim이 containerd와 **생명주기를 공유하지 않기 때문**입니다.
+
+```text
+[Before] shim 이 없다면
+  containerd ──직접 fork──▶ 컨테이너 프로세스
+       ×  containerd 죽음
+       └─▶ 부모가 사라짐. 컨테이너의 stdout·종료코드를 받을 주체가 없다.
+
+[After] shim 이 있으면
+  containerd ──ttRPC──▶ shim ──fork/exec──▶ runc ─▶ 컨테이너 프로세스
+       ×  containerd 죽음                  └─ shim 이 계속 품고 있음
+       └─▶ shim 은 멀쩡. 컨테이너도 멀쩡.
+           containerd 가 돌아오면 소켓으로 다시 붙는다.
+```
+
+컨테이너의 부모로 남아 표준 출력과 종료 코드를 챙기는 건 containerd도 dockerd도 아니고 **shim**입니다. containerd 문서도 shim이 독립 런타임을 호출하며 "**컨테이너를 부모로서 품는다(parenting containers)**"고 표현합니다.
+
+여기서 재미있는 사실 하나. shim과 컨테이너가 꼭 1:1은 아닙니다. **하나의 shim이 여러 컨테이너를 품을 수 있고**, containerd는 그 관계가 1:1인지 1:다인지 신경 쓰지 않습니다. 전적으로 shim이 정합니다. 실제로 `io.containerd.runc.v2` shim은 라벨을 보고 자동으로 묶는데, **같은 쿠버네티스 파드에 속한 컨테이너들은 `io.kubernetes.cri.sandbox-id` 라벨로 묶여 shim 하나가 담당**합니다. 이 라벨이 어디서 오는지는 3편에서, 쿠버네티스가 런타임과 말하는 규약인 **CRI(Container Runtime Interface)**를 다루며 만나게 됩니다.
+
+### 그리고 shim의 시작 프로세스는 스스로 끝납니다
+
+이 부분이 미묘해서 많이들 놓칩니다. containerd가 shim을 실행하면, shim은 이렇게 움직입니다.
+
+```text
+ containerd 가 shim 을 실행
+      │
+      ├─ 이미 쓸 수 있는 소켓이 있으면
+      │     → 그 주소를 돌려주고 종료(exit)
+      │
+      └─ 새로 만들어야 하면
+            1. 소켓에서 ttRPC 명령을 들을 새 프로세스를 만든다
+            2. 그 소켓 주소를 containerd 에 돌려준다
+            3. 종료(exit)          ← 처음 실행된 그 프로세스는 끝난다
+```
+
+여기서 가장 중요한 줄은 **3번**입니다. 처음 실행된 shim 프로세스는 **리스너를 낳고 자기는 죽습니다.** 살아남아 컨테이너를 품는 건 1번에서 만들어진 프로세스예요. `ps`로 봤을 때 보이는 그 shim이 바로 이 친구입니다. 이걸 모르면 "shim을 실행했는데 왜 바로 끝났지?"에서 막힙니다.
+
+## 4층 — runc, 띄우고 빠집니다
+
+마지막 프로그램은 **runc**입니다. containerd 문서의 표현으로는 "가장 흔히 쓰이는 런타임 **엔진**"이고, "런타임 엔진이므로 **containerd가 직접 호출하지 않고 shim이 호출한다**"고 명시돼 있습니다.
+
+shim이 runc 바이너리를 실행하면서 컨테이너 설정을 넘기면, runc가 보통 `libcontainer`를 거쳐 시스템 API를 호출해 컨테이너를 만들고, 시작하고, 정지합니다.
+
+여기서 용어를 한 번 정리하고 가겠습니다. **만드는 주체**와 **지키는 주체**가 다릅니다.
+
+```text
+ 만든다(생성)   : runc  ─ clone() 로 컨테이너 프로세스를 낳는다
+ 지킨다(감시)   : shim  ─ 낳아진 프로세스의 부모로 남아
+                        stdout·종료코드를 챙긴다
+```
+
+여기서 헷갈리기 쉬운 포인트는 **"runc가 컨테이너를 계속 붙들고 있다"고 생각하는 것**입니다. 아닙니다. runc는 컨테이너를 세워 놓고 물러납니다. 계속 남아 있는 건 shim이에요.
+
+### 그런데 부모가 죽으면 자식은 고아가 되지 않나요?
+
+좋은 질문입니다. 그리고 이 질문이 이 절의 진짜 알맹이예요.
+
+리눅스에서는 부모 프로세스가 죽으면 자식이 **PID 1로 재입양(reparenting)**됩니다. 그렇다면 runc가 컨테이너를 낳고 종료한 순간, 컨테이너 프로세스는 shim이 아니라 PID 1에게 넘어가야 맞습니다. 그런데 실제로는 shim 밑에 매달려 있죠. 왜일까요?
+
+shim이 커널에게 **"내 자손이 고아가 되면 내가 입양하겠다"**고 미리 등록해 두기 때문입니다. 이 설정이 `PR_SET_CHILD_SUBREAPER`이고, containerd의 shim 코드에도 그대로 들어 있습니다.
+
+```go
+// containerd: pkg/shim/shim_linux.go
+func subreaper() error {
+	return reaper.SetSubreaper(1)
+}
+```
+
+여기서 가장 중요한 줄은 `reaper.SetSubreaper(1)`입니다. 이 한 줄이 없으면 runc가 빠지는 순간 컨테이너 프로세스는 PID 1에게 끌려가고, shim은 그 프로세스의 종료 코드를 수거할 수 없게 됩니다. **"컨테이너가 어떤 종료 코드로 끝났는지"를 도커가 알려줄 수 있는 이유가 이 줄에 있습니다.**
+
+```text
+ [subreaper 설정 없음]              [subreaper 설정됨]
+  shim                               shim ★ subreaper
+   └─ runc  ──낳음──▶ nginx           └─ runc ──낳음──▶ nginx
+      × runc 종료                        × runc 종료
+         nginx → PID 1 로 끌려감            nginx → shim 이 입양
+         (종료코드 수거 불가)                 (종료코드 수거 가능)
+```
+
+이걸 직접 확인해 볼까요? 컨테이너를 하나 띄워 놓고 호스트에서 프로세스 계보를 보세요.
+
+```bash
+docker run -d --name lab nginx
+pstree -aps $(docker inspect -f '{{.State.Pid}}' lab)
+```
+
+`containerd-shim-runc-v2` 아래에 nginx가 매달려 있고, **`runc`는 계보에 없습니다.** 이미 할 일을 마치고 빠졌기 때문입니다.
+
+> 기억법: **runc는 낳고 떠나고, shim은 입양해서 지킨다.**
+
+## 이미지는 어떻게 쌓여 있나 — overlay2
+
+여기까지가 "누가 컨테이너를 띄우는가"였습니다. 이제 "무엇을 띄우는가", 즉 파일시스템으로 갑니다. 두 번째 질문에 답할 차례예요 — **1GB 파일에 한 줄 덧붙였는데 왜 1GB가 늘었을까요?**
+
+도커의 기본 스토리지 드라이버는 **overlay2**이고, 그 바탕은 리눅스의 **OverlayFS**입니다. 공식 문서의 설명은 간단합니다. OverlayFS는 "두 디렉터리를 겹쳐(layer) 하나의 디렉터리로 보여준다"는 것.
+
+네 개의 이름만 기억하시면 됩니다.
+
+```text
+ merged/     ← 컨테이너가 실제로 보는 화면 (합쳐진 결과)
+    ▲
+    │  겹쳐서 보여줌
+    ├──────────────────────────────┐
+ upperdir/                    lowerdir/
+ 쓰기 가능한                  읽기 전용
+ 컨테이너 레이어              이미지 레이어(여러 장)
+
+ workdir/    ← OverlayFS 가 내부적으로 쓰는 작업 공간
+```
+
+저장 위치는 **`/var/lib/docker/overlay2/`** 입니다. 레이어마다 디렉터리가 하나씩 있고, 그 안에 실제 내용인 `diff` 폴더, 축약 식별자인 `link` 파일, 부모 레이어를 가리키는 `lower` 파일이 들어 있습니다. (베이스 레이어에는 `lower`가 없습니다. 부모가 없으니까요.)
+
+### copy_up — 파일 전체를 복사합니다
+
+이제 핵심입니다. 컨테이너가 **이미지에 이미 있던 파일**을 처음 수정하면 무슨 일이 벌어질까요?
+
+```text
+[Before] 쓰기 전
+  merged/app.log  ──보임──▶  lowerdir/app.log  (1GB, 읽기 전용)
+  upperdir/                   (비어 있음)
+
+[After] echo "x" >> app.log 한 줄 실행 후
+  merged/app.log  ──보임──▶  upperdir/app.log  (1GB + 한 줄)
+                              lowerdir/app.log  (1GB, 그대로 남아 있음)
+```
+
+공식 문서의 표현으로, overlay2 드라이버는 **`copy_up`** 연산으로 그 파일을 lowerdir에서 upperdir로 복사합니다. 그리고 결정적인 한 문장이 있습니다 — 이 연산은 **블록이 아니라 파일 전체를 복사**합니다.
+
+그래서 1GB 파일에 한 줄을 덧붙이면 컨테이너 레이어가 1GB만큼 늘어납니다. 원본도 lowerdir에 그대로 남아 있으니 디스크 위에는 사실상 2GB가 존재하게 되고요. 다행히 **한 번 복사된 뒤의 쓰기는 upperdir의 복사본에 바로 하므로 추가 비용이 없습니다.** 비싼 건 첫 쓰기 한 번입니다.
+
+(정확히 하자면, 최신 커널의 `metacopy` 옵션이 켜져 있으면 **권한·소유자 같은 메타데이터만 바꿀 때는** 데이터를 통째로 복사하지 않습니다. 다만 지금처럼 **내용에 쓰는 순간**에는 여전히 전체 복사가 일어나므로, 위의 결론은 그대로입니다.)
+
+> 기억법: **첫 쓰기가 비싸다. 그리고 통째로 복사한다.**
+
+### whiteout — 지운 게 아니라 가린 겁니다
+
+세 번째 질문 차례입니다. **`RUN rm secret.key`로 지웠는데 왜 이미지에 남아 있을까요?**
+
+lowerdir는 **읽기 전용**입니다. 거기 있는 파일은 애초에 지울 수가 없어요. 그래서 OverlayFS는 다른 방법을 씁니다 — upperdir에 **whiteout**을 만들어 원본을 **가립니다.**
+
+whiteout이 정확히 무엇인지는 커널 문서가 못박아 두었습니다. **`0/0` 장치 번호를 가진 캐릭터 디바이스**, 또는 `trusted.overlay.whiteout` 확장 속성(xattr)이 붙은 크기 0인 일반 파일입니다. merged 디렉터리의 상위 레벨에서 whiteout이 발견되면, 하위 레벨의 같은 이름은 **무시됩니다.**
+
+```text
+[Before]  lowerdir/secret.key  (존재)
+          merged/secret.key    → 보임
+
+[After rm secret.key]
+          lowerdir/secret.key  (여전히 존재!)
+          upperdir/secret.key  ← 캐릭터 디바이스 0/0 (whiteout 마커)
+          merged/secret.key    → 안 보임
+```
+
+`ls -l`로 보면 파일 종류 자리에 `c`가 찍히고 크기 자리에 `0, 0`이 보입니다. 파일처럼 생겼지만 파일이 아니라 **"여기 없는 걸로 쳐 달라"는 표식**인 셈입니다.
+
+디렉터리는 방식이 다릅니다. 디렉터리를 지우면 whiteout 대신 **opaque 디렉터리**가 만들어집니다 — `trusted.overlay.opaque` 속성을 `y`로 설정해 "이 아래는 하위 레이어를 합치지 말라"고 표시하는 방식이에요.
+
+> 헷갈리기 쉬운 포인트 하나. 인터넷 설명에서 `.wh.` 로 시작하는 파일명을 whiteout이라고 소개하는 걸 자주 보실 겁니다. 그건 **AUFS의 방식**이자 **이미지 레이어를 tar로 묶을 때 쓰는 표기**이고, 지금 보고 있는 **실행 중 컨테이너의 upperdir**에서 커널이 쓰는 방식은 위의 캐릭터 디바이스입니다. 같은 개념이 층마다 다른 모습으로 나타나는 것뿐입니다.
+
+어느 방식이든 결론은 같습니다. 컨테이너 안에서는 사라진 것처럼 보이지만 **하위 레이어에는 그대로 있습니다.** 이미지를 tar로 풀거나 레이어를 하나씩 뜯어보는 도구를 쓰면 그대로 나옵니다.
+
+그러니 이 문장을 새겨 두세요.
+
+> **Dockerfile에서 `rm`으로 지운 비밀은 지워진 게 아니라 가려진 것이다.**
+
+### 시뮬레이션으로 보기
+
+세 칸이 어떻게 맞물리는지는 눌러 보는 편이 빠릅니다.
+
+<OverlayLab client:visible />
+
+`app.log`를 고른 채 **읽기 → 쓰기 → 삭제** 순으로 눌러 보세요. 보실 것은 세 가지입니다.
+
+1. **읽기**를 눌렀을 때는 사용량이 그대로입니다. 읽기만 하면 lowerdir에서 바로 읽으니 복사가 없어요.
+2. **쓰기**를 누르는 순간 1.0GB가 통째로 upperdir로 올라오며 사용량이 뜁니다. 이게 copy_up입니다. **한 번 더 누르면 사용량은 그대로**인 것도 확인해 보세요 — 비싼 건 첫 쓰기뿐입니다.
+3. **삭제**를 누르면 merged에서는 사라지는데 **lowerdir 목록에는 그대로 남아 있습니다.** upperdir에 생긴 `c 0, 0`이 앞에서 본 캐릭터 디바이스 whiteout이에요.
+
+`new.txt`로도 해 보시면 차이가 보입니다. 이 파일은 컨테이너가 직접 만든 것이라 lowerdir에 원본이 없습니다. 그래서 쓰기를 눌러도 copy_up이 일어나지 않고, 삭제하면 whiteout 없이 그냥 사라집니다. **copy_up과 whiteout은 "아래층에 원본이 있을 때만" 등장하는 장치**라는 걸 여기서 확인하실 수 있습니다.
+
+## 커널의 두 축 — namespace와 cgroup
+
+마지막 층입니다. runc가 커널에 요청하는 격리의 정체를 봅시다. 축은 딱 두 개예요.
+
+- **namespace** — 무엇을 **따로 보게** 할 것인가 (시야)
+- **cgroup** — 얼마나 **쓰게** 할 것인가 (분량)
+
+### namespace — 시야를 자릅니다
+
+**리눅스가 제공하는** namespace 종류는 이렇습니다. 표를 보시기 전에 하나만 짚을게요 — 이건 커널이 가진 목록이지 `docker run` 한 번에 여덟 개가 전부 갈라진다는 뜻이 아닙니다. 특히 **User namespace는 기본 설정의 rootful 도커에서 보통 활성화되지 않고**, Time namespace도 커널·런타임 설정에 따라 다릅니다.
+
+| 종류 | 플래그 | 격리 대상 |
+| --- | --- | --- |
+| Mount | `CLONE_NEWNS` | 마운트 지점 |
+| PID | `CLONE_NEWPID` | 프로세스 ID |
+| Network | `CLONE_NEWNET` | 네트워크 장치·스택·포트 |
+| IPC | `CLONE_NEWIPC` | System V IPC, POSIX 메시지 큐 |
+| UTS | `CLONE_NEWUTS` | 호스트명, NIS 도메인명 |
+| User | `CLONE_NEWUSER` | 사용자·그룹 ID |
+| Cgroup | `CLONE_NEWCGROUP` | cgroup root 디렉터리 |
+| Time | `CLONE_NEWTIME` | boot·monotonic 시계 |
+
+PID namespace 하나만 예로 들어 볼게요. 컨테이너 안에서 `ps`를 치면 자기 프로세스가 **PID 1**로 보입니다. 그런데 호스트에서 보면 같은 프로세스가 예컨대 PID 34821입니다.
+
+```text
+ [호스트 시야]                     [컨테이너 시야]
+  PID 1     systemd
+  PID 812   containerd
+  PID 34820 containerd-shim
+  PID 34821 nginx           ◀──▶  PID 1  nginx
+  PID 34850 nginx worker    ◀──▶  PID 2  nginx worker
+```
+
+**같은 프로세스에 번호가 두 개** 붙은 겁니다. 숨은 게 아니라 번호표가 두 벌인 것이죠. 컨테이너 안에서 호스트의 다른 프로세스가 안 보이는 이유도 같습니다 — 그 번호표 체계에 아예 없으니까요.
+
+### cgroup — 분량을 자릅니다
+
+namespace가 시야라면 cgroup(control group)은 자원 분량입니다. `docker run --memory=512m`이 실제로 하는 일이 cgroup 설정이에요.
+
+cgroup에는 v1과 v2가 있고, 가장 큰 차이는 구조입니다. v1은 컨트롤러마다 별도 계층을 둘 수 있었지만, **v2는 마운트된 모든 컨트롤러가 하나의 통합 계층(unified hierarchy)에 있습니다.** 이름도 일부 바뀌었습니다.
+
+| 자원 | v1 | v2 |
+| --- | --- | --- |
+| CPU | `cpu`, `cpuacct` | `cpu` |
+| 메모리 | `memory` | `memory` |
+| 프로세스 수 | `pids` | `pids` |
+| 블록 I/O | `blkio` | `io` |
+
+v2에는 알아둘 규칙이 하나 있습니다. **"no internal process constraint"**입니다. 어떤 cgroup이 **자식들에게 자원 컨트롤러를 나눠주려면, 자기 자신에게는 프로세스가 붙어 있으면 안 된다**는 제약이에요. 왜 이런 제약을 뒀을까요? 부모 cgroup에 프로세스가 직접 붙어 있으면, 그 프로세스와 자식 cgroup들 사이에 자원을 어떻게 나눠야 하는지가 모호해지기 때문입니다. 규칙 하나로 그 모호함을 없앤 것이죠.
+
+여기서 헷갈리기 쉬운 포인트는 이걸 **"프로세스는 무조건 리프에만 있어야 한다"로 넓혀 읽는 것**입니다. 그렇지 않습니다. **root cgroup은 이 제약의 예외**이고, 스레드 단위로 다루는 threaded 서브트리도 예외입니다. 정확히는 "컨트롤러를 자식에게 분배하려는 non-root cgroup"에 걸리는 조건입니다.
+
+하나만 더 짚고 갈게요. namespace 표를 보고 **"Cgroup namespace가 있으니 cgroup은 namespace의 한 종류겠구나"**라고 읽기 쉽습니다. 아닙니다. 둘은 별개 기능이에요. Cgroup **namespace**는 "cgroup 계층의 어디를 루트로 보여줄까"라는 **시야** 문제고, cgroup 자체는 **분량** 문제입니다. 이름이 겹칠 뿐 하는 일이 다릅니다.
+
+> 기억법: **namespace는 시야, cgroup은 분량. 이름이 겹치는 Cgroup namespace는 "시야" 쪽이다.**
+
+### 두 축이 전부는 아닙니다
+
+솔직하게 덧붙일 것이 있습니다. namespace와 cgroup은 컨테이너 격리의 **뼈대**이지 **전부**가 아닙니다.
+
+시야를 가리고 분량을 제한해도, 그 프로세스가 커널을 조작할 권한을 그대로 쥐고 있다면 격리는 종이벽입니다. 그래서 실제 컨테이너 런타임은 두 가지를 더 겁니다.
+
+- **Capabilities 박탈** — root의 권한을 잘게 쪼갠 것이 capability입니다. 컨테이너는 그중 위험한 것들(예: 커널 모듈 적재, 임의 마운트)을 애초에 박탈당한 채 시작합니다.
+- **seccomp 필터** — 호출할 수 있는 시스템 콜 자체를 목록으로 제한합니다.
+
+이 글에서는 깊이 다루지 않겠습니다. 다만 "컨테이너는 시야와 분량만 제한된 프로세스"라고 외우고 끝내면 **보안 관점에서 위험한 요약**이 된다는 점만 기억해 주세요. 격리를 더 강하게 만드는 방법들 — 아예 커널을 따로 두거나 경량 VM을 쓰는 접근 — 은 이 시리즈 4편에서 다룹니다.
+
+## 함정과 베스트 프랙티스 — Dockerfile에서 자주 밟는 것
+
+앞에서 배운 copy_up과 whiteout이 실무에서 바로 값을 합니다. 두 가지만 보겠습니다.
+
+**❌ 안티패턴 — 레이어를 나눠 지우기**
+
+```dockerfile
+# ❌ secret.key 는 이미지에 그대로 남는다
+COPY secret.key /tmp/secret.key
+RUN ./configure --key=/tmp/secret.key
+RUN rm /tmp/secret.key
+```
+
+`RUN rm`은 **새 레이어에 whiteout 마커를 하나 추가할 뿐**입니다. `COPY`가 만든 아래 레이어의 `secret.key`는 그대로 있습니다. 이미지를 받은 사람은 레이어를 뜯어 파일을 꺼낼 수 있습니다.
+
+**✅ 베스트 프랙티스 — 애초에 레이어에 남기지 않기**
+
+```dockerfile
+# ✅ 빌드 시크릿은 레이어에 기록되지 않는다
+RUN --mount=type=secret,id=key \
+    ./configure --key=/run/secrets/key
+```
+
+BuildKit의 secret mount는 빌드 중에만 파일을 보여주고 **레이어에는 기록하지 않습니다.** 멀티 스테이지 빌드로 최종 스테이지에 결과물만 `COPY` 하는 방법도 같은 효과를 냅니다.
+
+| 구분 | ❌ COPY 후 RUN rm | ✅ secret mount / 멀티 스테이지 |
+| --- | --- | --- |
+| 컨테이너 안에서 보이나 | 안 보임 | 안 보임 |
+| **이미지 레이어에서 복구 가능한가** | **가능**(하위 레이어에 원본이 남음) | 불가능(레이어에 기록되지 않음) |
+| 왜 그런가 | whiteout은 가릴 뿐 지우지 않음 | 애초에 레이어에 안 씀 |
+
+표의 첫 줄과 둘째 줄이 갈린다는 게 핵심입니다. 두 방식 모두 **컨테이너 안에서는 파일이 안 보입니다.** 차이는 **이미지를 받은 사람이 레이어를 뜯어 꺼낼 수 있느냐**에서 납니다. "안 보이니까 지워졌다"고 판단하면 안 되는 이유예요.
+
+<VizComparison3 />
+
+두 번째 함정은 짧게만 짚겠습니다. **큰 파일을 여러 `RUN`에 걸쳐 조금씩 수정하면** 그때마다 copy_up이 일어나 레이어마다 파일 전체 사본이 쌓입니다. 큰 파일은 **한 레이어 안에서 처리를 끝내는 것**이 원칙입니다.
+
+## 오해하기 쉬운 포인트 정리
+
+지금까지 흩어져 나온 오해들을 한자리에 모읍니다.
+
+**오해 1. "도커 데몬이 컨테이너의 부모다."**
+아닙니다. 컨테이너를 품고 있는 건 `containerd-shim-runc-v2`입니다. 그래서 데몬을 재시작해도 컨테이너가 안 죽습니다. `pstree -aps`로 직접 확인할 수 있습니다.
+
+**오해 2. "runc가 컨테이너를 실행하고 지키고 있다."**
+runc는 컨테이너를 **낳고** 빠집니다. 돌아가는 컨테이너 옆에 runc 프로세스는 없습니다. 낳는 건 runc, 입양해서 지키는 건 shim입니다.
+
+**오해 3. "컨테이너는 가벼운 VM이다."**
+커널을 공유하는 프로세스입니다. 게스트 커널이 없다는 게 성능 이점의 원천이자, 격리 강도의 한계이기도 합니다. (이 한계를 다르게 푸는 방법들이 4편에 나옵니다.)
+
+**오해 4. "이미지 레이어에서 파일을 지우면 사라진다."**
+whiteout 마커로 가릴 뿐입니다. 하위 레이어에는 남아 있습니다.
+
+## 직접 해보기
+
+리눅스 호스트에서 rootful 도커가 돌고 있다면 5분이면 확인할 수 있습니다.
+
+1. 컨테이너를 하나 띄웁니다.
+   ```bash
+   docker run -d --name lab nginx
+   PID=$(docker inspect -f '{{.State.Pid}}' lab)
+   ```
+2. **shim이 부모인지 확인합니다.**
+   ```bash
+   pstree -aps $PID
+   ```
+   기대 결과: 계보가 `systemd(PID 1) → containerd-shim-runc-v2 → nginx`로 이어지고, **`runc`는 계보에 없습니다.**
+
+   여기서 한 번 더 확인하고 갈 것이 있습니다. shim이 **containerd 밑에 붙어 있지 않다**는 점이에요. 앞에서 "처음 실행된 shim 프로세스는 리스너를 낳고 자기는 죽는다"고 했죠. 그래서 살아남은 리스너는 부모를 잃고 PID 1로 재입양됩니다. **계보에서 containerd가 안 보이는 것 자체가, 3층에서 배운 "shim은 containerd와 생명주기를 공유하지 않는다"의 증거**입니다.
+3. **namespace를 확인합니다.**
+   ```bash
+   sudo lsns -p $PID
+   ```
+   기대 결과: `mnt`·`pid`·`net`·`uts`·`ipc`가 호스트와 다른 ID로 잡혀 있습니다. 다만 `user`·`cgroup`·`time`은 **설정과 커널에 따라 호스트와 같거나 아예 목록에 없을 수 있습니다** — 앞서 말씀드린 "표에 있다고 항상 갈라지는 건 아니다"가 여기서 눈으로 확인됩니다.
+4. **cgroup을 확인합니다.**
+   ```bash
+   cat /proc/$PID/cgroup
+   ```
+   기대 결과: 도커가 만든 cgroup 경로가 나옵니다.
+5. **copy_up을 눈으로 봅니다.** 여기서 주의할 게 하나 있습니다. copy_up은 **"이미지에 이미 있던 파일"을 고칠 때** 일어납니다. 새 파일을 만드는 건 그냥 upperdir에 쓰는 것이라 copy_up이 아니에요. 그래서 먼저 **큰 파일이 들어 있는 이미지**를 만들어야 합니다.
+   ```bash
+   # ① 이미지 레이어에 100MB 파일을 심는다
+   printf 'FROM alpine\nRUN dd if=/dev/zero of=/big bs=1M count=100\n' > /tmp/Dockerfile
+   docker build -t copyup-lab -f /tmp/Dockerfile /tmp
+
+   # ② 컨테이너를 띄우고 컨테이너 레이어 크기를 먼저 본다
+   docker run -d --name cu copyup-lab sleep 600
+   docker ps -s --filter name=cu --format '{{.Size}}'
+
+   # ③ 이미지에 있던 그 파일에 한 줄만 덧붙인다
+   docker exec cu sh -c 'echo x >> /big'
+   docker ps -s --filter name=cu --format '{{.Size}}'
+   ```
+   관찰 포인트: ②에서 거의 0에 가깝던 컨테이너 레이어 크기가, **한 줄 덧붙였을 뿐인 ③에서 약 100MB로 뜁니다.** 이게 copy_up입니다. 한 번 더 `echo`를 해 보시면 이번엔 거의 늘지 않는 것도 확인하실 수 있습니다.
+
+관찰 포인트를 한 문장으로 줄이면 이렇습니다 — **컨테이너는 특별한 무언가가 아니라, 제한된 시야와 자원 정책 안에서 도는 프로세스 집합이다.**
+
+## 스스로 점검하기
+
+1. containerd를 재시작해도 실행 중인 컨테이너가 살아 있는 이유를 두 문장으로 설명해 보세요. (힌트: 누가 컨테이너의 부모인가)
+2. 런타임 이름이 URI 형태로 `io.containerd.myrt.v2`라고 주어졌습니다. containerd가 PATH에서 찾을 바이너리 이름은 무엇일까요?
+3. 이미지에 있던 200MB 파일의 마지막 줄을 컨테이너 안에서 한 번 고쳤습니다. 컨테이너 레이어는 대략 얼마나 늘어날까요? 그리고 **두 번째** 수정에서는 얼마나 늘어날까요?
+4. Dockerfile에서 `COPY key.pem` 다음 줄에 `RUN rm key.pem`을 썼습니다. 완성된 이미지를 건네받은 사람이 `key.pem`을 꺼낼 수 있을까요?
+
+<details>
+<summary>답 확인</summary>
+
+1. 컨테이너의 부모 프로세스는 containerd가 아니라 shim(`containerd-shim-runc-v2`)이고, shim은 containerd와 생명주기를 공유하지 않기 때문입니다. containerd가 돌아오면 shim이 열어 둔 소켓으로 다시 연결합니다.
+2. 점을 하이픈으로 바꾸고(`io-containerd-myrt-v2`) 마지막 두 요소(`myrt-v2`)를 취해 앞에 `containerd-shim`을 붙이므로 **`containerd-shim-myrt-v2`**입니다.
+3. 첫 수정에서 copy_up이 일어나 **약 200MB** 늘어납니다(블록이 아니라 파일 전체를 복사하므로). 두 번째 수정은 이미 upperdir에 있는 사본에 쓰는 것이라 **거의 늘지 않습니다.**
+4. **꺼낼 수 있습니다.** `RUN rm`은 새 레이어에 "가림" 표시를 추가할 뿐이고, `COPY`가 만든 아래 레이어에는 `key.pem` 원본이 그대로 남아 있습니다. 컨테이너를 실행해서 보면 없지만, 레이어를 뜯으면 나옵니다.
+
+</details>
+
+## 마무리 — 핵심 다시 짚기
+
+한 문장으로 줄이면 이렇습니다.
+
+> **"도커"는 하나의 프로그램이 아니라, 층마다 다른 약속으로 맞물린 조립품이다.**
+
+- `docker` CLI는 REST 요청을 던지는 얇은 클라이언트입니다.
+- `dockerd`는 요청을 받아 아래로 넘깁니다.
+- `containerd`는 밥상(파일시스템·설정)을 차리지만 **컨테이너를 직접 띄우지 않습니다.**
+- `shim`이 소켓을 열고, subreaper로 등록해 컨테이너를 **부모로서 품습니다.** 데몬이 죽어도 살아남는 이유입니다.
+- `runc`는 커널에 요청해 컨테이너를 **낳고 물러납니다.**
+- 커널은 **namespace로 시야를, cgroup으로 분량을** 자릅니다. 여기에 capabilities·seccomp가 더해져야 격리가 완성됩니다.
+
+<VizFlowchart4 />
+
+그런데 여기서 자연스러운 질문이 하나 남습니다. 층마다 만든 조직이 다르다면서, **어떻게 이렇게 딱딱 맞물릴까요?** shim이 runc 대신 다른 엔진을 부를 수 있다고 했는데, 그 "다른 엔진"은 무엇을 지켜야 자격이 생기는 걸까요?
+
+그 약속의 이름이 **OCI**입니다. 다음 편에서는 컨테이너를 **실행하는 법·담는 법·나르는 법**을 규정한 세 개의 문서를 열어 보겠습니다. `docker build`로 만든 이미지가 왜 Podman에서도 돌아가는지, 그 이유가 거기 있습니다.
+
+## 근거와 더 읽을 거리
+
+본문의 인용과 수치는 아래 1차 자료에서 확인했습니다(조회일 2026-07-27). 이 영역은 구현이 빠르게 바뀌니, 실무에 적용하실 때는 쓰시는 버전의 문서를 다시 확인해 주세요.
+
+- containerd, [Runtime v2](https://github.com/containerd/containerd/blob/main/docs/runtime-v2.md) — shim+engine 구조, ttRPC, 런타임 이름 변환 규칙, shim 실행 흐름
+- containerd, [README](https://github.com/containerd/containerd) · [Getting Started](https://github.com/containerd/containerd/blob/main/docs/getting-started.md) — 프로젝트 정의, `/run/containerd/containerd.sock`
+- containerd, [`pkg/shim/shim_linux.go`](https://github.com/containerd/containerd/blob/main/pkg/shim/shim_linux.go) — subreaper 설정
+- containerd, [ttrpc](https://github.com/containerd/ttrpc) — 저메모리 환경을 위한 gRPC 경량판
+- Docker Docs, [Docker overview](https://docs.docker.com/get-started/docker-overview/) — 클라이언트·데몬·REST API
+- Docker Docs, [OverlayFS storage driver](https://docs.docker.com/engine/storage/drivers/overlayfs-driver/) — lowerdir/upperdir/merged/workdir, `copy_up`
+- Linux Kernel Docs, [Overlay Filesystem](https://www.kernel.org/doc/html/latest/filesystems/overlayfs.html) — whiteout(캐릭터 디바이스 0/0)·opaque 디렉터리
+- Linux Kernel Docs, [Control Group v2](https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html) — 통합 계층, no internal process constraint
+- man7.org, [namespaces(7)](https://man7.org/linux/man-pages/man7/namespaces.7.html) · [cgroups(7)](https://man7.org/linux/man-pages/man7/cgroups.7.html) — namespace 종류와 플래그, 컨트롤러 이름
