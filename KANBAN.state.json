@@ -1,6 +1,6 @@
 {
   "next_id": 30,
-  "next_seq": 94,
+  "next_seq": 96,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -287,15 +287,15 @@
       "verbatim_hash": "d6e598e9d9c50a3f9ce5b24b1a8a002be9bc944a"
     },
     "KAN-027": {
-      "col": "doing",
+      "col": "review",
       "title": "Footer 임시 마스코트 → 등록 저자 전신샷(나란히) + 홈 마스코트 swing 모션",
-      "memo": "푸터 임시 마스코트(svg.mascot) → 저자 전신 컷아웃 라인업(src/components/AuthorLineup.astro)으로 교체 완료. 모션은 홈 히어로와 **동일한 스윙 공유** — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화하고, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 추가 — 채운 저자만 라인업에 서고, 나머지는 자산이 생기면 컴포넌트 수정 없이 자동 합류. 컷아웃은 scripts/extract-author-cutout.ts(종이색 flood fill + 최대 연결 컴포넌트)로 데코 원본에서 굽는다 → tony-full.webp(322x440), ppangto-teacher-full.webp(284x440) 생성. 검증: bun run build 통과 · 4인 라인업 데스크톱/모바일 넘침 없음(390px에서 355px) · reduced-motion에서 animation:none. 남은 것: 빵토 연구원·빵토 교수님은 전신 원본이 레포/git 히스토리에 없어 현재 2인만 노출 — 같은 화풍 1254² 전신 이미지 2장을 받으면 스크립트 실행 + fullBody 채우기로 4인 완성(유저 대기 중).",
+      "memo": "완료. 푸터 임시 마스코트(svg.mascot) → 등록 저자 4인 전신 컷아웃 라인업(src/components/AuthorLineup.astro). 모션은 홈 히어로와 동일한 스윙 공유 — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 — 채운 저자만 라인업에 서므로 저자 추가/삭제에 컴포넌트 수정 불필요. 자산: scripts/extract-author-cutout.ts가 원본 테두리를 보고 3경로 자동 선택 — (A) 데코 컷=종이색 flood fill+최대 연결 컴포넌트, (B) 이미 투명=알파 임계값 8 바운딩 박스(발밑 그림자 배제), (C) 종이색 아닌 단색 배경=테두리색 ±4. 두 함정을 잡았다: 데코 원본도 테두리가 매끈해 (C)로 오판되던 것(→ 테두리색이 종이색이면 (A)로), 흰 실험복이 종이와 밝기가 겹쳐 배경으로 먹히던 것(→ isPaper에 따뜻함 r−b≥10 하한). 크기는 유저 요청대로 절반: 표시 높이 56px(모바일 42px), 자산 220px(파일당 9~13KB). 모바일 축소가 여태 죽어 있던 버그도 수정(인라인 커스텀 프로퍼티가 미디어 쿼리를 이김 → --figure-base로 받고 --figure-h는 CSS에서 파생). 검증: bun run build 통과 · 데스크톱 187px/모바일 137px 넘침 없음 · reduced-motion에서 animation:none · 4인 컷아웃 4x 확대 육안 확인. 커밋 9caa43e·e6b8852·f0bad3b·bfc669a (로컬, 푸시 안 함).",
       "verbatim": "대상: footer 마스코트 (footer.site-footer > div.footer-inner > svg.mascot, aria-label 빵관 토니 마스코트 / 홈 http://localhost:4321/).\n\n현재 footer의 이미지는 블로그 설계 초기 때 만든 임시 이미지다. 이 이미지를 현재 등록된 저자들의 전신샷이 나란히 있는 형태로 전환 하라. 이 저자들 이미지 또한, 메인 화면 마스코트와 동일한 모션(swing)을 취해야 한다.",
       "생성": "유저",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "1bdb962eef7e00cfa0726a87d74c52d1266eab08",
-      "memo_hash": "6e8a9a5d5c78709787b0dff6a1fa1fef5401ba29",
+      "memo_hash": "7efb68c8c03b4397d1faf9f28136c7b98fb5579f",
       "verbatim_hash": "e24af35bb31a54ab4e6aa09720c2999393b49497"
     },
     "KAN-028": {
@@ -354,6 +354,25 @@
     "KAN-027"
   ],
   "recent": [
+    {
+      "seq": 95,
+      "t": "2026-07-28T01:38",
+      "a": "ai",
+      "id": "KAN-027",
+      "op": "move",
+      "from": "doing",
+      "to": "review"
+    },
+    {
+      "seq": 94,
+      "t": "2026-07-28T01:38",
+      "a": "ai",
+      "id": "KAN-027",
+      "op": "edit",
+      "field": "memo",
+      "before": "푸터 임시 마스코트(svg.mascot) → 저자 전신 컷아웃 라인업(src/components/AuthorLineup.astro)으로 교체 완료. 모션은 홈 히어로와 **동일한 스윙 공유** — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화하고, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 추가 — 채운 저자만 라인업에 서고, 나머지는 자산이 생기면 컴포넌트 수정 없이 자동 합류. 컷아웃은 scripts/extract-author-cutout.ts(종이색 flood fill + 최대 연결 컴포넌트)로 데코 원본에서 굽는다 → tony-full.webp(322x440), ppangto-teacher-full.webp(284x440) 생성. 검증: bun run build 통과 · 4인 라인업 데스크톱/모바일 넘침 없음(390px에서 355px) · reduced-motion에서 animation:none. 남은 것: 빵토 연구원·빵토 교수님은 전신 원본이 레포/git 히스토리에 없어 현재 2인만 노출 — 같은 화풍 1254² 전신 이미지 2장을 받으면 스크립트 실행 + fullBody 채우기로 4인 완성(유저 대기 중).",
+      "after": "완료. 푸터 임시 마스코트(svg.mascot) → 등록 저자 4인 전신 컷아웃 라인업(src/components/AuthorLineup.astro). 모션은 홈 히어로와 동일한 스윙 공유 — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 — 채운 저자만 라인업에 서므로 저자 추가/삭제에 컴포넌트 수정 불필요. 자산: scripts/extract-author-cutout.ts가 원본 테두리를 보고 3경로 자동 선택 — (A) 데코 컷=종이색 flood fill+최대 연결 컴포넌트, (B) 이미 투명=알파 임계값 8 바운딩 박스(발밑 그림자 배제), (C) 종이색 아닌 단색 배경=테두리색 ±4. 두 함정을 잡았다: 데코 원본도 테두리가 매끈해 (C)로 오판되던 것(→ 테두리색이 종이색이면 (A)로), 흰 실험복이 종이와 밝기가 겹쳐 배경으로 먹히던 것(→ isPaper에 따뜻함 r−b≥10 하한). 크기는 유저 요청대로 절반: 표시 높이 56px(모바일 42px), 자산 220px(파일당 9~13KB). 모바일 축소가 여태 죽어 있던 버그도 수정(인라인 커스텀 프로퍼티가 미디어 쿼리를 이김 → --figure-base로 받고 --figure-h는 CSS에서 파생). 검증: bun run build 통과 · 데스크톱 187px/모바일 137px 넘침 없음 · reduced-motion에서 animation:none · 4인 컷아웃 4x 확대 육안 확인. 커밋 9caa43e·e6b8852·f0bad3b·bfc669a (로컬, 푸시 안 함)."
+    },
     {
       "seq": 93,
       "t": "2026-07-28T00:20",
@@ -824,26 +843,6 @@
       "op": "move",
       "from": "backlog",
       "to": "doing"
-    },
-    {
-      "seq": 29,
-      "t": "2026-07-26T13:22",
-      "a": "ai",
-      "id": "KAN-007",
-      "op": "move",
-      "from": "backlog",
-      "to": "doing"
-    },
-    {
-      "seq": 28,
-      "t": "2026-07-25T20:44",
-      "a": "ai",
-      "id": "KAN-015",
-      "op": "create",
-      "col": "backlog",
-      "title": "deprecated 이미지 스크립트 3종 삭제",
-      "memo": "선행조건(gating): KAN-014 배포 안정화 검증 완료 후에만 착수. 대상: scripts/generate-image.ts·render-image.ts·image-templates.ts(KAN-013에서 호출 경로 제거+deprecated 주석, 롤백 유예). 조건 충족 시 3파일 삭제 + 잔존 참조 grep 0 확인 + bun run build green + 커밋.",
-      "verbatim": ""
     }
   ]
 }
