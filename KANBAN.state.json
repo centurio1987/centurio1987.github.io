@@ -1,6 +1,6 @@
 {
   "next_id": 24,
-  "next_seq": 83,
+  "next_seq": 85,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -73,14 +73,14 @@
       "memo_hash": "52dd3cd265a84842f059ebd2da50737c6d71300f"
     },
     "KAN-008": {
-      "col": "doing",
+      "col": "review",
       "title": "OCI, CRI",
-      "memo": "시리즈 4편 \"컨테이너의 해부\" 확정 · 저자 퍼소나=ppangto-teacher(빵토 선생님, voice: src/lib/personas/ppangto-teacher-voice.md) · EP1 도커 해부(CLI→dockerd→containerd→shim→runc, namespaces/cgroups/OverlayFS) / EP2 OCI 표준(Image·Runtime·Distribution Spec, bundle+config.json, runc·crun·youki) / EP3 CRI(kubelet↔gRPC, dockershim 제거, containerd CRI plugin vs CRI-O, Pod sandbox) / EP4 대안 다면 비교(Podman·Buildah·Skopeo, gVisor·Kata, rootless·daemonless, 빌드 3파전, 선택 기준표). 파이프라인: research 선행 → 편당 tech-deepdive → review-post → review-writing → quality-gate → post-finalize → publish-post → ship-post. 진행=단계별 개입.",
+      "memo": "시리즈 4편 \"컨테이너의 해부\" 발행 완료(저자: ppangto-teacher 빵토 선생님, 퍼소나 첫 적용). EP1 도커 해부(8632f75) / EP2 OCI 3대 스펙(4dbc311) / EP3 CRI(5ab2da5) / EP4 대안 다면 비교·완결(98ff6f1). 브랜치 centurio1987/kan-008 푸시, main 미머지(사용자 리뷰 대기). 편당 파이프라인 전 구간 통과: research→tech-deepdive(외부검토 codex/agy)→react-sim→make-image→review-post→review-writing→quality-gate→post-finalize→publish-post→ship-post. 산출물: 글 4편 + React 시뮬 3종(OverlayLab·DigestChain·CriCallTrace) + viz 14종 + hero 4장, 전부 브라우저 육안·상호작용 검증. 리서치: ~/blog-research raws/008 + 위키 10p + angle 4개(306f255). 검증에서 잡은 실오류: whiteout=캐릭터디바이스0/0(.wh.아님)·pstree 자기모순·copy_up 실습 무효·process.args만 보류(전체 아님)·Hyper-V root MUST NOT·prestart DEPRECATED·hero 제목 잘림. 부수 산출: CLAUDE.md graphify 검증 2단계화(a058700). 남은 것: 그래프 데이터 갱신, main 머지 여부 사용자 결정.",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-27",
       "title_hash": "e173cecc43d9e35ec7f698842f292a31d84e44f9",
-      "memo_hash": "b5a24a24a6acf2515b8a71b8312b27d10d72a6c6"
+      "memo_hash": "93eca194f459809ab0b120b45d84f5a37c4676cb"
     },
     "KAN-009": {
       "col": "done",
@@ -276,6 +276,25 @@
     "KAN-008"
   ],
   "recent": [
+    {
+      "seq": 84,
+      "t": "2026-07-27T19:33",
+      "a": "ai",
+      "id": "KAN-008",
+      "op": "edit",
+      "field": "memo",
+      "before": "시리즈 4편 \"컨테이너의 해부\" 확정 · 저자 퍼소나=ppangto-teacher(빵토 선생님, voice: src/lib/personas/ppangto-teacher-voice.md) · EP1 도커 해부(CLI→dockerd→containerd→shim→runc, namespaces/cgroups/OverlayFS) / EP2 OCI 표준(Image·Runtime·Distribution Spec, bundle+config.json, runc·crun·youki) / EP3 CRI(kubelet↔gRPC, dockershim 제거, containerd CRI plugin vs CRI-O, Pod sandbox) / EP4 대안 다면 비교(Podman·Buildah·Skopeo, gVisor·Kata, rootless·daemonless, 빌드 3파전, 선택 기준표). 파이프라인: research 선행 → 편당 tech-deepdive → review-post → review-writing → quality-gate → post-finalize → publish-post → ship-post. 진행=단계별 개입.",
+      "after": "시리즈 4편 \"컨테이너의 해부\" 발행 완료(저자: ppangto-teacher 빵토 선생님, 퍼소나 첫 적용). EP1 도커 해부(8632f75) / EP2 OCI 3대 스펙(4dbc311) / EP3 CRI(5ab2da5) / EP4 대안 다면 비교·완결(98ff6f1). 브랜치 centurio1987/kan-008 푸시, main 미머지(사용자 리뷰 대기). 편당 파이프라인 전 구간 통과: research→tech-deepdive(외부검토 codex/agy)→react-sim→make-image→review-post→review-writing→quality-gate→post-finalize→publish-post→ship-post. 산출물: 글 4편 + React 시뮬 3종(OverlayLab·DigestChain·CriCallTrace) + viz 14종 + hero 4장, 전부 브라우저 육안·상호작용 검증. 리서치: ~/blog-research raws/008 + 위키 10p + angle 4개(306f255). 검증에서 잡은 실오류: whiteout=캐릭터디바이스0/0(.wh.아님)·pstree 자기모순·copy_up 실습 무효·process.args만 보류(전체 아님)·Hyper-V root MUST NOT·prestart DEPRECATED·hero 제목 잘림. 부수 산출: CLAUDE.md graphify 검증 2단계화(a058700). 남은 것: 그래프 데이터 갱신, main 머지 여부 사용자 결정."
+    },
+    {
+      "seq": 83,
+      "t": "2026-07-27T19:33",
+      "a": "ai",
+      "id": "KAN-008",
+      "op": "move",
+      "from": "doing",
+      "to": "review"
+    },
     {
       "seq": 82,
       "t": "2026-07-27T01:57",
@@ -743,27 +762,6 @@
       "op": "move",
       "from": "backlog",
       "to": "review"
-    },
-    {
-      "seq": 18,
-      "t": "2026-07-23T12:59",
-      "a": "유저",
-      "id": "KAN-009",
-      "op": "edit",
-      "field": "verbatim",
-      "before": "KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다.\n\t- 기존 기술 블로그글을 집필하던 AI는 글의 프로필에 나와 있는 것 처럼 **빵토 연구원** 퍼소나로 정의 한다. 퍼소나의 프로필 이미지와 배너 또한, 기존 기술 글에 포함된 것을 빵토 연구원의 것으로서 사용한다.\n\t- **빵토 교수님**과의 인터뷰 시리즈는 **빵토 교수님**이란 퍼소나로 정의한다. 퍼소나에서 사용하는 프로필 이미지와 배너는, 빵토 교수님과의 인터뷰 시리즈에 포함하는 프로필 이미지와 배너를 사용한다.\n\t- **빵토 선생님** 퍼소나를 새로 정의한다.\n\t\t- 빵토 선생님 [프로필 이미지](ChatGPT Image 2026년 7월 22일 오후 02_10_31.png), [배너 이미지](ChatGPT Image 2026년 7월 22일 오후 02_11_10.png)\n\t\t\t- 두 이미지는 webp로 변환후 사용하고 원본은 삭제해라\n\t\t- **빵토 선생님**의 보이스는 아래와 같다.\n\t```markdown\n\t  ## 문체 규칙 10\n\n\t1. **존댓말 설명체.** \"~예요 / ~합니다 / ~봅시다\"로 말을 건다. 격식 논문체(\"~이다\" 일변도) 금지.\n\n\t- 예: \"먼저 수준을 맞추고 갈게요.\" / \"작은 예로 직접 나열해 봅시다.\"\n\n\n\n\t2. **작은 단계로 쪼갠 전개.** 한 절에서 개념 하나만 전진시킨다. 개념을 제시하면 그 직후에\n\n\t바로 예시가 따른다 — \"정의 → 다음 정의\"로 건너뛰지 않는다.\n\n\t- 예: balance factor 정의 직후, 노드 3개짜리 트리로 즉시 계산해 보인다.\n\n\n\n\t3. **모든 핵심 개념 직후 ascii art.** 트리/배열/계산 과정을 ```text 코드 블록 그림으로\n\n\t즉시 보인다. 산문 3~4문단이 그림 없이 이어지면 신호 위반이다.\n\n\t- 예:\n\n\t\t\t```text\n\n\t\t\ti = 6 = 0110₂\n\n\t\t\t-i = 1010₂\n\n\t\t\ti & -i = 0010₂ = 2\n",
-      "after": "KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다.\n    - 기존 기술 블로그글을 집필하던 AI는 글의 프로필에 나와 있는 것 처럼 **빵토 연구원** 퍼소나로 정의 한다. 퍼소나의 프로필 이미지와 배너 또한, 기존 기술 글에 포함된 것을 빵토 연구원의 것으로서 사용한다.\n    - **빵토 교수님**과의 인터뷰 시리즈는 **빵토 교수님**이란 퍼소나로 정의한다. 퍼소나에서 사용하는 프로필 이미지와 배너는, 빵토 교수님과의 인터뷰 시리즈에 포함하는 프로필 이미지와 배너를 사용한다.\n    - **빵토 선생님** 퍼소나를 새로 정의한다.\n        - 빵토 선생님 [프로필 이미지](ChatGPT Image 2026년 7월 22일 오후 02_10_31.png), [배너 이미지](ChatGPT Image 2026년 7월 22일 오후 02_11_10.png)\n            - 두 이미지는 webp로 변환후 사용하고 원본은 삭제해라\n        - **빵토 선생님**의 보이스는 아래와 같다.\n    ```markdown\n      ## 문체 규칙 10\n\n    1. **존댓말 설명체.** \"~예요 / ~합니다 / ~봅시다\"로 말을 건다. 격식 논문체(\"~이다\" 일변도) 금지.\n\n    - 예: \"먼저 수준을 맞추고 갈게요.\" / \"작은 예로 직접 나열해 봅시다.\"\n\n\n\n    2. **작은 단계로 쪼갠 전개.** 한 절에서 개념 하나만 전진시킨다. 개념을 제시하면 그 직후에\n\n    바로 예시가 따른다 — \"정의 → 다음 정의\"로 건너뛰지 않는다.\n\n    - 예: balance factor 정의 직후, 노드 3개짜리 트리로 즉시 계산해 보인다.\n\n\n\n    3. **모든 핵심 개념 직후 ascii art.** 트리/배열/계산 과정을 ```text 코드 블록 그림으로\n\n    즉시 보인다. 산문 3~4문단이 그림 없이 이어지면 신호 위반이다.\n\n    - 예:\n\n            ```text\n\n            i = 6 = 0110₂\n\n            -i = 1010₂\n\n            i & -i = 0010₂ = 2\n"
-    },
-    {
-      "seq": 17,
-      "t": "2026-07-23T12:59",
-      "a": "유저",
-      "id": "KAN-010",
-      "op": "create",
-      "col": "backlog",
-      "title": "KAN-013 퍼소나를 정의 했고, 기존 포스트들에는 퍼소나를 나타내는 저자명, 저자의 프로필, 저자 및 포스트 유형을 나타내는 배너가 포함되어 있으나, 집필 workflow에는 그것들을 포함하는 과정이 생략되어 있다. 포스트 레이아웃의 재설계를 포함하여, 원인 분석과 해결 방법에 대한 전략을 구상하라.",
-      "memo": "",
-      "verbatim": ""
     }
   ]
 }
