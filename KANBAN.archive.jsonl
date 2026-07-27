@@ -48,3 +48,5 @@
 {"seq": 28, "t": "2026-07-25T20:44", "a": "ai", "id": "KAN-015", "op": "create", "col": "backlog", "title": "deprecated 이미지 스크립트 3종 삭제", "memo": "선행조건(gating): KAN-014 배포 안정화 검증 완료 후에만 착수. 대상: scripts/generate-image.ts·render-image.ts·image-templates.ts(KAN-013에서 호출 경로 제거+deprecated 주석, 롤백 유예). 조건 충족 시 3파일 삭제 + 잔존 참조 grep 0 확인 + bun run build green + 커밋.", "verbatim": ""}
 {"seq": 29, "t": "2026-07-26T13:22", "a": "ai", "id": "KAN-007", "op": "move", "from": "backlog", "to": "doing"}
 {"seq": 30, "t": "2026-07-26T13:23", "a": "ai", "id": "KAN-014", "op": "move", "from": "backlog", "to": "doing"}
+{"seq": 31, "t": "2026-07-26T17:02", "a": "ai", "id": "KAN-014", "op": "move", "from": "doing", "to": "done"}
+{"seq": 32, "t": "2026-07-26T17:02", "a": "ai", "id": "KAN-007", "op": "edit", "field": "memo", "before": "앱 개발자용 개념·구조 설명 + 주요 개념 두루 쓰는 예시 프로젝트 구현기 포함", "after": "1편(개념·구조) 발행·라이브 배포 완료(/posts/tauri-1/). viz 엔진(KAN-013) 첫 실사용 카나리로 KAN-014 검증 동시 달성. 다이어그램 품질 보정(화살표·색·가독성)·OG 폴백·본문 이미지 분리 반영. 2편(예시 프로젝트 구현기)은 KAN-016으로 분리."}

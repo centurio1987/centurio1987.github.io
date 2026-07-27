@@ -51,12 +51,6 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
-- `KAN-028` graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결 — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: 착수(KAN-028 브랜치). 조사 결과 카드 원안(하위 폴더별 extract + merge-graphs)은 이 레포에서 작동하지 않음: cross-post 링크 62개가 전부 같은 시리즈 안(cross-series 0)이라 시리즈 단위 분할은 충돌을 못 잡고, 파일 단위 분할은 충돌은 잡되 62개 엣지(postPairs 신호 전부)를 잃는다. 게다가 merge-graphs는 prefix_graph_for_global로 모든 ID를 tag::id로 바꿔 build-graph-data.ts·커뮤니티 라벨까지 깨뜨린다. 재해석: 참조 문서 노드와 진짜 문서 노드는 같은 글을 가리키는 같은 실체라 병합이 정답이고, 엣지는 dedup이 survivor로 이미 재배선해 손실이 없다(dedup.py 노드 attribute만 첫 항목 승). 진짜 버그는 build-graph-data.ts가 문서 노드 정체성을 source_file로 판단하는 것 — osi_7_layers_3_post(src=osi-1)가 post:osi-7-layers-1로 매핑돼 글↔글 인용 엣지가 전부 자기루프로 버려진다(KAN-029가 쓰는 신호). 확정 방향(유저 승인): ① build-graph-data.ts 문서 노드 정규화 — 'ID 정확일치(slug|slug_post)' + 'ID접두사 && 라벨↔제목 포함' 2단 결정론 규칙으로 가리키는 글에 귀속, 외부 문서(OWASP·Keycloak 등)는 배제 ② 2단계 검증 스크립트화 ③ 그래프 재생성(container-anatomy 4편 통째 누락분 포함) 후 CLAUDE.md·ship-post 절차 갱신.
-  - 원문:
-    ```text
-    2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라.
-    ```
 
 ## 검토
 - `KAN-010` KAN-013 퍼소나를 정의 했고, 기존 포스트들에는 퍼소나를 나타내는 저자명, 저자의 프로필, 저자 및 포스트 유형을 나타내는 배너가 포함되어 있으나, 집필 workflow에는 그것들을 포함하는 과정이 생략되어 있다. 포스트 레이아웃의 재설계를 포함하여, 원인 분석과 해결 방법에 대한 전략을 구상하라. — 생성:유저 · 최종:ai · 갱신:2026-07-23
@@ -70,6 +64,12 @@
   - 원문:
     ```text
     글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.
+    ```
+- `KAN-028` graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: 구현·검증 완료(8072c28 정규화 + ae9e117 재생성, 미머지 — 배포 전 유저 리뷰 대기). 카드 원안(하위 폴더별 extract + merge-graphs)은 폐기했다: cross-post 링크가 전부 같은 시리즈 안(cross-series 0)이라 시리즈 단위 분할은 충돌을 못 잡고, 파일 단위 분할은 그 링크(=postPairs 신호 전부)를 잃으며, merge-graphs는 prefix_graph_for_global로 모든 ID를 tag::id로 바꿔 증류 스크립트·커뮤니티 라벨까지 깨뜨린다. 실제로는 참조 문서 노드와 진짜 문서 노드가 같은 글을 가리키는 같은 실체라 병합이 옳고, dedup이 엣지를 survivor로 재배선하므로 손실이 없다 — 진짜 버그는 build-graph-data.ts가 문서 노드 정체성을 source_file로 판단해 글↔글 인용 엣지를 전부 자기루프로 버린 것이었다. 해결: ① representedPostSlug() 2단 결정론 규칙(①id 정확일치 <slug>/<slug>_post ②id 접두사 + 라벨↔제목 포함, 확신 없으면 source_file 폴백)으로 문서 노드를 가리키는 글에 귀속 — 문서 노드 57개 전수 감사 결과 오귀속 0건(OWASP·Keycloak·mediasoup 등 외부 문서는 전부 폴백). ② scripts/verify-graph.ts 신규: ⓪청크 실패 WARNING ①커버리지 ②껍데기 없음(글당 노드>=2) ③증류 커버리지를 한 번에 판정, 비0=커밋 금지. CLAUDE.md의 손수 python 검사와 ship-post 1.5 절차를 이 스크립트 호출로 교체하고 merge-graphs 금지 근거도 기록. ③ 그래프 전량 재생성(22/22 청크, 청크 실패 0건, ID 충돌 26건은 무해) + cluster-only로 GRAPH_REPORT/graph.html/커뮤니티 32개 동기화. 효과: graphify-out 657노드·1064링크→874·1466, src/data/graph.json 18편→22편(KAN-008 발행 후 재생성 누락으로 통째로 빠져 있던 container-anatomy 1~4편 편입), concepts 600→792, postPairs 25→31, 글↔글 인용 엣지 12→41(쌍 8→25). 검증: verify-graph 4단계 통과 · bun run build 통과 · 증류 멱등성 확인 · Playwright 헤드리스로 /graph 육안 확인(22노드·32엣지·평균차수 2.91·고립 3→1·hover 키워드 8개 부채 정상·콘솔 에러 0).
+  - 원문:
+    ```text
+    2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라.
     ```
 
 ## 완료
