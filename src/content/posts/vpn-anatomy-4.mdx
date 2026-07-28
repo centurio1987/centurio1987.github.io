@@ -315,7 +315,15 @@ NAT-T 체크박스를 켜 보십시오. 유효 내부 MTU가 8바이트 내려�
 
 **목표:** 같은 터널의 같은 데이터가 NAT 유무에 따라 `ip proto 50`과 `udp port 4500`으로 갈리는 것을 확인하고, ESP 헤더의 SPI·시퀀스가 실제로 평문으로 읽히는지 봅니다.
 
-**준비물:** 리눅스 두 노드와 그 사이 NAT 라우터(컨테이너 3개면 충분합니다). strongSwan, `tcpdump`, `tshark`. 게이트웨이 노드에는 `NET_ADMIN` 권한과 IP 포워딩이 필요합니다.
+**준비물:** 리눅스 두 노드와 그 사이 NAT 라우터. strongSwan, `tcpdump`, `tshark`. 라우터 노드에는 IP 포워딩(`net.ipv4.ip_forward=1`)과 MASQUERADE 규칙이 필요합니다.
+
+가장 가벼운 방법은 **리눅스 한 대 안에서 네트워크 네임스페이스 세 개**를 쓰는 것입니다. `ip netns add`와 veth 쌍이면 끝이고, 컨테이너 런타임을 설치할 필요가 없습니다. 정리도 `ip netns del` 한 번이면 그 안의 인터페이스·SA·방화벽 규칙이 함께 사라집니다. macOS나 윈도우라면 가벼운 리눅스 VM 하나를 띄우고 그 안에서 하십시오.
+
+> **캡처하기 전에 offload부터 끄십시오.** veth는 GRO/GSO/TSO가 기본으로 켜져 있어서, 그대로 두면 `tcpdump`에 **실제 회선에 흐른 것보다 큰, 합쳐진 패킷**과 **아직 계산되지 않은 체크섬**이 찍힙니다. 아래 크기·시퀀스 관찰이 통째로 어긋납니다.
+>
+> ```bash
+> ethtool -K <인터페이스> gro off gso off tso off tx off rx off
+> ```
 
 1. IKEv2 + ESP tunnel 모드로 터널을 세웁니다(`mode = tunnel`, `esp_proposals = aes256gcm16-ecp384`).
    ```bash
