@@ -111,11 +111,15 @@ flowchart TD
 
 | 입력물 | 트리거 | 산출물 |
 |---|---|---|
-| `src/content/posts/` | `/graphify` | `graphify-out/graph.json` — LLM 기반 지식 그래프 (커밋) |
-| `graphify-out/graph.json` | `bun scripts/build-graph-data.ts` | `src/data/graph.json` — 빌드가 소비하는 **증류 그래프** (커밋) |
+| `src/content/posts/` | `bun run graph:refresh` (**main 워크트리 전용**) | `graphify-out/graph.json` — LLM 기반 지식 그래프 (커밋) + `graphify-out/cache/semantic/` — 증분 추출 상태 (커밋) |
+| `graphify-out/graph.json` | 같은 스크립트가 `bun scripts/build-graph-data.ts` 호출 | `src/data/graph.json` — 빌드가 소비하는 **증류 그래프** (커밋) |
 | `src/data/graph.json` | `astro build` | 각 글의 **연관 글 섹션** + `/graph` **글 지도 탐색기** (LLM·키 불필요) |
 
-> **CI 계약**: `astro build` 는 절대 graphify를 실행하지 않고 커밋된 `src/data/graph.json` 만 읽는다. 파일이 없어도 빌드는 통과(frontmatter 기반 연관도로 degrade). graphify 재생성은 발행 시점 또는 위 명령쌍으로 수동 수행.
+> **CI 계약**: `astro build` 는 절대 graphify를 실행하지 않고 커밋된 `src/data/graph.json` 만 읽는다. 파일이 없어도 빌드는 통과(frontmatter 기반 연관도로 degrade).
+>
+> **실행 시점**: 발행(`ship-post`)은 그래프를 건드리지 않는다. main 머지 후 main 워크트리에서 `bun run graph:refresh` 를 한 번 돌린다 — 병렬 워크트리가 각자 갱신하면 1MB JSON 이 충돌하고 어차피 형제 편 머지 즉시 stale 이 되기 때문이다. 스크립트가 브랜치·워크트리를 가드한다.
+>
+> **`graphify-out/cache/semantic/` 은 절대 gitignore 하지 마라.** 증분 추출의 상태가 그것뿐이라, 없으면 매 갱신이 전량 재추출(24편 기준 1.26M in / 280k out / 40~60분)로 되돌아간다. 자세한 근거는 `CLAUDE.md` 의 Graph data 절과 `scripts/seed-graph-cache.py` 헤더.
 
 ### 7. 폭신 대담 에피소드 (인터뷰 시리즈)
 

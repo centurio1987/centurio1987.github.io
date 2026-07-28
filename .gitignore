@@ -19,9 +19,30 @@ pnpm-lock.yaml
 # stray skill backups (cannot be deleted in some sandboxes)
 *.v1bak
 
-# graphify 실행 부산물 — graph.json/labels/report 는 커밋하되 캐시와 날짜 백업은 제외
-graphify-out/cache/
+# graphify 실행 부산물
+#   graph.json · .graphify_labels.json · GRAPH_REPORT.md · cache/semantic/ 는 커밋한다.
+#   cache/semantic/ 이 증분 추출의 상태 **전부**다 — 여기에 넣으면 매 발행이
+#   전량 재추출로 되돌아간다(24편 기준 1.26M in / 280k out / 40~60분, KAN-046).
+#   절대 넓히지 마라.
+#   (gitignore 는 줄 끝 주석을 지원하지 않는다 — 주석은 반드시 별도 줄로)
+# manifest.json 은 두지 않는다. graphify 가 문서 코퍼스에서 항상 `{}` 로 쓰는데
+# (경로 비교 버그), 빈 채로 있기만 해도 incremental_mode 가 켜져 삭제 감지가
+# 죽고 지운 글의 노드가 그래프에 영원히 남는다. 근거는 scripts/seed-graph-cache.py.
+graphify-out/manifest.json
+# 버전 네임스페이스 + 코드 전용, LLM 비용 0 — 재생성 무료
+graphify-out/cache/ast/
+# size+mtime_ns 로컬 fastpath, 체크아웃마다 달라 churn 만 만듦
+graphify-out/cache/stat-index.json
+# 776KB 뷰어, 빌드 미사용, 매 실행 전면 재생성
+graphify-out/graph.html
+# refresh-graph.sh 추출 로그
+graphify-out/logs/
+# backup_if_protected 날짜 백업
 graphify-out/20*/
+
+# python bytecode (scripts/seed-graph-cache.py)
+__pycache__/
+*.pyc
 
 # code coverage
 coverage

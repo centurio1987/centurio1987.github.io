@@ -2,14 +2,23 @@
 /**
  * graphify 추출 결과 검증 — 커밋해도 되는 graph.json 인지 판정한다.
  *
- * graphify 는 청크가 실패해도 **성공처럼 종료**한다(KAN-008). 그래서 세 겹으로 본다:
+ * graphify 는 청크가 실패해도 **성공처럼 종료**한다(KAN-008). 그래서 여러 겹으로 본다:
  *   ⓪ 추출 로그의 `n/m semantic chunk(s) failed` WARNING — 뜨면 그 자체로 폐기.
  *   ① 커버리지: 모든 글이 자기 source_file 로 그래프에 등장할 것.
  *   ② 알맹이:   글마다 노드가 2개 이상일 것(문서 노드만 남고 개념 0개인 **껍데기** 배제).
  *   ③ 증류:     src/data/graph.json 의 posts 에 모든 글이 있을 것(있을 때만).
+ *   ④ 증분:     글마다 시맨틱 캐시 항목이 있을 것 + 이번 실행의 캐시 통계(KAN-046).
  *
  * ②가 핵심이다 — 청크가 실패하면 글이 그래프에서 사라지는 게 아니라 껍데기가 되어
  * 커버리지 검사를 거짓 통과한 뒤 연관 글·/graph 에서 투명인간이 된다.
+ *
+ * ④는 **다음 실행**을 지킨다. `graphify-out/cache/semantic/` 이 증분 추출의 상태
+ * 전부다 — 비면 매 발행이 전량 재추출로 되돌아간다(24편 기준 1.26M in / 280k out /
+ * 40~60분). 이건 에러가 아니라 "그냥 느림"으로 나타나 몇 달을 조용히 굴러간다.
+ * 실제로 이 레포는 캐시가 gitignore 된 채 첫 커밋부터 계속 그렇게 돌았다.
+ *
+ * 캐시의 **내용**까지 보는 건 seed-graph-cache.py 다(graphify 자신의 해시 함수로
+ * 조회해 전 글 적중을 확인). 여기서는 존재·개수만 겹으로 본다.
  *
  * 노드 ID 충돌(`the second node will be dropped`)은 **실패로 보지 않는다**(KAN-028).
  * 시리즈 글이 서로를 인용하면 참조 문서 노드와 진짜 문서 노드가 같은 id 를 갖는데,
@@ -17,7 +26,7 @@
  * build-graph-data.ts 가 문서 노드를 **가리키는 글**로 정규화하므로 무해하다.
  * 다만 몇 건이나 났는지는 정보로 보고한다.
  *
- * 사용: bun scripts/verify-graph.ts [--graph <path>] [--log <extract.log>]
+ * 사용: bun scripts/verify-graph.ts [--graph <path>] [--log <extract.log>] [--cache <dir>]
  */
 import { existsSync } from "node:fs";
 import { readFile, readdir } from "node:fs/promises";
@@ -32,6 +41,7 @@ const GRAPH = argOf("--graph") ?? "graphify-out/graph.json";
 const LOG = argOf("--log");
 const POSTS_DIR = "src/content/posts";
 const DISTILLED = "src/data/graph.json";
+const CACHE_DIR = argOf("--cache") ?? "graphify-out/cache/semantic";
 const MIN_NODES_PER_POST = 2; // 문서 노드 1개뿐 = 개념·관계가 0개인 껍데기
 
 if (!existsSync(GRAPH)) {
@@ -90,6 +100,69 @@ if (existsSync(DISTILLED)) {
   if (gone.length) failures.push(`③ ${DISTILLED} 에 없는 글 ${gone.length}편: ${gone.join(", ")}`);
 } else {
   notes.push(`${DISTILLED} 가 아직 없다 — bun scripts/build-graph-data.ts 를 돌려라(③ 생략).`);
+}
+
+// ④ 증분 건전성 — **다음 실행**이 전량 재추출로 되돌아가지 않는지 본다.
+//
+// ④-a 시맨틱 캐시 존재 (하드 실패)
+//   캐시 파일명은 콘텐츠 해시라 여기서 글↔항목을 짝지을 수는 없다(해시 재구현은
+//   graphify 와 어긋날 위험이 크다). 글별 적중 확인은 graphify 자신의 해시
+//   함수를 쓰는 seed-graph-cache.py 가 하고, 여기서는 "있기는 한가 / 글 수만큼
+//   되는가"를 겹으로 본다.
+if (!existsSync(CACHE_DIR)) {
+  failures.push(
+    `④ ${CACHE_DIR} 가 없다 — 증분 추출의 상태가 통째로 없다.\n` +
+      `     이대로 커밋하면 다음 발행이 전량 재추출된다(24편 기준 1.26M in / 280k out / 40~60분).\n` +
+      `     scripts/seed-graph-cache.py 가 돌았는지 확인해라.`,
+  );
+} else {
+  const entries = (await readdir(CACHE_DIR)).filter((f) => f.endsWith(".json"));
+  if (entries.length === 0) {
+    failures.push(`④ ${CACHE_DIR} 가 비었다 — 다음 발행이 전량 재추출된다.`);
+  } else if (entries.length < posts.length) {
+    failures.push(
+      `④ 캐시 항목이 글 수보다 적다: ${entries.length}건 < 글 ${posts.length}편.\n` +
+        `     캐시에 없는 글은 다음 실행에 다시 LLM 을 탄다.`,
+    );
+  } else {
+    notes.push(
+      `시맨틱 캐시 ${entries.length}건 (글 ${posts.length}편) — 다음 실행은 바뀐 글만 LLM 을 탄다.`,
+    );
+  }
+}
+
+// ④-b 이번 실행의 캐시 통계 · ④-c 토큰 (로그가 있을 때만, 정보/경고)
+//   기준은 git status 가 아니라 graphify 가 직접 센 값이다 — main 배치 시점엔
+//   이미 머지가 끝나 working tree 가 clean 이라 git 기준은 아무 의미가 없다.
+if (LOG && existsSync(LOG)) {
+  const log = await readFile(LOG, "utf-8");
+
+  // full 모드: "semantic cache: N hit / M miss" · 마무리 줄: "N cached, M re-extracted"
+  const cacheStat = log.match(/semantic cache:\s*(\d+)\s*(?:hit|cached)\s*[/,]\s*(\d+)\s*(?:miss|re-extracted)/);
+  if (cacheStat) {
+    const [, hit, miss] = cacheStat;
+    notes.push(`캐시: ${hit}편 적중 · ${miss}편 재추출.`);
+    if (Number(hit) === 0 && posts.length > 1) {
+      notes.push("⚠ 적중 0편 — 증분이 안 먹고 전량 재추출됐다(콜드 부트스트랩이 아니라면 캐시 상태를 확인해라).");
+    }
+  } else if (/semantic extraction on \d+ files/.test(log)) {
+    notes.push("⚠ 로그에 캐시 적중 줄이 없다 — 전량 추출로 돌았다(콜드 부트스트랩이면 정상).");
+  }
+
+  // ④-c 토큰. 라벨 단계가 조용히 병목이 되는지 매 실행 눈에 보이게 한다.
+  const tokenLines = [...log.matchAll(/tokens:\s*([\d,]+)\s*in\s*\/\s*([\d,]+)\s*out/g)];
+  if (tokenLines.length) {
+    const total = tokenLines.reduce(
+      (acc, m) => ({
+        in: acc.in + Number(m[1].replace(/,/g, "")),
+        out: acc.out + Number(m[2].replace(/,/g, "")),
+      }),
+      { in: 0, out: 0 },
+    );
+    notes.push(`토큰 합계: ${total.in.toLocaleString()} in / ${total.out.toLocaleString()} out (${tokenLines.length}개 구간).`);
+  } else {
+    notes.push("토큰 0 — LLM 을 한 번도 안 탔다(전 글 캐시 적중).");
+  }
 }
 
 console.log(`글 ${posts.length}편 / 그래프 노드 ${nodes.length}개 (${GRAPH})`);
