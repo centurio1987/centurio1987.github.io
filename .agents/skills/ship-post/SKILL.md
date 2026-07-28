@@ -42,6 +42,11 @@ git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스�
 
 ### 1.5 그래프 데이터 갱신 (non-blocking)
 연관 글/글 지도 기능의 데이터(`src/data/graph.json`)를 새 글 반영본으로 갱신한다.
+
+> **시리즈 집필이면 편당 실행하지 말고 시리즈 전량 머지 후 1회로 미룬다**(KAN-044에서 확정).
+> 근거 셋: ① graphify가 `incremental scan`을 표방하지만 실측상 캐시가 적중하지 않아 **매 실행이 전량 재추출**이다(23편 = 24청크, 40~60분) — N편이면 같은 작업을 N배로 태운다. ② `graphify-out/graph.json`(약 1MB)과 `src/data/graph.json`(약 0.5MB)은 커밋 대상이라, 병렬 워크트리가 각자 재생성하면 머지 시 **대용량 JSON 다중 충돌**이 난다. ③ 각 워크트리에는 자기 편만 있어 생성한 그래프가 형제 편 머지 즉시 stale이 된다 — 어차피 다시 돌려야 한다.
+> 미룬 동안 연관 글·`/graph`는 새 글이 빠진 stale 데이터로 degrade될 뿐 동작한다(frontmatter 폴백). 단독 글이거나 시리즈 마지막 편이면 아래를 그대로 수행한다.
+
 - 아래를 실행 → `bun scripts/build-graph-data.ts` → 그래프 데이터가 바뀌었으면 **`bun run build` 한 번 더** 통과 확인.
   ```bash
   graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out .
