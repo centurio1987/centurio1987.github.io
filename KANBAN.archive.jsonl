@@ -103,3 +103,4 @@
 {"seq": 99, "t": "2026-07-28T00:39", "a": "유저", "id": "KAN-030", "op": "create", "col": "backlog", "title": "블로그 글을 로딩 할 때, 항목이 많아 지는 경우를 대비하여, pagination이 적용되어 있는지 확인하고, 안되어 있다면, 적용하기 위한 계획을 세우고 수행해라.", "memo": "", "verbatim": ""}
 {"seq": 100, "t": "2026-07-28T00:39", "a": "ai", "id": "KAN-030", "op": "edit", "field": "title", "before": "블로그 글을 로딩 할 때, 항목이 많아 지는 경우를 대비하여, pagination이 적용되어 있는지 확인하고, 안되어 있다면, 적용하기 위한 계획을 세우고 수행해라.", "after": "글 목록 pagination 적용 여부 점검 후 미적용 시 도입 계획·수행"}
 {"seq": 101, "t": "2026-07-28T00:39", "a": "ai", "id": "KAN-030", "op": "edit", "field": "memo", "before": "", "after": "글 항목이 많아질 때를 대비. 현행 글 목록(posts/index·index·categories/[category])에 pagination이 적용돼 있는지 먼저 확인하고, 미적용이면 도입 계획을 세워 수행한다."}
+{"seq": 102, "t": "2026-07-28T00:39", "a": "ai", "id": "KAN-030", "op": "edit", "field": "verbatim", "before": "", "after": "블로그 글을 로딩 할 때, 항목이 많아 지는 경우를 대비하여, pagination이 적용되어 있는지 확인하고, 안되어 있다면, 적용하기 위한 계획을 세우고 수행해라."}
