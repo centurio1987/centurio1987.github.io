@@ -1,6 +1,6 @@
 {
   "next_id": 31,
-  "next_seq": 105,
+  "next_seq": 107,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -287,15 +287,15 @@
       "verbatim_hash": "d6e598e9d9c50a3f9ce5b24b1a8a002be9bc944a"
     },
     "KAN-027": {
-      "col": "backlog",
+      "col": "review",
       "title": "Footer 임시 마스코트 → 등록 저자 전신샷(나란히) + 홈 마스코트 swing 모션",
-      "memo": "홈/footer 임시 마스코트(svg.mascot) 교체 — 등록 저자들의 전신샷을 나란히 배치, 홈 히어로 마스코트와 동일한 swing 모션 적용",
+      "memo": "완료. 푸터 임시 마스코트(svg.mascot) → 등록 저자 4인 전신 컷아웃 라인업(src/components/AuthorLineup.astro). 모션은 홈 히어로와 동일한 스윙 공유 — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 — 채운 저자만 라인업에 서므로 저자 추가/삭제에 컴포넌트 수정 불필요(KAN-026의 avatarSm과는 쓰임이 겹치지 않는 별개 자산). 자산: scripts/extract-author-cutout.ts가 원본 테두리를 보고 3경로 자동 선택 — (A) 데코 컷=종이색 flood fill+최대 연결 컴포넌트, (B) 이미 투명=알파 임계값 8 바운딩 박스(발밑 그림자 배제), (C) 종이색 아닌 단색 배경=테두리색 ±4. 두 함정: 데코 원본도 테두리가 매끈해 (C)로 오판되던 것(→ 테두리색이 종이색이면 (A)로), 흰 실험복이 종이와 밝기가 겹쳐 배경으로 먹히던 것(→ isPaper에 따뜻함 r−b≥10 하한). 크기는 절반: 표시 높이 56px(모바일 42px), 자산 220px(파일당 9~13KB). 모바일 축소가 죽어 있던 버그도 수정(인라인 커스텀 프로퍼티가 미디어 쿼리를 이김 → --figure-base로 받고 --figure-h는 CSS에서 파생). 검증: 빌드 통과 · 데스크톱 187px/모바일 137px 넘침 없음 · reduced-motion에서 animation:none · 4x 확대 육안 확인. main 머지 완료(충돌은 authors.ts 필드 공존으로 해소).",
       "verbatim": "대상: footer 마스코트 (footer.site-footer > div.footer-inner > svg.mascot, aria-label 빵관 토니 마스코트 / 홈 http://localhost:4321/).\n\n현재 footer의 이미지는 블로그 설계 초기 때 만든 임시 이미지다. 이 이미지를 현재 등록된 저자들의 전신샷이 나란히 있는 형태로 전환 하라. 이 저자들 이미지 또한, 메인 화면 마스코트와 동일한 모션(swing)을 취해야 한다.",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-27",
+      "최종": "ai",
+      "갱신": "2026-07-28",
       "title_hash": "1bdb962eef7e00cfa0726a87d74c52d1266eab08",
-      "memo_hash": "f16d5b98eb3feeffbce900174cd34b6da6f8a8df",
+      "memo_hash": "4e1441f70bf45f715d53d991fd558776c1421525",
       "verbatim_hash": "e24af35bb31a54ab4e6aa09720c2999393b49497"
     },
     "KAN-028": {
@@ -337,7 +337,6 @@
   },
   "order": [
     "KAN-024",
-    "KAN-027",
     "KAN-030",
     "KAN-001",
     "KAN-002",
@@ -350,6 +349,7 @@
     "KAN-029",
     "KAN-025",
     "KAN-026",
+    "KAN-028",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -364,9 +364,28 @@
     "KAN-023",
     "KAN-013",
     "KAN-011",
-    "KAN-028"
+    "KAN-027"
   ],
   "recent": [
+    {
+      "seq": 106,
+      "t": "2026-07-28T09:58",
+      "a": "ai",
+      "id": "KAN-027",
+      "op": "edit",
+      "field": "memo",
+      "before": "홈/footer 임시 마스코트(svg.mascot) 교체 — 등록 저자들의 전신샷을 나란히 배치, 홈 히어로 마스코트와 동일한 swing 모션 적용",
+      "after": "완료. 푸터 임시 마스코트(svg.mascot) → 등록 저자 4인 전신 컷아웃 라인업(src/components/AuthorLineup.astro). 모션은 홈 히어로와 동일한 스윙 공유 — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 — 채운 저자만 라인업에 서므로 저자 추가/삭제에 컴포넌트 수정 불필요(KAN-026의 avatarSm과는 쓰임이 겹치지 않는 별개 자산). 자산: scripts/extract-author-cutout.ts가 원본 테두리를 보고 3경로 자동 선택 — (A) 데코 컷=종이색 flood fill+최대 연결 컴포넌트, (B) 이미 투명=알파 임계값 8 바운딩 박스(발밑 그림자 배제), (C) 종이색 아닌 단색 배경=테두리색 ±4. 두 함정: 데코 원본도 테두리가 매끈해 (C)로 오판되던 것(→ 테두리색이 종이색이면 (A)로), 흰 실험복이 종이와 밝기가 겹쳐 배경으로 먹히던 것(→ isPaper에 따뜻함 r−b≥10 하한). 크기는 절반: 표시 높이 56px(모바일 42px), 자산 220px(파일당 9~13KB). 모바일 축소가 죽어 있던 버그도 수정(인라인 커스텀 프로퍼티가 미디어 쿼리를 이김 → --figure-base로 받고 --figure-h는 CSS에서 파생). 검증: 빌드 통과 · 데스크톱 187px/모바일 137px 넘침 없음 · reduced-motion에서 animation:none · 4x 확대 육안 확인. main 머지 완료(충돌은 authors.ts 필드 공존으로 해소)."
+    },
+    {
+      "seq": 105,
+      "t": "2026-07-28T09:58",
+      "a": "ai",
+      "id": "KAN-027",
+      "op": "move",
+      "from": "backlog",
+      "to": "review"
+    },
     {
       "seq": 104,
       "t": "2026-07-28T01:19",
@@ -837,23 +856,6 @@
       "field": "memo",
       "before": "KAN-007 후속. 주요 개념(invoke/command·capabilities·sidecar 등)을 두루 쓰는 예시 프로젝트 구현 과정. author: ppangto, series 'Tauri 해부' order:2. viz 엔진으로 시각화.",
       "after": "발행 완료 — /posts/tauri-2/ (src/content/posts/tauri-2.mdx, series 'Tauri 해부' order:2, author ppangto). 예시 앱 file-scout(폴더 선택→훑기→진행률 스트리밍→사이드카 체크섬)를 0~~8단계로 구현하며 command/invoke·State·Event/Channel·capabilities+scope·플러그인·사이드카·번들을 전부 관통. 1편 개념은 링크 참조로 위임. 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 🔴0·🟡3, review-writing PASS(MUST 9/9), quality-gate PASS(MUST 15/15) — shell:allow-spawn 권한 누락·Windows canonicalize UNC 검증 결함 등 실제 결함 교정. 리서치: blog-research raws/007 + angle tauri-example-project-part2 + topic tauri-implementation(push 9857238). 커밋 40b4f5b. [디자인 피드백 후속 2887f81] 유저 지적 4건(hero 글씨 작음·Comparison 글씨 작음·화살표 노드 겹침·화살표 이상하게 꺾임)은 모두 1편에서 고쳤던 것의 재발이었고, 원인은 1편 수정이 컴포넌트에만 국소 적용되고 가이드/엔진 기본값에 반영되지 않은 것. 조치: viewBox 폭 620 이하 통일·Flowchart 엣지 축정렬+routing:straight·엣지 label 미렌더라 정보를 노드 label로·hero PosterEditorial 600x338 제목/부제만. 재발 방지로 layout.ts 기본 viewBox 조정 + IMAGE_GUIDE R1~~R5 신설 + make-image SKILL 검증 배선(.claude/.agents 미러). Playwright 렌더 캡처로 육안 검증. build green(31 pages). 후속 graphify 그래프 갱신은 KAN-023에서 완료."
-    },
-    {
-      "seq": 56,
-      "t": "2026-07-26T21:08",
-      "a": "ai",
-      "id": "KAN-016",
-      "op": "move",
-      "from": "backlog",
-      "to": "done"
-    },
-    {
-      "seq": 55,
-      "t": "2026-07-26T19:34",
-      "a": "ai",
-      "id": "KAN-022",
-      "op": "edit",
-      "field": "memo"
     }
   ]
 }
