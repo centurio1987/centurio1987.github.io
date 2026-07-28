@@ -1,6 +1,6 @@
 {
   "next_id": 42,
-  "next_seq": 137,
+  "next_seq": 139,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -395,15 +395,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-036": {
-      "col": "doing",
+      "col": "review",
       "title": "VPN 해부 EP2 집필 — 암호 기반체력",
-      "memo": "착수(진행 중). vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033 해제됨. || 착수 시 확정: 저자 퍼소나=ppangto(빵토 연구원) — KAN-031 총괄 카드 값과 angle 프론트매터 값이 일치하고, 선수 시리즈인 OSI 7계층 해부·인증인가 해부·WebRTC 해부·Tauri 해부가 전부 ppangto라 시리즈 연속성상 맞다. angle vpn-anatomy-2.md의 '(빵토 선생님)' 괄호 라벨과 ppangto-teacher 태그는 오기로 판정(ppangto-teacher는 컨테이너의 해부 4편에만 적용된 별개 퍼소나). 유저 확인 완료. || 리서치 근거: ~/blog-research/wiki/angles/vpn-anatomy-2.md(mature) + raws/009 §1 + topic rfc5116-aead·rfc8439-chacha20-poly1305·rfc7748-x25519. || 제약: EP1(KAN-035) 미집필이므로 본문에 /posts/vpn-anatomy-1 하드링크 금지(죽은 링크) — 시리즈 내비가 EP1 발행 시 자동 연결한다.",
+      "memo": "발행 완료(검토 대기) — /posts/vpn-anatomy-2 · src/content/posts/vpn-anatomy-2.mdx · 커밋 93a161e, origin/centurio1987/kan-036 푸시(0/0 동기화). 제목 '암호가 하는 세 가지 약속: AEAD와 키교환, 그리고 카운터 하나', series 'VPN의 해부' order:2, author ppangto, category skills, 공백제외 13,366자. || 저자 퍼소나 ppangto 확정(유저 확인): KAN-031 총괄 카드·angle 프론트매터 값 일치, 선수 시리즈 OSI 7계층 해부·인증인가 해부·WebRTC·Tauri가 전부 ppangto. angle vpn-anatomy-2.md의 '(빵토 선생님)' 괄호 라벨·ppangto-teacher 태그는 오기(ppangto-teacher는 컨테이너의 해부 4편 전용). || 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 4축 빨강6·노랑10 중 13건 반영, review-writing PASS(MUST 8/8), quality-gate PASS 2라운드(MUST 15/15). 게이트가 잡은 실오류 — (1) '미래는 rekey가 지킨다'가 논리적 오류: 단방향 파생은 앞→뒤 계산을 못 막으므로 유출 상태 탈출엔 새 키교환이 필요, 전면 수정. (2) KDF 단계 통째 누락으로 X25519 공유 비밀이 곧 AEAD 키인 것처럼 읽힘 → '공유 비밀은 아직 키가 아니다' 절 신설(RFC 8446 7.1). (3) NIST 인과 단정(ChaCha20이 GCM 권장값에 맞춰 들어왔다)은 코퍼스 근거 없음 → RFC 5116 2.1 공통 인터페이스 규약 기반 재서술. (4) Poly1305 인증 대상을 AAD+암호문으로 단순화했으나 실제는 패딩+길이 2개 포함(RFC 8439 2.8). (5) '카운터는 겹치지 않는다'에 상태 보존 전제(재시작·다중 송신자·wraparound) 단서 추가. (6) 카운터 3종(블록 카운터/nonce/재전송 번호) 혼용 위험 → 구분 표 신설. (7) AES-GCM·NIST 약어 미풀이. || 반려한 지적: Gemini의 'RFC 7748 6.1 all-zero 검사는 MUST' 주장은 1차 소스 확인 결과 원문이 MAY라 본문 유지. || 산출물: hero.webp(1200x676) + viz 3종(VizProcessSteps2·VizComparison3·VizFlowchart4, R1~R5 렌더 캡처 검증) + React 시뮬 NonceReuseLab(nonce 재사용 시 C1^C2=P1^P2 성립·붕괴와 P2 평문 복원 실측, hydration 경고 0) + ascii 도해 6개. || 검증: check-post-markers 통과, bun run build 36페이지 통과(메인 대화가 독립 재확인), 미발행 EP(vpn-anatomy-1·3~7) 하드링크 0건. || graphify 재생성은 유저 지시로 skip — 시리즈 7편 완료 후 일괄 재추출 예정이라 graphify-out/·src/data/graph.json 미변경·미커밋. 그동안 이 글의 연관 글은 frontmatter(series/tags/category) 기준으로 degrade(의도된 동작). || 미배포: 커밋이 centurio1987/kan-036 브랜치에 있고 main 미병합 — GitHub Pages 배포는 main 병합 시점. || 인계: EP1(KAN-035)은 series 문자열을 'VPN의 해부'로 정확히 맞출 것(발행 시 PostNav·SeriesEpisodes가 EP2와 자동 연결, 본문 '지난 편' 언급은 링크 없는 텍스트라 추가 작업 불필요). EP3으로 이월=PSK/PKI/EAP 인증 방식 세부(본문에 이월 명시, angle open question이라 코퍼스 2절로 충분한지 확인 필요). EP4·EP5로 이월=anti-replay 윈도우 실제 크기·알고리즘(RFC 4303 vs 6479), 카운터를 nonce로 겸하는 구체적 방식.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "5277baabe1482d207e205bb88f91c2cf7b0e223f",
-      "memo_hash": "d799a58f70259370ab9a57ab19851de135b4d984",
+      "memo_hash": "266c52e144bf0ebf04ae4fb4efe1e26192957216",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-037": {
@@ -510,6 +510,25 @@
     "KAN-036"
   ],
   "recent": [
+    {
+      "seq": 138,
+      "t": "2026-07-28T17:13",
+      "a": "ai",
+      "id": "KAN-036",
+      "op": "edit",
+      "field": "memo",
+      "before": "착수(진행 중). vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033 해제됨. || 착수 시 확정: 저자 퍼소나=ppangto(빵토 연구원) — KAN-031 총괄 카드 값과 angle 프론트매터 값이 일치하고, 선수 시리즈인 OSI 7계층 해부·인증인가 해부·WebRTC 해부·Tauri 해부가 전부 ppangto라 시리즈 연속성상 맞다. angle vpn-anatomy-2.md의 '(빵토 선생님)' 괄호 라벨과 ppangto-teacher 태그는 오기로 판정(ppangto-teacher는 컨테이너의 해부 4편에만 적용된 별개 퍼소나). 유저 확인 완료. || 리서치 근거: ~/blog-research/wiki/angles/vpn-anatomy-2.md(mature) + raws/009 §1 + topic rfc5116-aead·rfc8439-chacha20-poly1305·rfc7748-x25519. || 제약: EP1(KAN-035) 미집필이므로 본문에 /posts/vpn-anatomy-1 하드링크 금지(죽은 링크) — 시리즈 내비가 EP1 발행 시 자동 연결한다.",
+      "after": "발행 완료(검토 대기) — /posts/vpn-anatomy-2 · src/content/posts/vpn-anatomy-2.mdx · 커밋 93a161e, origin/centurio1987/kan-036 푸시(0/0 동기화). 제목 '암호가 하는 세 가지 약속: AEAD와 키교환, 그리고 카운터 하나', series 'VPN의 해부' order:2, author ppangto, category skills, 공백제외 13,366자. || 저자 퍼소나 ppangto 확정(유저 확인): KAN-031 총괄 카드·angle 프론트매터 값 일치, 선수 시리즈 OSI 7계층 해부·인증인가 해부·WebRTC·Tauri가 전부 ppangto. angle vpn-anatomy-2.md의 '(빵토 선생님)' 괄호 라벨·ppangto-teacher 태그는 오기(ppangto-teacher는 컨테이너의 해부 4편 전용). || 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 4축 빨강6·노랑10 중 13건 반영, review-writing PASS(MUST 8/8), quality-gate PASS 2라운드(MUST 15/15). 게이트가 잡은 실오류 — (1) '미래는 rekey가 지킨다'가 논리적 오류: 단방향 파생은 앞→뒤 계산을 못 막으므로 유출 상태 탈출엔 새 키교환이 필요, 전면 수정. (2) KDF 단계 통째 누락으로 X25519 공유 비밀이 곧 AEAD 키인 것처럼 읽힘 → '공유 비밀은 아직 키가 아니다' 절 신설(RFC 8446 7.1). (3) NIST 인과 단정(ChaCha20이 GCM 권장값에 맞춰 들어왔다)은 코퍼스 근거 없음 → RFC 5116 2.1 공통 인터페이스 규약 기반 재서술. (4) Poly1305 인증 대상을 AAD+암호문으로 단순화했으나 실제는 패딩+길이 2개 포함(RFC 8439 2.8). (5) '카운터는 겹치지 않는다'에 상태 보존 전제(재시작·다중 송신자·wraparound) 단서 추가. (6) 카운터 3종(블록 카운터/nonce/재전송 번호) 혼용 위험 → 구분 표 신설. (7) AES-GCM·NIST 약어 미풀이. || 반려한 지적: Gemini의 'RFC 7748 6.1 all-zero 검사는 MUST' 주장은 1차 소스 확인 결과 원문이 MAY라 본문 유지. || 산출물: hero.webp(1200x676) + viz 3종(VizProcessSteps2·VizComparison3·VizFlowchart4, R1~R5 렌더 캡처 검증) + React 시뮬 NonceReuseLab(nonce 재사용 시 C1^C2=P1^P2 성립·붕괴와 P2 평문 복원 실측, hydration 경고 0) + ascii 도해 6개. || 검증: check-post-markers 통과, bun run build 36페이지 통과(메인 대화가 독립 재확인), 미발행 EP(vpn-anatomy-1·3~7) 하드링크 0건. || graphify 재생성은 유저 지시로 skip — 시리즈 7편 완료 후 일괄 재추출 예정이라 graphify-out/·src/data/graph.json 미변경·미커밋. 그동안 이 글의 연관 글은 frontmatter(series/tags/category) 기준으로 degrade(의도된 동작). || 미배포: 커밋이 centurio1987/kan-036 브랜치에 있고 main 미병합 — GitHub Pages 배포는 main 병합 시점. || 인계: EP1(KAN-035)은 series 문자열을 'VPN의 해부'로 정확히 맞출 것(발행 시 PostNav·SeriesEpisodes가 EP2와 자동 연결, 본문 '지난 편' 언급은 링크 없는 텍스트라 추가 작업 불필요). EP3으로 이월=PSK/PKI/EAP 인증 방식 세부(본문에 이월 명시, angle open question이라 코퍼스 2절로 충분한지 확인 필요). EP4·EP5로 이월=anti-replay 윈도우 실제 크기·알고리즘(RFC 4303 vs 6479), 카운터를 nonce로 겸하는 구체적 방식."
+    },
+    {
+      "seq": 137,
+      "t": "2026-07-28T17:12",
+      "a": "ai",
+      "id": "KAN-036",
+      "op": "move",
+      "from": "doing",
+      "to": "review"
+    },
     {
       "seq": 136,
       "t": "2026-07-28T15:54",
@@ -983,28 +1002,6 @@
       "field": "title",
       "before": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
       "after": "글 지도(/graph): 초기엔 글↔글 연관만 표시, 글 노드 호버 시 연관 키워드 노출"
-    },
-    {
-      "seq": 88,
-      "t": "2026-07-27T23:33",
-      "a": "유저",
-      "id": "KAN-029",
-      "op": "create",
-      "col": "backlog",
-      "title": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
-      "memo": "",
-      "verbatim": ""
-    },
-    {
-      "seq": 87,
-      "t": "2026-07-27T23:26",
-      "a": "ai",
-      "id": "KAN-028",
-      "op": "create",
-      "col": "todo",
-      "title": "graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결",
-      "memo": "KAN-008 발행 중 발견. 증상: graphify extract 가 청크 실패 0건으로 성공 보고하는데도 문서 노드가 글 수보다 적다(2026-07-27 기준 18/22). 누락: osi-7-layers-3·4·5·6. 원인: 시리즈 글이 본문에서 서로를 참조하면 osi-7-layers-1.mdx 가 osi_7_layers_3 같은 참조 노드를 먼저 만들고, 이후 osi-7-layers-3.mdx 의 진짜 문서 노드가 같은 ID 로 충돌해 \"the second node will be dropped\" 로 버려진다. 시리즈가 길수록·상호링크 많을수록 악화. auth-authz·tauri 계열도 동일 충돌. graphify 경고문이 해법 제시: 하위 폴더별 extract 후 graphify merge-graphs 병합. 할 일: ① 분할 추출 + merge-graphs 파이프라인을 scripts 로 구성 ② ship-post 1.5 단계와 CLAUDE.md 절차 교체 ③ 재생성 후 2단계 검증(문서 노드 수 = 글 수, 노드 1개짜리 글 없음) 통과 시 커밋. 참고: 검증 2단계화는 c632650 에서 완료 — 이 문제를 잡아낸 게 그 ① 검사다. 현재 영향: 연관 글은 frontmatter 랭킹, /graph 는 일반 목록으로 폴백하므로 사이트 동작 지장 없음(기능 degrade).",
-      "verbatim": "2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라."
     }
   ]
 }
