@@ -40,8 +40,6 @@
     - 전문적 이해를 위해, 실제 환경과 완전히 일치하는 형식과 내용을 제공하여 설명한다.
       - ex. wireshark로 패킷을 캡쳐 했을 때와 완벽히 똑같은 실물 패킷을 제공하여 설명한다.
     ```
-- `KAN-034` VPN 해부 리서치② — 캡처 랩 환경·방법론 — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: 재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.
 - `KAN-035` VPN 해부 EP1 집필 — 큰 그림·프로토콜 지형도 — 생성:ai · 최종:ai · 갱신:2026-07-28
   - 메모: vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.
 - `KAN-036` VPN 해부 EP2 집필 — 암호 기반체력 — 생성:ai · 최종:ai · 갱신:2026-07-28
@@ -68,6 +66,8 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+- `KAN-034` VPN 해부 리서치② — 캡처 랩 환경·방법론 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: 재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.
 
 ## 검토
 - `KAN-033` VPN 해부 리서치① — 스펙·RFC 근거 코퍼스 — 생성:ai · 최종:ai · 갱신:2026-07-28

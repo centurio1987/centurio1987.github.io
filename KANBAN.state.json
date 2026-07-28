@@ -1,6 +1,6 @@
 {
   "next_id": 42,
-  "next_seq": 135,
+  "next_seq": 136,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -371,7 +371,7 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-034": {
-      "col": "todo",
+      "col": "doing",
       "title": "VPN 해부 리서치② — 캡처 랩 환경·방법론",
       "memo": "재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.",
       "verbatim": "",
@@ -472,7 +472,6 @@
     "KAN-030",
     "KAN-032",
     "KAN-031",
-    "KAN-034",
     "KAN-035",
     "KAN-036",
     "KAN-037",
@@ -485,6 +484,7 @@
     "KAN-003",
     "KAN-004",
     "KAN-005",
+    "KAN-033",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -507,9 +507,18 @@
     "KAN-027",
     "KAN-025",
     "KAN-026",
-    "KAN-033"
+    "KAN-034"
   ],
   "recent": [
+    {
+      "seq": 135,
+      "t": "2026-07-28T15:38",
+      "a": "ai",
+      "id": "KAN-034",
+      "op": "move",
+      "from": "todo",
+      "to": "doing"
+    },
     {
       "seq": 134,
       "t": "2026-07-28T15:23",
@@ -996,15 +1005,6 @@
       "field": "memo",
       "before": "Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교",
       "after": "시리즈 4편 \"컨테이너의 해부\" 발행 완료 · main 머지·배포됨(556a9ab EP1 / 21bef71 EP2 / de2c2ac EP3 / 43e82f5 EP4, + c632650 CLAUDE.md 검증 보완). 저자 퍼소나 ppangto-teacher(빵토 선생님) 첫 적용. 편당 파이프라인 전 구간 통과: research→tech-deepdive(외부검토 codex/agy)→react-sim→make-image→review-post→review-writing→quality-gate→post-finalize→publish-post→ship-post. 산출물: 글 4편 + React 시뮬 3종(OverlayLab·DigestChain·CriCallTrace) + viz 14종 + hero 4장, 전부 브라우저 육안·상호작용 검증. 리서치: ~/blog-research raws/008 + 위키 10p + angle 4개(306f255). 게이트가 잡은 실오류: whiteout=캐릭터디바이스0/0(.wh. 아님)·pstree 자기모순·copy_up 실습 무효·process.args만 보류(전체 아님)·Hyper-V root MUST NOT·prestart DEPRECATED·hero 제목 잘림. 미해결(별도 카드): 그래프 데이터에 시리즈 글 누락 — graphify 노드 ID 충돌."
-    },
-    {
-      "seq": 85,
-      "t": "2026-07-27T23:25",
-      "a": "ai",
-      "id": "KAN-008",
-      "op": "move",
-      "from": "backlog",
-      "to": "review"
     }
   ]
 }
