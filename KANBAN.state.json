@@ -1,6 +1,6 @@
 {
   "next_id": 45,
-  "next_seq": 151,
+  "next_seq": 152,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -373,13 +373,13 @@
     "KAN-034": {
       "col": "review",
       "title": "VPN 해부 리서치② — 캡처 랩 환경·방법론",
-      "memo": "완료(검토 대기). 재현 가능한 캡처 랩 확정 — ~/blog-research/raws/010-vpn-anatomy-capture-lab.md(불변, 22KB) + 위키 topic vpn-capture-lab(mature) 신설, blog-research 커밋·푸시. 산출: Docker 2노드+NAT 토폴로지(underlay 192.0.2/203.0.113 · overlay 198.51.100, MASQUERADE로 NAT-T 유발, NET_ADMIN·ip_forward), 버전·암호군 고정(strongSwan 5.9.13-2ubuntu4 aes256gcm16 / WireGuard 커널6.8 내장+tools 1.0.20210914 고정암호군 / OpenVPN 2.6.x data-ciphers AES-256-GCM+tls-crypt), 프로토콜별 캡처 명령(tcpdump 필터+tshark -O <proto> -V -x)·복호 절차(ESP=ip xfrm state 키→Wireshark ESP SA 또는 교육용 null-sha256 / WireGuard=키 로그 4토큰, 완전복호엔 ephemeral 필요 / OpenVPN=제어채널 TLS·데이터채널 복호 불가·구조만 / IKE_SA_INIT 평문)·보안 마스킹(합성 키·RFC5737/3849 IP·RFC7042 MAC)·증거 파일명 규약 vpn-anatomy-<n>/<capture>.txt + EP↔캡처 매핑표. accept 충족(각 프로토콜 캡처 재생성 명령/노트 문서화). EP3~7(KAN-037~040) 집필 gate 해제. open questions 5건: IKE_AUTH SK_ 키 추출(strongSwan) 미확립 / WireGuard ephemeral 키 로그(wireguard-go 계측) 미확립 / OpenVPN 최신 패치 발행 직전 재확인 / AES-GCM ESP SA salt 배치 실검증 / 커널6.8+ 컨테이너 wg-quick sysctl RO 이슈.",
+      "memo": "완료(검토 대기). 재현 가능한 캡처 랩 **설계** 확정 — ~/blog-research/raws/010-vpn-anatomy-capture-lab.md(불변, 22KB) + 위키 topic vpn-capture-lab 신설, blog-research 커밋·푸시. 설계 3원칙(재현성·충실성·안전성), underlay 192.0.2/203.0.113 · overlay 198.51.100 토폴로지에 MASQUERADE로 NAT-T 유발, 버전·암호군 고정(strongSwan 5.9.13 aes256gcm16 / WireGuard 커널내장 고정암호군 / OpenVPN 2.6 AES-256-GCM+tls-crypt), 프로토콜별 캡처·복호 절차, 마스킹 규약(합성 키·RFC5737/3849 IP·RFC7042 MAC), 증거 파일명 규약 + EP↔캡처 매핑표. EP3~7 집필 gate 해제. || ★후속(KAN-043)에서 **실장 시 토폴로지 구현이 대체됨**: 이 카드가 정한 Docker 2노드+NAT(NET_ADMIN·ip_forward)은 실제로는 **Lima VM 1개 + network namespace 3노드**로 지어졌다 — 컨테이너로는 이 카드가 스스로 내건 요구 2개(§6 RFC7042 MAC 부여 / 런타임 sysctl 조작)를 충족할 수 없기 때문. 설계 원칙·주소 대역·암호군·파일명 규약은 그대로 유효하고 **토폴로지 구현 수단만** 달라졌다. raws/010은 불변 원본으로 보존하고 실장 보고는 **raws/011**에 별도 기록(후자가 최신). 위키 topic vpn-capture-lab은 011 기준으로 개정됨. || open questions 5건 중: ④ AES-GCM ESP SA salt 배치 **해결** · ⑤ 컨테이너 wg-quick sysctl RO **소멸**(netns 채택으로 발생하지 않음) · ①②③은 KAN-043 메모 참조.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "f063e423dd794c61e96f61081d9d4e775661a9d7",
-      "memo_hash": "ecbde99b0f5e877ec792198c2d741b6f9a062f83",
+      "memo_hash": "0f9224baac2c9a395f66c282ea8f92a1d819172d",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-035": {
@@ -549,6 +549,16 @@
     "KAN-043"
   ],
   "recent": [
+    {
+      "seq": 151,
+      "t": "2026-07-28T23:10",
+      "a": "ai",
+      "id": "KAN-034",
+      "op": "edit",
+      "field": "memo",
+      "before": "완료(검토 대기). 재현 가능한 캡처 랩 확정 — ~/blog-research/raws/010-vpn-anatomy-capture-lab.md(불변, 22KB) + 위키 topic vpn-capture-lab(mature) 신설, blog-research 커밋·푸시. 산출: Docker 2노드+NAT 토폴로지(underlay 192.0.2/203.0.113 · overlay 198.51.100, MASQUERADE로 NAT-T 유발, NET_ADMIN·ip_forward), 버전·암호군 고정(strongSwan 5.9.13-2ubuntu4 aes256gcm16 / WireGuard 커널6.8 내장+tools 1.0.20210914 고정암호군 / OpenVPN 2.6.x data-ciphers AES-256-GCM+tls-crypt), 프로토콜별 캡처 명령(tcpdump 필터+tshark -O <proto> -V -x)·복호 절차(ESP=ip xfrm state 키→Wireshark ESP SA 또는 교육용 null-sha256 / WireGuard=키 로그 4토큰, 완전복호엔 ephemeral 필요 / OpenVPN=제어채널 TLS·데이터채널 복호 불가·구조만 / IKE_SA_INIT 평문)·보안 마스킹(합성 키·RFC5737/3849 IP·RFC7042 MAC)·증거 파일명 규약 vpn-anatomy-<n>/<capture>.txt + EP↔캡처 매핑표. accept 충족(각 프로토콜 캡처 재생성 명령/노트 문서화). EP3~7(KAN-037~040) 집필 gate 해제. open questions 5건: IKE_AUTH SK_ 키 추출(strongSwan) 미확립 / WireGuard ephemeral 키 로그(wireguard-go 계측) 미확립 / OpenVPN 최신 패치 발행 직전 재확인 / AES-GCM ESP SA salt 배치 실검증 / 커널6.8+ 컨테이너 wg-quick sysctl RO 이슈.",
+      "after": "완료(검토 대기). 재현 가능한 캡처 랩 **설계** 확정 — ~/blog-research/raws/010-vpn-anatomy-capture-lab.md(불변, 22KB) + 위키 topic vpn-capture-lab 신설, blog-research 커밋·푸시. 설계 3원칙(재현성·충실성·안전성), underlay 192.0.2/203.0.113 · overlay 198.51.100 토폴로지에 MASQUERADE로 NAT-T 유발, 버전·암호군 고정(strongSwan 5.9.13 aes256gcm16 / WireGuard 커널내장 고정암호군 / OpenVPN 2.6 AES-256-GCM+tls-crypt), 프로토콜별 캡처·복호 절차, 마스킹 규약(합성 키·RFC5737/3849 IP·RFC7042 MAC), 증거 파일명 규약 + EP↔캡처 매핑표. EP3~7 집필 gate 해제. || ★후속(KAN-043)에서 **실장 시 토폴로지 구현이 대체됨**: 이 카드가 정한 Docker 2노드+NAT(NET_ADMIN·ip_forward)은 실제로는 **Lima VM 1개 + network namespace 3노드**로 지어졌다 — 컨테이너로는 이 카드가 스스로 내건 요구 2개(§6 RFC7042 MAC 부여 / 런타임 sysctl 조작)를 충족할 수 없기 때문. 설계 원칙·주소 대역·암호군·파일명 규약은 그대로 유효하고 **토폴로지 구현 수단만** 달라졌다. raws/010은 불변 원본으로 보존하고 실장 보고는 **raws/011**에 별도 기록(후자가 최신). 위키 topic vpn-capture-lab은 011 기준으로 개정됨. || open questions 5건 중: ④ AES-GCM ESP SA salt 배치 **해결** · ⑤ 컨테이너 wg-quick sysctl RO **소멸**(netns 채택으로 발생하지 않음) · ①②③은 KAN-043 메모 참조."
+    },
     {
       "seq": 150,
       "t": "2026-07-28T23:09",
@@ -1032,16 +1042,6 @@
       "field": "verbatim",
       "before": "",
       "after": "블로그 글을 로딩 할 때, 항목이 많아 지는 경우를 대비하여, pagination이 적용되어 있는지 확인하고, 안되어 있다면, 적용하기 위한 계획을 세우고 수행해라."
-    },
-    {
-      "seq": 101,
-      "t": "2026-07-28T00:39",
-      "a": "ai",
-      "id": "KAN-030",
-      "op": "edit",
-      "field": "memo",
-      "before": "",
-      "after": "글 항목이 많아질 때를 대비. 현행 글 목록(posts/index·index·categories/[category])에 pagination이 적용돼 있는지 먼저 확인하고, 미적용이면 도입 계획을 세워 수행한다."
     }
   ]
 }
