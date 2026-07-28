@@ -1,6 +1,6 @@
 {
   "next_id": 45,
-  "next_seq": 150,
+  "next_seq": 151,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -479,7 +479,7 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-043": {
-      "col": "todo",
+      "col": "review",
       "title": "VPN 해부 캡처 아티팩트 실제 생성 (랩 실행 → raws/captures/) 및 본문 발췌 보강",
       "memo": "완료(검토 대기) — 랩 구축·아티팩트 생성·집필 인계까지. || ★환경이 KAN-034 설계와 달라졌다: Docker 2노드+NAT → **Lima VM 1개 + network namespace 3노드**(컨테이너 런타임 없음). 유저 가치(Docker Desktop급 무게 배제)가 1차 이유지만, 조사 결과 컨테이너는 raws/010이 스스로 내건 요구 2개를 깬다 — ① RFC7042 문서용 MAC 부여(Docker --mac-address는 다중 네트워크 컨테이너에 무효, r 노드는 정의상 2개 망) ② 런타임 sysctl 조작(/proc RO). 후보 10종의 커널 config를 직접 대조해 Lima 채택(스톡 Ubuntu만 CONFIG_MODULES=y; Apple container는 CONFIG_INET_ESP 부재로 IPv4 IPsec 불가, OrbStack은 config 비공개+modprobe 불가, Multipass는 macOS 26.5.2/25F84에서 restart 무한행 이슈 #5049). || 산출: ~/blog-research/lab/vpn-capture-lab/(Lima vz+Ubuntu24.04 digest핀, netns 토폴로지, 프로토콜 3종 기동, 게이트 5종, 캡처 러너, Makefile, README) + raws/011 실장보고 + raws/captures/vpn-anatomy-{3,4,5,6}/ 아티팩트 15개(텍스트 디섹션 + 소용량 pcap). blog-research 커밋 ca2a6e7·e240001(로컬). || 게이트 전 구간 통과: Phase0 커널실측 / Phase2 토폴로지(NAT'd 출발지·offload off·RFC7042 MAC·netns sysctl 격리) / Phase3 IPsec(charon 2인스턴스, **호스트 xfrm 0개 = netns 격리 증명**, NAT-T UDP4500 자동 발동) / Phase4 WireGuard(s1이 학습한 피어=203.0.113.1 → birth-namespace 함정 회피 증명) / Phase5 OpenVPN. || raws/010 §8 open questions: ④ salt 배치 **해결**(aead 키를 salt 포함 36B 통째로; tshark -o uat:esp_sa 만으로 복호 → Wireshark GUI 불필요) · ⑤ 컨테이너 wg-quick sysctl RO **소멸**(netns) · ① IKE_AUTH SK_ 미확립 유지 · ② WireGuard 완전복호는 충실성 원칙(유저스페이스 전환 금지) 충돌로 **부분복호 확정** · ③ OpenVPN 패치는 발행 직전 재확인. 신규: **Cookie Reply(type3,64B) 미관측**(부하 시에만 발생) — EP5는 백서 값으로 서술하고 미관측을 밝히거나 별도 유발 필요. || ★실장 발견(raws/011 §2): AppArmor가 charon/swanctl에 경로 기반 프로파일을 걸어 노드별 설정 경로 사용 시 EACCES가 아니라 조용히 'invalid configuration'으로 죽는다(010에 없던 항목) / charon pid 컴파일타임 고정 → netns private mount ns에서 bind-mount 분리 / **offload 미차단 시 캡처에 합쳐진 패킷·미계산 체크섬이 찍혀 '실물 패킷' 전제 붕괴** / WireGuard는 birth namespace 때문에 반드시 해당 netns 안에서 생성. || 집필 인계 정비(감사 후 발견한 오도 수정): topics/vpn-capture-lab을 011 기준 전면 개정(존재하지 않는 Docker 랩 사용법을 안내하고 있었음) · angles/vpn-anatomy-3~7의 '캡처 재현: §4.x'를 **실제 아티팩트 파일 경로 + 실측값**으로 교체하며 사실오류 3건 교정(EP5 wg-quick→wg setconf, 148/92/64B→64B 미관측, EP4 Wireshark GUI→불필요) · 블로그 레포 CLAUDE.md 'Packet captures' 절 + tech-deepdive SECTION_PATTERNS 지침 신설 · 크기 인용 시 계층(UDP 페이로드 vs 프레임) 명시 의무화. || 잔여: EP4(발행본)에 실측 발췌 retro 삽입 — 별도 카드로 분리.",
       "verbatim": "",
@@ -513,7 +513,6 @@
     "KAN-040",
     "KAN-041",
     "KAN-042",
-    "KAN-043",
     "KAN-044",
     "KAN-001",
     "KAN-002",
@@ -546,9 +545,19 @@
     "KAN-028",
     "KAN-027",
     "KAN-025",
-    "KAN-026"
+    "KAN-026",
+    "KAN-043"
   ],
   "recent": [
+    {
+      "seq": 150,
+      "t": "2026-07-28T23:09",
+      "a": "ai",
+      "id": "KAN-043",
+      "op": "move",
+      "from": "todo",
+      "to": "review"
+    },
     {
       "seq": 149,
       "t": "2026-07-28T23:09",
@@ -1033,16 +1042,6 @@
       "field": "memo",
       "before": "",
       "after": "글 항목이 많아질 때를 대비. 현행 글 목록(posts/index·index·categories/[category])에 pagination이 적용돼 있는지 먼저 확인하고, 미적용이면 도입 계획을 세워 수행한다."
-    },
-    {
-      "seq": 100,
-      "t": "2026-07-28T00:39",
-      "a": "ai",
-      "id": "KAN-030",
-      "op": "edit",
-      "field": "title",
-      "before": "블로그 글을 로딩 할 때, 항목이 많아 지는 경우를 대비하여, pagination이 적용되어 있는지 확인하고, 안되어 있다면, 적용하기 위한 계획을 세우고 수행해라.",
-      "after": "글 목록 pagination 적용 여부 점검 후 미적용 시 도입 계획·수행"
     }
   ]
 }
