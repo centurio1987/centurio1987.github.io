@@ -1,6 +1,6 @@
 {
   "next_id": 42,
-  "next_seq": 138,
+  "next_seq": 140,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -419,15 +419,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-038": {
-      "col": "todo",
+      "col": "doing",
       "title": "VPN 해부 EP4 집필 — IPsec② ESP·NAT-T·MTU",
-      "memo": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034.",
+      "memo": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034. [진행 중] 집필 착수 — gate KAN-034 해제 확인, angle=~/blog-research/wiki/angles/vpn-anatomy-4.md(mature, sources 009·010), author=ppangto(총괄 KAN-031 기준 — angle의 '빵토 선생님' 표기는 오기). 병렬 워크트리 kan-035~037이 EP1~3 동시 진행.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "f089d770484b4941865148015d8760de9bbb0092",
-      "memo_hash": "a1bb3f4103c514b0a8c7b204af1aa1001be7fdf3",
+      "memo_hash": "db4e2211f69ae355a70d9ac6ef2ff191516274ed",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-039": {
@@ -475,7 +475,6 @@
     "KAN-035",
     "KAN-036",
     "KAN-037",
-    "KAN-038",
     "KAN-039",
     "KAN-040",
     "KAN-041",
@@ -485,6 +484,7 @@
     "KAN-004",
     "KAN-005",
     "KAN-033",
+    "KAN-034",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -507,9 +507,28 @@
     "KAN-027",
     "KAN-025",
     "KAN-026",
-    "KAN-034"
+    "KAN-038"
   ],
   "recent": [
+    {
+      "seq": 139,
+      "t": "2026-07-28T15:59",
+      "a": "ai",
+      "id": "KAN-038",
+      "op": "edit",
+      "field": "memo",
+      "before": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034.",
+      "after": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034. [진행 중] 집필 착수 — gate KAN-034 해제 확인, angle=~/blog-research/wiki/angles/vpn-anatomy-4.md(mature, sources 009·010), author=ppangto(총괄 KAN-031 기준 — angle의 '빵토 선생님' 표기는 오기). 병렬 워크트리 kan-035~037이 EP1~3 동시 진행."
+    },
+    {
+      "seq": 138,
+      "t": "2026-07-28T15:59",
+      "a": "ai",
+      "id": "KAN-038",
+      "op": "move",
+      "from": "todo",
+      "to": "doing"
+    },
     {
       "seq": 137,
       "t": "2026-07-28T15:52",
@@ -982,27 +1001,6 @@
       "field": "memo",
       "before": "",
       "after": "대상: /graph 글 지도 익스플로러(graphify 지식그래프 src/data/graph.json 소비). 현재는 글(문서) 노드와 개념·키워드 노드가 함께 그려짐. 변경① 초기 뷰를 글 노드와 글↔글 연관 관계(엣지)만으로 한정 — 개념·키워드 노드는 초기 렌더에서 숨김. 변경② 글 노드에 포인터를 올리면(hover) 해당 글의 연관 키워드가 나타나도록 인터랙션 추가."
-    },
-    {
-      "seq": 89,
-      "t": "2026-07-27T23:35",
-      "a": "ai",
-      "id": "KAN-029",
-      "op": "edit",
-      "field": "title",
-      "before": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
-      "after": "글 지도(/graph): 초기엔 글↔글 연관만 표시, 글 노드 호버 시 연관 키워드 노출"
-    },
-    {
-      "seq": 88,
-      "t": "2026-07-27T23:33",
-      "a": "유저",
-      "id": "KAN-029",
-      "op": "create",
-      "col": "backlog",
-      "title": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
-      "memo": "",
-      "verbatim": ""
     }
   ]
 }

@@ -46,8 +46,6 @@
   - 메모: vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033.
 - `KAN-037` VPN 해부 EP3 집필 — IPsec① IKEv2 협상 — 생성:ai · 최종:ai · 갱신:2026-07-28
   - 메모: vpn-anatomy-3 · IPsec① IKEv2: SA/SPI/SPD, IKE_SA_INIT→IKE_AUTH, UDP 500/4500, IKEv2 헤더·payload(SA/KE/Ni/Nr/AUTH) 캡처 분해(암호 payload는 복호 준비 시). 구현:strongSwan. IPsec=프레임워크 오해정리. 선수링크:EP2. gate:KAN-033·034.
-- `KAN-038` VPN 해부 EP4 집필 — IPsec② ESP·NAT-T·MTU — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034.
 - `KAN-039` VPN 해부 EP5 집필 — WireGuard — 생성:ai · 최종:ai · 갱신:2026-07-28
   - 메모: vpn-anatomy-5 · WireGuard: 고정 암호군(Curve25519+ChaCha20Poly1305+BLAKE2s), Noise_IKpsk2 vs 실제 UDP message format 층위 구분, 메시지 4종 캡처 분해, cryptokey routing/roaming/타이머, IPsec 대비(코드규모·공격면). 선수링크:EP2·EP3·4. gate:KAN-034.
 - `KAN-040` VPN 해부 EP6 집필 — TLS-VPN(OpenVPN·SSL-VPN) — 생성:ai · 최종:ai · 갱신:2026-07-28
@@ -66,6 +64,8 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+- `KAN-038` VPN 해부 EP4 집필 — IPsec② ESP·NAT-T·MTU — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034. [진행 중] 집필 착수 — gate KAN-034 해제 확인, angle=~/blog-research/wiki/angles/vpn-anatomy-4.md(mature, sources 009·010), author=ppangto(총괄 KAN-031 기준 — angle의 '빵토 선생님' 표기는 오기). 병렬 워크트리 kan-035~037이 EP1~3 동시 진행.
 
 ## 검토
 - `KAN-033` VPN 해부 리서치① — 스펙·RFC 근거 코퍼스 — 생성:ai · 최종:ai · 갱신:2026-07-28
