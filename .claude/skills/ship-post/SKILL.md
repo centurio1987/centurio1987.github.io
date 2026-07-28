@@ -40,29 +40,27 @@ git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스�
 - **frontmatter 재검증**: `src/content.config.ts` 스키마와 호환되는지(`title`/`pubDate`/`category` 필수, `category`는 `src/lib/categories.ts` enum), `draft: true` 잔존이 없는지.
 - 하나라도 실패하면 **push로 넘어가지 않고** 보고한다.
 
-### 1.5 그래프 데이터 갱신 (non-blocking)
-연관 글/글 지도 기능의 데이터(`src/data/graph.json`)를 새 글 반영본으로 갱신한다.
-- 아래 3개를 순서대로 실행 → 그래프 데이터가 바뀌었으면 **`bun run build` 한 번 더** 통과 확인.
-  ```bash
-  graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . 2>&1 | tee /tmp/graphify-extract.log
-  bun scripts/build-graph-data.ts
-  bun scripts/verify-graph.ts --log /tmp/graphify-extract.log   # 비0이면 커밋 금지
-  ```
-  `--backend claude-cli`는 API 키가 필요 없다(글 1편당 청크 1개라 22편이면 40~60분). `--backend gemini`는 무료 티어 5 RPM·일일 상한에 걸려 청크 절반이 429로 죽는다(KAN-023). `--out .`을 빼면 `src/content/posts/`를 오염시킨다.
-- **판정은 `verify-graph.ts`에 맡긴다**(KAN-028). 손으로 세지 말 것 — 스크립트가 ⓪청크 실패 WARNING ①커버리지(모든 글이 자기 `source_file`로 등장) ②껍데기 없음(글당 노드 ≥2) ③증류 커버리지를 한 번에 본다. 비0으로 끝나면 그 결과물을 버리고(`git checkout -- graphify-out/ src/data/graph.json`) 기존 커밋 그래프를 유지한다.
-- **노드 ID 충돌은 실패가 아니다**(KAN-028). `the second node will be dropped` 경고는 시리즈 글이 서로를 인용할 때 나는데, 참조 문서 노드와 진짜 문서 노드는 같은 글을 가리키는 같은 실체라 병합이 옳고 엣지도 survivor로 재배선된다. `build-graph-data.ts`가 문서 노드를 **가리키는 글**로 정규화해 흡수하므로 그냥 진행한다.
-- **실패 정책: non-blocking.** graphify 실패(추출 오류·부분 실패) 시 경고만 남기고 기존 커밋 그래프로 발행을 계속한다 — 기능은 stale 데이터로 degrade될 뿐 글 발행을 막지 않는다.
-- 갱신에 성공했으면 commit 경로에 `graphify-out/`(단 `cache/`·날짜 백업 디렉터리 제외)과 `src/data/graph.json`을 추가한다.
+### 1.5 그래프 데이터 — **여기서 갱신하지 않는다** (KAN-045)
+그래프 갱신은 **main 머지 후 main 워크트리에서 `bun run graph:refresh` 한 번**으로 한다. 발행 워크트리에서는 손대지 않는다.
+
+- **왜 여기서 안 하나**: 산출물(`graphify-out/` 1MB + `src/data/graph.json`)이 커밋 대상이라, 병렬 워크트리가 각자 갱신하면 머지 때 대용량 JSON이 다중 충돌한다. 게다가 각 워크트리엔 자기 편만 있어 만들어진 그래프가 형제 편 머지 즉시 stale이 된다(KAN-044 근거 ②③).
+- **가드가 실제로 막는다**: `scripts/refresh-graph.sh`는 브랜치가 `main`이 아니거나 링크된 워크트리면 비0으로 끝난다. 여기서 억지로 돌리려 하지 마라.
+- **비용 걱정은 이제 없다**: 증분 추출이 복구돼(KAN-045) 바뀐 글만 LLM을 탄다. 예전처럼 "7편 모아서 한 번"이 아니라 **머지 직후 바로** 돌리면 된다.
+- **실패 정책: 여전히 non-blocking.** 그래프가 stale이어도 연관 글은 frontmatter 폴백(`src/lib/related.ts`)으로, `/graph`는 평범한 글 목록으로 degrade될 뿐 발행을 막지 않는다.
+
+### 1.6 빌드 재확인
+1.5에서 아무것도 안 바꿨으므로 1의 `bun run build` 결과가 그대로 유효하다. 추가 빌드 불필요.
 
 ### 2. commit & push (git-shipper / haiku)
 `git-shipper` 서브에이전트(haiku)에 위임한다. git-shipper는 직접 git을 쓰지 않고 **`scripts/git-commit-push.sh`만** 호출한다. 인자:
 - `--repo <블로그 레포 경로>` · `--branch main` · `--message "post: <slug> 발행"`
-- `--` 뒤에 **이번 글 관련 경로만**: `src/content/posts/<slug>.mdx`, `src/components/posts/<slug>/`, `public/images/<slug>/`, (1.5에서 갱신됐으면) `graphify-out/`, `src/data/graph.json`. **전체 add 금지**.
+- `--` 뒤에 **이번 글 관련 경로만**: `src/content/posts/<slug>.mdx`, `src/components/posts/<slug>/`, `public/images/<slug>/`. **전체 add 금지**. `graphify-out/`·`src/data/graph.json`은 **넣지 마라** — 그래프는 main에서 따로 갱신·커밋한다(1.5).
 - 가드(브랜치 일치·secret·대용량·`pull --rebase`·`--force` 금지)는 스크립트가 적용. 자동 모드면 실제 push까지.
 - 스크립트가 비0으로 끝나면 멈추고 원인(브랜치 불일치/secret/충돌 등)을 보고(자동 롤백 안 함).
 
 ### 3. 종료 보고
 빌드 결과, 재검증 통과/실패 항목, commit 해시·push 결과(또는 실패 원인), 배포 URL 안내(`/posts/<slug>`).
+- **후속 안내 필수**: "이 글은 아직 그래프에 없다 — main 머지 후 main 워크트리에서 `bun run graph:refresh`를 돌려야 연관 글·`/graph`에 뜬다."
 
 ## 멱등성
 - 이미 같은 내용이 커밋돼 staged 변경이 없으면 git 스크립트가 "nothing to commit"으로 무해하게 끝난다(중복 커밋 방지).
