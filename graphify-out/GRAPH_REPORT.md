@@ -1,15 +1,15 @@
-# Graph Report - /private/tmp/claude-501/-Users-centurio-orca-workspaces-centurio1987-github-io-kan-028/3fb26dd8-c358-434a-94a8-89d927090a49/scratchpad/extract  (2026-07-28)
+# Graph Report - .  (2026-07-29)
 
 ## Corpus Check
 - cluster-only mode — file stats not available
 
 ## Summary
-- 874 nodes · 1466 edges · 32 communities
-- Extraction: 92% EXTRACTED · 7% INFERRED · 1% AMBIGUOUS · INFERRED: 102 edges (avg confidence: 0.76)
+- 1006 nodes · 1679 edges · 52 communities
+- Extraction: 92% EXTRACTED · 7% INFERRED · 1% AMBIGUOUS · INFERRED: 111 edges (avg confidence: 0.76)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8072c289`
+- Built from commit: `cef8f2cd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -46,274 +46,392 @@
 - [[_COMMUNITY_Encapsulation & Layer Models|Encapsulation & Layer Models]]
 - [[_COMMUNITY_HTTP Version Evolution|HTTP Version Evolution]]
 - [[_COMMUNITY_Astro Blog Build|Astro Blog Build]]
+- [[_COMMUNITY_WebRTC 혼잡제어 RFC 표준|WebRTC 혼잡제어 RFC 표준]]
+- [[_COMMUNITY_직렬화와 표현 계층|직렬화와 표현 계층]]
+- [[_COMMUNITY_Tauri 프로젝트 구조 진입점|Tauri 프로젝트 구조 진입점]]
+- [[_COMMUNITY_VPN 위협모델과 신뢰 이전|VPN 위협모델과 신뢰 이전]]
+- [[_COMMUNITY_Tauri 권한·케이퍼빌리티 모델|Tauri 권한·케이퍼빌리티 모델]]
+- [[_COMMUNITY_Tauri 사이드카 번들링·빌드|Tauri 사이드카 번들링·빌드]]
+- [[_COMMUNITY_VPN 정의와 표준 문서|VPN 정의와 표준 문서]]
+- [[_COMMUNITY_Tauri 해부 시리즈 시각물|Tauri 해부 시리즈 시각물]]
+- [[_COMMUNITY_Simulcast와 SVC 다중 화질|Simulcast와 SVC 다중 화질]]
+- [[_COMMUNITY_정책 기반 접근제어(PBAC)|정책 기반 접근제어(PBAC)]]
+- [[_COMMUNITY_UTF-8 문자 인코딩|UTF-8 문자 인코딩]]
+- [[_COMMUNITY_HTTP 의미론과 버전 진화|HTTP 의미론과 버전 진화]]
+- [[_COMMUNITY_프록시와 TLS-VPN 비교|프록시와 TLS-VPN 비교]]
+- [[_COMMUNITY_세션·쿠키와 CSRF 방어|세션·쿠키와 CSRF 방어]]
+- [[_COMMUNITY_Tauri fs 플러그인 스코프|Tauri fs 플러그인 스코프]]
+- [[_COMMUNITY_IPsec ESP와 NAT 통과|IPsec ESP와 NAT 통과]]
+- [[_COMMUNITY_file-scout 예제 앱 배선|file-scout 예제 앱 배선]]
+- [[_COMMUNITY_TLS의 메타데이터 노출 한계|TLS의 메타데이터 노출 한계]]
+- [[_COMMUNITY_Tauri 블로킹 작업 오프로딩|Tauri 블로킹 작업 오프로딩]]
+- [[_COMMUNITY_Astro Blog Publishing Workflow|Astro Blog Publishing Workflow]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `OSI 7계층, 외우지 말고 데이터의 여행으로 이해하기` - 50 edges
-2. `L3 해부: 패킷은 어떻게 모르는 네트워크를 건너 길을 찾는가` - 28 edges
-3. `L4 해부: 포트와 소켓, 그리고 TCP가 신뢰를 만드는 법` - 23 edges
-4. `L7 해부: DNS와 HTTP, 그리고 한 줄의 curl로 끝나는 여행` - 23 edges
-5. `3편 — 플로우: Authorization Code + PKCE·OIDC 로그인 (작성 예정)` - 22 edges
-6. `인증·인가 해부 1편 — 로그인 화면 뒤에 숨은 지형도` - 20 edges
-7. `인증·인가 해부 2편 — 토큰과 검증: 서명을 믿는다는 것` - 20 edges
-8. `4편 — 실무 베스트 프랙티스: nginx·Redis 세션·BFF·인가 모델 (작성 예정)` - 19 edges
-9. `컨테이너의 해부 EP3 — CRI (다음 편 예고)` - 19 edges
-10. `L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가` - 18 edges
+1. `인증·인가 해부 1편 — 로그인 화면 뒤에 숨은 지형도` - 29 edges
+2. `L7 해부: DNS와 HTTP, 그리고 한 줄의 curl로 끝나는 여행` - 29 edges
+3. `VPN의 해부 1편 — VPN 아닌 것부터 지웁니다` - 29 edges
+4. `OSI 7계층, 외우지 말고 데이터의 여행으로 이해하기` - 27 edges
+5. `인증·인가 해부 2편 — 토큰과 검증 (예정)` - 25 edges
+6. `VPN 해부 2편 — 암호가 하는 세 가지 약속` - 25 edges
+7. `L5·L6 해부: 도착한 bytes를 '같은 뜻'으로, 그리고 대화를 잇기` - 22 edges
+8. `L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가` - 21 edges
+9. `L4 해부: 포트와 소켓, 그리고 TCP가 신뢰를 만드는 법` - 20 edges
+10. `컨테이너 해부 EP1 — 도커라는 조립품` - 18 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `40살인데 알고리즘 해도 괜찮을까요 - 프롤로그` --semantically_similar_to--> `aside: 드디어 arc의 악령에서 벗어나나`  [AMBIGUOUS] [semantically similar]
   algorithm-at-40-prologue.md → aside-arc.md
-- `VizFlowchart4 (흐름도)` --references--> `OverlayFS`  [AMBIGUOUS]
-  src/components/posts/container-anatomy-1/VizFlowchart4.tsx → container-anatomy-1.mdx
-- `VizProcessSteps2 (실행 릴레이 순서 도식)` --references--> `containerd-shim-runc-v2 (shim)`  [INFERRED]
-  src/components/posts/container-anatomy-1/VizProcessSteps2.tsx → container-anatomy-1.mdx
-- `VizProcessSteps2 (파드 기동 순서 도해)` --references--> `RunPodSandbox`  [INFERRED]
-  src/components/posts/container-anatomy-3/VizProcessSteps2.tsx → container-anatomy-3.mdx
-- `VizComparison3 (dockershim 전/후 비교)` --references--> `dockershim (kubelet↔Docker Engine 어댑터)`  [INFERRED]
-  src/components/posts/container-anatomy-3/VizComparison3.tsx → container-anatomy-3.mdx
+- `docker run 한 줄에, 몇 개의 프로그램이 움직일까요` --references--> `shim (EP1에서 이어진 중간 계층)`  [INFERRED]
+  container-anatomy-1.mdx → container-anatomy-2.mdx
+- `홉마다 재작성되는 L2 헤더(MAC)` --references--> `L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가`  [INFERRED]
+  osi-7-layers-3.mdx → osi-7-layers-2.mdx
+- `VPN 해부 2편 — 암호가 하는 세 가지 약속` --references--> `VPN의 해부 EP4 — ESP`  [AMBIGUOUS]
+  vpn-anatomy-1.mdx → vpn-anatomy-4.mdx
+- `RFC 8853 (SDP simulcast, 2편 교차)` --semantically_similar_to--> `RFC 8853 (simulcast)`  [INFERRED] [semantically similar]
+  webrtc-3.mdx → webrtc-2.mdx
 
 ## Import Cycles
 - None detected.
 
 ## Hyperedges (group relationships)
-- **재능 부재 자각 → 전략적 우회 → CTO 커리어 → 알고리즘 회귀** — algorithm_at_40_prologue_no_programming_talent, algorithm_at_40_prologue_strategic_resolve, algorithm_at_40_prologue_breadth_of_knowledge, algorithm_at_40_prologue_cto_career, algorithm_at_40_prologue_coding_test_failure, algorithm_at_40_prologue_pro_mindset [EXTRACTED 0.85]
-- **20년간의 사고 시스템 최적화(경험주의 → 펀더멘털·추상화·패턴 인식)** — algorithm_at_40_prologue_empiricist_thinking, algorithm_at_40_prologue_fundamentals_learning_method, algorithm_at_40_prologue_concept_abstraction_system, algorithm_at_40_prologue_domain_pattern_recognition, algorithm_at_40_prologue_multifaceted_thinking [EXTRACTED 0.85]
-- **브라우저 노마드의 후보 평가(사이드바·tidy·크로미움·AI 기준)** — aside_arc_arc_browser, aside_arc_dia, aside_arc_vivaldi, aside_arc_zen, aside_arc_aside_browser, aside_arc_sidebar_ux, aside_arc_tidy [EXTRACTED 0.90]
-- **인증·인가 여덟 좌표 지형도** — auth_authz_1_identification, auth_authz_1_authentication, auth_authz_1_authorization, auth_authz_1_delegation, auth_authz_1_federation, auth_authz_1_session, auth_authz_1_token, auth_authz_1_policy [EXTRACTED 0.95]
-- **인가 규칙 표현 모델군 (RBAC·ABAC·ReBAC·PBAC)** — auth_authz_1_rbac, auth_authz_1_abac, auth_authz_1_rebac, auth_authz_1_pbac, auth_authz_1_authorization [EXTRACTED 0.90]
-- **OAuth 위임 → OIDC 신원 계층 → 토큰 검증 흐름** — auth_authz_1_oauth2, auth_authz_1_oidc, auth_authz_1_access_token, auth_authz_1_id_token, auth_authz_1_audience_validation, auth_authz_1_jwt [EXTRACTED 0.90]
-- **JWT 검증 6단계 흐름 (alg→kid→서명→iss→aud→exp)** — auth_authz_2_alg_allowlist, auth_authz_2_kid, auth_authz_2_jwks, auth_authz_2_jws_signature, auth_authz_2_aud_validation, auth_authz_2_registered_claims, auth_authz_2_verification_six_steps [EXTRACTED 0.95]
-- **서명 검증을 우회하는 공격군 (alg:none · alg confusion · jku/x5u 키 주입 · aud 미검증)** — auth_authz_2_alg_none_attack, auth_authz_2_alg_confusion, auth_authz_2_jku_x5u_injection, auth_authz_2_aud_validation, auth_authz_2_rfc8725 [EXTRACTED 0.90]
-- **소지 증명으로 Bearer 약점을 막는 토큰 바인딩 (DPoP · mTLS · cnf 클레임)** — auth_authz_2_sender_constrained, auth_authz_2_dpop, auth_authz_2_mtls_bound, auth_authz_2_rfc9449, auth_authz_2_rfc8705 [EXTRACTED 0.90]
-- **Authorization Code + PKCE 여섯 스텝 로그인 플로우** — auth_authz_3_code_verifier, auth_authz_3_code_challenge, auth_authz_3_authorization_code, auth_authz_3_token_exchange, auth_authz_3_id_token_validation, auth_authz_3_oidc_discovery [EXTRACTED 0.90]
-- **state · PKCE · nonce 삼중 방어 조합** — auth_authz_3_state, auth_authz_3_pkce, auth_authz_3_nonce, auth_authz_3_mixup_attack, auth_authz_3_code_interception [EXTRACTED 0.85]
-- **토큰 엔드포인트 클라이언트 인증 방식군** — auth_authz_3_client_authentication, auth_authz_3_private_key_jwt, auth_authz_3_mtls, auth_authz_3_confidential_client, auth_authz_3_public_client [EXTRACTED 0.85]
-- **심층 방어 계층 — 프록시·세션·BFF·리소스 서버 인가** — auth_authz_4_defense_in_depth, auth_authz_4_nginx_auth_request, auth_authz_4_server_side_session, auth_authz_4_bff, auth_authz_4_authorization_enforcement [EXTRACTED 0.90]
-- **엣지 신뢰 경계 사고 — X-User 위조와 백엔드 직접 접근** — auth_authz_4_nginx_auth_request, auth_authz_4_header_sanitize, auth_authz_4_direct_backend_access, src_components_posts_auth_authz_4_authrequestlab [EXTRACTED 0.85]
+- **재능 자각 → 전략적 우회 → 40대 알고리즘 재대면 서사** — algorithm_at_40_prologue_programming_talent_realization, algorithm_at_40_prologue_strategic_detour, algorithm_at_40_prologue_cto_career, algorithm_at_40_prologue_coding_test_failure, algorithm_at_40_prologue_pro_mindset [EXTRACTED 0.90]
+- **20년 학습으로 재구축한 사고 역량 스택** — algorithm_at_40_prologue_fundamentals_learning_method, algorithm_at_40_prologue_concept_abstraction_system, algorithm_at_40_prologue_domain_pattern_recognition, algorithm_at_40_prologue_multifaceted_thinking [EXTRACTED 0.85]
+- **브라우저 노마드가 평가한 사이드바·탭관리 대안 집합** — aside_arc_arc_browser, aside_arc_dia, aside_arc_vivaldi, aside_arc_zen, aside_arc_aside, aside_arc_sidebar_ux, aside_arc_tidy [EXTRACTED 0.90]
+- **인증·인가 지형의 여덟 좌표** — auth_authz_1_identification, auth_authz_1_authentication, auth_authz_1_authorization, auth_authz_1_delegation, auth_authz_1_federation, auth_authz_1_session, auth_authz_1_token, auth_authz_1_policy [EXTRACTED 0.95]
+- **인가 규칙 표현 모델 4종과 PDP/PEP 강제 구조** — auth_authz_1_rbac, auth_authz_1_abac, auth_authz_1_rebac, auth_authz_1_pbac, auth_authz_1_pdp, auth_authz_1_pep, auth_authz_1_deny_by_default [EXTRACTED 0.90]
+- **audience 검증 누락 → 토큰 치환 사고 흐름** — auth_authz_1_token_substitution_incident, auth_authz_1_oauth2, auth_authz_1_access_token, auth_authz_1_audience_validation, auth_authz_1_oidc, auth_authz_1_id_token [EXTRACTED 0.90]
+- **JWT 검증 6단계 흐름** — auth_authz_2_alg_allowlist, auth_authz_2_kid_key_selection, auth_authz_2_signature_verification, auth_authz_2_iss_check, auth_authz_2_aud_check, auth_authz_2_exp_nbf_check [EXTRACTED 0.95]
+- **검증 누락에서 열리는 토큰 위조·우회 공격군** — auth_authz_2_alg_none_attack, auth_authz_2_alg_confusion, auth_authz_2_jku_x5u_injection, auth_authz_2_audience_bypass, auth_authz_2_rfc8725 [EXTRACTED 0.90]
+- **토큰을 키에 묶는 소지 증명 방식** — auth_authz_2_sender_constrained, auth_authz_2_dpop, auth_authz_2_mtls_bound, auth_authz_2_bearer_weakness [EXTRACTED 0.90]
+- **Authorization Code + PKCE 여섯 스텝 로그인 플로우** — auth_authz_3_pkce, auth_authz_3_authorization_endpoint, auth_authz_3_authorization_code, auth_authz_3_token_exchange, auth_authz_3_id_token_validation, auth_authz_3_oidc_discovery [EXTRACTED 0.95]
+- **state·PKCE·nonce 삼각 방어 (CSRF·코드 주입·ID Token 재생)** — auth_authz_3_state, auth_authz_3_pkce, auth_authz_3_nonce, auth_authz_3_code_interception, auth_authz_3_mixup_attack [EXTRACTED 0.90]
+- **클라이언트 인증·요청 강화 수단 (private_key_jwt·mTLS·PAR)** — auth_authz_3_client_authentication, auth_authz_3_private_key_jwt, auth_authz_3_mtls, auth_authz_3_par, auth_authz_3_public_client [EXTRACTED 0.85]
+- **심층 방어 겹: 프록시 인증 → 서버측 세션 → BFF 토큰 격리 → 리소스 서버 인가** — auth_authz_4_nginx_auth_request, auth_authz_4_server_side_session, auth_authz_4_bff, auth_authz_4_authorization_enforcement, auth_authz_4_defense_in_depth [EXTRACTED 0.90]
+- **엣지 신뢰 실패 사고: X-User 위조와 백엔드 직접 접근** — auth_authz_4_nginx_auth_request, auth_authz_4_header_sanitize, auth_authz_4_direct_backend_access, auth_authz_4_authrequestlab [EXTRACTED 0.85]
 - **인증·인가 해부 시리즈 4부작 아크** — auth_authz_1_post, auth_authz_2_post, auth_authz_3_post, auth_authz_4_post [EXTRACTED 0.95]
-- **docker run 실행 릴레이 5계층** — container_anatomy_1_docker_cli, container_anatomy_1_dockerd, container_anatomy_1_containerd, container_anatomy_1_containerd_shim_runc_v2, container_anatomy_1_runc, container_anatomy_1_linux_kernel [EXTRACTED 0.95]
-- **OverlayFS 쓰기·삭제 경로 (copy_up · whiteout)** — container_anatomy_1_overlayfs, container_anatomy_1_lowerdir, container_anatomy_1_upperdir, container_anatomy_1_merged_dir, container_anatomy_1_copy_up, container_anatomy_1_whiteout, container_anatomy_1_opaque_directory [EXTRACTED 0.90]
-- **커널 격리 기본기 (시야·분량·권한·시스템콜)** — container_anatomy_1_namespace, container_anatomy_1_cgroup, container_anatomy_1_capabilities, container_anatomy_1_seccomp [EXTRACTED 0.85]
-- **컨테이너 기동 계보 — CLI에서 커널까지의 층 구조** — container_anatomy_1_docker_cli, container_anatomy_1_dockerd, container_anatomy_1_containerd, container_anatomy_1_shim, container_anatomy_1_runc, container_anatomy_1_namespace, container_anatomy_1_cgroup [EXTRACTED 0.95]
-- **격리를 완성하는 커널 원시요소 묶음** — container_anatomy_1_namespace, container_anatomy_1_cgroup, container_anatomy_1_capabilities, container_anatomy_1_seccomp [EXTRACTED 0.90]
-- **OverlayFS 레이어 의미론 — copy_up·whiteout·레이어 잔존** — container_anatomy_1_overlayfs, container_anatomy_1_copy_up, container_anatomy_1_whiteout, container_anatomy_1_image_layer [EXTRACTED 0.90]
-- **OCI가 컨테이너를 쪼갠 세 스펙 (실행·포장·운반)** — container_anatomy_2_oci, container_anatomy_2_runtime_spec, container_anatomy_2_image_spec, container_anatomy_2_distribution_spec [EXTRACTED 0.95]
-- **이미지→번들→실행으로 이어지는 변환 흐름** — container_anatomy_2_image_index, container_anatomy_2_image_manifest, container_anatomy_2_image_configuration, container_anatomy_2_conversion, container_anatomy_2_filesystem_bundle, container_anatomy_2_create_start [EXTRACTED 0.90]
-- **내용이 주소라서 따라오는 것들 — 검증·중복제거·캐시와 그 한계** — container_anatomy_2_digest_chain, container_anatomy_2_descriptor, container_anatomy_2_diffid, container_anatomy_2_cross_repo_mount, container_anatomy_2_integrity_vs_trust, container_anatomy_2_tag_vs_digest [EXTRACTED 0.90]
-- **파드 기동 CRI 호출 시퀀스 (샌드박스 선행 → 컨테이너 채우기)** — container_anatomy_3_kubelet, container_anatomy_3_run_pod_sandbox, container_anatomy_3_cni, container_anatomy_3_pull_image, container_anatomy_3_create_container, container_anatomy_3_pause_container, container_anatomy_3_podsandbox [EXTRACTED 0.95]
-- **CRI를 구현·중계하는 런타임과 어댑터들** — container_anatomy_3_containerd, container_anatomy_3_cri_o, container_anatomy_3_cri_dockerd, container_anatomy_3_dockershim, container_anatomy_3_cri [EXTRACTED 0.90]
-- **kubelet→CRI→런타임→OCI→runc 계층 스택** — container_anatomy_3_kubelet, container_anatomy_3_cri, container_anatomy_3_containerd, container_anatomy_3_oci, container_anatomy_3_runc [EXTRACTED 0.90]
-- **같은 OCI 런타임 스펙을 구현해 서로 갈아 끼울 수 있는 런타임들** — container_anatomy_4_runc, container_anatomy_4_crun, container_anatomy_4_youki, container_anatomy_4_runsc, container_anatomy_4_kata_containers, container_anatomy_4_oci_runtime_spec [EXTRACTED 0.90]
-- **gVisor 시스템 콜 처리 흐름 (runsc → Sentry → Gofer / systrap)** — container_anatomy_4_runsc, container_anatomy_4_sentry, container_anatomy_4_gofer, container_anatomy_4_systrap [EXTRACTED 0.85]
-- **층마다 갈아 끼운다 — 시리즈 4편을 관통하는 주제** — container_anatomy_4_layer_map, container_anatomy_4_oci_runtime_spec, container_anatomy_4_cri, container_anatomy_4_selection_matrix, container_anatomy_1, container_anatomy_2, container_anatomy_3 [INFERRED 0.80]
-- **OSI 일곱 책임 스택과 캡슐화** — osi_7_layers_1_l1_physical, osi_7_layers_1_l2_data_link, osi_7_layers_1_l3_network, osi_7_layers_1_l4_transport, osi_7_layers_1_l5_session, osi_7_layers_1_l6_presentation, osi_7_layers_1_l7_application, osi_7_layers_1_encapsulation [EXTRACTED 0.95]
-- **아래에서 위로 좁히는 장애 진단 플로우** — osi_7_layers_1_layer_triage, osi_7_layers_1_l1_physical, osi_7_layers_1_l2_data_link, osi_7_layers_1_l3_network, osi_7_layers_1_dns_resolution_checkpoint, osi_7_layers_1_l4_transport, osi_7_layers_1_l6_presentation, osi_7_layers_1_l7_application, src_components_posts_osi_7_layers_1_layertriage [EXTRACTED 0.90]
-- **OSI 7계층 해부 시리즈** — osi_7_layers_1_post, osi_7_layers_2, osi_7_layers_3, osi_7_layers_4, osi_7_layers_5, osi_7_layers_6 [EXTRACTED 0.95]
-- **한 LAN 안에서 프레임이 목적지를 찾는 전체 흐름** — osi_7_layers_2_l1_physical, osi_7_layers_2_ethernet_frame, osi_7_layers_2_mac_learning, osi_7_layers_2_arp, osi_7_layers_2_vlan, osi_7_layers_2_switch [EXTRACTED 0.90]
-- **아래에서 위로 좁히는 L1·L2 장애 진단 3단계** — osi_7_layers_2_ethtool_check, osi_7_layers_2_ip_neigh_check, osi_7_layers_2_tcpdump_arp_check, osi_7_layers_2_troubleshooting_walkthrough [EXTRACTED 0.90]
-- **OSI 7계층 해부 시리즈 (EP1~EP6)** — osi_7_layers_1, osi_7_layers_2, osi_7_layers_3, osi_7_layers_4, osi_7_layers_5, osi_7_layers_6 [EXTRACTED 0.95]
-- **한 홉 forwarding 처리 흐름 (LPM → TTL −1 → checksum 보정 → ARP/ND → 새 L2 프레임)** — osi_7_layers_3_router, osi_7_layers_3_longest_prefix_match, osi_7_layers_3_ttl, osi_7_layers_3_header_checksum, osi_7_layers_3_arp_nd, osi_7_layers_3_mac_address [EXTRACTED 0.90]
-- **NAT 변환 생태계 (사설주소 → NAPT 매핑 → CGNAT·ALG·conntrack)** — osi_7_layers_3_nat, osi_7_layers_3_napt, osi_7_layers_3_cgnat, osi_7_layers_3_alg, osi_7_layers_3_private_address, osi_7_layers_3_conntrack [EXTRACTED 0.85]
-- **OSI 7계층 해부 시리즈 (EP1~EP6)** — osi_7_layers_1_post, osi_7_layers_2_post, osi_7_layers_3_post, osi_7_layers_4_post, osi_7_layers_5_post, osi_7_layers_6_post [EXTRACTED 0.95]
-- **신뢰할 수 없는 IP 위에 신뢰성을 쌓는 장치들** — osi_7_layers_4_reliability, osi_7_layers_4_retransmission_rto, osi_7_layers_4_fast_retransmit, osi_7_layers_4_sack, osi_7_layers_4_tcp [EXTRACTED 0.90]
-- **전송량 결정 흐름: rwnd·cwnd·비행 중 데이터의 최솟값** — osi_7_layers_4_flow_control, osi_7_layers_4_congestion_control, osi_7_layers_4_min_rwnd_cwnd, osi_7_layers_4_window_scale, src_components_posts_osi_7_layers_4_slidingwindowlab [EXTRACTED 0.85]
-- **패킷을 프로세스까지 가르는 식별 체계** — osi_7_layers_4_port, osi_7_layers_4_five_tuple, osi_7_layers_4_socket, osi_7_layers_4_ephemeral_port, osi_7_layers_4_multiplexing [EXTRACTED 0.90]
-- **L6 표현 책임의 네 갈래 (인코딩·직렬화·압축·암호화)** — osi_7_layers_5_l6_presentation, osi_7_layers_5_character_encoding, osi_7_layers_5_serialization, osi_7_layers_5_compression, osi_7_layers_5_tls [EXTRACTED 0.95]
-- **한 번의 TLS handshake로 세워지는 신뢰 (키 교환·인증·협상)** — osi_7_layers_5_tls13_handshake, osi_7_layers_5_ecdhe_forward_secrecy, osi_7_layers_5_certificate_verify, osi_7_layers_5_certificate_chain, osi_7_layers_5_sni, osi_7_layers_5_alpn [EXTRACTED 0.90]
-- **대화를 잇는 세션 연속성 (쿠키·TLS 재개·QUIC 이동·이어받기)** — osi_7_layers_5_l5_session, osi_7_layers_5_cookie, osi_7_layers_5_tls_session_resumption, osi_7_layers_5_quic_connection_migration, osi_7_layers_5_resumable_transfer, osi_7_layers_5_disconnect_ready_design [EXTRACTED 0.90]
-- **한 줄의 curl이 깨우는 일곱 계층 흐름 (DNS→TCP→TLS→HTTP)** — osi_7_layers_6_curl_journey, osi_7_layers_6_dns, osi_7_layers_6_http, osi_7_layers_6_sni_host_header, src_components_posts_osi_7_layers_6_requestjourneylab [EXTRACTED 0.90]
-- **같은 의미(RFC 9110)를 다른 전송으로 싣는 HTTP 세 버전** — osi_7_layers_6_http11, osi_7_layers_6_http2, osi_7_layers_6_http3_quic, osi_7_layers_6_semantics_vs_transport, osi_7_layers_6_rfc9110 [EXTRACTED 0.90]
-- **DNS 이름 해석 체인: stub → 재귀 → 반복 질의 → 캐싱/실패** — osi_7_layers_6_stub_resolver, osi_7_layers_6_recursive_resolver, osi_7_layers_6_iterative_query, osi_7_layers_6_dns_caching_ttl, osi_7_layers_6_dns_failures, src_components_posts_osi_7_layers_6_dnsresolvelab [EXTRACTED 0.90]
-- **v2 보안 3요소 + 런타임 강제** — tauri_1_permission, tauri_1_scope, tauri_1_capability, tauri_1_runtime_authority, tauri_1_main_capability_json [EXTRACTED 0.95]
-- **invoke 왕복 흐름 (프런트→Core→응답)** — tauri_1_invoke, tauri_1_ipc_bridge, tauri_1_generate_handler, tauri_1_greet_command, tauri_1_runtime_authority [EXTRACTED 0.90]
-- **Tauri 런타임 스택 (Core·WebView·Rust 라이브러리)** — tauri_1_core_process, tauri_1_webview_process, tauri_1_tauri_crate, tauri_1_wry, tauri_1_tao, tauri_1_tauri_runtime [EXTRACTED 0.90]
-- **권한 거절 흐름 — 플러그인 호출부터 케이퍼빌리티 해제까지** — tauri_2_dialog_plugin, tauri_2_runtime_authority, tauri_2_capabilities, tauri_2_permissions, tauri_2_scope [EXTRACTED 0.90]
-- **커맨드·상태·직렬화 배선** — tauri_2_run, tauri_2_generate_handler, tauri_2_scan_folder, tauri_2_scan_cache, tauri_2_scan_summary, tauri_2_serde_contract, tauri_2_mutex_state [EXTRACTED 0.85]
-- **파일 접근 경계 설계 — fs 플러그인 대 자체 커맨드** — tauri_2_fs_plugin, tauri_2_scan_folder, tauri_2_canonicalize_guard, tauri_2_scope, tauri_2_viz_comparison4 [INFERRED 0.80]
-- **Channel 기반 진행률 스트리밍 흐름** — tauri_2_scan_folder_streaming, tauri_2_scan_event, tauri_2_channel, tauri_2_serde_tag_content, tauri_2_frontend_channel, tauri_2_invoke [EXTRACTED 0.90]
-- **사이드카 배선 — 이름·권한·실행 3중 일치** — tauri_2_external_bin, tauri_2_target_triple_suffix, tauri_2_capabilities, tauri_2_shell_allow_spawn, tauri_2_checksum_file, tauri_2_command_sidecar_js [EXTRACTED 0.85]
-- **네 층의 실패 — 권한·등록·상태·파일명** — tauri_2_capabilities, tauri_2_generate_handler, tauri_2_app_manage, tauri_2_target_triple_suffix, tauri_2_not_allowed_vs_not_found, tauri_2_exercise [EXTRACTED 0.90]
-- **WebRTC 연결의 세 축 — 협상·연결성·보안** — webrtc_1_sdp, webrtc_1_offer_answer, webrtc_1_ice, webrtc_1_stun, webrtc_1_turn, webrtc_1_dtls_srtp [EXTRACTED 0.95]
-- **연결 협상 타임라인 — addTrack→Offer→ICE 수집→Answer→DTLS→미디어** — webrtc_1_rtcrtptransceiver, webrtc_1_offer_answer, webrtc_1_trickle_ice, webrtc_1_ice, webrtc_1_dtls_srtp, webrtc_1_signaling [EXTRACTED 0.90]
-- **연결 실패 진단·복구 흐름 — 방화벽·인터페이스 전환·경로 사망** — webrtc_1_getstats_diagnostics, webrtc_1_ice_restart, webrtc_1_consent_freshness, webrtc_1_turn, webrtc_1_ice_candidate_types [EXTRACTED 0.90]
-- **연결 이후 품질을 지키는 네 메커니즘 파이프라인 (측정→흡수→적응→선택지)** — webrtc_2_rtcp, webrtc_2_jitter_buffer, webrtc_2_congestion_control, webrtc_2_simulcast, webrtc_2_webrtc_quality_pipeline [EXTRACTED 0.95]
-- **TWCC 기반 GCC 혼잡제어 루프 (피드백→두 추정→인코더/pacer)** — webrtc_2_twcc, webrtc_2_delay_based_estimator, webrtc_2_loss_based_estimator, webrtc_2_encoder_bitrate, webrtc_2_pacer, webrtc_2_bandwidth_probing [EXTRACTED 0.90]
-- **simulcast 계층 식별·제어 스택 (RID·SSRC·인코딩 파라미터·트랜시버)** — webrtc_2_simulcast, webrtc_2_rid, webrtc_2_ssrc, webrtc_2_rtcrtpencodingparameters, webrtc_2_rtcrtptransceiver [EXTRACTED 0.85]
-- **WebRTC 해부 3부작 시리즈 (연결 → 품질 → 확장)** — webrtc_1_post, webrtc_2_post, webrtc_3_post [EXTRACTED 0.95]
-- **세 토폴로지가 대역폭·연산 비용을 나눠 지는 트레이드오프** — webrtc_3_mesh, webrtc_3_sfu, webrtc_3_mcu, webrtc_3_topology_decision, webrtc_3_rfc7667 [EXTRACTED 0.90]
-- **클라이언트 simulcast 인코딩 → SFU 계층 선택 → 구독자별 화질 전달 흐름** — webrtc_2_simulcast_rfc8853, webrtc_3_simulcast, webrtc_3_sfu, webrtc_3_dynacast, webrtc_3_active_speaker [INFERRED 0.80]
+- **docker run 한 줄의 5계층 릴레이** — container_anatomy_1_docker_cli, container_anatomy_1_dockerd, container_anatomy_1_containerd, container_anatomy_1_containerd_shim_runc_v2, container_anatomy_1_runc, container_anatomy_1_linux_kernel [EXTRACTED 0.95]
+- **OverlayFS 레이어 쓰기·삭제 메커니즘** — container_anatomy_1_overlay2, container_anatomy_1_layer_dirs, container_anatomy_1_copy_up, container_anatomy_1_whiteout, container_anatomy_1_opaque_dir [EXTRACTED 0.90]
+- **커널 격리 기본 요소 (시야·분량·권한)** — container_anatomy_1_namespace, container_anatomy_1_cgroup, container_anatomy_1_capabilities, container_anatomy_1_seccomp [EXTRACTED 0.90]
+- **도커 실행 계보: CLI → dockerd → containerd → shim → runc → 커널** — container_anatomy_1_docker_cli, container_anatomy_1_dockerd, container_anatomy_1_containerd, container_anatomy_1_containerd_shim_runc_v2, container_anatomy_1_runc, container_anatomy_1_namespace, container_anatomy_1_cgroup [EXTRACTED 0.90]
+- **OverlayFS 레이어 의미론: copy_up · whiteout · 삭제된 비밀 잔존** — container_anatomy_1_overlayfs, container_anatomy_1_copy_up, container_anatomy_1_whiteout, container_anatomy_1_image_layer_secret_leak [EXTRACTED 0.85]
+- **데몬이 죽어도 컨테이너가 사는 메커니즘: shim + subreaper + 소켓 재연결** — container_anatomy_1_containerd_shim_runc_v2, container_anatomy_1_subreaper, container_anatomy_1_containerd, container_anatomy_1_ttrpc [EXTRACTED 0.85]
+- **OCI 세 스펙의 분리 (실행·포장·운반)** — container_anatomy_2_oci, container_anatomy_2_runtime_spec, container_anatomy_2_image_spec, container_anatomy_2_distribution_spec [EXTRACTED 0.95]
+- **다이제스트 사슬 — Index → Manifest → Config + Layers를 Descriptor로 잇는다** — container_anatomy_2_image_index, container_anatomy_2_image_manifest, container_anatomy_2_image_configuration, container_anatomy_2_filesystem_layer, container_anatomy_2_descriptor, container_anatomy_2_digest [EXTRACTED 0.90]
+- **레지스트리 pull → Conversion → 번들 → create/start 실행 흐름** — container_anatomy_2_pull_flow, container_anatomy_2_image_manifest, container_anatomy_2_conversion, container_anatomy_2_filesystem_bundle, container_anatomy_2_config_json, container_anatomy_2_create_start_split [EXTRACTED 0.90]
+- **파드 하나가 뜨는 CRI 호출 흐름 (샌드박스 → 이미지 → 컨테이너)** — container_anatomy_3_kubelet, container_anatomy_3_runpodsandbox, container_anatomy_3_cni, container_anatomy_3_pullimage, container_anatomy_3_createcontainer, container_anatomy_3_startcontainer, container_anatomy_3_pause_container [EXTRACTED 0.95]
+- **CRI를 말하는 런타임·어댑터 구현체들** — container_anatomy_3_containerd, container_anatomy_3_crio, container_anatomy_3_cri_dockerd, container_anatomy_3_dockershim, container_anatomy_3_cri [EXTRACTED 0.90]
+- **컨테이너 스택의 층위별 계약 (CRI / OCI / CNI)** — container_anatomy_3_cri, container_anatomy_3_oci, container_anatomy_3_cni, container_anatomy_3_kubelet, container_anatomy_3_runc [EXTRACTED 0.85]
+- **OCI 런타임 스펙으로 갈아 끼우는 저수준 런타임 자리** — container_anatomy_4_oci_runtime_spec, container_anatomy_4_runc, container_anatomy_4_crun, container_anatomy_4_youki, container_anatomy_4_shim [EXTRACTED 0.90]
+- **gVisor 구성요소 (runsc·Sentry·Gofer·systrap)** — container_anatomy_4_gvisor, container_anatomy_4_runsc, container_anatomy_4_sentry, container_anatomy_4_gofer, container_anatomy_4_systrap [EXTRACTED 0.90]
+- **층마다 한 칸씩 고르는 선택 흐름** — container_anatomy_4_layer_map, container_anatomy_4_selection_table, container_anatomy_4_podman, container_anatomy_4_containerd, container_anatomy_4_kata_containers, container_anatomy_4_buildkit [EXTRACTED 0.80]
+- **OSI 일곱 책임이 이루는 계층 스택** — osi_7_layers_1_l1_physical, osi_7_layers_1_l2_data_link, osi_7_layers_1_l3_network, osi_7_layers_1_l4_transport, osi_7_layers_1_l5_session, osi_7_layers_1_l6_presentation, osi_7_layers_1_l7_application, osi_7_layers_1_osi_reference_model [EXTRACTED 0.95]
+- **아래에서 위로 좁히는 장애 진단 흐름** — osi_7_layers_1_layer_triage, src_components_posts_osi_7_layers_1_layertriage, osi_7_layers_1_l1_physical, osi_7_layers_1_l2_data_link, osi_7_layers_1_l3_network, osi_7_layers_1_dns_resolution_checkpoint, osi_7_layers_1_l4_transport, osi_7_layers_1_refused_vs_timeout, osi_7_layers_1_l6_presentation, osi_7_layers_1_l7_application [EXTRACTED 0.90]
+- **캡슐화를 실제 bytes로 확인하는 경로** — osi_7_layers_1_encapsulation, osi_7_layers_1_pdu, src_components_posts_osi_7_layers_1_encapsulationlab, osi_7_layers_1_packet_capture, osi_7_layers_1_hands_on_lab [EXTRACTED 0.85]
+- **ARP 주소 해석 흐름 (broadcast 질의 → unicast 응답 → cache → 프레임 전송)** — osi_7_layers_2_arp, osi_7_layers_2_broadcast_domain, osi_7_layers_2_arp_cache, osi_7_layers_2_mac_address, osi_7_layers_2_ethernet_frame [EXTRACTED 0.90]
+- **아래에서 위로 좁히는 L1→L2 장애 진단 3단계** — osi_7_layers_2_troubleshoot_walkthrough, osi_7_layers_2_ethtool_check, osi_7_layers_2_ip_neigh_check, osi_7_layers_2_tcpdump_arp, osi_7_layers_2_duplex_mismatch, osi_7_layers_2_vlan [EXTRACTED 0.85]
+- **브로드캐스트 영역을 다루는 세 장치 — VLAN 분할·router 경계·STP 루프 차단** — osi_7_layers_2_broadcast_domain, osi_7_layers_2_vlan, osi_7_layers_2_router, osi_7_layers_2_stp, osi_7_layers_2_broadcast_storm [INFERRED 0.80]
+- **한 홉 forwarding 절차 (LPM → TTL 감소 → checksum 보정 → MAC 재작성)** — osi_7_layers_3_router, osi_7_layers_3_routing_table, osi_7_layers_3_longest_prefix_match, osi_7_layers_3_next_hop, osi_7_layers_3_ttl, osi_7_layers_3_header_checksum, osi_7_layers_3_mac_rewrite, osi_7_layers_3_arp [EXTRACTED 0.90]
+- **ICMP 기반 L3 진단 신호 체계** — osi_7_layers_3_icmp, osi_7_layers_3_ping, osi_7_layers_3_traceroute, osi_7_layers_3_time_exceeded, osi_7_layers_3_destination_unreachable, osi_7_layers_3_pmtud, osi_7_layers_3_ttl [EXTRACTED 0.85]
+- **NAT 주소 변환 계열과 그 대가** — osi_7_layers_3_nat, osi_7_layers_3_napt, osi_7_layers_3_cgnat, osi_7_layers_3_alg, osi_7_layers_3_private_address, osi_7_layers_3_conntrack [EXTRACTED 0.85]
+- **TCP가 신뢰성을 만드는 장치들** — osi_7_layers_4_cumulative_ack, osi_7_layers_4_retransmission_rto, osi_7_layers_4_fast_retransmit, osi_7_layers_4_sack, osi_7_layers_4_byte_stream [EXTRACTED 0.90]
+- **보낼 양을 정하는 두 창(rwnd·cwnd)과 그 최솟값** — osi_7_layers_4_flow_control, osi_7_layers_4_congestion_control, osi_7_layers_4_min_rwnd_cwnd, osi_7_layers_4_window_scale, osi_7_layers_4_zero_window [EXTRACTED 0.85]
+- **패킷을 프로세스까지 가르는 식별 체계** — osi_7_layers_4_port, osi_7_layers_4_five_tuple, osi_7_layers_4_socket, osi_7_layers_4_ephemeral_port, osi_7_layers_4_so_reuseport, osi_7_layers_4_napt [EXTRACTED 0.85]
+- **L6 표현의 네 갈래 (인코딩·직렬화·압축·암호화)** — osi_7_layers_5_presentation_layer, osi_7_layers_5_character_encoding, osi_7_layers_5_serialization, osi_7_layers_5_compression, osi_7_layers_5_tls [EXTRACTED 0.95]
+- **TLS handshake가 기밀성·무결성·인증을 세우는 흐름** — osi_7_layers_5_tls_handshake, osi_7_layers_5_ecdhe, osi_7_layers_5_certificate_verify, osi_7_layers_5_certificate_chain, osi_7_layers_5_sni, osi_7_layers_5_alpn [EXTRACTED 0.90]
+- **대화 연속성을 잇는 세션 메커니즘 묶음** — osi_7_layers_5_session_layer, osi_7_layers_5_cookie, osi_7_layers_5_tls_resumption, osi_7_layers_5_quic_migration, osi_7_layers_5_resumable_transfer, osi_7_layers_5_idempotency_backoff [EXTRACTED 0.90]
+- **DNS 이름 해석 흐름 (stub→재귀→root/TLD/권한, 캐싱·레코드·실패 코드)** — osi_7_layers_6_dns, osi_7_layers_6_recursive_iterative_query, osi_7_layers_6_dns_caching_ttl, osi_7_layers_6_dns_records, osi_7_layers_6_dns_failure_codes, osi_7_layers_6_dnsresolvelab [EXTRACTED 0.90]
+- **한 줄의 curl이 깨우는 일곱 계층 종합 흐름** — osi_7_layers_6_curl_journey, osi_7_layers_6_dns, osi_7_layers_6_http, osi_7_layers_6_sni_host, osi_7_layers_6_requestjourneylab, osi_7_layers_6_hands_on_curl_v [EXTRACTED 0.85]
+- **OSI 7계층 해부 시리즈 6부작 (L1~L7 질문의 사슬)** — osi_7_layers_1_post, osi_7_layers_2_post, osi_7_layers_3_post, osi_7_layers_4_post, osi_7_layers_5_post, osi_7_layers_6_post, osi_7_layers_6_layered_questions [EXTRACTED 0.90]
+- **v2 보안 모델 — permissions·scopes·capabilities와 런타임 강제** — tauri_1_permission, tauri_1_scope, tauri_1_capability, tauri_1_runtime_authority, tauri_1_trust_boundary [EXTRACTED 0.90]
+- **invoke 왕복 흐름 — 프런트 호출에서 Rust 커맨드 실행까지** — tauri_1_invoke, tauri_1_ipc_bridge, tauri_1_runtime_authority, tauri_1_generate_handler, tauri_1_greet_command [EXTRACTED 0.85]
+- **런타임 구성 — Core가 WRY·TAO·tauri-runtime으로 OS WebView를 오케스트레이션** — tauri_1_core_process, tauri_1_webview_process, tauri_1_wry, tauri_1_tao, tauri_1_tauri_runtime, tauri_1_os_webview [EXTRACTED 0.85]
+- **권한 거절 → 케이퍼빌리티 개방 흐름** — tauri_2_dialog_plugin, tauri_2_runtime_authority, tauri_2_dialog_allow_open, tauri_2_capabilities_default_json, tauri_2_permission_scope [EXTRACTED 0.85]
+- **커맨드 배선: 정의·등록·호출·상태 주입** — tauri_2_scan_folder, tauri_2_generate_handler, tauri_2_invoke_handler, tauri_2_invoke, tauri_2_manage_state, tauri_2_scan_cache [EXTRACTED 0.90]
+- **내 커맨드로 읽을 때의 자기 검증 책임** — tauri_2_fs_vs_command_tradeoff, tauri_2_scan_folder, tauri_2_canonicalize_guard, tauri_2_toctou, tauri_2_fs_plugin [INFERRED 0.75]
+- **사이드카 이름 세 곳 대조 (externalBin · 케이퍼빌리티 name · 호출 인자)** — tauri_2_external_bin, tauri_2_shell_allow_execute, tauri_2_checksum_file, tauri_2_command_sidecar_js, tauri_2_target_triple_suffix [EXTRACTED 0.90]
+- **진행률 스트리밍 흐름 (Rust enum → Channel → 프런트 분기)** — tauri_2_scan_folder_streaming, tauri_2_scan_event, tauri_2_serde_tag_content, tauri_2_channel, tauri_2_invoke, tauri_2_onevent_handler [EXTRACTED 0.90]
+- **네 층의 실패 지점 (권한·등록·상태·파일 이름)** — tauri_2_dialog_allow_open, tauri_2_generate_handler, tauri_2_app_manage, tauri_2_target_triple_suffix, tauri_2_error_triage [EXTRACTED 0.85]
+- **VPN 아닌 것 가르기 — 계층·범위·암호화 세 축** — vpn_anatomy_1_vpn, vpn_anatomy_1_proxy, vpn_anatomy_1_ssh_tunnel, vpn_anatomy_1_nat, vpn_anatomy_1_routing_table [EXTRACTED 0.90]
+- **세 가족 지형도 — IPsec·WireGuard·TLS-VPN** — vpn_anatomy_1_ipsec, vpn_anatomy_1_wireguard, vpn_anatomy_1_tls_vpn, vpn_anatomy_1_openvpn, vpn_anatomy_1_ikev2, vpn_anatomy_1_esp [EXTRACTED 0.90]
+- **운영 함정 — 보호 범위가 새는 자리들** — vpn_anatomy_1_split_tunnel, vpn_anatomy_1_dns_leak, vpn_anatomy_1_ipv6_leak, vpn_anatomy_1_kill_switch, vpn_anatomy_1_mtu_blackhole, vpn_anatomy_1_routing_table [EXTRACTED 0.85]
+- **VPN 프로토콜 지형도 세 가족 + 레거시** — vpn_anatomy_1_protocol_families, vpn_anatomy_1_ipsec_family, vpn_anatomy_1_wireguard, vpn_anatomy_1_tls_vpn_family, vpn_anatomy_1_legacy_pptp_l2tp [EXTRACTED 0.90]
+- **VPN 해부 7부작 시리즈** — vpn_anatomy_1_post, vpn_anatomy_2_post, vpn_anatomy_3_post, vpn_anatomy_4_post, vpn_anatomy_5_post, vpn_anatomy_6_post, vpn_anatomy_7_post [EXTRACTED 0.95]
+- **보호 범위 판정 흐름: 라우팅·메타데이터·위협모델·신뢰 이전** — vpn_anatomy_1_routing_table_scope, vpn_anatomy_1_metadata_dns_sni, vpn_anatomy_1_threat_model, vpn_anatomy_1_trust_shift_gateway, vpn_anatomy_1_vpn_is_configuration [INFERRED 0.80]
+- **데이터 국면의 세 약속을 떠받치는 부품들** — vpn_anatomy_2_three_promises, vpn_anatomy_2_aead, vpn_anatomy_2_nonce, vpn_anatomy_2_replay_protection [EXTRACTED 0.85]
+- **ChaCha20-Poly1305 합성 구조 (블록 카운터 0 → 일회성 키)** — vpn_anatomy_2_chacha20_poly1305, vpn_anatomy_2_chacha20, vpn_anatomy_2_poly1305, vpn_anatomy_2_block_counter, vpn_anatomy_2_nonce [EXTRACTED 0.85]
+- **키 수립 흐름: 키교환 → KDF → AEAD 키, 그리고 PFS** — vpn_anatomy_2_x25519, vpn_anatomy_2_kdf, vpn_anatomy_2_aead, vpn_anatomy_2_pfs [EXTRACTED 0.80]
+- **매 패킷마다 반복되는 세 약속 (AEAD·키교환·카운터)** — vpn_anatomy_2_aead, vpn_anatomy_2_x25519, vpn_anatomy_2_anti_replay, vpn_anatomy_2_post [EXTRACTED 0.90]
+- **PFS를 떠받치는 키 파생 흐름 (키교환→공유 비밀→KDF→방향별 키)** — vpn_anatomy_2_x25519, vpn_anatomy_2_shared_secret, vpn_anatomy_2_kdf, vpn_anatomy_2_pfs [EXTRACTED 0.85]
+- **AEAD 교체 가능성을 만드는 공통 파라미터 규약** — vpn_anatomy_2_aes_gcm, vpn_anatomy_2_chacha20_poly1305, vpn_anatomy_2_aead_parameters, vpn_anatomy_2_aead [EXTRACTED 0.85]
+- **ESP 패킷을 이루는 필드 배치 전체** — vpn_anatomy_4_esp, vpn_anatomy_4_spi, vpn_anatomy_4_sequence_number, vpn_anatomy_4_esp_trailer, vpn_anatomy_4_next_header, vpn_anatomy_4_icv, vpn_anatomy_4_esn [EXTRACTED 0.95]
+- **UDP 4500 한 포트를 나눠 쓰는 세 트래픽과 감지 흐름** — vpn_anatomy_4_nat_t, vpn_anatomy_4_non_esp_marker, vpn_anatomy_4_nat_keepalive, vpn_anatomy_4_nat_detection_payload, vpn_anatomy_4_spi, vpn_anatomy_4_nat [EXTRACTED 0.90]
+- **MTU 블랙홀이 생기고 진단·완화되는 전 과정** — vpn_anatomy_4_mtu, vpn_anatomy_4_pmtud, vpn_anatomy_4_df_bit_policy, vpn_anatomy_4_icmp_blocking, vpn_anatomy_4_mtu_blackhole, vpn_anatomy_4_mss_clamping, vpn_anatomy_4_troubleshooting_walkthrough [EXTRACTED 0.90]
+- **ESP 패킷 실측 관찰 흐름 (터널 수립 → 캡처 → 디섹션 → 복호)** — vpn_anatomy_4_strongswan_swanctl, vpn_anatomy_4_offload_disable, vpn_anatomy_4_tcpdump, vpn_anatomy_4_tshark, vpn_anatomy_4_wireshark_esp_sa, vpn_anatomy_4_netns_lab [EXTRACTED 0.90]
+- **UDP 4500 위 세 손님 구분 (IKE / NAT-keepalive / ESP)** — vpn_anatomy_4_nat_traversal, vpn_anatomy_4_nat_keepalive, vpn_anatomy_4_spi, vpn_anatomy_4_esp_header [EXTRACTED 0.85]
+- **MTU 블랙홀과 그 대응·오해** — vpn_anatomy_4_mtu_blackhole, vpn_anatomy_4_mss_clamping, vpn_anatomy_4_df_fragmentation, vpn_anatomy_4_common_mistakes [EXTRACTED 0.85]
+- **WebRTC 연결의 세 축 — 협상·연결성·보안** — webrtc_1_signaling, webrtc_1_sdp, webrtc_1_ice, webrtc_1_dtls_srtp [EXTRACTED 0.90]
+- **NAT 트래버설 연결성 스택 (STUN·TURN·ICE·trickle·후보 타입)** — webrtc_1_stun, webrtc_1_turn, webrtc_1_ice, webrtc_1_trickle_ice, webrtc_1_ice_candidate_types, webrtc_1_nat_traversal [EXTRACTED 0.85]
+- **협상의 가장자리 — glare·perfect negotiation·재협상·ICE restart** — webrtc_1_glare, webrtc_1_perfect_negotiation, webrtc_1_renegotiation, webrtc_1_ice_restart, webrtc_1_trickle_ice [EXTRACTED 0.85]
+- **품질 유지 파이프라인의 네 메커니즘 (측정→흡수→적응→선택지)** — webrtc_2_rtp, webrtc_2_rtcp, webrtc_2_jitter_buffer, webrtc_2_congestion_control, webrtc_2_simulcast [EXTRACTED 0.90]
+- **TWCC 기반 GCC 혼잡제어 루프 참여 요소** — webrtc_2_twcc, webrtc_2_delay_based_estimator, webrtc_2_loss_based_estimator, webrtc_2_bandwidth_probing, webrtc_2_pacer, webrtc_2_encoder [EXTRACTED 0.85]
+- **simulcast 계층 식별·협상 체계 (RID·헤더 확장·SDP·인코딩 파라미터)** — webrtc_2_simulcast, webrtc_2_rid, webrtc_2_rtp_header_extension, webrtc_2_sdp, webrtc_2_rtcrtpencodingparameters, webrtc_2_ssrc [EXTRACTED 0.85]
+- **WebRTC 해부 3부작 (연결 성립 → 품질 유지 → 다인원 토폴로지)** — webrtc_1_post, webrtc_2_post, webrtc_3_post [EXTRACTED 0.95]
+- **mesh·SFU·MCU 세 토폴로지 트레이드오프 (RFC 7667 분류)** — webrtc_3_mesh, webrtc_3_sfu, webrtc_3_mcu, webrtc_3_rfc7667, webrtc_3_topology_decision_axes [EXTRACTED 0.90]
+- **simulcast 계층 준비(2편)→SFU 계층 선택(3편) 흐름** — webrtc_2_rfc8853, webrtc_2_w3c_simulcast, webrtc_3_simulcast, webrtc_3_sfu, webrtc_3_dynacast [INFERRED 0.80]
 
-## Communities (32 total, 0 thin omitted)
+## Communities (52 total, 0 thin omitted)
 
 ### Community 0 - "Tauri IPC Commands & Security"
-Cohesion: 0.05
-Nodes (63): Tauri 해부 1편, app.manage() 상태 등록, 인자 validator로 권한 좁히기, async 커맨드에서 잠금 유지 함정, tauri::async_runtime::Mutex (비동기 Mutex), 커맨드 자체 경로 검증(canonicalize), capabilities/default.json 권한 묶음, Channel 진행률 스트리밍 (+55 more)
+Cohesion: 0.07
+Nodes (57): AAD (Additional Authenticated Data), AES-GCM (ENCR_AES_GCM_16, AEAD 결합 모드), AES-GCM ESP와 AAD 인증, AH (Authentication Header, 프로토콜 51), Anti-replay 슬라이딩 윈도우, CHILD_SA (데이터 전송 SA), RFC 6479 순환 버퍼 재생 방지, 자주 틀리는 일곱 가지 (+49 more)
 
 ### Community 1 - "Container Ecosystem & Tooling"
 Cohesion: 0.06
-Nodes (57): 컨테이너의 해부 EP2 — OCI 3대 스펙, 컨테이너의 해부 EP3 — 쿠버네티스와 CRI, "도커 대신 뭘 쓰지"가 잘못된 질문인 이유 (컨테이너의 해부 EP4), 아카이브된 도구를 새로 고르면 안 되는 이유, 빌드 도구 층, Buildah, BuildKit, CNI (Container Network Interface) (+49 more)
+Nodes (56): 컨테이너 해부 EP1 — 도커라는 조립품, BuildKit secret mount, Capabilities 박탈, capabilities · seccomp (격리 완성 요소), cgroup (control group), cgroup v2 통합 계층, 컨테이너 실행 릴레이 5계층, containerd (+48 more)
 
 ### Community 2 - "OCI Image & Runtime Specs"
 Cohesion: 0.07
-Nodes (49): 교체 가능한 저수준 런타임 (crun·youki·runsc), annotations (스펙이 비워 둔 메타데이터 칸), CNI (Container Network Interface), config.json, Conversion (이미지 → 런타임 번들 변환), create / start 분리, 교차 저장소 마운트 (?mount=&from=), 직접 해보기 — curl·jq로 레지스트리 실습 (+41 more)
+Nodes (51): 액세스 토큰, alg 허용목록 (1단계), alg confusion (RS256→HS256), alg:none 공격, aud(대상) 확인 (5단계), audience 우회 (남의 토큰 통과), base64url 인코딩, Bearer 토큰의 근본 약점 (+43 more)
 
 ### Community 3 - "Docker Layers & Kernel Isolation"
-Cohesion: 0.08
-Nodes (48): 컨테이너 해부학 1편 — 도커의 층 구조, BuildKit secret mount (레이어에 남지 않는 빌드 시크릿), Capabilities 박탈, cgroup (자원 분량 제한), cgroup v2 통합 계층 · no internal process constraint, containerd, copy_up (첫 쓰기 시 파일 전체 복사), CRI (Container Runtime Interface) (+40 more)
+Cohesion: 0.06
+Nodes (49): 교체 가능한 저수준 런타임 (crun·youki·runsc), annotations (스펙이 비워 둔 칸), 익명 베어러 토큰 인증 (401 + WWW-Authenticate), CNI (Container Network Interface), config.json, 내용 주소화의 세 결과 (무결성·중복 제거·캐시), Conversion (이미지 → 런타임 번들 변환), create / start 분리 (+41 more)
 
 ### Community 4 - "WebRTC Congestion Control"
-Cohesion: 0.06
-Nodes (47): AVPF (RFC 4585, 즉시 피드백 프로파일), Bandwidth probing (패딩 패킷 능동 탐색), 혼잡제어 (congestion control), delay-based 추정 (AIMD, 지연 추세), 동적 페이로드 타입 (96~127, SDP 협상), 인코더 목표 비트레이트 조정 (해상도·프레임레이트), FEC (RED/ULPFEC·FlexFEC, 범위 밖), fraction lost / cumulative packets lost (+39 more)
+Cohesion: 0.07
+Nodes (48): L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가, Access Port, ARP (Address Resolution Protocol), ARP Cache (IP → MAC), ARP Spoofing, Autonegotiation (802.3 Clause 28), 브로드캐스트 영역(Broadcast Domain), Broadcast Storm (L2 루프) (+40 more)
 
 ### Community 5 - "Tauri Architecture & Bundle Size"
 Cohesion: 0.06
-Nodes (44): BundleMemoryExample 시각화 컴포넌트, InvokeRoundTrip 시각화 컴포넌트, TauriRuntimeArchitecture 시각화 컴포넌트, TauriVsElectron 시각화 컴포넌트, Tauri 해부 1편 — 작은 번들은 결과일 뿐, v1 allowlist (전역 허용목록), 번들·메모리 예시 측정, Capability (창별 권한 묶음) (+36 more)
+Nodes (43): slow start · congestion avoidance · AIMD, byte stream (메시지 경계 없음), CLOSE-WAIT (앱이 close() 안 함), 혼잡 제어 (cwnd), Connection ID와 연결 이동, 연결 종료 (FIN, half-close), CUBIC · BBR · ECN, 순서번호와 누적 ACK (+35 more)
 
 ### Community 6 - "OAuth Authorization Code + PKCE"
 Cohesion: 0.07
-Nodes (41): access_token, 일회용 인가 코드 (authorization code), Authorization Code Grant 흐름, 백채널 (back channel), 클라이언트 인증 (client_secret·private_key_jwt·mTLS), code_challenge (S256), 코드 가로채기·주입 공격, code_verifier (+33 more)
+Nodes (42): L3 해부: 패킷은 어떻게 모르는 네트워크를 건너 길을 찾는가, ALG (Application Layer Gateway), ARP를 통한 MAC 해석 (L2 연계), CGNAT (Carrier-Grade NAT), conntrack (NAT·연결 추적 조회), Default route (0.0.0.0/0), ICMP Destination Unreachable, Dynamic routing (OSPF·IS-IS·BGP) (+34 more)
 
 ### Community 7 - "IP Routing & NAT"
 Cohesion: 0.08
-Nodes (41): L3 해부: 패킷은 어떻게 모르는 네트워크를 건너 길을 찾는가, ALG (Application Layer Gateway), ARP / ND (다음 홉 MAC 해석), CGNAT (Carrier-Grade NAT), CIDR prefix 길이 / subnet mask, conntrack (NAT·연결 추적 표), Default route (0.0.0.0/0), Dynamic routing (OSPF·IS-IS·BGP) (+33 more)
+Nodes (41): 인증·인가 해부 2편 — 토큰과 검증: 서명을 믿는다는 것, 인증·인가 해부 3편 — 플로우: 토큰은 어떻게 오는가, access_token, 일회용 authorization code, Authorization Code Grant 흐름, 인가 요청 (authorization_endpoint), 백채널 (back channel), 클라이언트 인증 (confidential client) (+33 more)
 
 ### Community 8 - "Authentication vs Authorization Basics"
-Cohesion: 0.09
-Nodes (40): ABAC (속성 기반 접근 제어, NIST SP 800-162), 액세스 토큰 (위임된 인가, bearer), IAL·AAL·FAL 보증 수준 3축, audience(aud) 검증 누락과 토큰 치환 사고, 인증(Authentication) — 너는 누구냐, 인가(Authorization) — 해도 되느냐, AuthzMap (인증·인가 인터랙티브 지도), 쿠키 속성 (Secure·HttpOnly·SameSite) (+32 more)
+Cohesion: 0.07
+Nodes (40): v1 allowlist (전역 허용목록), BundleMemoryExample (viz 컴포넌트), Capability (케이퍼빌리티), tauri::ipc::Channel (스트리밍 통로), Chromium 번들 렌더러, Command (invoke 요청-응답), Core 프로세스 (Rust), 콘텐츠 보안 정책 (CSP) · XSS 대비 (+32 more)
 
 ### Community 9 - "Kubernetes CRI Runtimes"
-Cohesion: 0.09
-Nodes (37): CRI (Container Runtime Interface), cgroup 드라이버 일치 (cgroupfs vs systemd), CNI (Container Network Interface), --container-runtime-endpoint 소켓 설정, containerd (CRI 플러그인 내장 런타임), CreateContainer, CRI (Container Runtime Interface), cri-dockerd (Mirantis·Docker 유지보수 어댑터) (+29 more)
+Cohesion: 0.08
+Nodes (39): OSI 7계층, 외우지 말고 데이터의 여행으로 이해하기, ARP / IPv6 Neighbor Discovery (링크 내 주소 해석), 자주 틀리는 일곱 가지 오해, DNS 이름 해석 분리 검증 (L4처럼 보이는 L7 실패), 캡슐화 (헤더를 겹겹이 포장하는 일), end-to-end argument (세션·표현을 양 끝에 맡기는 설계 철학), 직접 해보기: curl 한 요청을 계층별로 해부, IEEE 802.3-2018 Ethernet (+31 more)
 
 ### Community 10 - "JWT Tokens & Signature Validation"
-Cohesion: 0.09
-Nodes (36): 액세스 토큰 vs ID Token 구분, alg 허용목록, alg confusion (RS256→HS256) 공격, alg:none 공격, aud(대상) 검증, DPoP, jku·x5u 키 주입 / SSRF, JWE (암호화된 토큰) (+28 more)
+Cohesion: 0.11
+Nodes (34): AAD (인증되지만 암호화되지 않는 연관 데이터), AEAD (Authenticated Encryption with Associated Data), AEAD 공통 파라미터 (nonce 12옥텟·태그 16옥텟), AES-GCM AEAD, 재전송 방지 (카운터 + 창), ChaCha20 블록 카운터, ChaCha20 스트림 암호 (512비트 상태), ChaCha20-Poly1305 AEAD (+26 more)
 
 ### Community 11 - "Auth Production Best Practices"
-Cohesion: 0.10
-Nodes (33): 리소스 서버 인가 집행, 인증·인가 베스트 프랙티스 체크리스트, BFF(Backend-for-Frontend) 토큰 격리 패턴, CORS는 CSRF 방어가 아니다, CSRF 방어(Synchronizer Token·Double-Submit), 심층 방어(Defense in Depth), deny-by-default 원칙, 백엔드 직접 접근(엣지 우회) 차단 (+25 more)
+Cohesion: 0.11
+Nodes (33): cgroup 드라이버 일치 (cgroupfs vs systemd), CNI (Container Network Interface), containerd, CreateContainer, CRI (Container Runtime Interface), cri-dockerd (Mirantis·Docker 유지보수 어댑터), crictl (CRI 전용 디버깅 도구), CRI-O (+25 more)
 
 ### Community 12 - "WebRTC ICE & SDP Negotiation"
-Cohesion: 0.11
-Nodes (33): IceTraversalLab (ICE 트래버설 인터랙티브 랩), LoopbackNegotiationDemo (한 탭 루프백 협상 데모), SdpNegotiationStepper (SDP 협상 스테퍼), BUNDLE · rtcp-mux 트랜스포트 통합, consent freshness · NAT keepalive (RFC 7675), DTLS-SRTP 의무 암호화 (RFC 5764), getStats · webrtc-internals 진단, getUserMedia (미디어 캡처, secure context) (+25 more)
+Cohesion: 0.12
+Nodes (32): IceTraversalLab (ICE 트래버설 랩), LoopbackNegotiationDemo (한 탭 루프백 협상 데모), SdpNegotiationStepper (SDP 협상 스테퍼), BUNDLE · rtcp-mux 트랜스포트 통합, consent freshness / keepalive (RFC 7675), DCEP 데이터 채널 개설 (RFC 8832), DTLS-SRTP 의무 암호화 (RFC 5764), getStats · webrtc-internals 진단 (+24 more)
 
 ### Community 13 - "OSI Seven-Layer Model"
-Cohesion: 0.16
-Nodes (32): OSI 7계층, 외우지 말고 데이터의 여행으로 이해하기, ARP / IPv6 Neighbor Discovery (링크 내 주소 해석), 자주 틀리는 일곱 가지 오해, 장비와 계층 매핑 (hub·switch·router·LB·WAF·NIC), 이름 해석 검사 지점 (DNS는 L7이지만 진단의 길목), end-to-end argument (세션·표현을 종단 application에 맡김), IEEE 802.3-2018 — Ethernet MAC/PHY, L1 Physical — 비트를 매체 신호로 (+24 more)
+Cohesion: 0.11
+Nodes (29): 컨테이너의 해부 EP2 — OCI 3대 스펙, 컨테이너의 해부 EP3 — 쿠버네티스와 CRI, "도커 대신 뭘 쓰지"가 잘못된 질문인 이유 (컨테이너의 해부 EP4), Buildah (rootless 빌드 도구), BuildKit (Docker 기본 빌더), conmon (컨테이너 감시자), containerd, CRI (Container Runtime Interface) (+21 more)
 
 ### Community 14 - "WebRTC RFC References"
-Cohesion: 0.08
-Nodes (32): RFC 4585 (AVPF 즉시 피드백), RFC 8888 (CCFB 혼잡제어 피드백), 연결(connectivity)과 품질(quality)의 구분, GCC 초안 (draft-ietf-rmcat-gcc), RFC 7587 (Opus RTP 페이로드 포맷), WebRTC 해부 2편 — 연결된 경로 위에서, 품질은 어떻게 지켜지는가, RFC 8852 (RID 헤더 확장), RFC 3551 (RTP/AVP 프로파일) (+24 more)
+Cohesion: 0.14
+Nodes (21): L7 해부: DNS와 HTTP, 그리고 한 줄의 curl로 끝나는 여행, 콘텐츠 협상 (Accept·Accept-Language·Accept-Encoding), 한 줄의 curl이 깨우는 일곱 책임, 직접 해보기: curl -v 로그를 일곱 계층으로 되감기, HTTP (요청과 응답의 문법), HTTP 캐싱 (Cache-Control·ETag·304 조건부 요청), HTTP 상태 코드 부류 (2xx·3xx·4xx·5xx), L7 응용 계층: 전달이 아니라 의미 (+13 more)
 
 ### Community 15 - "TLS Handshake & Character Encoding"
-Cohesion: 0.08
-Nodes (31): 인증서 체인 검증 (leaf → 중간 CA → trust anchor), CertificateVerify·Finished (MITM 차단의 핵심), 도해: 글자 → 코드 포인트 → byte, 문자 인코딩 (글자 → 코드 포인트 → byte), charset 선언 (meta charset / Content-Type), 압축 협상 (gzip·brotli, Accept-Encoding), CRIME·BREACH (압축 크기로 새는 비밀), ECDHE와 forward secrecy (+23 more)
+Cohesion: 0.11
+Nodes (20): 40살인데 알고리즘 해도 괜찮을까요 - 프롤로그, "알고리즘은 실무에서 의미 없다"는 통념, 겸직으로 인한 코딩 밀도 저하, 코딩 테스트 실패 경험, 개념 추상화·사고 시스템 구축, OOP·소프트웨어공학·운영체제 학습, 스타트업 CTO 커리어, 새 도메인의 와꾸를 읽는 패턴 인식 (+12 more)
 
 ### Community 16 - "DNS Resolution & HTTP Basics"
-Cohesion: 0.12
-Nodes (24): ALPN (상위 프로토콜 협상), RFC 7301 — ALPN, DNS(Domain Name System), DNS 캐싱과 TTL, DNS 실패 코드: NXDOMAIN·SERVFAIL·NODATA·음성 캐싱, DNS 레코드 타입(A/AAAA·CNAME·MX·NS·SOA·TXT·CAA·HTTPS/SVCB), DNS 전송: UDP 53 · TC 비트 · TCP 53 · EDNS0, DNSSEC — 출처 인증·무결성 (+16 more)
+Cohesion: 0.18
+Nodes (18): 인증·인가 해부 1편 — 로그인 화면 뒤에 숨은 지형도, ABAC (속성 기반 접근 제어), 보증 수준 IAL·AAL·FAL, 인증(Authentication), 인가(Authorization), AuthzMap (인증·인가 인터랙티브 지도 컴포넌트), 식별(Identification), 신원증명(Identity Proofing) (+10 more)
 
 ### Community 17 - "Developer Career & Fundamentals"
-Cohesion: 0.12
-Nodes (20): "알고리즘은 실무에서 의미 없다"는 여론, 알고리즘 — 가장 큰 취약점, 외연 확장 학습(마케팅·AI·심리학·철학·경영·경제), 코딩 밀도 하락, 코딩 테스트 실패 경험, 개념 추상화·사고 시스템 구축, 스타트업 CTO 커리어, 새 도메인의 와꾸를 보는 패턴 인식 (+12 more)
+Cohesion: 0.18
+Nodes (18): RFC 8853 (simulcast), 발화자 감지 (active/dominant speaker detection), BlogGeek.me — WebRTC P2P mesh, Dynacast (LiveKit 고유 계층 인코딩 중단 최적화), 하이브리드 토폴로지 구성 (SFU + MCU 게이트웨이), Janus VideoRoom 문서, LiveKit SFU 공식 문서, MCU (Multipoint Control/Conferencing Unit) (+10 more)
 
 ### Community 18 - "Browser Choice & AI Agents"
-Cohesion: 0.19
-Nodes (17): AI 에이전트 UX 일체감, Arc Browser, aside 브라우저, 브라우저 자동화(크롤링·폼 채우기 위임), 브라우저 노마드, 크로미움 기반, 클로드의 웹 접근 실패(MCP 설정 필요), aside clear 기능(전 탭 강제 종료) (+9 more)
+Cohesion: 0.15
+Nodes (17): 액세스 토큰(Access Token, bearer), audience(aud) 검증, 위임(Delegation), 페더레이션(Federation), ID Token, JWT (JSON Web Token), OAuth 2.0 (위임 인가 프레임워크), OAuth 2.1 (IETF Internet-Draft) (+9 more)
 
 ### Community 19 - "Ethernet Frames & ARP"
 Cohesion: 0.15
-Nodes (17): L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가, Autonegotiation (IEEE 802.3 Clause 28), 802.1Q 4바이트 태그 (TPID·TCI·VID·PCP·DEI), Duplex mismatch (반이중/전이중 불일치 장애), Ethernet II 프레임 구조, FCS (Frame Check Sequence), Gratuitous ARP와 ARP Probe (ACD, RFC 5227), IEEE 802.3 Ethernet 표준 (+9 more)
+Nodes (17): AVPF (RFC 4585 피드백 프로파일), FEC (RED/ULPFEC·FlexFEC, 범위 밖), interarrival jitter (지터 추정치), NACK (Generic NACK) 및 RTX 재전송, 코덱별 RTP 페이로드 포맷 RFC (RFC 7587 Opus, RFC 7741 VP8), PLI (Picture Loss Indication), Receiver Report (RR), RFC 3550 (RTP/RTCP) (+9 more)
 
 ### Community 20 - "TCP Reliability & Congestion"
-Cohesion: 0.16
-Nodes (16): TCP는 byte stream (메시지 경계 없음), CLOSE-WAIT (앱이 close() 안 함), 혼잡 제어 (cwnd·slow start·AIMD·CUBIC·BBR·ECN), 연결 종료 (FIN 교환·half-close), 빠른 재전송 (중복 ACK 3개), 흐름 제어 (rwnd·zero window probe), Head-of-line blocking, 전송 한계 = min(rwnd, cwnd) − 비행 중 데이터 (+8 more)
+Cohesion: 0.21
+Nodes (16): aside: 드디어 arc의 악령에서 벗어나나, AI 에이전트 UX의 클리셰화, Arc Browser, aside 브라우저, 브라우저 노마드, 크로미움 기반, Claude의 웹 접근 실패 대비 aside의 즉시 접근, aside clear 기능(전체 탭 닫기) (+8 more)
 
 ### Community 21 - "HTTP Semantics & Caching"
-Cohesion: 0.19
-Nodes (15): 콘텐츠 협상: Accept·Accept-Language·Accept-Encoding, 한 줄의 curl이 깨우는 일곱 책임, 전달의 성공 ≠ 의미의 성공, HTTP(HyperText Transfer Protocol), HTTP 캐싱: Cache-Control·ETag·If-None-Match·304, HTTP 메서드와 safe·idempotent 성질, HTTP 요청 구조: 요청 라인·헤더·본문, L7 응용 계층(Application Layer) (+7 more)
+Cohesion: 0.20
+Nodes (14): 인증·인가 베스트 프랙티스 체크리스트, BFF (Backend-for-Frontend) 토큰 격리 패턴, OAuth 2.0 for Browser-Based Applications (Internet-Draft), 쿠키 보안 속성 (HttpOnly·Secure·SameSite·__Host-), CSRF 방어 (Synchronizer Token·Double-Submit·SameSite 보조), 심층 방어 (Defense in Depth), OWASP — CSRF Prevention Cheat Sheet, OWASP — Session Management Cheat Sheet (+6 more)
 
 ### Community 22 - "Session Layer & Cookies"
-Cohesion: 0.15
-Nodes (14): cookie: L7 형식, L5 책임, 쿠키 속성 (Secure·HttpOnly·SameSite·세션 ID 회전), 끊김 전제 설계 (지수 backoff·멱등성 키·checkpoint), end-to-end argument (상위 기능을 양 끝에 두는 설계 철학), L5 세션 계층: 대화의 생명주기, QUIC connection migration (Connection ID), 계층은 형식이 아니라 책임으로 읽는다, 이어받기 (Range·ETag/If-Range·tus checkpoint) (+6 more)
+Cohesion: 0.21
+Nodes (14): L5·L6 해부: 도착한 bytes를 '같은 뜻'으로, 그리고 대화를 잇기, ALPN (Application-Layer Protocol Negotiation), 인증서 체인 검증 / trust anchor, CertificateVerify · Finished, ECDHE 키 교환 / forward secrecy, ECH (Encrypted Client Hello), RFC 5280 — X.509 PKI Certificate and CRL Profile, RFC 6066 — TLS Extensions (SNI) (+6 more)
 
 ### Community 23 - "ARP Address Resolution Lab"
-Cohesion: 0.26
-Nodes (13): ARP (Address Resolution Protocol, RFC 826), ARP cache (IP → MAC 매핑), ARP spoofing과 Dynamic ARP Inspection, 1단계: ethtool·ip link로 link/duplex 확인, 직접 해보기: ARP 한 번을 캡처로 잡기, IP 주소 (종단 여권), 2단계: ip neigh·ip addr로 VLAN·서브넷 확인, MAC 주소 구조 (OUI·I/G·U/L 비트) (+5 more)
+Cohesion: 0.21
+Nodes (14): 혼잡제어 (congestion control), 연결(connectivity)과 품질(quality)의 구분, getStats() 진단 지표, jitter buffer (지연 변동 흡수), jitterBufferDelay / jitterBufferEmittedCount, JitterBufferLab (React 시뮬레이션), NetEQ (libwebrtc 적응형 오디오 jitter buffer), PLC (손실 은닉, Expand/Merge) (+6 more)
 
 ### Community 24 - "Physical Layer & Switching"
-Cohesion: 0.17
-Nodes (13): 충돌 영역 (collision domain), CSMA/CA (Wi-Fi 802.11 충돌 회피), CSMA/CD (충돌 감지 매체 접근 제어), Echo cancellation (1000BASE-T, PAM-5), Hub (신호 반복 장비), L1 Physical (물리 계층), Line code 인코딩과 클럭 회복, MAC flooding 공격 (CAM 테이블 포화) (+5 more)
+Cohesion: 0.19
+Nodes (13): 리소스 서버의 인가 집행 (scope·RBAC/ABAC·deny-by-default·소유권), AuthRequestLab (auth_request 시퀀스 시뮬레이션), Broken Access Control / IDOR, 백엔드 직접 접근(엣지 우회) 차단, 프록시 신원 헤더 sanitize (X-User 덮어쓰기), ID Token으로 API 인가하지 않기, 엣지가 서명한 내부 JWT, nginx auth_request (ngx_http_auth_request_module) (+5 more)
 
 ### Community 25 - "Transport Layer & UDP/QUIC"
-Cohesion: 0.26
-Nodes (12): L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가, L4 전송 계층 (Transport), 멀티플렉싱·디멀티플렉싱, L4 해부: 포트와 소켓, 그리고 TCP가 신뢰를 만드는 법, QUIC (UDP 위 연결·암호화·다중 스트림), RFC 768 — User Datagram Protocol, RFC 9000 — QUIC, RFC 9114 — HTTP/3 (+4 more)
+Cohesion: 0.22
+Nodes (13): DNS (Domain Name System), DNS 캐싱과 TTL (음성 캐싱 포함), DNS 실패 코드 (NXDOMAIN·SERVFAIL·NOERROR/NODATA), DNS 레코드 타입 (A/AAAA·CNAME·MX·NS·SOA·TXT·HTTPS/SVCB), DNS 전송: UDP 53 · TC 비트 → TCP 53 · EDNS0, DnsResolveLab (DNS 해석 시뮬레이션), DNSSEC (응답 출처 인증·무결성), DoH / DoT (DNS 질의 암호화) (+5 more)
 
 ### Community 26 - "Ports, Sockets & NAT State"
-Cohesion: 0.20
-Nodes (12): Connection ID / 연결 이동, 임시 포트 (ephemeral port), 5-튜플 (protocol, src IP/port, dst IP/port), 연결 재사용 (keep-alive·connection pool), MTU 블랙홀 / MSS clamping, NAPT / 포트 포워딩 (DNAT), 포트 (16비트 식별자), TIME-WAIT 누적과 포트 고갈 (+4 more)
+Cohesion: 0.19
+Nodes (13): tauri::async_runtime::Mutex (비동기 Mutex), canonicalize 경로 자기검증, Result 에러 직렬화 (thiserror), do_scan 보조 함수, do_scan_async, await 너머로 가드를 들고 가는 함정, manage() / State<'_, T> 상태 주입, MutexGuard를 든 채 await 하는 안티패턴 (+5 more)
 
 ### Community 27 - "VLAN & Spanning Tree"
-Cohesion: 0.29
-Nodes (10): Access port (untagged 호스트 포트), Broadcast domain (브로드캐스트 영역), 자주 틀리는 여섯 가지 오해, IEEE 802.1 Bridging 개요, IEEE 802.1Q (VLAN tagging·STP 통합), L2 루프와 broadcast storm (TTL 부재), RSTP·PortFast·MSTP·Rapid PVST+, STP (Spanning Tree Protocol) (+2 more)
+Cohesion: 0.19
+Nodes (13): IPsec 계열, PPTP and L2TP deprecation (Microsoft, 2024-10), Configure VPN protocols in RRAS (Microsoft Learn), VPN의 해부 1편 — VPN 아닌 것부터 지웁니다, 프로토콜 지형도 세 가족, RFC 4301 — Security Architecture for the Internet Protocol, RFC 4949 — Internet Security Glossary, Version 2, ssh(1) / sshd_config(5) 매뉴얼 (+5 more)
 
 ### Community 28 - "TCP Handshake & Options"
-Cohesion: 0.25
-Nodes (9): ISN (초기 순서번호), RFC 7323 — TCP Extensions for High Performance, RFC 9293 — Transmission Control Protocol, ss/nc/tcpdump 진단 명령, SYN flood 공격 / SYN cookie, TCP 옵션 협상 (MSS·Window Scale·SACK 허용), 3-way handshake, Window Scale (RFC 7323) (+1 more)
+Cohesion: 0.20
+Nodes (12): cookie 기반 세션 유지, end-to-end argument (RFC 1122 인터넷 4계층), 지수 backoff · 멱등성 키 · checkpoint 설계, QUIC connection migration, 책임으로 계층을 읽는 렌즈, 이어받기 (Range·ETag·If-Range·tus), RFC 1122 — Requirements for Internet Hosts, RFC 6265 — HTTP State Management (Cookies) (+4 more)
 
 ### Community 29 - "Encapsulation & Layer Models"
-Cohesion: 0.29
-Nodes (7): 캡슐화 (계층마다 헤더가 덧붙는 포장), ISO/IEC 7498-1:1994 OSI Basic Reference Model, OSI 참조 모델 (구현 명세가 아닌 책임 분리 모델), RFC 1122 — Requirements for Internet Hosts, service · interface · peer protocol (OSI의 세 문법), 인터넷 4계층 모델 (Link/Internet/Transport/Application), EncapsulationLab (캡슐화 시뮬레이터)
+Cohesion: 0.26
+Nodes (12): Channel 진행률 스트리밍, ChecksumEvent (Serialize enum), checksum_file (사이드카 중계 커맨드), child.kill() — 고아 프로세스 정리, CommandEvent (Stdout/Stderr 스트림), Event (느슨한 JSON 알림 통로), invoke — 프런트에서 커맨드 호출, onEvent.onmessage (프런트 채널 핸들러) (+4 more)
 
 ### Community 30 - "HTTP Version Evolution"
-Cohesion: 0.47
-Nodes (6): HTTP/1.1 — 텍스트·keep-alive·HOL blocking, HTTP/2 — 바이너리 프레임·멀티플렉싱·HPACK, HTTP/3 — QUIC(UDP) 위 독립 stream, RFC 9110, HTTP Semantics, RFC 9114, HTTP/3, 의미는 그대로, 전송만 진화한다(RFC 9110)
+Cohesion: 0.21
+Nodes (12): DNS Leak, IPv6 Leak, Kill Switch, 계층과 범위로 가르는 분류 기준, 프록시 (애플리케이션 단위, L7), RFC 1928 — SOCKS Protocol Version 5, RFC 4254 — SSH Connection Protocol, 라우팅 테이블 — 보호 범위의 결정자 (+4 more)
 
 ### Community 31 - "Astro Blog Build"
-Cohesion: 0.83
-Nodes (4): Astro 정적 사이트 빌드, 콘텐츠 1급 시민 (마크다운 중심), 블로그를 Astro로 새로 지었습니다, raws → draft → 발행 집필 워크플로우
+Cohesion: 0.25
+Nodes (11): Bandwidth probing (능동 대역폭 탐색), delay-based 추정 (AIMD, 지연 추세), draft-ietf-rmcat-gcc (만료된 인터넷 초안), 인코더 (목표 비트레이트 반영), GCC (Google Congestion Control), libwebrtc (브라우저 구현체), loss-based 추정 (손실률), pacer (전송 리듬 평활화) (+3 more)
+
+### Community 32 - "WebRTC 혼잡제어 RFC 표준"
+Cohesion: 0.18
+Nodes (11): RFC 8888 CCFB (차세대 혼잡제어 피드백), draft-ietf-rmcat-gcc (GCC 혼잡제어 초안), 근거와 더 읽을 거리 (2편), RFC 7587 (Opus RTP 페이로드 포맷), RFC 7741 (VP8 RTP 페이로드 포맷), RFC 8852 (RTP Stream Identifier SDES), RFC 8888 (RTCP Feedback for Congestion Control), RTP 헤더 확장 (RFC 8852 sdes:rtp-stream-id) (+3 more)
+
+### Community 33 - "직렬화와 표현 계층"
+Cohesion: 0.27
+Nodes (10): 압축 (gzip·brotli), CRIME·BREACH 압축 사이드채널 공격, 엔디언 (network byte order), JSON, L6 표현 계층 (Presentation), RFC 8259 — JSON, RFC 8446 — TLS 1.3, 스키마 진화 (직렬화 계약) (+2 more)
+
+### Community 34 - "Tauri 프로젝트 구조 진입점"
+Cohesion: 0.24
+Nodes (10): capabilities/default.json 권한 묶음, 케이퍼빌리티 (capability), core:default 기본 권한 묶음, dialog:allow-open 퍼미션, dialog 플러그인, src/main.ts — 프런트엔드 진입, 퍼미션 세트, Runtime Authority — 요청 심사 (+2 more)
+
+### Community 35 - "VPN 위협모델과 신뢰 이전"
+Cohesion: 0.24
+Nodes (10): create-tauri-app 스캐폴딩, not found vs not allowed 1차 분류, generate_handler! 커맨드 등록, invoke_handler — 한 번만 호출, src-tauri/src/lib.rs — 앱 본체, src-tauri/src/main.rs — 데스크톱 진입점, cfg_attr(mobile, mobile_entry_point), run() 앱 진입 함수 (+2 more)
+
+### Community 36 - "Tauri 권한·케이퍼빌리티 모델"
+Cohesion: 0.27
+Nodes (10): AEAD (Authenticated Encryption with Associated Data), 캡슐화 오버헤드, 암호화 (기밀성·무결성·재전송 방지), MITRE ATT&CK T1572 — Protocol Tunneling, MTU 블랙홀, RFC 4026 — Provider Provisioned VPN Terminology, 암호의 세 가지 약속: 기밀성·무결성·재전송 방지, 터널링 (Tunneling) (+2 more)
+
+### Community 37 - "Tauri 사이드카 번들링·빌드"
+Cohesion: 0.28
+Nodes (9): L4 해부: 포트와 소켓, 그리고 TCP가 신뢰를 만드는 법, RFC 9114 — HTTP/3, 자주 틀리는 여섯 가지 (L7 오해), Head-of-line blocking (pipelining·TCP 레벨), HTTP 메서드 (GET·POST·PUT·PATCH·DELETE), HTTP/1.1 · HTTP/2 · HTTP/3: 의미는 그대로, 전송만 진화, 안전(safe)·멱등(idempotent) 성질과 재시도, QUIC (UDP 위 독립 stream) (+1 more)
+
+### Community 38 - "VPN 정의와 표준 문서"
+Cohesion: 0.33
+Nodes (9): Command.sidecar (프런트 직접 호출), bundle.externalBin 설정, 크로스 컴파일 불가 — 플랫폼별 러너, scripts/rename-sidecar.mjs, shell:allow-execute 퍼미션, 사이드카 — 외부 CLI 번들링, 타깃 트리플 접미사 규칙, tauri build (플랫폼별 인스톨러) (+1 more)
+
+### Community 39 - "Tauri 해부 시리즈 시각물"
+Cohesion: 0.25
+Nodes (9): AH (Authentication Header), IKEv2 (키 협상), IPsec 프레임워크, L2TP (레거시, 기밀성 없음), 레거시: PPTP·L2TP 단독, MOBIKE / 모바일 로밍, PPTP (레거시), RFC 2637 — PPTP (Informational) (+1 more)
+
+### Community 40 - "Simulcast와 SVC 다중 화질"
+Cohesion: 0.25
+Nodes (8): 자체 DoH 브라우저의 경로 결정 우회, 보호 범위는 라우팅 테이블이 정한다, SNI (Server Name Indication) 노출, 위협모델 — 누구로부터 무엇을 숨기는가, 신뢰 이전: 게이트웨이 운영자, Trust Transfer (신뢰 이전), VPN 게이트웨이 (복호 지점), "VPN을 켰다"는 상태가 아니라 구성이다
+
+### Community 41 - "정책 기반 접근제어(PBAC)"
+Cohesion: 0.32
+Nodes (8): RID (RTP Stream Identifier), RTCRtpEncodingParameters / setParameters(), RTCRtpTransceiver, 시나리오 3 — 다인원 회의에서 내 화면만 흐림, SFU (Selective Forwarding Unit, 3편 주제), simulcast (RFC 8853, 다중 화질 동시 인코딩), SSRC (스트림 식별자), SVC (Scalable Video Coding, scalabilityMode)
+
+### Community 42 - "UTF-8 문자 인코딩"
+Cohesion: 0.33
+Nodes (7): 기본은 거부(deny-by-default), OPA · Rego 정책 엔진, PBAC (정책 기반 접근 제어), PDP (Policy Decision Point), PEP (Policy Enforcement Point), 정책(Policy), XACML
+
+### Community 43 - "HTTP 의미론과 버전 진화"
+Cohesion: 0.29
+Nodes (7): Tauri 해부 1편, Tauri 해부 2편 — 개념을 코드로, app.manage() 상태 등록, file-scout 예제 앱, 직접 해 보기 — 4층 실패 재현 과제, Tauri 2.x 공식 문서 (v2.tauri.app), VizFlowchart5 (file-scout 전체 배선)
+
+### Community 44 - "프록시와 TLS-VPN 비교"
+Cohesion: 0.40
+Nodes (6): 문자 인코딩, mojibake (글자 깨짐), RFC 3629 — UTF-8, 워크스루: 글자가 깨진다, 유니코드 코드 포인트, UTF-8
+
+### Community 45 - "세션·쿠키와 CSRF 방어"
+Cohesion: 0.40
+Nodes (5): 쿠키 속성(Secure·HttpOnly·SameSite), CSRF와 CSRF 토큰, OWASP — CSRF Prevention / SameSite Cheat Sheet, 확장성 vs 폐기(revocation) 트레이드오프, 세션(Session, stateful)
+
+### Community 46 - "Tauri fs 플러그인 스코프"
+Cohesion: 0.60
+Nodes (5): fs_scope().allow_directory 런타임 확장, fs 플러그인, fs 플러그인 vs 내 커맨드 경계 설계, $HOME·$APPDATA 경로 변수, scope — 인자 검증 규칙
+
+### Community 47 - "IPsec ESP와 NAT 통과"
+Cohesion: 0.40
+Nodes (5): Clientless SSL-VPN (애플리케이션 포털), OpenVPN, 프록시 (L7 중개자), RFC 9110 — HTTP Semantics, TLS-VPN 계열
+
+### Community 48 - "file-scout 예제 앱 배선"
+Cohesion: 0.50
+Nodes (5): ESP (Encapsulating Security Payload), NAT (Network Address Translation), NAT Traversal (ESP의 UDP 캡슐화), RFC 3022 — Traditional IP NAT, RFC 3948 — UDP Encapsulation of IPsec ESP Packets
+
+### Community 49 - "TLS의 메타데이터 노출 한계"
+Cohesion: 0.50
+Nodes (4): 메타데이터: DNS 질의와 평문 SNI, HTTPS/TLS가 지키는 내용, TLS-VPN 계열 (OpenVPN·SSL-VPN), VPN 해부 6편 — TLS-VPN: OpenVPN과 SSL-VPN
+
+### Community 50 - "Tauri 블로킹 작업 오프로딩"
+Cohesion: 0.67
+Nodes (3): do_scan_blocking, heavy_scan (spawn_blocking 커맨드), tauri::async_runtime::spawn_blocking
+
+### Community 51 - "Astro Blog Publishing Workflow"
+Cohesion: 1.00
+Nodes (3): Astro (정적 콘텐츠 우선 빌드), 블로그를 Astro로 새로 지었습니다, raws → draft → 발행 집필 워크플로우
 
 ## Ambiguous Edges - Review These
 - `40살인데 알고리즘 해도 괜찮을까요 - 프롤로그` → `aside: 드디어 arc의 악령에서 벗어나나`  [AMBIGUOUS]
   algorithm-at-40-prologue.md · relation: semantically_similar_to
-- `Zen 브라우저` → `Tidy 탭 정리 기능`  [AMBIGUOUS]
-  aside-arc.md · relation: references
-- `위임(Delegation) — 권한을 넘긴다` → `PKCE (Proof Key for Code Exchange)`  [AMBIGUOUS]
-  auth-authz-1.mdx · relation: conceptually_related_to
-- `ID Token (누가 로그인했는가)` → `액세스 토큰 (위임된 인가, bearer)`  [AMBIGUOUS]
-  auth-authz-1.mdx · relation: shares_data_with
-- `containerd` → `OverlayFS`  [AMBIGUOUS]
-  container-anatomy-1.mdx · relation: references
-- `OverlayFS` → `VizFlowchart4 (흐름도)`  [AMBIGUOUS]
-  container-anatomy-1.mdx · relation: references
-- `CNI (Container Network Interface)` → `CRI (Container Runtime Interface)`  [AMBIGUOUS]
-  container-anatomy-2.mdx · relation: semantically_similar_to
-- `다이제스트 사슬 (내용이 곧 주소)` → `레지스트리 GC·삭제 정책 (202 ≠ 즉시 회수)`  [AMBIGUOUS]
+- `Tidy 탭 정리 기능` → `aside clear 기능(전체 탭 닫기)`  [AMBIGUOUS]
+  aside-arc.md · relation: conceptually_related_to
+- `프록시 신원 헤더 sanitize (X-User 덮어쓰기)` → `Broken Access Control / IDOR`  [AMBIGUOUS]
+  auth-authz-4.mdx · relation: conceptually_related_to
+- `OCI 런타임 스펙` → `shim 바이너리 이름 변환 규칙`  [AMBIGUOUS]
+  container-anatomy-1.mdx · relation: conceptually_related_to
+- `OverlayFS` → `이미지 레이어에 남는 삭제된 비밀 파일`  [AMBIGUOUS]
+  container-anatomy-1.mdx · relation: conceptually_related_to
+- `내용 주소화의 세 결과 (무결성·중복 제거·캐시)` → `레지스트리 GC 정책 (202는 즉시 삭제가 아니다)`  [AMBIGUOUS]
   container-anatomy-2.mdx · relation: conceptually_related_to
-- `OCI 이미지 스펙` → `LLB (content-addressable 빌드 그래프)`  [AMBIGUOUS]
-  container-anatomy-4.mdx · relation: shares_data_with
-- `L2 Data Link — 같은 링크의 다음 목적지` → `L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가`  [AMBIGUOUS]
-  osi-7-layers-1.mdx · relation: conceptually_related_to
-- `L6 Presentation — 같은 뜻을 같은 bytes로` → `L5·L6 해부: 도착한 bytes를 '같은 뜻'으로, 그리고 대화를 잇기`  [AMBIGUOUS]
-  osi-7-layers-1.mdx · relation: conceptually_related_to
-- `NAPT / PAT (포트까지 변환하는 다중화)` → `ALG (Application Layer Gateway)`  [AMBIGUOUS]
-  osi-7-layers-3.mdx · relation: references
-- `TCP 옵션 협상 (MSS·Window Scale·SACK 허용)` → `MTU 블랙홀 / MSS clamping`  [AMBIGUOUS]
-  osi-7-layers-4.mdx · relation: shares_data_with
-- `endianness / network byte order (big-endian)` → `직렬화와 스키마 진화 계약`  [AMBIGUOUS]
-  osi-7-layers-5.mdx · relation: conceptually_related_to
-- `OS 시스템 WebView (동적 링크)` → `타깃 트리플 접미사 규칙`  [AMBIGUOUS]
-  tauri-1.mdx · relation: conceptually_related_to
-- `fs 플러그인과 런타임 scope 확장` → `커맨드 자체 경로 검증(canonicalize)`  [AMBIGUOUS]
+- `컨테이너의 해부 EP2 — OCI 3대 스펙` → `LLB (content-addressable 빌드 그래프)`  [AMBIGUOUS]
+  container-anatomy-4.mdx · relation: references
+- `kubelet (CRI gRPC 클라이언트)` → `Exec·Attach·PortForward 스트리밍 엔드포인트`  [AMBIGUOUS]
+  container-anatomy-3.mdx · relation: shares_data_with
+- `Dynamic routing (OSPF·IS-IS·BGP)` → `다음 홉 (next hop) forwarding`  [AMBIGUOUS]
+  osi-7-layers-3.mdx · relation: conceptually_related_to
+- `엔디언 (network byte order)` → `직렬화 / 역직렬화`  [AMBIGUOUS]
+  osi-7-layers-5.mdx · relation: shares_data_with
+- `core:default 기본 권한 묶음` → `Channel 진행률 스트리밍`  [AMBIGUOUS]
   tauri-2.mdx · relation: conceptually_related_to
-- `Channel 진행률 스트리밍` → `Command.sidecar (@tauri-apps/plugin-shell)`  [AMBIGUOUS]
+- `Channel 진행률 스트리밍` → `Command.sidecar (프런트 직접 호출)`  [AMBIGUOUS]
   tauri-2.mdx · relation: conceptually_related_to
-- `getUserMedia (미디어 캡처, secure context)` → `시그널링 MITM · fingerprint 신뢰 모델 (RFC 8827)`  [AMBIGUOUS]
+- `WireGuard` → `MOBIKE / 모바일 로밍`  [AMBIGUOUS]
+  vpn-anatomy-1.mdx · relation: conceptually_related_to
+- `HTTPS/TLS가 지키는 내용` → `TLS-VPN 계열 (OpenVPN·SSL-VPN)`  [AMBIGUOUS]
+  vpn-anatomy-1.mdx · relation: conceptually_related_to
+- `VPN 해부 2편 — 암호가 하는 세 가지 약속` → `VPN 해부 3편 — IPsec ①: IKEv2는 무엇을 협상하는가`  [AMBIGUOUS]
+  vpn-anatomy-2.mdx · relation: references
+- `VPN 해부 2편 — 암호가 하는 세 가지 약속` → `VPN의 해부 EP4 — ESP`  [AMBIGUOUS]
+  vpn-anatomy-2.mdx · relation: references
+- `MTU 블랙홀` → `ESP 트러블슈팅 시나리오 2 — NAT 뒤 데이터 미전달`  [AMBIGUOUS]
+  vpn-anatomy-4.mdx · relation: conceptually_related_to
+- `trickle ICE (RFC 8838)` → `perfect negotiation (polite/impolite)`  [AMBIGUOUS]
   webrtc-1.mdx · relation: conceptually_related_to
-- `혼잡제어 (congestion control)` → `REMB (Receiver Estimated Maximum Bitrate, 레거시 폴백)`  [AMBIGUOUS]
-  webrtc-2.mdx · relation: implements
+- `interarrival jitter (지터 추정치)` → `jitter buffer (지연 변동 흡수)`  [AMBIGUOUS]
+  webrtc-2.mdx · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **142 isolated node(s):** `다면적(수학적·공학적) 사고`, `메타인지와 겁 많은 천성`, `top-down 모델 설계 관점`, `새 도메인의 와꾸를 보는 패턴 인식`, `Vivaldi 브라우저` (+137 more)
+- **170 isolated node(s):** `다면적(수학적·공학적) 사고`, `메타 인지와 겁 많은 천성`, `OOP·소프트웨어공학·운영체제 학습`, `실무자 맥락 공감 리더십`, `40대 구직 시장과 AI 시대의 능력 증명 압박` (+165 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 
 ## Suggested Questions
@@ -321,15 +439,15 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `40살인데 알고리즘 해도 괜찮을까요 - 프롤로그` and `aside: 드디어 arc의 악령에서 벗어나나`?**
   _Edge tagged AMBIGUOUS (relation: semantically_similar_to) - confidence is low._
-- **What is the exact relationship between `Zen 브라우저` and `Tidy 탭 정리 기능`?**
-  _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
-- **What is the exact relationship between `위임(Delegation) — 권한을 넘긴다` and `PKCE (Proof Key for Code Exchange)`?**
+- **What is the exact relationship between `Tidy 탭 정리 기능` and `aside clear 기능(전체 탭 닫기)`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **What is the exact relationship between `ID Token (누가 로그인했는가)` and `액세스 토큰 (위임된 인가, bearer)`?**
-  _Edge tagged AMBIGUOUS (relation: shares_data_with) - confidence is low._
-- **What is the exact relationship between `containerd` and `OverlayFS`?**
+- **What is the exact relationship between `프록시 신원 헤더 sanitize (X-User 덮어쓰기)` and `Broken Access Control / IDOR`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `OCI 런타임 스펙` and `shim 바이너리 이름 변환 규칙`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `OverlayFS` and `이미지 레이어에 남는 삭제된 비밀 파일`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `내용 주소화의 세 결과 (무결성·중복 제거·캐시)` and `레지스트리 GC 정책 (202는 즉시 삭제가 아니다)`?**
+  _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
+- **What is the exact relationship between `컨테이너의 해부 EP2 — OCI 3대 스펙` and `LLB (content-addressable 빌드 그래프)`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
-- **What is the exact relationship between `OverlayFS` and `VizFlowchart4 (흐름도)`?**
-  _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
-- **What is the exact relationship between `CNI (Container Network Interface)` and `CRI (Container Runtime Interface)`?**
-  _Edge tagged AMBIGUOUS (relation: semantically_similar_to) - confidence is low._

@@ -61,6 +61,11 @@ if [[ ! -x "$GRAPHIFY_PYTHON" ]]; then
 fi
 
 # ── 가드 ③ 증분 기준선(캐시) 존재 여부 ───────────────────────────────────────
+# 콜드 부트스트랩(캐시 디렉터리가 아직 없음)에서는 아래 find 가 존재하지 않는
+# 경로를 훑어 non-zero 로 끝나는데, set -euo pipefail 이 그걸 대입문 종료코드로
+# 전파해 경고 한 줄 찍기도 전에 스크립트가 조용히 죽는다. 디렉터리를 미리 만들어
+# find 를 항상 0 으로 만든다 — seed-graph-cache.py 가 어차피 여기에 쓰므로 무해하다.
+mkdir -p graphify-out/cache/semantic
 cache_entries=$(find graphify-out/cache/semantic -maxdepth 1 -name '*.json' 2>/dev/null | wc -l | tr -d ' ')
 if [[ "$cache_entries" == "0" ]]; then
   echo "⚠ 시맨틱 캐시가 비어 있다 — 이번 실행은 전량 추출(콜드 부트스트랩)이다."
