@@ -1,6 +1,6 @@
 {
   "next_id": 42,
-  "next_seq": 132,
+  "next_seq": 133,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -359,7 +359,7 @@
       "verbatim_hash": "04039fab2b64ade803c32e448cf4d378b0c7a449"
     },
     "KAN-033": {
-      "col": "todo",
+      "col": "doing",
       "title": "VPN 해부 리서치① — 스펙·RFC 근거 코퍼스",
       "memo": "공통 스펙/RFC 근거 코퍼스: RFC 7296·4303·5116·8439·8446(TLS1.3), WireGuard 백서, OpenVPN 2.6 문서. 각 필드 레이아웃의 스펙 근거(섹션 번호) 정리. research 스킬→~/blog-research. accept: 7편이 인용할 필드 레이아웃이 섹션 번호와 함께 정리됨. gate for EP1~7.",
       "verbatim": "",
@@ -471,6 +471,15 @@
     "KAN-024",
     "KAN-030",
     "KAN-032",
+    "KAN-031",
+    "KAN-034",
+    "KAN-035",
+    "KAN-036",
+    "KAN-037",
+    "KAN-038",
+    "KAN-039",
+    "KAN-040",
+    "KAN-041",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -498,18 +507,18 @@
     "KAN-027",
     "KAN-025",
     "KAN-026",
-    "KAN-031",
-    "KAN-033",
-    "KAN-034",
-    "KAN-035",
-    "KAN-036",
-    "KAN-037",
-    "KAN-038",
-    "KAN-039",
-    "KAN-040",
-    "KAN-041"
+    "KAN-033"
   ],
   "recent": [
+    {
+      "seq": 132,
+      "t": "2026-07-28T14:57",
+      "a": "ai",
+      "id": "KAN-033",
+      "op": "move",
+      "from": "todo",
+      "to": "doing"
+    },
     {
       "seq": 131,
       "t": "2026-07-28T14:48",
@@ -999,17 +1008,6 @@
       "title": "글 목록 아이템에 저자 프로필 사진 노출",
       "memo": "/posts 목록 아이템(span.post-author)에 현재 저자명 + AI 태그만 노출됨 → 저자 프로필 사진도 드러나게",
       "verbatim": "대상: /posts 글 목록 아이템의 저자 표기 (li.post-item > a.post-link > span.post-body > span.post-meta > span.post-author, 예: 빵토 연구원 AI).\n\n현재 블로그 목록의 아이템에는 저자명과 ai 여부 태그만 나타난다. 저자 프로필 사진이 드러날 수 있도록 해라."
-    },
-    {
-      "seq": 82,
-      "t": "2026-07-27T17:11",
-      "a": "유저",
-      "id": "KAN-025",
-      "op": "create",
-      "col": "backlog",
-      "title": "글 목록에 저자별 필터 추가 (2축 필터 UX 리서치 + 필터에 저자 프로필 사진)",
-      "memo": "/posts(section.wrap)는 현재 카테고리 필터(nav.cats)만 존재. 저자 필터 추가 + 필터축 2개에 맞는 UX 리서치 + 필터 인터랙션 요소에 저자 프로필 사진 포함",
-      "verbatim": "대상: /posts 글 목록 (section.wrap — 현재 카테고리 필터 nav.cats 만 존재).\n\n지금은 블로그 글 목록에 카테고리 별 필터만 존재한다. 여기에 저자 별 필터도 추가 해라. 필터 분류가 2개이기 때문에 지금과 다른 UX를 채택해야 할 수 있다. 리서치를 통해, 가장 적절한 UX 패턴을 채택해라.\n\n선택 인터렉션 요소에는 저자의 프로필 사진을 포함해야 한다."
     }
   ]
 }
