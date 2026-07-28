@@ -52,6 +52,10 @@
   - 메모: vpn-anatomy-6 · TLS-VPN: TLS1.3 제어/데이터 채널, tls-auth/tls-crypt, OpenVPN2.6 UDP/TCP(TCP-over-TCP meltdown), SSL-VPN/WebVPN clientless, 패킷+TLS record 캡처 분해(data channel 내부는 암호문). 선수링크:OSI(L6)·EP2. gate:KAN-034.
 - `KAN-041` VPN 해부 EP7 집필 — 선택 매트릭스·운영 총정리 — 생성:ai · 최종:ai · 갱신:2026-07-28
   - 메모: vpn-anatomy-7 · 선택·운영 총정리: 선택 매트릭스(보안·성능·NAT친화·모바일로밍·운영복잡도), 운영 함정(MTU블랙홀·DNS leak·kill switch·split tunnel), 성능(오버헤드·커널vs유저스페이스), 세 가족 최종 비교표, 전편 회수. 선수링크:EP3~6.
+- `KAN-042` VPN 해부 시리즈 링크 섹션 삽입 (EP 발행 후 post-finalize 재실행) — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: 선행조건(gating): 같은 series 'VPN의 해부' 글이 2편 이상 main에 발행된 뒤 착수. KAN-038(EP4) 발행 시점에는 시리즈 내 발행 글이 0편이라 '## 이 시리즈의 다른 글' 섹션을 넣으면 목록이 빈 채로 들어가 생략했다(형제 시리즈 osi/webrtc/auth-authz는 모두 이 섹션을 보유 — 관례 이탈 상태). 조치: EP1~3(KAN-035~037, 병렬 워크트리)·EP5~7 머지 후 발행된 각 편에 post-finalize 재실행(멱등 — 기존 섹션 통째 교체). 함께 확인할 것: vpn-anatomy-4 본문의 내부 링크 /posts/vpn-anatomy-2·3·5 가 해당 편 발행 전까지 404이므로 전편 발행 후 링크 생존 확인. SeriesEpisodes/PostNav 자동 렌더와 중복되지 않는지도 육안 점검.
+- `KAN-043` VPN 해부 캡처 아티팩트 실제 생성 (랩 실행 → raws/captures/) 및 본문 발췌 보강 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: KAN-034가 캡처 랩 환경·방법론(~/blog-research/raws/010 + topic vpn-capture-lab)을 문서화했으나 실제 캡처는 아직 미실행 — ~/blog-research/raws/captures/ 디렉터리 자체가 없다. 그래서 KAN-038(EP4)은 KAN-031의 '스펙 레이아웃 vs 실제 캡처 분리' 규칙에 따라 스펙 유도 레이아웃 + 랩 재현 절차로만 서술했고, 실측 hex/tshark 출력은 싣지 않았다(날조 금지 원칙 준수). 조치: raws/010 §4의 절차대로 Docker 2노드+NAT 랩을 실제로 띄워 매핑표(§5.2)의 아티팩트를 생성 — EP3 ike_sa_init.txt·ike_auth.txt / EP4 esp-proto50.txt·esp-natt.txt·esp-decrypted.txt / EP5 wg-handshake.txt·wg-transport.txt / EP6 openvpn-opcode.txt·openvpn-tls-auth.txt. 확보되면 각 편 본문에 발췌 인용 보강(전체는 blog-research에 커밋, 본문은 발췌만). 마스킹 규약(§6, 합성 키·RFC5737/3849 주소) 준수. raws/010 §8 open questions 5건(IKE_AUTH SK_ 키 추출·WireGuard ephemeral 키 로그·OpenVPN 최신 패치·AES-GCM ESP SA salt 배치 실검증·커널6.8+ 컨테이너 wg-quick sysctl RO)도 이때 실측으로 해소 시도.
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26
