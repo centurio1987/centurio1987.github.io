@@ -1,6 +1,6 @@
 {
-  "next_id": 44,
-  "next_seq": 144,
+  "next_id": 45,
+  "next_seq": 145,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -489,6 +489,18 @@
       "title_hash": "75ac2bd695f047d74173573610bf9c9228054aa1",
       "memo_hash": "33582336cda76fecf139b5f8519e239781ae2d89",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-044": {
+      "col": "todo",
+      "title": "graphify 그래프 일괄 재생성 (VPN 시리즈 7편 전량 발행·머지 후 1회)",
+      "memo": "선행조건(gating): VPN 해부 EP1~7(KAN-035~041)이 전부 main에 머지된 뒤 main에서 1회만 실행. 편당 재생성을 금지하는 근거 3가지: ① graphify가 incremental scan을 표방하지만 실측상 캐시 미적중으로 매 실행이 전량 재추출(23편 = 24청크, claude-cli 백엔드로 40~60분) — 7편이면 같은 작업을 7회 반복. ② graphify-out/graph.json·src/data/graph.json 은 커밋 대상이라 병렬 워크트리(kan-035~038)가 각자 재생성하면 머지 시 대용량 JSON 다중 충돌. ③ 각 워크트리에는 자기 편만 있어 생성된 그래프가 형제 편 머지 즉시 stale — 어차피 재생성 필요. || KAN-038(EP4) 발행 시 ship-post 1.5를 착수했다가 위 근거로 중단했고 산출물은 미변경(커밋된 기존 그래프 유지, 연관 글·/graph 는 EP1~7이 빠진 stale 상태로 degrade — 기능은 동작, frontmatter 폴백). || 절차(CLAUDE.md 규약): graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . 2>&1 | tee /tmp/graphify-extract.log → bun scripts/build-graph-data.ts → bun scripts/verify-graph.ts --log /tmp/graphify-extract.log (비0이면 git checkout -- graphify-out/ src/data/graph.json 로 폐기). --out . 필수(빼면 콘텐츠 디렉터리 오염). 노드 ID 충돌 경고는 실패 아님(KAN-028). 커밋 경로는 graphify-out/(cache·날짜백업 제외) + src/data/graph.json. || 후속 검토(선택): 시리즈 단위 집필에서는 ship-post 1.5를 편당이 아니라 시리즈 완료 후로 미루도록 ship-post SKILL.md·CLAUDE.md에 명시할지 판단.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "7134568f6e31aef4bc7ac91e120948751129e87a",
+      "memo_hash": "fcd97043d8dc49f1fde25d3e4524943ec496e451",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
@@ -533,9 +545,21 @@
     "KAN-025",
     "KAN-026",
     "KAN-042",
-    "KAN-043"
+    "KAN-043",
+    "KAN-044"
   ],
   "recent": [
+    {
+      "seq": 144,
+      "t": "2026-07-28T16:45",
+      "a": "ai",
+      "id": "KAN-044",
+      "op": "create",
+      "col": "todo",
+      "title": "graphify 그래프 일괄 재생성 (VPN 시리즈 7편 전량 발행·머지 후 1회)",
+      "memo": "선행조건(gating): VPN 해부 EP1~7(KAN-035~041)이 전부 main에 머지된 뒤 main에서 1회만 실행. 편당 재생성을 금지하는 근거 3가지: ① graphify가 incremental scan을 표방하지만 실측상 캐시 미적중으로 매 실행이 전량 재추출(23편 = 24청크, claude-cli 백엔드로 40~60분) — 7편이면 같은 작업을 7회 반복. ② graphify-out/graph.json·src/data/graph.json 은 커밋 대상이라 병렬 워크트리(kan-035~038)가 각자 재생성하면 머지 시 대용량 JSON 다중 충돌. ③ 각 워크트리에는 자기 편만 있어 생성된 그래프가 형제 편 머지 즉시 stale — 어차피 재생성 필요. || KAN-038(EP4) 발행 시 ship-post 1.5를 착수했다가 위 근거로 중단했고 산출물은 미변경(커밋된 기존 그래프 유지, 연관 글·/graph 는 EP1~7이 빠진 stale 상태로 degrade — 기능은 동작, frontmatter 폴백). || 절차(CLAUDE.md 규약): graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . 2>&1 | tee /tmp/graphify-extract.log → bun scripts/build-graph-data.ts → bun scripts/verify-graph.ts --log /tmp/graphify-extract.log (비0이면 git checkout -- graphify-out/ src/data/graph.json 로 폐기). --out . 필수(빼면 콘텐츠 디렉터리 오염). 노드 ID 충돌 경고는 실패 아님(KAN-028). 커밋 경로는 graphify-out/(cache·날짜백업 제외) + src/data/graph.json. || 후속 검토(선택): 시리즈 단위 집필에서는 ship-post 1.5를 편당이 아니라 시리즈 완료 후로 미루도록 ship-post SKILL.md·CLAUDE.md에 명시할지 판단.",
+      "verbatim": ""
+    },
     {
       "seq": 143,
       "t": "2026-07-28T16:42",
@@ -1020,16 +1044,6 @@
       "op": "move",
       "from": "backlog",
       "to": "review"
-    },
-    {
-      "seq": 94,
-      "t": "2026-07-28T00:15",
-      "a": "ai",
-      "id": "KAN-029",
-      "op": "edit",
-      "field": "memo",
-      "before": "대상: /graph 글 지도 익스플로러(graphify 지식그래프 src/data/graph.json 소비). 현재는 글(문서) 노드와 개념·키워드 노드가 함께 그려짐. 변경① 초기 뷰를 글 노드와 글↔글 연관 관계(엣지)만으로 한정 — 개념·키워드 노드는 초기 렌더에서 숨김. 변경② 글 노드에 포인터를 올리면(hover) 해당 글의 연관 키워드가 나타나도록 인터랙션 추가.",
-      "after": "구현·검증 완료(5b8e7b7, 미머지 — 배포 전 유저 리뷰 대기). 초기 뷰=글 노드+글↔글 엣지만, 개념 노드는 렌더에서 제외. 글↔글 엣지 3신호 합성: 개념 공유(postPairs.score)+본문 인용(문서 노드 직접 엣지, 자기참조 제외)+시리즈 이웃 화(order 체인). hover/focus(터치 첫 탭) 시 상위 8개 키워드를 부채로 펼침 — 방향은 뷰박스 이탈·주변 노드 혼잡도로 선택, 세로 간격 고정이라 키워드끼리 안 겹침. 개념 노드 제거 후에도 검색 유지(글별 searchText에 전체 개념 라벨 접음), 그래프 미포함 글(container-anatomy 4편 — KAN-028)은 tags로 degrade. 부수 수정: 제목 라벨 좌우 클램프·18자 절단·collide 확대로 잘림/겹침 해소, 키보드 접근(tabIndex/Enter/focus) 추가. 검증(Playwright headless): 초기 22노드·17엣지·키워드 0 / hover 키워드 8개·뷰박스 이탈 0 / 좌우 양쪽 방향 전환 / unhover 소멸 / 검색 PKCE→글 3 / 클릭·Enter·터치 2탭 진입 / reduced-motion 동일 배치 / 콘솔 에러 0. 페이로드 562KB→155KB."
     }
   ]
 }
