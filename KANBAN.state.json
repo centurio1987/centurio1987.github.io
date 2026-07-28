@@ -1,6 +1,6 @@
 {
   "next_id": 42,
-  "next_seq": 136,
+  "next_seq": 138,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -371,15 +371,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-034": {
-      "col": "doing",
+      "col": "review",
       "title": "VPN 해부 리서치② — 캡처 랩 환경·방법론",
-      "memo": "재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.",
+      "memo": "완료(검토 대기). 재현 가능한 캡처 랩 확정 — ~/blog-research/raws/010-vpn-anatomy-capture-lab.md(불변, 22KB) + 위키 topic vpn-capture-lab(mature) 신설, blog-research 커밋·푸시. 산출: Docker 2노드+NAT 토폴로지(underlay 192.0.2/203.0.113 · overlay 198.51.100, MASQUERADE로 NAT-T 유발, NET_ADMIN·ip_forward), 버전·암호군 고정(strongSwan 5.9.13-2ubuntu4 aes256gcm16 / WireGuard 커널6.8 내장+tools 1.0.20210914 고정암호군 / OpenVPN 2.6.x data-ciphers AES-256-GCM+tls-crypt), 프로토콜별 캡처 명령(tcpdump 필터+tshark -O <proto> -V -x)·복호 절차(ESP=ip xfrm state 키→Wireshark ESP SA 또는 교육용 null-sha256 / WireGuard=키 로그 4토큰, 완전복호엔 ephemeral 필요 / OpenVPN=제어채널 TLS·데이터채널 복호 불가·구조만 / IKE_SA_INIT 평문)·보안 마스킹(합성 키·RFC5737/3849 IP·RFC7042 MAC)·증거 파일명 규약 vpn-anatomy-<n>/<capture>.txt + EP↔캡처 매핑표. accept 충족(각 프로토콜 캡처 재생성 명령/노트 문서화). EP3~7(KAN-037~040) 집필 gate 해제. open questions 5건: IKE_AUTH SK_ 키 추출(strongSwan) 미확립 / WireGuard ephemeral 키 로그(wireguard-go 계측) 미확립 / OpenVPN 최신 패치 발행 직전 재확인 / AES-GCM ESP SA salt 배치 실검증 / 커널6.8+ 컨테이너 wg-quick sysctl RO 이슈.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "f063e423dd794c61e96f61081d9d4e775661a9d7",
-      "memo_hash": "c5750a770e87f021570d70294ac20d6fb5b577aa",
+      "memo_hash": "ecbde99b0f5e877ec792198c2d741b6f9a062f83",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-035": {
@@ -510,6 +510,25 @@
     "KAN-034"
   ],
   "recent": [
+    {
+      "seq": 137,
+      "t": "2026-07-28T15:52",
+      "a": "ai",
+      "id": "KAN-034",
+      "op": "move",
+      "from": "doing",
+      "to": "review"
+    },
+    {
+      "seq": 136,
+      "t": "2026-07-28T15:52",
+      "a": "ai",
+      "id": "KAN-034",
+      "op": "edit",
+      "field": "memo",
+      "before": "재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.",
+      "after": "완료(검토 대기). 재현 가능한 캡처 랩 확정 — ~/blog-research/raws/010-vpn-anatomy-capture-lab.md(불변, 22KB) + 위키 topic vpn-capture-lab(mature) 신설, blog-research 커밋·푸시. 산출: Docker 2노드+NAT 토폴로지(underlay 192.0.2/203.0.113 · overlay 198.51.100, MASQUERADE로 NAT-T 유발, NET_ADMIN·ip_forward), 버전·암호군 고정(strongSwan 5.9.13-2ubuntu4 aes256gcm16 / WireGuard 커널6.8 내장+tools 1.0.20210914 고정암호군 / OpenVPN 2.6.x data-ciphers AES-256-GCM+tls-crypt), 프로토콜별 캡처 명령(tcpdump 필터+tshark -O <proto> -V -x)·복호 절차(ESP=ip xfrm state 키→Wireshark ESP SA 또는 교육용 null-sha256 / WireGuard=키 로그 4토큰, 완전복호엔 ephemeral 필요 / OpenVPN=제어채널 TLS·데이터채널 복호 불가·구조만 / IKE_SA_INIT 평문)·보안 마스킹(합성 키·RFC5737/3849 IP·RFC7042 MAC)·증거 파일명 규약 vpn-anatomy-<n>/<capture>.txt + EP↔캡처 매핑표. accept 충족(각 프로토콜 캡처 재생성 명령/노트 문서화). EP3~7(KAN-037~040) 집필 gate 해제. open questions 5건: IKE_AUTH SK_ 키 추출(strongSwan) 미확립 / WireGuard ephemeral 키 로그(wireguard-go 계측) 미확립 / OpenVPN 최신 패치 발행 직전 재확인 / AES-GCM ESP SA salt 배치 실검증 / 커널6.8+ 컨테이너 wg-quick sysctl RO 이슈."
+    },
     {
       "seq": 135,
       "t": "2026-07-28T15:38",
@@ -984,27 +1003,6 @@
       "title": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
       "memo": "",
       "verbatim": ""
-    },
-    {
-      "seq": 87,
-      "t": "2026-07-27T23:26",
-      "a": "ai",
-      "id": "KAN-028",
-      "op": "create",
-      "col": "todo",
-      "title": "graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결",
-      "memo": "KAN-008 발행 중 발견. 증상: graphify extract 가 청크 실패 0건으로 성공 보고하는데도 문서 노드가 글 수보다 적다(2026-07-27 기준 18/22). 누락: osi-7-layers-3·4·5·6. 원인: 시리즈 글이 본문에서 서로를 참조하면 osi-7-layers-1.mdx 가 osi_7_layers_3 같은 참조 노드를 먼저 만들고, 이후 osi-7-layers-3.mdx 의 진짜 문서 노드가 같은 ID 로 충돌해 \"the second node will be dropped\" 로 버려진다. 시리즈가 길수록·상호링크 많을수록 악화. auth-authz·tauri 계열도 동일 충돌. graphify 경고문이 해법 제시: 하위 폴더별 extract 후 graphify merge-graphs 병합. 할 일: ① 분할 추출 + merge-graphs 파이프라인을 scripts 로 구성 ② ship-post 1.5 단계와 CLAUDE.md 절차 교체 ③ 재생성 후 2단계 검증(문서 노드 수 = 글 수, 노드 1개짜리 글 없음) 통과 시 커밋. 참고: 검증 2단계화는 c632650 에서 완료 — 이 문제를 잡아낸 게 그 ① 검사다. 현재 영향: 연관 글은 frontmatter 랭킹, /graph 는 일반 목록으로 폴백하므로 사이트 동작 지장 없음(기능 degrade).",
-      "verbatim": "2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라."
-    },
-    {
-      "seq": 86,
-      "t": "2026-07-27T23:25",
-      "a": "ai",
-      "id": "KAN-008",
-      "op": "edit",
-      "field": "memo",
-      "before": "Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교",
-      "after": "시리즈 4편 \"컨테이너의 해부\" 발행 완료 · main 머지·배포됨(556a9ab EP1 / 21bef71 EP2 / de2c2ac EP3 / 43e82f5 EP4, + c632650 CLAUDE.md 검증 보완). 저자 퍼소나 ppangto-teacher(빵토 선생님) 첫 적용. 편당 파이프라인 전 구간 통과: research→tech-deepdive(외부검토 codex/agy)→react-sim→make-image→review-post→review-writing→quality-gate→post-finalize→publish-post→ship-post. 산출물: 글 4편 + React 시뮬 3종(OverlayLab·DigestChain·CriCallTrace) + viz 14종 + hero 4장, 전부 브라우저 육안·상호작용 검증. 리서치: ~/blog-research raws/008 + 위키 10p + angle 4개(306f255). 게이트가 잡은 실오류: whiteout=캐릭터디바이스0/0(.wh. 아님)·pstree 자기모순·copy_up 실습 무효·process.args만 보류(전체 아님)·Hyper-V root MUST NOT·prestart DEPRECATED·hero 제목 잘림. 미해결(별도 카드): 그래프 데이터에 시리즈 글 누락 — graphify 노드 ID 충돌."
     }
   ]
 }
