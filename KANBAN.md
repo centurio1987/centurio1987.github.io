@@ -11,38 +11,22 @@
     ```text
     글 작성 도중, 이미 작성한 다른 시리즈와 연관된 내용이 있을 경우, 그 시리즈를 보러 가는 링크를 제공하려고 한다. 이미 작성이 완료된 글을 스캔 하여, 연관된 내용을 포착하고, 링크를 삽입하는 방식으로 집필 파이프라인에 작업을 추가해라.
     ```
-- `KAN-025` 글 목록에 저자별 필터 추가 (2축 필터 UX 리서치 + 필터에 저자 프로필 사진) — 생성:유저 · 최종:유저 · 갱신:2026-07-27
-  - 메모: /posts(section.wrap)는 현재 카테고리 필터(nav.cats)만 존재. 저자 필터 추가 + 필터축 2개에 맞는 UX 리서치 + 필터 인터랙션 요소에 저자 프로필 사진 포함
+- `KAN-027` Footer 임시 마스코트 → 등록 저자 전신샷(나란히) + 홈 마스코트 swing 모션 — 생성:유저 · 최종:유저 · 갱신:2026-07-27
+  - 메모: 홈/footer 임시 마스코트(svg.mascot) 교체 — 등록 저자들의 전신샷을 나란히 배치, 홈 히어로 마스코트와 동일한 swing 모션 적용
   - 원문:
     ```text
-    대상: /posts 글 목록 (section.wrap — 현재 카테고리 필터 nav.cats 만 존재).
+    대상: footer 마스코트 (footer.site-footer > div.footer-inner > svg.mascot, aria-label 빵관 토니 마스코트 / 홈 http://localhost:4321/).
     
-    지금은 블로그 글 목록에 카테고리 별 필터만 존재한다. 여기에 저자 별 필터도 추가 해라. 필터 분류가 2개이기 때문에 지금과 다른 UX를 채택해야 할 수 있다. 리서치를 통해, 가장 적절한 UX 패턴을 채택해라.
-    
-    선택 인터렉션 요소에는 저자의 프로필 사진을 포함해야 한다.
+    현재 footer의 이미지는 블로그 설계 초기 때 만든 임시 이미지다. 이 이미지를 현재 등록된 저자들의 전신샷이 나란히 있는 형태로 전환 하라. 이 저자들 이미지 또한, 메인 화면 마스코트와 동일한 모션(swing)을 취해야 한다.
     ```
-- `KAN-026` 글 목록 아이템에 저자 프로필 사진 노출 — 생성:유저 · 최종:유저 · 갱신:2026-07-27
-  - 메모: /posts 목록 아이템(span.post-author)에 현재 저자명 + AI 태그만 노출됨 → 저자 프로필 사진도 드러나게
+- `KAN-030` 글 목록 pagination 적용 여부 점검 후 미적용 시 도입 계획·수행 — 생성:유저 · 최종:ai · 갱신:2026-07-28
+  - 메모: 글 항목이 많아질 때를 대비. 현행 글 목록(posts/index·index·categories/[category])에 pagination이 적용돼 있는지 먼저 확인하고, 미적용이면 도입 계획을 세워 수행한다.
   - 원문:
     ```text
-    대상: /posts 글 목록 아이템의 저자 표기 (li.post-item > a.post-link > span.post-body > span.post-meta > span.post-author, 예: 빵토 연구원 AI).
-    
-    현재 블로그 목록의 아이템에는 저자명과 ai 여부 태그만 나타난다. 저자 프로필 사진이 드러날 수 있도록 해라.
-    ```
-- `KAN-029` 글 지도(/graph): 초기엔 글↔글 연관만 표시, 글 노드 호버 시 연관 키워드 노출 — 생성:유저 · 최종:ai · 갱신:2026-07-27
-  - 메모: 대상: /graph 글 지도 익스플로러(graphify 지식그래프 src/data/graph.json 소비). 현재는 글(문서) 노드와 개념·키워드 노드가 함께 그려짐. 변경① 초기 뷰를 글 노드와 글↔글 연관 관계(엣지)만으로 한정 — 개념·키워드 노드는 초기 렌더에서 숨김. 변경② 글 노드에 포인터를 올리면(hover) 해당 글의 연관 키워드가 나타나도록 인터랙션 추가.
-  - 원문:
-    ```text
-    글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.
+    블로그 글을 로딩 할 때, 항목이 많아 지는 경우를 대비하여, pagination이 적용되어 있는지 확인하고, 안되어 있다면, 적용하기 위한 계획을 세우고 수행해라.
     ```
 
 ## 할 일
-- `KAN-028` graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결 — 생성:ai · 최종:ai · 갱신:2026-07-27
-  - 메모: KAN-008 발행 중 발견. 증상: graphify extract 가 청크 실패 0건으로 성공 보고하는데도 문서 노드가 글 수보다 적다(2026-07-27 기준 18/22). 누락: osi-7-layers-3·4·5·6. 원인: 시리즈 글이 본문에서 서로를 참조하면 osi-7-layers-1.mdx 가 osi_7_layers_3 같은 참조 노드를 먼저 만들고, 이후 osi-7-layers-3.mdx 의 진짜 문서 노드가 같은 ID 로 충돌해 "the second node will be dropped" 로 버려진다. 시리즈가 길수록·상호링크 많을수록 악화. auth-authz·tauri 계열도 동일 충돌. graphify 경고문이 해법 제시: 하위 폴더별 extract 후 graphify merge-graphs 병합. 할 일: ① 분할 추출 + merge-graphs 파이프라인을 scripts 로 구성 ② ship-post 1.5 단계와 CLAUDE.md 절차 교체 ③ 재생성 후 2단계 검증(문서 노드 수 = 글 수, 노드 1개짜리 글 없음) 통과 시 커밋. 참고: 검증 2단계화는 c632650 에서 완료 — 이 문제를 잡아낸 게 그 ① 검사다. 현재 영향: 연관 글은 frontmatter 랭킹, /graph 는 일반 목록으로 폴백하므로 사이트 동작 지장 없음(기능 degrade).
-  - 원문:
-    ```text
-    2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라.
-    ```
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26
@@ -63,13 +47,35 @@
   - 메모: 기획 완료(승인 플랜: ~/.claude/plans/zazzy-enchanting-storm.md). 방향: viz.css 선례 미러 — core MOTION_CSS를 정적 CSS 셸(src/styles/motion.css)로 방출 + 멱등 공유 IntersectionObserver로 가장자리(hero·목록·카드·Squiggle draw-on) 진입 리빌, 콘텐츠 무JS/하이드레이션 0 유지. bbangto-ui-core=모션 엔진, style-guide-catalog 유틸(makeFoundations/makeSemantic/mergeFoundation)로 블로그 전용 bbangtoTonyStyleGuide(코발트+크림·한국어폰트·subtle) 저자화=정적셸+아일랜드 단일 진실원. FoundationProvider 금지(폰트 오염). 독립 배포·롤백 단계: Phase0 설치+스타일가이드 / A 정적셸+리빌(무JS·핵심) / B ClientRouter 크로스페이지 VT+제목 shared-element / C 은은한 배경 아일랜드(Aurora/Waves, reduced시 미마운트)+그래프 reduced-motion 가드 / D CI motion.css drift 가드. 강도=적극적+페이지전환. 외부검토(codex) 지적 9건 반영: reveal 멱등성·스태거 delay cap(min(i,4)*40ms)·name 유일성·persist Header 미적용·번들/접근성/정량 검증. 패키지매니저=bun 확정.
 - `KAN-008` OCI, CRI — 생성:ai · 최종:ai · 갱신:2026-07-27
   - 메모: 시리즈 4편 "컨테이너의 해부" 발행 완료 · main 머지·배포됨(556a9ab EP1 / 21bef71 EP2 / de2c2ac EP3 / 43e82f5 EP4, + c632650 CLAUDE.md 검증 보완). 저자 퍼소나 ppangto-teacher(빵토 선생님) 첫 적용. 편당 파이프라인 전 구간 통과: research→tech-deepdive(외부검토 codex/agy)→react-sim→make-image→review-post→review-writing→quality-gate→post-finalize→publish-post→ship-post. 산출물: 글 4편 + React 시뮬 3종(OverlayLab·DigestChain·CriCallTrace) + viz 14종 + hero 4장, 전부 브라우저 육안·상호작용 검증. 리서치: ~/blog-research raws/008 + 위키 10p + angle 4개(306f255). 게이트가 잡은 실오류: whiteout=캐릭터디바이스0/0(.wh. 아님)·pstree 자기모순·copy_up 실습 무효·process.args만 보류(전체 아님)·Hyper-V root MUST NOT·prestart DEPRECATED·hero 제목 잘림. 미해결(별도 카드): 그래프 데이터에 시리즈 글 누락 — graphify 노드 ID 충돌.
-- `KAN-027` Footer 임시 마스코트 → 등록 저자 전신샷(나란히) + 홈 마스코트 swing 모션 — 생성:유저 · 최종:ai · 갱신:2026-07-28
-  - 메모: 완료. 푸터 임시 마스코트(svg.mascot) → 등록 저자 4인 전신 컷아웃 라인업(src/components/AuthorLineup.astro). 모션은 홈 히어로와 동일한 스윙 공유 — @keyframes tony-sway(2.8s steps(1) ±4deg)를 index.astro 로컬에서 global.css로 올려 단일 소스화, 저자별 음수 딜레이(--i × -0.7s)로 위상만 어긋냄. authors.ts에 fullBody 필드 — 채운 저자만 라인업에 서므로 저자 추가/삭제에 컴포넌트 수정 불필요. 자산: scripts/extract-author-cutout.ts가 원본 테두리를 보고 3경로 자동 선택 — (A) 데코 컷=종이색 flood fill+최대 연결 컴포넌트, (B) 이미 투명=알파 임계값 8 바운딩 박스(발밑 그림자 배제), (C) 종이색 아닌 단색 배경=테두리색 ±4. 두 함정을 잡았다: 데코 원본도 테두리가 매끈해 (C)로 오판되던 것(→ 테두리색이 종이색이면 (A)로), 흰 실험복이 종이와 밝기가 겹쳐 배경으로 먹히던 것(→ isPaper에 따뜻함 r−b≥10 하한). 크기는 유저 요청대로 절반: 표시 높이 56px(모바일 42px), 자산 220px(파일당 9~13KB). 모바일 축소가 여태 죽어 있던 버그도 수정(인라인 커스텀 프로퍼티가 미디어 쿼리를 이김 → --figure-base로 받고 --figure-h는 CSS에서 파생). 검증: bun run build 통과 · 데스크톱 187px/모바일 137px 넘침 없음 · reduced-motion에서 animation:none · 4인 컷아웃 4x 확대 육안 확인. 커밋 9caa43e·e6b8852·f0bad3b·bfc669a (로컬, 푸시 안 함).
+- `KAN-029` 글 지도(/graph): 초기엔 글↔글 연관만 표시, 글 노드 호버 시 연관 키워드 노출 — 생성:유저 · 최종:ai · 갱신:2026-07-28
+  - 메모: 구현·검증 완료(5b8e7b7, 미머지 — 배포 전 유저 리뷰 대기). 초기 뷰=글 노드+글↔글 엣지만, 개념 노드는 렌더에서 제외. 글↔글 엣지 3신호 합성: 개념 공유(postPairs.score)+본문 인용(문서 노드 직접 엣지, 자기참조 제외)+시리즈 이웃 화(order 체인). hover/focus(터치 첫 탭) 시 상위 8개 키워드를 부채로 펼침 — 방향은 뷰박스 이탈·주변 노드 혼잡도로 선택, 세로 간격 고정이라 키워드끼리 안 겹침. 개념 노드 제거 후에도 검색 유지(글별 searchText에 전체 개념 라벨 접음), 그래프 미포함 글(container-anatomy 4편 — KAN-028)은 tags로 degrade. 부수 수정: 제목 라벨 좌우 클램프·18자 절단·collide 확대로 잘림/겹침 해소, 키보드 접근(tabIndex/Enter/focus) 추가. 검증(Playwright headless): 초기 22노드·17엣지·키워드 0 / hover 키워드 8개·뷰박스 이탈 0 / 좌우 양쪽 방향 전환 / unhover 소멸 / 검색 PKCE→글 3 / 클릭·Enter·터치 2탭 진입 / reduced-motion 동일 배치 / 콘솔 에러 0. 페이로드 562KB→155KB.
   - 원문:
     ```text
-    대상: footer 마스코트 (footer.site-footer > div.footer-inner > svg.mascot, aria-label 빵관 토니 마스코트 / 홈 http://localhost:4321/).
+    글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.
+    ```
+- `KAN-025` 글 목록에 저자별 필터 추가 (2축 필터 UX 리서치 + 필터에 저자 프로필 사진) — 생성:유저 · 최종:ai · 갱신:2026-07-28
+  - 메모: 구현 완료(검토 대기, 커밋 8711454 계열). /posts 에 카테고리 × 글쓴이 2축 패싯 필터 신설 — src/components/PostFilter.astro. 채택 UX(패싯 필터 베스트프랙티스 리서치 기준): 결과 바로 위 수평 칩바 + 축별 라벨(옵션이 축당 10개 미만이면 사이드바보다 상단 칩바가 표준), 축 내 단일 선택(글 하나에 카테고리·저자가 각 1개뿐이라 같은 축 다중선택은 이득이 작다) + '전체' 해제 옵션, 적용 버튼 없는 즉시 반영, 옵션마다 결과 수 표기하되 반대 축 선택에 따라 갱신, 0건 조합은 흐리게(고른 칩은 제외), 0건이면 목록 대신 안내 문구, 글쓴이 칩에 프로필 사진 리딩 요소(요구사항). 구현: 시각적으로 숨긴 라디오 + label 칩 + :has() 기반 CSS-only 필터라 무JS·하이드레이션 0 에서도 필터가 동작한다(콘텐츠 무JS 원칙 유지). JS 는 URL 쿼리(?cat=&author=) 동기화라는 진행적 향상만 담당 — ClientRouter 가 popstate 를 가로채므로 pushState 대신 replaceState. 카운트는 --pf-n 커스텀 프로퍼티를 content 로 흘려 처리하되 기본값도 CSS 로 방출해야 한다(인라인 style 로 두면 인라인 우선순위가 오버라이드를 이겨 숫자가 영영 안 바뀜 — 1차 구현에서 실제로 난 버그). 기존 /posts 의 카테고리 링크 칩(nav.cats)은 필터로 대체했고, /categories/<slug> 정적 페이지는 유지(글 상단 CategoryBadge 가 계속 링크하므로 고아 아님). 검증(Playwright, 프리뷰 HTTP): 저자 필터 4글·조합 필터 1글·딥링크 ?cat=skills&author=ppangto 15글·0건 조합 빈 상태 전환·카운트 갱신·무JS 컨텍스트에서도 필터 동작·Tab 6회로 라디오 그룹 진입 후 화살표 키 즉시 필터·포커스 링 노출·모바일 390px 축 라벨 상단 배치·콘솔 에러 0·/categories,/graph,홈 회귀 없음. KAN-029(graph) 위로 리베이스한 뒤 재검증: build green 35 pages, tsc clean, check-post-markers 통과.
+  - 원문:
+    ```text
+    대상: /posts 글 목록 (section.wrap — 현재 카테고리 필터 nav.cats 만 존재).
     
-    현재 footer의 이미지는 블로그 설계 초기 때 만든 임시 이미지다. 이 이미지를 현재 등록된 저자들의 전신샷이 나란히 있는 형태로 전환 하라. 이 저자들 이미지 또한, 메인 화면 마스코트와 동일한 모션(swing)을 취해야 한다.
+    지금은 블로그 글 목록에 카테고리 별 필터만 존재한다. 여기에 저자 별 필터도 추가 해라. 필터 분류가 2개이기 때문에 지금과 다른 UX를 채택해야 할 수 있다. 리서치를 통해, 가장 적절한 UX 패턴을 채택해라.
+    
+    선택 인터렉션 요소에는 저자의 프로필 사진을 포함해야 한다.
+    ```
+- `KAN-026` 글 목록 아이템에 저자 프로필 사진 노출 — 생성:유저 · 최종:ai · 갱신:2026-07-28
+  - 메모: 구현 완료(검토 대기). PostList 아이템의 저자 표기(span.post-author)에 원형 프로필 사진을 이름 앞 리딩 요소로 추가 — src/components/PostList.astro. 22px 원형 + accent 링, 이름이 바로 옆 텍스트로 있으므로 alt 를 비워 장식 처리(스크린리더 중복 낭독 방지), avatar 없는 저자용 해칭+이니셜 폴백 유지, lazy/async 디코딩. 성능 부수 작업: 원본 아바타가 512~1254px(40~150KB)라 20px 자리에 그대로 쓰면 낭비 — scripts/make-author-avatars.ts(sharp, 멱등)로 64px webp 사본을 만들고 authors.ts 에 avatarSm 필드를 배선(4장 합계 355KB→5.6KB). 규약은 /images/authors/<id>-sm.webp — 경로를 바꾸면 스크립트와 authors.ts 를 함께 고쳐야 한다. PostList 는 /posts·/categories/*·/graph 폴백이 공유하므로 세 곳 모두에 동일 적용(의도). 같은 커밋에서 필터용 data-cat·data-author 속성도 아이템에 부여(KAN-025). 검증: 세 페이지 깨진 이미지 0·콘솔 에러 0, build green.
+  - 원문:
+    ```text
+    대상: /posts 글 목록 아이템의 저자 표기 (li.post-item > a.post-link > span.post-body > span.post-meta > span.post-author, 예: 빵토 연구원 AI).
+    
+    현재 블로그 목록의 아이템에는 저자명과 ai 여부 태그만 나타난다. 저자 프로필 사진이 드러날 수 있도록 해라.
+    ```
+- `KAN-028` graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: 구현·검증 완료(8072c28 정규화 + ae9e117 재생성, main 머지 25843f2). 카드 원안(하위 폴더별 extract + merge-graphs)은 폐기했다: cross-post 링크가 전부 같은 시리즈 안(cross-series 0)이라 시리즈 단위 분할은 충돌을 못 잡고, 파일 단위 분할은 그 링크(=postPairs 신호 전부)를 잃으며, merge-graphs는 prefix_graph_for_global로 모든 ID를 tag::id로 바꿔 증류 스크립트·커뮤니티 라벨까지 깨뜨린다. 실제로는 참조 문서 노드와 진짜 문서 노드가 같은 글을 가리키는 같은 실체라 병합이 옳고, dedup이 엣지를 survivor로 재배선하므로 손실이 없다 — 진짜 버그는 build-graph-data.ts가 문서 노드 정체성을 source_file로 판단해 글↔글 인용 엣지를 전부 자기루프로 버린 것이었다. 해결: ① representedPostSlug() 2단 결정론 규칙(①id 정확일치 <slug>/<slug>_post ②id 접두사 + 라벨↔제목 포함, 확신 없으면 source_file 폴백)으로 문서 노드를 가리키는 글에 귀속 — 문서 노드 57개 전수 감사 결과 오귀속 0건(OWASP·Keycloak·mediasoup 등 외부 문서는 전부 폴백). ② scripts/verify-graph.ts 신규: ⓪청크 실패 WARNING ①커버리지 ②껍데기 없음(글당 노드>=2) ③증류 커버리지를 한 번에 판정, 비0=커밋 금지. CLAUDE.md의 손수 python 검사와 ship-post 1.5 절차를 이 스크립트 호출로 교체하고 merge-graphs 금지 근거도 기록. ③ 그래프 전량 재생성(22/22 청크, 청크 실패 0건, ID 충돌 26건은 무해) + cluster-only로 GRAPH_REPORT/graph.html/커뮤니티 32개 동기화. 효과: graphify-out 657노드·1064링크→874·1466, src/data/graph.json 18편→22편(KAN-008 발행 후 재생성 누락으로 통째로 빠져 있던 container-anatomy 1~4편 편입), concepts 600→792, postPairs 25→31, 글↔글 인용 엣지 12→41(쌍 8→25). 검증: verify-graph 4단계 통과 · bun run build 통과 · 증류 멱등성 확인 · Playwright 헤드리스로 /graph 육안 확인(22노드·32엣지·평균차수 2.91·고립 3→1·hover 키워드 8개 부채 정상·콘솔 에러 0). 미해결(보수적 규칙이 놓친 인용 1건): osi_7_layers_5_l5_l6_anatomy 는 라벨이 제목의 의역이라 포함 판정 실패 — 시리즈 체인이 osi-4↔osi-5 를 이미 이어 지도상 손실 없음.
+  - 원문:
+    ```text
+    2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라.
     ```
 
 ## 완료

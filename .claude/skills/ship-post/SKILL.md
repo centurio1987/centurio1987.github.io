@@ -42,12 +42,15 @@ git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스�
 
 ### 1.5 그래프 데이터 갱신 (non-blocking)
 연관 글/글 지도 기능의 데이터(`src/data/graph.json`)를 새 글 반영본으로 갱신한다.
-- 아래를 실행 → `bun scripts/build-graph-data.ts` → 그래프 데이터가 바뀌었으면 **`bun run build` 한 번 더** 통과 확인.
+- 아래 3개를 순서대로 실행 → 그래프 데이터가 바뀌었으면 **`bun run build` 한 번 더** 통과 확인.
   ```bash
-  graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out .
+  graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . 2>&1 | tee /tmp/graphify-extract.log
+  bun scripts/build-graph-data.ts
+  bun scripts/verify-graph.ts --log /tmp/graphify-extract.log   # 비0이면 커밋 금지
   ```
-  `--backend claude-cli`는 API 키가 필요 없다. `--backend gemini`는 무료 티어 5 RPM·일일 상한에 걸려 청크 절반이 429로 죽는다(KAN-023). `--out .`을 빼면 `src/content/posts/`를 오염시킨다.
-- **부분 실패 = 커밋 금지.** `WARNING: n/m semantic chunk(s) failed`가 뜨면 그 결과물을 버리고 기존 커밋 그래프를 유지한다. 부분 그래프를 커밋하면 일부 글이 통째로 그래프에서 사라진다. 전량 성공은 `graphify-out/graph.json`의 문서 노드 수 = 발행 글 수로 확인한다.
+  `--backend claude-cli`는 API 키가 필요 없다(글 1편당 청크 1개라 22편이면 40~60분). `--backend gemini`는 무료 티어 5 RPM·일일 상한에 걸려 청크 절반이 429로 죽는다(KAN-023). `--out .`을 빼면 `src/content/posts/`를 오염시킨다.
+- **판정은 `verify-graph.ts`에 맡긴다**(KAN-028). 손으로 세지 말 것 — 스크립트가 ⓪청크 실패 WARNING ①커버리지(모든 글이 자기 `source_file`로 등장) ②껍데기 없음(글당 노드 ≥2) ③증류 커버리지를 한 번에 본다. 비0으로 끝나면 그 결과물을 버리고(`git checkout -- graphify-out/ src/data/graph.json`) 기존 커밋 그래프를 유지한다.
+- **노드 ID 충돌은 실패가 아니다**(KAN-028). `the second node will be dropped` 경고는 시리즈 글이 서로를 인용할 때 나는데, 참조 문서 노드와 진짜 문서 노드는 같은 글을 가리키는 같은 실체라 병합이 옳고 엣지도 survivor로 재배선된다. `build-graph-data.ts`가 문서 노드를 **가리키는 글**로 정규화해 흡수하므로 그냥 진행한다.
 - **실패 정책: non-blocking.** graphify 실패(추출 오류·부분 실패) 시 경고만 남기고 기존 커밋 그래프로 발행을 계속한다 — 기능은 stale 데이터로 degrade될 뿐 글 발행을 막지 않는다.
 - 갱신에 성공했으면 commit 경로에 `graphify-out/`(단 `cache/`·날짜 백업 디렉터리 제외)과 `src/data/graph.json`을 추가한다.
 
