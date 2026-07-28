@@ -1,6 +1,6 @@
 {
   "next_id": 42,
-  "next_seq": 139,
+  "next_seq": 141,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -383,15 +383,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-035": {
-      "col": "doing",
+      "col": "review",
       "title": "VPN 해부 EP1 집필 — 큰 그림·프로토콜 지형도",
-      "memo": "vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.",
+      "memo": "vpn-anatomy-1 발행 완료(05e8203) · 큰 그림: 터널링+암호화 두 축, 위협모델 trust transfer(관찰자 시뮬), 프로토콜 지형도 3가족→EP3~6, 레거시 배제 근거. 외부검토 2R 반영(NAT-T 원인 정정·SNI 보강·macOS dig 교정). 게이트: review-writing PASS·quality-gate PASS. viz 4종+시뮬 1. 미결: graph.json 재생성 미완(10분 타임아웃, non-blocking).",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "6e3a0d0575bb7f6cbba36d0e33292ebae76394ba",
-      "memo_hash": "61c1bad7e4571bc240767316ca5e60b8ad71b24d",
+      "memo_hash": "e3816abcc2c187c4cbfc831544c4142a6e4305e4",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-036": {
@@ -510,6 +510,25 @@
     "KAN-035"
   ],
   "recent": [
+    {
+      "seq": 140,
+      "t": "2026-07-28T16:46",
+      "a": "ai",
+      "id": "KAN-035",
+      "op": "edit",
+      "field": "memo",
+      "before": "vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.",
+      "after": "vpn-anatomy-1 발행 완료(05e8203) · 큰 그림: 터널링+암호화 두 축, 위협모델 trust transfer(관찰자 시뮬), 프로토콜 지형도 3가족→EP3~6, 레거시 배제 근거. 외부검토 2R 반영(NAT-T 원인 정정·SNI 보강·macOS dig 교정). 게이트: review-writing PASS·quality-gate PASS. viz 4종+시뮬 1. 미결: graph.json 재생성 미완(10분 타임아웃, non-blocking)."
+    },
+    {
+      "seq": 139,
+      "t": "2026-07-28T16:46",
+      "a": "ai",
+      "id": "KAN-035",
+      "op": "move",
+      "from": "doing",
+      "to": "review"
+    },
     {
       "seq": 138,
       "t": "2026-07-28T16:00",
@@ -981,26 +1000,6 @@
       "field": "verbatim",
       "before": "",
       "after": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라."
-    },
-    {
-      "seq": 90,
-      "t": "2026-07-27T23:35",
-      "a": "ai",
-      "id": "KAN-029",
-      "op": "edit",
-      "field": "memo",
-      "before": "",
-      "after": "대상: /graph 글 지도 익스플로러(graphify 지식그래프 src/data/graph.json 소비). 현재는 글(문서) 노드와 개념·키워드 노드가 함께 그려짐. 변경① 초기 뷰를 글 노드와 글↔글 연관 관계(엣지)만으로 한정 — 개념·키워드 노드는 초기 렌더에서 숨김. 변경② 글 노드에 포인터를 올리면(hover) 해당 글의 연관 키워드가 나타나도록 인터랙션 추가."
-    },
-    {
-      "seq": 89,
-      "t": "2026-07-27T23:35",
-      "a": "ai",
-      "id": "KAN-029",
-      "op": "edit",
-      "field": "title",
-      "before": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라.",
-      "after": "글 지도(/graph): 초기엔 글↔글 연관만 표시, 글 노드 호버 시 연관 키워드 노출"
     }
   ]
 }
