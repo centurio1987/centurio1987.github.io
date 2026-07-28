@@ -1,6 +1,6 @@
 {
   "next_id": 42,
-  "next_seq": 133,
+  "next_seq": 135,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -359,15 +359,15 @@
       "verbatim_hash": "04039fab2b64ade803c32e448cf4d378b0c7a449"
     },
     "KAN-033": {
-      "col": "doing",
+      "col": "review",
       "title": "VPN 해부 리서치① — 스펙·RFC 근거 코퍼스",
-      "memo": "공통 스펙/RFC 근거 코퍼스: RFC 7296·4303·5116·8439·8446(TLS1.3), WireGuard 백서, OpenVPN 2.6 문서. 각 필드 레이아웃의 스펙 근거(섹션 번호) 정리. research 스킬→~/blog-research. accept: 7편이 인용할 필드 레이아웃이 섹션 번호와 함께 정리됨. gate for EP1~7.",
+      "memo": "완료(검토 대기). VPN 해부 7편 공통 스펙·RFC 근거 코퍼스 수집·ingest·push 완료(~/blog-research 커밋 1b28e66). 산출: raws/009-vpn-anatomy-protocol-corpus.md(682줄·§근거 118회·RFC 56인용, 불변) + 위키 topic 11개(rfc5116-aead·rfc8439-chacha20-poly1305·rfc7748-x25519·ipsec-architecture·rfc7296-ikev2·rfc4303-esp·wireguard-protocol·rfc8446-tls13·openvpn-protocol=9 mature, vpn-threat-model·vpn-operational-pitfalls=2 draft) + angle 7개(vpn-anatomy-1~7; EP2~6 mature·EP1/EP7 draft). accept 충족: 와이어 레벨 필드 레이아웃을 섹션 번호까지 확보 — RFC 5116 §2/§5.1-2, RFC 8439 §2.3-2.8, RFC 7748 §5/6.1, NIST SP800-38D §5.2.1, RFC 7296 §3.1-3.10/§1.2-1.3, RFC 4301, RFC 4303 §2/§2.1-2.8/§3.1.1-2/§3.4.3, RFC 3948 §2.1-2.2, RFC 6479, RFC 1191, WireGuard 백서 §5.4.1-7(PDF pdftotext 직접 추출), RFC 8446 §5.1-2/§4.1.2-4.4.4/§7.1, OpenVPN wire §4-7. 1차 소스=RFC Editor 원문·공식 백서·openvpn.github.io wire 문서·NIST PDF. open questions 9건(코퍼스 §7): WireGuard 백서 RFC7539→8439 각주·IKEv2 Exchange Type IANA 코드값·RFC4303 §2 원문 다이어그램·OpenVPN TCP-meltdown 공식 FAQ(503)·커널vs유저스페이스 정량 성능(SEO 저품질이라 의도 배제)·BLAKE2 RFC7693 세부·IKEv2 Proposal/Transform 바이트 오프셋·OpenVPN P_ACK 필드순. 다음: EP2~6은 mature angle로 KAN-036~040 tech-deepdive 집필 착수 가능, EP1/EP7은 draft라 open question 유의. gate for EP1~7 해제.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "4c0238d907d241ed8f35ef9e43640a533d856945",
-      "memo_hash": "b3a6a2f9d3f189fcc7a49d9ec419b9f87b650d7d",
+      "memo_hash": "4e41d147afb40db235f16e8e61fb437dd3df93b7",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-034": {
@@ -510,6 +510,25 @@
     "KAN-033"
   ],
   "recent": [
+    {
+      "seq": 134,
+      "t": "2026-07-28T15:23",
+      "a": "ai",
+      "id": "KAN-033",
+      "op": "move",
+      "from": "doing",
+      "to": "review"
+    },
+    {
+      "seq": 133,
+      "t": "2026-07-28T15:23",
+      "a": "ai",
+      "id": "KAN-033",
+      "op": "edit",
+      "field": "memo",
+      "before": "공통 스펙/RFC 근거 코퍼스: RFC 7296·4303·5116·8439·8446(TLS1.3), WireGuard 백서, OpenVPN 2.6 문서. 각 필드 레이아웃의 스펙 근거(섹션 번호) 정리. research 스킬→~/blog-research. accept: 7편이 인용할 필드 레이아웃이 섹션 번호와 함께 정리됨. gate for EP1~7.",
+      "after": "완료(검토 대기). VPN 해부 7편 공통 스펙·RFC 근거 코퍼스 수집·ingest·push 완료(~/blog-research 커밋 1b28e66). 산출: raws/009-vpn-anatomy-protocol-corpus.md(682줄·§근거 118회·RFC 56인용, 불변) + 위키 topic 11개(rfc5116-aead·rfc8439-chacha20-poly1305·rfc7748-x25519·ipsec-architecture·rfc7296-ikev2·rfc4303-esp·wireguard-protocol·rfc8446-tls13·openvpn-protocol=9 mature, vpn-threat-model·vpn-operational-pitfalls=2 draft) + angle 7개(vpn-anatomy-1~7; EP2~6 mature·EP1/EP7 draft). accept 충족: 와이어 레벨 필드 레이아웃을 섹션 번호까지 확보 — RFC 5116 §2/§5.1-2, RFC 8439 §2.3-2.8, RFC 7748 §5/6.1, NIST SP800-38D §5.2.1, RFC 7296 §3.1-3.10/§1.2-1.3, RFC 4301, RFC 4303 §2/§2.1-2.8/§3.1.1-2/§3.4.3, RFC 3948 §2.1-2.2, RFC 6479, RFC 1191, WireGuard 백서 §5.4.1-7(PDF pdftotext 직접 추출), RFC 8446 §5.1-2/§4.1.2-4.4.4/§7.1, OpenVPN wire §4-7. 1차 소스=RFC Editor 원문·공식 백서·openvpn.github.io wire 문서·NIST PDF. open questions 9건(코퍼스 §7): WireGuard 백서 RFC7539→8439 각주·IKEv2 Exchange Type IANA 코드값·RFC4303 §2 원문 다이어그램·OpenVPN TCP-meltdown 공식 FAQ(503)·커널vs유저스페이스 정량 성능(SEO 저품질이라 의도 배제)·BLAKE2 RFC7693 세부·IKEv2 Proposal/Transform 바이트 오프셋·OpenVPN P_ACK 필드순. 다음: EP2~6은 mature angle로 KAN-036~040 tech-deepdive 집필 착수 가능, EP1/EP7은 draft라 open question 유의. gate for EP1~7 해제."
+    },
     {
       "seq": 132,
       "t": "2026-07-28T14:57",
@@ -986,28 +1005,6 @@
       "op": "move",
       "from": "backlog",
       "to": "review"
-    },
-    {
-      "seq": 84,
-      "t": "2026-07-27T17:11",
-      "a": "유저",
-      "id": "KAN-027",
-      "op": "create",
-      "col": "backlog",
-      "title": "Footer 임시 마스코트 → 등록 저자 전신샷(나란히) + 홈 마스코트 swing 모션",
-      "memo": "홈/footer 임시 마스코트(svg.mascot) 교체 — 등록 저자들의 전신샷을 나란히 배치, 홈 히어로 마스코트와 동일한 swing 모션 적용",
-      "verbatim": "대상: footer 마스코트 (footer.site-footer > div.footer-inner > svg.mascot, aria-label 빵관 토니 마스코트 / 홈 http://localhost:4321/).\n\n현재 footer의 이미지는 블로그 설계 초기 때 만든 임시 이미지다. 이 이미지를 현재 등록된 저자들의 전신샷이 나란히 있는 형태로 전환 하라. 이 저자들 이미지 또한, 메인 화면 마스코트와 동일한 모션(swing)을 취해야 한다."
-    },
-    {
-      "seq": 83,
-      "t": "2026-07-27T17:11",
-      "a": "유저",
-      "id": "KAN-026",
-      "op": "create",
-      "col": "backlog",
-      "title": "글 목록 아이템에 저자 프로필 사진 노출",
-      "memo": "/posts 목록 아이템(span.post-author)에 현재 저자명 + AI 태그만 노출됨 → 저자 프로필 사진도 드러나게",
-      "verbatim": "대상: /posts 글 목록 아이템의 저자 표기 (li.post-item > a.post-link > span.post-body > span.post-meta > span.post-author, 예: 빵토 연구원 AI).\n\n현재 블로그 목록의 아이템에는 저자명과 ai 여부 태그만 나타난다. 저자 프로필 사진이 드러날 수 있도록 해라."
     }
   ]
 }

@@ -68,10 +68,10 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
-- `KAN-033` VPN 해부 리서치① — 스펙·RFC 근거 코퍼스 — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: 공통 스펙/RFC 근거 코퍼스: RFC 7296·4303·5116·8439·8446(TLS1.3), WireGuard 백서, OpenVPN 2.6 문서. 각 필드 레이아웃의 스펙 근거(섹션 번호) 정리. research 스킬→~/blog-research. accept: 7편이 인용할 필드 레이아웃이 섹션 번호와 함께 정리됨. gate for EP1~7.
 
 ## 검토
+- `KAN-033` VPN 해부 리서치① — 스펙·RFC 근거 코퍼스 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: 완료(검토 대기). VPN 해부 7편 공통 스펙·RFC 근거 코퍼스 수집·ingest·push 완료(~/blog-research 커밋 1b28e66). 산출: raws/009-vpn-anatomy-protocol-corpus.md(682줄·§근거 118회·RFC 56인용, 불변) + 위키 topic 11개(rfc5116-aead·rfc8439-chacha20-poly1305·rfc7748-x25519·ipsec-architecture·rfc7296-ikev2·rfc4303-esp·wireguard-protocol·rfc8446-tls13·openvpn-protocol=9 mature, vpn-threat-model·vpn-operational-pitfalls=2 draft) + angle 7개(vpn-anatomy-1~7; EP2~6 mature·EP1/EP7 draft). accept 충족: 와이어 레벨 필드 레이아웃을 섹션 번호까지 확보 — RFC 5116 §2/§5.1-2, RFC 8439 §2.3-2.8, RFC 7748 §5/6.1, NIST SP800-38D §5.2.1, RFC 7296 §3.1-3.10/§1.2-1.3, RFC 4301, RFC 4303 §2/§2.1-2.8/§3.1.1-2/§3.4.3, RFC 3948 §2.1-2.2, RFC 6479, RFC 1191, WireGuard 백서 §5.4.1-7(PDF pdftotext 직접 추출), RFC 8446 §5.1-2/§4.1.2-4.4.4/§7.1, OpenVPN wire §4-7. 1차 소스=RFC Editor 원문·공식 백서·openvpn.github.io wire 문서·NIST PDF. open questions 9건(코퍼스 §7): WireGuard 백서 RFC7539→8439 각주·IKEv2 Exchange Type IANA 코드값·RFC4303 §2 원문 다이어그램·OpenVPN TCP-meltdown 공식 FAQ(503)·커널vs유저스페이스 정량 성능(SEO 저품질이라 의도 배제)·BLAKE2 RFC7693 세부·IKEv2 Proposal/Transform 바이트 오프셋·OpenVPN P_ACK 필드순. 다음: EP2~6은 mature angle로 KAN-036~040 tech-deepdive 집필 착수 가능, EP1/EP7은 draft라 open question 유의. gate for EP1~7 해제.
 
 ## 완료
 - `KAN-009` KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다. — 생성:유저 · 최종:유저 · 갱신:2026-07-23
