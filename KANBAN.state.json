@@ -1,6 +1,6 @@
 {
-  "next_id": 42,
-  "next_seq": 141,
+  "next_id": 45,
+  "next_seq": 145,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -383,15 +383,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-035": {
-      "col": "review",
+      "col": "todo",
       "title": "VPN 해부 EP1 집필 — 큰 그림·프로토콜 지형도",
-      "memo": "vpn-anatomy-1 발행 완료(05e8203) · 큰 그림: 터널링+암호화 두 축, 위협모델 trust transfer(관찰자 시뮬), 프로토콜 지형도 3가족→EP3~6, 레거시 배제 근거. 외부검토 2R 반영(NAT-T 원인 정정·SNI 보강·macOS dig 교정). 게이트: review-writing PASS·quality-gate PASS. viz 4종+시뮬 1. 미결: graph.json 재생성 미완(10분 타임아웃, non-blocking).",
+      "memo": "vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "6e3a0d0575bb7f6cbba36d0e33292ebae76394ba",
-      "memo_hash": "e3816abcc2c187c4cbfc831544c4142a6e4305e4",
+      "memo_hash": "61c1bad7e4571bc240767316ca5e60b8ad71b24d",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-036": {
@@ -419,15 +419,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-038": {
-      "col": "todo",
+      "col": "review",
       "title": "VPN 해부 EP4 집필 — IPsec② ESP·NAT-T·MTU",
-      "memo": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034.",
+      "memo": "완료(검토 대기). vpn-anatomy-4 발행·푸시 — 커밋 a3ce646(브랜치 centurio1987/kan-038, 미머지). 산출: src/content/posts/vpn-anatomy-4.mdx(본문 약 17.5천자) + viz 4종(hero PosterEditorial / EspFieldOrder Flowchart / TransportVsTunnel Comparison / MtuBlackhole ProcessSteps) + React 시뮬 2종(AntiReplayLab·EspOverheadLab). author ppangto(총괄 KAN-031 기준 — angle 문서의 '빵토 선생님' 표기는 오기라 무시). || 게이트 전 구간 통과: 외부검토 2라운드(codex+Gemini) → review-post(4축, 자동모드 반영) → review-writing(라운드2 PASS, MUST 11/11) → quality-gate(라운드2 PASS, MUST 전부·SHOULD 0). || 외부검토가 잡은 실오류(1차 소스로 전수 재확인 후 반영): ESP 필드 수 8→7(ESN은 옵션 확장) · AEAD 결합모드는 '검증 먼저 복호 나중'이 아니라 검증·복호 동시(RFC 4303 §3.4.4) · anti-replay 윈도우 갱신은 무결성 검증 성공 후에만(§3.4.3) + SA별 선택이며 무결성 없이는 활성화 불가 · NAT-keepalive 1바이트 0xFF 누락(RFC 3948 §2.3·§4, 20초/5분 기본값, 생존판정 사용 금지) · SPI·Seq가 AAD로 인증됨(RFC 4106 §5) + nonce=salt4+IV8(§4·§8.1) · ICV 16옥텟은 MUST-support이고 현행 실무 기준은 RFC 8221의 ENCR_AES_GCM_16 MUST · IPv6 경계(외부헤더 40B·DF 없음·ICMPv6 type2·정렬 8B·최소MTU 1280) · tunnel DF 복사 정책 3케이스(RFC 4301 §8.1-8.2) · TFC 패딩(§2.7) · WireGuard 백서는 두 방식을 '선택지로 명시'일 뿐 후자 채택 단정 불가. || 렌더 육안 검증(Playwright, astro preview HTTP): hero 제목 잘림 1건 발견→제목 단축 후 재렌더 · Comparison 우측 잘림+내부 여백 1건 발견→항목 단축·viewBox 268→218 재생성 · 시뮬 조작 검증에서 '아주 오래된 패킷' 버튼이 왼쪽밖 거부를 재현 못 하는 결함 발견(윈도우가 seq 1에서 시작해 왼쪽밖이 없음)→초기 상태를 size*2 지점으로 이동+빈칸 2개 배치+'늦게 온 빈칸 채우기' 버튼 신설로 판정 3종 전부 재현. MTU 계산 실측 1446→1438(NAT-T) 스펙 일치 확인, 콘솔 에러 0. || 미해결/후속: ① 시리즈 링크 섹션 미삽입 — 같은 series 'VPN의 해부' 글이 아직 0편 발행이라 목록이 빈 채로 들어감. EP1~3(KAN-035~037, 형제 워크트리 병렬 진행) 머지 후 post-finalize 재실행 필요(멱등, 기존 섹션 교체). 본문의 /posts/vpn-anatomy-2·3·5 링크도 그때까지 404. ② 실제 캡처 아티팩트(~/blog-research/raws/captures/) 미생성 — 본문은 스펙 유도 레이아웃 + 랩 재현 절차로 분리 서술(KAN-031 정확성 규칙 준수), 캡처 확보 시 발췌 인용 보강 가능. ③ graphify 그래프 재생성 진행 중.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "f089d770484b4941865148015d8760de9bbb0092",
-      "memo_hash": "a1bb3f4103c514b0a8c7b204af1aa1001be7fdf3",
+      "memo_hash": "8c3c0fdad7c0c9b76ccaa1b3e10974575c9841ae",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-039": {
@@ -465,6 +465,42 @@
       "title_hash": "9eb9896d2e118c8e448b7ddd120c8fb8597109d4",
       "memo_hash": "e7d287baabc6a466c1f8c2e9e9ef7746725e2c34",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-042": {
+      "col": "todo",
+      "title": "VPN 해부 시리즈 링크 섹션 삽입 (EP 발행 후 post-finalize 재실행)",
+      "memo": "선행조건(gating): 같은 series 'VPN의 해부' 글이 2편 이상 main에 발행된 뒤 착수. KAN-038(EP4) 발행 시점에는 시리즈 내 발행 글이 0편이라 '## 이 시리즈의 다른 글' 섹션을 넣으면 목록이 빈 채로 들어가 생략했다(형제 시리즈 osi/webrtc/auth-authz는 모두 이 섹션을 보유 — 관례 이탈 상태). 조치: EP1~3(KAN-035~037, 병렬 워크트리)·EP5~7 머지 후 발행된 각 편에 post-finalize 재실행(멱등 — 기존 섹션 통째 교체). 함께 확인할 것: vpn-anatomy-4 본문의 내부 링크 /posts/vpn-anatomy-2·3·5 가 해당 편 발행 전까지 404이므로 전편 발행 후 링크 생존 확인. SeriesEpisodes/PostNav 자동 렌더와 중복되지 않는지도 육안 점검.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "e1ae54686ab653f96e1dd10ba52c110eafcaaa35",
+      "memo_hash": "0be2e58830daab4fab6c5ccc6daa341e0babec4e",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-043": {
+      "col": "todo",
+      "title": "VPN 해부 캡처 아티팩트 실제 생성 (랩 실행 → raws/captures/) 및 본문 발췌 보강",
+      "memo": "KAN-034가 캡처 랩 환경·방법론(~/blog-research/raws/010 + topic vpn-capture-lab)을 문서화했으나 실제 캡처는 아직 미실행 — ~/blog-research/raws/captures/ 디렉터리 자체가 없다. 그래서 KAN-038(EP4)은 KAN-031의 '스펙 레이아웃 vs 실제 캡처 분리' 규칙에 따라 스펙 유도 레이아웃 + 랩 재현 절차로만 서술했고, 실측 hex/tshark 출력은 싣지 않았다(날조 금지 원칙 준수). 조치: raws/010 §4의 절차대로 Docker 2노드+NAT 랩을 실제로 띄워 매핑표(§5.2)의 아티팩트를 생성 — EP3 ike_sa_init.txt·ike_auth.txt / EP4 esp-proto50.txt·esp-natt.txt·esp-decrypted.txt / EP5 wg-handshake.txt·wg-transport.txt / EP6 openvpn-opcode.txt·openvpn-tls-auth.txt. 확보되면 각 편 본문에 발췌 인용 보강(전체는 blog-research에 커밋, 본문은 발췌만). 마스킹 규약(§6, 합성 키·RFC5737/3849 주소) 준수. raws/010 §8 open questions 5건(IKE_AUTH SK_ 키 추출·WireGuard ephemeral 키 로그·OpenVPN 최신 패치·AES-GCM ESP SA salt 배치 실검증·커널6.8+ 컨테이너 wg-quick sysctl RO)도 이때 실측으로 해소 시도.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "75ac2bd695f047d74173573610bf9c9228054aa1",
+      "memo_hash": "33582336cda76fecf139b5f8519e239781ae2d89",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-044": {
+      "col": "todo",
+      "title": "graphify 그래프 일괄 재생성 (VPN 시리즈 7편 전량 발행·머지 후 1회)",
+      "memo": "선행조건(gating): VPN 해부 EP1~7(KAN-035~041)이 전부 main에 머지된 뒤 main에서 1회만 실행. 편당 재생성을 금지하는 근거 3가지: ① graphify가 incremental scan을 표방하지만 실측상 캐시 미적중으로 매 실행이 전량 재추출(23편 = 24청크, claude-cli 백엔드로 40~60분) — 7편이면 같은 작업을 7회 반복. ② graphify-out/graph.json·src/data/graph.json 은 커밋 대상이라 병렬 워크트리(kan-035~038)가 각자 재생성하면 머지 시 대용량 JSON 다중 충돌. ③ 각 워크트리에는 자기 편만 있어 생성된 그래프가 형제 편 머지 즉시 stale — 어차피 재생성 필요. || KAN-038(EP4) 발행 시 ship-post 1.5를 착수했다가 위 근거로 중단했고 산출물은 미변경(커밋된 기존 그래프 유지, 연관 글·/graph 는 EP1~7이 빠진 stale 상태로 degrade — 기능은 동작, frontmatter 폴백). || 절차(CLAUDE.md 규약): graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . 2>&1 | tee /tmp/graphify-extract.log → bun scripts/build-graph-data.ts → bun scripts/verify-graph.ts --log /tmp/graphify-extract.log (비0이면 git checkout -- graphify-out/ src/data/graph.json 로 폐기). --out . 필수(빼면 콘텐츠 디렉터리 오염). 노드 ID 충돌 경고는 실패 아님(KAN-028). 커밋 경로는 graphify-out/(cache·날짜백업 제외) + src/data/graph.json. || 후속 검토(선택): 시리즈 단위 집필에서는 ship-post 1.5를 편당이 아니라 시리즈 완료 후로 미루도록 ship-post SKILL.md·CLAUDE.md에 명시할지 판단.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "7134568f6e31aef4bc7ac91e120948751129e87a",
+      "memo_hash": "fcd97043d8dc49f1fde25d3e4524943ec496e451",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
@@ -472,9 +508,9 @@
     "KAN-030",
     "KAN-032",
     "KAN-031",
+    "KAN-035",
     "KAN-036",
     "KAN-037",
-    "KAN-038",
     "KAN-039",
     "KAN-040",
     "KAN-041",
@@ -485,6 +521,7 @@
     "KAN-005",
     "KAN-033",
     "KAN-034",
+    "KAN-038",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -507,33 +544,78 @@
     "KAN-027",
     "KAN-025",
     "KAN-026",
-    "KAN-035"
+    "KAN-042",
+    "KAN-043",
+    "KAN-044"
   ],
   "recent": [
     {
-      "seq": 140,
-      "t": "2026-07-28T16:46",
+      "seq": 144,
+      "t": "2026-07-28T16:45",
       "a": "ai",
-      "id": "KAN-035",
-      "op": "edit",
-      "field": "memo",
-      "before": "vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.",
-      "after": "vpn-anatomy-1 발행 완료(05e8203) · 큰 그림: 터널링+암호화 두 축, 위협모델 trust transfer(관찰자 시뮬), 프로토콜 지형도 3가족→EP3~6, 레거시 배제 근거. 외부검토 2R 반영(NAT-T 원인 정정·SNI 보강·macOS dig 교정). 게이트: review-writing PASS·quality-gate PASS. viz 4종+시뮬 1. 미결: graph.json 재생성 미완(10분 타임아웃, non-blocking)."
+      "id": "KAN-044",
+      "op": "create",
+      "col": "todo",
+      "title": "graphify 그래프 일괄 재생성 (VPN 시리즈 7편 전량 발행·머지 후 1회)",
+      "memo": "선행조건(gating): VPN 해부 EP1~7(KAN-035~041)이 전부 main에 머지된 뒤 main에서 1회만 실행. 편당 재생성을 금지하는 근거 3가지: ① graphify가 incremental scan을 표방하지만 실측상 캐시 미적중으로 매 실행이 전량 재추출(23편 = 24청크, claude-cli 백엔드로 40~60분) — 7편이면 같은 작업을 7회 반복. ② graphify-out/graph.json·src/data/graph.json 은 커밋 대상이라 병렬 워크트리(kan-035~038)가 각자 재생성하면 머지 시 대용량 JSON 다중 충돌. ③ 각 워크트리에는 자기 편만 있어 생성된 그래프가 형제 편 머지 즉시 stale — 어차피 재생성 필요. || KAN-038(EP4) 발행 시 ship-post 1.5를 착수했다가 위 근거로 중단했고 산출물은 미변경(커밋된 기존 그래프 유지, 연관 글·/graph 는 EP1~7이 빠진 stale 상태로 degrade — 기능은 동작, frontmatter 폴백). || 절차(CLAUDE.md 규약): graphify extract src/content/posts/ --backend claude-cli --mode deep --token-budget 15000 --out . 2>&1 | tee /tmp/graphify-extract.log → bun scripts/build-graph-data.ts → bun scripts/verify-graph.ts --log /tmp/graphify-extract.log (비0이면 git checkout -- graphify-out/ src/data/graph.json 로 폐기). --out . 필수(빼면 콘텐츠 디렉터리 오염). 노드 ID 충돌 경고는 실패 아님(KAN-028). 커밋 경로는 graphify-out/(cache·날짜백업 제외) + src/data/graph.json. || 후속 검토(선택): 시리즈 단위 집필에서는 ship-post 1.5를 편당이 아니라 시리즈 완료 후로 미루도록 ship-post SKILL.md·CLAUDE.md에 명시할지 판단.",
+      "verbatim": ""
     },
     {
-      "seq": 139,
-      "t": "2026-07-28T16:46",
+      "seq": 143,
+      "t": "2026-07-28T16:42",
       "a": "ai",
-      "id": "KAN-035",
+      "id": "KAN-043",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 캡처 아티팩트 실제 생성 (랩 실행 → raws/captures/) 및 본문 발췌 보강",
+      "memo": "KAN-034가 캡처 랩 환경·방법론(~/blog-research/raws/010 + topic vpn-capture-lab)을 문서화했으나 실제 캡처는 아직 미실행 — ~/blog-research/raws/captures/ 디렉터리 자체가 없다. 그래서 KAN-038(EP4)은 KAN-031의 '스펙 레이아웃 vs 실제 캡처 분리' 규칙에 따라 스펙 유도 레이아웃 + 랩 재현 절차로만 서술했고, 실측 hex/tshark 출력은 싣지 않았다(날조 금지 원칙 준수). 조치: raws/010 §4의 절차대로 Docker 2노드+NAT 랩을 실제로 띄워 매핑표(§5.2)의 아티팩트를 생성 — EP3 ike_sa_init.txt·ike_auth.txt / EP4 esp-proto50.txt·esp-natt.txt·esp-decrypted.txt / EP5 wg-handshake.txt·wg-transport.txt / EP6 openvpn-opcode.txt·openvpn-tls-auth.txt. 확보되면 각 편 본문에 발췌 인용 보강(전체는 blog-research에 커밋, 본문은 발췌만). 마스킹 규약(§6, 합성 키·RFC5737/3849 주소) 준수. raws/010 §8 open questions 5건(IKE_AUTH SK_ 키 추출·WireGuard ephemeral 키 로그·OpenVPN 최신 패치·AES-GCM ESP SA salt 배치 실검증·커널6.8+ 컨테이너 wg-quick sysctl RO)도 이때 실측으로 해소 시도.",
+      "verbatim": ""
+    },
+    {
+      "seq": 142,
+      "t": "2026-07-28T16:42",
+      "a": "ai",
+      "id": "KAN-042",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 시리즈 링크 섹션 삽입 (EP 발행 후 post-finalize 재실행)",
+      "memo": "선행조건(gating): 같은 series 'VPN의 해부' 글이 2편 이상 main에 발행된 뒤 착수. KAN-038(EP4) 발행 시점에는 시리즈 내 발행 글이 0편이라 '## 이 시리즈의 다른 글' 섹션을 넣으면 목록이 빈 채로 들어가 생략했다(형제 시리즈 osi/webrtc/auth-authz는 모두 이 섹션을 보유 — 관례 이탈 상태). 조치: EP1~3(KAN-035~037, 병렬 워크트리)·EP5~7 머지 후 발행된 각 편에 post-finalize 재실행(멱등 — 기존 섹션 통째 교체). 함께 확인할 것: vpn-anatomy-4 본문의 내부 링크 /posts/vpn-anatomy-2·3·5 가 해당 편 발행 전까지 404이므로 전편 발행 후 링크 생존 확인. SeriesEpisodes/PostNav 자동 렌더와 중복되지 않는지도 육안 점검.",
+      "verbatim": ""
+    },
+    {
+      "seq": 141,
+      "t": "2026-07-28T16:39",
+      "a": "ai",
+      "id": "KAN-038",
+      "op": "edit",
+      "field": "memo",
+      "before": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034. [진행 중] 집필 착수 — gate KAN-034 해제 확인, angle=~/blog-research/wiki/angles/vpn-anatomy-4.md(mature, sources 009·010), author=ppangto(총괄 KAN-031 기준 — angle의 '빵토 선생님' 표기는 오기). 병렬 워크트리 kan-035~037이 EP1~3 동시 진행.",
+      "after": "완료(검토 대기). vpn-anatomy-4 발행·푸시 — 커밋 a3ce646(브랜치 centurio1987/kan-038, 미머지). 산출: src/content/posts/vpn-anatomy-4.mdx(본문 약 17.5천자) + viz 4종(hero PosterEditorial / EspFieldOrder Flowchart / TransportVsTunnel Comparison / MtuBlackhole ProcessSteps) + React 시뮬 2종(AntiReplayLab·EspOverheadLab). author ppangto(총괄 KAN-031 기준 — angle 문서의 '빵토 선생님' 표기는 오기라 무시). || 게이트 전 구간 통과: 외부검토 2라운드(codex+Gemini) → review-post(4축, 자동모드 반영) → review-writing(라운드2 PASS, MUST 11/11) → quality-gate(라운드2 PASS, MUST 전부·SHOULD 0). || 외부검토가 잡은 실오류(1차 소스로 전수 재확인 후 반영): ESP 필드 수 8→7(ESN은 옵션 확장) · AEAD 결합모드는 '검증 먼저 복호 나중'이 아니라 검증·복호 동시(RFC 4303 §3.4.4) · anti-replay 윈도우 갱신은 무결성 검증 성공 후에만(§3.4.3) + SA별 선택이며 무결성 없이는 활성화 불가 · NAT-keepalive 1바이트 0xFF 누락(RFC 3948 §2.3·§4, 20초/5분 기본값, 생존판정 사용 금지) · SPI·Seq가 AAD로 인증됨(RFC 4106 §5) + nonce=salt4+IV8(§4·§8.1) · ICV 16옥텟은 MUST-support이고 현행 실무 기준은 RFC 8221의 ENCR_AES_GCM_16 MUST · IPv6 경계(외부헤더 40B·DF 없음·ICMPv6 type2·정렬 8B·최소MTU 1280) · tunnel DF 복사 정책 3케이스(RFC 4301 §8.1-8.2) · TFC 패딩(§2.7) · WireGuard 백서는 두 방식을 '선택지로 명시'일 뿐 후자 채택 단정 불가. || 렌더 육안 검증(Playwright, astro preview HTTP): hero 제목 잘림 1건 발견→제목 단축 후 재렌더 · Comparison 우측 잘림+내부 여백 1건 발견→항목 단축·viewBox 268→218 재생성 · 시뮬 조작 검증에서 '아주 오래된 패킷' 버튼이 왼쪽밖 거부를 재현 못 하는 결함 발견(윈도우가 seq 1에서 시작해 왼쪽밖이 없음)→초기 상태를 size*2 지점으로 이동+빈칸 2개 배치+'늦게 온 빈칸 채우기' 버튼 신설로 판정 3종 전부 재현. MTU 계산 실측 1446→1438(NAT-T) 스펙 일치 확인, 콘솔 에러 0. || 미해결/후속: ① 시리즈 링크 섹션 미삽입 — 같은 series 'VPN의 해부' 글이 아직 0편 발행이라 목록이 빈 채로 들어감. EP1~3(KAN-035~037, 형제 워크트리 병렬 진행) 머지 후 post-finalize 재실행 필요(멱등, 기존 섹션 교체). 본문의 /posts/vpn-anatomy-2·3·5 링크도 그때까지 404. ② 실제 캡처 아티팩트(~/blog-research/raws/captures/) 미생성 — 본문은 스펙 유도 레이아웃 + 랩 재현 절차로 분리 서술(KAN-031 정확성 규칙 준수), 캡처 확보 시 발췌 인용 보강 가능. ③ graphify 그래프 재생성 진행 중."
+    },
+    {
+      "seq": 140,
+      "t": "2026-07-28T16:39",
+      "a": "ai",
+      "id": "KAN-038",
       "op": "move",
       "from": "doing",
       "to": "review"
     },
     {
-      "seq": 138,
-      "t": "2026-07-28T16:00",
+      "seq": 139,
+      "t": "2026-07-28T15:59",
       "a": "ai",
-      "id": "KAN-035",
+      "id": "KAN-038",
+      "op": "edit",
+      "field": "memo",
+      "before": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034.",
+      "after": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034. [진행 중] 집필 착수 — gate KAN-034 해제 확인, angle=~/blog-research/wiki/angles/vpn-anatomy-4.md(mature, sources 009·010), author=ppangto(총괄 KAN-031 기준 — angle의 '빵토 선생님' 표기는 오기). 병렬 워크트리 kan-035~037이 EP1~3 동시 진행."
+    },
+    {
+      "seq": 138,
+      "t": "2026-07-28T15:59",
+      "a": "ai",
+      "id": "KAN-038",
       "op": "move",
       "from": "todo",
       "to": "doing"
@@ -962,44 +1044,6 @@
       "op": "move",
       "from": "backlog",
       "to": "review"
-    },
-    {
-      "seq": 94,
-      "t": "2026-07-28T00:15",
-      "a": "ai",
-      "id": "KAN-029",
-      "op": "edit",
-      "field": "memo",
-      "before": "대상: /graph 글 지도 익스플로러(graphify 지식그래프 src/data/graph.json 소비). 현재는 글(문서) 노드와 개념·키워드 노드가 함께 그려짐. 변경① 초기 뷰를 글 노드와 글↔글 연관 관계(엣지)만으로 한정 — 개념·키워드 노드는 초기 렌더에서 숨김. 변경② 글 노드에 포인터를 올리면(hover) 해당 글의 연관 키워드가 나타나도록 인터랙션 추가.",
-      "after": "구현·검증 완료(5b8e7b7, 미머지 — 배포 전 유저 리뷰 대기). 초기 뷰=글 노드+글↔글 엣지만, 개념 노드는 렌더에서 제외. 글↔글 엣지 3신호 합성: 개념 공유(postPairs.score)+본문 인용(문서 노드 직접 엣지, 자기참조 제외)+시리즈 이웃 화(order 체인). hover/focus(터치 첫 탭) 시 상위 8개 키워드를 부채로 펼침 — 방향은 뷰박스 이탈·주변 노드 혼잡도로 선택, 세로 간격 고정이라 키워드끼리 안 겹침. 개념 노드 제거 후에도 검색 유지(글별 searchText에 전체 개념 라벨 접음), 그래프 미포함 글(container-anatomy 4편 — KAN-028)은 tags로 degrade. 부수 수정: 제목 라벨 좌우 클램프·18자 절단·collide 확대로 잘림/겹침 해소, 키보드 접근(tabIndex/Enter/focus) 추가. 검증(Playwright headless): 초기 22노드·17엣지·키워드 0 / hover 키워드 8개·뷰박스 이탈 0 / 좌우 양쪽 방향 전환 / unhover 소멸 / 검색 PKCE→글 3 / 클릭·Enter·터치 2탭 진입 / reduced-motion 동일 배치 / 콘솔 에러 0. 페이로드 562KB→155KB."
-    },
-    {
-      "seq": 93,
-      "t": "2026-07-28T00:15",
-      "a": "ai",
-      "id": "KAN-029",
-      "op": "move",
-      "from": "doing",
-      "to": "review"
-    },
-    {
-      "seq": 92,
-      "t": "2026-07-28T00:03",
-      "a": "ai",
-      "id": "KAN-029",
-      "op": "move",
-      "from": "backlog",
-      "to": "doing"
-    },
-    {
-      "seq": 91,
-      "t": "2026-07-27T23:36",
-      "a": "ai",
-      "id": "KAN-029",
-      "op": "edit",
-      "field": "verbatim",
-      "before": "",
-      "after": "글지도에서, 최초에 나타나는 것은 글 노드와 글 노드 사이의 연관 관계만으로 한정해라. 글 노드에 포인터를 올렸을 때 연관 키워드가 나타나는 것으로 변경해라."
     }
   ]
 }
