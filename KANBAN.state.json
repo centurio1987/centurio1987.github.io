@@ -1,6 +1,6 @@
 {
   "next_id": 45,
-  "next_seq": 145,
+  "next_seq": 147,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -383,15 +383,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-035": {
-      "col": "todo",
+      "col": "review",
       "title": "VPN 해부 EP1 집필 — 큰 그림·프로토콜 지형도",
-      "memo": "vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.",
+      "memo": "vpn-anatomy-1 발행 완료(05e8203) · 큰 그림: 터널링+암호화 두 축, 위협모델 trust transfer(관찰자 시뮬), 프로토콜 지형도 3가족→EP3~6, 레거시 배제 근거. 외부검토 2R 반영(NAT-T 원인 정정·SNI 보강·macOS dig 교정). 게이트: review-writing PASS·quality-gate PASS. viz 4종(hero+인라인3)+시뮬1. graph.json 재생성은 KAN-044 정책대로 편당 생략(7편 전량 머지 후 일괄).",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "6e3a0d0575bb7f6cbba36d0e33292ebae76394ba",
-      "memo_hash": "61c1bad7e4571bc240767316ca5e60b8ad71b24d",
+      "memo_hash": "dd5f6e77f4bd2bf7aa0684e7c590991fa1eec488",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-036": {
@@ -508,12 +508,14 @@
     "KAN-030",
     "KAN-032",
     "KAN-031",
-    "KAN-035",
     "KAN-036",
     "KAN-037",
     "KAN-039",
     "KAN-040",
     "KAN-041",
+    "KAN-042",
+    "KAN-043",
+    "KAN-044",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -544,11 +546,28 @@
     "KAN-027",
     "KAN-025",
     "KAN-026",
-    "KAN-042",
-    "KAN-043",
-    "KAN-044"
+    "KAN-035"
   ],
   "recent": [
+    {
+      "seq": 146,
+      "t": "2026-07-28T16:47",
+      "a": "ai",
+      "id": "KAN-035",
+      "op": "edit",
+      "field": "memo",
+      "before": "vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.",
+      "after": "vpn-anatomy-1 발행 완료(05e8203) · 큰 그림: 터널링+암호화 두 축, 위협모델 trust transfer(관찰자 시뮬), 프로토콜 지형도 3가족→EP3~6, 레거시 배제 근거. 외부검토 2R 반영(NAT-T 원인 정정·SNI 보강·macOS dig 교정). 게이트: review-writing PASS·quality-gate PASS. viz 4종(hero+인라인3)+시뮬1. graph.json 재생성은 KAN-044 정책대로 편당 생략(7편 전량 머지 후 일괄)."
+    },
+    {
+      "seq": 145,
+      "t": "2026-07-28T16:47",
+      "a": "ai",
+      "id": "KAN-035",
+      "op": "move",
+      "from": "todo",
+      "to": "review"
+    },
     {
       "seq": 144,
       "t": "2026-07-28T16:45",
@@ -1026,24 +1045,6 @@
       "field": "memo",
       "before": "/posts(section.wrap)는 현재 카테고리 필터(nav.cats)만 존재. 저자 필터 추가 + 필터축 2개에 맞는 UX 리서치 + 필터 인터랙션 요소에 저자 프로필 사진 포함",
       "after": "구현 완료(검토 대기, 커밋 8711454 계열). /posts 에 카테고리 × 글쓴이 2축 패싯 필터 신설 — src/components/PostFilter.astro. 채택 UX(패싯 필터 베스트프랙티스 리서치 기준): 결과 바로 위 수평 칩바 + 축별 라벨(옵션이 축당 10개 미만이면 사이드바보다 상단 칩바가 표준), 축 내 단일 선택(글 하나에 카테고리·저자가 각 1개뿐이라 같은 축 다중선택은 이득이 작다) + '전체' 해제 옵션, 적용 버튼 없는 즉시 반영, 옵션마다 결과 수 표기하되 반대 축 선택에 따라 갱신, 0건 조합은 흐리게(고른 칩은 제외), 0건이면 목록 대신 안내 문구, 글쓴이 칩에 프로필 사진 리딩 요소(요구사항). 구현: 시각적으로 숨긴 라디오 + label 칩 + :has() 기반 CSS-only 필터라 무JS·하이드레이션 0 에서도 필터가 동작한다(콘텐츠 무JS 원칙 유지). JS 는 URL 쿼리(?cat=&author=) 동기화라는 진행적 향상만 담당 — ClientRouter 가 popstate 를 가로채므로 pushState 대신 replaceState. 카운트는 --pf-n 커스텀 프로퍼티를 content 로 흘려 처리하되 기본값도 CSS 로 방출해야 한다(인라인 style 로 두면 인라인 우선순위가 오버라이드를 이겨 숫자가 영영 안 바뀜 — 1차 구현에서 실제로 난 버그). 기존 /posts 의 카테고리 링크 칩(nav.cats)은 필터로 대체했고, /categories/<slug> 정적 페이지는 유지(글 상단 CategoryBadge 가 계속 링크하므로 고아 아님). 검증(Playwright, 프리뷰 HTTP): 저자 필터 4글·조합 필터 1글·딥링크 ?cat=skills&author=ppangto 15글·0건 조합 빈 상태 전환·카운트 갱신·무JS 컨텍스트에서도 필터 동작·Tab 6회로 라디오 그룹 진입 후 화살표 키 즉시 필터·포커스 링 노출·모바일 390px 축 라벨 상단 배치·콘솔 에러 0·/categories,/graph,홈 회귀 없음. KAN-029(graph) 위로 리베이스한 뒤 재검증: build green 35 pages, tsc clean, check-post-markers 통과."
-    },
-    {
-      "seq": 96,
-      "t": "2026-07-28T00:24",
-      "a": "ai",
-      "id": "KAN-026",
-      "op": "move",
-      "from": "backlog",
-      "to": "review"
-    },
-    {
-      "seq": 95,
-      "t": "2026-07-28T00:24",
-      "a": "ai",
-      "id": "KAN-025",
-      "op": "move",
-      "from": "backlog",
-      "to": "review"
     }
   ]
 }
