@@ -17,16 +17,6 @@
     ```text
     블로그 글을 로딩 할 때, 항목이 많아 지는 경우를 대비하여, pagination이 적용되어 있는지 확인하고, 안되어 있다면, 적용하기 위한 계획을 세우고 수행해라.
     ```
-- `KAN-031` VPN 완벽 해부 시리즈 집필 — 생성:유저 · 최종:ai · 갱신:2026-07-28
-  - 메모: VPN의 원리·작동 메커니즘·절차별 패킷 구성·사용 알고리즘/표준 규격/프로토콜을 심층 해설하는 시리즈. 개념적 큰 그림을 곁들이되, 실제 환경과 완전히 일치하는 실물(예: Wireshark 캡처와 동일한 패킷)로 전문적 이해를 준다.
-  - 원문:
-    ```text
-    VPN 완벽 해부 시리즈 집필
-    - VPN의 원리, 작동 매커니즘, 절차 별 패킷 구성, 사용하는 알고리즘이나 표준 규격, 프로토콜을 심층 설명한다.
-    - 독자가 큰 그림을 그릴 수 있도록 개념적 관점 설명을 포함한다.
-    - 전문적 이해를 위해, 실제 환경과 완전히 일치하는 형식과 내용을 제공하여 설명한다.
-      - ex. wireshark로 패킷을 캡쳐 했을 때와 완벽히 똑같은 실물 패킷을 제공하여 설명한다.
-    ```
 - `KAN-032` 프로그래밍 레벨에서 async/await를 가능하게 만드는 원리 시리즈 집필 — 생성:유저 · 최종:ai · 갱신:2026-07-28
   - 메모: async/await를 가능케 하는 저수준 구성요소(epoll·kqueue·pipe 등)와 각 런타임 비동기 엔진(Node·Rust·Python·Java)의 작동 원리를 절차별로 해설. 실제 코드 구현과 라인 레벨 내부 플로우까지, 개념적 큰 그림 + 실제 spec 근거로 설명.
   - 원문:
@@ -40,6 +30,34 @@
     ```
 
 ## 할 일
+- `KAN-031` VPN 완벽 해부 시리즈 집필 — 생성:유저 · 최종:ai · 갱신:2026-07-28
+  - 메모: VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 정확성: 스펙 레이아웃 vs 실제 캡처 분리, wire-level은 EP3~. 하위카드 KAN-033~041.
+  - 원문:
+    ```text
+    VPN 완벽 해부 시리즈 집필
+    - VPN의 원리, 작동 매커니즘, 절차 별 패킷 구성, 사용하는 알고리즘이나 표준 규격, 프로토콜을 심층 설명한다.
+    - 독자가 큰 그림을 그릴 수 있도록 개념적 관점 설명을 포함한다.
+    - 전문적 이해를 위해, 실제 환경과 완전히 일치하는 형식과 내용을 제공하여 설명한다.
+      - ex. wireshark로 패킷을 캡쳐 했을 때와 완벽히 똑같은 실물 패킷을 제공하여 설명한다.
+    ```
+- `KAN-033` VPN 해부 리서치① — 스펙·RFC 근거 코퍼스 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: 공통 스펙/RFC 근거 코퍼스: RFC 7296·4303·5116·8439·8446(TLS1.3), WireGuard 백서, OpenVPN 2.6 문서. 각 필드 레이아웃의 스펙 근거(섹션 번호) 정리. research 스킬→~/blog-research. accept: 7편이 인용할 필드 레이아웃이 섹션 번호와 함께 정리됨. gate for EP1~7.
+- `KAN-034` VPN 해부 리서치② — 캡처 랩 환경·방법론 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: 재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.
+- `KAN-035` VPN 해부 EP1 집필 — 큰 그림·프로토콜 지형도 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.
+- `KAN-036` VPN 해부 EP2 집필 — 암호 기반체력 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033.
+- `KAN-037` VPN 해부 EP3 집필 — IPsec① IKEv2 협상 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: vpn-anatomy-3 · IPsec① IKEv2: SA/SPI/SPD, IKE_SA_INIT→IKE_AUTH, UDP 500/4500, IKEv2 헤더·payload(SA/KE/Ni/Nr/AUTH) 캡처 분해(암호 payload는 복호 준비 시). 구현:strongSwan. IPsec=프레임워크 오해정리. 선수링크:EP2. gate:KAN-033·034.
+- `KAN-038` VPN 해부 EP4 집필 — IPsec② ESP·NAT-T·MTU — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034.
+- `KAN-039` VPN 해부 EP5 집필 — WireGuard — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: vpn-anatomy-5 · WireGuard: 고정 암호군(Curve25519+ChaCha20Poly1305+BLAKE2s), Noise_IKpsk2 vs 실제 UDP message format 층위 구분, 메시지 4종 캡처 분해, cryptokey routing/roaming/타이머, IPsec 대비(코드규모·공격면). 선수링크:EP2·EP3·4. gate:KAN-034.
+- `KAN-040` VPN 해부 EP6 집필 — TLS-VPN(OpenVPN·SSL-VPN) — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: vpn-anatomy-6 · TLS-VPN: TLS1.3 제어/데이터 채널, tls-auth/tls-crypt, OpenVPN2.6 UDP/TCP(TCP-over-TCP meltdown), SSL-VPN/WebVPN clientless, 패킷+TLS record 캡처 분해(data channel 내부는 암호문). 선수링크:OSI(L6)·EP2. gate:KAN-034.
+- `KAN-041` VPN 해부 EP7 집필 — 선택 매트릭스·운영 총정리 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: vpn-anatomy-7 · 선택·운영 총정리: 선택 매트릭스(보안·성능·NAT친화·모바일로밍·운영복잡도), 운영 함정(MTU블랙홀·DNS leak·kill switch·split tunnel), 성능(오버헤드·커널vs유저스페이스), 세 가족 최종 비교표, 전편 회수. 선수링크:EP3~6.
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26

@@ -1,6 +1,6 @@
 {
-  "next_id": 33,
-  "next_seq": 121,
+  "next_id": 42,
+  "next_seq": 132,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -335,15 +335,15 @@
       "verbatim_hash": "4c50f7a9cd09e4a9e85015f24c1ed77b626fb1fc"
     },
     "KAN-031": {
-      "col": "backlog",
+      "col": "todo",
       "title": "VPN 완벽 해부 시리즈 집필",
-      "memo": "VPN의 원리·작동 메커니즘·절차별 패킷 구성·사용 알고리즘/표준 규격/프로토콜을 심층 해설하는 시리즈. 개념적 큰 그림을 곁들이되, 실제 환경과 완전히 일치하는 실물(예: Wireshark 캡처와 동일한 패킷)로 전문적 이해를 준다.",
+      "memo": "VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 정확성: 스펙 레이아웃 vs 실제 캡처 분리, wire-level은 EP3~. 하위카드 KAN-033~041.",
       "verbatim": "VPN 완벽 해부 시리즈 집필\n- VPN의 원리, 작동 매커니즘, 절차 별 패킷 구성, 사용하는 알고리즘이나 표준 규격, 프로토콜을 심층 설명한다.\n- 독자가 큰 그림을 그릴 수 있도록 개념적 관점 설명을 포함한다.\n- 전문적 이해를 위해, 실제 환경과 완전히 일치하는 형식과 내용을 제공하여 설명한다.\n  - ex. wireshark로 패킷을 캡쳐 했을 때와 완벽히 똑같은 실물 패킷을 제공하여 설명한다.",
       "생성": "유저",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "243f9ead3a0e33a94b67c6cab49c1db98c943f11",
-      "memo_hash": "1febb744aadadf91a18431c9c5ba43b7cd159fa2",
+      "memo_hash": "ff0106a6c3fc8103366865ecb75c24bcb606b60f",
       "verbatim_hash": "2023813e9a9804597db9c54cc6bfef01da28221a"
     },
     "KAN-032": {
@@ -357,12 +357,119 @@
       "title_hash": "dc629a48ced589561586f13a00313dd3da350dd5",
       "memo_hash": "7dbc607a5adc322a8424a488e643d5242636be28",
       "verbatim_hash": "04039fab2b64ade803c32e448cf4d378b0c7a449"
+    },
+    "KAN-033": {
+      "col": "todo",
+      "title": "VPN 해부 리서치① — 스펙·RFC 근거 코퍼스",
+      "memo": "공통 스펙/RFC 근거 코퍼스: RFC 7296·4303·5116·8439·8446(TLS1.3), WireGuard 백서, OpenVPN 2.6 문서. 각 필드 레이아웃의 스펙 근거(섹션 번호) 정리. research 스킬→~/blog-research. accept: 7편이 인용할 필드 레이아웃이 섹션 번호와 함께 정리됨. gate for EP1~7.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "4c0238d907d241ed8f35ef9e43640a533d856945",
+      "memo_hash": "b3a6a2f9d3f189fcc7a49d9ec419b9f87b650d7d",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-034": {
+      "col": "todo",
+      "title": "VPN 해부 리서치② — 캡처 랩 환경·방법론",
+      "memo": "재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "f063e423dd794c61e96f61081d9d4e775661a9d7",
+      "memo_hash": "c5750a770e87f021570d70294ac20d6fb5b577aa",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-035": {
+      "col": "todo",
+      "title": "VPN 해부 EP1 집필 — 큰 그림·프로토콜 지형도",
+      "memo": "vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "6e3a0d0575bb7f6cbba36d0e33292ebae76394ba",
+      "memo_hash": "61c1bad7e4571bc240767316ca5e60b8ad71b24d",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-036": {
+      "col": "todo",
+      "title": "VPN 해부 EP2 집필 — 암호 기반체력",
+      "memo": "vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "5277baabe1482d207e205bb88f91c2cf7b0e223f",
+      "memo_hash": "fd850ddc13bec9a28c7581f8a74b994467d0824a",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-037": {
+      "col": "todo",
+      "title": "VPN 해부 EP3 집필 — IPsec① IKEv2 협상",
+      "memo": "vpn-anatomy-3 · IPsec① IKEv2: SA/SPI/SPD, IKE_SA_INIT→IKE_AUTH, UDP 500/4500, IKEv2 헤더·payload(SA/KE/Ni/Nr/AUTH) 캡처 분해(암호 payload는 복호 준비 시). 구현:strongSwan. IPsec=프레임워크 오해정리. 선수링크:EP2. gate:KAN-033·034.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "9a20233c5b3162c181a2f05edb8966a893e44a5d",
+      "memo_hash": "cc147f9442ab8da6cc68b6cfd2b99da6e0b28a9e",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-038": {
+      "col": "todo",
+      "title": "VPN 해부 EP4 집필 — IPsec② ESP·NAT-T·MTU",
+      "memo": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "f089d770484b4941865148015d8760de9bbb0092",
+      "memo_hash": "a1bb3f4103c514b0a8c7b204af1aa1001be7fdf3",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-039": {
+      "col": "todo",
+      "title": "VPN 해부 EP5 집필 — WireGuard",
+      "memo": "vpn-anatomy-5 · WireGuard: 고정 암호군(Curve25519+ChaCha20Poly1305+BLAKE2s), Noise_IKpsk2 vs 실제 UDP message format 층위 구분, 메시지 4종 캡처 분해, cryptokey routing/roaming/타이머, IPsec 대비(코드규모·공격면). 선수링크:EP2·EP3·4. gate:KAN-034.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "348ecacd24a3200e834189c0e5afa06c20cd8f86",
+      "memo_hash": "c3aefcbbe0b20088ab439a5c2abb132784c59545",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-040": {
+      "col": "todo",
+      "title": "VPN 해부 EP6 집필 — TLS-VPN(OpenVPN·SSL-VPN)",
+      "memo": "vpn-anatomy-6 · TLS-VPN: TLS1.3 제어/데이터 채널, tls-auth/tls-crypt, OpenVPN2.6 UDP/TCP(TCP-over-TCP meltdown), SSL-VPN/WebVPN clientless, 패킷+TLS record 캡처 분해(data channel 내부는 암호문). 선수링크:OSI(L6)·EP2. gate:KAN-034.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "31906930564fe5b4fe556981d64d65cadd26f00e",
+      "memo_hash": "ff66a0f8c4c1740a7532c1adb4f58418fa9146e8",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-041": {
+      "col": "todo",
+      "title": "VPN 해부 EP7 집필 — 선택 매트릭스·운영 총정리",
+      "memo": "vpn-anatomy-7 · 선택·운영 총정리: 선택 매트릭스(보안·성능·NAT친화·모바일로밍·운영복잡도), 운영 함정(MTU블랙홀·DNS leak·kill switch·split tunnel), 성능(오버헤드·커널vs유저스페이스), 세 가족 최종 비교표, 전편 회수. 선수링크:EP3~6.",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-07-28",
+      "title_hash": "9eb9896d2e118c8e448b7ddd120c8fb8597109d4",
+      "memo_hash": "e7d287baabc6a466c1f8c2e9e9ef7746725e2c34",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
     "KAN-024",
     "KAN-030",
-    "KAN-031",
     "KAN-032",
     "KAN-001",
     "KAN-002",
@@ -390,9 +497,137 @@
     "KAN-028",
     "KAN-027",
     "KAN-025",
-    "KAN-026"
+    "KAN-026",
+    "KAN-031",
+    "KAN-033",
+    "KAN-034",
+    "KAN-035",
+    "KAN-036",
+    "KAN-037",
+    "KAN-038",
+    "KAN-039",
+    "KAN-040",
+    "KAN-041"
   ],
   "recent": [
+    {
+      "seq": 131,
+      "t": "2026-07-28T14:48",
+      "a": "ai",
+      "id": "KAN-041",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 EP7 집필 — 선택 매트릭스·운영 총정리",
+      "memo": "vpn-anatomy-7 · 선택·운영 총정리: 선택 매트릭스(보안·성능·NAT친화·모바일로밍·운영복잡도), 운영 함정(MTU블랙홀·DNS leak·kill switch·split tunnel), 성능(오버헤드·커널vs유저스페이스), 세 가족 최종 비교표, 전편 회수. 선수링크:EP3~6.",
+      "verbatim": ""
+    },
+    {
+      "seq": 130,
+      "t": "2026-07-28T14:48",
+      "a": "ai",
+      "id": "KAN-040",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 EP6 집필 — TLS-VPN(OpenVPN·SSL-VPN)",
+      "memo": "vpn-anatomy-6 · TLS-VPN: TLS1.3 제어/데이터 채널, tls-auth/tls-crypt, OpenVPN2.6 UDP/TCP(TCP-over-TCP meltdown), SSL-VPN/WebVPN clientless, 패킷+TLS record 캡처 분해(data channel 내부는 암호문). 선수링크:OSI(L6)·EP2. gate:KAN-034.",
+      "verbatim": ""
+    },
+    {
+      "seq": 129,
+      "t": "2026-07-28T14:48",
+      "a": "ai",
+      "id": "KAN-039",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 EP5 집필 — WireGuard",
+      "memo": "vpn-anatomy-5 · WireGuard: 고정 암호군(Curve25519+ChaCha20Poly1305+BLAKE2s), Noise_IKpsk2 vs 실제 UDP message format 층위 구분, 메시지 4종 캡처 분해, cryptokey routing/roaming/타이머, IPsec 대비(코드규모·공격면). 선수링크:EP2·EP3·4. gate:KAN-034.",
+      "verbatim": ""
+    },
+    {
+      "seq": 128,
+      "t": "2026-07-28T14:48",
+      "a": "ai",
+      "id": "KAN-038",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 EP4 집필 — IPsec② ESP·NAT-T·MTU",
+      "memo": "vpn-anatomy-4 · IPsec② ESP: 필드 레이아웃(SPI|Seq|IV|payload|pad|next|ICV), transport/tunnel 바이트차, 암복호 절차, NAT-T(UDP4500), MTU/PMTUD/DF/MSS clamping, ESP 캡처 분해(외부·ICV 기본/내부는 keylog). sim(선택). 선수링크:EP3. gate:KAN-034.",
+      "verbatim": ""
+    },
+    {
+      "seq": 127,
+      "t": "2026-07-28T14:48",
+      "a": "ai",
+      "id": "KAN-037",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 EP3 집필 — IPsec① IKEv2 협상",
+      "memo": "vpn-anatomy-3 · IPsec① IKEv2: SA/SPI/SPD, IKE_SA_INIT→IKE_AUTH, UDP 500/4500, IKEv2 헤더·payload(SA/KE/Ni/Nr/AUTH) 캡처 분해(암호 payload는 복호 준비 시). 구현:strongSwan. IPsec=프레임워크 오해정리. 선수링크:EP2. gate:KAN-033·034.",
+      "verbatim": ""
+    },
+    {
+      "seq": 126,
+      "t": "2026-07-28T14:48",
+      "a": "ai",
+      "id": "KAN-036",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 EP2 집필 — 암호 기반체력",
+      "memo": "vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033.",
+      "verbatim": ""
+    },
+    {
+      "seq": 125,
+      "t": "2026-07-28T14:48",
+      "a": "ai",
+      "id": "KAN-035",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 EP1 집필 — 큰 그림·프로토콜 지형도",
+      "memo": "vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.",
+      "verbatim": ""
+    },
+    {
+      "seq": 124,
+      "t": "2026-07-28T14:48",
+      "a": "ai",
+      "id": "KAN-034",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 리서치② — 캡처 랩 환경·방법론",
+      "memo": "재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.",
+      "verbatim": ""
+    },
+    {
+      "seq": 123,
+      "t": "2026-07-28T14:48",
+      "a": "ai",
+      "id": "KAN-033",
+      "op": "create",
+      "col": "todo",
+      "title": "VPN 해부 리서치① — 스펙·RFC 근거 코퍼스",
+      "memo": "공통 스펙/RFC 근거 코퍼스: RFC 7296·4303·5116·8439·8446(TLS1.3), WireGuard 백서, OpenVPN 2.6 문서. 각 필드 레이아웃의 스펙 근거(섹션 번호) 정리. research 스킬→~/blog-research. accept: 7편이 인용할 필드 레이아웃이 섹션 번호와 함께 정리됨. gate for EP1~7.",
+      "verbatim": ""
+    },
+    {
+      "seq": 122,
+      "t": "2026-07-28T14:47",
+      "a": "ai",
+      "id": "KAN-031",
+      "op": "move",
+      "from": "backlog",
+      "to": "todo"
+    },
+    {
+      "seq": 121,
+      "t": "2026-07-28T14:47",
+      "a": "ai",
+      "id": "KAN-031",
+      "op": "edit",
+      "field": "memo",
+      "before": "VPN의 원리·작동 메커니즘·절차별 패킷 구성·사용 알고리즘/표준 규격/프로토콜을 심층 해설하는 시리즈. 개념적 큰 그림을 곁들이되, 실제 환경과 완전히 일치하는 실물(예: Wireshark 캡처와 동일한 패킷)로 전문적 이해를 준다.",
+      "after": "VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 정확성: 스펙 레이아웃 vs 실제 캡처 분리, wire-level은 EP3~. 하위카드 KAN-033~041."
+    },
     {
       "seq": 120,
       "t": "2026-07-28T13:14",
@@ -775,110 +1010,6 @@
       "title": "글 목록에 저자별 필터 추가 (2축 필터 UX 리서치 + 필터에 저자 프로필 사진)",
       "memo": "/posts(section.wrap)는 현재 카테고리 필터(nav.cats)만 존재. 저자 필터 추가 + 필터축 2개에 맞는 UX 리서치 + 필터 인터랙션 요소에 저자 프로필 사진 포함",
       "verbatim": "대상: /posts 글 목록 (section.wrap — 현재 카테고리 필터 nav.cats 만 존재).\n\n지금은 블로그 글 목록에 카테고리 별 필터만 존재한다. 여기에 저자 별 필터도 추가 해라. 필터 분류가 2개이기 때문에 지금과 다른 UX를 채택해야 할 수 있다. 리서치를 통해, 가장 적절한 UX 패턴을 채택해라.\n\n선택 인터렉션 요소에는 저자의 프로필 사진을 포함해야 한다."
-    },
-    {
-      "seq": 81,
-      "t": "2026-07-27T17:11",
-      "a": "유저",
-      "id": "KAN-024",
-      "op": "create",
-      "col": "backlog",
-      "title": "집필 파이프라인: 완성 글 스캔 → 연관 시리즈 자동 링크 삽입",
-      "memo": "발행 완료 글을 스캔해 연관 내용을 포착하고, 해당 시리즈로 가는 링크를 본문에 삽입하는 단계를 집필 워크플로에 추가",
-      "verbatim": "글 작성 도중, 이미 작성한 다른 시리즈와 연관된 내용이 있을 경우, 그 시리즈를 보러 가는 링크를 제공하려고 한다. 이미 작성이 완료된 글을 스캔 하여, 연관된 내용을 포착하고, 링크를 삽입하는 방식으로 집필 파이프라인에 작업을 추가해라."
-    },
-    {
-      "seq": 80,
-      "t": "2026-07-27T00:55",
-      "a": "ai",
-      "id": "KAN-012",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
-    },
-    {
-      "seq": 79,
-      "t": "2026-07-26T23:19",
-      "a": "ai",
-      "id": "KAN-012",
-      "op": "edit",
-      "field": "memo",
-      "before": "",
-      "after": "기획 완료(승인 플랜: ~/.claude/plans/zazzy-enchanting-storm.md). 방향: viz.css 선례 미러 — core MOTION_CSS를 정적 CSS 셸(src/styles/motion.css)로 방출 + 멱등 공유 IntersectionObserver로 가장자리(hero·목록·카드·Squiggle draw-on) 진입 리빌, 콘텐츠 무JS/하이드레이션 0 유지. bbangto-ui-core=모션 엔진, style-guide-catalog 유틸(makeFoundations/makeSemantic/mergeFoundation)로 블로그 전용 bbangtoTonyStyleGuide(코발트+크림·한국어폰트·subtle) 저자화=정적셸+아일랜드 단일 진실원. FoundationProvider 금지(폰트 오염). 독립 배포·롤백 단계: Phase0 설치+스타일가이드 / A 정적셸+리빌(무JS·핵심) / B ClientRouter 크로스페이지 VT+제목 shared-element / C 은은한 배경 아일랜드(Aurora/Waves, reduced시 미마운트)+그래프 reduced-motion 가드 / D CI motion.css drift 가드. 강도=적극적+페이지전환. 외부검토(codex) 지적 9건 반영: reveal 멱등성·스태거 delay cap(min(i,4)*40ms)·name 유일성·persist Header 미적용·번들/접근성/정량 검증. 패키지매니저=bun 확정."
-    },
-    {
-      "seq": 78,
-      "t": "2026-07-26T23:19",
-      "a": "ai",
-      "id": "KAN-012",
-      "op": "move",
-      "from": "backlog",
-      "to": "todo"
-    },
-    {
-      "seq": 77,
-      "t": "2026-07-26T21:33",
-      "a": "ai",
-      "id": "KAN-005",
-      "op": "move",
-      "from": "review",
-      "to": "doing"
-    },
-    {
-      "seq": 76,
-      "t": "2026-07-26T21:33",
-      "a": "ai",
-      "id": "KAN-004",
-      "op": "move",
-      "from": "review",
-      "to": "doing"
-    },
-    {
-      "seq": 75,
-      "t": "2026-07-26T21:33",
-      "a": "ai",
-      "id": "KAN-003",
-      "op": "move",
-      "from": "review",
-      "to": "doing"
-    },
-    {
-      "seq": 74,
-      "t": "2026-07-26T21:33",
-      "a": "ai",
-      "id": "KAN-002",
-      "op": "move",
-      "from": "review",
-      "to": "doing"
-    },
-    {
-      "seq": 73,
-      "t": "2026-07-26T21:33",
-      "a": "ai",
-      "id": "KAN-001",
-      "op": "move",
-      "from": "review",
-      "to": "doing"
-    },
-    {
-      "seq": 72,
-      "t": "2026-07-26T21:32",
-      "a": "유저",
-      "id": "KAN-021",
-      "op": "archive",
-      "col": "backlog",
-      "title": "astro 7 네이티브 이관 — 마크다운 파이프라인 unified(호환 shim) → Sätteri",
-      "memo": "전제: 2026-07-26 기준 astro 7.1.3 · @astrojs/mdx 7.0.3 · react 6.0.1 · sitemap 3.7.3 · markdown-remark 7.2.1 모두 레지스트리 최신이라 '버전 올리기'로 할 일은 없다. KAN-017이 astro 7로 올리면서 마크다운은 공식 호환 경로(@astrojs/markdown-remark + processor: unified({rehypePlugins}))로 남겨 뒀으므로, '최신 반영'의 실체는 v7 기본 파이프라인인 Sätteri(Rust)로 이관하는 것이다. 긴급도 낮음 — unified 프로세서는 v7에서 정식 지원이며 deprecated가 아니다(deprecated였던 것은 최상위 markdown.rehypePlugins 옵션뿐이고 KAN-017에서 이미 이관 완료). 따라서 이 카드는 선택 과제이며, 아래 '따옴표 정규화'를 어차피 할 가치가 있을 때 함께 착수하는 것을 권한다. || 사전 스파이크 실측(실제로 config를 Sätteri로 바꿔 빌드·비교 후 원복함, 커밋 없음): (1) 빌드 통과 — 30페이지, 경고 0. (2) rehypeWrapTables는 satteri의 defineHastPlugin으로 기계적 포팅 가능하며 MDX 본문에도 정상 적용됨(table-wrap 10개 일치). 함정: ctx.wrapNode(node, wrapper)의 wrapper는 children:[]로 둬야 한다. 공식 문서 예제대로 children:[node]로 넣으면 표가 두 번 렌더된다(실측: 표 3→6, 2→4개로 중복). (3) shikiConfig는 그대로 동작 — astro가 프로세서에 공통 전달하고 Sätteri가 자체 highlight 플러그인을 붙인다(astro-code 58개 일치). (4) MDX는 @mdx-js/mdx가 아니라 createSatteriMdxProcessor라는 전혀 다른 컴파일 경로를 타지만, React 아일랜드(astro-island 114)·viz SSR SVG(viz-figure 9)·QA 컴포넌트 모두 이상 없음. || 유일한 실질 장애물 = 스마트 따옴표. Sätteri와 unified가 11개 포스트 26곳에서 따옴표 방향을 다르게 판정한다(‘→’ 17건, ”→“ 8건, “→” 1건). 원인: 본문 원문이 전부 ASCII 직선 따옴표('\"')이고(원문 내 휘어진 따옴표 0건) 두 엔진이 각자 자동 변환하는데, 따옴표가 **강조** 마커나 ? 에 인접하면 한글 맥락에서 판정이 갈린다. 예: 원문 '위임된 인가' → unified ‘위임된 인가’(정상) vs Sätteri ’위임된 인가’(닫는 따옴표 2개, 오류). 완화책 실측: features:{smartPunctuation:false}는 오히려 악화(휘어진 따옴표가 전부 직선 &quot;로 바뀌어 100여 곳 타이포 downgrade) → 채택 불가. 반면 원문에 휘어진 따옴표를 직접 쓰면 두 엔진 모두 변형 없이 보존함을 프로브로 확인 → 이것이 유효한 해법이며, 부수 효과로 출력이 엔진 비의존이 된다. || 절차: ①package.json에 @astrojs/markdown-satteri 명시 추가(현재는 astro의 전이 의존으로만 존재) ②src/lib/rehype-wrap-tables.mjs를 defineHastPlugin 버전으로 포팅(children:[] 주의) ③astro.config를 processor: satteri({hastPlugins:[...]})로 교체하고 @astrojs/markdown-remark 제거 ④빌드 후 KAN-017과 동일한 회귀 세트로 검증 — 가시 텍스트 다중집합 비교·기능 마커 수(table-wrap/astro-code/astro-island/viz-figure)·Playwright 콘솔에러/하이드레이션/픽셀·지오메트리 ⑤남는 차이는 따옴표 26곳뿐이어야 하며, 각 지점을 원문에 휘어진 따옴표로 확정해 0으로 만든다 ⑥diff가 따옴표 개선분만 남을 때 커밋. 롤백: astro.config 한 파일과 plugin 파일만 되돌리면 즉시 unified로 복귀(의존성은 남겨 둬도 무해). || 기대 이득: 의존성 1개 감소, v7 기본 경로와 일치(향후 astro 업그레이드 시 호환 shim 유지 부담 제거), Rust 엔진 빌드 속도(단 30페이지 규모에서는 유의미한 측정 안 함 — 성능은 착수 근거로 삼지 말 것)."
-    },
-    {
-      "seq": 71,
-      "t": "2026-07-26T21:32",
-      "a": "유저",
-      "id": "KAN-011",
-      "op": "edit",
-      "field": "memo",
-      "before": "main 병합으로 퍼소나(저자) 시스템 반영. 1~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지. 배포·검증 완료(main==origin/main, auth-authz-1~4 라이브) — 완료 이동.",
-      "after": "main 병합으로 퍼소나(저자) 시스템 반영. 1~~4편 author: ppangto 배선(상단 AI배너·저자명·프로필카드·시리즈 내비 자동 렌더). quality-gate/review-writing(PASS)/review-post 게이트로 정확성·하우스 보이스 표적 보정 완료(전면 재집필 아님). 커밋 0ef48e2·a31d487·84d55fe·b244bcb·012a095·b2d5830. 1편은 '지형도' 장르로 실무 시나리오 생략 유지. 배포·검증 완료(main==origin/main, auth-authz-1~~4 라이브) — 완료 이동."
     }
   ]
 }
