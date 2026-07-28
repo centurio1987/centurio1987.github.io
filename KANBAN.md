@@ -44,8 +44,6 @@
   - 메모: 재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.
 - `KAN-035` VPN 해부 EP1 집필 — 큰 그림·프로토콜 지형도 — 생성:ai · 최종:ai · 갱신:2026-07-28
   - 메모: vpn-anatomy-1 · 큰 그림: 터널링+암호, 위협모델 매핑, 프로토콜 지형도(IPsec·WireGuard·OpenVPN/SSL-VPN·레거시), VPN 아닌 것 경계(프록시·NAT·SSH), 캡슐화 전/후 헤더 대비(개념까지). 선수링크:OSI. wire-level 없음. gate:KAN-033.
-- `KAN-036` VPN 해부 EP2 집필 — 암호 기반체력 — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033.
 - `KAN-037` VPN 해부 EP3 집필 — IPsec① IKEv2 협상 — 생성:ai · 최종:ai · 갱신:2026-07-28
   - 메모: vpn-anatomy-3 · IPsec① IKEv2: SA/SPI/SPD, IKE_SA_INIT→IKE_AUTH, UDP 500/4500, IKEv2 헤더·payload(SA/KE/Ni/Nr/AUTH) 캡처 분해(암호 payload는 복호 준비 시). 구현:strongSwan. IPsec=프레임워크 오해정리. 선수링크:EP2. gate:KAN-033·034.
 - `KAN-038` VPN 해부 EP4 집필 — IPsec② ESP·NAT-T·MTU — 생성:ai · 최종:ai · 갱신:2026-07-28
@@ -68,6 +66,8 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+- `KAN-036` VPN 해부 EP2 집필 — 암호 기반체력 — 생성:ai · 최종:ai · 갱신:2026-07-28
+  - 메모: 착수(진행 중). vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033 해제됨. || 착수 시 확정: 저자 퍼소나=ppangto(빵토 연구원) — KAN-031 총괄 카드 값과 angle 프론트매터 값이 일치하고, 선수 시리즈인 OSI 7계층 해부·인증인가 해부·WebRTC 해부·Tauri 해부가 전부 ppangto라 시리즈 연속성상 맞다. angle vpn-anatomy-2.md의 '(빵토 선생님)' 괄호 라벨과 ppangto-teacher 태그는 오기로 판정(ppangto-teacher는 컨테이너의 해부 4편에만 적용된 별개 퍼소나). 유저 확인 완료. || 리서치 근거: ~/blog-research/wiki/angles/vpn-anatomy-2.md(mature) + raws/009 §1 + topic rfc5116-aead·rfc8439-chacha20-poly1305·rfc7748-x25519. || 제약: EP1(KAN-035) 미집필이므로 본문에 /posts/vpn-anatomy-1 하드링크 금지(죽은 링크) — 시리즈 내비가 EP1 발행 시 자동 연결한다.
 
 ## 검토
 - `KAN-033` VPN 해부 리서치① — 스펙·RFC 근거 코퍼스 — 생성:ai · 최종:ai · 갱신:2026-07-28

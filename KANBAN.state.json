@@ -1,6 +1,6 @@
 {
   "next_id": 42,
-  "next_seq": 135,
+  "next_seq": 137,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -395,15 +395,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-036": {
-      "col": "todo",
+      "col": "doing",
       "title": "VPN 해부 EP2 집필 — 암호 기반체력",
-      "memo": "vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033.",
+      "memo": "착수(진행 중). vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033 해제됨. || 착수 시 확정: 저자 퍼소나=ppangto(빵토 연구원) — KAN-031 총괄 카드 값과 angle 프론트매터 값이 일치하고, 선수 시리즈인 OSI 7계층 해부·인증인가 해부·WebRTC 해부·Tauri 해부가 전부 ppangto라 시리즈 연속성상 맞다. angle vpn-anatomy-2.md의 '(빵토 선생님)' 괄호 라벨과 ppangto-teacher 태그는 오기로 판정(ppangto-teacher는 컨테이너의 해부 4편에만 적용된 별개 퍼소나). 유저 확인 완료. || 리서치 근거: ~/blog-research/wiki/angles/vpn-anatomy-2.md(mature) + raws/009 §1 + topic rfc5116-aead·rfc8439-chacha20-poly1305·rfc7748-x25519. || 제약: EP1(KAN-035) 미집필이므로 본문에 /posts/vpn-anatomy-1 하드링크 금지(죽은 링크) — 시리즈 내비가 EP1 발행 시 자동 연결한다.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
       "갱신": "2026-07-28",
       "title_hash": "5277baabe1482d207e205bb88f91c2cf7b0e223f",
-      "memo_hash": "fd850ddc13bec9a28c7581f8a74b994467d0824a",
+      "memo_hash": "d799a58f70259370ab9a57ab19851de135b4d984",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-037": {
@@ -474,7 +474,6 @@
     "KAN-031",
     "KAN-034",
     "KAN-035",
-    "KAN-036",
     "KAN-037",
     "KAN-038",
     "KAN-039",
@@ -485,6 +484,7 @@
     "KAN-003",
     "KAN-004",
     "KAN-005",
+    "KAN-033",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -507,9 +507,28 @@
     "KAN-027",
     "KAN-025",
     "KAN-026",
-    "KAN-033"
+    "KAN-036"
   ],
   "recent": [
+    {
+      "seq": 136,
+      "t": "2026-07-28T15:54",
+      "a": "ai",
+      "id": "KAN-036",
+      "op": "edit",
+      "field": "memo",
+      "before": "vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033.",
+      "after": "착수(진행 중). vpn-anatomy-2 · 암호 기반체력: AEAD(AES-GCM·ChaCha20-Poly1305)·키교환(ECDH/Curve25519)·인증(PSK/PKI/EAP)·PFS·anti-replay window. 개념 레이아웃까지(실제 wire format은 EP3~ 상이 명시). 선수링크:인증인가. sim(선택). gate:KAN-033 해제됨. || 착수 시 확정: 저자 퍼소나=ppangto(빵토 연구원) — KAN-031 총괄 카드 값과 angle 프론트매터 값이 일치하고, 선수 시리즈인 OSI 7계층 해부·인증인가 해부·WebRTC 해부·Tauri 해부가 전부 ppangto라 시리즈 연속성상 맞다. angle vpn-anatomy-2.md의 '(빵토 선생님)' 괄호 라벨과 ppangto-teacher 태그는 오기로 판정(ppangto-teacher는 컨테이너의 해부 4편에만 적용된 별개 퍼소나). 유저 확인 완료. || 리서치 근거: ~/blog-research/wiki/angles/vpn-anatomy-2.md(mature) + raws/009 §1 + topic rfc5116-aead·rfc8439-chacha20-poly1305·rfc7748-x25519. || 제약: EP1(KAN-035) 미집필이므로 본문에 /posts/vpn-anatomy-1 하드링크 금지(죽은 링크) — 시리즈 내비가 EP1 발행 시 자동 연결한다."
+    },
+    {
+      "seq": 135,
+      "t": "2026-07-28T15:54",
+      "a": "ai",
+      "id": "KAN-036",
+      "op": "move",
+      "from": "todo",
+      "to": "doing"
+    },
     {
       "seq": 134,
       "t": "2026-07-28T15:23",
@@ -986,25 +1005,6 @@
       "title": "graphify 시리즈 글 노드 ID 충돌로 문서가 그래프에서 누락되는 문제 해결",
       "memo": "KAN-008 발행 중 발견. 증상: graphify extract 가 청크 실패 0건으로 성공 보고하는데도 문서 노드가 글 수보다 적다(2026-07-27 기준 18/22). 누락: osi-7-layers-3·4·5·6. 원인: 시리즈 글이 본문에서 서로를 참조하면 osi-7-layers-1.mdx 가 osi_7_layers_3 같은 참조 노드를 먼저 만들고, 이후 osi-7-layers-3.mdx 의 진짜 문서 노드가 같은 ID 로 충돌해 \"the second node will be dropped\" 로 버려진다. 시리즈가 길수록·상호링크 많을수록 악화. auth-authz·tauri 계열도 동일 충돌. graphify 경고문이 해법 제시: 하위 폴더별 extract 후 graphify merge-graphs 병합. 할 일: ① 분할 추출 + merge-graphs 파이프라인을 scripts 로 구성 ② ship-post 1.5 단계와 CLAUDE.md 절차 교체 ③ 재생성 후 2단계 검증(문서 노드 수 = 글 수, 노드 1개짜리 글 없음) 통과 시 커밋. 참고: 검증 2단계화는 c632650 에서 완료 — 이 문제를 잡아낸 게 그 ① 검사다. 현재 영향: 연관 글은 frontmatter 랭킹, /graph 는 일반 목록으로 폴백하므로 사이트 동작 지장 없음(기능 degrade).",
       "verbatim": "2번 수행할 수 있도록 kanban에 추가해 주고, 집필은 이대로 마무리 해라."
-    },
-    {
-      "seq": 86,
-      "t": "2026-07-27T23:25",
-      "a": "ai",
-      "id": "KAN-008",
-      "op": "edit",
-      "field": "memo",
-      "before": "Docker 구성요소·개념 설명 + Docker 대안들 설명·구성요소 + Docker와 다면 비교",
-      "after": "시리즈 4편 \"컨테이너의 해부\" 발행 완료 · main 머지·배포됨(556a9ab EP1 / 21bef71 EP2 / de2c2ac EP3 / 43e82f5 EP4, + c632650 CLAUDE.md 검증 보완). 저자 퍼소나 ppangto-teacher(빵토 선생님) 첫 적용. 편당 파이프라인 전 구간 통과: research→tech-deepdive(외부검토 codex/agy)→react-sim→make-image→review-post→review-writing→quality-gate→post-finalize→publish-post→ship-post. 산출물: 글 4편 + React 시뮬 3종(OverlayLab·DigestChain·CriCallTrace) + viz 14종 + hero 4장, 전부 브라우저 육안·상호작용 검증. 리서치: ~/blog-research raws/008 + 위키 10p + angle 4개(306f255). 게이트가 잡은 실오류: whiteout=캐릭터디바이스0/0(.wh. 아님)·pstree 자기모순·copy_up 실습 무효·process.args만 보류(전체 아님)·Hyper-V root MUST NOT·prestart DEPRECATED·hero 제목 잘림. 미해결(별도 카드): 그래프 데이터에 시리즈 글 누락 — graphify 노드 ID 충돌."
-    },
-    {
-      "seq": 85,
-      "t": "2026-07-27T23:25",
-      "a": "ai",
-      "id": "KAN-008",
-      "op": "move",
-      "from": "backlog",
-      "to": "review"
     }
   ]
 }
