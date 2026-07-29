@@ -35,30 +35,9 @@
 - `KAN-051` 글지도에 연도별 필터를 추가해라. — 생성:유저 · 최종:유저 · 갱신:2026-07-29
 - `KAN-052` 글지도에 요약보기와 자세히 보기 토글을 추가해라. 요약 보기에서는 시리즈의 첫 번째 시리즈만 나타나게끔 한다. 연도별 필터가 풀려 있으면 요약보기로 강제해라. — 생성:유저 · 최종:유저 · 갱신:2026-07-29
 - `KAN-053` 백엔드 없이도 회원가입 기능을 추가할 수 있는지 알려주고, 가능 하다면 계획하고 수행해라. — 생성:유저 · 최종:유저 · 갱신:2026-07-29
+- `KAN-054` 시리즈 글의 경우, 글 목록에서는 어떤 시리즈의 글인지 표시되어 있지 않아, 파악이 어렵다. 목록 아이템의 레이아웃에 시리즈를 파악할 수 있는 구성 요소를 설계 및 디자인 하고, 구현 할 수 있도록 전략을 구상해라. — 생성:유저 · 최종:유저 · 갱신:2026-07-29
 
 ## 할 일
-- `KAN-031` VPN 완벽 해부 시리즈 집필 — 생성:유저 · 최종:ai · 갱신:2026-07-28
-  - 메모: VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 정확성: 스펙 레이아웃 vs 실제 캡처 분리, wire-level은 EP3~. 하위카드 KAN-033~041.
-  - 원문:
-    ```text
-    VPN 완벽 해부 시리즈 집필
-    - VPN의 원리, 작동 매커니즘, 절차 별 패킷 구성, 사용하는 알고리즘이나 표준 규격, 프로토콜을 심층 설명한다.
-    - 독자가 큰 그림을 그릴 수 있도록 개념적 관점 설명을 포함한다.
-    - 전문적 이해를 위해, 실제 환경과 완전히 일치하는 형식과 내용을 제공하여 설명한다.
-      - ex. wireshark로 패킷을 캡쳐 했을 때와 완벽히 똑같은 실물 패킷을 제공하여 설명한다.
-    ```
-- `KAN-037` VPN 해부 EP3 집필 — IPsec① IKEv2 협상 — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: vpn-anatomy-3 · IPsec① IKEv2: SA/SPI/SPD, IKE_SA_INIT→IKE_AUTH, UDP 500/4500, IKEv2 헤더·payload(SA/KE/Ni/Nr/AUTH) 캡처 분해. 구현:strongSwan. IPsec=프레임워크 오해정리. 선수링크:EP2. gate:KAN-033·034(둘 다 해제). || 인계(2026-07-28, 착수 전 조사만 완료·본문 미착수): 이어받기 전에 draft/KAN-037-HANDOFF.md 를 먼저 읽을 것. 요지 — ① 저자는 author:ppangto(빵토 연구원)로 확정(EP1·EP2·EP4와 통일, angle의 '빵토 선생님' 병기는 오기). series는 'VPN의 해부', order:3, category:skills. ② 캡처는 이미 있다(KAN-043 산출, ~/blog-research/raws/captures/vpn-anatomy-3/{ike_sa_init.txt,ike_auth.txt,ike.pcap}) — EP1이 '3편부터 캡처와 함께'라 약속했으므로 발췌 인용은 필수. ③ 실측 확인분: 4메시지(500/500→4500/4500 NAT-T 전환), 프레임−42=IKE Length(포트500) vs 프레임−46(포트4500, non-ESP marker 4B), 첫 메시지 Responder SPI 전부 0, SA payload 40=4+36 / Proposal 36=8+12+8+8 덧셈 일치, AEAD라 INTEG transform 부재, NAT_DETECTION_* Notify→포트 4500 전환이 캡처 안에서 원인·결과로 완결, IKE_AUTH는 SK{} 암호문(복호 미확립). ④ RFC 7296 원문 직접 확인분(헤더 28B 오프셋·Generic Payload Header 4B·Proposal/Transform 고정부 8B·속성 TV/TLV·Exchange/Payload/Transform 코드값·§1.2 4메시지·§2.14 키유도·§2.15 AUTH·§2.23 NAT-T)으로 angle open question ①②는 해소. ⑤ 코퍼스 raws/009 §2.2의 Flags 비트 서술은 오류 — I=0x08·V=0x10·R=0x20으로 정정해 쓸 것. ⑥ raws/011(실장 보고)이 raws/010(설계)보다 최신. ⑦ 정책: 그래프 재생성은 KAN-044대로 편당 생략, 시리즈 링크는 KAN-042 소관, EP4가 이미 다룬 ESP·NAT-T 캡슐화·MTU는 중복 금지. ⑧ 인계문서 §6의 'EP2 미발행' 서술은 stale — EP2는 로컬 main에 발행됨(93a161e).
-- `KAN-039` VPN 해부 EP5 집필 — WireGuard — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: vpn-anatomy-5 · WireGuard: 고정 암호군(Curve25519+ChaCha20Poly1305+BLAKE2s), Noise_IKpsk2 vs 실제 UDP message format 층위 구분, 메시지 4종 캡처 분해, cryptokey routing/roaming/타이머, IPsec 대비(코드규모·공격면). 선수링크:EP2·EP3·4. gate:KAN-034.
-- `KAN-040` VPN 해부 EP6 집필 — TLS-VPN(OpenVPN·SSL-VPN) — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: vpn-anatomy-6 · TLS-VPN: TLS1.3 제어/데이터 채널, tls-auth/tls-crypt, OpenVPN2.6 UDP/TCP(TCP-over-TCP meltdown), SSL-VPN/WebVPN clientless, 패킷+TLS record 캡처 분해(data channel 내부는 암호문). 선수링크:OSI(L6)·EP2. gate:KAN-034.
-- `KAN-041` VPN 해부 EP7 집필 — 선택 매트릭스·운영 총정리 — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: vpn-anatomy-7 · 선택·운영 총정리: 선택 매트릭스(보안·성능·NAT친화·모바일로밍·운영복잡도), 운영 함정(MTU블랙홀·DNS leak·kill switch·split tunnel), 성능(오버헤드·커널vs유저스페이스), 세 가족 최종 비교표, 전편 회수. 선수링크:EP3~6.
-- `KAN-042` VPN 해부 시리즈 링크 섹션 삽입 (EP 발행 후 post-finalize 재실행) — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: 선행조건(gating): 같은 series 'VPN의 해부' 글이 2편 이상 main에 발행된 뒤 착수. KAN-038(EP4) 발행 시점에는 시리즈 내 발행 글이 0편이라 '## 이 시리즈의 다른 글' 섹션을 넣으면 목록이 빈 채로 들어가 생략했다(형제 시리즈 osi/webrtc/auth-authz는 모두 이 섹션을 보유 — 관례 이탈 상태). 조치: EP1~3(KAN-035~037, 병렬 워크트리)·EP5~7 머지 후 발행된 각 편에 post-finalize 재실행(멱등 — 기존 섹션 통째 교체). 함께 확인할 것: vpn-anatomy-4 본문의 내부 링크 /posts/vpn-anatomy-2·3·5 가 해당 편 발행 전까지 404이므로 전편 발행 후 링크 생존 확인. SeriesEpisodes/PostNav 자동 렌더와 중복되지 않는지도 육안 점검.
-- `KAN-045` VPN 해부 EP4 발행본에 실측 캡처 발췌 retro 삽입 — 생성:ai · 최종:ai · 갱신:2026-07-28
-  - 메모: 선행조건: 없음(아티팩트·인계 모두 준비 완료 — KAN-043). || 배경: EP4(vpn-anatomy-4)는 캡처 아티팩트가 없던 시점에 발행돼 '스펙 유도 레이아웃 + 랩 재현 절차'로만 서술했다(KAN-031 정확성 규칙·날조 금지 준수). 이제 실물이 있으므로 발췌를 넣어 '실제 캡처와 완벽히 똑같은 실물 패킷' 요구를 채운다. || 재료: ~/blog-research/raws/captures/vpn-anatomy-4/ — esp-natt.txt(ESP-in-UDP, SPI·Seq·IV·ICV) · esp-decrypted.txt(복호 후 안쪽 원본 IP 198.51.100.2→198.51.100.1 노출 — 바깥 헤더 192.0.2.10→203.0.113.10/NAT후 203.0.113.1 과 대비하면 '국경을 두 번 넘는다'가 한 화면에) · esp.pcap. || 규약(CLAUDE.md 'Packet captures' 절): 발췌는 한 블록 20줄 이내, 각 .txt 헤더의 생성 명령·버전이 출처 표기, **디섹션 값 위조 금지 — 자른다**, 크기 인용 시 계층 명시. pcap 원본을 독자에게 주려면 public/ 로 복사해 링크. || 이미 반영된 것: 실습 절의 준비물을 실제 랩(netns)에 맞추고 offload 차단 안내를 추가함(커밋 73d4ad2). || 주의: EP4는 발행본이므로 수정 후 bun run build 재확인 필요. 같은 맥락의 EP4 후속 작업으로 KAN-042(시리즈 링크 섹션 삽입)가 있으니 함께 처리하면 재빌드 1회로 끝난다. || EP3·EP5~7은 아직 미집필이라 각 집필 카드(KAN-037·039·040·041)에서 처음부터 발췌를 넣는다 — angle 페이지에 파일 경로·실측값이 이미 박혀 있다.
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26
@@ -73,6 +52,10 @@
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
 
 ## 검토
+- `KAN-042` VPN 해부 시리즈 링크 섹션 삽입 (EP 발행 후 post-finalize 재실행) — 생성:ai · 최종:ai · 갱신:2026-07-29
+  - 메모: ✅ 완료(검토 대기) — 2026-07-29. **유저 결정: 섹션은 없는 게 맞다 → 전 발행물에서 삭제해 통일.** || 조치 ①: "## 이 시리즈의 다른 글" 섹션을 발행물 **14편에서 일괄 제거**(auth-authz 1~4 · osi-7-layers 1~6 · webrtc 1~3 · vpn-anatomy-1). 전부 파일 끝 섹션이라 삭제 경계가 깨끗했다 — 검증 내장 스크립트로 처리(섹션 뒤 다른 헤딩 존재 / 목록 아닌 내용 혼입 시 거부, 미리보기 후 적용). 잔존 0건. || 조치 ②(핵심): **post-finalize의 삽입 로직 자체를 폐지.** 안 그러면 다음 발행 때 되살아난다. `.claude/skills/post-finalize/SKILL.md` 4단계를 "삽입"에서 "잔존 시 제거"로 뒤집고 frontmatter description·멱등성 원칙·보고 포맷까지 정리, `assets/SERIES_SECTION_TEMPLATE.md` 삭제(.codex 미러도 동일). 연쇄 참조 정리: tech-article-publisher(.md/.toml) · raw-to-draft · tech-deepdive(.codex) · README.md · CLAUDE.md. || 근거: PostNav.astro(이전화/다음화)·SeriesEpisodes.astro(지난 에피소드 그리드)가 모든 글에 시리즈 네비를 자동 렌더하므로 본문 수동 섹션은 순수 중복이고, 수동 목록은 형제 편 발행마다 손갱신이 필요해 "(작성 예정)"·404를 남긴다. || 검증: bun run build 42p exit 0. 내부 링크 /posts/vpn-anatomy-1~7 전량 생존.
+- `KAN-045` VPN 해부 EP4 발행본에 실측 캡처 발췌 retro 삽입 — 생성:ai · 최종:ai · 갱신:2026-07-29
+  - 메모: ✅ 완료(검토 대기) — 2026-07-29. vpn-anatomy-4 발행본에 랩 실측 캡처 발췌를 retro 삽입. 이로써 KAN-031 유저 요구("wireshark로 캡처했을 때와 완벽히 똑같은 실물 패킷")가 **7편 전편 이행**됐다. || 삽입 내역 5곳: ① 새 절 "### 스펙에서 캡처로: 실제 패킷 하나를 열어 본다"(필드 순서 절 뒤) — 암호화 상태 발췌(SPI·Seq 평문 노출 실증) + 복호 발췌(IV 8B·Pad 2·Pad Length·Next header IPIP까지 7필드 전부) ② tunnel 절 — 같은 프레임에 IP 헤더 2개(바깥 192.0.2.10→203.0.113.10 / 안쪽 198.51.100.2→198.51.100.1)로 "국경을 두 번" 실증 ③ NAT-T 절 — 같은 4500 포트에서 Frame 1은 ISAKMP, Frame 3은 ESP로 갈리는 실물 + 시퀀스 양방향 1~5 ④ MTU 절 — 실측 오버헤드 64B(고정 62 + 패딩 2) 산출, 시뮬 EspOverheadLab의 1438과 교차검증 ⑤ 실습 절 — 발췌 출처·재현 절차 명시. 도입부 "읽기 전 약속"도 "스펙 유도 + 캡처 대조"로 갱신. || 규약 준수: 블록당 최대 13줄(20줄 이내) · **디섹션 값 위조 0건**(인용 문자열 21건을 원본과 grep -F 전수 대조) · 크기 인용 시 계층 명시(프레임 162 vs IP 148을 본문에서 명시적으로 경고) · 각 .txt 헤더의 생성 명령·버전·캡처 지점을 출처로 표기. `[unchecked]`를 덮지 않고 "이 캡처가 증명하는 범위는 복호까지"라고 좁혀 서술. || 함께 교정(KAN-043 인계 반영): 실습 절 6단계의 "Wireshark GUI(Preferences→Protocols→ESP)"를 tshark `-o uat:esp_sa` 한 줄로 교체하고, aead 키는 32+4로 나누지 말고 **36옥텟 통째로** 넣는다는 확정 사실 반영. || 게이트: review-post 4축 자체검토 실행 → 🔴 1건(내가 만든 결함: 프레임별 프로토콜 요약 블록에 tshark가 출력하지 않는 `→` 서식을 지어냄) + 🟡 1건(생략 표시 누락) 발견해 둘 다 수정. 수정 후 재대조·재빌드 통과. || 검증: bun run build 42p exit 0, 코드블록 내 지어낸 서식 잔존 0건.
 
 ## 완료
 - `KAN-009` KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다. — 생성:유저 · 최종:유저 · 갱신:2026-07-23
@@ -224,3 +207,21 @@
   - 메모: ✅ 부트스트랩 완료(2026-07-29, main 24ef578). 콜드 전량 재추출(1.66M in/352k out·~50분)로 커버리지 22편→25편(vpn-anatomy-1·4 포함). 합격기준 ①②③⑤ 통과: verify-graph 통과 · 캐시 25건 · build 38p 통과 · /graph·연관글 렌더 확인 · communityName 실명(플레이스홀더 0). || ③(핵심) 무변경 재실행 0토큰 실측 — 증분 복구 목표 달성. || ④(캐시 무변경 fixpoint) 미성립: graphify 클러스터링 비결정성으로 웜→웜에도 9파일 churn + graph.json ~560줄 churn. 유저 결정=캐시 계속 커밋(노이즈 감수) — 커밋 노이즈 대부분이 graph.json 자체라 gitignore 폴백은 이점 적음. CLAUDE.md/README '절대 gitignore 하지 마라' 규약 유지. || 기준선 실측(in/out·벽시계·hit/miss): 콜드 1,655,027/351,992·~50분 · 무변경 0/0·1s·25hit/0 · 1편본문(tauri-1) 59,336/10,101·86s·24hit/1miss · .mdx프론트매터만(updatedDate) 59,138/10,300·86s·24hit/1miss(→ cache.py 프론트매터 스트립 .md전용 확정: post-finalize의 tags·updatedDate·시리즈링크가 그 글 재추출 유발) · 형제3편(osi-7-layers-2·3·4) 181,821/51,825·438s·22hit/3miss. 증분비용=바뀐 글 수에 선형(글당 ~59k in), 1편=이전 전량(1.66M) 대비 ~96%절감. || 부수 버그수정(24ef578): refresh-graph.sh 가드③ — 캐시 디렉터리 없는 콜드 상태에서 find가 set -e pipefail로 경고도 못 찍고 스크립트를 죽이던 버그 → mkdir -p graphify-out/cache/semantic 선행. || 원인·해결 상세는 CLAUDE.md graphify 절 + 커밋 2394fcf/24ef578. KAN-044 함께 검토 이동.
 - `KAN-044` graphify 그래프 일괄 재생성 (VPN 시리즈 7편 전량 발행·머지 후 1회) — 생성:ai · 최종:ai · 갱신:2026-07-29
   - 메모: ✅ KAN-046 부트스트랩으로 흡수·완료(2026-07-29, main 24ef578): 커버리지 25편(vpn-anatomy-1·4 포함), verify-graph 통과, 증분 복구 실측 완료 — 이후 그래프 갱신은 main 머지 직후 bun run graph:refresh 1회면 바뀐 글만 LLM을 탄다. 실측·결정 상세는 KAN-046. || **KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다.
+- `KAN-037` VPN 해부 EP3 집필 — IPsec① IKEv2 협상 — 생성:ai · 최종:ai · 갱신:2026-07-29
+  - 메모: 완료(검토 대기). vpn-anatomy-3 발행 — 커밋 b2edf14, 머지 b7cd07f, origin/main 반영 확인(2026-07-29 사후 검증). IPsec① IKEv2: SPD/SAD·SA/SPI, IKE_SA_INIT→IKE_AUTH 4메시지, UDP 500→4500 NAT-T 전환, IKE 헤더 28B·Proposal/Transform 2단 트리 분해. || 인계(draft/KAN-037-HANDOFF.md) 지시 전부 반영 확인: author ppangto · series "VPN의 해부" order:3 · category skills · draft:false · 캡처 발췌 인용 6곳(출처 `ike_sa_init.txt` 프레임1·2 / `ike_auth.txt` 프레임3·4를 본문에 명시) · IKE_AUTH 는 SK{} 암호문으로 정직하게 서술. viz 3종(VizFlowchartSpdSaSad·VizProcessStepsFourMessages·VizComparisonSpi) + 시뮬 2종(IkeHeaderDissector·ProposalTreeBuilder). || 2026-07-29 검증: bun run build 42p exit 0 · 내부 링크 /posts/vpn-anatomy-1~7 전량 생존 · 그래프 커버리지 포함(conceptCount 51 = 껍데기 아님).
+- `KAN-039` VPN 해부 EP5 집필 — WireGuard — 생성:ai · 최종:ai · 갱신:2026-07-29
+  - 메모: 완료(검토 대기). vpn-anatomy-5 발행 — 커밋 0a118ed, 머지 c0767f5, origin/main 반영 확인(2026-07-29 사후 검증). WireGuard: 고정 암호군(Curve25519+ChaCha20Poly1305+BLAKE2s), Noise_IKpsk2 와 실제 UDP message format 층위 구분, Cryptokey Routing·1-RTT 핸드셰이크, IPsec 대비. || 캡처 발췌 4곳 + 아티팩트 경로 출처 표기(~/blog-research/raws/captures/vpn-anatomy-5/ 의 wg-handshake.txt·wg-transport.txt·wg-sizes.txt·wg.pcap, 각 파일 첫머리 주석이 출처). CLAUDE.md 규약 준수 확인: 148/92/32B 를 **UDP 페이로드 길이**로 계층 명시(프레임은 +42B), 커널 wg 부분복호 사실 그대로 서술. viz 3종(CryptokeyRoutingFlow·OneRttFlow·WgVsIpsec) + 시뮬 CryptokeyRoutingLab. || 2026-07-29 검증: build 42p exit 0 · 그래프 conceptCount 50.
+- `KAN-040` VPN 해부 EP6 집필 — TLS-VPN(OpenVPN·SSL-VPN) — 생성:ai · 최종:ai · 갱신:2026-07-29
+  - 메모: 완료(검토 대기). vpn-anatomy-6 발행 — 커밋 7e3e330, 머지 88aeaf7, origin/main 반영 확인(2026-07-29 사후 검증). TLS-VPN/OpenVPN: 제어 채널만 TLS 를 빌려 쓰는 구조, opcode 1바이트 설계, tls-auth vs tls-crypt 가 캡처 두 장에서 갈리는 지점, P_DATA_V2 AEAD 헤더 24B, TCP-over-TCP meltdown. || 캡처 발췌 4곳(openvpn-opcode.txt tls-crypt 모드 Frame 1·3 / openvpn-tls-auth.txt Frame 2 / openvpn-compare.txt) — 전부 파일 경로·모드·프레임 번호까지 출처 표기. 데이터 채널 복호 불가(2.6 SSLKEYLOGFILE 미방출)를 위조 없이 명시. viz 3종 + 시뮬 OpcodeByte. || 2026-07-29 검증: build 42p exit 0 · 그래프 conceptCount 30.
+- `KAN-041` VPN 해부 EP7 집필 — 선택 매트릭스·운영 총정리 — 생성:ai · 최종:ai · 갱신:2026-07-29
+  - 메모: 완료(검토 대기). vpn-anatomy-7 발행 — 커밋 3610efb, 머지 44e000b, origin/main 반영 확인(2026-07-29 사후 검증). 선택 매트릭스 5축(보안·성능·NAT친화·모바일로밍·운영복잡도) + 운영 함정(MTU 블랙홀·DNS 유출·split tunnel·kill switch) + 세 가족 최종 비교표 + 전편 회수. || 후속 통합 패스 b4b4e7f 에서 선택 매트릭스·오버헤드표의 ⚠︎TBD 7셀을 형제편(EP4·EP5·EP6) 실측·서술로 확정 — 창작 수치 0, MOBIKE=RFC 4555·유효 터널 MTU ≈1438~1448B 등. 표의 셀마다 근거 주석({/* 근거: EP5 wg-sizes.txt … */})을 달아 캡처 파일까지 역추적 가능. 크기 인용은 UDP 페이로드 vs 프레임 계층을 전부 명시(CLAUDE.md 규약). viz 3종(MtuTriage·VizSplitLeak·KernelVsUserspace) + 시뮬 SplitTunnelLab. || 2026-07-29 검증: build 42p exit 0 · 그래프 conceptCount 38.
+- `KAN-031` VPN 완벽 해부 시리즈 집필 — 생성:유저 · 최종:ai · 갱신:2026-07-29
+  - 메모: VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 하위카드 KAN-033~041. || ✅ 완료(유저 검토 완료, 2026-07-29). EP1~EP7 7편 전량 발행(draft:false)·origin/main 반영. series "VPN의 해부" order 1~7 · author ppangto · category skills 통일. bun run build 42p exit 0, 내부 링크 전량 생존, 그래프 커버리지 29/29편(VPN 7편 conceptCount 27~54, 껍데기 0). || 유저 요구 "실제 캡처와 완벽히 똑같은 실물 패킷" **7편 전편 이행 완료** — EP3·5·6·7은 집필 시점에 발췌 인용, EP4는 KAN-045로 retro 삽입(2026-07-29). 잔여 없음. || 부수 산출: KAN-042에서 "## 이 시리즈의 다른 글" 수동 섹션을 전 발행물(14편)에서 제거하고 post-finalize 삽입 로직을 폐지 — 시리즈 네비는 PostNav·SeriesEpisodes 자동 렌더로 일원화.
+  - 원문:
+    ```text
+    VPN 완벽 해부 시리즈 집필
+    - VPN의 원리, 작동 매커니즘, 절차 별 패킷 구성, 사용하는 알고리즘이나 표준 규격, 프로토콜을 심층 설명한다.
+    - 독자가 큰 그림을 그릴 수 있도록 개념적 관점 설명을 포함한다.
+    - 전문적 이해를 위해, 실제 환경과 완전히 일치하는 형식과 내용을 제공하여 설명한다.
+      - ex. wireshark로 패킷을 캡쳐 했을 때와 완벽히 똑같은 실물 패킷을 제공하여 설명한다.
+    ```
