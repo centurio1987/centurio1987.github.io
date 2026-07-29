@@ -4,6 +4,7 @@ import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import NavProgress from "../components/NavProgress.astro";
+import { FEED_TITLE, FEED_URL } from "../lib/feed";
 
 interface Props {
   title: string;
@@ -15,6 +16,12 @@ interface Props {
   ambientFooter?: boolean;
   /** 색인에서 뺀다. 디자인 쇼케이스처럼 독자용이 아닌 내부 페이지에 쓴다. */
   noindex?: boolean;
+  /**
+   * 이 페이지에 **추가로** 붙일 피드 자동발견 링크 (KAN-047).
+   * 전체 피드는 모든 페이지에 항상 붙으므로 여기 다시 적지 않는다 —
+   * 카테고리 페이지가 자기 카테고리 피드를 얹을 때만 쓴다.
+   */
+  feeds?: { href: string; title: string }[];
 }
 const {
   title,
@@ -24,6 +31,7 @@ const {
   canonical = new URL(Astro.url.pathname, Astro.site),
   ambientFooter = false,
   noindex = false,
+  feeds = [],
 } = Astro.props;
 const siteName = "빵관 토니";
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
@@ -61,6 +69,25 @@ const imageUrl = new URL(image, Astro.site).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {/* 피드 자동발견 (KAN-047). 리더 확장·브라우저가 주소만 보고 구독을 걸 수 있게
+        모든 페이지에 전체 피드를 깐다. 카테고리 페이지는 자기 피드를 추가로 얹는다 —
+        전체 피드를 **먼저** 두는 순서가 곧 기본 선택이다(리더 대부분이 첫 항목을 고른다). */}
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={FEED_TITLE}
+      href={new URL(FEED_URL, Astro.site).href}
+    />
+    {
+      feeds.map((f) => (
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title={f.title}
+          href={new URL(f.href, Astro.site).href}
+        />
+      ))
+    }
     {/* 크로스 페이지 View Transitions. 콘텐츠는 여전히 SSR이고, 라우터 스크립트만
         전역 로드된다. Astro가 VT의 reduced-motion 을 자동 존중하며, reveal.ts 는
         astro:page-load 에 바인딩돼 VT 후 새 페이지의 [data-reveal] 을 재관측한다. */}

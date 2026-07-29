@@ -1,6 +1,7 @@
 ---
 import AuthorLineup from "./AuthorLineup.astro";
 import AmbientWaves from "./motion/AmbientWaves.tsx";
+import { FEED_NOTE, FEED_URL } from "../lib/feed";
 
 interface Props {
   /**
@@ -33,6 +34,9 @@ const year = new Date().getFullYear();
         target="_blank"
         rel="noopener">LinkedIn</a
       >
+      {/* 자동발견(<link rel="alternate">)만으로는 리더 확장을 안 쓰는 사람이 주소를
+          알 길이 없다. 눈에 보이는 자리를 하나 둔다 — 푸터는 모든 페이지에 있다. */}
+      <a href={FEED_URL} title={FEED_NOTE}>RSS</a>
     </nav>
     <p class="copy">© {year} 김윤덕</p>
   </div>

@@ -2,6 +2,8 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostFilter from "../../components/PostFilter.astro";
+import FeedLink from "../../components/FeedLink.astro";
+import { FEED_URL } from "../../lib/feed";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
   (a, b) =>
@@ -12,7 +14,10 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
 
 <BaseLayout title="글" description="기획 · 아키텍처 · 설계에 관한 글 모음">
   <section class="wrap">
-    <h1>글</h1>
+    <div class="head">
+      <h1>글</h1>
+      <FeedLink href={FEED_URL} label="전체 글" />
+    </div>
     {
       posts.length > 0 ? (
         <PostFilter posts={posts} />
@@ -29,9 +34,19 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
     margin: 0 auto;
     padding: 56px var(--page-pad) 0;
   }
+  /* 제목과 구독 캡슐을 한 줄에. 좁은 화면에서도 캡슐이 작아 줄바꿈이 잘 안 나지만,
+     나면 자연스럽게 아래로 떨어지도록 wrap 을 열어 둔다. */
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 18px;
+  }
   h1 {
     font-size: clamp(30px, 6vw, 40px);
-    margin: 0 0 18px;
+    margin: 0;
   }
   .empty {
     color: var(--ink-2);

@@ -1,0 +1,63 @@
+---
+// 눈에 보이는 RSS 구독 링크 (KAN-047).
+//
+// 목록 페이지(전체 글 · 카테고리)의 제목 옆에 선다. 전용 컴포넌트로 뺀 이유는
+// 자리가 늘어날 때마다 아이콘·문구·툴팁이 조금씩 갈라지기 때문이다.
+import { FEED_NOTE } from "../lib/feed";
+
+interface Props {
+  href: string;
+  /** 어떤 피드인지 — "기획 글" 처럼 대상을 적으면 aria-label 이 구체적이 된다. */
+  label?: string;
+}
+const { href, label } = Astro.props;
+const aria = label ? `${label} RSS 구독` : "RSS 구독";
+---
+
+<a class="feed-link" href={href} aria-label={aria} title={FEED_NOTE}>
+  {/* 표준 RSS 마크(왼쪽 아래 점 + 두 호). currentColor 라 링크 색을 그대로 따른다. */}
+  <svg
+    class="feed-icon"
+    viewBox="0 0 16 16"
+    width="13"
+    height="13"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <circle cx="3.2" cy="12.8" r="1.9" fill="currentColor"></circle>
+    <path
+      d="M2 7.4a6.6 6.6 0 0 1 6.6 6.6M2 2.6A11.4 11.4 0 0 1 13.4 14"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.1"
+      stroke-linecap="round"></path>
+  </svg>
+  <span>RSS</span>
+</a>
+
+<style>
+  .feed-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--ink-3);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 11px 4px 9px;
+    transition:
+      color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+  .feed-link:hover {
+    color: var(--accent);
+    border-color: var(--accent-tint);
+  }
+  .feed-icon {
+    display: block;
+    /* 캡슐 안에서 글자 기준선에 맞추기 */
+    margin-top: -1px;
+  }
+</style>

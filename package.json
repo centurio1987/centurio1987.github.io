@@ -20,6 +20,7 @@
     "@astrojs/markdown-remark": "^7.2.1",
     "@astrojs/mdx": "^7.0.3",
     "@astrojs/react": "^6.0.1",
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "@centurio1987/bbangto-ui-core": "1.1.1",
     "@centurio1987/bbangto-ui-style-guide-catalog": "0.3.0",
