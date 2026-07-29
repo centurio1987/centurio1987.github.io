@@ -1,6 +1,6 @@
 {
   "next_id": 58,
-  "next_seq": 208,
+  "next_seq": 209,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -532,7 +532,7 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-047": {
-      "col": "doing",
+      "col": "review",
       "title": "rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
       "memo": "",
       "verbatim": "",
@@ -723,6 +723,15 @@
     "KAN-047"
   ],
   "recent": [
+    {
+      "seq": 208,
+      "t": "2026-07-30T01:20",
+      "a": "ai",
+      "id": "KAN-047",
+      "op": "move",
+      "from": "doing",
+      "to": "review"
+    },
     {
       "seq": 207,
       "t": "2026-07-30T01:12",
@@ -1197,15 +1206,6 @@
       "field": "memo",
       "before": "**KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다.",
       "after": "✅ KAN-046 부트스트랩으로 흡수·완료(2026-07-29, main 24ef578): 커버리지 25편(vpn-anatomy-1·4 포함), verify-graph 통과, 증분 복구 실측 완료 — 이후 그래프 갱신은 main 머지 직후 bun run graph:refresh 1회면 바뀐 글만 LLM을 탄다. 실측·결정 상세는 KAN-046. || **KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다."
-    },
-    {
-      "seq": 158,
-      "t": "2026-07-29T08:47",
-      "a": "ai",
-      "id": "KAN-046",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
     }
   ]
 }
