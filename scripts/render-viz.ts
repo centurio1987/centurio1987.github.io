@@ -30,6 +30,7 @@ import {
   Statistics,
   PosterEditorial,
 } from "@centurio1987/bbangto-ui-visualization";
+import PosterHero from "../src/lib/viz/PosterHero";
 import { blogVizStyleGuide } from "../src/lib/viz/blogVizStyleGuide";
 import { parseVizSpec, type VizSpec } from "../src/lib/viz/schema";
 import { defaultViewBox, a11yText, extraProps, pixelSize } from "../src/lib/viz/layout";
@@ -43,6 +44,7 @@ const KIND: Record<VizSpec["kind"], any> = {
   Flowchart,
   Statistics,
   PosterEditorial,
+  PosterHero,
 };
 
 const FONT_IMPORT =

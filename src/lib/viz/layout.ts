@@ -22,6 +22,7 @@ export function defaultViewBox(spec: VizSpec): string {
     case "Statistics":
       return "0 0 620 220";
     case "PosterEditorial":
+    case "PosterHero":
       // hero 래스터는 deviceScaleFactor 2 → 1200x676(OG 규격). 텍스트는 크게.
       return "0 0 600 338";
     case "Flowchart": {
@@ -37,11 +38,13 @@ export function defaultViewBox(spec: VizSpec): string {
   }
 }
 
-/** SVG 접근성 title/desc. alt > (PosterEditorial의 title) > caption > kind. */
+/** SVG 접근성 title/desc. alt > (포스터 kind의 title) > caption > kind. */
 export function a11yText(spec: VizSpec): { title: string; desc: string } {
   const title =
     spec.alt ??
-    (spec.kind === "PosterEditorial" ? spec.data.title : undefined) ??
+    (spec.kind === "PosterEditorial" || spec.kind === "PosterHero"
+      ? spec.data.title
+      : undefined) ??
     spec.caption ??
     spec.kind;
   const desc = spec.caption ?? spec.alt ?? title;

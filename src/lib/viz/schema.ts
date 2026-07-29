@@ -4,8 +4,8 @@
  * 저작자가 본문에 남기는 구조형 시각물 명세를 kind별로 검증한다.
  * apply-viz 엔진(scripts/apply-viz.ts)이 이 스키마로 파싱→코드생성/래스터한다.
  *
- * v1 지원 kind(5종): ProcessSteps · Comparison · Flowchart · Statistics · PosterEditorial.
- * 나머지 ~65종은 후속 확장.
+ * v1 지원 kind(6종): ProcessSteps · Comparison · Flowchart · Statistics · PosterEditorial
+ * · PosterHero(로컬 구현 — hero 전용, 긴 제목 자동 줄바꿈). 나머지 ~65종은 후속 확장.
  */
 import { z } from "zod";
 
@@ -105,6 +105,17 @@ export const vizSpecSchema = z.discriminatedUnion("kind", [
     }),
     ...commonShape,
   }),
+  z.object({
+    kind: z.literal("PosterHero"),
+    data: z.object({
+      eyebrow: z.string().optional(),
+      title: z.string(),
+      subtitle: z.string().optional(),
+      maxTitleLines: z.number().int().min(1).max(4).optional(),
+      maxSubtitleLines: z.number().int().min(1).max(3).optional(),
+    }),
+    ...commonShape,
+  }),
 ]);
 
 export type VizSpec = z.infer<typeof vizSpecSchema>;
@@ -116,7 +127,14 @@ export const SUPPORTED_VIZ_KINDS: readonly string[] = [
   "Flowchart",
   "Statistics",
   "PosterEditorial",
+  "PosterHero",
 ];
+
+/**
+ * 패키지가 아니라 **레포 로컬**(`src/lib/viz/<kind>.tsx`)에 구현된 kind.
+ * apply-viz 의 코드생성이 import 경로를 여기서 갈라 쓴다.
+ */
+export const LOCAL_VIZ_KINDS: readonly string[] = ["PosterHero"];
 
 /** raw(파싱된 JSON)을 검증한다. 실패 시 읽기 좋은 에러 메시지를 던진다. */
 export function parseVizSpec(raw: unknown, blockLabel = "viz block"): VizSpec {
