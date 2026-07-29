@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import { POSTS_URL } from "../lib/urls";
 import AuthorProfile from "../components/AuthorProfile.astro";
 import PostNav from "../components/PostNav.astro";
 import SeriesEpisodes from "../components/SeriesEpisodes.astro";
@@ -106,7 +107,7 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
       tags.length > 0 && (
         <div class="talk-tags">
           {tags.map((t) => (
-            <a href={`/posts`} class="tag-pill">#{t}</a>
+            <a href={POSTS_URL} class="tag-pill">#{t}</a>
           ))}
         </div>
       )

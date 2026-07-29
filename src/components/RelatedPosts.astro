@@ -2,6 +2,7 @@
 import Squiggle from "./motifs/Squiggle.astro";
 import { getCategory } from "../lib/categories";
 import type { RelatedItem } from "../lib/related";
+import { postUrl, GRAPH_URL } from "../lib/urls";
 
 interface Props {
   items: RelatedItem[];
@@ -27,7 +28,7 @@ const REASON_PREFIX: Record<string, string> = {
           const cat = getCategory(post.data.category);
           return (
             <li class="related-item" data-reveal="up" style={`--reveal-i:${i}`}>
-              <a href={`/posts/${post.id}`} class="related-link">
+              <a href={postUrl(post.id)} class="related-link">
                 <span class="bullet" style={`--cat:${cat.color}`} aria-hidden="true" />
                 <span class="related-body">
                   <span class="related-post-title">{post.data.title}</span>
@@ -50,7 +51,7 @@ const REASON_PREFIX: Record<string, string> = {
         })}
       </ul>
       <p class="related-more">
-        <a href="/graph">전체 글 지도 보기 →</a>
+        <a href={GRAPH_URL}>전체 글 지도 보기 →</a>
       </p>
     </aside>
   )

@@ -1,0 +1,62 @@
+---
+/**
+ * 페이지 전환 진행 바 (KAN-055).
+ *
+ * transition:persist 로 스왑을 넘어 살아남는다 — 그러지 않으면 진행 중에 바 자체가
+ * 교체돼 사라진다. 로직은 src/lib/motion/navProgress.ts, 여기는 표면만 담당한다.
+ * aria-hidden 인 이유는 페이지 전환 안내를 Astro 라우터의 announcer 가 이미 하기 때문.
+ */
+---
+
+<div id="nav-progress" data-state="idle" aria-hidden="true"><span class="bar"></span></div>
+
+<style>
+  #nav-progress {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 2px;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms var(--ease);
+  }
+  #nav-progress[data-state="loading"],
+  #nav-progress[data-state="done"] {
+    opacity: 1;
+  }
+
+  .bar {
+    display: block;
+    height: 100%;
+    transform-origin: left center;
+    /* --p 는 0~1 진행률. transform 만 건드려 레이아웃/페인트 없이 합성만 시킨다. */
+    transform: scaleX(var(--p, 0));
+    background: linear-gradient(90deg, var(--accent-tint) 0%, var(--accent) 100%);
+    transition: transform 160ms var(--ease);
+  }
+  /* 완료 구간은 남은 거리를 빠르게 접는다 — 끝이 질질 끌리면 오히려 느려 보인다. */
+  #nav-progress[data-state="done"] .bar {
+    transition: transform 120ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #nav-progress,
+    .bar {
+      transition: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* 클릭한 링크를 흐리게 — 어느 항목으로 가는 중인지 클릭 지점에서 되돌려 보여준다.
+     opacity 만 바꾸므로 목록 레이아웃이 흔들리지 않는다. */
+  a.is-nav-source {
+    opacity: 0.5;
+    transition: opacity 160ms var(--ease);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    a.is-nav-source {
+      transition: none;
+    }
+  }
+</style>

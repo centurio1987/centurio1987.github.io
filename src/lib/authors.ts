@@ -40,7 +40,7 @@ export const AUTHORS: AuthorMeta[] = [
     fullBody: "/images/authors/tony-full.webp",
     avatarSm: "/images/authors/tony-sm.webp",
     isAI: false,
-    links: [{ label: "글 더 보기", href: "/posts" }],
+    links: [{ label: "글 더 보기", href: "/posts/" }],
   },
   {
     id: "ppangto",
@@ -54,7 +54,7 @@ export const AUTHORS: AuthorMeta[] = [
     banner: "/images/authors/ai-banner.webp",
     bannerAlt: "토실토실하게 구워낸 연구 성과를 공유합니다 — 이 글은 AI 빵토 연구원이 집필했습니다",
     isAI: true,
-    links: [{ label: "글 더 보기", href: "/posts" }],
+    links: [{ label: "글 더 보기", href: "/posts/" }],
   },
   {
     id: "ppangto-prof",
@@ -66,7 +66,7 @@ export const AUTHORS: AuthorMeta[] = [
     fullBody: "/images/authors/ppangto-prof-full.webp",
     avatarSm: "/images/authors/ppangto-prof-sm.webp",
     isAI: true,
-    links: [{ label: "글 더 보기", href: "/posts" }],
+    links: [{ label: "글 더 보기", href: "/posts/" }],
   },
   {
     id: "ppangto-teacher",
@@ -79,7 +79,7 @@ export const AUTHORS: AuthorMeta[] = [
     avatarSm: "/images/authors/ppangto-teacher-sm.webp",
     banner: "/images/authors/ppangto-teacher-banner.webp",
     isAI: true,
-    links: [{ label: "글 더 보기", href: "/posts" }],
+    links: [{ label: "글 더 보기", href: "/posts/" }],
   },
 ];
 

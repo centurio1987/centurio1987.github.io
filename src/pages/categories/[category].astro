@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostList from "../../components/PostList.astro";
 import { CATEGORIES, getCategory } from "../../lib/categories";
+import { POSTS_URL } from "../../lib/urls";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
@@ -27,7 +28,7 @@ const meta = getCategory(category);
 
 <BaseLayout title={`${meta.label} 글`} description={`${meta.label} 카테고리의 글 모음`}>
   <section class="wrap">
-    <p class="back"><a href="/posts" class="sketch-link">← 전체 글</a></p>
+    <p class="back"><a href={POSTS_URL} class="sketch-link">← 전체 글</a></p>
     <h1 style={`--cat:${meta.color}`}>
       <span class="swatch" aria-hidden="true"></span>{meta.label}
     </h1>

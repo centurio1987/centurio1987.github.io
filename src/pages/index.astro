@@ -5,6 +5,7 @@ import { getCategory } from "../lib/categories";
 import { getAuthor } from "../lib/authors";
 import { formatMonthYear } from "../lib/format";
 import AmbientAurora from "../components/motion/AmbientAurora.tsx";
+import { postUrl, POSTS_URL } from "../lib/urls";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
   (a, b) =>
@@ -36,7 +37,7 @@ const hasMore = posts.length > recent.length;
           코드와 빵 사이 어딘가에서, 만든 것과 배운 것을 차곡차곡 굽습니다.
         </p>
         <div class="hero-cta">
-          <a href="/posts" class="btn-filled">블로그 전체 보기 →</a>
+          <a href={POSTS_URL} class="btn-filled">블로그 전체 보기 →</a>
         </div>
       </div>
 
@@ -54,7 +55,7 @@ const hasMore = posts.length > recent.length;
   <section class="recent">
     <div class="recent-head">
       <h2>최근 글</h2>
-      {hasMore && <a href="/posts" class="view-all">전체 보기 →</a>}
+      {hasMore && <a href={POSTS_URL} class="view-all">전체 보기 →</a>}
     </div>
 
     {recent.length > 0 ? (
@@ -64,7 +65,7 @@ const hasMore = posts.length > recent.length;
           const author = getAuthor(post.data.author);
           return (
             <li>
-              <a href={`/posts/${post.id}`} class="post-row" data-reveal="up" style={`--reveal-i:${i}`}>
+              <a href={postUrl(post.id)} class="post-row" data-reveal="up" style={`--reveal-i:${i}`}>
                 <span class="post-label">
                   {formatMonthYear(post.data.pubDate)} · {cat.label} · {author.name}
                 </span>

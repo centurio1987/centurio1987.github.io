@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { CollectionEntry } from "astro:content";
 import { getSeriesPosts, episodeNumber } from "../lib/seriesNav";
+import { postUrl } from "../lib/urls";
 
 /**
  * 지난 에피소드 카드 목록 (디자인: 폭신 대담 — episodes 카드 그리드 패턴)
@@ -34,7 +35,7 @@ const thumbOf = (p: CollectionEntry<"posts">): string | null => {
           const isCurrent = ep.id === post.id;
           return (
             <a
-              href={`/posts/${ep.id}`}
+              href={postUrl(ep.id)}
               class:list={["ep-card", { "is-current": isCurrent }]}
               aria-current={isCurrent ? "page" : undefined}
               data-reveal="up"

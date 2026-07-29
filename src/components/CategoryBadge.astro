@@ -1,5 +1,6 @@
 ---
 import { getCategory } from "../lib/categories";
+import { categoryUrl } from "../lib/urls";
 interface Props {
   category: string;
   asLink?: boolean;
@@ -7,7 +8,7 @@ interface Props {
 const { category, asLink = false } = Astro.props;
 const meta = getCategory(category);
 const Tag = asLink ? "a" : "span";
-const href = asLink ? `/categories/${meta.slug}` : undefined;
+const href = asLink ? categoryUrl(meta.slug) : undefined;
 ---
 
 <Tag

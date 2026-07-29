@@ -3,6 +3,7 @@ import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import NavProgress from "../components/NavProgress.astro";
 
 interface Props {
   title: string;
@@ -77,6 +78,7 @@ const imageUrl = new URL(image, Astro.site).href;
     </script>
   </head>
   <body>
+    <NavProgress transition:persist />
     <Header />
     <main>
       <slot />
@@ -84,7 +86,9 @@ const imageUrl = new URL(image, Astro.site).href;
     <Footer ambient={ambientFooter} />
     <script>
       import { initReveal } from "../lib/motion/reveal";
+      import { initNavProgress } from "../lib/motion/navProgress";
       initReveal();
+      initNavProgress();
     </script>
   </body>
 </html>

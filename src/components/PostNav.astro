@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getPrevNext, getSeriesPosts, episodeNumber } from "../lib/seriesNav";
+import { postUrl } from "../lib/urls";
 
 /**
  * 이전화/다음화 네비게이션 (디자인: 폭신 대담 — prev/next 카드 패턴)
@@ -24,7 +25,13 @@ const nextLabel = (p: CollectionEntry<"posts">) =>
   (prev || next) && (
     <nav class="post-nav" aria-label="이전 글 / 다음 글">
       {prev ? (
-        <a href={`/posts/${prev.id}`} class="nav-card nav-prev" data-reveal="up" style="--reveal-i:0">
+        <a
+          href={postUrl(prev.id)}
+          class="nav-card nav-prev"
+          data-reveal="up"
+          style="--reveal-i:0"
+          data-astro-prefetch="viewport"
+        >
           <span class="nav-label">{prevLabel(prev)}</span>
           <span class="nav-title">{prev.data.title}</span>
         </a>
@@ -32,7 +39,13 @@ const nextLabel = (p: CollectionEntry<"posts">) =>
         <span class="nav-empty" aria-hidden="true" />
       )}
       {next ? (
-        <a href={`/posts/${next.id}`} class="nav-card nav-next" data-reveal="up" style="--reveal-i:1">
+        <a
+          href={postUrl(next.id)}
+          class="nav-card nav-next"
+          data-reveal="up"
+          style="--reveal-i:1"
+          data-astro-prefetch="viewport"
+        >
           <span class="nav-label">{nextLabel(next)}</span>
           <span class="nav-title">{next.data.title}</span>
         </a>
