@@ -1,14 +1,47 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import { getCategory } from "../lib/categories";
 import { getAuthor } from "../lib/authors";
 import { formatYear, readingTime } from "../lib/format";
 import { postUrl } from "../lib/urls";
+import { getSeriesBadge } from "../lib/seriesNav";
 
 interface Props {
   posts: CollectionEntry<"posts">[];
 }
 const { posts } = Astro.props;
+
+// 회차·전체 편수는 이 목록이 무엇으로 걸러졌는지와 무관해야 한다(카테고리 페이지,
+// /posts 필터). 그래서 넘겨받은 posts 가 아니라 컬렉션 전체를 기준으로 센다.
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+// 총 편수를 모르면(getSeriesBadge 가 null) `??` — 회차 표시가 통째로 빠지지 않게 한다.
+const pad = (n: number | null) => (n == null ? "??" : String(n).padStart(2, "0"));
+
+// ── 시리즈 테이프 폭 산정 ───────────────────────────────────────────────────
+// 테이프는 한 줄짜리라 폭이 시리즈 이름 길이를 그대로 따라간다. 그래서 ① 이름이
+// 길면 글자를 단계적으로 줄이고 ② 그래도 넘치면 상한에서 말줄임한다. 그리고 이렇게
+// 구한 폭을 CSS 상한(--tape-w)으로 **강제**해, 제목이 비켜준 자리를 테이프가 절대
+// 넘지 못하게 만든다 — 아래 추정이 빗나가도 침범이 일어나지 않는다.
+const WIDE_CHAR = /[ᄀ-ᇿ㄰-㆏가-힯　-〿一-鿿！-｠]/;
+const NAME_CAP_PX = 150; // 이름이 차지할 수 있는 최대 폭
+const INK_BLOCK_PX = 72; // 회차 잉크 블록(숫자 + /총편 + 좌우 패딩)
+
+/** 한글·CJK 는 1em, 그 외는 0.6em 로 보고 letter-spacing(.1em)까지 더한 근사 폭 */
+function nameEm(s: string): number {
+  let em = 0;
+  for (const ch of s) em += (WIDE_CHAR.test(ch) ? 1 : 0.6) + 0.1;
+  return em;
+}
+
+function tapeMetrics(name: string) {
+  const em = nameEm(name);
+  // 길수록 작게 — 상한에서 잘려나가는 글자를 줄인다
+  const fontPx = em <= 9 ? 12 : em <= 12 ? 11 : em <= 15 ? 10 : 9;
+  const nameW = Math.min(Math.ceil(em * fontPx * 1.12), NAME_CAP_PX);
+  //            이름 + "SER." + gap 9 + 좌우 padding 32 + 잉크 블록
+  const tapeW = nameW + Math.ceil(4 * 0.7 * fontPx) + 9 + 32 + INK_BLOCK_PX;
+  return { fontPx, nameW, tapeW };
+}
 ---
 
 <ul class="post-list">
@@ -22,17 +55,39 @@ const { posts } = Astro.props;
       // 페이지에 같은 글이 한 번만 나오므로 name 유일성이 보장된다(RelatedPosts 등
       // 부차 목록엔 부여하지 않는다). 값은 PostLayout <h1> 과 동일 규칙.
       const titleTransition = `post-${post.id.replace(/\.(md|mdx)$/, "")}-title`;
+      const series = getSeriesBadge(post, allPosts);
+      const tape = series ? tapeMetrics(series.name) : null;
+      const epLabel = series
+        ? series.total == null
+          ? `${series.n}편 (총 편수 미정)`
+          : `${series.total}편 중 ${series.n}편`
+        : "";
       return (
         <li
-          class="post-item"
+          class:list={["post-item", { "has-series": series }]}
           data-reveal="up"
-          style={`--reveal-i:${i}`}
+          style={`--reveal-i:${i}${tape ? `;--tape-w:${tape.tapeW}px;--tape-name:${tape.nameW}px;--tape-font:${tape.fontPx}px` : ""}`}
           data-cat={post.data.category}
           data-author={author.id}
         >
           <a href={postUrl(post.id)} class="post-link">
             <span class="bullet" style={`--cat:${cat.color}`} aria-hidden="true" />
             <span class="post-body">
+              {series && (
+                <span class="series-tape">
+                  <span class="visually-hidden">
+                    시리즈 {series.name}, {epLabel}
+                  </span>
+                  <span class="st-name" aria-hidden="true">
+                    <span class="st-pre">SER.</span>
+                    <span class="st-text">{series.name}</span>
+                  </span>
+                  <span class="st-no" aria-hidden="true">
+                    <span class="st-n">{pad(series.n)}</span>
+                    <span class="st-total">/{pad(series.total)}</span>
+                  </span>
+                </span>
+              )}
               <span class="post-meta">
                 <span class="post-cat" style={`--cat:${cat.color}`}>
                   {cat.label}
@@ -82,7 +137,12 @@ const { posts } = Astro.props;
   .post-list {
     list-style: none;
     margin: 0;
-    padding: 0;
+    /* 첫 항목 스티커가 목록 위로 14px(+hover 시 7px 더) 삐져나오므로 자리를 준다 */
+    padding: 12px 0 0;
+  }
+  .post-item {
+    /* 시리즈 스티커의 절대배치 기준 */
+    position: relative;
   }
   .post-item + .post-item {
     border-top: 1px dashed var(--border);
@@ -90,7 +150,9 @@ const { posts } = Astro.props;
   .post-link {
     display: flex;
     gap: 14px;
-    padding: 18px 0;
+    /* 아래 여백이 18px 이면 다음 항목 스티커가 떼어질 때(왼쪽이 들리며 위로 쓸림)
+       이 항목 설명문의 마지막 줄을 덮는다. 24px 이 그 스침을 없애는 최소치. */
+    padding: 18px 0 24px;
     color: var(--ink);
   }
   .bullet {
@@ -107,6 +169,10 @@ const { posts } = Astro.props;
     display: flex;
     flex-direction: column;
     gap: 4px;
+    /* 시리즈 라벨이 흐름 안에 들어오는 좁은 화면에서, 줄바꿈 없는 라벨의
+       min-content 가 이 칸의 자동 최소폭을 밀어올려 메타·제목을 한 글자씩
+       쪼개는 것을 막는다. */
+    min-width: 0;
   }
   .post-meta {
     display: flex;
@@ -159,6 +225,10 @@ const { posts } = Astro.props;
     font-size: 20px;
     font-weight: 700;
     letter-spacing: -0.02em;
+    /* 시리즈 스티커가 제목 칸을 좁히는 만큼 줄바꿈이 잦아진다 — 한국어는 어절
+       단위로 끊고(keep-all), 끊을 데 없는 긴 라틴 토큰만 예외로 쪼갠다. */
+    word-break: keep-all;
+    overflow-wrap: break-word;
     transition: color var(--dur) var(--ease);
   }
   .post-desc {
@@ -170,5 +240,131 @@ const { posts } = Astro.props;
   }
   .post-link:hover .post-title {
     color: var(--accent);
+  }
+
+  .post-item.has-series .post-meta {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  /* ── 시리즈 라벨 2b: 찢긴 테이프 + 회차 잉크 블록 ────────────────────────────
+     테이프는 한 줄짜리라 폭이 시리즈 이름 길이를 따라간다(2a 의 고정폭 186 과
+     대조). 그래서 제목이 비켜줄 폭도 그만큼 더 잡는다. 떼어지는 모션은 없다. */
+  .series-tape {
+    position: absolute;
+    top: -11px;
+    right: 0;
+    z-index: 1;
+    display: flex;
+    align-items: stretch;
+    /* 제목이 비켜준 폭을 넘지 못하게 하는 강제 상한(li 인라인 스타일에서 주입).
+       폭 추정이 빗나가도 이 상한이 침범을 막고, 넘치는 이름은 말줄임된다. */
+    max-width: min(var(--tape-w, 240px), 100%);
+    transform: rotate(-1.6deg);
+    transform-origin: 100% 100%;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.14));
+    transition:
+      transform 280ms cubic-bezier(0.34, 1.4, 0.64, 1),
+      filter 280ms ease;
+  }
+  .st-name {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    padding: 11px 16px 10px;
+    background: var(--pop-tint);
+    /* 찢긴 마스킹테이프 끝단 */
+    clip-path: polygon(
+      0 6%,
+      5px 0,
+      11px 9%,
+      17px 1%,
+      23px 7%,
+      100% 4%,
+      100% 96%,
+      22px 100%,
+      15px 92%,
+      8px 99%,
+      0 91%
+    );
+    font-family: var(--font-mono);
+    /* 이름이 길수록 작아진다(12 → 11 → 10 → 9px). 주입값은 tapeMetrics() 산정. */
+    font-size: var(--tape-font, 12px);
+    line-height: 1;
+    letter-spacing: 0.1em;
+    color: var(--pop-ink);
+    white-space: nowrap;
+  }
+  .st-pre {
+    flex: none;
+    opacity: 0.5;
+  }
+  /* 상한을 넘는 이름은 여기서 잘린다 — 잉크 블록은 절대 밀려나지 않는다 */
+  .st-text {
+    min-width: 0;
+    max-width: var(--tape-name, none);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .st-no {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    flex: none;
+    margin-left: -2px;
+    padding: 0 12px;
+    background: var(--ink);
+    color: var(--paper);
+    clip-path: polygon(0 4%, 100% 0, calc(100% - 4px) 52%, 100% 100%, 0 96%);
+  }
+  .st-n {
+    align-self: center;
+    padding-top: 1px;
+    font-family: var(--font-mono);
+    font-size: 21px;
+    line-height: 1;
+  }
+  .st-total {
+    align-self: center;
+    padding-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    line-height: 1;
+    opacity: 0.6;
+  }
+  /* 떼어짐 — 항목 전체가 링크이므로 트리거도 항목 단위로 잡는다(키보드 포함) */
+  .post-link:hover .series-tape,
+  .post-link:focus-visible .series-tape {
+    transform: rotate(-3.2deg) translate(-2px, -3px) scale(1.02);
+    filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.22));
+  }
+  /* 테이프가 덮는 띠(메타 줄·제목 첫 줄)만 폭을 비켜준다. 설명문은 테이프
+     아래쪽이라 그대로 전폭을 쓴다. 비켜주는 폭은 테이프 상한을 그대로 따라간다. */
+  .post-item.has-series .post-meta,
+  .post-item.has-series .post-title {
+    padding-right: calc(var(--tape-w, 240px) + 14px);
+  }
+
+  /* 테이프(≈230~290px)는 제목 칸을 꽤 먹는다. 좁은 화면에서는 절대배치를 풀어
+     흐름 안으로 내린다 — 안 그러면 641px 근방에서 긴 제목이 4줄로 눌린다.
+     아래 padding 리셋은 위 데스크톱 규칙과 특이도(0,2,0)가 같고 뒤에 오므로 이긴다. */
+  @media (max-width: 768px) {
+    .post-item.has-series .post-meta,
+    .post-item.has-series .post-title {
+      padding-right: 0;
+    }
+    .series-tape {
+      position: static;
+      align-self: flex-start;
+      max-width: 100%;
+      margin: 2px 0 10px;
+    }
+    .st-name {
+      padding: 9px 13px 8px;
+    }
+    .st-n {
+      font-size: 18px;
+    }
   }
 </style>
