@@ -10,34 +10,34 @@ export default function VizFlowchartSpdSaSad() {
         accessible="img"
         title={"SPD 정책 판정 → IKEv2 협상 → SAD 런타임 상태의 세 단계 흐름"}
         desc={"SPD가 정책을 정하고, IKEv2가 협상으로 SA를 만들어, SAD에 런타임 상태로 꽂는다 (RFC 4301 §4)"}
-        viewBox="0 0 520 380"
+        viewBox="0 0 520 340"
         data={{
   "nodes": [
     {
       "id": "spd",
-      "x": 120,
-      "y": 16,
-      "width": 360,
-      "height": 76,
-      "label": "SPD · 보안 정책 DB — 나가는 패킷을 PROTECT · BYPASS · DISCARD로 가른다",
+      "x": 30,
+      "y": 24,
+      "width": 460,
+      "height": 60,
+      "label": "SPD · 보안 정책 DB — 나갈 패킷을 PROTECT / BYPASS / DISCARD로 분류",
       "stroke": "#4E6CA8"
     },
     {
       "id": "ike",
-      "x": 120,
-      "y": 132,
-      "width": 360,
-      "height": 92,
-      "label": "IKEv2 협상 — PROTECT인데 SA가 없다 → IKE_SA_INIT·IKE_AUTH로 IKE SA와 첫 CHILD SA를 세운다",
+      "x": 30,
+      "y": 140,
+      "width": 460,
+      "height": 64,
+      "label": "IKEv2 협상 — SA 없으면 IKE_SA_INIT · IKE_AUTH로 SA 수립",
       "stroke": "#D8A33F"
     },
     {
       "id": "sad",
-      "x": 120,
-      "y": 264,
-      "width": 360,
-      "height": 76,
-      "label": "SAD · 보안 연관 DB — 수립된 SA의 SPI·키·알고리즘을 패킷마다 런타임 조회",
+      "x": 30,
+      "y": 256,
+      "width": 460,
+      "height": 60,
+      "label": "SAD · 보안 연관 DB — 수립된 SA의 SPI · 키 · 알고리즘을 패킷마다 조회",
       "stroke": "#3E6B4F"
     }
   ],
