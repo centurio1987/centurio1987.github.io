@@ -57,8 +57,6 @@
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
 
 ## 검토
-- `KAN-047` rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
-  - 메모: 구현 완료(머지 c287f9d). @astrojs/rss 기반 정적 피드 — /rss.xml(전체 29편) + /categories/<slug>/rss.xml(9개). src/lib/feed.ts 가 채널 메타·아이템 조립·상한(FEED_MAX_ITEMS=50)의 단일 소스. 요약 피드(표지·요약·시리즈 회차·본문 링크) — 본문이 MDX 아일랜드라 리더에선 껍데기가 되므로 전문 제외, 확장 지점은 toFeedItem 하나. 저자는 dc:creator(RSS <author>는 이메일 자리), lastBuildDate 는 최신 글 pubDate(빌드 시각은 무변경 재배포에도 흔들림). 노출: 전 페이지 head 자동발견 + 푸터 RSS + 목록/카테고리 제목 옆 FeedLink 캡슐. 검증: bun run build 통과, 피드 10개 xmllint 통과. || 계획 대비 차이 2건 — ① 카테고리별 피드를 '초판 제외(YAGNI)'로 잡아뒀으나 실제로는 포함했다(카테고리가 이미 정본 분류라 getStaticPaths 재사용으로 비용이 낮았고, 글 폭이 넓어 전체 피드가 소음이 되는 문제가 실재). 되돌리려면 src/pages/categories/[category]/rss.xml.ts 삭제 + [category].astro 의 FeedLink/feeds prop 제거면 끝. ② 검증에서 W3C Feed Validator·리더 앱 실물 확인은 미수행(로컬 xmllint + XML 파싱 점검으로 대체) — 배포 후 확인 필요. || 미확인: 목록/카테고리 제목 옆 캡슐 배치의 시각 확인(브라우저 확장 미연결로 빌드 HTML 구조만 확인).
 
 ## 완료
 - `KAN-009` KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다. — 생성:유저 · 최종:유저 · 갱신:2026-07-23
@@ -242,3 +240,5 @@
 - `KAN-054` 시리즈 글의 경우, 글 목록에서는 어떤 시리즈의 글인지 표시되어 있지 않아, 파악이 어렵다. 목록 아이템의 레이아웃에 시리즈를 파악할 수 있는 구성 요소를 설계 및 디자인 하고, 구현 할 수 있도록 전략을 구상해라. — 생성:유저 · 최종:ai · 갱신:2026-07-29
 - `KAN-050` 헤더 레벨로 포스트 페이지 우측에 네비게이션을 보여주고, 헤더를 클릭하면 바로 스크롤해서 이동할 수 있는 기능을 추가해라. — 생성:유저 · 최종:ai · 갱신:2026-07-29
   - 메모: 포스트 목차 레일 — 오른쪽에 떠 있는 접힘/펼침 네비게이션. PostToc.astro(render() headings → 서버 렌더 앵커, h2+h3): 평소엔 눈금(tick)만 48px 폭·화면 절반 높이로 접혀 있고, 근처에 포인터가 오면 320px 패널로 펼쳐져 본문 위에 오버레이된다. 오버레이라 본문 칼럼 폭을 뺏지 않으므로 880px부터 켜진다(접힘 히트영역이 본문을 침범하지 않는 하한). 깊이 표현이 상태마다 다르다 — 접힘은 눈금 길이(h2 20px/h3 9px), 펼침은 눈금을 지우고 글자가 진다(크기·굵기·색 + h3 20px 들여쓰기 + h2 앞 여백). tocSpy.ts(scroll+rAF 스파이, 진행적 향상) + tocFloat.ts(hover 없는 입력의 첫 탭=펼치기, 펼침 완료 시 현재 절 끌어오기) + tokens.css --header-h + .prose 헤딩 scroll-margin-top. 활성 임계선은 헤딩의 scroll-margin-top에서 파생시킨다 — 임의 패딩을 쓰면 클릭 착지 지점과 8px 어긋나 직전 절이 활성으로 남는다. 본문 파일 무수정, 무JS에서도 목차 노출·클릭 점프·펼침(CSS :hover/:focus-within) 동작.
+- `KAN-047` rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
+  - 메모: 구현 완료(머지 c287f9d). @astrojs/rss 기반 정적 피드 — /rss.xml(전체 29편) + /categories/<slug>/rss.xml(9개). src/lib/feed.ts 가 채널 메타·아이템 조립·상한(FEED_MAX_ITEMS=50)의 단일 소스. 요약 피드(표지·요약·시리즈 회차·본문 링크) — 본문이 MDX 아일랜드라 리더에선 껍데기가 되므로 전문 제외, 확장 지점은 toFeedItem 하나. 저자는 dc:creator(RSS <author>는 이메일 자리), lastBuildDate 는 최신 글 pubDate(빌드 시각은 무변경 재배포에도 흔들림). 노출: 전 페이지 head 자동발견 + 푸터 RSS + 목록/카테고리 제목 옆 FeedLink 캡슐. 검증: bun run build 통과, 피드 10개 xmllint 통과. || 계획 대비 차이 2건 — ① 카테고리별 피드를 '초판 제외(YAGNI)'로 잡아뒀으나 실제로는 포함했다(카테고리가 이미 정본 분류라 getStaticPaths 재사용으로 비용이 낮았고, 글 폭이 넓어 전체 피드가 소음이 되는 문제가 실재). 되돌리려면 src/pages/categories/[category]/rss.xml.ts 삭제 + [category].astro 의 FeedLink/feeds prop 제거면 끝. ② 검증에서 W3C Feed Validator·리더 앱 실물 확인은 미수행(로컬 xmllint + XML 파싱 점검으로 대체) — 배포 후 확인 필요. || 미확인: 목록/카테고리 제목 옆 캡슐 배치의 시각 확인(브라우저 확장 미연결로 빌드 HTML 구조만 확인).
