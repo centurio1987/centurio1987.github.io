@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#
+# 글이 main 에 머지되면 graphify 그래프를 백그라운드로 갱신한다 (KAN-056).
+# 판단은 전부 scripts/graph-autorefresh.sh 가 한다 — 여기서는 부르기만 한다.
+# 절대 실패를 전파하지 않는다(머지는 이미 끝났고, 그래프는 non-blocking 이다).
+#
+root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+[ -x "$root/scripts/graph-autorefresh.sh" ] || exit 0
+"$root/scripts/graph-autorefresh.sh" --check || true
+exit 0

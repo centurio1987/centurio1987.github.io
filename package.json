@@ -9,8 +9,12 @@
     "preview": "astro preview",
     "astro": "astro",
     "gen:motion": "bun scripts/gen-motion-css.ts",
-    "graph:refresh": "bash scripts/refresh-graph.sh",
-    "graph:verify": "bun scripts/verify-graph.ts"
+    "graph:refresh": "bash scripts/refresh-graph.sh && bash scripts/graph-stamp.sh",
+    "graph:stamp": "bash scripts/graph-stamp.sh",
+    "graph:request": "bash scripts/graph-request.sh",
+    "graph:verify": "bun scripts/verify-graph.ts",
+    "graph:hooks": "git config core.hooksPath .githooks && echo '✓ .githooks/ 연결 — graph:request 로 예약이 남았을 때만 main 커밋·머지에서 한 번 갱신된다'",
+    "graph:status": "cat graphify-out/.autorefresh/status 2>/dev/null || echo '자동 갱신 기록 없음'"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.1",

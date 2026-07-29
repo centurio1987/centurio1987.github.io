@@ -37,6 +37,9 @@ graphify-out/cache/stat-index.json
 graphify-out/graph.html
 # refresh-graph.sh 추출 로그
 graphify-out/logs/
+# graph-autorefresh.sh 의 로컬 상태(스탬프·락·마지막 결과). 클론마다 다르고,
+# 여기 들어오면 git status 가 항상 더러워져 자동 갱신 가드(⑨)가 영구히 막힌다.
+graphify-out/.autorefresh/
 # backup_if_protected 날짜 백업
 graphify-out/20*/
 

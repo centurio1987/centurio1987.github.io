@@ -111,13 +111,19 @@ flowchart TD
 
 | 입력물 | 트리거 | 산출물 |
 |---|---|---|
-| `src/content/posts/` | `bun run graph:refresh` (**main 워크트리 전용**) | `graphify-out/graph.json` — LLM 기반 지식 그래프 (커밋) + `graphify-out/cache/semantic/` — 증분 추출 상태 (커밋) |
+| `src/content/posts/` | **main 의 git 훅이 자동** (`.githooks/post-merge`·`post-commit` → `scripts/graph-autorefresh.sh`) | `graphify-out/graph.json` — LLM 기반 지식 그래프 (커밋) + `graphify-out/cache/semantic/` — 증분 추출 상태 (커밋) |
 | `graphify-out/graph.json` | 같은 스크립트가 `bun scripts/build-graph-data.ts` 호출 | `src/data/graph.json` — 빌드가 소비하는 **증류 그래프** (커밋) |
 | `src/data/graph.json` | `astro build` | 각 글의 **연관 글 섹션** + `/graph` **글 지도 탐색기** (LLM·키 불필요) |
 
 > **CI 계약**: `astro build` 는 절대 graphify를 실행하지 않고 커밋된 `src/data/graph.json` 만 읽는다. 파일이 없어도 빌드는 통과(frontmatter 기반 연관도로 degrade).
 >
-> **실행 시점**: 발행(`ship-post`)은 그래프를 건드리지 않는다. main 머지 후 main 워크트리에서 `bun run graph:refresh` 를 한 번 돌린다 — 병렬 워크트리가 각자 갱신하면 1MB JSON 이 충돌하고 어차피 형제 편 머지 즉시 stale 이 되기 때문이다. 스크립트가 브랜치·워크트리를 가드한다.
+> **실행 시점: 예약제.** 시리즈 집필이 끝났을 때 한 번 돈다. `ship-post`가 마지막 편을 감지해 `bun run graph:request "<사유>"`로 예약을 남기면, main 에 다음 커밋·머지가 들어올 때 git 훅이 백그라운드 갱신을 띄우고 verify 통과 시 그래프 경로만 커밋한 뒤 예약을 지운다(push 는 안 한다). **예약이 없으면 커밋이 쌓여도 아무 일도 일어나지 않는다** — 커밋마다 도는 방식은 집필 중 커밋·오타 수정까지 갱신을 불러 예외가 너무 많았다.
+>
+> **감지와 실행을 분리한 이유**: "EP7이 마지막 편인가"는 파일 변화로 판정할 수 없는 **판단**이라 훅이 못 한다. 판단은 에이전트가, 실행은 훅이 맡는다 — 그래야 수십 분짜리 로그가 에이전트 컨텍스트를 채우지 않는다.
+>
+> 클론 직후 한 번만: `bun run graph:hooks` (`core.hooksPath` 연결). 상태 확인은 `bun run graph:status`, 잠깐 끄려면 `GRAPH_AUTOREFRESH_DISABLE=1`. 수동 실행 `bun run graph:refresh` 도 그대로 남아 있다(부트스트랩·디버깅용, **main 워크트리 전용**) — 끝나면 `scripts/graph-stamp.sh` 를 자동 호출해 **중복 갱신을 막는다**(따로 찍으려면 `bun run graph:stamp`).
+>
+> **비용은 바뀐 글 수에 비례한다.** graphify는 콘텐츠 해시 캐시로 LLM 호출 **전에** 안 바뀐 글을 걸러낸 뒤 미스분만 청킹한다(실측 로그: `24 hit / 5 miss` → `5 files` → `8 chunks`). 전수 재추출이 아니다. 다만 시리즈 링크 일괄 삽입처럼 **여러 글의 본문을 한꺼번에 건드리는 편집**은 그만큼 재추출을 부른다.
 >
 > **`graphify-out/cache/semantic/` 은 절대 gitignore 하지 마라.** 증분 추출의 상태가 그것뿐이라, 없으면 매 갱신이 전량 재추출(24편 기준 1.26M in / 280k out / 40~60분)로 되돌아간다. 자세한 근거는 `CLAUDE.md` 의 Graph data 절과 `scripts/seed-graph-cache.py` 헤더.
 

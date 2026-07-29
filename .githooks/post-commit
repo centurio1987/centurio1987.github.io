@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#
+# main 에 직접 커밋했을 때도 그래프를 갱신한다 (KAN-056).
+# 이 레포는 워크트리 머지뿐 아니라 main 직커밋으로도 글이 들어온다.
+# 자기 자신이 만든 그래프 커밋에는 GRAPH_AUTOREFRESH=1 이 걸려 재진입하지 않는다.
+#
+root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+[ -x "$root/scripts/graph-autorefresh.sh" ] || exit 0
+"$root/scripts/graph-autorefresh.sh" --check || true
+exit 0
