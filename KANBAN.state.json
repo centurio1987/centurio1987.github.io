@@ -1,6 +1,6 @@
 {
   "next_id": 58,
-  "next_seq": 214,
+  "next_seq": 216,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -532,15 +532,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-047": {
-      "col": "todo",
+      "col": "review",
       "title": "rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
-      "memo": "실행전략(4단계): ① @astrojs/rss@4.0.19 설치 — astro peer 제약 없고 zod4 기설치 ② src/pages/rss.xml.js 요약 피드 — draft 제외·pubDate desc·description+hero 절대URL·categories=카테고리+tags, 본문 전문은 MDX 아일랜드 탓에 제외 ③ 발견성 — BaseLayout head 의 link rel=alternate + Footer 구독 링크 ④ 검증 — bun run build 로 dist/rss.xml, W3C Feed Validator, 리더 앱 실물 확인 · 카테고리별 피드는 초판 제외(YAGNI) · astro.config 의 site 설정은 이미 충족",
+      "memo": "구현 완료(머지 c287f9d). @astrojs/rss 기반 정적 피드 — /rss.xml(전체 29편) + /categories/<slug>/rss.xml(9개). src/lib/feed.ts 가 채널 메타·아이템 조립·상한(FEED_MAX_ITEMS=50)의 단일 소스. 요약 피드(표지·요약·시리즈 회차·본문 링크) — 본문이 MDX 아일랜드라 리더에선 껍데기가 되므로 전문 제외, 확장 지점은 toFeedItem 하나. 저자는 dc:creator(RSS <author>는 이메일 자리), lastBuildDate 는 최신 글 pubDate(빌드 시각은 무변경 재배포에도 흔들림). 노출: 전 페이지 head 자동발견 + 푸터 RSS + 목록/카테고리 제목 옆 FeedLink 캡슐. 검증: bun run build 통과, 피드 10개 xmllint 통과. || 계획 대비 차이 2건 — ① 카테고리별 피드를 '초판 제외(YAGNI)'로 잡아뒀으나 실제로는 포함했다(카테고리가 이미 정본 분류라 getStaticPaths 재사용으로 비용이 낮았고, 글 폭이 넓어 전체 피드가 소음이 되는 문제가 실재). 되돌리려면 src/pages/categories/[category]/rss.xml.ts 삭제 + [category].astro 의 FeedLink/feeds prop 제거면 끝. ② 검증에서 W3C Feed Validator·리더 앱 실물 확인은 미수행(로컬 xmllint + XML 파싱 점검으로 대체) — 배포 후 확인 필요. || 미확인: 목록/카테고리 제목 옆 캡슐 배치의 시각 확인(브라우저 확장 미연결로 빌드 HTML 구조만 확인).",
       "verbatim": "",
       "생성": "유저",
       "최종": "ai",
       "갱신": "2026-07-30",
       "title_hash": "e4774d11d90018821c86b23d655b393c966cc483",
-      "memo_hash": "32328bd2111c5ae38f63c16eb971c5e2cf75136f",
+      "memo_hash": "1cc1cbe6904047d057d48379f96cebce019cc98c",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-048": {
@@ -673,6 +673,7 @@
     "KAN-052",
     "KAN-053",
     "KAN-057",
+    "KAN-048",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -719,10 +720,28 @@
     "KAN-055",
     "KAN-054",
     "KAN-050",
-    "KAN-047",
-    "KAN-048"
+    "KAN-047"
   ],
   "recent": [
+    {
+      "seq": 215,
+      "t": "2026-07-30T01:33",
+      "a": "ai",
+      "id": "KAN-047",
+      "op": "edit",
+      "field": "memo",
+      "before": "실행전략(4단계): ① @astrojs/rss@4.0.19 설치 — astro peer 제약 없고 zod4 기설치 ② src/pages/rss.xml.js 요약 피드 — draft 제외·pubDate desc·description+hero 절대URL·categories=카테고리+tags, 본문 전문은 MDX 아일랜드 탓에 제외 ③ 발견성 — BaseLayout head 의 link rel=alternate + Footer 구독 링크 ④ 검증 — bun run build 로 dist/rss.xml, W3C Feed Validator, 리더 앱 실물 확인 · 카테고리별 피드는 초판 제외(YAGNI) · astro.config 의 site 설정은 이미 충족",
+      "after": "구현 완료(머지 c287f9d). @astrojs/rss 기반 정적 피드 — /rss.xml(전체 29편) + /categories/<slug>/rss.xml(9개). src/lib/feed.ts 가 채널 메타·아이템 조립·상한(FEED_MAX_ITEMS=50)의 단일 소스. 요약 피드(표지·요약·시리즈 회차·본문 링크) — 본문이 MDX 아일랜드라 리더에선 껍데기가 되므로 전문 제외, 확장 지점은 toFeedItem 하나. 저자는 dc:creator(RSS <author>는 이메일 자리), lastBuildDate 는 최신 글 pubDate(빌드 시각은 무변경 재배포에도 흔들림). 노출: 전 페이지 head 자동발견 + 푸터 RSS + 목록/카테고리 제목 옆 FeedLink 캡슐. 검증: bun run build 통과, 피드 10개 xmllint 통과. || 계획 대비 차이 2건 — ① 카테고리별 피드를 '초판 제외(YAGNI)'로 잡아뒀으나 실제로는 포함했다(카테고리가 이미 정본 분류라 getStaticPaths 재사용으로 비용이 낮았고, 글 폭이 넓어 전체 피드가 소음이 되는 문제가 실재). 되돌리려면 src/pages/categories/[category]/rss.xml.ts 삭제 + [category].astro 의 FeedLink/feeds prop 제거면 끝. ② 검증에서 W3C Feed Validator·리더 앱 실물 확인은 미수행(로컬 xmllint + XML 파싱 점검으로 대체) — 배포 후 확인 필요. || 미확인: 목록/카테고리 제목 옆 캡슐 배치의 시각 확인(브라우저 확장 미연결로 빌드 HTML 구조만 확인)."
+    },
+    {
+      "seq": 214,
+      "t": "2026-07-30T01:32",
+      "a": "ai",
+      "id": "KAN-047",
+      "op": "move",
+      "from": "todo",
+      "to": "review"
+    },
     {
       "seq": 213,
       "t": "2026-07-30T00:47",
@@ -1179,28 +1198,6 @@
       "op": "create",
       "col": "backlog",
       "title": "글지도에 요약보기와 자세히 보기 토글을 추가해라. 요약 보기에서는 시리즈의 첫 번째 시리즈만 나타나게끔 한다. 연도별 필터가 풀려 있으면 요약보기로 강제해라.",
-      "memo": "",
-      "verbatim": ""
-    },
-    {
-      "seq": 165,
-      "t": "2026-07-29T13:22",
-      "a": "유저",
-      "id": "KAN-051",
-      "op": "create",
-      "col": "backlog",
-      "title": "글지도에 연도별 필터를 추가해라.",
-      "memo": "",
-      "verbatim": ""
-    },
-    {
-      "seq": 164,
-      "t": "2026-07-29T13:22",
-      "a": "유저",
-      "id": "KAN-050",
-      "op": "create",
-      "col": "backlog",
-      "title": "헤더 레벨로 포스트 페이지 우측에 네비게이션을 보여주고, 헤더를 클릭하면 바로 스크롤해서 이동할 수 있는 기능을 추가해라.",
       "memo": "",
       "verbatim": ""
     }

@@ -41,8 +41,6 @@
     ```text
     블로그에 데코를 적용하는 태스크를 생성해라
     ```
-- `KAN-047` rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
-  - 메모: 실행전략(4단계): ① @astrojs/rss@4.0.19 설치 — astro peer 제약 없고 zod4 기설치 ② src/pages/rss.xml.js 요약 피드 — draft 제외·pubDate desc·description+hero 절대URL·categories=카테고리+tags, 본문 전문은 MDX 아일랜드 탓에 제외 ③ 발견성 — BaseLayout head 의 link rel=alternate + Footer 구독 링크 ④ 검증 — bun run build 로 dist/rss.xml, W3C Feed Validator, 리더 앱 실물 확인 · 카테고리별 피드는 초판 제외(YAGNI) · astro.config 의 site 설정은 이미 충족
 - `KAN-048` 포스트에 좋아요를 누르는 기능을 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
   - 메모: 실행전략(5단계): ① 인프라 Cloudflare Workers+D1 — 무료 Workers 10만req/일·D1 쓰기 10만행/일, 저활동 정지 없음(Supabase 는 7일 정지로 탈락) ② 스키마 counts(slug,likes,shares)+dedupe(sha256(salt+ip+slug+day)), 증가는 ON CONFLICT DO UPDATE 로 원자적, 원본 IP 미저장 ③ 엔드포인트 GET /stats?slugs= 배치조회·POST /like(IP당 1일 1회, 토글 허용)·POST /share, CORS 오리진 고정 ④ 프론트 React 아일랜드 금지 — .astro + is:inline vanilla 를 astro:page-load 바인딩, 숫자 폭 예약으로 CLS 0, 조회 실패시 숫자만 숨기고 글에는 영향 0 ⑤ 공유수는 플랫폼 카운트 API 부재로 '공유 버튼 클릭' 집계(X·링크복사·navigator.share) — 라벨을 정직하게 표기
 
@@ -59,6 +57,8 @@
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
 
 ## 검토
+- `KAN-047` rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
+  - 메모: 구현 완료(머지 c287f9d). @astrojs/rss 기반 정적 피드 — /rss.xml(전체 29편) + /categories/<slug>/rss.xml(9개). src/lib/feed.ts 가 채널 메타·아이템 조립·상한(FEED_MAX_ITEMS=50)의 단일 소스. 요약 피드(표지·요약·시리즈 회차·본문 링크) — 본문이 MDX 아일랜드라 리더에선 껍데기가 되므로 전문 제외, 확장 지점은 toFeedItem 하나. 저자는 dc:creator(RSS <author>는 이메일 자리), lastBuildDate 는 최신 글 pubDate(빌드 시각은 무변경 재배포에도 흔들림). 노출: 전 페이지 head 자동발견 + 푸터 RSS + 목록/카테고리 제목 옆 FeedLink 캡슐. 검증: bun run build 통과, 피드 10개 xmllint 통과. || 계획 대비 차이 2건 — ① 카테고리별 피드를 '초판 제외(YAGNI)'로 잡아뒀으나 실제로는 포함했다(카테고리가 이미 정본 분류라 getStaticPaths 재사용으로 비용이 낮았고, 글 폭이 넓어 전체 피드가 소음이 되는 문제가 실재). 되돌리려면 src/pages/categories/[category]/rss.xml.ts 삭제 + [category].astro 의 FeedLink/feeds prop 제거면 끝. ② 검증에서 W3C Feed Validator·리더 앱 실물 확인은 미수행(로컬 xmllint + XML 파싱 점검으로 대체) — 배포 후 확인 필요. || 미확인: 목록/카테고리 제목 옆 캡슐 배치의 시각 확인(브라우저 확장 미연결로 빌드 HTML 구조만 확인).
 
 ## 완료
 - `KAN-009` KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다. — 생성:유저 · 최종:유저 · 갱신:2026-07-23
