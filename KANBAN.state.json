@@ -1,6 +1,6 @@
 {
-  "next_id": 47,
-  "next_seq": 161,
+  "next_id": 54,
+  "next_seq": 176,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -359,49 +359,49 @@
       "verbatim_hash": "04039fab2b64ade803c32e448cf4d378b0c7a449"
     },
     "KAN-033": {
-      "col": "review",
+      "col": "done",
       "title": "VPN 해부 리서치① — 스펙·RFC 근거 코퍼스",
       "memo": "완료(검토 대기). VPN 해부 7편 공통 스펙·RFC 근거 코퍼스 수집·ingest·push 완료(~/blog-research 커밋 1b28e66). 산출: raws/009-vpn-anatomy-protocol-corpus.md(682줄·§근거 118회·RFC 56인용, 불변) + 위키 topic 11개(rfc5116-aead·rfc8439-chacha20-poly1305·rfc7748-x25519·ipsec-architecture·rfc7296-ikev2·rfc4303-esp·wireguard-protocol·rfc8446-tls13·openvpn-protocol=9 mature, vpn-threat-model·vpn-operational-pitfalls=2 draft) + angle 7개(vpn-anatomy-1~7; EP2~6 mature·EP1/EP7 draft). accept 충족: 와이어 레벨 필드 레이아웃을 섹션 번호까지 확보 — RFC 5116 §2/§5.1-2, RFC 8439 §2.3-2.8, RFC 7748 §5/6.1, NIST SP800-38D §5.2.1, RFC 7296 §3.1-3.10/§1.2-1.3, RFC 4301, RFC 4303 §2/§2.1-2.8/§3.1.1-2/§3.4.3, RFC 3948 §2.1-2.2, RFC 6479, RFC 1191, WireGuard 백서 §5.4.1-7(PDF pdftotext 직접 추출), RFC 8446 §5.1-2/§4.1.2-4.4.4/§7.1, OpenVPN wire §4-7. 1차 소스=RFC Editor 원문·공식 백서·openvpn.github.io wire 문서·NIST PDF. open questions 9건(코퍼스 §7): WireGuard 백서 RFC7539→8439 각주·IKEv2 Exchange Type IANA 코드값·RFC4303 §2 원문 다이어그램·OpenVPN TCP-meltdown 공식 FAQ(503)·커널vs유저스페이스 정량 성능(SEO 저품질이라 의도 배제)·BLAKE2 RFC7693 세부·IKEv2 Proposal/Transform 바이트 오프셋·OpenVPN P_ACK 필드순. 다음: EP2~6은 mature angle로 KAN-036~040 tech-deepdive 집필 착수 가능, EP1/EP7은 draft라 open question 유의. gate for EP1~7 해제.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-28",
+      "갱신": "2026-07-29",
       "title_hash": "4c0238d907d241ed8f35ef9e43640a533d856945",
       "memo_hash": "4e41d147afb40db235f16e8e61fb437dd3df93b7",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-034": {
-      "col": "review",
+      "col": "done",
       "title": "VPN 해부 리서치② — 캡처 랩 환경·방법론",
       "memo": "완료(검토 대기). 재현 가능한 캡처 랩 **설계** 확정 — ~/blog-research/raws/010-vpn-anatomy-capture-lab.md(불변, 22KB) + 위키 topic vpn-capture-lab 신설, blog-research 커밋·푸시. 설계 3원칙(재현성·충실성·안전성), underlay 192.0.2/203.0.113 · overlay 198.51.100 토폴로지에 MASQUERADE로 NAT-T 유발, 버전·암호군 고정(strongSwan 5.9.13 aes256gcm16 / WireGuard 커널내장 고정암호군 / OpenVPN 2.6 AES-256-GCM+tls-crypt), 프로토콜별 캡처·복호 절차, 마스킹 규약(합성 키·RFC5737/3849 IP·RFC7042 MAC), 증거 파일명 규약 + EP↔캡처 매핑표. EP3~7 집필 gate 해제. || ★후속(KAN-043)에서 **실장 시 토폴로지 구현이 대체됨**: 이 카드가 정한 Docker 2노드+NAT(NET_ADMIN·ip_forward)은 실제로는 **Lima VM 1개 + network namespace 3노드**로 지어졌다 — 컨테이너로는 이 카드가 스스로 내건 요구 2개(§6 RFC7042 MAC 부여 / 런타임 sysctl 조작)를 충족할 수 없기 때문. 설계 원칙·주소 대역·암호군·파일명 규약은 그대로 유효하고 **토폴로지 구현 수단만** 달라졌다. raws/010은 불변 원본으로 보존하고 실장 보고는 **raws/011**에 별도 기록(후자가 최신). 위키 topic vpn-capture-lab은 011 기준으로 개정됨. || open questions 5건 중: ④ AES-GCM ESP SA salt 배치 **해결** · ⑤ 컨테이너 wg-quick sysctl RO **소멸**(netns 채택으로 발생하지 않음) · ①②③은 KAN-043 메모 참조.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-28",
+      "갱신": "2026-07-29",
       "title_hash": "f063e423dd794c61e96f61081d9d4e775661a9d7",
       "memo_hash": "0f9224baac2c9a395f66c282ea8f92a1d819172d",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-035": {
-      "col": "review",
+      "col": "done",
       "title": "VPN 해부 EP1 집필 — 큰 그림·프로토콜 지형도",
       "memo": "vpn-anatomy-1 발행 완료(05e8203) · 큰 그림: 터널링+암호화 두 축, 위협모델 trust transfer(관찰자 시뮬), 프로토콜 지형도 3가족→EP3~6, 레거시 배제 근거. 외부검토 2R 반영(NAT-T 원인 정정·SNI 보강·macOS dig 교정). 게이트: review-writing PASS·quality-gate PASS. viz 4종(hero+인라인3)+시뮬1. graph.json 재생성은 KAN-044 정책대로 편당 생략(7편 전량 머지 후 일괄).",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-28",
+      "갱신": "2026-07-29",
       "title_hash": "6e3a0d0575bb7f6cbba36d0e33292ebae76394ba",
       "memo_hash": "dd5f6e77f4bd2bf7aa0684e7c590991fa1eec488",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-036": {
-      "col": "review",
+      "col": "done",
       "title": "VPN 해부 EP2 집필 — 암호 기반체력",
       "memo": "발행 완료(검토 대기) — /posts/vpn-anatomy-2 · src/content/posts/vpn-anatomy-2.mdx · 브랜치 커밋 93a161e, main 병합 49f7584. 제목 '암호가 하는 세 가지 약속: AEAD와 키교환, 그리고 카운터 하나', series 'VPN의 해부' order:2, author ppangto, category skills, 공백제외 13,366자. || 저자 퍼소나 ppangto 확정(유저 확인): KAN-031 총괄 카드·angle 프론트매터 값 일치, 선수 시리즈 OSI 7계층 해부·인증인가 해부·WebRTC·Tauri가 전부 ppangto. angle vpn-anatomy-2.md의 '(빵토 선생님)' 괄호 라벨·ppangto-teacher 태그는 오기(ppangto-teacher는 컨테이너의 해부 4편 전용) — EP1·EP3~7도 ppangto로 통일할 것. || 게이트 전부 통과: 외부검토(codex+Gemini) 반영, review-post 4축 빨강6·노랑10 중 13건 반영, review-writing PASS(MUST 8/8), quality-gate PASS 2라운드(MUST 15/15). 게이트가 잡은 실오류 — (1) '미래는 rekey가 지킨다'가 논리적 오류: 단방향 파생은 앞→뒤 계산을 못 막으므로 유출 상태 탈출엔 새 키교환이 필요, 전면 수정. (2) KDF 단계 통째 누락으로 X25519 공유 비밀이 곧 AEAD 키인 것처럼 읽힘 → '공유 비밀은 아직 키가 아니다' 절 신설(RFC 8446 7.1). (3) NIST 인과 단정(ChaCha20이 GCM 권장값에 맞춰 들어왔다)은 코퍼스 근거 없음 → RFC 5116 2.1 공통 인터페이스 규약 기반 재서술. (4) Poly1305 인증 대상을 AAD+암호문으로 단순화했으나 실제는 패딩+길이 2개 포함(RFC 8439 2.8). (5) '카운터는 겹치지 않는다'에 상태 보존 전제(재시작·다중 송신자·wraparound) 단서 추가. (6) 카운터 3종(블록 카운터/nonce/재전송 번호) 혼용 위험 → 구분 표 신설. (7) AES-GCM·NIST 약어 미풀이. || 반려한 지적: Gemini의 'RFC 7748 6.1 all-zero 검사는 MUST' 주장은 1차 소스 확인 결과 원문이 MAY라 본문 유지. || 산출물: hero.webp(1200x676) + viz 3종(VizProcessSteps2·VizComparison3·VizFlowchart4, R1~R5 렌더 캡처 검증) + React 시뮬 NonceReuseLab(nonce 재사용 시 C1^C2=P1^P2 성립·붕괴와 P2 평문 복원 실측, hydration 경고 0) + ascii 도해 6개. || 검증: check-post-markers 통과, bun run build 통과(메인 대화가 독립 재확인), 미발행 EP 하드링크 0건. || graphify 재생성 skip — KAN-044 정책(7편 전량 머지 후 일괄 재생성)과 일치. 그동안 연관 글은 frontmatter 기준 degrade(의도된 동작). || 미배포: main 로컬 병합만 완료, origin/main 미푸시 — GitHub Pages 배포는 푸시 시점. || 인계: EP1(KAN-035)은 이미 발행돼 series 'VPN의 해부'로 EP2와 자동 연결됨. EP3으로 이월=PSK/PKI/EAP 인증 방식 세부(본문에 이월 명시, angle open question이라 코퍼스 2절로 충분한지 확인 필요). EP4(KAN-038 발행 완료)·EP5로 이월=anti-replay 윈도우 실제 크기·알고리즘(RFC 4303 vs 6479), 카운터를 nonce로 겸하는 구체적 방식.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-28",
+      "갱신": "2026-07-29",
       "title_hash": "5277baabe1482d207e205bb88f91c2cf7b0e223f",
       "memo_hash": "b47f96920a78c1ca0ccd3bf6931c726e27fe332e",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
@@ -419,13 +419,13 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-038": {
-      "col": "review",
+      "col": "done",
       "title": "VPN 해부 EP4 집필 — IPsec② ESP·NAT-T·MTU",
       "memo": "완료(검토 대기). vpn-anatomy-4 발행·푸시 — 커밋 a3ce646(브랜치 centurio1987/kan-038, 미머지). 산출: src/content/posts/vpn-anatomy-4.mdx(본문 약 17.5천자) + viz 4종(hero PosterEditorial / EspFieldOrder Flowchart / TransportVsTunnel Comparison / MtuBlackhole ProcessSteps) + React 시뮬 2종(AntiReplayLab·EspOverheadLab). author ppangto(총괄 KAN-031 기준 — angle 문서의 '빵토 선생님' 표기는 오기라 무시). || 게이트 전 구간 통과: 외부검토 2라운드(codex+Gemini) → review-post(4축, 자동모드 반영) → review-writing(라운드2 PASS, MUST 11/11) → quality-gate(라운드2 PASS, MUST 전부·SHOULD 0). || 외부검토가 잡은 실오류(1차 소스로 전수 재확인 후 반영): ESP 필드 수 8→7(ESN은 옵션 확장) · AEAD 결합모드는 '검증 먼저 복호 나중'이 아니라 검증·복호 동시(RFC 4303 §3.4.4) · anti-replay 윈도우 갱신은 무결성 검증 성공 후에만(§3.4.3) + SA별 선택이며 무결성 없이는 활성화 불가 · NAT-keepalive 1바이트 0xFF 누락(RFC 3948 §2.3·§4, 20초/5분 기본값, 생존판정 사용 금지) · SPI·Seq가 AAD로 인증됨(RFC 4106 §5) + nonce=salt4+IV8(§4·§8.1) · ICV 16옥텟은 MUST-support이고 현행 실무 기준은 RFC 8221의 ENCR_AES_GCM_16 MUST · IPv6 경계(외부헤더 40B·DF 없음·ICMPv6 type2·정렬 8B·최소MTU 1280) · tunnel DF 복사 정책 3케이스(RFC 4301 §8.1-8.2) · TFC 패딩(§2.7) · WireGuard 백서는 두 방식을 '선택지로 명시'일 뿐 후자 채택 단정 불가. || 렌더 육안 검증(Playwright, astro preview HTTP): hero 제목 잘림 1건 발견→제목 단축 후 재렌더 · Comparison 우측 잘림+내부 여백 1건 발견→항목 단축·viewBox 268→218 재생성 · 시뮬 조작 검증에서 '아주 오래된 패킷' 버튼이 왼쪽밖 거부를 재현 못 하는 결함 발견(윈도우가 seq 1에서 시작해 왼쪽밖이 없음)→초기 상태를 size*2 지점으로 이동+빈칸 2개 배치+'늦게 온 빈칸 채우기' 버튼 신설로 판정 3종 전부 재현. MTU 계산 실측 1446→1438(NAT-T) 스펙 일치 확인, 콘솔 에러 0. || 미해결/후속: ① 시리즈 링크 섹션 미삽입 — 같은 series 'VPN의 해부' 글이 아직 0편 발행이라 목록이 빈 채로 들어감. EP1~3(KAN-035~037, 형제 워크트리 병렬 진행) 머지 후 post-finalize 재실행 필요(멱등, 기존 섹션 교체). 본문의 /posts/vpn-anatomy-2·3·5 링크도 그때까지 404. ② 실제 캡처 아티팩트(~/blog-research/raws/captures/) 미생성 — 본문은 스펙 유도 레이아웃 + 랩 재현 절차로 분리 서술(KAN-031 정확성 규칙 준수), 캡처 확보 시 발췌 인용 보강 가능. ③ graphify 그래프 재생성 진행 중.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-28",
+      "갱신": "2026-07-29",
       "title_hash": "f089d770484b4941865148015d8760de9bbb0092",
       "memo_hash": "8c3c0fdad7c0c9b76ccaa1b3e10974575c9841ae",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
@@ -479,19 +479,19 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-043": {
-      "col": "review",
+      "col": "done",
       "title": "VPN 해부 캡처 아티팩트 실제 생성 (랩 실행 → raws/captures/) 및 본문 발췌 보강",
       "memo": "완료(검토 대기) — 랩 구축·아티팩트 생성·집필 인계까지. || ★환경이 KAN-034 설계와 달라졌다: Docker 2노드+NAT → **Lima VM 1개 + network namespace 3노드**(컨테이너 런타임 없음). 유저 가치(Docker Desktop급 무게 배제)가 1차 이유지만, 조사 결과 컨테이너는 raws/010이 스스로 내건 요구 2개를 깬다 — ① RFC7042 문서용 MAC 부여(Docker --mac-address는 다중 네트워크 컨테이너에 무효, r 노드는 정의상 2개 망) ② 런타임 sysctl 조작(/proc RO). 후보 10종의 커널 config를 직접 대조해 Lima 채택(스톡 Ubuntu만 CONFIG_MODULES=y; Apple container는 CONFIG_INET_ESP 부재로 IPv4 IPsec 불가, OrbStack은 config 비공개+modprobe 불가, Multipass는 macOS 26.5.2/25F84에서 restart 무한행 이슈 #5049). || 산출: ~/blog-research/lab/vpn-capture-lab/(Lima vz+Ubuntu24.04 digest핀, netns 토폴로지, 프로토콜 3종 기동, 게이트 5종, 캡처 러너, Makefile, README) + raws/011 실장보고 + raws/captures/vpn-anatomy-{3,4,5,6}/ 아티팩트 15개(텍스트 디섹션 + 소용량 pcap). blog-research 커밋 ca2a6e7·e240001(로컬). || 게이트 전 구간 통과: Phase0 커널실측 / Phase2 토폴로지(NAT'd 출발지·offload off·RFC7042 MAC·netns sysctl 격리) / Phase3 IPsec(charon 2인스턴스, **호스트 xfrm 0개 = netns 격리 증명**, NAT-T UDP4500 자동 발동) / Phase4 WireGuard(s1이 학습한 피어=203.0.113.1 → birth-namespace 함정 회피 증명) / Phase5 OpenVPN. || raws/010 §8 open questions: ④ salt 배치 **해결**(aead 키를 salt 포함 36B 통째로; tshark -o uat:esp_sa 만으로 복호 → Wireshark GUI 불필요) · ⑤ 컨테이너 wg-quick sysctl RO **소멸**(netns) · ① IKE_AUTH SK_ 미확립 유지 · ② WireGuard 완전복호는 충실성 원칙(유저스페이스 전환 금지) 충돌로 **부분복호 확정** · ③ OpenVPN 패치는 발행 직전 재확인. 신규: **Cookie Reply(type3,64B) 미관측**(부하 시에만 발생) — EP5는 백서 값으로 서술하고 미관측을 밝히거나 별도 유발 필요. || ★실장 발견(raws/011 §2): AppArmor가 charon/swanctl에 경로 기반 프로파일을 걸어 노드별 설정 경로 사용 시 EACCES가 아니라 조용히 'invalid configuration'으로 죽는다(010에 없던 항목) / charon pid 컴파일타임 고정 → netns private mount ns에서 bind-mount 분리 / **offload 미차단 시 캡처에 합쳐진 패킷·미계산 체크섬이 찍혀 '실물 패킷' 전제 붕괴** / WireGuard는 birth namespace 때문에 반드시 해당 netns 안에서 생성. || 집필 인계 정비(감사 후 발견한 오도 수정): topics/vpn-capture-lab을 011 기준 전면 개정(존재하지 않는 Docker 랩 사용법을 안내하고 있었음) · angles/vpn-anatomy-3~7의 '캡처 재현: §4.x'를 **실제 아티팩트 파일 경로 + 실측값**으로 교체하며 사실오류 3건 교정(EP5 wg-quick→wg setconf, 148/92/64B→64B 미관측, EP4 Wireshark GUI→불필요) · 블로그 레포 CLAUDE.md 'Packet captures' 절 + tech-deepdive SECTION_PATTERNS 지침 신설 · 크기 인용 시 계층(UDP 페이로드 vs 프레임) 명시 의무화. || 잔여: EP4(발행본)에 실측 발췌 retro 삽입 — 별도 카드로 분리.",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-28",
+      "갱신": "2026-07-29",
       "title_hash": "75ac2bd695f047d74173573610bf9c9228054aa1",
       "memo_hash": "df7d02b432a4818f24891797a261ac5cf3d443e5",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-044": {
-      "col": "review",
+      "col": "done",
       "title": "graphify 그래프 일괄 재생성 (VPN 시리즈 7편 전량 발행·머지 후 1회)",
       "memo": "✅ KAN-046 부트스트랩으로 흡수·완료(2026-07-29, main 24ef578): 커버리지 25편(vpn-anatomy-1·4 포함), verify-graph 통과, 증분 복구 실측 완료 — 이후 그래프 갱신은 main 머지 직후 bun run graph:refresh 1회면 바뀐 글만 LLM을 탄다. 실측·결정 상세는 KAN-046. || **KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다.",
       "verbatim": "",
@@ -517,7 +517,7 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-046": {
-      "col": "review",
+      "col": "done",
       "title": "graphify 증분 추출 복구 — 글 1편 추가에 전수 재추출 중단",
       "memo": "✅ 부트스트랩 완료(2026-07-29, main 24ef578). 콜드 전량 재추출(1.66M in/352k out·~50분)로 커버리지 22편→25편(vpn-anatomy-1·4 포함). 합격기준 ①②③⑤ 통과: verify-graph 통과 · 캐시 25건 · build 38p 통과 · /graph·연관글 렌더 확인 · communityName 실명(플레이스홀더 0). || ③(핵심) 무변경 재실행 0토큰 실측 — 증분 복구 목표 달성. || ④(캐시 무변경 fixpoint) 미성립: graphify 클러스터링 비결정성으로 웜→웜에도 9파일 churn + graph.json ~560줄 churn. 유저 결정=캐시 계속 커밋(노이즈 감수) — 커밋 노이즈 대부분이 graph.json 자체라 gitignore 폴백은 이점 적음. CLAUDE.md/README '절대 gitignore 하지 마라' 규약 유지. || 기준선 실측(in/out·벽시계·hit/miss): 콜드 1,655,027/351,992·~50분 · 무변경 0/0·1s·25hit/0 · 1편본문(tauri-1) 59,336/10,101·86s·24hit/1miss · .mdx프론트매터만(updatedDate) 59,138/10,300·86s·24hit/1miss(→ cache.py 프론트매터 스트립 .md전용 확정: post-finalize의 tags·updatedDate·시리즈링크가 그 글 재추출 유발) · 형제3편(osi-7-layers-2·3·4) 181,821/51,825·438s·22hit/3miss. 증분비용=바뀐 글 수에 선형(글당 ~59k in), 1편=이전 전량(1.66M) 대비 ~96%절감. || 부수 버그수정(24ef578): refresh-graph.sh 가드③ — 캐시 디렉터리 없는 콜드 상태에서 find가 set -e pipefail로 경고도 못 찍고 스크립트를 죽이던 버그 → mkdir -p graphify-out/cache/semantic 선행. || 원인·해결 상세는 CLAUDE.md graphify 절 + 커밋 2394fcf/24ef578. KAN-044 함께 검토 이동.",
       "by": "ai",
@@ -530,12 +530,103 @@
       "최종": "ai",
       "갱신": "2026-07-29",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-047": {
+      "col": "backlog",
+      "title": "rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-29",
+      "title_hash": "e4774d11d90018821c86b23d655b393c966cc483",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-048": {
+      "col": "backlog",
+      "title": "포스트에 좋아요를 누르는 기능을 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-29",
+      "title_hash": "71f774b2dbd873a293f12e761c168ef07e9d9c3a",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-049": {
+      "col": "backlog",
+      "title": "글지도에서 그래프가 확장 되어도 전체를 조감할 수 있도록, 확대, 축소와 캔버스 내 위치 이동 기능을 추가해라.",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-29",
+      "title_hash": "5745988e1176a387fb80deeba9e9f448cb4df59d",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-050": {
+      "col": "backlog",
+      "title": "헤더 레벨로 포스트 페이지 우측에 네비게이션을 보여주고, 헤더를 클릭하면 바로 스크롤해서 이동할 수 있는 기능을 추가해라.",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-29",
+      "title_hash": "2b6952b19ec37e83ebffb77afcdafef2c2abc905",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-051": {
+      "col": "backlog",
+      "title": "글지도에 연도별 필터를 추가해라.",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-29",
+      "title_hash": "73bfcde587ef16aacaa8db505f98b1f8bb1de2c3",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-052": {
+      "col": "backlog",
+      "title": "글지도에 요약보기와 자세히 보기 토글을 추가해라. 요약 보기에서는 시리즈의 첫 번째 시리즈만 나타나게끔 한다. 연도별 필터가 풀려 있으면 요약보기로 강제해라.",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-29",
+      "title_hash": "cabba5fce7f7c01474536758966d8987b0c30daa",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-053": {
+      "col": "backlog",
+      "title": "백엔드 없이도 회원가입 기능을 추가할 수 있는지 알려주고, 가능 하다면 계획하고 수행해라.",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-29",
+      "title_hash": "15bf51047feb99b26f17471b1f3f30a4bf54423a",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
     "KAN-024",
     "KAN-030",
     "KAN-032",
+    "KAN-047",
+    "KAN-048",
+    "KAN-049",
+    "KAN-050",
+    "KAN-051",
+    "KAN-052",
+    "KAN-053",
     "KAN-031",
     "KAN-037",
     "KAN-039",
@@ -548,12 +639,6 @@
     "KAN-003",
     "KAN-004",
     "KAN-005",
-    "KAN-033",
-    "KAN-034",
-    "KAN-038",
-    "KAN-035",
-    "KAN-036",
-    "KAN-043",
     "KAN-009",
     "KAN-006",
     "KAN-014",
@@ -576,10 +661,165 @@
     "KAN-027",
     "KAN-025",
     "KAN-026",
+    "KAN-033",
+    "KAN-034",
+    "KAN-038",
+    "KAN-035",
+    "KAN-036",
+    "KAN-043",
     "KAN-046",
     "KAN-044"
   ],
   "recent": [
+    {
+      "seq": 175,
+      "t": "2026-07-29T13:24",
+      "a": "ai",
+      "id": "KAN-044",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 174,
+      "t": "2026-07-29T13:24",
+      "a": "ai",
+      "id": "KAN-046",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 173,
+      "t": "2026-07-29T13:24",
+      "a": "ai",
+      "id": "KAN-043",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 172,
+      "t": "2026-07-29T13:24",
+      "a": "ai",
+      "id": "KAN-036",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 171,
+      "t": "2026-07-29T13:24",
+      "a": "ai",
+      "id": "KAN-035",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 170,
+      "t": "2026-07-29T13:24",
+      "a": "ai",
+      "id": "KAN-038",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 169,
+      "t": "2026-07-29T13:24",
+      "a": "ai",
+      "id": "KAN-034",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 168,
+      "t": "2026-07-29T13:24",
+      "a": "ai",
+      "id": "KAN-033",
+      "op": "move",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 167,
+      "t": "2026-07-29T13:22",
+      "a": "유저",
+      "id": "KAN-053",
+      "op": "create",
+      "col": "backlog",
+      "title": "백엔드 없이도 회원가입 기능을 추가할 수 있는지 알려주고, 가능 하다면 계획하고 수행해라.",
+      "memo": "",
+      "verbatim": ""
+    },
+    {
+      "seq": 166,
+      "t": "2026-07-29T13:22",
+      "a": "유저",
+      "id": "KAN-052",
+      "op": "create",
+      "col": "backlog",
+      "title": "글지도에 요약보기와 자세히 보기 토글을 추가해라. 요약 보기에서는 시리즈의 첫 번째 시리즈만 나타나게끔 한다. 연도별 필터가 풀려 있으면 요약보기로 강제해라.",
+      "memo": "",
+      "verbatim": ""
+    },
+    {
+      "seq": 165,
+      "t": "2026-07-29T13:22",
+      "a": "유저",
+      "id": "KAN-051",
+      "op": "create",
+      "col": "backlog",
+      "title": "글지도에 연도별 필터를 추가해라.",
+      "memo": "",
+      "verbatim": ""
+    },
+    {
+      "seq": 164,
+      "t": "2026-07-29T13:22",
+      "a": "유저",
+      "id": "KAN-050",
+      "op": "create",
+      "col": "backlog",
+      "title": "헤더 레벨로 포스트 페이지 우측에 네비게이션을 보여주고, 헤더를 클릭하면 바로 스크롤해서 이동할 수 있는 기능을 추가해라.",
+      "memo": "",
+      "verbatim": ""
+    },
+    {
+      "seq": 163,
+      "t": "2026-07-29T13:22",
+      "a": "유저",
+      "id": "KAN-049",
+      "op": "create",
+      "col": "backlog",
+      "title": "글지도에서 그래프가 확장 되어도 전체를 조감할 수 있도록, 확대, 축소와 캔버스 내 위치 이동 기능을 추가해라.",
+      "memo": "",
+      "verbatim": ""
+    },
+    {
+      "seq": 162,
+      "t": "2026-07-29T13:22",
+      "a": "유저",
+      "id": "KAN-048",
+      "op": "create",
+      "col": "backlog",
+      "title": "포스트에 좋아요를 누르는 기능을 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
+      "memo": "",
+      "verbatim": ""
+    },
+    {
+      "seq": 161,
+      "t": "2026-07-29T13:22",
+      "a": "유저",
+      "id": "KAN-047",
+      "op": "create",
+      "col": "backlog",
+      "title": "rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
+      "memo": "",
+      "verbatim": ""
+    },
     {
       "seq": 160,
       "t": "2026-07-29T08:48",
@@ -930,148 +1170,6 @@
       "title": "VPN 해부 리서치② — 캡처 랩 환경·방법론",
       "memo": "재현 가능한 합성 랩 확정: Docker 2노드+NAT, strongSwan/WireGuard/OpenVPN2.6 버전·암호군 고정, tcpdump/tshark 필터, ESP/TLS 복호(keylog) 준비, 보안 마스킹(합성 키·RFC5737 IP), 증거 아티팩트 파일명 규칙(vpn-anatomy-<n>/<capture>.txt). accept: 각 프로토콜 캡처를 재생성하는 명령/노트 문서화. gate for EP3~7.",
       "verbatim": ""
-    },
-    {
-      "seq": 123,
-      "t": "2026-07-28T14:48",
-      "a": "ai",
-      "id": "KAN-033",
-      "op": "create",
-      "col": "todo",
-      "title": "VPN 해부 리서치① — 스펙·RFC 근거 코퍼스",
-      "memo": "공통 스펙/RFC 근거 코퍼스: RFC 7296·4303·5116·8439·8446(TLS1.3), WireGuard 백서, OpenVPN 2.6 문서. 각 필드 레이아웃의 스펙 근거(섹션 번호) 정리. research 스킬→~/blog-research. accept: 7편이 인용할 필드 레이아웃이 섹션 번호와 함께 정리됨. gate for EP1~7.",
-      "verbatim": ""
-    },
-    {
-      "seq": 122,
-      "t": "2026-07-28T14:47",
-      "a": "ai",
-      "id": "KAN-031",
-      "op": "move",
-      "from": "backlog",
-      "to": "todo"
-    },
-    {
-      "seq": 121,
-      "t": "2026-07-28T14:47",
-      "a": "ai",
-      "id": "KAN-031",
-      "op": "edit",
-      "field": "memo",
-      "before": "VPN의 원리·작동 메커니즘·절차별 패킷 구성·사용 알고리즘/표준 규격/프로토콜을 심층 해설하는 시리즈. 개념적 큰 그림을 곁들이되, 실제 환경과 완전히 일치하는 실물(예: Wireshark 캡처와 동일한 패킷)로 전문적 이해를 준다.",
-      "after": "VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 정확성: 스펙 레이아웃 vs 실제 캡처 분리, wire-level은 EP3~. 하위카드 KAN-033~041."
-    },
-    {
-      "seq": 120,
-      "t": "2026-07-28T13:14",
-      "a": "ai",
-      "id": "KAN-026",
-      "op": "move",
-      "from": "review",
-      "to": "done"
-    },
-    {
-      "seq": 119,
-      "t": "2026-07-28T13:14",
-      "a": "ai",
-      "id": "KAN-025",
-      "op": "move",
-      "from": "review",
-      "to": "done"
-    },
-    {
-      "seq": 118,
-      "t": "2026-07-28T13:14",
-      "a": "ai",
-      "id": "KAN-027",
-      "op": "move",
-      "from": "review",
-      "to": "done"
-    },
-    {
-      "seq": 117,
-      "t": "2026-07-28T13:14",
-      "a": "ai",
-      "id": "KAN-028",
-      "op": "move",
-      "from": "review",
-      "to": "done"
-    },
-    {
-      "seq": 116,
-      "t": "2026-07-28T13:14",
-      "a": "ai",
-      "id": "KAN-029",
-      "op": "move",
-      "from": "review",
-      "to": "done"
-    },
-    {
-      "seq": 115,
-      "t": "2026-07-28T13:14",
-      "a": "ai",
-      "id": "KAN-008",
-      "op": "move",
-      "from": "review",
-      "to": "done"
-    },
-    {
-      "seq": 114,
-      "t": "2026-07-28T13:14",
-      "a": "ai",
-      "id": "KAN-012",
-      "op": "move",
-      "from": "review",
-      "to": "done"
-    },
-    {
-      "seq": 113,
-      "t": "2026-07-28T13:14",
-      "a": "ai",
-      "id": "KAN-010",
-      "op": "move",
-      "from": "review",
-      "to": "done"
-    },
-    {
-      "seq": 112,
-      "t": "2026-07-28T12:55",
-      "a": "ai",
-      "id": "KAN-032",
-      "op": "edit",
-      "field": "verbatim",
-      "before": "",
-      "after": "프로그래밍 레벨에서 async/await를 가능하게 만드는 원리 시리즈 집필\n- 가능케 하는 구성요소들 소개(epoll, kqueue, pipe, node, rust, pythom, java 비동기 엔진 etc.)\n- 각 구성요소들의 세부적인 작동 원리를 절차별로 설명\n- 실제 코드 구현 및 라인 레벨로 내부적으로 수행되는 플로우를 설명한다.\n  - 전체 그림을 이해하기 위해 개념적 레벨 설명 포함\n  - 전문성을 위해 실제 spec으로 설명 포함"
-    },
-    {
-      "seq": 111,
-      "t": "2026-07-28T12:55",
-      "a": "ai",
-      "id": "KAN-032",
-      "op": "edit",
-      "field": "memo",
-      "before": "",
-      "after": "async/await를 가능케 하는 저수준 구성요소(epoll·kqueue·pipe 등)와 각 런타임 비동기 엔진(Node·Rust·Python·Java)의 작동 원리를 절차별로 해설. 실제 코드 구현과 라인 레벨 내부 플로우까지, 개념적 큰 그림 + 실제 spec 근거로 설명."
-    },
-    {
-      "seq": 110,
-      "t": "2026-07-28T12:55",
-      "a": "ai",
-      "id": "KAN-031",
-      "op": "edit",
-      "field": "verbatim",
-      "before": "",
-      "after": "VPN 완벽 해부 시리즈 집필\n- VPN의 원리, 작동 매커니즘, 절차 별 패킷 구성, 사용하는 알고리즘이나 표준 규격, 프로토콜을 심층 설명한다.\n- 독자가 큰 그림을 그릴 수 있도록 개념적 관점 설명을 포함한다.\n- 전문적 이해를 위해, 실제 환경과 완전히 일치하는 형식과 내용을 제공하여 설명한다.\n  - ex. wireshark로 패킷을 캡쳐 했을 때와 완벽히 똑같은 실물 패킷을 제공하여 설명한다."
-    },
-    {
-      "seq": 109,
-      "t": "2026-07-28T12:55",
-      "a": "ai",
-      "id": "KAN-031",
-      "op": "edit",
-      "field": "memo",
-      "before": "",
-      "after": "VPN의 원리·작동 메커니즘·절차별 패킷 구성·사용 알고리즘/표준 규격/프로토콜을 심층 해설하는 시리즈. 개념적 큰 그림을 곁들이되, 실제 환경과 완전히 일치하는 실물(예: Wireshark 캡처와 동일한 패킷)로 전문적 이해를 준다."
     }
   ]
 }
