@@ -1,6 +1,6 @@
 {
   "next_id": 58,
-  "next_seq": 207,
+  "next_seq": 209,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -652,15 +652,15 @@
       "verbatim_hash": "d6daa32d8e1390ce61b4559c3f99bc091382b940"
     },
     "KAN-057": {
-      "col": "todo",
+      "col": "done",
       "title": "데코 키트를 블로그 실제 페이지에 적용 (홈 히어로 · 글 목록 · 글 상세 · 글 지도)",
-      "memo": "부품·패턴·쇼케이스(/design/deco)는 자산화 완료 — 남은 건 실제 페이지에 얹는 일. 페이지별 강도(data-deco 1~5)를 정하고 해당 페이지에서만 src/styles/deco.css 를 import 한다(전역 금지 — opt-in 계약). 적용 후보: ① 홈 히어로를 P-02 HeroCollage 로 교체(지금 구워진 public/tony-deco.webp 를 대체해 말풍선이 텍스트가 됨 = 효과 최대) ② 홈·목록 섹션 머리에 P-06 DecoHeading + 최신 글 1건에만 P-07 도장 ③ 목록 필터 카드에 P-03 ClippedCard ④ 글 상세 인용 P-04 / 코드블록 P-05 / 시리즈 하단 P-08 ⑤ 글 지도 판에 P-01 TapedBoard. 주의: PostList 에 이미 시리즈 테이프(.series-tape)가 있어 목록에 테이프를 더 얹으면 중복이므로 그 자리는 피한다. 배치·접근성 규칙은 design-concept/DECO_KIT.md 5·6절.",
+      "memo": "완료 — 네 지면에 얹음(강도: 홈 4, 나머지 3). 홈: P-02 HeroCollage 로 구운 tony-deco.webp 대체 + P-06 탭 배지·BAKED FRESH 테이프 + P-07 NEW 도장. 목록: P-06 리본(전부 N편) + P-03 필터 클립 카드 + P-07 도장(시리즈 테이프를 피해 top:34px, 768px 이하 접음). 글 상세: MDX components 매핑으로 blockquote→P-04 / pre→P-05 자동 치환(src/components/deco/mdx/), 시리즈 글 하단 P-08 티켓+손글씨(+마지막 편이면 완결 도장). 지도: P-01 TapedBoard + MAP·N편 인덱스 탭. 새로 얻은 규칙 3개를 DECO_KIT 5절에 추가(부품끼리 자리 다툼 / 겹치는 자리엔 hover=false / 되풀이 요소엔 첫 하나에만) + 7절에 적용 현황표. /categories·폭신 대담은 의도적으로 제외(이유는 7절).",
       "verbatim": "블로그에 데코를 적용하는 태스크를 생성해라",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-29",
+      "갱신": "2026-07-30",
       "title_hash": "276ba4a1f0463236c4f267dc406360783702c004",
-      "memo_hash": "499a3cdd941ec16307c07b67dac8f9f63f866c1c",
+      "memo_hash": "28085ae596788e6e2f9481f6656c0bd25bf931ac",
       "verbatim_hash": "7d62be42369ad6271a871fc748898f873a994dfe"
     }
   },
@@ -723,6 +723,25 @@
     "KAN-057"
   ],
   "recent": [
+    {
+      "seq": 208,
+      "t": "2026-07-30T01:41",
+      "a": "ai",
+      "id": "KAN-057",
+      "op": "edit",
+      "field": "memo",
+      "before": "부품·패턴·쇼케이스(/design/deco)는 자산화 완료 — 남은 건 실제 페이지에 얹는 일. 페이지별 강도(data-deco 1~5)를 정하고 해당 페이지에서만 src/styles/deco.css 를 import 한다(전역 금지 — opt-in 계약). 적용 후보: ① 홈 히어로를 P-02 HeroCollage 로 교체(지금 구워진 public/tony-deco.webp 를 대체해 말풍선이 텍스트가 됨 = 효과 최대) ② 홈·목록 섹션 머리에 P-06 DecoHeading + 최신 글 1건에만 P-07 도장 ③ 목록 필터 카드에 P-03 ClippedCard ④ 글 상세 인용 P-04 / 코드블록 P-05 / 시리즈 하단 P-08 ⑤ 글 지도 판에 P-01 TapedBoard. 주의: PostList 에 이미 시리즈 테이프(.series-tape)가 있어 목록에 테이프를 더 얹으면 중복이므로 그 자리는 피한다. 배치·접근성 규칙은 design-concept/DECO_KIT.md 5·6절.",
+      "after": "완료 — 네 지면에 얹음(강도: 홈 4, 나머지 3). 홈: P-02 HeroCollage 로 구운 tony-deco.webp 대체 + P-06 탭 배지·BAKED FRESH 테이프 + P-07 NEW 도장. 목록: P-06 리본(전부 N편) + P-03 필터 클립 카드 + P-07 도장(시리즈 테이프를 피해 top:34px, 768px 이하 접음). 글 상세: MDX components 매핑으로 blockquote→P-04 / pre→P-05 자동 치환(src/components/deco/mdx/), 시리즈 글 하단 P-08 티켓+손글씨(+마지막 편이면 완결 도장). 지도: P-01 TapedBoard + MAP·N편 인덱스 탭. 새로 얻은 규칙 3개를 DECO_KIT 5절에 추가(부품끼리 자리 다툼 / 겹치는 자리엔 hover=false / 되풀이 요소엔 첫 하나에만) + 7절에 적용 현황표. /categories·폭신 대담은 의도적으로 제외(이유는 7절)."
+    },
+    {
+      "seq": 207,
+      "t": "2026-07-30T01:41",
+      "a": "ai",
+      "id": "KAN-057",
+      "op": "move",
+      "from": "todo",
+      "to": "done"
+    },
     {
       "seq": 206,
       "t": "2026-07-29T20:03",
@@ -1188,25 +1207,6 @@
       "field": "memo",
       "before": "**KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다.",
       "after": "✅ KAN-046 부트스트랩으로 흡수·완료(2026-07-29, main 24ef578): 커버리지 25편(vpn-anatomy-1·4 포함), verify-graph 통과, 증분 복구 실측 완료 — 이후 그래프 갱신은 main 머지 직후 bun run graph:refresh 1회면 바뀐 글만 LLM을 탄다. 실측·결정 상세는 KAN-046. || **KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다."
-    },
-    {
-      "seq": 158,
-      "t": "2026-07-29T08:47",
-      "a": "ai",
-      "id": "KAN-046",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
-    },
-    {
-      "seq": 157,
-      "t": "2026-07-29T08:47",
-      "a": "ai",
-      "id": "KAN-046",
-      "op": "edit",
-      "field": "memo",
-      "before": "**상태: 코드·규약 완료(머지 2394fcf). 남은 건 main 워크트리에서 부트스트랩 1회.** || **문제**: 글 1편 발행마다 24편 전량이 LLM 재추출됐다(실측 graphify-out/.graphify_analysis.json: 1,257,753 in / 279,644 out, claude-cli로 40~60분). N에 선형이라 편당 발행 누적 O(N²). || **근본 원인(소스 확인)**: graphify 0.9.4는 콘텐츠 해시 캐시로 LLM 호출 전에 안 바뀐 글을 걸러내는데 이 레포는 두 겹으로 죽어 있었다. ⓐ graphify-out/cache/ 가 .gitignore. ⓑ 더 근본적으로 graphify 자신이 이 레이아웃에서 캐시를 한 건도 못 쓴다 — save_semantic_cache() 가 out_root/<source_file> 실재 여부를 보는데 source_file 은 스캔 루트(src/content/posts/) 기준 상대경로이고 --out . 은 레포 루트라 경로 불일치로 통째 skip. 같은 절대/상대 불일치가 _manifest_files 에도 있어 manifest.json 은 문서 코퍼스에서 항상 {} (첫 커밋부터 비어 있던 이유). || **해결**: scripts/seed-graph-cache.py 가 추출 직후 source_file 을 절대경로로 바꿔 graphify 자신의 save_semantic_cache(root=레포루트) 로 캐시를 심고 check_semantic_cache() 로 전 글 적중을 자체 검증한다(해시는 graphify 함수 그대로 — 재구현 없음). manifest 는 커밋하지 않는다(빈 파일이 있기만 해도 incremental_mode 가 켜져 삭제 감지가 죽고 지운 글 노드가 영구 잔존). || **실측(스크래치 프로브, 글 2편)**: 콜드 34,657 in / 6,168 out → 캐시 적중 시 'semantic cache: 2 hit / 0 miss', LLM 0콜, 토큰 0, 그래프는 26노드·41엣지로 동일. 1편만 수정 시 '1 hit / 1 miss'. || **산출물**: scripts/refresh-graph.sh(가드 3종) + scripts/seed-graph-cache.py + verify-graph.ts 검사 ④ + .gitignore 재작성 + package.json graph:refresh/graph:verify + ship-post 2벌·CLAUDE.md·README 규약 동기화. || ===== 다음 세션 인계(부트스트랩) ===== || **어디서**: 반드시 main 체크아웃 /Users/centurio/centurio1987.github.io 에서. 링크된 워크트리에서는 refresh-graph.sh 가드가 비0으로 막는다(의도된 동작). || **무엇을**: `bun run graph:refresh` 한 번. 캐시가 비어 있어 콜드런이라 40~60분. 이건 KAN-044가 예정해 둔 전량 재생성을 흡수한 것이라 추가 비용이 아니다. || **부트스트랩 전 상태는 정상이 아니다**: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 `bun run graph:verify` 가 ①③④로 실패한다. 이게 기대 상태다 — 고치려 들지 말고 부트스트랩을 돌려라. || **합격 기준(순서대로)**: ① 콜드런이 exit 0 (스크립트가 seed-cache 자체검증 + verify-graph 까지 자동으로 돈다). ② `ls graphify-out/cache/semantic/*.json | wc -l` 이 글 수(24) 이상. ③ **무변경 재실행이 공짜인가(핵심)** — 아무것도 안 고치고 `bun run graph:refresh` 재실행 → 로그에 'semantic cache: 24 hit / 0 miss', 'tokens' 줄 없음(또는 0), 1분 내 종료. ④ **캐시 churn 확인** — ③ 직후 `git diff --stat graphify-out/cache/semantic/` 이 비어야 한다. ⑤ `bun run build` 통과 + `bun run preview` 로 /graph 렌더와 임의 글의 연관 글 섹션 육안 확인, src/data/graph.json 의 concepts[].communityName 이 'Community N' 플레이스홀더로 퇴화하지 않았는지 확인(label --missing-only 정합이 먹었다는 증거). || **④가 깨지면(캐시 JSON 이 매번 달라지면)**: 커밋 노이즈가 커지므로 캐시 커밋 정책을 재고해야 한다. 다만 갱신이 main 전용이라 캐시를 커밋 안 해도 main 로컬에 남아 증분은 계속 동작한다 — 그 경우 .gitignore 에 graphify-out/cache/ 를 되돌리고 CLAUDE.md·README 의 '절대 gitignore 하지 마라' 문구를 'main 로컬 전용 상태'로 고쳐라. 기능 자체는 유지된다. || **커밋 경로**: graphify-out/ (cache/ast · cache/stat-index.json · manifest.json · graph.html · logs/ · 날짜백업은 .gitignore 가 이미 제외) + src/data/graph.json. 커밋 전 `git status --porcelain graphify-out/` 로 .gitignore 가 놓친 신규 부산물이 없는지 눈으로 확인해라. || **실패 시 폐기**: 자동 롤백하지 마라. `git diff --name-only graphify-out/ src/data/graph.json` 으로 손수정이 섞였는지 먼저 보고 나서 `git checkout --` 한다. || **끝나면**: 이 카드에 기준선 실측 4케이스(무변경 / 1편 본문 변경 / .mdx 프론트매터만 변경 / 시리즈 링크 삽입으로 형제 편 다수 변경)의 토큰·소요시간을 기록하고 검토로 옮겨라. KAN-044 도 함께 닫는다. || **주의**: .mdx 는 프론트매터까지 해시된다(cache.py 스트립은 .md 전용) — post-finalize 의 tags·시리즈 링크 삽입이 형제 편 재추출을 유발한다. claude-cli 는 청크당 입력 하한이 ~30k라 1편 추가도 완전 공짜는 아니다(전량 1.26M 대비 ~95% 절감). 브랜치 커밋 4b92642 메시지에는 옛 번호 KAN-045 가 남아 있다 — 실제 카드는 이것.",
-      "after": "✅ 부트스트랩 완료(2026-07-29, main 24ef578). 콜드 전량 재추출(1.66M in/352k out·~50분)로 커버리지 22편→25편(vpn-anatomy-1·4 포함). 합격기준 ①②③⑤ 통과: verify-graph 통과 · 캐시 25건 · build 38p 통과 · /graph·연관글 렌더 확인 · communityName 실명(플레이스홀더 0). || ③(핵심) 무변경 재실행 0토큰 실측 — 증분 복구 목표 달성. || ④(캐시 무변경 fixpoint) 미성립: graphify 클러스터링 비결정성으로 웜→웜에도 9파일 churn + graph.json ~560줄 churn. 유저 결정=캐시 계속 커밋(노이즈 감수) — 커밋 노이즈 대부분이 graph.json 자체라 gitignore 폴백은 이점 적음. CLAUDE.md/README '절대 gitignore 하지 마라' 규약 유지. || 기준선 실측(in/out·벽시계·hit/miss): 콜드 1,655,027/351,992·~50분 · 무변경 0/0·1s·25hit/0 · 1편본문(tauri-1) 59,336/10,101·86s·24hit/1miss · .mdx프론트매터만(updatedDate) 59,138/10,300·86s·24hit/1miss(→ cache.py 프론트매터 스트립 .md전용 확정: post-finalize의 tags·updatedDate·시리즈링크가 그 글 재추출 유발) · 형제3편(osi-7-layers-2·3·4) 181,821/51,825·438s·22hit/3miss. 증분비용=바뀐 글 수에 선형(글당 ~59k in), 1편=이전 전량(1.66M) 대비 ~96%절감. || 부수 버그수정(24ef578): refresh-graph.sh 가드③ — 캐시 디렉터리 없는 콜드 상태에서 find가 set -e pipefail로 경고도 못 찍고 스크립트를 죽이던 버그 → mkdir -p graphify-out/cache/semantic 선행. || 원인·해결 상세는 CLAUDE.md graphify 절 + 커밋 2394fcf/24ef578. KAN-044 함께 검토 이동."
     }
   ]
 }
