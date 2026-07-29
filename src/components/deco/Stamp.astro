@@ -1,0 +1,109 @@
+---
+/**
+ * P1 — 날짜 스탬프 · 도장.
+ *
+ * 잉크가 마른 고무도장 느낌이라 색이 다 반투명이다(선명하면 UI 배지처럼 읽힌다).
+ *
+ *   date  점선 사각 + 날짜        round 이중 원 + 두 줄
+ *
+ * "NEW", "완결", 발행일처럼 **한 항목만** 도드라지게 할 때 쓴다. 목록의 모든 줄에
+ * 찍으면 도장의 뜻(= 이것만 특별)이 사라진다.
+ */
+interface Props {
+  variant?: "date" | "round";
+  /** date 의 문구 / round 의 윗줄 */
+  text?: string;
+  /** round 의 아랫줄 */
+  sub?: string;
+  size?: number;
+  /** false 면 문구를 스크린리더에 노출한다(기본 true = 순수 장식) */
+  decorative?: boolean;
+  class?: string;
+}
+const {
+  variant = "date",
+  text = "",
+  sub = "",
+  size = 62,
+  decorative = true,
+  class: className = "",
+} = Astro.props;
+
+const hidden = decorative ? "true" : undefined;
+---
+
+{
+  variant === "date" && (
+    <span class:list={["date", className]} aria-hidden={hidden}>
+      {text}
+    </span>
+  )
+}
+
+{
+  variant === "round" && (
+    <span
+      class:list={["round", className]}
+      style={`--s:${size}px`}
+      aria-hidden={hidden}
+    >
+      <span class="ring">
+        <span class="line-1">{text}</span>
+        {sub && <span class="line-2">{sub}</span>}
+      </span>
+    </span>
+  )
+}
+
+<style>
+  /* ── 날짜 스탬프 ── */
+  .date {
+    display: inline-block;
+    padding: 5px 9px;
+    border: 1.5px dashed color-mix(in srgb, var(--deco-red) 70%, transparent);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--deco-red) 85%, transparent);
+    white-space: nowrap;
+  }
+
+  /* ── 원형 도장 — 실선 바깥 원 + 점선 안쪽 원 ── */
+  .round {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--deco-red) 65%, transparent);
+    opacity: 0.9;
+  }
+  .ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--s) - 12px);
+    height: calc(var(--s) - 12px);
+    border-radius: 50%;
+    border: 1px dashed color-mix(in srgb, var(--deco-red) 55%, transparent);
+    line-height: 1.15;
+  }
+  .line-1 {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: color-mix(in srgb, var(--deco-red) 85%, transparent);
+  }
+  .line-2 {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--deco-red) 85%, transparent);
+  }
+</style>

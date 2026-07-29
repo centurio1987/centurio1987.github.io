@@ -1,0 +1,151 @@
+---
+/**
+ * 마스킹테이프 T1~T6.
+ *
+ * 여섯 종 모두 같은 뼈대다 — 폭·높이를 받는 사각형에 ① 무늬(background) ② 찢긴
+ * 끝단(clip-path) ③ 옅은 그림자. 갈리는 건 무늬뿐이라 variant 하나로 묶었다.
+ * clip-path 는 종류마다 다른 다각형을 쓴다(같은 모양을 여섯 번 쓰면 붙여놨을 때
+ * 복제한 티가 난다).
+ *
+ *   T1 check   격자 · 버터        T2 stripe  사선 · 핑크
+ *   T3 vellum  무지 벨럼(반투명)   T4 letter  레터링(문구를 label 로)
+ *   T5 dot     도트               T6 kraft   찢은 크라프트
+ *
+ * 폭은 붙일 자리에 맞춰 넘긴다(기본 150). 높이는 종류별 고유값이라 건드리지 않는다.
+ */
+interface Props {
+  variant?: "check" | "stripe" | "vellum" | "letter" | "dot" | "kraft";
+  width?: number;
+  /** T4 레터링 테이프에 찍을 문구. 다른 종류에서는 무시된다. */
+  label?: string;
+  /**
+   * 붙일 바닥의 밝기. 레터링 테이프(T4)에만 영향을 준다 — 옅은 코발트 위에 코발트
+   * 글씨인 기본값은 어두운 코드블록 위에서 통째로 묻힌다. dark 면 채도를 올리고
+   * 글씨를 크림으로 뒤집는다.
+   */
+  tone?: "light" | "dark";
+  class?: string;
+}
+const {
+  variant = "check",
+  width = 150,
+  label = "MEMO · MEMO",
+  tone = "light",
+  class: className = "",
+} = Astro.props;
+---
+
+<span
+  class:list={["tape", variant, `on-${tone}`, className]}
+  style={`--w:${width}px`}
+  aria-hidden="true"
+>
+  {variant === "letter" && <span class="tape-label">{label}</span>}
+</span>
+
+<style>
+  .tape {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--w);
+    box-shadow: var(--deco-shadow);
+  }
+
+  /* T1 — 격자 무늬. 가로·세로 줄무늬를 겹쳐 체크를 만든다. */
+  .check {
+    height: 34px;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        var(--deco-tape-yellow) 0 12px,
+        transparent 12px 24px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        var(--deco-tape-yellow) 0 12px,
+        transparent 12px 24px
+      ),
+      rgba(240, 222, 180, 0.62);
+    clip-path: polygon(0 4%, 100% 0, 98% 100%, 2% 96%);
+  }
+
+  /* T2 — 48도 사선 */
+  .stripe {
+    height: 32px;
+    background: repeating-linear-gradient(
+      48deg,
+      color-mix(in srgb, var(--deco-pink) 62%, transparent) 0 7px,
+      color-mix(in srgb, var(--deco-pink-tint) 55%, transparent) 7px 15px
+    );
+    clip-path: polygon(0 0, 100% 5%, 97% 100%, 3% 95%);
+  }
+
+  /* T3 — 반투명 벨럼. 아래 글자가 비쳐야 하므로 흰색 알파만 쓴다. */
+  .vellum {
+    height: 30px;
+    background: linear-gradient(
+      180deg,
+      var(--deco-tape-vellum),
+      rgba(255, 255, 255, 0.5)
+    );
+    border-top: 1px solid rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid rgba(32, 38, 74, 0.06);
+    clip-path: polygon(0 6%, 100% 0, 99% 100%, 1% 94%);
+  }
+
+  /* T4 — 레터링 */
+  .letter {
+    height: 30px;
+    background: color-mix(in srgb, var(--accent) 13%, transparent);
+    clip-path: polygon(0 0, 100% 4%, 98% 100%, 2% 96%);
+  }
+  .letter.on-dark {
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow: 0 1px 3px rgba(32, 38, 74, 0.24);
+  }
+  .letter.on-dark .tape-label {
+    color: #fffcf6;
+  }
+  .tape-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.34em;
+    /* letter-spacing 이 마지막 글자 뒤에도 붙어 시각 중심이 왼쪽으로 밀린다 */
+    text-indent: 0.34em;
+    color: color-mix(in srgb, var(--accent) 75%, transparent);
+    white-space: nowrap;
+  }
+
+  /* T5 — 도트 */
+  .dot {
+    height: 34px;
+    background:
+      radial-gradient(rgba(32, 38, 74, 0.16) 1.5px, transparent 1.6px) 0 0 /
+        11px 11px,
+      rgba(255, 255, 255, 0.5);
+    clip-path: polygon(0 3%, 100% 0, 98% 97%, 2% 100%);
+  }
+
+  /* T6 — 손으로 찢은 크라프트. 위아래가 톱니처럼 들쭉날쭉하다. */
+  .kraft {
+    height: 36px;
+    background: linear-gradient(
+      180deg,
+      rgba(219, 201, 170, 0.95),
+      rgba(205, 184, 150, 0.95)
+    );
+    clip-path: polygon(
+      0 0,
+      100% 5%,
+      95% 32%,
+      100% 60%,
+      96% 100%,
+      0 94%,
+      5% 62%,
+      0 30%
+    );
+  }
+</style>

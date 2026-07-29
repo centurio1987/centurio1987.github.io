@@ -1,0 +1,90 @@
+---
+/**
+ * 패턴 P-06 — 데코 섹션 머리.
+ *
+ * 시안 1a 의 "최근 글 + 3편 탭", 1b 의 "글 + 전부 29편 리본"이 같은 짜임이다:
+ *   굵은 제목 옆에 **개수/상태를 담은 작은 부품** 하나 + (선택) 오른쪽 위 레터링 테이프.
+ *
+ * 제목 옆 부품은 tab(인덱스 탭) 또는 ribbon(리본 배너) 중 하나만 쓴다. 둘 다 붙이면
+ * 라벨이 두 개라 어느 쪽이 진짜 정보인지 흐려진다.
+ *
+ * badge 는 실제 정보(편수)를 담으므로 decorative={false} — 스크린리더가 읽는다.
+ */
+import DecoLayer from "../DecoLayer.astro";
+import IndexTab from "../IndexTab.astro";
+import Sticker from "../Sticker.astro";
+import Tape from "../Tape.astro";
+
+interface Props {
+  /** 제목 옆 부품에 넣을 문구(예: "3편"). 비우면 안 붙인다. */
+  badge?: string;
+  badgeType?: "tab" | "ribbon";
+  tone?: "pink" | "blue" | "yellow";
+  /** 오른쪽 위 레터링 테이프 문구. 비우면 안 붙인다. */
+  tape?: string;
+  /** 제목 위 경계선 */
+  rule?: boolean;
+  class?: string;
+}
+const {
+  badge = "",
+  badgeType = "tab",
+  tone = "pink",
+  tape = "",
+  rule = true,
+  class: className = "",
+} = Astro.props;
+---
+
+<div class:list={["deco-heading", { rule }, className]}>
+  <div class="head-row">
+    <slot />
+    {
+      badge &&
+        (badgeType === "tab" ? (
+          <span class="badge">
+            <IndexTab text={badge} tone={tone} decorative={false} />
+          </span>
+        ) : (
+          <span class="badge">
+            <Sticker variant="ribbon" text={badge} decorative={false} />
+          </span>
+        ))
+    }
+  </div>
+
+  {
+    tape && (
+      <DecoLayer top="-16px" right="60px" rotate={-4} tier={3} z={2}>
+        <Tape variant="letter" width={104} label={tape} />
+      </DecoLayer>
+    )
+  }
+
+  <slot name="aside" />
+</div>
+
+<style>
+  .deco-heading {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .deco-heading.rule {
+    border-top: 1.5px solid var(--ink);
+    padding-top: 18px;
+  }
+  .head-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  /* 배지는 손으로 붙인 티가 나게 살짝 기운다 */
+  .badge {
+    display: inline-flex;
+    transform: rotate(-2deg);
+  }
+</style>

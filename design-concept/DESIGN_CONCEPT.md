@@ -126,6 +126,18 @@ repeating-linear-gradient(45deg, rgba(43,63,212,.10) 0 1px, transparent 1px 11px
 - `Sparkle.astro` — 4꼭지별, 머스터드(`--pop`) 채우기
 - `Squiggle.astro` — 물결 구분선, 포스트 헤더 하단
 
+### 데코 키트 (다이어리 레이어) → [`DECO_KIT.md`](./DECO_KIT.md)
+마스킹테이프·스티커·두들·포스트잇을 재사용 부품으로 굳힌 **선택 레이어**. 위 모티프
+시스템이 지면 전체에 깔리는 기본 어휘라면, 데코 키트는 히어로·목록 머리·글 상세처럼
+**고른 지점에만** 얹는 장식이다. 그래서 `deco.css` 는 `global.css` 가 아니라 쓰는 쪽에서
+import 한다.
+
+- 부품 `src/components/deco/` · 패턴 `src/components/deco/patterns/` · 토큰 `src/styles/deco.css`
+- 살아 있는 카탈로그: `/design/deco` (noindex)
+- 장식 총량은 `data-deco="1"~"5"` 손잡이 하나로 접힌다(부품마다 티어 1~4)
+- 팔레트·폰트는 **이 문서의 토큰으로 환산**해 쓴다. 코어에 짝이 없는 핑크·레드만
+  `--deco-pink` / `--deco-red` 로 `deco.css` 에 따로 둔다(데코 전용 — 본문·UI 는 안 쓴다).
+
 ## 8. 버튼 & 형태
 
 | 토큰 | 값 |

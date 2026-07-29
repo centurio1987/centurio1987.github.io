@@ -1,0 +1,74 @@
+---
+/**
+ * 패턴 P-01 — 테이프로 붙인 판.
+ *
+ * 시안의 1a 히어로 보드 · 1c 글 지도 · 1d 글 배너가 전부 같은 짜임이다:
+ *   종이 바탕 + 마주 보는 두 모서리에 테이프 한 장씩(서로 다른 무늬, 반대 방향 기울기).
+ *
+ * 세 군데가 각자 테이프를 붙이면 각도·오프셋이 조금씩 어긋나 "같은 손이 붙인" 느낌이
+ * 깨진다. 그래서 판을 만드는 일 자체를 패턴으로 굳혔다.
+ *
+ * 테이프는 판 **바깥으로 걸쳐야** 붙인 것으로 읽힌다 — 안쪽에만 있으면 무늬가 된다.
+ * 그래서 보드는 overflow 를 자르지 않고, 쓰는 쪽에서 위아래 여백을 조금 준다.
+ */
+import PaperSurface from "../PaperSurface.astro";
+import DecoLayer from "../DecoLayer.astro";
+import Tape from "../Tape.astro";
+
+interface Props {
+  paper?: "grid" | "dot" | "ruled" | "plain";
+  tone?: "surface" | "cream";
+  cell?: number;
+  /** 좌상 테이프 무늬 */
+  tapeA?: "check" | "stripe" | "vellum" | "letter" | "dot" | "kraft";
+  /** 우하(또는 corners="top" 이면 우상) 테이프 무늬 */
+  tapeB?: "check" | "stripe" | "vellum" | "letter" | "dot" | "kraft";
+  /**
+   * 테이프를 어느 대각으로 붙일지.
+   * diagonal 좌상 + 우하(기본, 판이 클 때) · top 좌상 + 우상(판이 납작할 때)
+   */
+  corners?: "diagonal" | "top";
+  tapeWidth?: number;
+  class?: string;
+}
+const {
+  paper = "grid",
+  tone = "surface",
+  cell = 22,
+  tapeA = "check",
+  tapeB = "stripe",
+  corners = "diagonal",
+  tapeWidth = 126,
+  class: className = "",
+} = Astro.props;
+---
+
+<div class:list={["taped-board", className]}>
+  <PaperSurface paper={paper} tone={tone} cell={cell}>
+    <slot />
+  </PaperSurface>
+
+  {/* 테이프는 티어 2 — 강도를 낮추면 판만 남는다 */}
+  <DecoLayer top="-14px" left="-20px" rotate={-10} tier={2} z={3}>
+    <Tape variant={tapeA} width={tapeWidth} />
+  </DecoLayer>
+
+  {
+    corners === "diagonal" ? (
+      <DecoLayer bottom="-13px" right="-18px" rotate={-6} tier={2} z={3}>
+        <Tape variant={tapeB} width={tapeWidth - 8} />
+      </DecoLayer>
+    ) : (
+      <DecoLayer top="-12px" right="-18px" rotate={9} tier={2} z={3}>
+        <Tape variant={tapeB} width={tapeWidth - 8} />
+      </DecoLayer>
+    )
+  }
+</div>
+
+<style>
+  .taped-board {
+    /* DecoLayer 들의 배치 기준 */
+    position: relative;
+  }
+</style>

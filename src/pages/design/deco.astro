@@ -1,0 +1,638 @@
+---
+/**
+ * 데코 키트 쇼케이스 — /design/deco
+ *
+ * 부품 카탈로그와 적용 패턴을 **실제 컴포넌트로** 그린다. 문서(DECO_KIT.md)가 규칙을
+ * 적는다면 이 페이지는 그 규칙이 지금도 도는지를 보여준다 — 부품을 고치면 여기가 같이
+ * 바뀌고, 깨지면 빌드가 아니라 이 화면에서 먼저 티가 난다.
+ *
+ * 독자용 페이지가 아니라 noindex + 사이트맵 제외(astro.config.mjs).
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DecoLayer from "../../components/deco/DecoLayer.astro";
+import Tape from "../../components/deco/Tape.astro";
+import Sticker from "../../components/deco/Sticker.astro";
+import Doodle from "../../components/deco/Doodle.astro";
+import Clip from "../../components/deco/Clip.astro";
+import StickyNote from "../../components/deco/StickyNote.astro";
+import IndexTab from "../../components/deco/IndexTab.astro";
+import Polaroid from "../../components/deco/Polaroid.astro";
+import CornerMount from "../../components/deco/CornerMount.astro";
+import Stamp from "../../components/deco/Stamp.astro";
+import TicketStub from "../../components/deco/TicketStub.astro";
+import PaperSurface from "../../components/deco/PaperSurface.astro";
+import HeroCollage from "../../components/deco/patterns/HeroCollage.astro";
+import TapedBoard from "../../components/deco/patterns/TapedBoard.astro";
+import ClippedCard from "../../components/deco/patterns/ClippedCard.astro";
+import TapedQuote from "../../components/deco/patterns/TapedQuote.astro";
+import TapedCode from "../../components/deco/patterns/TapedCode.astro";
+import DecoHeading from "../../components/deco/patterns/DecoHeading.astro";
+import { DECO_INTENSITY, TONY_CUTOUT } from "../../lib/deco";
+import "../../styles/deco.css";
+---
+
+<BaseLayout title="데코 키트" description="다이어리 데코 부품·패턴 카탈로그" noindex>
+  <div class="wrap" data-deco="4">
+    <header class="page-head">
+      <p class="kicker">DECO KIT · 빵관 토니</p>
+      <h1>다이어리 데코 키트</h1>
+      <p class="lede">
+        기존 팔레트를 유지한 채 종이·테이프·스티커 질감만 얹는 부품 모음입니다. 전부
+        CSS 로 그려 이미지 없이 붙고, 각 부품은 각도·위치만 바꿔 재사용합니다. 코드
+        (<code>T1</code>, <code>S3</code> …)로 지정해 배치합니다.
+      </p>
+    </header>
+
+    <!-- ══ 01 부품 카탈로그 ══ -->
+    <h2 class="sec"><span class="no">01</span> 부품 카탈로그 <small>호버하면 살짝 갸웃합니다</small></h2>
+
+    <p class="group">MASKING TAPE</p>
+    <div class="grid">
+      <figure class="cell"><span class="code">T1</span><span class="stage"><span style="transform:rotate(-5deg)"><Tape variant="check" /></span></span><figcaption>체크 · 버터</figcaption></figure>
+      <figure class="cell"><span class="code">T2</span><span class="stage"><span style="transform:rotate(4deg)"><Tape variant="stripe" /></span></span><figcaption>사선 스트라이프 · 핑크</figcaption></figure>
+      <figure class="cell"><span class="code">T3</span><span class="stage"><span style="transform:rotate(-2deg)"><Tape variant="vellum" /></span></span><figcaption>무지 벨럼 · 반투명</figcaption></figure>
+      <figure class="cell"><span class="code">T4</span><span class="stage"><span style="transform:rotate(-7deg)"><Tape variant="letter" width={154} /></span></span><figcaption>레터링 테이프</figcaption></figure>
+      <figure class="cell"><span class="code">T5</span><span class="stage"><span style="transform:rotate(3deg)"><Tape variant="dot" /></span></span><figcaption>도트 테이프</figcaption></figure>
+      <figure class="cell"><span class="code">T6</span><span class="stage"><span style="transform:rotate(-4deg)"><Tape variant="kraft" /></span></span><figcaption>찢은 크라프트</figcaption></figure>
+    </div>
+
+    <p class="group">STICKER</p>
+    <div class="grid">
+      <figure class="cell"><span class="code">S1</span><span class="stage"><span style="transform:rotate(-4deg)"><Sticker variant="speech" text="오늘도 빵빵하게!" /></span></span><figcaption>말풍선 스티커</figcaption></figure>
+      <figure class="cell"><span class="code">S2</span><span class="stage"><span style="transform:rotate(-2deg)"><Sticker variant="ribbon" text="EP 07 · 완결" /></span></span><figcaption>리본 배너</figcaption></figure>
+      <figure class="cell"><span class="code">S3</span><span class="stage"><Sticker variant="star" /></span><figcaption>별 스티커 3종</figcaption></figure>
+      <figure class="cell"><span class="code">S4</span><span class="stage"><span style="transform:rotate(8deg)"><Sticker variant="diecut" text="빵-하!" /></span></span><figcaption>원형 다이컷</figcaption></figure>
+      <figure class="cell"><span class="code">S5</span><span class="stage"><span style="transform:rotate(-6deg)"><Sticker variant="tag" text="TECH · 29MIN" /></span></span><figcaption>택 라벨</figcaption></figure>
+      <figure class="cell"><span class="code">S6</span><span class="stage"><span style="transform:rotate(-5deg)"><Sticker variant="tony" size={96} /></span></span><figcaption>토니 다이컷</figcaption></figure>
+    </div>
+
+    <p class="group">DOODLE</p>
+    <div class="grid">
+      <figure class="cell"><span class="code">D1</span><span class="stage"><Doodle variant="sparkle" /></span><figcaption>반짝 (4각)</figcaption></figure>
+      <figure class="cell"><span class="code">D2</span><span class="stage"><Doodle variant="heart" /></span><figcaption>하트</figcaption></figure>
+      <figure class="cell"><span class="code">D3</span><span class="stage"><Doodle variant="arrow" /></span><figcaption>곡선 화살표</figcaption></figure>
+      <figure class="cell"><span class="code">D4</span><span class="stage"><span class="stack"><b>밑줄 두들</b><Doodle variant="wave" width={140} /></span></span><figcaption>물결 밑줄</figcaption></figure>
+      <figure class="cell"><span class="code">D5</span><span class="stage"><Doodle variant="emphasis" /></span><figcaption>강조선 · 별표</figcaption></figure>
+      <figure class="cell"><span class="code">D6</span><span class="stage"><span style="transform:rotate(-3deg)"><Doodle variant="memo" text={"여기부터 읽으면\n편해요 :)"} /></span></span><figcaption>손글씨 메모</figcaption></figure>
+    </div>
+
+    <p class="group">CLIP · MEMO · FRAME · PAPER</p>
+    <div class="grid">
+      <figure class="cell"><span class="code">C1</span><span class="stage gap"><span style="transform:rotate(-16deg)"><Clip variant="clip" /></span><Clip variant="binder" /></span><figcaption>종이 클립 · 집게</figcaption></figure>
+      <figure class="cell"><span class="code">M1</span><span class="stage"><span style="transform:rotate(3deg)"><StickyNote text={"MTU 1420,\n여기서 막힘!"} /></span></span><figcaption>포스트잇 메모</figcaption></figure>
+      <figure class="cell"><span class="code">M2</span><span class="stage gap"><IndexTab text="최근 글" tone="pink" /><IndexTab text="글 지도" tone="blue" /></span><figcaption>인덱스 탭</figcaption></figure>
+      <figure class="cell"><span class="code">F1</span><span class="stage"><span style="transform:rotate(-3deg)"><Polaroid caption="빵관 토니 ♡" width={74}><img src={TONY_CUTOUT} alt="" width="52" height="71" /></Polaroid></span></span><figcaption>폴라로이드 프레임</figcaption></figure>
+      <figure class="cell"><span class="code">F2</span><span class="stage"><CornerMount><PaperSurface paper="dot" tone="cream" cell={11} width="96px" height="66px" /></CornerMount></span><figcaption>사진 코너 마운트</figcaption></figure>
+      <figure class="cell"><span class="code">P1</span><span class="stage gap"><span style="transform:rotate(-8deg)"><Stamp variant="date" text="2026.07.28" /></span><span style="transform:rotate(-11deg)"><Stamp variant="round" text="BAKED" sub="빵관토니" /></span></span><figcaption>날짜 · 도장 스탬프</figcaption></figure>
+      <figure class="cell"><span class="code">P2</span><span class="stage"><span style="transform:rotate(-2deg)"><TicketStub code="EP 07" note="29분 읽기" notch="var(--surface)" /></span></span><figcaption>티켓 스텁</figcaption></figure>
+      <figure class="cell wide"><span class="code">B1</span><span class="stage row"><PaperSurface paper="grid" tone="cream" cell={16} width="74px" height="80px" /><PaperSurface paper="dot" tone="cream" cell={14} width="74px" height="80px" /><PaperSurface paper="ruled" tone="cream" cell={16} width="74px" height="80px" /></span><figcaption>모눈 · 도트 · 노트 종이</figcaption></figure>
+    </div>
+
+    <!-- ══ 02 강도 ══ -->
+    <h2 class="sec"><span class="no">02</span> 강도 <small>같은 마크업, 한 손잡이</small></h2>
+    <p class="note-p">
+      부품마다 티어(1~4)가 있고, 감싼 요소의 <code>data-deco</code> 한 값이 어디까지
+      보일지 정합니다. 아래는 <b>완전히 같은 마크업</b>을 강도만 바꿔 그린 것입니다.
+    </p>
+    <div class="intensity">
+      {
+        DECO_INTENSITY.map((it) => (
+          <figure class="int-cell" data-deco={it.level}>
+            <span class="code">강도 {it.level}</span>
+            <div class="int-stage">
+              <div class="int-card">
+                <DecoLayer top="-12px" left="-14px" rotate={-9} tier={2} z={2}>
+                  <Tape variant="check" width={84} />
+                </DecoLayer>
+                <DecoLayer top="-10px" right="-12px" rotate={8} tier={3} z={2}>
+                  <Tape variant="stripe" width={70} />
+                </DecoLayer>
+                <DecoLayer right="6px" bottom="-14px" rotate={-6} tier={4} z={2}>
+                  <IndexTab text="메모" tone="blue" />
+                </DecoLayer>
+                <b>카드</b>
+              </div>
+            </div>
+            <figcaption>
+              {it.name}
+              <small>{it.note}</small>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <!-- ══ 03 적용 패턴 ══ -->
+    <h2 class="sec"><span class="no">03</span> 적용 패턴 <small>기존 레이아웃은 그대로, 데코만 얹음</small></h2>
+
+    <!-- P-02 히어로 콜라주 -->
+    <section class="pat">
+      <p class="pat-head"><span class="pid">P-02</span> 히어로 콜라주 — 홈</p>
+      <div class="pat-body">
+        <HeroCollage
+          speechLeft={"오늘도\n빵빵하게!"}
+          speechRight="빵-하!"
+          polaroidCaption="관찰력 만렙!"
+          mascot={300}
+        />
+      </div>
+    </section>
+
+    <!-- P-06 섹션 머리 + P-07 도장 -->
+    <section class="pat">
+      <p class="pat-head"><span class="pid">P-06 · P-07</span> 섹션 머리 + 최신 글 도장 — 홈 · 목록</p>
+      <div class="pat-body pad">
+        <DecoHeading badge="3편" badgeType="tab" tape="BAKED FRESH">
+          <h3 class="demo-h">최근 글</h3>
+          <span slot="aside" class="view-all">전체 보기 →</span>
+        </DecoHeading>
+        <ul class="demo-list">
+          <li class="demo-row">
+            <span class="demo-meta">2026.07 · 기술</span>
+            <span class="demo-title">무엇을 고르든 어디서 넘어지는가 — VPN 선택 매트릭스</span>
+            <DecoLayer right="18px" top="-14px" rotate={-13} tier={2} z={2}>
+              <Stamp variant="round" text="NEW" size={54} />
+            </DecoLayer>
+          </li>
+          <li class="demo-row">
+            <span class="demo-meta">2026.07 · 기술</span>
+            <span class="demo-title">OpenVPN 해부: 웹의 자물쇠를 빌려 쓴다는 것</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- P-03 클립 카드 -->
+    <section class="pat">
+      <p class="pat-head"><span class="pid">P-03</span> 클립으로 물린 카드 — 목록 필터 · 시리즈 카드</p>
+      <div class="pat-body pad">
+        <ClippedCard side="right" offset="26px">
+          <div class="filter-card">
+            <div class="filter-row">
+              <span class="filter-k">CATEGORY</span>
+              <span class="chip on">전체 29</span>
+              <span class="chip">기술 26</span>
+              <span class="chip">리서치 1</span>
+              <span class="chip">학습 1</span>
+            </div>
+          </div>
+        </ClippedCard>
+      </div>
+    </section>
+
+    <!-- P-01 테이프 보드 -->
+    <section class="pat">
+      <p class="pat-head"><span class="pid">P-01</span> 테이프로 붙인 판 — 글 지도 · 글 배너</p>
+      <div class="pat-body pad">
+        <TapedBoard paper="dot" tone="cream" cell={24} tapeA="check" tapeB="vellum" corners="top">
+          <div class="map-stage">
+            <DecoLayer left="34px" top="-14px" rotate={-2} tier={1} z={4}>
+              <IndexTab text="MAP · 29" tone="blue" />
+            </DecoLayer>
+            <span class="map-note">
+              <Doodle variant="memo" text={"이 덩어리부터\n읽으면 편해요!"} />
+              <Doodle variant="arrow" width={80} color="var(--deco-pink-ink)" />
+            </span>
+            <span class="map-dots">
+              <i></i><i></i><i></i><i></i><i></i>
+            </span>
+          </div>
+        </TapedBoard>
+      </div>
+    </section>
+
+    <!-- P-04 인용 -->
+    <section class="pat">
+      <p class="pat-head"><span class="pid">P-04</span> 테이프로 붙인 인용 — 글 상세</p>
+      <div class="pat-body pad">
+        <TapedQuote cite="— 여섯 편을 다 굽고 나서">
+          <p>“프로토콜은 취향이 아니라 제약의 결과다. 남은 건 어디서 새는지 아는 일.”</p>
+        </TapedQuote>
+      </div>
+    </section>
+
+    <!-- P-05 코드블록 -->
+    <section class="pat">
+      <p class="pat-head"><span class="pid">P-05</span> 테이프 붙인 코드블록 — 글 상세</p>
+      <div class="pat-body pad">
+        <TapedCode label="CHECK THIS" note={"MTU 1420,\n여기서 다\n막혔었다!"}>
+          <pre class="demo-pre"><code>$ ping -M do -s 1420 1.1.1.1
+ping: local error: message too long, mtu=1420</code></pre>
+        </TapedCode>
+      </div>
+    </section>
+
+    <!-- P-08 시리즈 꼬리말 -->
+    <section class="pat">
+      <p class="pat-head"><span class="pid">P-08</span> 시리즈 꼬리말 — 글 상세 하단</p>
+      <div class="pat-body pad">
+        <div class="series-foot">
+          <span style="transform:rotate(-1.5deg);display:inline-flex">
+            <TicketStub code="EP 07" note="다음 편 없음" notch="var(--paper)" />
+          </span>
+          <span class="foot-hand">시리즈 끝! 읽어주셔서 고마워요 ♡</span>
+          <span class="foot-stamp" style="transform:rotate(-12deg)">
+            <Stamp variant="round" text="BAKED" sub="빵관토니" size={58} />
+          </span>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 44px var(--page-pad) 80px;
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--ink-3);
+    margin: 0 0 10px;
+  }
+  .page-head h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(30px, 5vw, 40px);
+    margin: 0 0 14px;
+  }
+  .lede {
+    max-width: 640px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--ink-2);
+    margin: 0 0 12px;
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .sec {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
+    margin: 52px 0 18px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 24px;
+  }
+  .sec .no {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    background: var(--ink);
+    color: var(--surface);
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .sec small {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+  .group {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    margin: 24px 0 12px;
+  }
+
+  /* ── 부품 셀 ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(212px, 1fr));
+    gap: 14px;
+  }
+  .cell {
+    position: relative;
+    margin: 0;
+    height: 158px;
+    padding: 0 0 26px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(32, 38, 74, 0.06);
+  }
+  .cell.wide {
+    grid-column: span 2;
+  }
+  .code {
+    position: absolute;
+    top: 9px;
+    left: 11px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+  }
+  .stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stage.gap {
+    gap: 22px;
+  }
+  .stage.row {
+    gap: 10px;
+  }
+  .stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .cell figcaption {
+    position: absolute;
+    bottom: 9px;
+    left: 11px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
+  /* ── 강도 ── */
+  .note-p {
+    font-size: 14px;
+    color: var(--ink-2);
+    margin: 0 0 16px;
+    max-width: 640px;
+  }
+  .intensity {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+  }
+  .int-cell {
+    margin: 0;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    position: relative;
+  }
+  .int-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 26px 10px 20px;
+  }
+  .int-card {
+    position: relative;
+    width: 108px;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  .int-cell figcaption {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+  }
+  .int-cell figcaption small {
+    display: block;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-top: 3px;
+  }
+
+  /* ── 패턴 ── */
+  .pat {
+    margin: 0 0 40px;
+  }
+  .pat-head {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    font-size: 12px;
+    color: var(--ink-2);
+    margin: 0 0 10px;
+  }
+  .pid {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 7px;
+    background: color-mix(in srgb, var(--ink) 9%, transparent);
+    color: var(--ink);
+    border-radius: 5px;
+  }
+  .pat-body {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .pat-body.pad {
+    padding: 40px 40px 44px;
+  }
+
+  .demo-h {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 26px;
+    margin: 0;
+  }
+  .view-all {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+  .demo-list {
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 0;
+  }
+  .demo-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 18px 0;
+    border-bottom: 1px dashed color-mix(in srgb, var(--ink) 26%, transparent);
+  }
+  .demo-meta {
+    width: 130px;
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .demo-title {
+    flex: 1;
+    font-size: 18px;
+    font-weight: 700;
+    word-break: keep-all;
+  }
+
+  .filter-card {
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+  .filter-k {
+    width: 62px;
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+  }
+  .chip {
+    font-size: 13px;
+    color: var(--ink-2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 15px;
+  }
+  .chip.on {
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-tint2);
+    border: 1.5px solid var(--accent);
+  }
+
+  .map-stage {
+    position: relative;
+    height: 260px;
+    padding: 24px;
+  }
+  .map-note {
+    position: absolute;
+    left: 34%;
+    bottom: 30px;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    color: var(--deco-pink-ink);
+  }
+  .map-note :global(.memo) {
+    color: var(--deco-pink-ink);
+    transform: rotate(-3deg);
+  }
+  .map-dots {
+    position: absolute;
+    inset: 34px auto auto 40px;
+    display: flex;
+    gap: 46px;
+    align-items: flex-start;
+  }
+  .map-dots i {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--cat-skills);
+    box-shadow: 0 2px 4px rgba(32, 38, 74, 0.2);
+  }
+  .map-dots i:nth-child(2) {
+    margin-top: 42px;
+    background: var(--cat-research);
+  }
+  .map-dots i:nth-child(3) {
+    margin-top: 16px;
+  }
+  .map-dots i:nth-child(4) {
+    margin-top: 58px;
+    background: var(--cat-strategy);
+  }
+  .map-dots i:nth-child(5) {
+    margin-top: 26px;
+  }
+
+  .demo-pre {
+    margin: 0;
+    background: var(--ink) !important;
+    border: none;
+    border-radius: 10px;
+    padding: 26px;
+    color: var(--cream);
+    font-family: var(--font-code);
+    font-size: 13.5px;
+    line-height: 2;
+    overflow-x: auto;
+  }
+
+  .series-foot {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 26px;
+    border-top: 1px dashed color-mix(in srgb, var(--ink) 26%, transparent);
+  }
+  .foot-hand {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--deco-pink-ink);
+  }
+  .foot-stamp {
+    margin-left: auto;
+    display: inline-flex;
+  }
+
+  @media (max-width: 768px) {
+    .cell.wide {
+      grid-column: span 1;
+    }
+    .pat-body.pad {
+      padding: 30px 20px 34px;
+    }
+    .demo-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .demo-meta {
+      width: auto;
+    }
+    .map-stage {
+      height: 200px;
+    }
+    /* 데모용 노드들이 좁은 화면에서 판 밖으로 나간다(잘려서 스크롤은 안 생기지만
+       보기 나쁘다) — 간격·크기를 줄여 안에 앉힌다. */
+    .map-dots {
+      gap: 18px;
+      inset: 24px auto auto 20px;
+    }
+    .map-dots i {
+      width: 30px;
+      height: 30px;
+    }
+    .map-note {
+      left: 26%;
+    }
+  }
+</style>

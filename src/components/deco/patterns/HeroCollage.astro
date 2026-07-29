@@ -1,0 +1,204 @@
+---
+/**
+ * 패턴 P-02 — 히어로 콜라주.
+ *
+ * 시안 1a 의 오른쪽 판. 데코 키트가 통째로 한자리에 모이는 유일한 곳이자, 이 키트의
+ * 출발점이기도 하다 — 지금 홈에 걸린 public/tony-deco.webp 는 말풍선·반짝·테이프·
+ * 캡션이 **한 장의 래스터에 구워진** 그림이다. 이 패턴은 그 그림을 부품으로 되돌린다.
+ * 그래서 얻는 것:
+ *   ① 문구를 고칠 때 이미지를 다시 굽지 않는다(말풍선이 텍스트다)
+ *   ② 강도 한 손잡이로 장식을 접었다 폈다 한다
+ *   ③ 마스코트만 교체해도 나머지가 따라온다
+ *
+ * 좌표 규칙: **세로는 %, 가로 중 판 밖으로 걸치는 것은 px**.
+ *   - 세로(top/bottom)를 % 로 두면 마스코트 키에 따라 같이 내려앉는다.
+ *   - 가로도 % 로 두면 판이 넓어질수록 음수 오프셋이 같이 커져서, 말풍선·테이프가
+ *     .collage 여백(26px)을 넘어 잘려나간다. 이것들은 크기가 고정된 부품이므로
+ *     걸치는 양도 고정이어야 맞다.
+ * 좁은 화면에서는 티어 2~4 가 접히고 말풍선만 남는다.
+ */
+import PaperSurface from "../PaperSurface.astro";
+import DecoLayer from "../DecoLayer.astro";
+import Tape from "../Tape.astro";
+import Sticker from "../Sticker.astro";
+import Doodle from "../Doodle.astro";
+import Polaroid from "../Polaroid.astro";
+import { TONY_CUTOUT } from "../../../lib/deco";
+
+interface Props {
+  /** 왼쪽 말풍선 문구. 줄바꿈은 \n. */
+  speechLeft?: string;
+  /** 오른쪽 말풍선 문구 */
+  speechRight?: string;
+  /** 폴라로이드 캡션. 비우면 폴라로이드를 안 붙인다. */
+  polaroidCaption?: string;
+  /** 마스코트 폭(px) */
+  mascot?: number;
+  class?: string;
+}
+const {
+  speechLeft = "오늘도\n빵빵하게!",
+  speechRight = "빵-하!",
+  polaroidCaption = "",
+  mascot = 330,
+  class: className = "",
+} = Astro.props;
+---
+
+<div class:list={["collage", className]}>
+  <PaperSurface paper="grid" tone="surface" cell={22} bordered={false}>
+    <div class="stage">
+      {/* 주인공 — 데코가 아니라 콘텐츠라 DecoLayer 를 안 두른다 */}
+      <img
+        class="mascot deco-diecut"
+        src="/images/deco/tony-diecut.webp"
+        alt="빵 든 빵관 토니 마스코트"
+        style={`--m:${mascot}px`}
+        width={mascot}
+        height={Math.round((mascot * 975) / 712)}
+        fetchpriority="high"
+        decoding="async"
+      />
+
+      {/* ── 티어 1: 항상 보이는 두 말풍선 ── */}
+      <DecoLayer left="-14px" top="18%" rotate={-8} tier={1} z={2}>
+        <Sticker variant="speech" text={speechLeft} />
+      </DecoLayer>
+      <DecoLayer right="-10px" top="10%" rotate={7} tier={1} z={2}>
+        <Sticker variant="speech" text={speechRight} class="speech-blue" />
+      </DecoLayer>
+
+      {/* ── 티어 2: 반짝·하트 ── */}
+      <DecoLayer left="7%" top="6%" rotate={0} tier={2} z={2}>
+        <span class="one-sparkle lg"></span>
+      </DecoLayer>
+      <DecoLayer right="13%" top="28%" rotate={0} tier={2} z={2}>
+        <span class="one-sparkle md"></span>
+      </DecoLayer>
+      <DecoLayer right="6%" top="40%" rotate={-14} tier={2} z={2}>
+        <span class="one-heart">&hearts;</span>
+      </DecoLayer>
+
+      {/* ── 티어 2: 대각 코너 테이프 ── */}
+      <DecoLayer left="-20px" top="-4%" rotate={-9} tier={2} z={3}>
+        <Tape variant="check" width={132} />
+      </DecoLayer>
+      <DecoLayer right="-18px" bottom="-3%" rotate={-6} tier={2} z={3}>
+        <Tape variant="stripe" width={120} />
+      </DecoLayer>
+
+      {/* ── 티어 3: 속도선 ── */}
+      <DecoLayer left="5%" top="47%" rotate={-12} tier={3} z={2}>
+        <Doodle variant="emphasis" class="speed-only" />
+      </DecoLayer>
+
+      {/* ── 티어 4: 작은 하트 하나 더 ── */}
+      <DecoLayer left="6%" bottom="24%" rotate={10} tier={4} z={2}>
+        <span class="one-heart sm">&hearts;</span>
+      </DecoLayer>
+
+      {/* ── 티어 3: 폴라로이드(캡션이 있을 때만) ── */}
+      {
+        polaroidCaption && (
+          <DecoLayer right="4%" bottom="4%" rotate={-3} tier={3} z={3}>
+            <Polaroid caption={polaroidCaption} width={150} paper="grid">
+              <img src={TONY_CUTOUT} alt="" width="62" height="85" loading="lazy" />
+            </Polaroid>
+          </DecoLayer>
+        )
+      }
+    </div>
+  </PaperSurface>
+</div>
+
+<style>
+  .collage {
+    /* 데코가 판 밖으로 걸치므로 잘리지 않게 여백을 준다.
+       가로 여백(26px)은 가장 크게 걸치는 테이프(-20px)보다 커야 한다. */
+    padding: 26px;
+  }
+  .stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 마스코트 높이 + 위아래 숨통 */
+    min-height: calc(var(--m, 330px) * 1.18);
+  }
+  .mascot {
+    position: relative;
+    z-index: 1;
+    width: var(--m, 330px);
+    height: auto;
+    border-radius: 0;
+  }
+
+  /* 오른쪽 말풍선만 파랑 계열 — 두 화자를 구분한다.
+     :global 로 감싸는 이유 — Astro 는 자식 컴포넌트 루트에 자식의 cid 만 붙이므로
+     class 를 넘겨도 여기(부모) 선택자로는 못 잡는다. .stage 로 범위를 묶어 샌다는
+     문제는 막는다. */
+  .stage :global(.speech-blue) {
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+  .stage :global(.speech-blue .tail) {
+    background: var(--accent-tint);
+  }
+
+  /* 콜라주에는 반짝이 하나씩 흩어져야 해서, 3종 묶음(D1)이 아니라 낱개를 쓴다 */
+  .one-sparkle {
+    display: block;
+    background: var(--pop);
+    clip-path: polygon(
+      50% 0,
+      57% 43%,
+      100% 50%,
+      57% 57%,
+      50% 100%,
+      43% 57%,
+      0 50%,
+      43% 43%
+    );
+  }
+  .one-sparkle.lg {
+    width: 26px;
+    height: 26px;
+  }
+  .one-sparkle.md {
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+  }
+  .one-heart {
+    display: block;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--deco-red);
+  }
+  .one-heart.sm {
+    font-size: 20px;
+    color: var(--deco-pink);
+  }
+  /* D5 에서 속도선만 — 별표는 콜라주에서 과하다 (위와 같은 이유로 :global) */
+  .stage :global(.speed-only .asterisk) {
+    display: none;
+  }
+  .stage :global(.speed-only i) {
+    opacity: 0.5;
+  }
+
+  @media (max-width: 768px) {
+    .collage {
+      padding: 18px 14px;
+    }
+    .mascot {
+      width: min(var(--m, 330px), 62vw);
+    }
+    /* 좁은 화면에선 말풍선만 남긴다 — 나머지는 마스코트를 덮는다 */
+    .stage :global(.deco-layer.t2),
+    .stage :global(.deco-layer.t3),
+    .stage :global(.deco-layer.t4) {
+      display: none;
+    }
+  }
+</style>

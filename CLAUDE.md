@@ -114,6 +114,13 @@ astro build                                        → consumes src/data/graph.j
 
 All visual decisions follow `design-concept/DESIGN_CONCEPT.md` and are implemented as CSS variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives at the edges (hero, footer, 404, hover, the Tony mascot). Hand-drawn motifs are SVG components under `src/components/motifs/`.
 
+**데코 키트** (`design-concept/DECO_KIT.md`) — 마스킹테이프·스티커·두들·포스트잇을 부품(`src/components/deco/`)과 적용 패턴(`.../deco/patterns/`)으로 굳힌 **선택 레이어**. 살아 있는 카탈로그는 `/design/deco`(noindex, 사이트맵 제외).
+- 토큰·강도·모션은 `src/styles/deco.css` 이고 **전역이 아니라 쓰는 쪽에서 import** 한다 — 데코는 고른 지점에만 얹는 장식이라 전 페이지가 지고 갈 이유가 없다.
+- 시안 팔레트·폰트는 **코어 토큰으로 환산**해 들여왔다(짝 없는 핑크·레드만 `--deco-*` 로 신설). 시안 hex 를 그대로 쓰면 팔레트가 두 벌이 되고, Nanum Pen 을 들이면 한국어 웹폰트가 6종이 된다.
+- 장식 총량은 `data-deco="1"~"5"` 하나로 접힌다(부품마다 티어 1~4). 페이지마다 꾸밈 정도가 갈리는데 그때마다 마크업을 고치면 되돌리기 어렵기 때문이다.
+- **부모 scoped CSS 로 부품을 못 고친다** — Astro 는 자식 컴포넌트 루트에 자식의 `data-astro-cid` 만 붙여서 `class` 를 넘겨도 부모 선택자가 매칭되지 않는다. prop 이나 지역 조상 아래 `:global()` 을 쓴다.
+- 마스코트 다이컷(`public/images/deco/tony-diecut.webp`)은 `public/tony-deco.webp`(장식이 구워진 합성물)에서 떼어낸 것이다. 흰 테두리를 새로 그려야 하면 `.deco-diecut` 유틸.
+
 ## Writing workflow (skills in `.claude/skills/`)
 
 ```

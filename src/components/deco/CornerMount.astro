@@ -1,0 +1,60 @@
+---
+/**
+ * F2 — 사진 코너 마운트.
+ *
+ * 네 귀퉁이에 삼각 홀더를 끼워 "이 블록이 종이에 꽂혀 있다"를 만든다. 테이프가
+ * 위를 덮는 것과 달리 모서리만 잡으므로, 안쪽 내용(이미지·다이어그램)을 하나도
+ * 가리지 않는다 — 표를 덮으면 안 되는 자리에는 테이프 대신 이걸 쓴다.
+ *
+ * 감쌀 대상 위에 절대배치로 얹는 게 아니라 **감싸는** 컴포넌트다.
+ */
+interface Props {
+  /** 모서리에서 얼마나 물릴지(px). 음수면 바깥으로 걸친다. */
+  inset?: number;
+  class?: string;
+}
+const { inset = -2, class: className = "" } = Astro.props;
+---
+
+<span class:list={["mount", className]} style={`--i:${inset}px`}>
+  <slot />
+  <span class="c tl" aria-hidden="true"></span>
+  <span class="c tr" aria-hidden="true"></span>
+  <span class="c bl" aria-hidden="true"></span>
+  <span class="c br" aria-hidden="true"></span>
+</span>
+
+<style>
+  .mount {
+    position: relative;
+    display: block;
+  }
+  .c {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 1px 2px rgba(32, 38, 74, 0.12);
+    pointer-events: none;
+  }
+  .tl {
+    top: var(--i);
+    left: var(--i);
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+  }
+  .tr {
+    top: var(--i);
+    right: var(--i);
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+  }
+  .bl {
+    bottom: var(--i);
+    left: var(--i);
+    clip-path: polygon(0 0, 0 100%, 100% 100%);
+  }
+  .br {
+    bottom: var(--i);
+    right: var(--i);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  }
+</style>

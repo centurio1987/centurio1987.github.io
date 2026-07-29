@@ -1,0 +1,58 @@
+---
+/**
+ * M2 — 인덱스 탭.
+ *
+ * 다이어리 옆구리에 붙이는 색인 탭. 섹션 제목 옆이나 카드 위쪽 모서리에 물려
+ * "여기가 한 묶음의 시작"을 표시한다. 오른쪽 끝이 화살표처럼 뾰족하다.
+ *
+ * 색은 tone 으로 고른다 — 내용이 아니라 **묶음이 다르다**는 것만 구분하면 되므로
+ * 카테고리 색(8종)을 끌어오지 않고 세 가지만 둔다.
+ */
+interface Props {
+  text?: string;
+  tone?: "pink" | "blue" | "yellow";
+  /** true 면 순수 장식으로 보고 스크린리더에서 감춘다. */
+  decorative?: boolean;
+  class?: string;
+}
+const {
+  text = "",
+  tone = "pink",
+  decorative = true,
+  class: className = "",
+} = Astro.props;
+---
+
+<span
+  class:list={["tab", tone, className]}
+  aria-hidden={decorative ? "true" : undefined}>{text}</span
+>
+
+<style>
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding: 0 20px 0 12px;
+    /* 오른쪽 끝 뾰족 */
+    clip-path: polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%);
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .pink {
+    background: var(--deco-pink);
+    color: #fff;
+  }
+  .blue {
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+  .yellow {
+    background: var(--pop-tint);
+    color: var(--pop-ink);
+  }
+</style>

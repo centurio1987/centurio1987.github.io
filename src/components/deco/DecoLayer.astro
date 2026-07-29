@@ -1,0 +1,105 @@
+---
+/**
+ * 데코 배치 프리미티브 — 부품을 "어디에, 몇 도로, 어느 강도에서" 붙일지만 맡는다.
+ *
+ * 부품(Tape·Sticker·…)은 자기 생김새만 알고 위치는 모른다. 둘을 갈라놓는 이유는
+ * 같은 테이프가 히어로 모서리에도, 코드블록 위에도, 목록 첫 항목에도 각도만 바꿔
+ * 붙기 때문이다 — 부품에 위치를 박으면 그때마다 변종이 하나씩 생긴다.
+ *
+ *   <div style="position:relative">
+ *     <DecoLayer top="-14px" left="-18px" rotate={-9} tier={2}>
+ *       <Tape variant="check" width={132} />
+ *     </DecoLayer>
+ *   </div>
+ *
+ * 부모에 position:relative 가 필요하다(안 주면 조상 중 첫 배치 컨텍스트로 튄다).
+ * inline 을 주면 절대배치 대신 흐름 안에 놓인다 — 회전·티어는 그대로 받는다.
+ */
+interface Props {
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
+  /** 기울기(deg). 손으로 붙인 티를 내는 값 — 보통 -12~12. */
+  rotate?: number;
+  /**
+   * 강도 티어. 1=항상 보임, 2=강도 2부터(반투명)·3부터 온전히,
+   * 3=강도 3부터, 4=강도 4부터. 기본 1.
+   * 게이트 정의는 src/styles/deco.css 의 [data-deco].
+   */
+  tier?: 1 | 2 | 3 | 4;
+  /** 흐름 안에 놓기(절대배치 안 함) */
+  inline?: boolean;
+  /** 호버 시 갸웃 — 기본 켬. 부모가 data-deco-hover="off" 면 전역으로 꺼진다. */
+  hover?: boolean;
+  z?: number;
+  class?: string;
+}
+const {
+  top,
+  right,
+  bottom,
+  left,
+  rotate = 0,
+  tier = 1,
+  inline = false,
+  hover = true,
+  z,
+  class: className = "",
+} = Astro.props;
+
+const style = [
+  !inline && "position:absolute",
+  top != null && `top:${top}`,
+  right != null && `right:${right}`,
+  bottom != null && `bottom:${bottom}`,
+  left != null && `left:${left}`,
+  rotate ? `--deco-rot:${rotate}deg` : null,
+  z != null && `z-index:${z}`,
+]
+  .filter(Boolean)
+  .join(";");
+---
+
+<span
+  class:list={["deco-layer", `t${tier}`, { inline, hover }, className]}
+  style={style}
+  aria-hidden="true"><slot /></span
+>
+
+<style>
+  .deco-layer {
+    display: block;
+    transform: rotate(var(--deco-rot, 0deg));
+    /* 장식이 글자 선택·클릭을 가로채면 안 된다 */
+    pointer-events: none;
+  }
+  .deco-layer.inline {
+    display: inline-block;
+  }
+  /* 호버를 받으려면 스스로는 이벤트를 받아야 한다 — 자식만 되살린다 */
+  .deco-layer.hover > :global(*) {
+    pointer-events: auto;
+  }
+  .deco-layer.hover:hover > :global(*) {
+    animation: var(--deco-wob, none);
+  }
+
+  /* 티어 게이트. t2 는 사라지지 않고 옅어진다(강도 1 에서만 완전히 0),
+     t3·t4 는 display 로 끊는다 — 자리까지 비워야 배치가 헐거워지지 않는다. */
+  .deco-layer.t2 {
+    opacity: var(--deco-op, 1);
+  }
+  .deco-layer.t3 {
+    display: var(--deco-t3, block);
+  }
+  .deco-layer.t4 {
+    display: var(--deco-t4, block);
+  }
+  .deco-layer.t3.inline {
+    display: var(--deco-t3, inline-block);
+  }
+  .deco-layer.t4.inline {
+    display: var(--deco-t4, inline-block);
+  }
+</style>

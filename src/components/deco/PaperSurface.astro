@@ -1,0 +1,130 @@
+---
+/**
+ * B1 — 종이 바탕 (모눈 · 도트 · 노트 · 무지).
+ *
+ * 데코를 얹을 **판**이다. 다른 부품과 달리 감싸는 컴포넌트이고, 이 안이 곧 배치
+ * 좌표계다(position:relative 를 스스로 가진다 — DecoLayer 를 바로 자식으로 둘 수 있다).
+ *
+ *   grid  모눈    dot  도트    ruled 줄노트(왼쪽에 펀치 구멍)    plain 무지
+ *
+ * 색은 종이 톤 두 가지 중에 고른다. 본문 위에 깔 때는 surface(밝음), 섹션 배경으로
+ * 깔 때는 cream(어둑) 쪽이 지면과 덜 싸운다.
+ */
+interface Props {
+  paper?: "grid" | "dot" | "ruled" | "plain";
+  tone?: "surface" | "cream";
+  /** 모눈·도트 간격(px) */
+  cell?: number;
+  radius?: string;
+  /** 테두리 선 */
+  bordered?: boolean;
+  /**
+   * 크기(CSS 길이). 보통은 부모가 폭을 정하지만, 스와치나 작은 판처럼 스스로
+   * 크기를 가져야 할 때 쓴다.
+   *
+   * 부모의 scoped CSS 로는 이 컴포넌트를 못 키운다 — Astro 는 자식 컴포넌트 루트에
+   * **자식의** data-astro-cid 만 붙여서, 부모가 class 를 넘겨도 부모 쪽 선택자
+   * (.foo[data-astro-cid-부모])가 매칭되지 않는다. 그래서 크기는 prop 으로 받는다.
+   */
+  width?: string;
+  height?: string;
+  class?: string;
+}
+const {
+  paper = "grid",
+  tone = "surface",
+  cell = 22,
+  radius = "var(--radius-md)",
+  bordered = true,
+  width,
+  height,
+  class: className = "",
+} = Astro.props;
+
+const sizeStyle = [
+  width && `width:${width}`,
+  height && `height:${height}`,
+]
+  .filter(Boolean)
+  .join(";");
+---
+
+<div
+  class:list={["paper", paper, tone, { bordered }, className]}
+  style={`--cell:${cell}px;--radius:${radius}${sizeStyle ? ";" + sizeStyle : ""}`}
+>
+  {
+    paper === "ruled" && (
+      <span class="punches" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+    )
+  }
+  <slot />
+</div>
+
+<style>
+  .paper {
+    position: relative;
+    border-radius: var(--radius);
+  }
+  .paper.bordered {
+    border: 1px solid var(--border);
+  }
+  .surface {
+    background-color: var(--surface);
+  }
+  .cream {
+    background-color: var(--cream);
+  }
+
+  .grid {
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(32, 38, 74, 0.07) 0 1px,
+        transparent 1px var(--cell)
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(32, 38, 74, 0.07) 0 1px,
+        transparent 1px var(--cell)
+      );
+  }
+  .dot {
+    background-image: radial-gradient(
+      rgba(32, 38, 74, 0.14) 1.4px,
+      transparent 1.5px
+    );
+    background-size: var(--cell) var(--cell);
+  }
+  /* 줄노트 — 가로줄만. 왼쪽 펀치 구멍은 아래 .punches. */
+  .ruled {
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent 0 calc(var(--cell) - 1px),
+      rgba(32, 38, 74, 0.1) calc(var(--cell) - 1px) var(--cell)
+    );
+  }
+  /* 펀치 구멍은 판 높이에 맞춰 나눠 앉는다 — 고정 간격으로 두면 판이 낮을 때
+     아래로 삐져나온다(판은 슬롯을 담아야 해서 overflow 를 자를 수 없다). */
+  .punches {
+    position: absolute;
+    left: 9px;
+    top: 14px;
+    bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .punches i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--paper);
+    /* 안쪽 그림자가 구멍의 깊이를 만든다 */
+    box-shadow: inset 0 1px 2px rgba(32, 38, 74, 0.25);
+  }
+</style>

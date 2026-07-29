@@ -1,0 +1,77 @@
+---
+/**
+ * C1 — 종이 클립 · 집게.
+ *
+ * 카드나 인용 블록의 위 모서리에 물려 "이 종이가 다른 종이 위에 얹혀 있다"를 만든다.
+ * 그래서 배치할 때 top 을 음수로 줘 블록 밖으로 절반쯤 걸치는 게 기본이다.
+ */
+interface Props {
+  variant?: "clip" | "binder";
+  class?: string;
+}
+const { variant = "clip", class: className = "" } = Astro.props;
+---
+
+{
+  variant === "clip" && (
+    <span class:list={["clip", className]} aria-hidden="true">
+      <span class="clip-inner" />
+    </span>
+  )
+}
+
+{
+  variant === "binder" && (
+    <span class:list={["binder", className]} aria-hidden="true">
+      <span class="binder-arm" />
+      <span class="binder-body" />
+    </span>
+  )
+}
+
+<style>
+  /* ── 클립 — 둥근 사각 테두리 안에 안쪽 고리 하나 ── */
+  .clip {
+    display: block;
+    width: 22px;
+    height: 58px;
+    border: 3px solid var(--accent-tint);
+    border-radius: 11px;
+  }
+  .clip-inner {
+    display: block;
+    width: 8px;
+    height: 36px;
+    margin: 5px auto 0;
+    border: 3px solid var(--accent-tint);
+    border-top-color: transparent;
+    border-radius: 6px;
+  }
+
+  /* ── 집게(바인더 클립) — 손잡이 고리 + 사다리꼴 몸통 ── */
+  .binder {
+    position: relative;
+    display: block;
+    width: 44px;
+    height: 34px;
+  }
+  .binder-arm {
+    position: absolute;
+    left: 8px;
+    top: -9px;
+    width: 28px;
+    height: 16px;
+    border: 2.5px solid var(--ink-3);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+  }
+  .binder-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 44px;
+    height: 26px;
+    background: var(--ink);
+    clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%);
+  }
+</style>

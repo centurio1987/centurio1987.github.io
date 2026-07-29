@@ -13,6 +13,8 @@ interface Props {
   canonical?: string | URL;
   /** 푸터 배경 파도(Phase C)를 켠다. 홈(index)만 true — JS 비용을 '/' 로 가둔다. */
   ambientFooter?: boolean;
+  /** 색인에서 뺀다. 디자인 쇼케이스처럼 독자용이 아닌 내부 페이지에 쓴다. */
+  noindex?: boolean;
 }
 const {
   title,
@@ -21,6 +23,7 @@ const {
   type = "website",
   canonical = new URL(Astro.url.pathname, Astro.site),
   ambientFooter = false,
+  noindex = false,
 } = Astro.props;
 const siteName = "빵관 토니";
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
@@ -46,6 +49,7 @@ const imageUrl = new URL(image, Astro.site).href;
     <link rel="apple-touch-icon" href="/tony-face.webp" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />

@@ -1,0 +1,259 @@
+---
+/**
+ * 두들 D1~D6 — 펜으로 여백에 끄적인 것들.
+ *
+ *   D1 sparkle  반짝(4각) 3종     D2 heart    하트 3종
+ *   D3 arrow    곡선 화살표        D4 wave     물결 밑줄
+ *   D5 emphasis 강조선 · 별표      D6 memo     손글씨 메모
+ *
+ * 테이프·스티커가 "붙인 것"이라면 두들은 "그린 것"이라 그림자가 없다. 종이에서
+ * 뜨지 않아야 손그림으로 읽힌다.
+ *
+ * 기존 모티프(motifs/Sparkle.astro)와 겹쳐 보이지만 역할이 다르다 — Sparkle 은
+ * 잉크 외곽선이 있는 브랜드 모티프이고, 여기 D1 은 외곽선 없는 납작한 데코다.
+ */
+interface Props {
+  variant?: "sparkle" | "heart" | "arrow" | "wave" | "emphasis" | "memo";
+  /** arrow·wave 의 폭(px). 나머지는 무시. */
+  width?: number;
+  /** arrow·wave 의 색. 기본은 종류별 고유색. */
+  color?: string;
+  /** arrow 를 좌우 반전(오른쪽에서 왼쪽을 가리킬 때) */
+  flip?: boolean;
+  /** memo 문구. 줄바꿈은 \n. */
+  text?: string;
+  class?: string;
+}
+const {
+  variant = "sparkle",
+  width = 94,
+  color,
+  flip = false,
+  text = "",
+  class: className = "",
+} = Astro.props;
+
+const memoLines = text.split("\n");
+---
+
+{
+  variant === "sparkle" && (
+    <span class:list={["sparkles", className]} aria-hidden="true">
+      <span class="sp sp-lg" />
+      <span class="sp sp-md" />
+      <span class="sp sp-sm" />
+    </span>
+  )
+}
+
+{
+  variant === "heart" && (
+    <span class:list={["hearts", className]} aria-hidden="true">
+      <span class="ht ht-lg">&hearts;</span>
+      <span class="ht ht-md">&hearts;</span>
+      <span class="ht ht-sm">&hearts;</span>
+    </span>
+  )
+}
+
+{
+  variant === "arrow" && (
+    <svg
+      class:list={["arrow", className]}
+      width={width}
+      height={Math.round((width * 56) / 94)}
+      viewBox="0 0 94 56"
+      fill="none"
+      aria-hidden="true"
+      style={`${flip ? "transform:scaleX(-1);" : ""}${color ? `--c:${color}` : ""}`}
+    >
+      <path
+        d="M4 50C14 18 44 6 76 14"
+        stroke="var(--c, var(--accent))"
+        stroke-width="2.6"
+        stroke-linecap="round"
+      />
+      <path
+        d="M62 6L78 14.5L64 24"
+        stroke="var(--c, var(--accent))"
+        stroke-width="2.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  )
+}
+
+{
+  variant === "wave" && (
+    <svg
+      class:list={["wave", className]}
+      width={width}
+      height="11"
+      viewBox="0 0 300 11"
+      fill="none"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      style={color ? `--c:${color}` : undefined}
+    >
+      <path
+        d="M2 7C16 2 30 2 44 7S72 2 86 7 114 2 128 7 156 2 170 7 198 2 212 7 240 2 254 7s20 3 44 -1"
+        stroke="var(--c, var(--deco-pink))"
+        stroke-width="2.6"
+        stroke-linecap="round"
+      />
+    </svg>
+  )
+}
+
+{
+  variant === "emphasis" && (
+    <span class:list={["emphasis", className]} aria-hidden="true">
+      <span class="speed">
+        <i /><i /><i />
+      </span>
+      <span class="asterisk">
+        <i /><i /><i />
+      </span>
+    </span>
+  )
+}
+
+{
+  variant === "memo" && (
+    <span class:list={["memo", className]} aria-hidden="true">
+      {memoLines.map((line, i) => (
+        <>
+          {i > 0 && <br />}
+          {line}
+        </>
+      ))}
+    </span>
+  )
+}
+
+<style>
+  /* ── D1 반짝 (4각) ── */
+  .sparkles {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sp {
+    clip-path: polygon(
+      50% 0,
+      57% 43%,
+      100% 50%,
+      57% 57%,
+      50% 100%,
+      43% 57%,
+      0 50%,
+      43% 43%
+    );
+  }
+  .sp-lg {
+    width: 30px;
+    height: 30px;
+    background: var(--pop);
+  }
+  .sp-md {
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+  }
+  .sp-sm {
+    width: 11px;
+    height: 11px;
+    background: var(--deco-pink);
+  }
+
+  /* ── D2 하트 ── */
+  .hearts {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1;
+  }
+  .ht-lg {
+    font-size: 30px;
+    color: var(--deco-red);
+    transform: rotate(-12deg);
+  }
+  .ht-md {
+    font-size: 20px;
+    color: var(--deco-pink);
+    transform: rotate(9deg);
+  }
+  .ht-sm {
+    font-size: 26px;
+    color: var(--ink);
+    opacity: 0.25;
+    transform: rotate(-4deg);
+  }
+
+  .arrow,
+  .wave {
+    display: block;
+    overflow: visible;
+  }
+
+  /* ── D5 강조선 · 별표 ── */
+  .emphasis {
+    display: inline-flex;
+    align-items: center;
+    gap: 22px;
+  }
+  /* 속도선 — 만화에서 뭔가 튀어나올 때 긋는 세 줄 */
+  .speed {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .speed i {
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--ink);
+  }
+  .speed i:nth-child(1) {
+    transform: rotate(-22deg);
+  }
+  .speed i:nth-child(2) {
+    height: 20px;
+  }
+  .speed i:nth-child(3) {
+    transform: rotate(22deg);
+  }
+  /* 별표 — 막대 셋을 60도씩 돌려 겹친다 */
+  .asterisk {
+    position: relative;
+    width: 22px;
+    height: 22px;
+  }
+  .asterisk i {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 3px;
+    height: 22px;
+    border-radius: 2px;
+    background: var(--deco-red);
+  }
+  .asterisk i:nth-child(2) {
+    transform: rotate(60deg);
+  }
+  .asterisk i:nth-child(3) {
+    transform: rotate(-60deg);
+  }
+
+  /* ── D6 손글씨 메모 ── */
+  .memo {
+    display: inline-block;
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 23px;
+    line-height: 1.25;
+    color: var(--ink-2);
+    text-align: center;
+  }
+</style>

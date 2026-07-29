@@ -1,0 +1,123 @@
+/* ── 데코 키트 v1 — 토큰 · 강도 게이트 · 모션 ────────────────────────────────
+ *
+ * 다이어리 데코(마스킹테이프·스티커·두들·포스트잇)를 **부품**으로 쓰기 위한 레이어.
+ * 카탈로그와 배치 규칙은 design-concept/DECO_KIT.md, 부품은 src/components/deco/.
+ *
+ * 이 파일은 global.css 가 아니라 **쓰는 쪽에서 import** 한다(opt-in). 데코는 전 페이지
+ * 공통이 아니라 히어로·목록 머리·글 상세처럼 고른 지점에만 얹는 장식이라, 전역에 넣으면
+ * 안 쓰는 페이지까지 토큰·키프레임을 지고 간다.
+ *
+ * 원본 시안(Claude Design "데코 키트")은 자체 팔레트(#E9E2D3/#24314F/#2540E8)와 폰트
+ * (Gothic A1 / Nanum Pen Script)로 그려졌지만, 여기서는 **전부 블로그 토큰으로 환산**한다.
+ * 시안 색을 그대로 들여오면 팔레트가 두 벌이 되고, Nanum Pen 을 들여오면 한국어 웹폰트가
+ * 5종에서 6종으로 늘어난다(손글씨는 이미 Gaegu 가 --font-hand 로 있다).
+ *
+ *   시안 → 블로그
+ *   #E9E2D3 배경 크림 → var(--paper)      #24314F 잉크 → var(--ink)
+ *   #FBF8F1 카드     → var(--surface)    #2540E8 코발트 → var(--accent)
+ *   #F0C24A 옐로     → var(--pop)        Gothic A1     → var(--font-body)
+ *   #F4A9B4 핑크     → --deco-pink ↓     Nanum Pen     → var(--font-hand) (Gaegu)
+ *   #E8564E 레드     → --deco-red  ↓     Space Mono    → var(--font-mono)
+ *
+ * 핑크·레드만 코어에 대응짝이 없어 아래에서 새로 정의한다. 코어 tokens.css 가 아니라
+ * 여기 두는 이유는 데코 전용이기 때문이다 — 본문·UI 는 이 색을 쓰지 않는다.
+ */
+
+:root {
+  /* 데코 전용 포인트 — 코어 팔레트에 없는 두 색 */
+  --deco-pink: #e0919f;
+  --deco-pink-tint: #f7dde2;
+  --deco-pink-ink: #a84f66;
+  --deco-red: #cf5049;
+
+  /* 종이·테이프 바탕 */
+  --deco-tape-yellow: rgba(216, 163, 63, 0.42);
+  --deco-tape-vellum: rgba(255, 255, 255, 0.62);
+  --deco-note: #f4e3b2;
+  --deco-note-2: #ecd79c;
+  --deco-note-ink: #6b5312;
+
+  /* 스티커 다이컷 테두리(흰 여백) 두께 */
+  --deco-diecut: 5px;
+
+  /* 그림자 — 종이가 지면에서 살짝 떠 있는 정도 */
+  --deco-shadow: 0 1px 3px rgba(32, 38, 74, 0.14);
+  --deco-shadow-lift: 0 5px 9px rgba(32, 38, 74, 0.2);
+
+  /* 강도 기본값(3 = 은근하게). [data-deco] 로 덮어쓴다. */
+  --deco-op: 1;
+  --deco-t3: block;
+  --deco-t4: block;
+  --deco-wob: deco-wobble 0.6s var(--ease);
+}
+
+/* ── 강도 게이트 ──────────────────────────────────────────────────────────
+ * 시안의 intensity 슬라이더(1~5)를 그대로 옮긴 것. 데코를 지우고 붙이는 대신
+ * **티어를 나눠 한 손잡이로 줄인다** — 페이지마다 얼마나 꾸밀지가 취향/맥락에 따라
+ * 갈리는데, 그때마다 마크업을 고치면 되돌리기가 어렵기 때문이다.
+ *
+ *   1 있는 듯 없는 듯 · 2 절제 · 3 은근하게(기본) · 4 넉넉히 · 5 다이어리
+ *
+ * 부품은 tier 로 자기 등급을 밝히고(1=항상, 2=--deco-op, 3/4=--deco-t3/t4),
+ * 페이지는 <div data-deco="2"> 한 줄로 전체 강도를 조절한다.
+ */
+[data-deco="1"] {
+  --deco-op: 0;
+  --deco-t3: none;
+  --deco-t4: none;
+}
+[data-deco="2"] {
+  --deco-op: 0.5;
+  --deco-t3: none;
+  --deco-t4: none;
+}
+[data-deco="3"] {
+  --deco-op: 1;
+  --deco-t3: block;
+  --deco-t4: none;
+}
+[data-deco="4"] {
+  --deco-op: 1;
+  --deco-t3: block;
+  --deco-t4: block;
+}
+/* 5 = 4 와 같은 가시성에 각도·개수를 쓰는 쪽에서 더 준다(부품 API 밖) */
+[data-deco="5"] {
+  --deco-op: 1;
+  --deco-t3: block;
+  --deco-t4: block;
+}
+
+/* 호버 들림 끄기 */
+[data-deco-hover="off"] {
+  --deco-wob: none;
+}
+
+/* ── 모션 ────────────────────────────────────────────────────────────────
+ * 붙인 종이가 손끝에 스치는 느낌 — 한 번 갸웃하고 제자리로. 무한 반복이 아니라
+ * hover 당 1회다(읽는 화면에서 계속 움직이면 시선을 뺏긴다).
+ * global.css 의 prefers-reduced-motion 규칙이 전역으로 animation 을 끈다. */
+@keyframes deco-wobble {
+  0% {
+    transform: rotate(0) translateY(0);
+  }
+  30% {
+    transform: rotate(-3.5deg) translateY(-3px);
+  }
+  65% {
+    transform: rotate(3deg) translateY(-2px);
+  }
+  100% {
+    transform: rotate(0) translateY(0);
+  }
+}
+
+/* ── 다이컷 유틸 ─────────────────────────────────────────────────────────
+ * 투명 PNG/WebP 둘레에 흰 스티커 여백을 그린다. drop-shadow 를 사방으로 겹쳐
+ * 알파 실루엣을 따라가게 하는 방식이라, 컷아웃 원본 하나로 다이컷을 얻는다
+ * (외곽선을 구워 넣은 별도 래스터를 두지 않는다). */
+.deco-diecut {
+  filter: drop-shadow(0 0 var(--deco-diecut) #fffcf6)
+    drop-shadow(0 0 var(--deco-diecut) #fffcf6)
+    drop-shadow(0 3px 6px rgba(32, 38, 74, 0.22));
+}

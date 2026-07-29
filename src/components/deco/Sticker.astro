@@ -1,0 +1,248 @@
+---
+/**
+ * 스티커 S1~S6.
+ *
+ *   S1 speech  말풍선(꼬리 달림)   S2 ribbon  리본 배너(양끝 V 홈)
+ *   S3 star    별 3종              S4 diecut  원형 다이컷
+ *   S5 tag     택 라벨(구멍 뚫린)  S6 tony    토니 다이컷(이미지)
+ *
+ * S1·S4 의 흰 테두리는 box-shadow 스프레드로 그린다 — border 로 그리면 꼬리(회전한
+ * 사각형)와 몸통의 테두리가 겹치는 자리에 이음매가 보인다. spread 그림자는 실루엣
+ * 바깥으로만 번져서 꼬리가 몸통에 자연스럽게 파묻힌다.
+ *
+ * 텍스트를 담는 종류(speech·ribbon·diecut·tag)는 기본이 장식이라 스크린리더에서
+ * 감춘다. 그 문구가 정보면 decorative={false} 로 노출한다.
+ */
+import { TONY_DIECUT } from "../../lib/deco";
+
+interface Props {
+  variant?: "speech" | "ribbon" | "star" | "diecut" | "tag" | "tony";
+  /** 스티커에 얹을 문구. star·tony 에서는 무시된다. */
+  text?: string;
+  /** tony 의 렌더 폭(px). 원본은 660px 이라 그 이하로 쓴다. */
+  size?: number;
+  /** false 면 문구를 스크린리더에 노출한다(기본 true = 순수 장식) */
+  decorative?: boolean;
+  class?: string;
+}
+const {
+  variant = "speech",
+  text = "",
+  size = 104,
+  decorative = true,
+  class: className = "",
+} = Astro.props;
+
+const hidden = decorative ? "true" : undefined;
+---
+
+{
+  variant === "speech" && (
+    <span class:list={["speech", className]} aria-hidden={hidden}>
+      {text}
+      <span class="tail" aria-hidden="true" />
+    </span>
+  )
+}
+
+{
+  variant === "ribbon" && (
+    <span class:list={["ribbon", className]} aria-hidden={hidden}>
+      {text}
+    </span>
+  )
+}
+
+{
+  variant === "star" && (
+    <span class:list={["stars", className]} aria-hidden="true">
+      <span class="star s-lg" />
+      <span class="star s-md" />
+      <span class="star s-sm" />
+    </span>
+  )
+}
+
+{
+  variant === "diecut" && (
+    <span class:list={["diecut", className]} aria-hidden={hidden}>
+      {text}
+    </span>
+  )
+}
+
+{
+  variant === "tag" && (
+    <span class:list={["tag", className]} aria-hidden={hidden}>
+      <span class="tag-hole" aria-hidden="true" />
+      <span class="tag-text">{text}</span>
+    </span>
+  )
+}
+
+{
+  variant === "tony" && (
+    <img
+      class:list={["tony", "deco-diecut", className]}
+      src={TONY_DIECUT}
+      alt={decorative ? "" : "빵관 토니 마스코트 스티커"}
+      width={size}
+      height={Math.round((size * 975) / 712)}
+      loading="lazy"
+      decoding="async"
+    />
+  )
+}
+
+<style>
+  /* ── S1 말풍선 ── */
+  .speech {
+    position: relative;
+    display: inline-block;
+    padding: 7px 14px 9px;
+    background: var(--deco-pink-tint);
+    border-radius: 15px;
+    box-shadow:
+      0 0 0 var(--deco-diecut) #fffcf6,
+      0 3px 7px rgba(32, 38, 74, 0.16);
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.2;
+    color: var(--deco-pink-ink);
+    text-align: center;
+  }
+  .tail {
+    position: absolute;
+    left: 16px;
+    bottom: -7px;
+    width: 13px;
+    height: 13px;
+    background: var(--deco-pink-tint);
+    box-shadow: 0 0 0 var(--deco-diecut) #fffcf6;
+    border-radius: 2px;
+    transform: rotate(45deg);
+    /* 몸통 뒤로 보내 이음매를 감춘다 */
+    z-index: -1;
+  }
+
+  /* ── S2 리본 배너 ── */
+  .ribbon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 22px;
+    background: var(--pop);
+    clip-path: polygon(0 0, 100% 0, 91% 50%, 100% 100%, 0 100%, 9% 50%);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--pop-ink);
+    white-space: nowrap;
+    /* clip-path 는 box-shadow 를 잘라내므로 그림자는 filter 로 준다 */
+    filter: drop-shadow(0 2px 3px rgba(32, 38, 74, 0.18));
+  }
+
+  /* ── S3 별 3종 ── */
+  .stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .star {
+    clip-path: polygon(
+      50% 0,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 95%,
+      50% 71%,
+      21% 95%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    );
+  }
+  .s-lg {
+    width: 40px;
+    height: 40px;
+    background: var(--pop);
+    filter: drop-shadow(0 2px 3px rgba(32, 38, 74, 0.2));
+  }
+  .s-md {
+    width: 30px;
+    height: 30px;
+    background: var(--accent);
+    opacity: 0.85;
+  }
+  .s-sm {
+    width: 22px;
+    height: 22px;
+    background: var(--deco-pink);
+  }
+
+  /* ── S4 원형 다이컷 ── */
+  .diecut {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent-tint);
+    box-shadow:
+      0 0 0 var(--deco-diecut) #fffcf6,
+      0 3px 7px rgba(32, 38, 74, 0.16);
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 21px;
+    line-height: 1;
+    color: var(--accent);
+    text-align: center;
+  }
+
+  /* ── S5 택 라벨 ── */
+  .tag {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 112px;
+    height: 38px;
+    padding: 0 14px 0 34px;
+    background: var(--surface);
+    border: 1.5px solid var(--ink);
+    /* 왼쪽 끝을 뾰족하게 — 끈을 꿰는 택 모양 */
+    clip-path: polygon(11% 0, 100% 0, 100% 100%, 11% 100%, 0 50%);
+    box-shadow: 2px 3px 0 rgba(32, 38, 74, 0.12);
+  }
+  .tag-hole {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+  }
+  .tag-text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ── S6 토니 다이컷 ── */
+  .tony {
+    display: block;
+    height: auto;
+    /* .deco-diecut 이 흰 여백 + 그림자를 그린다. 라운드는 없다(실루엣 컷). */
+    border-radius: 0;
+  }
+</style>

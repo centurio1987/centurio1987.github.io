@@ -1,0 +1,73 @@
+---
+/**
+ * M1 — 포스트잇 메모.
+ *
+ * 데코 중 유일하게 **읽으라고 있는** 부품이다. 나머지는 빼도 뜻이 안 변하지만 이건
+ * 글쓴이가 여백에 남긴 한마디라, 기본값을 decorative={false}(스크린리더 노출)로 둔다.
+ *
+ * 접힌 모서리는 ::after 의 대각선 그라디언트로 그린다.
+ */
+interface Props {
+  /** 메모 문구. 줄바꿈은 \n. */
+  text?: string;
+  width?: number;
+  /** true 면 순수 장식으로 보고 스크린리더에서 감춘다. */
+  decorative?: boolean;
+  class?: string;
+}
+const {
+  text = "",
+  width = 96,
+  decorative = false,
+  class: className = "",
+} = Astro.props;
+
+const lines = text.split("\n");
+---
+
+<span
+  class:list={["note", className]}
+  style={`--w:${width}px`}
+  aria-hidden={decorative ? "true" : undefined}
+>
+  {
+    lines.map((line, i) => (
+      <>
+        {i > 0 && <br />}
+        {line}
+      </>
+    ))
+  }
+</span>
+
+<style>
+  .note {
+    position: relative;
+    display: block;
+    width: var(--w);
+    /* 붙인 종이라 높이는 글에 맞춰 늘어난다 — 시안의 고정 높이는 버렸다 */
+    min-height: calc(var(--w) * 0.9);
+    padding: 11px 12px;
+    background: linear-gradient(180deg, var(--deco-note), var(--deco-note-2));
+    box-shadow: 2px 3px 8px rgba(32, 38, 74, 0.16);
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.35;
+    color: var(--deco-note-ink);
+  }
+  /* 오른쪽 아래 접힌 귀 */
+  .note::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(
+      135deg,
+      transparent 50%,
+      rgba(32, 38, 74, 0.12) 50%
+    );
+  }
+</style>

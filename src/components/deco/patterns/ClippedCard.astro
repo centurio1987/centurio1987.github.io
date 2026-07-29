@@ -1,0 +1,52 @@
+---
+/**
+ * 패턴 P-03 — 클립으로 물린 카드.
+ *
+ * 시안 1b 의 필터 카드와 1d 의 시리즈 카드가 같은 짜임이다: 반투명 카드 위 모서리에
+ * 클립(또는 집게)이 물려 있다. 카드가 페이지에 인쇄된 게 아니라 **끼워 넣은 종이**로
+ * 읽히게 하는 장치다.
+ *
+ * 클립은 카드 위쪽 밖으로 절반쯤 나와야 물린 것으로 보인다(top 음수). 왼쪽·오른쪽
+ * 어디에 물릴지는 카드 안 내용이 비어 있는 쪽을 골라 side 로 넘긴다.
+ */
+import DecoLayer from "../DecoLayer.astro";
+import Clip from "../Clip.astro";
+
+interface Props {
+  variant?: "clip" | "binder";
+  side?: "left" | "right";
+  /** 모서리에서 안쪽으로 얼마나 들어와 물릴지 */
+  offset?: string;
+  rotate?: number;
+  tier?: 1 | 2 | 3 | 4;
+  class?: string;
+}
+const {
+  variant = "clip",
+  side = "right",
+  offset = "26px",
+  rotate = side === "right" ? 14 : -16,
+  tier = 2,
+  class: className = "",
+} = Astro.props;
+---
+
+<div class:list={["clipped-card", className]}>
+  <slot />
+  <DecoLayer
+    top={variant === "binder" ? "-20px" : "-19px"}
+    left={side === "left" ? offset : undefined}
+    right={side === "right" ? offset : undefined}
+    rotate={rotate}
+    tier={tier}
+    z={2}
+  >
+    <Clip variant={variant} />
+  </DecoLayer>
+</div>
+
+<style>
+  .clipped-card {
+    position: relative;
+  }
+</style>

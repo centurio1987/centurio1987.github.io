@@ -1,0 +1,90 @@
+---
+/**
+ * F1 — 폴라로이드 프레임.
+ *
+ * 아래쪽에 여백을 크게 둔 흰 액자 + 손글씨 캡션. 안에 넣을 것은 slot 으로 받는다
+ * (이미지든 마스코트든 아무거나). 사진이 없으면 모눈 종이 바탕이 깔린다 — 시안의
+ * "빈 폴라로이드"가 그 상태다.
+ */
+interface Props {
+  caption?: string;
+  /** 사진 칸의 폭(px). 높이는 4:3 비율로 따라간다. */
+  width?: number;
+  /** 사진 칸 바탕 무늬 */
+  paper?: "grid" | "dot" | "plain";
+  class?: string;
+}
+const {
+  caption = "",
+  width = 150,
+  paper = "grid",
+  class: className = "",
+} = Astro.props;
+---
+
+<span
+  class:list={["polaroid", className]}
+  style={`--w:${width}px`}
+  aria-hidden="true"
+>
+  <span class:list={["shot", paper]}><slot /></span>
+  {caption && <span class="caption">{caption}</span>}
+</span>
+
+<style>
+  .polaroid {
+    display: inline-block;
+    padding: 7px 7px 22px;
+    background: #fffcf6;
+    box-shadow: 0 3px 9px rgba(32, 38, 74, 0.18);
+  }
+  .shot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: var(--w);
+    height: calc(var(--w) * 0.75);
+    overflow: hidden;
+    background-color: var(--cream);
+  }
+  .shot.grid {
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(32, 38, 74, 0.07) 0 1px,
+        transparent 1px 11px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(32, 38, 74, 0.07) 0 1px,
+        transparent 1px 11px
+      );
+  }
+  .shot.dot {
+    background-image: radial-gradient(
+      rgba(32, 38, 74, 0.13) 1.4px,
+      transparent 1.5px
+    );
+    background-size: 12px 12px;
+  }
+  /* 안에 들어온 이미지는 액자 폭에 맞추고 라운드를 지운다(global.css 가 img 에
+     radius 를 주는데, 액자 안 사진은 각져야 폴라로이드로 읽힌다) */
+  .shot :global(img) {
+    max-width: 100%;
+    /* 액자 밖으로 넘치면 위로 삐져나온다 — 세로도 함께 묶는다 */
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    object-fit: contain;
+  }
+  .caption {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.3;
+    color: var(--ink-2);
+    text-align: center;
+  }
+</style>

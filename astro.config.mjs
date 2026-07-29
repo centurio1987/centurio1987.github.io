@@ -12,7 +12,13 @@ import { rehypeInternalLinks } from "./src/lib/rehype-internal-links.mjs";
 // https://astro.build/config
 export default defineConfig({
   site: "https://centurio1987.github.io",
-  integrations: [sitemap(), mdx(), react()],
+  // /design/* 는 디자인 시스템 쇼케이스(독자용 콘텐츠가 아님)라 사이트맵에서 뺀다.
+  // 페이지 자체도 noindex 로 나간다(BaseLayout 의 noindex prop).
+  integrations: [
+    sitemap({ filter: (page) => !new URL(page).pathname.startsWith("/design/") }),
+    mdx(),
+    react(),
+  ],
   // ClientRouter(View Transitions)를 쓰면 prefetch 가 암묵적으로 켜지는데, 그 기본값에
   // 기대지 않고 여기 명시해 고정한다(KAN-055). hover 를 기본으로 두는 이유는 마우스
   // 사용자에게 200ms~2초의 선행 시간을 주기 때문이다 — tap(mousedown/touchstart)은
