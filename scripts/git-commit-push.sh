@@ -6,7 +6,14 @@
 #   scripts/git-commit-push.sh --repo <path> --branch <expected> --message <msg> [--dry-run] [--force-allow] -- <path...>
 #
 # 가드: 지정 경로만 add(전체 add 금지) · 기대 브랜치 확인 · staged secret/대용량 검사 ·
-#       pull --rebase(실패 시 중단) · push(--force 금지) · 실패 시 비0 종료(자동 롤백 안 함, 상태만 보고)
+#       원격 동기화(아래 규칙) · push(--force 금지) · 실패 시 비0 종료(자동 롤백 안 함, 상태만 보고)
+#
+# 원격 동기화 규칙 — rebase가 머지 커밋을 건드리는 것을 금지한다:
+#   1) 원격이 로컬의 조상이면  → 당겨올 게 없으므로 pull 자체를 건너뛴다(fast-forward push).
+#      (예전엔 무조건 pull --rebase 라서, 당겨올 게 없어도 로컬 머지 커밋을 평탄화해
+#       머지 해결 결과를 버리고 없던 충돌을 만들어냈다.)
+#   2) 갈라졌고 로컬 전용 커밋에 머지 커밋이 있으면 → rebase 금지. 중단하고 사람에게 넘긴다.
+#   3) 갈라졌고 로컬이 선형이면 → 기존대로 pull --rebase.
 set -euo pipefail
 
 REPO="" BRANCH="" MSG="" DRYRUN=0
@@ -75,7 +82,7 @@ fi
 
 if [[ $DRYRUN -eq 1 ]]; then
   echo "[dry-run] would commit on '$BRANCH' with message:"; echo "    $MSG"
-  echo "[dry-run] would: git pull --rebase && git push (no --force). 실제 변경 없음."
+  echo "[dry-run] would: 원격 동기화(머지 커밋 rebase 금지) 후 git push (no --force). 실제 변경 없음."
   git reset -q
   exit 0
 fi
@@ -87,9 +94,35 @@ echo "committed: $(git rev-parse --short HEAD)"
 # 원격 동기화 후 push (force 금지)
 if git remote get-url origin >/dev/null 2>&1; then
   if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
-    if ! git pull --rebase origin "$BRANCH"; then
-      echo "git pull --rebase 실패(충돌 가능). push 중단. 수동 해결 필요." >&2
+    if ! git fetch -q origin "$BRANCH"; then
+      echo "git fetch 실패(네트워크/권한). push 중단." >&2
       exit 5
+    fi
+    REMOTE="$(git rev-parse FETCH_HEAD)"
+
+    if git merge-base --is-ancestor "$REMOTE" HEAD; then
+      # (1) 원격이 로컬의 조상 — 당겨올 것이 없다.
+      # 여기서 rebase를 돌리면 얻는 것 없이 로컬 머지 커밋만 평탄화되므로 건너뛴다.
+      echo "원격이 이미 로컬의 조상 — pull 생략(fast-forward push)."
+    else
+      # 갈라졌다. 로컬 전용 커밋에 머지 커밋이 섞여 있으면 rebase를 금지한다 —
+      # rebase는 머지를 버리고 그 부모 쪽 커밋만 선형으로 다시 얹기 때문에
+      # 머지 때 내린 충돌 해결 결과가 통째로 사라진다.
+      MERGE_COMMITS="$(git rev-list --merges "$REMOTE"..HEAD)"
+      if [[ -n "$MERGE_COMMITS" ]]; then
+        echo "로컬 전용 커밋에 머지 커밋이 있어 rebase를 금지한다(머지 해결 결과 유실 방지)." >&2
+        echo "해당 머지 커밋:" >&2
+        echo "$MERGE_COMMITS" | while IFS= read -r c; do
+          echo "  - $(git log -1 --format='%h %s' "$c")" >&2
+        done
+        echo "커밋은 완료됐다. 원격과의 통합은 사람이 판단해 처리할 것(예: git merge origin/$BRANCH)." >&2
+        exit 5
+      fi
+      # (3) 로컬이 선형 — 기존대로 rebase.
+      if ! git pull --rebase origin "$BRANCH"; then
+        echo "git pull --rebase 실패(충돌 가능). push 중단. 수동 해결 필요." >&2
+        exit 5
+      fi
     fi
     if ! git push origin "$BRANCH"; then
       echo "git push 실패(auth/branch-protection/네트워크 등). 상태 확인 필요." >&2
