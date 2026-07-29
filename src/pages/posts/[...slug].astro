@@ -12,10 +12,20 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
-const Layout = post.data.template === "talk" ? TalkLayout : PostLayout;
+const { Content, headings } = await render(post);
 ---
 
-<Layout post={post}>
-  <Content />
-</Layout>
+{
+  /* 레이아웃을 변수로 고르지 않고 나눠 렌더한다 — TalkLayout 은 headings 를 쓰지 않는데
+     공용 변수로 묶으려면 쓰지도 않을 prop 으로 타입만 넓혀야 한다(TalkLayout 은 자체
+     "오늘의 질문" 목차를 갖는다). */
+  post.data.template === "talk" ? (
+    <TalkLayout post={post}>
+      <Content />
+    </TalkLayout>
+  ) : (
+    <PostLayout post={post} headings={headings}>
+      <Content />
+    </PostLayout>
+  )
+}
