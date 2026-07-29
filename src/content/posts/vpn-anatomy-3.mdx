@@ -1,0 +1,362 @@
+---
+title: "IKEv2 해부: 두 낯선 장비가 같은 열쇠를 쥐기까지 — 4개의 메시지"
+description: "IPsec은 하나의 프로토콜이 아니라 아키텍처다. 그 위에서 IKEv2가 SPD·SAD 사이에 SA를 세우는 과정을 IKE 헤더 28바이트부터 Proposal/Transform 트리, IKE_SA_INIT·IKE_AUTH 네 개의 메시지까지 실제 캡처와 RFC 7296을 나란히 놓고 해부한다."
+pubDate: 2026-07-28
+category: skills
+author: ppangto
+tags: ["VPN", "IPsec", "IKEv2", "RFC 7296", "SA", "SPI", "NAT-T"]
+series: "VPN의 해부"
+order: 3
+draft: false
+---
+import VizFlowchartSpdSaSad from "../../components/posts/vpn-anatomy-3/VizFlowchartSpdSaSad";
+import VizProcessStepsFourMessages from "../../components/posts/vpn-anatomy-3/VizProcessStepsFourMessages";
+import VizComparisonSpi from "../../components/posts/vpn-anatomy-3/VizComparisonSpi";
+
+import IkeHeaderDissector from "../../components/posts/vpn-anatomy-3/IkeHeaderDissector";
+import ProposalTreeBuilder from "../../components/posts/vpn-anatomy-3/ProposalTreeBuilder";
+
+![VPN의 해부 EP3 — IKEv2 협상](/images/vpn-anatomy-3/hero.webp)
+
+터널을 세우고 로그를 봅니다. 이름 세 개가 스쳐 지나갑니다 — `IKE_SA_INIT`, `IKE_AUTH`, 그리고 `CHILD_SA`. 설정 파일을 열어 보니 암호 제안이 `proposals`(IKE용)와 `esp_proposals`(ESP용)로 **따로** 적혀 있고, `swanctl --list-sas`는 SA를 **두 개** 보여 줍니다. 분명히 "IPsec 하나"를 켰는데, 튀어나온 부품은 하나가 아닙니다.
+
+이 어긋남은 실수가 아닙니다. **"IPsec을 쓴다"는 말 자체가 정확하지 않기 때문입니다.** IPsec(Internet Protocol Security)은 하나의 프로토콜이 아니라 여러 조각을 묶는 **아키텍처**(RFC 4301)이고, 그중 협상을 맡는 조각이 IKEv2(Internet Key Exchange version 2)입니다. 실제 데이터를 나르는 일은 협상이 끝난 **다음**입니다 — 그건 [4편](/posts/vpn-anatomy-4/)에서 ESP로 볼 이야기이고, 이 편은 그 앞 — 두 낯선 장비가 어떻게 **같은 키를 쥔 사이**가 되는지 — 를 다룹니다.
+
+이 글을 끝까지 읽으시면, 위의 세 이름이 어디서 나왔는지 짚을 수 있게 됩니다. IKE 헤더 28바이트가 어떤 필드로 이루어지는지, SPI가 왜 한 쌍(16바이트)인지, 암호 스위트가 어떻게 `Proposal` 안의 `Transform` 트리로 인코딩되는지, 그리고 **네 개의 메시지**가 어떻게 IKE SA와 첫 CHILD SA를 **동시에** 세우는지를, 실제 캡처의 바이트와 RFC 7296 원문을 나란히 놓고 봅니다.
+
+> **읽기 전 약속 둘.** 이 글이 인용하는 바이트는 **실제로 캡처한 IKEv2 교환**에서 잘라 온 것입니다. 환경은 strongSwan 5.9.13(Ubuntu 24.04)·TShark 4.2.2, IKE 암호군 `aes256gcm16-prfsha384-ecp384`, 캡처 지점은 NAT 라우터 **이전**(개시자 쪽)입니다. 주소는 문서용 대역(RFC 5737), 키·SPI·nonce는 랩 전용 합성값이라 가릴 것이 없습니다. 그리고 재현의 기준은 **바이트가 똑같다**가 아니라 **구조가 똑같다**입니다 — 키와 nonce는 매 실행 달라지지만, 지금부터 볼 필드 배치와 길이 산술은 그대로 나옵니다.
+
+## 한눈에 보기
+
+이번 편에서 짚을 축은 다섯 개입니다.
+
+1. **IPsec은 프로토콜이 아니다** — SA·SPD·SAD라는 세 개념이 이루는 프레임워크, 그리고 그 위에 올라선 별개의 스펙 IKEv2.
+2. **IKE 헤더 28바이트** — SPI가 왜 한 쌍(8+8바이트)이어야 하는지, 그것이 ESP의 SPI 하나와 어떻게 다른지.
+3. **SA / Proposal / Transform** — 암호 스위트 후보를 계층 트리로 인코딩하는 방식. [2편](/posts/vpn-anatomy-2/)에서 본 AEAD·키교환이 여기 `Transform ID`로 등장합니다.
+4. **네 개의 메시지** — `IKE_SA_INIT` 둘과 `IKE_AUTH` 둘로 두 개의 SA를 함께 세우는 구조.
+5. **여기부터 암호문** — `IKE_AUTH`의 봉투가 왜 안이 안 보이는지, 그리고 포트가 4500으로 옮겨 간 것이 어떻게 [4편](/posts/vpn-anatomy-4/)을 예고하는지.
+
+## 먼저 바로잡기: "IPsec을 쓴다"는 말의 부정확함
+
+가장 먼저 깰 오해가 이것입니다. **IPsec은 실행되는 프로토콜이 아닙니다.** RFC 4301은 자기 자신을 IP를 위한 "base architecture", 곧 **뼈대**라고 부릅니다. 그 뼈대는 무엇을 어떻게 지킬지의 **구조**를 정하되, ESP·AH의 실제 패킷 형식이나 IKEv2의 협상 절차 같은 **세부는 각각 별도 RFC**(RFC 4303, RFC 7296)에 맡깁니다. 그래서 "IPsec을 쓴다"는 실은 "이 아키텍처를 이러이러한 조각으로 채워 쓴다"는 말의 줄임입니다.
+
+그 아키텍처의 뼈대가 세 글자 약어 셋입니다.
+
+- **SA(Security Association, 보안 연관)** — "이 방향의 트래픽을 이 알고리즘과 이 키로 보호한다"는 **하나의 합의**입니다. 결정적으로 SA는 **단방향(simplex)**입니다. 그래서 양방향 통신에는 SA가 **한 쌍** 필요합니다. 이 "방향마다 하나"라는 성질이, 4편에서 ESP의 SPI가 방향마다 달라지는 뿌리이기도 합니다.
+- **SPD(Security Policy Database, 보안 정책 DB)** — 나가고 들어오는 패킷을 **PROTECT(보호) · BYPASS(그냥 통과) · DISCARD(폐기)** 세 갈래로 가르는 규칙표입니다. "무엇을 터널에 태울지"를 정하는 것이 바로 이 표입니다.
+- **SAD(Security Association Database, 보안 연관 DB)** — 실제로 **수립된 SA**들의 키·알고리즘·SPI를 담아 두고, 패킷이 올 때마다 조회하는 런타임 테이블입니다.
+
+셋의 관계는 한 줄로 이어집니다. **SPD가 "이 패킷은 보호 대상"이라고 판정했는데 쓸 SA가 아직 없으면, 그때 IKEv2가 불려 나와 협상으로 SA를 만들어 SAD에 꽂습니다.** IKEv2는 이 그림에서 **SPD와 SAD 사이를 잇는 협상 담당**입니다 — 정책이 요구한 SA를, 실제로 존재하는 상태로 바꾸는 일.
+
+<VizFlowchartSpdSaSad />
+
+여기서 처음의 어긋남이 풀립니다. `swanctl --list-sas`가 SA를 둘 보여 준 것은, IKEv2가 **자기 자신을 지킬 SA(IKE SA)**와 **실제 데이터를 지킬 SA(CHILD SA)**를 함께 세우기 때문입니다. 설정에 `proposals`와 `esp_proposals`가 나뉘어 있던 것도 같은 이유입니다 — 앞은 IKE SA용 암호군, 뒤는 CHILD SA(=ESP)용 암호군입니다. 하나가 아니라 둘, 그것도 역할이 다른 둘입니다.
+
+## 캡처를 먼저 펼칩니다: 네 개의 메시지
+
+스펙을 먼저 늘어놓기보다, 실제로 오간 패킷을 펼쳐 놓고 필드를 짚어 가는 편이 빠릅니다. 아래는 캡처 전체의 골격 — 네 프레임의 헤더 요약입니다. 출처는 `ike_sa_init.txt`(프레임 1·2)와 `ike_auth.txt`(프레임 3·4)이며, 값은 `tshark -O isakmp -V`가 뽑은 그대로입니다.
+
+| 프레임 | 방향 · 포트 | Exchange | Flags | Message ID | IKE Length | 프레임 길이 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | c1→s1 · **500→500** | IKE_SA_INIT (34) | `0x08` 개시자·요청 | 0 | 296 | 338 |
+| 2 | s1→c1 · 500→500 | IKE_SA_INIT (34) | `0x20` 응답자·응답 | 0 | 304 | 346 |
+| 3 | c1→s1 · **4500→4500** | IKE_AUTH (35) | `0x08` 개시자·요청 | 1 | 277 | 323 |
+| 4 | s1→c1 · 4500→4500 | IKE_AUTH (35) | `0x20` 응답자·응답 | 1 | 231 | 277 |
+
+이 표 하나에 이 편의 줄거리가 거의 다 들어 있습니다.
+
+- **네 프레임이 두 쌍**입니다. 앞 두 개가 `IKE_SA_INIT`, 뒤 두 개가 `IKE_AUTH`. 각 쌍은 요청·응답이고, `Message ID`가 0 → 1로 오릅니다. RFC 7296 §1.2가 이 넷을 "initial exchanges"로 묶고 "보통 네 개의 메시지로 이루어진다"고 적습니다.
+- **포트가 500에서 4500으로 바뀝니다.** 프레임 1·2는 UDP 500, 프레임 3·4는 UDP 4500. 이 전환은 우연이 아니라 **NAT을 발견한 결과**인데, 그 증거가 첫 메시지 안에 들어 있습니다(뒤에서 봅니다).
+- **Flags가 `0x08`과 `0x20`으로 갈립니다.** 요청은 `0x08`(개시자), 응답은 `0x20`(응답자·응답). 한 바이트가 "누가 보냈고 이것이 요청인가 응답인가"를 담습니다.
+
+<VizProcessStepsFourMessages />
+
+두 쌍이 하는 일은 명확히 다릅니다. **앞 쌍(`IKE_SA_INIT`)은 공유 비밀을 세우는 일**입니다 — 암호군을 고르고, 공개키를 교환해([2편](/posts/vpn-anatomy-2/)의 그 키교환), 양쪽만 아는 비밀을 만듭니다. 그런데 이 시점엔 상대가 **누구인지** 아직 모릅니다. 그래서 **뒤 쌍(`IKE_AUTH`)이 서로를 인증하고**, 그와 동시에 실제 데이터를 나를 첫 CHILD SA와 그 트래픽 범위(TS)까지 합의합니다. 즉 앞 쌍이 "안전한 방을 만들고", 뒤 쌍이 그 방 안에서 "신분증을 확인하고 계약서를 씁니다."
+
+> **짚어 둘 전제 하나.** 이 "네 개"는 **PSK(사전 공유 키)나 인증서로 인증하는 가장 흔한 최초 교환** 기준입니다. 원격접속에서 흔한 EAP 인증이 끼면 `IKE_AUTH`가 여러 왕복으로 늘어나고, 서버가 DoS를 막으려 쿠키(cookie)를 요구하면 `IKE_SA_INIT`이 한 번 더 오갑니다. 이 글은 그 곁가지를 걷어 낸 본줄기를 봅니다.
+
+## IKE 헤더 28바이트
+
+네 메시지가 모두 같은 머리로 시작합니다. RFC 7296 §3.1이 정의하는 IKE 헤더는 고정 **28옥텟**입니다. 직접 그려 보면 이렇습니다.
+
+```text
+ offset
+ 0 ─┬─ IKE SA Initiator's SPI  (8옥텟)
+    │
+ 8 ─┼─ IKE SA Responder's SPI  (8옥텟)
+    │
+16 ─┼─ Next Payload (1) │ MjVer/MnVer (1) │ Exchange Type (1) │ Flags (1)
+20 ─┼─ Message ID  (4옥텟)
+24 ─┴─ Length      (4옥텟, 메시지 전체 길이)
+```
+
+절반인 16바이트를 SPI 두 개가 차지합니다. 나머지 12바이트에 "이 봉투 안 첫 페이로드가 뭔지(Next Payload)", "버전(2.0)", "무슨 교환인지(Exchange Type)", "누가 보냈고 요청인지 응답인지(Flags)", "몇 번째 메시지인지(Message ID)", "전체가 몇 바이트인지(Length)"가 담깁니다. 캡처의 프레임 1 머리를 그대로 잘라 오면(출처: `ike_sa_init.txt`, 프레임 1 상단):
+
+```text
+Internet Security Association and Key Management Protocol
+    Initiator SPI: 9f85f7745c53f73e
+    Responder SPI: 0000000000000000
+    Next payload: Security Association (33)
+    Version: 2.0
+    Exchange type: IKE_SA_INIT (34)
+    Flags: 0x08 (Initiator, No higher version, Request)
+    Message ID: 0x00000000
+    Length: 296
+```
+
+여기서 두 가지를 짚어 둡니다. 첫째, `Flags`를 비트로 파고들면 헷갈리기 쉽습니다. 규격의 비트 위치 자체는 분명한데, 자료마다 비트에 번호를 매기는 방향(MSB를 0으로 세느냐 LSB를 0으로 세느냐)이 달라 표기가 뒤죽박죽 보이기 때문입니다. 헷갈리지 않으려면 번호 대신 **마스크 값**으로 캡처와 대조하는 편이 안전합니다 — 개시자(Initiator) 비트가 `0x08`, 응답(Response) 비트가 `0x20`. 프레임 1은 개시자가 보낸 요청이라 `0x08`, 프레임 2는 응답자가 보낸 응답이라 `0x20`입니다.
+
+둘째, `Version`은 항상 `2.0`입니다(상위 4비트 MjVer=2, 하위 4비트 MnVer=0). 그래서 오프셋 17 바이트는 협상 내내 `0x20`으로 고정입니다 — Flags의 `0x20`과 값은 같지만 자리가 다르니 헷갈리지 마십시오. 아래에서 Exchange Type과 Flags 두 자리만 직접 바꿔 보시면, 나머지 26바이트가 어떻게 자리를 지키는지 눈에 들어옵니다.
+
+<IkeHeaderDissector client:visible />
+
+## SPI는 왜 한 쌍인가
+
+헤더의 절반을 차지한 SPI(Security Parameter Index) 두 개가 이 편에서 가장 자주 오해받는 자리입니다. 실제 데이터를 지키는 ESP의 SPI는 **4바이트 하나**입니다(4편에서 봅니다). 그런데 왜 여기 IKE에서는 **8바이트짜리가 둘**일까요?
+
+답은 "지금이 협상 **전**이기 때문"입니다. ESP 패킷이 날아다닐 때는 이미 SA가 서 있어서, 받는 쪽이 고른 SPI 하나로 "어느 SA로 풀지"가 정해집니다. 그러나 IKE의 첫 메시지는 그 SA를 **지금 만들려는** 참입니다. 그래서 양쪽이 **각자 자기 SA를 식별할 값을 미리** 들고 시작해야 하고, 그 값이 개시자 SPI와 응답자 SPI입니다. 그 증거가 캡처에 선명합니다(출처: `ike_sa_init.txt`, 프레임 1·2의 SPI 두 줄):
+
+```text
+프레임 1:  Initiator SPI: 9f85f7745c53f73e
+          Responder SPI: 0000000000000000   ← 아직 0. 응답자 SA가 없다
+프레임 2:  Initiator SPI: 9f85f7745c53f73e
+          Responder SPI: 474b3074cfd05b67   ← 응답자가 여기서 자기 SPI를 채운다
+```
+
+**첫 요청의 응답자 SPI가 전부 0**이라는 사실이 "협상 전이라 아직 상대 SA가 없다"를 그대로 보여 줍니다. 개시자는 자기 SPI만 정해 던지고, 응답자는 응답(프레임 2)에서 비로소 자기 SPI를 채웁니다. 이 순간 두 SPI가 다 채워지면서 **이 IKE SA를 가리키는 이름표 한 쌍**이 완성됩니다.
+
+<VizComparisonSpi />
+
+그래서 "SPI는 세션 ID다"라는 축약은 절반만 맞습니다. SPI는 **SA를 가리키는 인덱스**이지 대화 하나를 뜻하는 번호가 아니고, 협상용 IKE SPI(8+8)와 데이터용 ESP SPI(4)는 크기도 개수도 고르는 주체도 다른 별개의 물건입니다.
+
+## 모든 페이로드의 공통 머리: Generic Payload Header
+
+헤더 다음부터는 페이로드들이 사슬처럼 이어집니다. SA·KE·Nonce·Notify… 종류는 많지만, **모든 페이로드가 똑같은 4옥텟 머리로 시작**합니다. RFC 7296 §3.2의 Generic Payload Header입니다.
+
+- **Next Payload(1옥텟)** — "내 **뒤에** 오는 페이로드의 종류". 페이로드가 자기 다음을 가리키는 방식이라, 헤더의 Next Payload가 첫 페이로드를, 각 페이로드가 그다음을 가리키며 사슬이 이어집니다. 마지막 페이로드의 Next Payload는 0입니다.
+- **Critical 비트(1) + Reserved(7비트)** — "이 페이로드를 모르면 거부하라"는 표시 한 비트와 예약 7비트. 캡처의 `0... .... = Critical Bit: Not critical`이 이 자리입니다.
+- **Payload Length(2옥텟)** — 이 머리 4옥텟을 **포함한** 이 페이로드의 전체 길이.
+
+이 "다음을 가리키는 사슬" 구조가 뒤에 나올 두 장면의 열쇠입니다. 하나는 `Transform`들이 서로를 가리키며 목록을 이루는 방식이고, 다른 하나는 암호문 봉투(`IKE_AUTH`)가 **자기 뒤가 아니라 자기 안**의 첫 페이로드를 가리키는 예외입니다.
+
+## SA / Proposal / Transform: 암호 스위트를 트리로
+
+이제 첫 페이로드인 SA를 엽니다. 협상의 본체입니다. "이 암호 조합들 중 하나를 골라라"라는 제안을, IKEv2는 **2단 트리**로 인코딩합니다 — `SA` 안에 `Proposal`, `Proposal` 안에 `Transform` 목록. 캡처의 프레임 1 제안을 잘라 오면(출처: `ike_sa_init.txt`, 프레임 1의 SA 페이로드):
+
+```text
+Payload: Security Association (33)
+    Payload length: 40
+    Payload: Proposal (2) # 1
+        Payload length: 36
+        Protocol ID: IKE (1)
+        SPI Size: 0
+        Proposal transforms: 3
+        Payload: Transform (3)    Type: ENCR (1) · ID: AES-GCM 16 ICV (20) · Key Length: 256
+        Payload: Transform (3)    Type: PRF (2)  · ID: PRF_HMAC_SHA2_384 (6)
+        Payload: Transform (3)    Type: D-H (4)  · ID: 384-bit random ECP group (20)
+```
+
+(위 세 `Transform` 줄은 각 변환의 `Next payload`·`Reserved` 같은 반복 줄을 덜어 내고 종류와 ID만 남긴 것입니다. `SPI Size: 0`은 오타가 아닙니다 — 최초 IKE SA 협상에서는 SPI를 바깥 헤더에서 얻으므로 여기 SPI를 0으로 둡니다. RFC 7296 §3.3.1.)
+
+이 트리가 좋은 이유는 **길이가 외울 값이 아니라 더해지는 값**이라는 데 있습니다. 하나씩 세어 봅니다.
+
+- `Transform`의 고정부는 8옥텟(§3.3.2)입니다. 그런데 `ENCR`에는 **Key Length 속성**(§3.3.5, `Type/Value` 형식 4옥텟)이 붙어 **12옥텟**이 됩니다. `PRF`와 `D-H`는 속성이 없어 각 **8옥텟**.
+- 그래서 변환 합계는 `12 + 8 + 8 = 28`. 여기에 `Proposal` 고정부 8옥텟을 더하면 `28 + 8 = 36` = **Proposal Length**.
+- 다시 Generic Payload Header 4옥텟을 얹으면 `36 + 4 = 40` = **SA Payload Length**.
+
+캡처의 `40`과 `36`이 이렇게 **덧셈 한 줄로** 설명됩니다. 아래에서 변환을 넣고 빼면 두 길이가 정확히 그만큼 움직이는 것을 확인하실 수 있습니다.
+
+<ProposalTreeBuilder client:visible />
+
+여기서 **눈여겨볼 부재**가 하나 있습니다. `Transform Type` 중 **3번(INTEG, 무결성)이 없습니다.** 암호화(`ENCR`)로 AES-GCM을 골랐기 때문입니다. AES-GCM은 [2편](/posts/vpn-anatomy-2/)에서 본 **AEAD** — 암호화와 무결성을 한 몸으로 처리하는 방식 — 이라, 무결성 알고리즘을 따로 협상할 필요가 없습니다. 그래서 "무결성 칸이 비었다"는 결함이 아니라 **AEAD를 골랐다는 표시**입니다(구현에 따라 무결성을 `NONE`으로 명시해 제안하기도 합니다). 위 도구에서 `INTEG`를 억지로 켜 보면 왜 그것이 사족인지가 드러납니다.
+
+그리고 이 트리가 곧 처음의 `proposals`/`esp_proposals` 분리와 이어집니다. 지금 본 것은 **IKE SA용** 제안(`Protocol ID: IKE`)이고, `IKE_AUTH` 안에는 **CHILD SA용** 제안(`Protocol ID: ESP`)이 따로 실려 갑니다. 후자에서 등장할 `Transform ID`가 바로 4편에서 데이터를 지킬 그 암호군입니다 — 4편이 "알고리즘은 3편에서 협상한 SA가 정한다"고 말할 때의 그 SA가, 여기 트리 한 그루에서 시작됩니다.
+
+## IKE_SA_INIT이 실어 나른 것들: KE · Nonce · Notify
+
+SA 제안 뒤로 페이로드가 더 이어집니다. RFC 7296 §1.2는 첫 두 메시지가 나르는 것을 이렇게 적습니다.
+
+```text
+1  HDR, SAi1, KEi, Ni
+2  HDR, SAr1, KEr, Nr, [CERTREQ]
+```
+
+- **KE(Key Exchange, 34)** — [2편](/posts/vpn-anatomy-2/)의 그 키교환 공개값입니다. 캡처에서는 `DH Group #: 384-bit random ECP group (20)`과 `Key Exchange Data:`(104옥텟 페이로드)로 보입니다. 양쪽의 KE가 만나면, 경로에서 아무도 계산할 수 없는 **공유 비밀 `g^ir`**이 섭니다.
+- **Nonce(40)** — `Ni`(개시자)·`Nr`(응답자)라는 일회용 난수입니다. 캡처의 `Nonce DATA:`가 그대로 보입니다. 이 값들은 잠시 뒤 **키 유도의 재료**가 됩니다.
+
+여기서 자연스러운 의문이 하나 듭니다. **KE도 Nonce도 평문인데, 그럼 도청자가 다 보는 것 아닌가?** 봅니다. 그러나 소용이 없습니다. [2편](/posts/vpn-anatomy-2/)에서 본 대로, 공개값 두 개를 봐도 공유 비밀 `g^ir`은 개인값 없이 계산할 수 없습니다. **평문으로 보이는 것과 그것으로 키를 만들 수 있는 것은 다른 축**입니다. 다만 이건 **가만히 엿듣는** 공격자 이야기입니다 — 중간에서 값을 바꿔치기하는 능동적 공격(MITM, Man-in-the-Middle)은 뒤 쌍인 `IKE_AUTH`가 막습니다. 잠시 뒤 보겠지만, `IKE_AUTH`의 서명이 방금 이 평문 교환 전체를 **사후에 인증**하기 때문입니다.
+
+그리고 SA 제안·KE·Nonce 뒤로, 이 편의 **숨은 하이라이트**가 있습니다. 첫 메시지에 이미 여러 `Notify`(41) 페이로드가 실려 오는데, 그중 두 개가 결정적입니다(출처: `ike_sa_init.txt`, 프레임 1의 Notify 두 개):
+
+```text
+Payload: Notify (41) - NAT_DETECTION_SOURCE_IP
+    Notify Message Type: NAT_DETECTION_SOURCE_IP (16388)
+    Notification DATA: 0b98686bc19a630c1cbb09bb223a962db9f88bb0
+Payload: Notify (41) - NAT_DETECTION_DESTINATION_IP
+    Notify Message Type: NAT_DETECTION_DESTINATION_IP (16389)
+    Notification DATA: 65372a67e9eaf8b87dd501230a21c3c6a50cc2e8
+```
+
+이 두 `NAT_DETECTION_*`이 **포트가 4500으로 바뀐 이유**입니다. 각 값은 **IKE SPI 두 개(SPIi·SPIr)와 송신자가 쓴 출발지/목적지 IP·포트를 이어 붙여 SHA-1로 해시한 것**입니다(이 해시가 NAT-T로 어떻게 이어지는지는 4편에서 자세히 봅니다). 받는 쪽은 자기가 **바깥 IP 헤더에서 실제로 관측한** 주소·포트로 같은 해시를 다시 계산해 봅니다. **값이 어긋나면 그 사이에 주소를 바꾼 상자(NAT)가 있다는 뜻**이고, 어느 쪽 해시가 어긋났는지로 NAT이 내 앞에 있는지 상대 앞에 있는지까지 갈립니다(RFC 7296 §2.23). 이 판정은 한 메시지로 끝나지 않습니다 — 양쪽이 프레임 1·2에서 이 해시를 주고받아 서로 대조한 **뒤**에야 확정되고, 그래서 포트 전환은 첫 `IKE_SA_INIT` 쌍 다음인 **프레임 3부터** 일어납니다. 우리 랩은 개시자와 응답자 사이에 NAT을 일부러 끼워 두었고, 그래서 이 전환이 실제로 관측됩니다 — "500/4500 두 포트가 NAT-T를 예고한다"가 캡처 안에서 **원인 → 결과로 완결**되는 장면입니다.
+
+나머지 `Notify`들도 협상의 세부를 나릅니다. 예컨대 `SIGNATURE_HASH_ALGORITHMS`(16431)는 인증 서명에 쓸 해시 후보를 담는데, 캡처의 `Notification DATA: 0002000300040005`가 SHA2-256·384·512·Identity로 그대로 디섹션됩니다. 응답(프레임 2)에는 `CHILDLESS_IKEV2_SUPPORTED`·`MULTIPLE_AUTH_SUPPORTED` 같은 항목이 더해집니다 — 협상은 암호군만이 아니라 "무엇을 지원하는지"까지 첫 두 메시지에서 서로 알립니다.
+
+## IKE_AUTH: 여기부터 암호문
+
+이제 뒤 쌍입니다. `IKE_SA_INIT`으로 공유 비밀이 섰으니, `IKE_AUTH`부터는 **그 비밀에서 뽑은 키로 암호화**됩니다. 그래서 여기서부터 우리가 볼 수 있는 것이 달라집니다. 프레임 3의 봉투를 잘라 오면(출처: `ike_auth.txt`, 프레임 3):
+
+```text
+User Datagram Protocol, Src Port: 4500, Dst Port: 4500
+UDP Encapsulation of IPsec Packets
+    ...
+    Exchange type: IKE_AUTH (35)
+    Message ID: 0x00000001
+    Length: 277
+    Payload: Encrypted and Authenticated (46)
+        Next payload: Identification - Initiator (35)
+        Payload length: 249
+        Initialization Vector: d06c79b5
+        Encrypted Data
+```
+
+마지막 두 줄이 전부입니다. **`Encrypted Data` — 안에 무엇이 들었는지 값은 보이지 않습니다.** 이 캡처에서 `SK_*` 키를 뽑는 표준 경로는 확립돼 있지 않아, 우리는 이 봉투를 **열지 못합니다.** 정직하게 말해, 이 편에서 `IKE_AUTH`의 내용은 "구조는 보이되 payload는 암호문"입니다. 그래도 봉투의 **겉면**이 알려 주는 것이 셋 있습니다.
+
+- **`Next payload`가 예외적으로 "안쪽 첫 페이로드"를 가리킵니다.** 이 암호문 봉투(Encrypted and Authenticated, 46번 페이로드)는 대개 메시지의 마지막 페이로드라, 규칙대로면 Next Payload가 0이어야 합니다. 그런데 여기엔 `Identification - Initiator (35)`가 적혀 있습니다. 안에 든 첫 페이로드의 종류를 담을 자리가 따로 없어, RFC 7296 §3.14가 이 필드에 **자기 뒤가 아니라 자기 안**의 첫 페이로드를 넣도록 정했기 때문입니다. 앞서 말한 "사슬" 구조에 규격이 둔 특례입니다. 그래서 우리는 내용을 못 봐도 "안에 개시자 신분증(IDi)이 먼저 들었다"까지는 압니다.
+- **봉투 앞머리에 IV(Initialization Vector)가 평문으로 실립니다** — 캡처에선 `d06c79b5`(응답 프레임 4는 `4175f534`)로 보입니다. 한 가지 주의: AES-GCM 같은 AEAD는 nonce를 "키 자료에서 오는 고정 salt"와 "패킷마다 실리는 IV"로 나눠 쓰는데, 이 둘은 크기도 출처도 달라 혼동하기 쉽습니다(RFC 5282). nonce의 세부 구성은 [2편](/posts/vpn-anatomy-2/)의 AEAD 이야기로 미룹니다.
+- **응답은 안쪽 첫 페이로드가 `Identification - Responder (36)`**입니다. 개시자는 IDi를, 응답자는 IDr을 먼저 넣습니다.
+
+봉투 안에서 실제로 무슨 일이 벌어지는지는 RFC 7296이 규정합니다. §1.2 표기로 옮기면 이렇습니다.
+
+```text
+3  HDR, SK { IDi, [CERT,] [CERTREQ,] [IDr,] AUTH, SAi2, TSi, TSr }
+4  HDR, SK { IDr, [CERT,] AUTH, SAr2, TSi, TSr }
+```
+
+여기서 세 가지가 함께 끝납니다.
+
+첫째, **인증(AUTH)**입니다. 개시자가 서명하는 대상은 단순히 nonce 하나가 아니라 **자기가 보낸 첫 메시지 전체 + 응답자의 nonce `Nr` + 자기 신분증을 prf로 묶은 값(`prf(SK_pi, IDi)`)**입니다. 응답자는 대칭으로 **자기 두 번째 메시지 전체 + `Ni` + `prf(SK_pr, IDr)`**에 서명합니다(§2.15). 자기 ID까지 서명에 묶는 덕분에, 인증은 "상대가 맞다"만이 아니라 "내가 방금 나눈 그 교환의 당사자가 맞다"까지 걸어 잠급니다. RFC가 "**각자가 상대의 nonce에 서명하는 것이 이 교환의 안전에 결정적**"이라고 못 박습니다 — 서명 대상에 상대의 일회용 난수와 앞선 교환 전체를 넣어야, 평문으로 오갔던 그 `IKE_SA_INIT`을 중간에서 바꿔치기한 MITM이 여기서 들통나기 때문입니다. 서명 방식은 사전 공유 키(PSK)일 수도, 인증서(PKI)일 수도 있고, 원격접속에서는 **EAP**로 넘어가기도 합니다([인증·인가 해부](/posts/auth-authz-1)에서 다룬 그 구분입니다).
+
+둘째, **키 유도**입니다. §2.14는 공유 비밀과 nonce에서 여러 키를 한 번에 뽑습니다.
+
+```text
+SKEYSEED = prf(Ni | Nr, g^ir)
+{ SK_d | SK_ai | SK_ar | SK_ei | SK_er | SK_pi | SK_pr }
+    = prf+(SKEYSEED, Ni | Nr | SPIi | SPIr)
+```
+
+세부 암호는 [2편](/posts/vpn-anatomy-2/)에 미루되, 한 가지만 짚습니다. **키의 재료가 `Ni`·`Nr`과 `SPIi`·`SPIr`** — 즉 프레임 1·2에서 평문으로 봤던 바로 그 값들입니다. 평문으로 보이던 것들이 키의 재료라는 사실이, "평문인데 왜 안전한가"의 답이기도 합니다. 재료가 다 보여도 공유 비밀 `g^ir` 없이는 `SKEYSEED`를 만들 수 없습니다. 그리고 방향마다 키가 다릅니다(`SK_ei`는 개시자→응답자 암호화, `SK_er`은 그 반대) — SA가 단방향이라던 앞의 이야기가 키 수준에서 이렇게 드러납니다. 참고로 우리처럼 AEAD(AES-GCM)를 골랐다면 무결성 키 `SK_ai`·`SK_ar`은 쓰이지 않습니다(길이 0) — 앞에서 INTEG 변환 칸이 비었던 것과 같은 이유입니다.
+
+셋째, **CHILD SA와 트래픽 범위(TS) 합의**입니다. `IKE_AUTH` 안의 `SAi2`가 앞서 말한 **CHILD SA용 제안**(`esp_proposals`)이고, `TSi`·`TSr`(Traffic Selector)이 "어느 대역의 트래픽을 이 SA로 보호할지"를 정합니다 — 개시자가 넓게 제안한 범위를 응답자가 자기 정책(SPD)에 맞춰 더 좁힐(narrowing) 수 있습니다. 이 둘이 합의되는 순간, 4편이 다루던 그 **CHILD SA**가 섭니다. 그래서 4편 도입의 "양쪽은 이제 같은 키를 쥐고 있고, 어떤 트래픽을 어떻게 보호할지도 합의했다"는 문장이 정확히 여기서 성립합니다 — 키는 `SK_*`로, 트래픽 범위는 TS로. (엄밀히는 strongSwan이 한 줄로 보여 주는 CHILD SA 하나가 커널 SAD에는 방향마다 하나씩 **ESP SA 한 쌍**으로 앉습니다 — SA가 단방향이라던 원칙 그대로입니다. 그래서 `swanctl`의 SA 두 줄과 커널의 SA 개수는 세는 층위가 다릅니다.)
+
+## 4바이트가 어디서 늘었나 (그리고 CREATE_CHILD_SA)
+
+앞 표에서 눈여겨보지 않고 지나친 숫자가 있습니다. **프레임 길이와 IKE Length의 차이**입니다. 검산해 봅니다(계층을 밝혀 둡니다 — 프레임 길이는 이더넷 프레임, IKE Length는 IKE 메시지 길이입니다).
+
+| 프레임 | 프레임 길이 − IKE Length | 차이 | 그 차이의 정체 |
+| --- | --- | --- | --- |
+| 1 · 2 (UDP 500) | 338−296, 346−304 | **42** | Ethernet 14 + IPv4 20 + UDP 8 |
+| 3 · 4 (UDP 4500) | 323−277, 277−231 | **46** | 위 42 **+ 4** |
+
+앞 쌍은 딱 42바이트 차이입니다(L2·L3·L4 헤더 합 — VLAN 태그·IPv4 옵션이 없고 pcap에 이더넷 FCS가 안 잡힌 기준입니다). 그런데 뒤 쌍은 **46바이트** — **4바이트가 더 붙었습니다.** 이 4바이트가 UDP 4500 위에서 IKE 메시지 앞에 붙는 **non-ESP marker**(0값 4바이트)입니다. tshark도 이 줄을 `UDP Encapsulation of IPsec Packets`로 따로 표시했습니다. 왜 이 4바이트가 필요한지 — 같은 포트 4500 위로 IKE와 ESP가 함께 흐를 때 둘을 어떻게 가르는지 — 는 4편에서 NAT-T로 다룰 이야기입니다. 여기서는 "포트가 4500으로 옮겨 가자 4바이트가 늘었다"는 사실 하나가 **3편과 4편을 잇는 다리**라는 점만 붙잡아 두면 됩니다.
+
+한 가지 더 예고합니다. 지금까지 본 네 메시지는 IKE SA와 **첫** CHILD SA를 세우는 initial exchange였습니다. 이후 CHILD SA를 더 만들거나 키를 갱신(rekey)할 때는 또 다른 교환 종류인 **`CREATE_CHILD_SA`(36)**를 씁니다(§1.3). 여기에 새 키교환(KE)을 실으면 갱신된 키가 과거 키와 독립이 되는데(PFS, Perfect Forward Secrecy), 그 수명주기 이야기는 이 편의 범위를 넘습니다. 다만 헤더 해부기에서 Exchange Type을 36으로 바꿔 보면 그 자리 한 바이트만 달라지는 것은 확인할 수 있습니다 — 프로토콜은 같은 봉투에 다른 도장을 찍어 다른 일을 시킵니다.
+
+## 실무 시나리오: 협상이 실패하는 세 가지 모양
+
+협상은 실패하면 대개 **조용히** 실패합니다 — 터널이 그냥 안 서고, 애플리케이션에는 "연결 안 됨"만 뜹니다. 다행히 지금까지 뜯어 본 구조가 그대로 진단 지도가 됩니다. 실패는 협상의 **어느 단계**에서 멈췄는지로 갈리고, 그 단계는 세 개의 창으로 확인합니다 — `swanctl --list-sas`(SA가 어디까지 섰나), `journalctl -u strongswan`(charon가 남긴 이유), 그리고 이 편 내내 쓴 `tcpdump 'udp port 500 or udp port 4500'`(패킷이 실제로 오가나)입니다.
+
+### 시나리오 1 — 제안이 안 맞아 SA가 아예 안 선다
+
+- **원리**: `IKE_SA_INIT`에서 개시자가 던진 `Proposal`(암호 스위트 후보) 중 응답자가 **고를 것이 하나도 없으면**, 응답자는 SA를 세우지 않고 `NO_PROPOSAL_CHOSEN` Notify를 돌려보냅니다. 앞서 본 Transform 트리가 양쪽에서 **교집합**이 나야 한다는 뜻입니다.
+- **흔한 문제**: 한쪽은 `aes256gcm16`(AEAD)만, 다른 쪽은 `aes256-sha256`(암호화·무결성 분리)만 허용해 `ENCR` 종류가 안 겹칩니다. DH 그룹만 어긋나는 경우(`ecp384` ↔ `modp2048`)도 흔합니다.
+- **진단**: `journalctl`에 `no matching proposal found` 또는 `received NO_PROPOSAL_CHOSEN`. `tcpdump`으로는 500에서 요청은 나가는데 응답이 Notify 하나거나 아예 없습니다.
+- **해결**: 양쪽 `proposals`(IKE)와 `esp_proposals`(CHILD)의 교집합을 만듭니다. 이 글의 트리로 말하면 `ENCR·PRF·D-H`(그리고 AEAD가 아니면 `INTEG`)에서 각각 최소 하나씩 겹쳐야 합니다.
+- **팁**: IKE 제안과 ESP 제안은 별개라, IKE는 맞는데 ESP가 안 맞으면 **IKE_SA만 서고 CHILD_SA는 안 섭니다.** 이 편 첫머리의 "SA 두 줄"이 여기서 진단 도구가 됩니다 — `swanctl`에 IKE_SA만 뜨면 어긋난 것은 `esp_proposals` 쪽입니다.
+
+### 시나리오 2 — 500은 오가는데 4500에서 막힌다
+
+- **원리**: 협상은 500에서 시작하고, NAT을 발견하면 이후를 4500으로 옮깁니다(이 편의 `NAT_DETECTION`). 경로의 방화벽이 UDP 4500을 막으면 `IKE_SA_INIT`(500)은 오가지만 그다음 `IKE_AUTH`(4500)가 못 나갑니다.
+- **흔한 문제**: 방화벽이 UDP 500만 열고 4500을 닫아 둔 경우, 또는 ESP(프로토콜 50)만 생각하고 UDP 4500을 안 연 경우입니다.
+- **진단**: `tcpdump 'udp port 500 or udp port 4500'`에서 500의 두 프레임(요청·응답)은 보이는데 4500 트래픽이 한쪽 방향만이거나 전혀 없습니다. `swanctl`은 `IKE_SA ... CONNECTING`에서 멈춥니다.
+- **해결**: 경로상 방화벽에서 UDP **500과 4500을 모두** 엽니다.
+- **팁**: NAT이 없는 경로에서는 4500 전환 자체가 안 일어나 이 증상이 안 나타납니다. 그래서 "사무실에선 되는데 집·모바일에서만 안 된다"가 전형입니다 — 집·모바일 쪽 NAT 때문에 4500으로 옮겨 가는데, 하필 그 포트가 막혀 있는 것입니다.
+
+### 시나리오 3 — SA_INIT은 넘는데 AUTH에서 끊긴다
+
+- **원리**: `IKE_AUTH`에서 서로의 서명(AUTH 페이로드)을 검증합니다. 앞서 본 대로 서명 대상에는 상대의 nonce와 자기 ID가 묶여 들어가므로, PSK 불일치·인증서 신뢰 실패·ID 불일치 중 하나라도 있으면 검증이 깨집니다.
+- **흔한 문제**: 양쪽 PSK가 다르거나, 인증서 체인·CA가 안 맞거나, 시계가 크게 어긋나 인증서 유효기간을 벗어났거나, `leftid`/`rightid`가 실제 ID와 다른 경우입니다.
+- **진단**: `swanctl`에 IKE_SA가 잠깐 떴다 사라지고, `journalctl`에 `AUTHENTICATION_FAILED`·`no trusted certificate found`·`constraint check failed` 같은 줄이 남습니다.
+- **해결**: PSK·인증서·ID·시각을 양쪽에서 맞춥니다.
+- **팁**: 이 실패는 프레임 3·4 **안**(암호문)에서 나므로, `tcpdump`으로는 "`IKE_AUTH`가 오갔다"까지만 보이고 그 이유는 안 보입니다. 이 편에서 "여기부터 암호문"이라던 그 경계가 진단에서도 그대로 벽이 됩니다 — 그래서 이 시나리오만은 패킷이 아니라 **로그**를 봐야 합니다.
+
+## 자주 틀리는 포인트
+
+- ❌ **"IKEv2가 곧 IPsec이다."** → IKEv2는 **협상만** 합니다. 실제 데이터는 ESP가 나릅니다(4편). IPsec은 이 둘을 끼워 넣는 프레임워크이고, `swanctl`이 SA를 둘 보여 준 것도 IKE SA와 CHILD SA가 별개이기 때문입니다.
+- ❌ **"SPI는 세션 ID다."** → SPI는 **SA를 가리키는 인덱스**입니다. 협상용 IKE SPI(8+8바이트 쌍)와 데이터용 ESP SPI(4바이트 하나)는 크기·개수·고르는 주체가 모두 다릅니다. 첫 요청의 응답자 SPI가 0인 것이 "아직 SA가 없다"의 증거입니다.
+- ❌ **"IKE_SA_INIT도 암호화돼 있다."** → 첫 두 메시지는 **평문**입니다 — SA·KE·Ni·Nr가 그대로 디섹션됩니다. 암호화는 `IKE_AUTH`의 `SK{}` 봉투부터입니다. 평문인데도 안전한 이유는 공유 비밀 `g^ir`이 없으면 그 값들로 키를 만들 수 없기 때문입니다.
+- ❌ **"SA 제안에 무결성(INTEG) 칸이 비었으니 무결성이 없다."** → AES-GCM 같은 **AEAD**를 골랐다는 표시입니다. 암호화와 무결성을 한 몸으로 처리하므로 INTEG 변환을 따로 넣지 않는 것이 정상입니다(2편).
+- ❌ **"포트가 500에서 4500으로 바뀐 건 설정 실수다."** → **NAT 탐지의 결과**입니다. 첫 메시지의 `NAT_DETECTION_*` 해시가 어긋나면 양쪽이 4500으로 옮겨 갑니다. 그때 IKE 앞에 non-ESP marker 4바이트가 붙습니다(4편의 NAT-T).
+
+## 직접 해보기: 캡처를 다시 떠 본다
+
+**목표** — 이 편에서 인용한 구조가 실제 도구에서 그대로 나오는지 자기 손으로 확인하고, "평문인 IKE_SA_INIT"과 "암호문인 IKE_AUTH"의 경계를 눈으로 봅니다.
+
+**준비물** — 리눅스 두 노드와 그 사이 NAT 라우터. strongSwan과 `tshark`. 가장 가벼운 방법은 리눅스 한 대 안에서 네트워크 네임스페이스 세 개(개시자·NAT 라우터·응답자)를 쓰는 것입니다. 컨테이너 런타임은 필요하지 않고, 정리도 `ip netns del` 한 번이면 됩니다. macOS·윈도우라면 가벼운 리눅스 VM 하나를 띄우십시오.
+
+> **캡처하기 전에 offload부터 끄십시오.** veth는 GRO/GSO/TSO가 기본으로 켜져 있어, 그대로 두면 실제 회선보다 큰 합쳐진 패킷과 계산 전 체크섬이 찍혀 아래 길이 검산이 통째로 어긋납니다.
+>
+> ```bash
+> ethtool -K <인터페이스> gro off gso off tso off tx off rx off
+> ```
+
+1. IKEv2로 터널을 세웁니다(IKE 제안 `aes256gcm16-prfsha384-ecp384`). NAT 라우터에는 IP 포워딩과 MASQUERADE 규칙을 둡니다.
+   ```bash
+   swanctl --load-all
+   swanctl --initiate --child host-host
+   ```
+2. 개시자 쪽(NAT 이전)에서 협상을 캡처합니다.
+   ```bash
+   tcpdump -i <c1-veth> -w ike.pcap 'udp port 500 or udp port 4500'
+   ```
+3. 텍스트로 떠서 읽습니다.
+   ```bash
+   tshark -r ike.pcap -O isakmp -V > ike.txt
+   ```
+4. **관찰 포인트**
+   - 첫 요청의 **Responder SPI가 0**인가. 응답에서 채워지는가.
+   - `IKE_SA_INIT`의 SA·KE·Nonce가 **평문으로 디섹션**되는가. 반대로 `IKE_AUTH`는 `Encrypted Data` 한 줄로 끝나는가.
+   - SA 제안의 **길이가 `12 + 8 + 8 → 36 → 40`**으로 맞아떨어지는가. INTEG 변환이 비어 있는가.
+   - **포트가 500 → 4500으로 옮겨 갈 때 IKE Length 대비 프레임 길이 차이가 42에서 46으로** 늘어나는가.
+
+> 재현의 기준은 값이 아니라 **구조**입니다. SPI·nonce·키는 매 실행 달라지지만, 위 네 가지는 그대로 나타납니다. (참고로 `IKE_AUTH` 내부를 굳이 열어 보고 싶다면 교육용으로 널 암호를 쓰는 방법이 있으나, 그건 실제 운영 설정이 아니므로 "teaching-only"임을 분명히 하고 써야 합니다.)
+
+## 마무리 — 핵심 다시 짚기
+
+**IKEv2의 헤더와 페이로드는 외울 목록이 아니라, "아직 서로를 모르는 두 장비가 같은 키를 쥐기까지"의 설계 흔적입니다.** SPI가 한 쌍인 것은 협상 전이라 각자 이름표가 필요해서이고, 첫 요청의 응답자 SPI가 0인 것은 아직 상대 SA가 없어서이며, SA 제안의 INTEG 칸이 빈 것은 AEAD를 골랐다는 표시이고, 포트가 4500으로 옮겨 간 것은 NAT을 발견했다는 뜻입니다.
+
+- **IPsec은 프레임워크입니다.** SA(단방향)·SPD(정책)·SAD(상태)가 뼈대이고, IKEv2는 정책이 요구한 SA를 협상으로 세워 SAD에 꽂는 조각입니다. 그래서 SA가 둘(IKE SA·CHILD SA) 서고, 제안도 둘(IKE·ESP)로 나뉩니다.
+- **네 개의 메시지**로 두 SA를 함께 세웁니다. 앞 쌍(`IKE_SA_INIT`, 평문)이 공유 비밀을, 뒤 쌍(`IKE_AUTH`, 암호문)이 인증과 CHILD SA·트래픽 범위를 끝냅니다.
+- **평문과 무보호는 다릅니다.** SA·KE·Nonce는 읽히지만, 공유 비밀 없이는 그 재료로 키를 만들 수 없습니다.
+- **길이는 더해지는 값입니다.** `12 + 8 + 8 → 36 → 40`. 캡처의 SA payload length가 덧셈 한 줄로 설명됩니다.
+- **`IKE_AUTH`는 봉투만 보입니다.** 안은 암호문이지만, 겉면의 `Next Payload`·IV·길이가 "안에 무엇이 먼저 들었는지"까지는 알려 줍니다.
+- **4500으로 옮겨 간 순간 4바이트가 늘었습니다.** 그 non-ESP marker가 3편과 4편을 잇는 다리입니다.
+- **"같은 열쇠"는 비유입니다.** 두 장비가 실제로 나눠 갖는 것은 하나의 공유 비밀이고, 거기서 방향·용도별 키 여러 개(`SK_ei`·`SK_er`·`SK_d`…)가 갈라져 나옵니다.
+
+여기까지가 IPsec의 협상 절반입니다. 두 낯선 장비는 이제 같은 키를 쥐었고, 어떤 트래픽을 어떻게 보호할지도 합의했습니다. 그런데 **협상은 협상일 뿐**입니다 — 실제 데이터를 그 키로 감싸 국경을 넘기는 일은 전혀 다른 프로토콜이 맡습니다. [4편](/posts/vpn-anatomy-4/)에서 ESP를 해부하며, 방금 4500으로 옮겨 간 그 포트 위에서 패킷이 어떻게 UDP 옷을 한 겹 더 입는지, 그리고 그 옷값이 어떻게 MTU 블랙홀로 돌아오는지를 봅니다.
+
+## 근거와 더 읽을 거리
+
+**표준·명세(normative)**
+- [RFC 7296 — Internet Key Exchange Protocol Version 2 (IKEv2)](https://www.rfc-editor.org/rfc/rfc7296.html) (§1.2 초기 교환, §2.14 키 유도, §2.15 AUTH, §2.23 NAT Traversal, §3.1 헤더, §3.2 Generic Payload Header, §3.3 SA/Proposal/Transform, §3.14 Encrypted Payload)
+- [RFC 4301 — Security Architecture for the Internet Protocol](https://www.rfc-editor.org/rfc/rfc4301.txt) (§4.1 SA, §4.4.1 SPD, §4.4.2 SAD)
+- [RFC 3948 — UDP Encapsulation of IPsec ESP Packets](https://www.rfc-editor.org/rfc/rfc3948.txt) (non-ESP marker·NAT-T, 4편)
+- [RFC 5282 — Using AEAD Algorithms in the Encrypted Payload of IKEv2](https://www.rfc-editor.org/rfc/rfc5282.txt) (AES-GCM의 IV·salt·무결성 키 처리)
+- [RFC 8247 — Algorithm Implementation Requirements and Usage Guidance for IKEv2](https://www.rfc-editor.org/rfc/rfc8247.txt) (권장 암호군 — RFC 7296을 갱신)
+
+**레지스트리**
+- [IANA — Internet Key Exchange Version 2 (IKEv2) Parameters](https://www.iana.org/assignments/ikev2-parameters/) (Exchange Type 34~37, Payload Type, Transform Type/ID, Notify Message Type)
+
+**선수 지식**
+- [VPN의 해부 2편 — 암호가 하는 세 가지 약속](/posts/vpn-anatomy-2/) — AEAD·키교환·nonce의 기반
+- [인증·인가 해부 1편](/posts/auth-authz-1/) — PSK·PKI·EAP 인증 방식의 구분
+- [OSI 7계층, 데이터의 여행으로 이해하기](/posts/osi-7-layers-1) — 계층과 캡슐화
