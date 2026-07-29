@@ -1,6 +1,6 @@
 {
   "next_id": 58,
-  "next_seq": 207,
+  "next_seq": 208,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -532,13 +532,13 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-047": {
-      "col": "backlog",
+      "col": "doing",
       "title": "rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
       "memo": "",
       "verbatim": "",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-29",
+      "최종": "ai",
+      "갱신": "2026-07-30",
       "title_hash": "e4774d11d90018821c86b23d655b393c966cc483",
       "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
@@ -668,13 +668,13 @@
     "KAN-024",
     "KAN-030",
     "KAN-032",
-    "KAN-047",
     "KAN-048",
     "KAN-049",
     "KAN-050",
     "KAN-051",
     "KAN-052",
     "KAN-053",
+    "KAN-057",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -720,9 +720,18 @@
     "KAN-056",
     "KAN-055",
     "KAN-054",
-    "KAN-057"
+    "KAN-047"
   ],
   "recent": [
+    {
+      "seq": 207,
+      "t": "2026-07-30T01:12",
+      "a": "ai",
+      "id": "KAN-047",
+      "op": "move",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 206,
       "t": "2026-07-29T20:03",
@@ -1197,16 +1206,6 @@
       "op": "move",
       "from": "todo",
       "to": "review"
-    },
-    {
-      "seq": 157,
-      "t": "2026-07-29T08:47",
-      "a": "ai",
-      "id": "KAN-046",
-      "op": "edit",
-      "field": "memo",
-      "before": "**상태: 코드·규약 완료(머지 2394fcf). 남은 건 main 워크트리에서 부트스트랩 1회.** || **문제**: 글 1편 발행마다 24편 전량이 LLM 재추출됐다(실측 graphify-out/.graphify_analysis.json: 1,257,753 in / 279,644 out, claude-cli로 40~60분). N에 선형이라 편당 발행 누적 O(N²). || **근본 원인(소스 확인)**: graphify 0.9.4는 콘텐츠 해시 캐시로 LLM 호출 전에 안 바뀐 글을 걸러내는데 이 레포는 두 겹으로 죽어 있었다. ⓐ graphify-out/cache/ 가 .gitignore. ⓑ 더 근본적으로 graphify 자신이 이 레이아웃에서 캐시를 한 건도 못 쓴다 — save_semantic_cache() 가 out_root/<source_file> 실재 여부를 보는데 source_file 은 스캔 루트(src/content/posts/) 기준 상대경로이고 --out . 은 레포 루트라 경로 불일치로 통째 skip. 같은 절대/상대 불일치가 _manifest_files 에도 있어 manifest.json 은 문서 코퍼스에서 항상 {} (첫 커밋부터 비어 있던 이유). || **해결**: scripts/seed-graph-cache.py 가 추출 직후 source_file 을 절대경로로 바꿔 graphify 자신의 save_semantic_cache(root=레포루트) 로 캐시를 심고 check_semantic_cache() 로 전 글 적중을 자체 검증한다(해시는 graphify 함수 그대로 — 재구현 없음). manifest 는 커밋하지 않는다(빈 파일이 있기만 해도 incremental_mode 가 켜져 삭제 감지가 죽고 지운 글 노드가 영구 잔존). || **실측(스크래치 프로브, 글 2편)**: 콜드 34,657 in / 6,168 out → 캐시 적중 시 'semantic cache: 2 hit / 0 miss', LLM 0콜, 토큰 0, 그래프는 26노드·41엣지로 동일. 1편만 수정 시 '1 hit / 1 miss'. || **산출물**: scripts/refresh-graph.sh(가드 3종) + scripts/seed-graph-cache.py + verify-graph.ts 검사 ④ + .gitignore 재작성 + package.json graph:refresh/graph:verify + ship-post 2벌·CLAUDE.md·README 규약 동기화. || ===== 다음 세션 인계(부트스트랩) ===== || **어디서**: 반드시 main 체크아웃 /Users/centurio/centurio1987.github.io 에서. 링크된 워크트리에서는 refresh-graph.sh 가드가 비0으로 막는다(의도된 동작). || **무엇을**: `bun run graph:refresh` 한 번. 캐시가 비어 있어 콜드런이라 40~60분. 이건 KAN-044가 예정해 둔 전량 재생성을 흡수한 것이라 추가 비용이 아니다. || **부트스트랩 전 상태는 정상이 아니다**: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 `bun run graph:verify` 가 ①③④로 실패한다. 이게 기대 상태다 — 고치려 들지 말고 부트스트랩을 돌려라. || **합격 기준(순서대로)**: ① 콜드런이 exit 0 (스크립트가 seed-cache 자체검증 + verify-graph 까지 자동으로 돈다). ② `ls graphify-out/cache/semantic/*.json | wc -l` 이 글 수(24) 이상. ③ **무변경 재실행이 공짜인가(핵심)** — 아무것도 안 고치고 `bun run graph:refresh` 재실행 → 로그에 'semantic cache: 24 hit / 0 miss', 'tokens' 줄 없음(또는 0), 1분 내 종료. ④ **캐시 churn 확인** — ③ 직후 `git diff --stat graphify-out/cache/semantic/` 이 비어야 한다. ⑤ `bun run build` 통과 + `bun run preview` 로 /graph 렌더와 임의 글의 연관 글 섹션 육안 확인, src/data/graph.json 의 concepts[].communityName 이 'Community N' 플레이스홀더로 퇴화하지 않았는지 확인(label --missing-only 정합이 먹었다는 증거). || **④가 깨지면(캐시 JSON 이 매번 달라지면)**: 커밋 노이즈가 커지므로 캐시 커밋 정책을 재고해야 한다. 다만 갱신이 main 전용이라 캐시를 커밋 안 해도 main 로컬에 남아 증분은 계속 동작한다 — 그 경우 .gitignore 에 graphify-out/cache/ 를 되돌리고 CLAUDE.md·README 의 '절대 gitignore 하지 마라' 문구를 'main 로컬 전용 상태'로 고쳐라. 기능 자체는 유지된다. || **커밋 경로**: graphify-out/ (cache/ast · cache/stat-index.json · manifest.json · graph.html · logs/ · 날짜백업은 .gitignore 가 이미 제외) + src/data/graph.json. 커밋 전 `git status --porcelain graphify-out/` 로 .gitignore 가 놓친 신규 부산물이 없는지 눈으로 확인해라. || **실패 시 폐기**: 자동 롤백하지 마라. `git diff --name-only graphify-out/ src/data/graph.json` 으로 손수정이 섞였는지 먼저 보고 나서 `git checkout --` 한다. || **끝나면**: 이 카드에 기준선 실측 4케이스(무변경 / 1편 본문 변경 / .mdx 프론트매터만 변경 / 시리즈 링크 삽입으로 형제 편 다수 변경)의 토큰·소요시간을 기록하고 검토로 옮겨라. KAN-044 도 함께 닫는다. || **주의**: .mdx 는 프론트매터까지 해시된다(cache.py 스트립은 .md 전용) — post-finalize 의 tags·시리즈 링크 삽입이 형제 편 재추출을 유발한다. claude-cli 는 청크당 입력 하한이 ~30k라 1편 추가도 완전 공짜는 아니다(전량 1.26M 대비 ~95% 절감). 브랜치 커밋 4b92642 메시지에는 옛 번호 KAN-045 가 남아 있다 — 실제 카드는 이것.",
-      "after": "✅ 부트스트랩 완료(2026-07-29, main 24ef578). 콜드 전량 재추출(1.66M in/352k out·~50분)로 커버리지 22편→25편(vpn-anatomy-1·4 포함). 합격기준 ①②③⑤ 통과: verify-graph 통과 · 캐시 25건 · build 38p 통과 · /graph·연관글 렌더 확인 · communityName 실명(플레이스홀더 0). || ③(핵심) 무변경 재실행 0토큰 실측 — 증분 복구 목표 달성. || ④(캐시 무변경 fixpoint) 미성립: graphify 클러스터링 비결정성으로 웜→웜에도 9파일 churn + graph.json ~560줄 churn. 유저 결정=캐시 계속 커밋(노이즈 감수) — 커밋 노이즈 대부분이 graph.json 자체라 gitignore 폴백은 이점 적음. CLAUDE.md/README '절대 gitignore 하지 마라' 규약 유지. || 기준선 실측(in/out·벽시계·hit/miss): 콜드 1,655,027/351,992·~50분 · 무변경 0/0·1s·25hit/0 · 1편본문(tauri-1) 59,336/10,101·86s·24hit/1miss · .mdx프론트매터만(updatedDate) 59,138/10,300·86s·24hit/1miss(→ cache.py 프론트매터 스트립 .md전용 확정: post-finalize의 tags·updatedDate·시리즈링크가 그 글 재추출 유발) · 형제3편(osi-7-layers-2·3·4) 181,821/51,825·438s·22hit/3miss. 증분비용=바뀐 글 수에 선형(글당 ~59k in), 1편=이전 전량(1.66M) 대비 ~96%절감. || 부수 버그수정(24ef578): refresh-graph.sh 가드③ — 캐시 디렉터리 없는 콜드 상태에서 find가 set -e pipefail로 경고도 못 찍고 스크립트를 죽이던 버그 → mkdir -p graphify-out/cache/semantic 선행. || 원인·해결 상세는 CLAUDE.md graphify 절 + 커밋 2394fcf/24ef578. KAN-044 함께 검토 이동."
     }
   ]
 }
