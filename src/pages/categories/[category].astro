@@ -2,7 +2,9 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostList from "../../components/PostList.astro";
+import FeedLink from "../../components/FeedLink.astro";
 import { CATEGORIES, getCategory } from "../../lib/categories";
+import { FEED_TITLE, categoryFeedUrl } from "../../lib/feed";
 import { POSTS_URL } from "../../lib/urls";
 
 export async function getStaticPaths() {
@@ -24,14 +26,22 @@ export async function getStaticPaths() {
 
 const { posts, category } = Astro.props;
 const meta = getCategory(category);
+const feedUrl = categoryFeedUrl(category);
 ---
 
-<BaseLayout title={`${meta.label} 글`} description={`${meta.label} 카테고리의 글 모음`}>
+<BaseLayout
+  title={`${meta.label} 글`}
+  description={`${meta.label} 카테고리의 글 모음`}
+  feeds={[{ href: feedUrl, title: `${FEED_TITLE} — ${meta.label}` }]}
+>
   <section class="wrap">
     <p class="back"><a href={POSTS_URL} class="sketch-link">← 전체 글</a></p>
-    <h1 style={`--cat:${meta.color}`}>
-      <span class="swatch" aria-hidden="true"></span>{meta.label}
-    </h1>
+    <div class="head">
+      <h1 style={`--cat:${meta.color}`}>
+        <span class="swatch" aria-hidden="true"></span>{meta.label}
+      </h1>
+      <FeedLink href={feedUrl} label={`${meta.label} 글`} />
+    </div>
     {
       posts.length > 0 ? (
         <PostList posts={posts} />
@@ -52,12 +62,21 @@ const meta = getCategory(category);
     font-size: 14px;
     margin: 0 0 12px;
   }
+  /* 카테고리 제목과 그 카테고리 피드 구독 캡슐을 한 줄에 (KAN-047). */
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 18px;
+  }
   h1 {
     display: flex;
     align-items: center;
     gap: 10px;
     font-size: clamp(28px, 6vw, 38px);
-    margin: 0 0 18px;
+    margin: 0;
   }
   .swatch {
     width: 18px;
