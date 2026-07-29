@@ -1,0 +1,310 @@
+---
+title: "OpenVPN 해부: 웹의 자물쇠를 빌려 쓴다는 것 — opcode 한 바이트와 tls-crypt"
+description: "OpenVPN은 HTTPS를 지키는 TLS를 제어 채널에만 빌려오고, 데이터는 자기 opcode 문법으로 나른다. 그 한 바이트의 설계와, tls-auth·tls-crypt가 캡처 두 장에서 갈리는 지점을 바이트 단위로 해부한다."
+pubDate: 2026-07-28
+category: skills
+author: ppangto
+tags: ["VPN", "OpenVPN", "TLS", "tls-auth", "tls-crypt", "opcode", "DCO", "TCP meltdown"]
+series: "VPN의 해부"
+order: 6
+draft: false
+---
+import VizFlowchart2 from "../../components/posts/vpn-anatomy-6/VizFlowchart2";
+import VizComparison3 from "../../components/posts/vpn-anatomy-6/VizComparison3";
+import VizProcessSteps4 from "../../components/posts/vpn-anatomy-6/VizProcessSteps4";
+
+import OpcodeByte from "../../components/posts/vpn-anatomy-6/OpcodeByte";
+
+![OpenVPN이 웹의 TLS를 제어 채널에만 빌려오고 데이터는 자기 opcode 문법으로 나르는 구조](/images/vpn-anatomy-6/hero.webp)
+
+궁금해서 자기 회사 OpenVPN 터널에 Wireshark를 대 봅니다. 암호화된 VPN이니 알아볼 수 없는 암호문 벽이 나오리라 기대하면서요. 그런데 첫 화면부터 이상합니다. `P_CONTROL_HARD_RESET_CLIENT_V2`라는 이름이 평문으로 찍히고, 이어서 `TLSv1 Client Hello`, `TLSv1.3 Server Hello`가 통째로 디섹션되어 나옵니다. **TLS 핸드셰이크가 훤히 보입니다** — 어떤 암호군을 제안하는지, 서버가 뭐라고 답하는지가 그대로 읽힙니다. "암호화 VPN이라면서, 왜 이게 다 보이지?"
+
+그런데 옆자리 동료의 OpenVPN을 똑같이 열어 보면, 같은 자리에 아무것도 없습니다. `SSL Continuation Data`라는 이름의 덩어리뿐, 핸드셰이크의 흔적조차 파싱되지 않습니다. 같은 OpenVPN 버전, 같은 UDP 1194 포트, 같은 AES-256-GCM 암호군인데 한쪽은 훤히 열려 있고 한쪽은 닫혀 있습니다. 설정 파일에서 다른 것은 딱 한 줄입니다 — `tls-auth`냐 `tls-crypt`냐.
+
+이 글을 끝까지 읽으시면, 그 한 줄이 왜 이렇게까지 다른 그림을 만드는지, "OpenVPN은 TLS를 쓴다"는 말이 정확히 **어디까지** 참인지, 그리고 그 모든 것을 같은 스트림 위에서 갈라 주는 **opcode 한 바이트**가 어떻게 생겼는지를 바이트 단위로 설명할 수 있게 됩니다. 이 편의 목표는 하나입니다 — **"TLS를 쓴다"와 "TLS 그 자체가 된다"가 어떻게 다른지**를 손에 쥐는 것.
+
+> **읽기 전 약속 셋.** 이 글의 캡처는 모두 실제 랩에서 뜬 것이고, OpenVPN 2.6.19가 UDP 1194 위에서 AES-256-GCM으로 실제로 내보낸 바이트입니다. 주소는 문서용 대역(RFC 5737), 키·인증서는 랩 전용 합성값입니다. 둘째, **데이터 채널 내용은 복호하지 않습니다** — 데이터 채널은 TLS 레코드가 아니라 TLS 세션에서 따로 파생한 키로 OpenVPN이 직접 AEAD를 겁니다. 그 키를 OpenVPN 2.6이 표준 `SSLKEYLOGFILE` 형태로 내보내 주지 않으니(설령 TLS 키 로그가 있어도 데이터 채널은 TLS 레코드가 아니라 그걸로 열리지 않습니다), "구조(opcode·세션·키 인덱스)는 보이되 내용은 암호문"을 그대로 보여 드립니다. 셋째, 암호화·인증을 한 함수로 묶는 AEAD(Authenticated Encryption with Associated Data), 키교환, 전진 비밀성 같은 **공통 암호 기반은 [2편](/posts/vpn-anatomy-2/)에서 다뤘습니다.** 이 편은 그 위에 OpenVPN이 얹은 고유한 부분만 봅니다.
+
+## 들어가며: "OpenVPN은 그냥 TLS다"라는 착각
+
+OpenVPN을 소개할 때 흔히 "TLS 기반 VPN"이라고 부릅니다. 그래서 많은 분이 이렇게 정리합니다 — "OpenVPN 안에는 TLS 연결이 하나 있고, 그 위로 IP 패킷을 그냥 흘려보내는 거구나." 절반은 맞고 절반은 틀립니다.
+
+맞는 절반부터. OpenVPN은 **자기만의 암호 핸드셰이크를 발명하지 않았습니다.** IPsec은 IKEv2라는 전용 협상 프로토콜을 만들었고, WireGuard는 Noise 프레임워크 기반의 고유한 핸드셰이크를 설계했습니다. OpenVPN은 그 길을 가지 않았습니다. HTTPS를 지키는 바로 그 TLS(Transport Layer Security)를 **그대로 빌려다** 상대를 인증하고 키를 나눕니다. 남이 십수 년간 검증한 자물쇠를 새로 깎지 않고 빌려 쓴 것이니, 영리한 선택입니다.
+
+틀린 절반. **그 TLS는 "제어 채널"에만 쓰입니다.** 실제 데이터 — 여러분이 터널로 보내는 IP 패킷 — 는 TLS 레코드로 감싸이지 않습니다. OpenVPN은 데이터를 나를 때 자기만의 프레이밍을 씁니다. 그러니까 OpenVPN 하나의 소켓 위에는 성격이 다른 두 채널이 흐릅니다.
+
+- **제어 채널(control channel)** — TLS 핸드셰이크와 키 교환, 설정 푸시가 오가는 곳. 여기서 TLS를 빌려 씁니다.
+- **데이터 채널(data channel)** — 인증·키 협상이 끝난 뒤 실제 IP 패킷이 AEAD로 암호화되어 나르는 곳. 여기엔 TLS 레코드가 없습니다.
+
+"OpenVPN은 TLS다"가 위험한 축약인 이유가 여기 있습니다. TLS는 **핸드셰이크를 빌려주는 하청 업체**이지, 데이터를 나르는 운송 수단이 아닙니다. 이 구분을 놓치면 "왜 데이터 채널에는 TLS 레코드가 안 보이지?", "왜 opcode 같은 낯선 바이트가 앞에 붙지?" 같은 질문에 영영 답할 수 없습니다. 이 편은 정확히 그 두 채널이 **한 UDP 스트림 위에서 어떻게 갈라지는지**를 파고듭니다.
+
+## 한눈에 보기
+
+이번 편에서 다룰 축은 다섯 개입니다.
+
+1. **두 개의 채널** — 제어는 TLS를 빌리고, 데이터는 자기 문법을 쓴다. 이 분리가 전부의 출발점입니다.
+2. **TLS 1.3 레코드** — 타입까지 암호화 안에 숨기는 구조. OpenVPN이 빌려 오는 자물쇠의 성능.
+3. **opcode 한 바이트** — 상위 5비트와 하위 3비트. 두 채널을 같은 스트림에서 구분하는 설계의 전부.
+4. **tls-auth vs tls-crypt** — 서명이냐 암호화냐. 이 편 첫머리의 "왜 한쪽만 보이나"의 답.
+5. **유연성의 값** — DCO로 커널에 들어간 데이터 채널, 그리고 TCP 위에 TCP를 얹었을 때 벌어지는 일.
+
+## 엄밀한 정의: 채널이 둘, 그래서 프레이밍도 둘
+
+OpenVPN wire protocol 문서(openvpn.github.io/openvpn-rfc)는 모든 OpenVPN 패킷의 맨 앞에 **1바이트짜리 opcode/key-id 필드**를 둡니다. 이 한 바이트가 "이 패킷이 제어 채널인지 데이터 채널인지, 그리고 어떤 키로 처리해야 하는지"를 알려 줍니다. 채널을 가르는 스위치가 헤더 맨 앞 1바이트에 박혀 있는 셈입니다. (정확히는 **UDP 전송 기준**입니다. TCP 전송에서는 데이터그램 경계를 표시하는 2바이트 길이 필드가 앞에 하나 더 붙어 opcode는 그 뒤로 밀립니다 — 이 편의 캡처는 전부 UDP라 opcode가 진짜 맨 앞입니다.)
+
+그 뒤가 채널에 따라 완전히 달라집니다.
+
+- **제어 패킷**(`P_CONTROL_*`, `P_ACK_*`)은 세션 ID와 패킷 ID, 확인응답(ACK) 배열을 헤더로 갖고, 그 뒤에 **TLS 레코드 조각**을 실어 나릅니다. OpenVPN이 TLS를 UDP 위에서 신뢰성 있게 나르려고 자기 손으로 재전송·순서보장·ACK를 구현한 것입니다(UDP는 그런 걸 안 해 주니까요).
+- **데이터 패킷**(`P_DATA_V1`, `P_DATA_V2`)은 opcode 뒤에 **peer-id(멀티 클라이언트 구분자)와 패킷 ID, AEAD 인증 태그, 그리고 암호문**이 옵니다. TLS 레코드는 없습니다. 여기서 쓰는 암호는 TLS가 아니라 OpenVPN이 자체 협상한 AEAD 암호군입니다(2.6이 기본으로 **허용하는** AEAD는 AES-256-GCM·ChaCha20-Poly1305 둘로 좁혀졌고, 대개 AES-256-GCM으로 협상됩니다).
+
+정리하면, **제어 채널은 "TLS를 나르는 신뢰성 계층"이고, 데이터 채널은 "AEAD로 감싼 IP 패킷"입니다.** 둘은 같은 소켓, 같은 포트를 쓰되 첫 바이트로 갈립니다. 이 편의 나머지는 이 문장을 바이트로 증명하는 과정입니다.
+
+## TLS 1.3 레코드: 타입까지 숨기는 자물쇠
+
+OpenVPN이 빌려 오는 자물쇠가 얼마나 좋은지부터 봅시다. 여기서 중요한 것은 **TLS 1.3의 레코드 계층**이 무엇을 숨기느냐입니다.
+
+TLS 1.2까지는 레코드 헤더에 "이 레코드가 핸드셰이크인가, 애플리케이션 데이터인가, 경보(alert)인가"를 알려 주는 **ContentType이 평문으로** 붙었습니다. 관찰자가 내용은 못 읽어도 "지금 핸드셰이크 중이구나", "이제 데이터가 흐르는구나"는 알 수 있었다는 뜻입니다. TLS 1.3은 이걸 닫았습니다. RFC 8446 §5.2가 정의하는 `TLSInnerPlaintext`는 이렇게 생겼습니다.
+
+```text
+# RFC 8446 §5.2 — 스펙 레이아웃(실제 캡처가 아니라 규격 정의)
+struct {
+    opaque content[TLSPlaintext.length];   // 진짜 내용
+    ContentType type;                       // 진짜 타입 — 안쪽으로 들어감
+    uint8 zeros[length_of_padding];         // 제로 패딩(길이 은닉)
+} TLSInnerPlaintext;
+```
+
+핵심은 **진짜 타입(`type`)이 내용 뒤로 들어가 통째로 암호화된다**는 점입니다. 바깥에 남는 것은 정체를 알 수 없는 암호문 덩어리와, 모든 레코드에 똑같이 붙는 위장용 `application_data`(0x17) 타입뿐입니다. 관찰자는 이게 핸드셰이크인지 데이터인지, 심지어 경보인지도 구분하지 못합니다. 뒤에 붙는 제로 패딩은 길이 패턴까지 흐립니다.
+
+단, 이 타입 은닉은 **암호화되는 레코드에만** 적용됩니다. 핸드셰이크의 맨 처음 두 메시지 — ClientHello와 ServerHello — 는 아직 공유 키가 없어 **평문 핸드셰이크 레코드**로 오갑니다(ServerHello가 키 공유를 나르니 당연합니다). 그 뒤 EncryptedExtensions·인증서·Finished부터가 핸드셰이크 키로 암호화되어 `application_data`로 위장됩니다. 이 구분을 기억해 두십시오 — 잠시 뒤 tls-auth 캡처에서 **인증서는 안 보이는데 ClientHello는 보이는** 이유가 바로 이것이기 때문입니다.
+
+여기서 잠깐 선을 그어야 합니다. **이 타입 은닉은 TLS 레코드 안쪽의 이야기입니다.** OpenVPN에서 이 TLS 레코드는 **제어 채널에서만** 등장합니다. 그리고 그 TLS 레코드조차, OpenVPN이 `P_CONTROL` 패킷의 페이로드로 감싸서 나릅니다. 즉 관찰자가 보는 순서는 바깥에서 안으로 `[IP][UDP][OpenVPN opcode·세션][TLS 레코드]`입니다. TLS 1.3이 아무리 타입을 잘 숨겨도, 그 **바깥의 OpenVPN opcode는 여전히 평문**입니다. 이 편 첫머리에서 `P_CONTROL_HARD_RESET_CLIENT_V2`가 훤히 보였던 이유가 바로 이것입니다 — 그건 TLS가 아니라 OpenVPN의 프레이밍이니까요.
+
+TLS 1.3의 또 다른 미덕은 **키 스케줄**입니다. 핸드셰이크로 뽑은 시크릿을 한 방향 함수(HKDF, HMAC-based Key Derivation Function)로 계단처럼 파생시키는데, 각 단계가 이전 시크릿을 입력으로 삼는 **단방향** 연쇄라 뒤 단계 키가 새더라도 앞 단계로 역산할 수 없습니다. (전진 비밀성 자체는 이 단방향성만으로 서는 게 아니라, 매 세션 새로 만들고 버리는 **임시 Diffie-Hellman 키**에서 나옵니다 — 그 원리는 2편에서 다뤘고, 단방향 키 스케줄은 그 위에 얹히는 보강 성질입니다.)
+
+<VizFlowchart2 />
+
+이 전진 비밀성(PFS, Perfect Forward Secrecy)이 왜 성립하는지, AEAD가 왜 기밀성과 무결성을 한 번에 주는지는 [2편](/posts/vpn-anatomy-2/)에서 부품 단위로 해부했습니다. 여기서는 "OpenVPN이 제어 채널에 이 좋은 자물쇠를 빌려 온다"는 사실과, **그 자물쇠 바깥에 여전히 평문 opcode가 남는다**는 사실만 붙들면 됩니다.
+
+## opcode 한 바이트: 이 한 바이트가 전부입니다
+
+이제 이 편의 심장으로 갑니다. 두 채널을 같은 스트림에서 구분하는 것, 어떤 키로 풀지 정하는 것 — 이 모든 것이 **맨 앞 1바이트**에 들어 있습니다. OpenVPN wire protocol 문서 §4는 이 바이트를 이렇게 쪼갭니다.
+
+```text
+# openvpn.github.io/openvpn-rfc §4 — opcode/key-id 1바이트(스펙 정의)
+struct udp_packet {
+   int opcode:5;   // 상위 5비트 = 메시지 종류
+   int keyid:3;    // 하위 3비트 = 키 인덱스(0~7)
+}
+```
+
+**상위 5비트가 opcode**(operation code, 메시지 종류)입니다. 5비트니 최대 32가지를 표현할 수 있고, 현재 11개 상수가 정의돼 있습니다 — `P_CONTROL_V1`, `P_ACK_V1`, `P_DATA_V2` 같은 것들입니다. **하위 3비트가 key-id**(키 인덱스)입니다. 새 세션은 0에서 시작하고, 키를 새로 협상(rekey)할 때마다 값이 올라가며 3비트 범위 안에서 회전합니다(0은 최초 세션 몫이라, 한 바퀴 돈 뒤로는 1~7을 씁니다). 데이터가 흐르는 도중에 무중단으로 키를 갈아 끼울 수 있는 이유가 이 3비트에 있습니다 — 옛 키와 새 키가 잠깐 공존할 때, 받는 쪽이 이 인덱스로 "이 패킷은 어느 키로 풀어야 하는지"를 즉시 압니다.
+
+직접 만져 보는 편이 빠릅니다. 아래에서 opcode와 key-id를 골라 보면, 그 둘이 어떻게 한 바이트로 합쳐지는지, 결과 바이트가 캡처에서 본 값과 어떻게 맞아떨어지는지 보입니다.
+
+<OpcodeByte client:visible />
+
+opcode를 `P_CONTROL_HARD_RESET_CLIENT_V2`(7), key-id를 0으로 두면 바이트가 `0x38`이 됩니다. 이 값을 기억해 두십시오 — 실제 캡처에서 그대로 나옵니다.
+
+```text
+# ~/blog-research/raws/captures/vpn-anatomy-6/openvpn-opcode.txt (tls-crypt 모드), Frame 3 발췌
+OpenVPN Protocol
+    Type: 0x38 [opcode/key_id]
+        0011 1... = Opcode: P_CONTROL_HARD_RESET_CLIENT_V2 (0x07)
+        .... .000 = Key ID: 0
+    Session ID: 1028502608930217994
+    Message Packet-ID: 362
+```
+
+`0x38`은 이진수로 `0011 1000`입니다. tshark가 친절하게 나눠 보여 줍니다 — 상위 5비트 `00111`은 7, 즉 `P_CONTROL_HARD_RESET_CLIENT_V2`이고, 하위 3비트 `000`은 key-id 0입니다. **여러분이 위 도구에서 만든 바로 그 바이트**입니다. 스펙의 비트 쪼개기가 실제 회선에서 그대로 나온다는 것을, 손으로 만든 값과 캡처가 일치하는 것으로 확인한 셈입니다.
+
+여기서 이 편 전체를 관통하는 관찰 하나. **이 opcode 바이트는 tls-crypt 모드인데도 평문으로 보입니다.** 뒤에서 보겠지만 tls-crypt는 제어 채널을 암호화하는 모드입니다. 그런데도 opcode는 열려 있습니다. 왜냐하면 opcode는 **암호화 영역 바깥**, 그러니까 수신자가 "이걸 어떻게 처리할지"를 정하기 위해 반드시 먼저 읽어야 하는 라우팅 정보이기 때문입니다. [4편](/posts/vpn-anatomy-4/)에서 ESP의 SPI가 왜 평문 맨 앞에 있었는지 기억하신다면 — 똑같은 이유입니다. **어떤 키로 풀지는, 풀기 전에 알아야 합니다.**
+
+## 제어 패킷의 구조: 그리고 V2가 3바이트를 더 넣은 이유
+
+opcode 뒤의 구조를 채널별로 봅시다. 먼저 제어 패킷입니다.
+
+```text
+# openvpn.github.io/openvpn-rfc §5.1/§6.2.1 — P_CONTROL(스펙 정의)
+struct control_packet {
+    int opcode:5;  int keyid:3;
+    uint64_t own_session_id;       // 내 세션 ID(64비트 난수)
+    uint8_t  acked_pktid_len;      // 이 패킷에 실은 ACK 개수
+    uint32_t acked_pktid_list[];   // ACK할 패킷 ID들(각 32비트)
+    uint64_t peer_session_id;      // ACK가 1개 이상일 때만 존재
+    uint32_t packet_id;            // 이 패킷의 순번(0부터, 빈틈 없이)
+    uint8_t  control_channel_payload[];  // ← 여기에 TLS 레코드 조각
+}
+```
+
+눈여겨볼 대목이 둘입니다. 첫째, **packet_id가 0부터 빈틈없이 증가**합니다. UDP는 순서도 재전송도 보장하지 않으니, OpenVPN이 제어 채널에서 "TCP 비슷한 신뢰성"을 스스로 만드는 것입니다. 그래서 `P_ACK_V1`이라는 별도 확인응답 패킷도 있습니다 — 구조는 제어 패킷과 비슷하되 **자기 packet_id 필드가 없습니다**(순수 확인응답이니 순번을 매길 필요가 없으니까요). 둘째, `control_channel_payload`가 바로 앞 절에서 본 **TLS 레코드가 실리는 자리**입니다. TLS는 이 안에 앉아 있고, OpenVPN이 재전송·순서보장으로 그걸 감싸 나릅니다. (UDP 위에서 TLS를 나르는 표준 답은 사실 DTLS(Datagram TLS)입니다. 그런데 OpenVPN은 DTLS 대신 **표준 TLS 레코드를 자기 신뢰성 계층으로 감싸는** 길을 택했고, 그 대가로 이 `P_CONTROL`·`P_ACK` 기구를 손수 갖춘 것입니다.)
+
+데이터 패킷의 V2는 한 필드를 더 넣었습니다.
+
+```text
+# openvpn.github.io/openvpn-rfc §7.4 — P_DATA_V2 (AEAD, 스펙 정의)
+struct aead_packet {
+    int opcode:5;  int key_id:3;
+    int peer_id:24;                 // ← V1에는 없던 3바이트
+    uint32_t packet_id;
+    uint8_t  authentication_tag[16];
+    uint8_t* encrypted_payload;
+}
+```
+
+opcode 바로 뒤에 **peer_id 24비트(3바이트)**가 붙습니다. 레거시 `P_DATA_V1`에는 없던 필드입니다. 서버 하나가 수천 클라이언트를 동시에 상대할 때, 들어온 데이터 패킷이 **어느 세션의 것인지**를 이 3바이트로 즉시 식별합니다. 세션 ID(8바이트)를 매번 실어 보내는 대신 짧은 정수 하나로 대신하니, 데이터 채널의 패킷당 오버헤드가 줄어듭니다. 캡처에서 확인됩니다.
+
+```text
+# openvpn-opcode.txt (tls-crypt 모드), Frame 1 발췌 — 데이터 채널
+    Type: 0x48 [opcode/key_id]
+        0100 1... = Opcode: P_DATA_V2 (0x09)
+        .... .000 = Key ID: 0
+    Peer ID: 0
+    Data (36 bytes)   # packet_id(4) + GCM 태그(16) + 암호문 — 여기부터는 열리지 않는다
+```
+
+`0x48` = `0100 1000` → 상위 5비트 `01001`은 9, `P_DATA_V2`입니다. 그 뒤에 `Peer ID: 0`(클라이언트가 하나뿐인 랩이라 0)이 파싱되고, 그다음 `Data (36 bytes)`부터는 **열리지 않습니다.** 여기가 packet_id + AEAD 인증 태그(16바이트) + 암호문이고, 데이터 채널이라 우리는 복호하지 않습니다. **구조는 보이되 내용은 암호문** — 이 편이 지키는 정직함입니다. 참고로 이 데이터 패킷의 UDP 페이로드는 40바이트(opcode 1 + peer_id 3 + Data 36)이고, tshark가 표시한 "82 bytes on wire"는 이더넷 프레임 길이입니다. 크기를 인용할 땐 어느 계층의 길이인지가 늘 중요합니다. (이 캡처는 packet_id가 32비트인 **고전 P_DATA_V2** 형식입니다. 최신 OpenVPN에는 64비트 패킷 ID·epoch 키를 쓰는 확장 AEAD 형식도 있으나, 2.6.19의 이 세션은 고전 형식으로 협상됐습니다.)
+
+## tls-auth vs tls-crypt: 서명이냐, 암호화냐
+
+이제 이 편 첫머리의 수수께끼로 돌아갑니다. 같은 OpenVPN인데 왜 한쪽은 핸드셰이크가 훤히 보이고 한쪽은 닫혀 있었을까요? 답은 제어 채널에 얹는 **추가 보호 계층**이 서로 다른 종류이기 때문입니다.
+
+**tls-auth는 서명입니다** — "서명"은 비유이고, 정확히는 사전 공유 키로 만드는 **HMAC(Hash-based Message Authentication Code), 곧 대칭키 MAC**입니다(공개키 전자서명과 달리 제3자 검증이나 부인방지는 없고, "키를 아는 쪽이 만들었다"만 보증합니다). 제어 채널 패킷에 이 HMAC을 덧붙여 위조를 막는 게 목적입니다 — 아무나 가짜 제어 패킷을 던져 서버를 흔드는 공격(DoS·핸드셰이크 플러딩)을 검증으로 걷어냅니다. 그런데 **MAC은 내용을 가리지 않습니다.** 제어 채널 페이로드, 즉 그 안의 TLS 핸드셰이크는 여전히 평문입니다.
+
+```text
+# ~/blog-research/raws/captures/vpn-anatomy-6/openvpn-tls-auth.txt (tls-auth 모드), Frame 2 발췌
+    Type: 0x38 [opcode/key_id]  →  P_CONTROL_HARD_RESET_CLIENT_V2 (0x07)
+    HMAC: 98c554cf636aa2451077b6908fc00c951fe63b98   # 40 hex = 20바이트 = HMAC-SHA1
+    Replay-Packet-ID: 1
+    Session ID: 5592081819249112416
+```
+
+`HMAC` 필드가 새로 등장한 게 보입니다(tls-crypt 캡처에는 이렇게 **따로 파싱되는 HMAC 필드가 없습니다** — tls-crypt도 인증 태그를 갖지만 그건 암호문 안으로 들어가 tshark가 떼어 보여 주지 못합니다). 40개 hex 문자, 즉 20바이트 — HMAC-SHA1 태그입니다(설정에 따라 SHA256이면 32바이트). 이 MAC이 위조는 막지만, 바로 다음 패킷에서 TLS 핸드셰이크가 그대로 파싱되는 것을 막지는 못합니다.
+
+**tls-crypt는 암호화입니다.** 사전 공유 키로 제어 채널 페이로드를 **AES-256-CTR로 암호화하고 HMAC-SHA-256으로 인증**합니다(IV를 인증값에서 뽑는 SIV(합성 IV)-유사 구성이라, 봉인과 검증을 함께 합니다). MAC이 아니라 봉인이라, 안의 TLS 핸드셰이크가 통째로 암호문이 됩니다.
+
+여기서 "무엇이 숨는가"를 정확히 짚어야 합니다. 흔히 "tls-crypt는 인증서를 숨긴다"고 하는데, 그건 TLS 1.2 시절의 이야기입니다. 앞서 봤듯 TLS 1.3에서는 서버 인증서가 이미 TLS 자신의 핸드셰이크 키로 암호화되므로(EncryptedExtensions 이후), tls-crypt가 없어도 관찰자에게 보이지 않습니다. 그러니 TLS 1.3에서 tls-crypt가 실제로 더 숨기는 것은 인증서가 아니라 **핸드셰이크의 겉면 전부** — ClientHello·ServerHello, 거기 담긴 제안 암호군과 키 공유, 그리고 무엇보다 **"여기서 TLS 핸드셰이크가 벌어지고 있다"는 사실 자체**입니다. 검열·DPI(Deep Packet Inspection, 딥 패킷 검사) 환경에서 "이건 OpenVPN이다"라고 특정당하는 단서를 지우는 실질적 차이가 여기 있습니다.
+
+<VizComparison3 />
+
+말로만 하면 믿기 어려우니, **같은 랩·같은 필터로 제어 채널 설정만 바꿔 뜬 두 캡처를 나란히** 놓겠습니다. 이 대비가 이 편의 증거입니다.
+
+```text
+# ~/blog-research/raws/captures/vpn-anatomy-6/openvpn-compare.txt 발췌
+## tls-auth
+  4  192.0.2.10 → 203.0.113.10  TLSv1   373  Client Hello
+  5  203.0.113.10 → 192.0.2.10  TLSv1.3 1264 Server Hello, Change Cipher Spec, Application Data
+## tls-crypt
+  5  192.0.2.10 → 203.0.113.10  SSL     385  Continuation Data
+  6  203.0.113.10 → 192.0.2.10  SSL     1248 Continuation Data
+```
+
+같은 랩, 같은 `udp port 1194` 필터, 오직 `tls-auth`냐 `tls-crypt`냐만 다릅니다. **tls-auth에서는 tshark가 `Client Hello`, `Server Hello`를 이름까지 붙여 디섹션합니다.** 제어 채널이 평문이니 TLS 파서가 거기까지 읽은 것입니다. 눈여겨볼 것은 Server Hello 뒤에 붙은 `Application Data` 두 개인데, 이건 TLS 1.3이 **자기 핸드셰이크 키로 암호화한 나머지**(EncryptedExtensions·인증서·Finished)라 tls-auth에서도 그 안은 열리지 않습니다. 그러니 tls-auth가 노출하는 것은 **인증서가 아니라 핸드셰이크의 겉면**(ClientHello·ServerHello)입니다. **tls-crypt에서는 정확히 같은 순간의 패킷이 `SSL Continuation Data`, 즉 정체 모를 덩어리로만** 찍힙니다 — 겉면조차 봉인된 것입니다. "tls-auth는 (겉면까지) 서명, tls-crypt는 (겉면까지) 암호화"라는 한 문장이, 캡처 두 장으로 그대로 증명됩니다.
+
+그러면서도 tls-crypt 캡처에서 tshark는 **맨 앞 opcode와 세션 ID까지는 여전히 파싱해 냈습니다**(위 Frame 3에서 보신 그대로 — 이 둘은 패킷을 옳은 세션으로 보내기 위해 봉인 바깥에 남습니다). 그러니 정확한 문장은 이렇습니다 — **tls-crypt는 "제어 채널의 내용"을 숨기지, "이게 OpenVPN 제어 패킷이라는 사실" 자체를 지우지는 않습니다.** 게다가 UDP 1194라는 포트, opcode 값의 패턴, 패킷 크기·타이밍은 그대로 남으니, tls-crypt는 완전한 위장이 아니라 **한 겹의 은폐**입니다 — 작정한 DPI는 이 흔적들로 여전히 OpenVPN을 지목할 수 있고, 그때는 obfs 계열 같은 별도 난독화 계층이 필요합니다.
+
+(경계 하나. 클라이언트마다 다른 키를 발급하는 **tls-crypt-v2**라는 확장도 있습니다 — 첫 패킷의 opcode가 `P_CONTROL_HARD_RESET_CLIENT_V3`(10)로 바뀌어, 랩핑된 클라이언트 키를 실어 나릅니다. 멀티 테넌트 배포에서 쓰지만 이 편의 캡처는 단일 키 tls-crypt라, 여기서는 이름만 남겨 두겠습니다.)
+
+## 유연성의 값 (1) — DCO: 유저스페이스의 대가를 커널로
+
+OpenVPN의 오랜 약점은 성능이었습니다. 전통적으로 제어 채널과 데이터 채널이 **둘 다 유저스페이스 데몬**에 있었기 때문입니다. 패킷 하나가 커널 ↔ 유저스페이스 경계를 몇 번씩 넘나들며 복사되고, 문맥 전환 비용이 쌓였습니다. [4편](/posts/vpn-anatomy-4/)의 IPsec이 커널 XFRM으로 도는 것, 그리고 다음 편에서 볼 WireGuard가 **처음부터 커널 모듈**로 태어난 것과 대비되는 지점이었습니다.
+
+OpenVPN 2.6은 **DCO(Data Channel Offload)**로 이 격차를 좁혔습니다. **지원 플랫폼(리눅스·FreeBSD·윈도우)에서 DCO가 활성화되면**, 데이터 채널(IP 패킷을 AEAD로 암·복호하는 뜨거운 경로)만 **커널 모듈(`ovpn-dco`)로 내려가고**, 유저스페이스 데몬은 **순수 제어 평면**으로 남습니다. 앞에서 두 채널을 그렇게 공들여 갈라 놓은 설계가 여기서 보상받습니다 — 채널이 이미 분리돼 있었으니, 뜨거운 절반만 커널로 옮기는 수술이 가능했던 것입니다. 물론 공짜는 아닙니다. DCO는 **AEAD 암호군만 허용**하고 `--compress` 같은 옛 옵션과는 함께 못 갑니다 — 조건을 갖춘 구성에서만 켜지는 최적화입니다. WireGuard가 처음부터 커널에 있던 자리를, OpenVPN은 아키텍처를 갈라 두었던 덕분에 **뒤늦게, 그러나 깔끔하게** 따라잡은 셈입니다.
+
+## 유연성의 값 (2) — TCP 위에 TCP를 얹으면
+
+OpenVPN의 가장 큰 매력은 **어디서나 붙는다**는 점입니다. 방화벽이 UDP를 다 막아도 OpenVPN은 TCP 443, 즉 HTTPS와 똑같은 포트로 갈아탈 수 있습니다. 겉보기가 평범한 HTTPS 트래픽과 비슷하니 검열을 넘기 쉽습니다. IPsec이나 WireGuard가 특정 포트·프로토콜에 묶여 방화벽에 막히는 상황에서, 이 유연성은 결정적입니다.
+
+그런데 이 유연성엔 값이 붙습니다. **TCP 위에 TCP를 얹으면** 고약한 일이 벌어집니다. 이름하여 TCP-over-TCP meltdown입니다.
+
+<VizProcessSteps4 />
+
+TCP는 애초에 **자기 안에 자기가 중첩되도록** 설계되지 않았습니다. 내부 TCP(터널을 타는 애플리케이션의 연결)와 외부 TCP(OpenVPN이 TCP 모드에서 여는 전송 연결)가 **각자 독립적으로** 재전송·타임아웃·혼잡제어를 돌립니다. 경로에서 패킷 하나가 사라지면, 내부 TCP가 "어? 안 왔네" 하며 재전송 타이머를 세우는데, **바로 그 순간 외부 TCP도 같은 손실을 감지하고 자기 재전송을 시작합니다.** 두 재전송이 겹치고, 혼잡제어가 서로를 오해하며 창을 줄이고, 지연이 눈덩이처럼 불어납니다. "가장 신뢰성 있는 프로토콜"이어야 할 TCP-in-TCP가 오히려 가장 불안정해지는 역설입니다.
+
+완화책은 놀랄 만큼 단순합니다 — **외부를 UDP로 바꾸는 것.** UDP는 재전송을 하지 않으니, 손실이 나도 내부 TCP의 재전송 하나만 남고 중첩이 사라집니다. 그래서 OpenVPN의 권장 기본은 UDP이고, 이 편의 캡처도 전부 UDP 1194입니다. **TCP 모드는 UDP가 방화벽에 막히는 최후의 수단**으로만 씁니다 — "어디서나 붙는" 유연성을 위해 성능을 담보로 잡히는, 값을 아는 채로 내리는 선택입니다.
+
+## 실무 워크스루: "어떤 망에서는 되는데, 어떤 망에서는 안 붙는다"
+
+집이나 카페에서는 멀쩡하던 OpenVPN이 회사 게스트 와이파이나 호텔 네트워크에서만 안 붙습니다. 혹은 붙긴 붙는데 파일 전송이 기어갑니다. 이 편에서 본 세 가지 — 전송 프로토콜, 제어 채널 은폐, 이중 재전송 — 이 여기서 실제 판단으로 번역됩니다. 순서대로 좁혀 가겠습니다.
+
+1. **먼저 "전송이 막혔는지"를 가른다.**
+   - **원리**: 기본은 UDP 1194입니다. 방화벽이 UDP를 통째로 막으면 협상의 첫 패킷(`P_CONTROL_HARD_RESET_CLIENT_V2`)조차 나가지 못합니다 — 제어 채널이 아예 서지 못하는 것입니다.
+   - **진단**: `tcpdump -ni any 'udp port 1194'`로 나가는 패킷은 있는데 응답이 없는지 봅니다. 클라이언트 로그에 `TLS handshake failed`만 반복되면 전송 자체가 막힌 신호입니다.
+   - **해결**: `proto tcp` + `port 443`으로 바꿔 HTTPS와 같은 겉모습으로 내보냅니다. 대부분의 방화벽은 443을 열어 두니까요.
+   - **팁**: 서버에서 UDP·TCP 인스턴스를 따로 띄워 두면, 클라이언트가 UDP를 먼저 시도하고 막혔을 때만 TCP로 폴백하게 할 수 있습니다.
+
+2. **TCP로 붙었는데 느리면, meltdown을 의심한다.**
+   - **원리**: 바로 앞 절의 TCP-over-TCP입니다. 외부 TCP(443)와 터널 안 앱의 TCP가 각자 재전송을 돌립니다.
+   - **문제**: 손실이 조금이라도 있는 경로(모바일·혼잡망)에서 처리량이 급락하고 지연이 튑니다.
+   - **해결**: 가능하면 UDP를 여는 것이 근본입니다. 정 안 되면 TCP를 쓰되, 이것이 "성능을 담보로 잡힌 우회로"임을 알고 감수합니다.
+   - **팁**: 손실이 없는 안정 회선이면 meltdown 체감은 작습니다 — "TCP라 무조건 느리다"가 아니라 "손실이 있을 때 나빠진다"가 정확합니다.
+
+3. **붙었다 끊기거나 특정 망에서만 즉시 차단되면, DPI를 의심한다.**
+   - **원리**: tls-auth는 제어 채널이 평문이라 ClientHello·ServerHello가 그대로 보입니다. DPI가 "이건 OpenVPN 핸드셰이크"라고 지목해 끊을 수 있습니다.
+   - **진단**: tls-auth 캡처에서 `TLSv1 Client Hello`가 이름까지 파싱되는지 봅니다. 여러분에게 보이면 관찰자에게도 보입니다.
+   - **해결**: `tls-crypt`로 바꿔 제어 채널을 봉인하면 핸드셰이크의 겉면이 사라집니다. 다중 클라이언트 배포라면 클라이언트별 키를 쓰는 tls-crypt-v2를 고려합니다.
+   - **팁**: 그래도 opcode·포트·크기 패턴은 남습니다(앞 절). 작정한 DPI 앞에서 tls-crypt는 한 겹일 뿐이라, 그 위에 obfs 계열 난독화를 더 얹어야 하는 환경도 있습니다.
+
+정리하면, **전송(UDP/TCP)은 "붙느냐"를, tls-crypt는 "들키느냐"를, 그리고 그 둘의 상호작용이 "빠르냐"를 가릅니다.** 이 세 손잡이를 따로 쥐고 있어야, 같은 "OpenVPN이 이상하다"는 증상을 서로 다른 처방으로 갈라낼 수 있습니다.
+
+## 자주 틀리는 포인트 (❌ → 교정)
+
+1. **❌ "OpenVPN은 TLS 그 자체다."**
+   → TLS는 **제어 채널에만** 빌려 씁니다. 데이터 채널은 TLS 레코드가 아니라 OpenVPN 고유의 `P_DATA` 프레이밍에 AEAD를 얹어 나릅니다. "TLS를 쓴다"와 "TLS가 된다"는 다릅니다.
+2. **❌ "P_DATA 패킷 안에 TLS 레코드가 들어 있다."**
+   → 없습니다. TLS 레코드는 `P_CONTROL` 패킷의 페이로드에만 실립니다. 데이터 패킷 안은 peer-id·packet-id·AEAD 태그·암호문이지 TLS가 아닙니다.
+3. **❌ "tls-crypt를 켜면 아무것도 안 보인다."**
+   → 제어 채널의 **내용**(핸드셰이크의 겉면 — ClientHello·ServerHello까지)은 숨지만, 맨 앞 **opcode와 세션 ID는 여전히 평문**입니다. "OpenVPN 제어 패킷이다"라는 사실 자체는 지워지지 않습니다.
+4. **❌ "tls-auth와 tls-crypt는 성능 옵션이다."**
+   → 보안 옵션입니다. tls-auth는 **HMAC 서명**(위조 방지), tls-crypt는 **암호화**(핸드셰이크 겉면까지 은닉). 목적이 다르지 처리 속도를 고르는 스위치가 아닙니다.
+5. **❌ "OpenVPN은 유저스페이스라 무조건 느리다."**
+   → 2.6의 DCO가 데이터 채널을 커널로 내렸습니다. 유저스페이스에 남은 건 제어 평면뿐입니다. "무조건 느리다"는 2.6 이전의 이야기입니다.
+6. **❌ "안정성을 위해 TCP 모드가 낫다."**
+   → 반대입니다. TCP-over-TCP meltdown 때문에 **UDP가 기본이고 더 안정적**입니다. TCP는 UDP가 막힐 때의 우회로입니다.
+
+## 직접 해보기: opcode를 눈으로 확인한다
+
+**목표:** 자기 손으로 만든 opcode 바이트가 실제 캡처와 맞아떨어지는지 확인하고, tls-auth와 tls-crypt에서 제어 채널의 가시성이 어떻게 갈리는지 봅니다.
+
+**준비물:** OpenVPN 2.6, `tshark`(또는 Wireshark). 리눅스 두 노드와 그 사이 NAT 라우터가 있으면 좋지만, 한 대 안에서 네트워크 네임스페이스로도 됩니다([4편](/posts/vpn-anatomy-4/)의 랩 구성 그대로).
+
+> **캡처 전에 offload를 끄십시오.** veth는 GRO/GSO/TSO가 기본으로 켜져 있어, 그대로 두면 실제 회선보다 큰 합쳐진 패킷이 찍혀 크기 관찰이 어긋납니다.
+>
+> ```bash
+> ethtool -K <인터페이스> gro off gso off tso off tx off rx off
+> ```
+
+1. **tls-crypt로 터널을 세우고 캡처합니다.**
+   ```bash
+   tcpdump -i eth0 -w openvpn-tls-crypt.pcap 'udp port 1194'
+   tshark -r openvpn-tls-crypt.pcap -O openvpn -V -x > opcode.txt
+   ```
+2. **opcode 바이트를 읽습니다.** 위의 인터랙티브 도구에서 `P_CONTROL_HARD_RESET_CLIENT_V2` + key-id 0을 골라 `0x38`을 만들고, 캡처에서 같은 값이 나오는지 대조합니다. `Type: 0x38 [opcode/key_id]` 아래 비트 분해가 여러분이 만든 것과 같아야 합니다.
+3. **제어 채널이 열리는지 봅니다.** tls-crypt에서는 TLS가 실리는 `P_CONTROL_V1` 패킷이 `SSL Continuation Data`로만 보입니다. 안이 암호문이라 tshark가 못 여는 것입니다.
+4. **설정 한 줄만 바꿔 다시 뜹니다.** `tls-crypt` 대신 `tls-auth`로 바꾸고 같은 절차를 반복하면, 이번엔 같은 자리에서 `TLSv1 Client Hello`가 이름까지 붙어 디섹션됩니다. **딱 한 줄 차이가 만드는 그림의 차이**를 자기 눈으로 확인하는 것이 이 실습의 전부입니다.
+5. **관찰 포인트**
+   - 두 모드 모두 **opcode·세션 ID는 평문**인가.
+   - tls-auth에만 **HMAC 필드**가 붙는가(20바이트 SHA1, 또는 설정에 따라 32바이트 SHA256).
+   - 데이터 채널(`P_DATA_V2`)은 두 모드 모두 **구조만 보이고 내용은 암호문**인가(우리는 데이터 채널을 복호하지 않습니다).
+
+> 랩의 키·인증서는 **반드시 새로 만든 합성값**을 쓰고, 주소는 문서용 대역(192.0.2.0/24, 203.0.113.0/24)을 씁니다. 실 인프라의 키나 인증서가 캡처 파일에 들어가는 사고는 생각보다 자주 납니다.
+
+## 마무리 — 핵심 다시 짚기
+
+**OpenVPN은 TLS를 빌려 쓰되, 그 자체가 되지는 않았습니다.** 자물쇠(핸드셰이크)는 남의 검증된 것을 빌려 오고, 운송(데이터 프레이밍)은 자기 문법으로 짰습니다. 이 편의 모든 것이 그 한 문장에서 갈라져 나옵니다.
+
+- **채널이 둘입니다.** 제어는 TLS를 나르는 신뢰성 계층, 데이터는 AEAD로 감싼 IP 패킷. 둘은 같은 소켓에서 **맨 앞 1바이트**로 갈립니다.
+- **opcode 한 바이트가 전부입니다.** 상위 5비트 메시지 종류, 하위 3비트 key-id. 이 바이트는 라우팅 정보라 **어느 모드에서도 평문**입니다.
+- **P_DATA_V2의 peer-id 3바이트**는 멀티 클라이언트를 짧은 정수로 구분하려는 최적화입니다.
+- **tls-auth는 HMAC 서명, tls-crypt는 암호화**입니다. 캡처 두 장이 그 차이를 그대로 보여 줍니다 — 한쪽은 `Client Hello`, 한쪽은 `Continuation Data`.
+- **유연성엔 값이 붙습니다.** DCO로 데이터 채널을 커널에 내려 성능을 되찾았고, TCP 모드는 어디서나 붙는 대신 meltdown을 감수합니다.
+
+여기까지 오면서 우리는 IPsec(3·4편), WireGuard(5편), 그리고 이번 OpenVPN까지, VPN의 세 가족을 각기 다른 각도에서 해부했습니다. 표준을 촘촘히 쌓은 IPsec, 최소 설계로 커널에 태어난 WireGuard, 남의 자물쇠를 빌려 유연함을 산 OpenVPN. **그런데 정작 현장에서는, 무엇을 골라야 할까요?** 포트가 막힌 카페에서, 수천 명이 붙는 게이트웨이에서, 모바일과 사무실을 오가는 노트북에서 — 세 가족의 트레이드오프가 실제 선택으로 번역되는 자리는 어디일까요. [다음 편](/posts/vpn-anatomy-7/)에서 일곱 편을 통틀어, **선택과 운영의 매트릭스**로 이 시리즈를 닫겠습니다.
+
+## 근거와 더 읽을 거리
+
+- **RFC 8446** — *The Transport Layer Security (TLS) Protocol Version 1.3*. §5.2(레코드 계층·`TLSInnerPlaintext`), §7.1(키 스케줄). [rfc-editor.org/rfc/rfc8446](https://www.rfc-editor.org/rfc/rfc8446)
+- **OpenVPN wire protocol** — *OpenVPN Protocol*(RFC 초안 형식). §4(opcode/key-id), §6.1(opcode 상수), §5.1·§6.2.1(P_CONTROL), §7.4(P_DATA_V2), §5.3·§5.4(tls-auth/tls-crypt). [openvpn.github.io/openvpn-rfc](https://openvpn.github.io/openvpn-rfc/)
+- **RFC 5116** — *An Interface and Algorithms for Authenticated Encryption*(AEAD 일반, 2편에서 상술). [rfc-editor.org/rfc/rfc5116](https://www.rfc-editor.org/rfc/rfc5116)
+- **OpenVPN 2.6 릴리스 노트** — DCO(Data Channel Offload), AEAD 기본화(AES-256-GCM·ChaCha20-Poly1305). [openvpn.net/community-downloads](https://openvpn.net/community-downloads/)
+- 캡처 아티팩트(랩 재현·인용 규약): 각 `.txt` 파일 첫머리 주석이 생성 명령·패키지 버전·캡처 지점·일시를 담은 출처 표기입니다. OpenVPN 2.6.19 / TShark 4.2.2 / UDP 1194 / `data-ciphers AES-256-GCM`.
