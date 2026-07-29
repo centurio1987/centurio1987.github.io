@@ -17,14 +17,16 @@
 
 | 필드 | 필수 | 설명 |
 |---|---|---|
-| `kind` | ✓ | 아래 5종 중 하나 |
+| `kind` | ✓ | 아래 6종 중 하나 |
 | `data` | ✓ | kind별 데이터(아래) |
 | `target` | | `"inline"`(기본) \| `"hero"` |
 | `caption` | | 그림 아래 캡션(figcaption) |
 | `alt` | | 접근성 대체텍스트(SVG `<title>`). 없으면 caption/title에서 유도 |
 | `name` | | 컴포넌트/파일명 힌트(hero면 보통 `"hero"`) |
 | `viewBox` | | 예 `"0 0 820 220"`. 생략 시 kind별 기본값 |
-| `size` | | hero 픽셀 크기 `{"w":1200,"h":675}` |
+
+> **`size`는 없다.** 스키마(`commonShape`)에 없어 Zod가 버린다. hero 픽셀 크기는 **`viewBox` × 2**로 정해진다
+> (`render-viz`가 deviceScaleFactor 2로 캡처). 그래서 `"0 0 600 338"` → 1200×676(OG 규격)이다.
 
 **텍스트는 짧게.** 노드당 1~2줄, 긴 설명은 본문·캡션에 둔다.
 
@@ -62,12 +64,16 @@
 `edges[].label`은 화면에 그려지지 않는다. **정보는 노드 `label`에 담아라**
 (예: 엣지 "invoke" 대신 노드 `"IPC — invoke ↓ · Channel send ↑"`). 엣지에만 적은 정보는 사라진다.
 
-### R4. hero(PosterEditorial)는 제목·부제 위주로 크게
+### R4. hero는 `PosterHero`를 쓴다 — 제목·부제만 크게
 
 hero는 본문 최상단이자 **OG 이미지이자 시리즈 카드 썸네일**이다. 작은 썸네일에서 읽히지 않는 글자는 없느니만 못하다.
+- **`PosterEditorial`을 hero로 쓰지 마라.** 패키지 구현이 `title`을 **줄바꿈 없는 단일 `<text fontSize=54>`**로
+  그려서, 폭을 넘는 제목은 경고 없이 오른쪽이 **잘린다**(한글 약 10자가 한계, `subtitle`·`items`도 같다).
+  로컬 kind `PosterHero`(`src/lib/viz/PosterHero.tsx`)가 자동 줄바꿈 + 자동 크기 맞춤으로 이 문제를 없앤다.
 - `viewBox`는 `"0 0 600 338"` 안팎(래스터는 deviceScaleFactor 2로 1200x676 = OG 규격).
   viewBox를 키울수록 글자만 작아진다(1200x675로 렌더하면 글씨가 1.67배 작아진다).
-- `title`은 한 줄, `subtitle`은 짧게. `items`는 넣더라도 2~3개 이내에 각 20자 이내.
+- `title`은 프론트매터 제목의 앞부분(부제 분리 전), `subtitle`은 25자 이내 한 줄이 가장 크게 나온다.
+  길수록 자동으로 작아질 뿐 잘리지는 않는다.
 
 ### R5. 발행 전 실제 렌더를 눈으로 본다
 
@@ -84,7 +90,7 @@ await b.close()'
 
 ---
 
-## v1 지원 kind (5종)
+## v1 지원 kind (6종)
 
 ### 1. `ProcessSteps` — 순차 단계 (입력→처리→출력, 워크플로)
 ```json
@@ -118,15 +124,21 @@ await b.close()'
 ```
 - `mode`: `"cards"`(기본) \| `"isotype"` \| `"mosaic"` \| `"waffle"`. `value`는 숫자/문자열, `unit`/`delta`/`count` 선택.
 
-### 5. `PosterEditorial` — hero 대표 이미지 (에디토리얼 포스터) — 구 OpenAI hero 대체
+### 5. `PosterHero` — hero 대표 이미지 (로컬 kind, **hero는 이걸 쓴다**)
 ```json
-{ "kind":"PosterEditorial", "target":"hero", "name":"hero",
+{ "kind":"PosterHero", "target":"hero", "name":"hero",
   "alt":"로그인 뒤의 지형도",
-  "data": { "eyebrow":"AUTH 해부 시리즈", "title":"로그인 화면 뒤에 숨은 지형도", "subtitle":"인증과 인가의 경계",
-            "items":["세션 vs 토큰","인증 ≠ 인가"] },
-  "size": { "w":1200, "h":675 } }
+  "data": { "eyebrow":"AUTH 해부 · EP1", "title":"로그인 화면 뒤에 숨은 지형도", "subtitle":"인증과 인가의 경계" } }
 ```
-- 보통 `target:"hero"`로 써서 `public/images/<slug>/hero.webp`를 만든다(본문 최상단 + OG + 시리즈 썸네일 겸용).
+- `target:"hero"`로 써서 `public/images/<slug>/hero.webp`를 만든다(본문 최상단 + OG + 시리즈 썸네일 겸용).
+- 제목이 길면 **어절 경계에서 자동으로 줄바꿈**하고(균형 줄바꿈), 줄 수와 지면 높이에 맞춰 글자 크기를
+  후보 사다리(64→28)에서 자동으로 낮춘다. 부제까지 지면 안에 드는지 함께 본다 — **잘리지 않는다.**
+- 선택 필드: `maxTitleLines`(기본 3, 1~4) · `maxSubtitleLines`(기본 2, 1~3).
+- 구현은 `src/lib/viz/PosterHero.tsx`(패키지 아님). `render-viz`/`apply-viz`의 KIND 맵에 등록돼 있다.
+
+### 5-1. `PosterEditorial` — 패키지 원본 포스터 (**hero로 쓰지 마라**)
+`items` 목록 지면이 필요할 때만 쓴다. `title`/`subtitle`/`items` 모두 **줄바꿈도 말줄임도 없이** 한 줄로
+그려져 폭을 넘으면 잘린다(한글 약 10자). 자세한 건 R4.
 
 > 구 make-image 5종(`compare-table`/`step-diagram`/`point-cards`/`quote-box`/`hero`)과 구 `[[[…]]]`·`(( ))`는 위 kind로 매핑되어 은퇴했다.
 

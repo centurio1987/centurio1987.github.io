@@ -36,7 +36,7 @@ tech-deepdive (구조형·hero 자리에 ```viz``` 명세 블록을 남김)
   - `target:"inline"` → `src/components/posts/<slug>/<Name>.tsx` 생성 + MDX 상단 import 삽입 + 블록을 `<Name />`로 치환(무 client directive = SSR 정적 SVG).
   - `target:"hero"` → `public/images/<slug>/<name>.webp` 생성 + 블록을 `![alt](/images/<slug>/<name>.webp)`로 치환.
   - 잔존 `viz` 블록 0개(검사 통과).
-- **v1 지원 kind(5종)**: `ProcessSteps`(단계) · `Comparison`(비교) · `Flowchart`(흐름) · `Statistics`(수치) · `PosterEditorial`(hero). 그 외/오타는 Zod 검증 실패로 명확히 보고. (`src/lib/viz/schema.ts`)
+- **v1 지원 kind(6종)**: `ProcessSteps`(단계) · `Comparison`(비교) · `Flowchart`(흐름) · `Statistics`(수치) · `PosterHero`(hero, 로컬 kind) · `PosterEditorial`(패키지 원본 — hero로는 쓰지 마라, 긴 제목이 잘린다). 그 외/오타는 Zod 검증 실패로 명확히 보고. (`src/lib/viz/schema.ts`)
 
 ## viz 블록 문법
 
