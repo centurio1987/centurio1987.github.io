@@ -1,6 +1,6 @@
 {
   "next_id": 58,
-  "next_seq": 209,
+  "next_seq": 214,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -532,27 +532,27 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-047": {
-      "col": "backlog",
+      "col": "todo",
       "title": "rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
-      "memo": "",
+      "memo": "실행전략(4단계): ① @astrojs/rss@4.0.19 설치 — astro peer 제약 없고 zod4 기설치 ② src/pages/rss.xml.js 요약 피드 — draft 제외·pubDate desc·description+hero 절대URL·categories=카테고리+tags, 본문 전문은 MDX 아일랜드 탓에 제외 ③ 발견성 — BaseLayout head 의 link rel=alternate + Footer 구독 링크 ④ 검증 — bun run build 로 dist/rss.xml, W3C Feed Validator, 리더 앱 실물 확인 · 카테고리별 피드는 초판 제외(YAGNI) · astro.config 의 site 설정은 이미 충족",
       "verbatim": "",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-29",
+      "최종": "ai",
+      "갱신": "2026-07-30",
       "title_hash": "e4774d11d90018821c86b23d655b393c966cc483",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "memo_hash": "32328bd2111c5ae38f63c16eb971c5e2cf75136f",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-048": {
-      "col": "backlog",
+      "col": "todo",
       "title": "포스트에 좋아요를 누르는 기능을 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
-      "memo": "",
+      "memo": "실행전략(5단계): ① 인프라 Cloudflare Workers+D1 — 무료 Workers 10만req/일·D1 쓰기 10만행/일, 저활동 정지 없음(Supabase 는 7일 정지로 탈락) ② 스키마 counts(slug,likes,shares)+dedupe(sha256(salt+ip+slug+day)), 증가는 ON CONFLICT DO UPDATE 로 원자적, 원본 IP 미저장 ③ 엔드포인트 GET /stats?slugs= 배치조회·POST /like(IP당 1일 1회, 토글 허용)·POST /share, CORS 오리진 고정 ④ 프론트 React 아일랜드 금지 — .astro + is:inline vanilla 를 astro:page-load 바인딩, 숫자 폭 예약으로 CLS 0, 조회 실패시 숫자만 숨기고 글에는 영향 0 ⑤ 공유수는 플랫폼 카운트 API 부재로 '공유 버튼 클릭' 집계(X·링크복사·navigator.share) — 라벨을 정직하게 표기",
       "verbatim": "",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-29",
+      "최종": "ai",
+      "갱신": "2026-07-30",
       "title_hash": "71f774b2dbd873a293f12e761c168ef07e9d9c3a",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "memo_hash": "1ed3b1cff3d749e4c83328bf7235953a7803c1d4",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-049": {
@@ -606,13 +606,13 @@
     "KAN-053": {
       "col": "backlog",
       "title": "백엔드 없이도 회원가입 기능을 추가할 수 있는지 알려주고, 가능 하다면 계획하고 수행해라.",
-      "memo": "",
+      "memo": "유저 결정(2026-07-30): 댓글·회원가입 포기. 근거 — 승인제 가입 자체는 Supabase 로 가능하나(Before User Created 훅이 Free 플랜, Postgres 함수로 구현) 내장 메일러 2통/시간 제약과 UGC 렌더가 새로 여는 XSS 표면(정적 호스팅이라 BFF 불가, 세션이 localStorage)이 개인 블로그의 이득 대비 큼. 좋아요·공유 카운트만 KAN-048 로 진행.",
       "verbatim": "",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-29",
+      "최종": "ai",
+      "갱신": "2026-07-30",
       "title_hash": "15bf51047feb99b26f17471b1f3f30a4bf54423a",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "memo_hash": "b5dbcf05c2fc513c7c683741983c903f9943a1d8",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-054": {
@@ -668,8 +668,6 @@
     "KAN-024",
     "KAN-030",
     "KAN-032",
-    "KAN-047",
-    "KAN-048",
     "KAN-049",
     "KAN-051",
     "KAN-052",
@@ -720,9 +718,59 @@
     "KAN-056",
     "KAN-055",
     "KAN-054",
-    "KAN-050"
+    "KAN-050",
+    "KAN-047",
+    "KAN-048"
   ],
   "recent": [
+    {
+      "seq": 213,
+      "t": "2026-07-30T00:47",
+      "a": "ai",
+      "id": "KAN-053",
+      "op": "edit",
+      "field": "memo",
+      "before": "",
+      "after": "유저 결정(2026-07-30): 댓글·회원가입 포기. 근거 — 승인제 가입 자체는 Supabase 로 가능하나(Before User Created 훅이 Free 플랜, Postgres 함수로 구현) 내장 메일러 2통/시간 제약과 UGC 렌더가 새로 여는 XSS 표면(정적 호스팅이라 BFF 불가, 세션이 localStorage)이 개인 블로그의 이득 대비 큼. 좋아요·공유 카운트만 KAN-048 로 진행."
+    },
+    {
+      "seq": 212,
+      "t": "2026-07-30T00:47",
+      "a": "ai",
+      "id": "KAN-048",
+      "op": "move",
+      "from": "backlog",
+      "to": "todo"
+    },
+    {
+      "seq": 211,
+      "t": "2026-07-30T00:47",
+      "a": "ai",
+      "id": "KAN-048",
+      "op": "edit",
+      "field": "memo",
+      "before": "",
+      "after": "실행전략(5단계): ① 인프라 Cloudflare Workers+D1 — 무료 Workers 10만req/일·D1 쓰기 10만행/일, 저활동 정지 없음(Supabase 는 7일 정지로 탈락) ② 스키마 counts(slug,likes,shares)+dedupe(sha256(salt+ip+slug+day)), 증가는 ON CONFLICT DO UPDATE 로 원자적, 원본 IP 미저장 ③ 엔드포인트 GET /stats?slugs= 배치조회·POST /like(IP당 1일 1회, 토글 허용)·POST /share, CORS 오리진 고정 ④ 프론트 React 아일랜드 금지 — .astro + is:inline vanilla 를 astro:page-load 바인딩, 숫자 폭 예약으로 CLS 0, 조회 실패시 숫자만 숨기고 글에는 영향 0 ⑤ 공유수는 플랫폼 카운트 API 부재로 '공유 버튼 클릭' 집계(X·링크복사·navigator.share) — 라벨을 정직하게 표기"
+    },
+    {
+      "seq": 210,
+      "t": "2026-07-30T00:46",
+      "a": "ai",
+      "id": "KAN-047",
+      "op": "move",
+      "from": "backlog",
+      "to": "todo"
+    },
+    {
+      "seq": 209,
+      "t": "2026-07-30T00:46",
+      "a": "ai",
+      "id": "KAN-047",
+      "op": "edit",
+      "field": "memo",
+      "before": "",
+      "after": "실행전략(4단계): ① @astrojs/rss@4.0.19 설치 — astro peer 제약 없고 zod4 기설치 ② src/pages/rss.xml.js 요약 피드 — draft 제외·pubDate desc·description+hero 절대URL·categories=카테고리+tags, 본문 전문은 MDX 아일랜드 탓에 제외 ③ 발견성 — BaseLayout head 의 link rel=alternate + Footer 구독 링크 ④ 검증 — bun run build 로 dist/rss.xml, W3C Feed Validator, 리더 앱 실물 확인 · 카테고리별 피드는 초판 제외(YAGNI) · astro.config 의 site 설정은 이미 충족"
+    },
     {
       "seq": 208,
       "t": "2026-07-29T23:39",
@@ -1155,58 +1203,6 @@
       "title": "헤더 레벨로 포스트 페이지 우측에 네비게이션을 보여주고, 헤더를 클릭하면 바로 스크롤해서 이동할 수 있는 기능을 추가해라.",
       "memo": "",
       "verbatim": ""
-    },
-    {
-      "seq": 163,
-      "t": "2026-07-29T13:22",
-      "a": "유저",
-      "id": "KAN-049",
-      "op": "create",
-      "col": "backlog",
-      "title": "글지도에서 그래프가 확장 되어도 전체를 조감할 수 있도록, 확대, 축소와 캔버스 내 위치 이동 기능을 추가해라.",
-      "memo": "",
-      "verbatim": ""
-    },
-    {
-      "seq": 162,
-      "t": "2026-07-29T13:22",
-      "a": "유저",
-      "id": "KAN-048",
-      "op": "create",
-      "col": "backlog",
-      "title": "포스트에 좋아요를 누르는 기능을 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
-      "memo": "",
-      "verbatim": ""
-    },
-    {
-      "seq": 161,
-      "t": "2026-07-29T13:22",
-      "a": "유저",
-      "id": "KAN-047",
-      "op": "create",
-      "col": "backlog",
-      "title": "rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라.",
-      "memo": "",
-      "verbatim": ""
-    },
-    {
-      "seq": 160,
-      "t": "2026-07-29T08:48",
-      "a": "ai",
-      "id": "KAN-044",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
-    },
-    {
-      "seq": 159,
-      "t": "2026-07-29T08:48",
-      "a": "ai",
-      "id": "KAN-044",
-      "op": "edit",
-      "field": "memo",
-      "before": "**KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다.",
-      "after": "✅ KAN-046 부트스트랩으로 흡수·완료(2026-07-29, main 24ef578): 커버리지 25편(vpn-anatomy-1·4 포함), verify-graph 통과, 증분 복구 실측 완료 — 이후 그래프 갱신은 main 머지 직후 bun run graph:refresh 1회면 바뀐 글만 LLM을 탄다. 실측·결정 상세는 KAN-046. || **KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다."
     }
   ]
 }
