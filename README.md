@@ -102,7 +102,7 @@ flowchart TD
 
 | 입력물 | 트리거 | 산출물 |
 |---|---|---|
-| 발행 대상 포스트 (`[[[…]]]`·`series` 포함 가능) | `/post-finalize` | `[[[…]]]`→일러스트, 본문 기반 **tags 추출**, `series` 있으면 **시리즈 링크 섹션** 삽입 |
+| 발행 대상 포스트 (`[[[…]]]`·`series` 포함 가능) | `/post-finalize` | `[[[…]]]`→일러스트, 본문 기반 **tags 추출**, 잔존 **시리즈 링크 섹션 제거**(네비는 `PostNav`·`SeriesEpisodes` 자동 렌더) |
 | `draft/<…>-draft.md` | `/publish-post` | `src/content/posts/<slug>.md` — Astro frontmatter 채우고 **draft:false 발행, 원본 draft 삭제** |
 | `src/content/posts/*.mdx` | `/ship-post` | `bun run build` 재검증(링크·이미지·스키마) 후 발행물 경로만 **commit & push** |
 | 처리 끝난 `raws/*.md` | `/seal-raws` | 원본을 `raws/committed/` 로 **봉인**(발행과 분리된 정리 단계) |

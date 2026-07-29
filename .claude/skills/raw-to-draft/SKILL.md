@@ -173,7 +173,7 @@ python3 .claude/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 - `post-draft` — raws가 **조각/단서**일 때 플롯 스캐폴드 생성(이 스킬과 반대 입구)
 - `review-post` — 형식화 후 4축(맞춤법/개연성/테크니컬 라이팅/몰입도) 검토
 - `publish-post` — draft → `src/content/posts/` 정식 발행(`draft:false`)
-- `post-finalize` — 발행물 태그·시리즈 링크·밈(이미지 생성 없음)
+- `post-finalize` — 발행물 태그·밈(이미지 생성 없음. 시리즈 링크 삽입은 폐지)
 - `make-image` — ```viz``` 구조형 시각물·hero(bbangto-ui-visualization)
 - `meme-inserter` — `<<meme:>>` 실제 밈 삽입(이 스킬이 위탁)
 - `seal-raws` — 처리 끝난 raws 원본을 `raws/committed/` 로 봉인

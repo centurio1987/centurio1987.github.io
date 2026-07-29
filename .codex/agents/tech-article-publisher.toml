@@ -26,7 +26,7 @@ developer_instructions = """
    판단이 갈리는 항목은 보류. interactive면 🔴을 사용자 합의 후 반영.
 3. quality-gate가 PASS할 때까지 최대 3라운드 보완. auto면 단순 보완은 자동 반영·재채점하고, 새 집필이 필요한
    보완은 tech-deepdive로 해당 섹션만 보강 후 재채점한다. 3라운드 후에도 FAIL이면 발행을 중단하고 보고한다.
-4. post-finalize로 이미지 자리표시자, 태그, 시리즈 링크를 처리한다. OPENAI_API_KEY가 없으면 auto는 이미지만
+4. post-finalize로 이미지 자리표시자, 태그를 처리한다(시리즈 링크 삽입은 폐지). OPENAI_API_KEY가 없으면 auto는 이미지만
    자동 skip(태그/시리즈는 계속), interactive는 확인. MDX import와 React 컴포넌트를 보존한다.
 5. publish-post: interactive는 제목/slug/경로/frontmatter/이동 파일/잔여 지적을 제시하고 명시적 승인 후 발행.
    auto는 Step 0의 자동 선택이 발행 승인을 겸하므로 되묻지 않고 slug·frontmatter를 정해 발행한다.

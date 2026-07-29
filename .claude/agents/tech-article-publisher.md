@@ -106,7 +106,8 @@ research        → tech-deepdive   → review-post → review-writing → quali
 - **책임 경계**: 깊이·완전성·다관점·정확성만. 문체/설득은 손대지 않는다.
 
 ### 6. 태그·시리즈·밈 — `post-finalize` (오케스트레이터 직접)
-- `Skill`로 `post-finalize` 호출. 태그 추출, 시리즈 링크 삽입, `<<meme:>>` 위탁, 레거시 마커 경고.
+- `Skill`로 `post-finalize` 호출. 태그 추출, `<<meme:>>` 위탁, 레거시 마커 경고, 잔존 시리즈 섹션 제거.
+  (시리즈 링크 본문 삽입은 KAN-042에서 폐지 — `PostNav`·`SeriesEpisodes` 가 자동 렌더한다.)
   **이미지는 생성하지 않는다** — 구조형 시각물·hero는 이미 2단계(make-image = viz 엔진)에서 코드로 구현됐다. `OPENAI_API_KEY` 불요.
 - MDX의 `import`/`<Comp/>` 블록과 frontmatter 보존 확인.
 

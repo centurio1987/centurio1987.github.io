@@ -18,7 +18,7 @@ argument-hint: <post-file-path>
 작성 완료된 포스트 마크다운/MDX 파일에 대해 다음을 수행한다.
 
 1. 본문에서 핵심 키워드를 뽑아 frontmatter `tags` 에 머지
-2. frontmatter `series` 가 명시된 경우, 같은 series 값의 다른 포스트 링크 목록을 본문 끝에 `## 이 시리즈의 다른 글` 섹션으로 삽입
+2. 본문에 `## 이 시리즈의 다른 글` 섹션이 남아 있으면 **제거**(삽입 로직은 KAN-042에서 폐지 — `PostNav`·`SeriesEpisodes` 가 자동 렌더)
 3. 잔존 레거시 마커(`[[[...]]]`·```figure```·`(( ))`) 검사 → 경고
 
 본문을 새로 쓰거나 리뷰하지 않는다. **이미지를 생성하지 않는다**(시각물은 이미 `viz` 엔진이 처리).
@@ -26,7 +26,7 @@ argument-hint: <post-file-path>
 ## 대상과 경로 규약 (Astro)
 
 - 포스트 본체: `src/content/posts/<slug>.md`/`.mdx` (발행 전이면 `draft/<…>.md`/`.mdx` 도 가능)
-- 시리즈 링크 경로: `/posts/<slug>`  (Astro 라우팅. `src/content/posts/<slug>.md` → `/posts/<slug>`, 확장자 제거)
+- 시리즈 네비게이션은 `PostNav.astro`·`SeriesEpisodes.astro` 가 자동 렌더한다 — 본문에 링크를 넣지 않는다.
 
 ## 동작 순서
 
@@ -65,8 +65,8 @@ argument-hint: <post-file-path>
 1. `src/content/posts/` 전체를 글롭(`rg --files` 또는 `find` + frontmatter 파싱)으로 훑어 같은 `series` 값을 가진 `.md`/`.mdx` 를 모은다.
 2. 현재 파일 제외.
 3. 정렬: frontmatter `order`(숫자) 오름차순, 없으면 파일명 사전순.
-4. 본문 끝에 `assets/SERIES_SECTION_TEMPLATE.md` 형식대로 섹션 삽입. 링크는 `/posts/<slug>` 절대 경로.
-5. **멱등성**: 이미 `## 이 시리즈의 다른 글` 섹션이 있으면 통째로 교체.
+4. 삽입하지 않는다. 이미 있는 `## 이 시리즈의 다른 글` 섹션은 헤딩부터 다음 `##` 직전(또는 파일 끝)까지 **제거**한다.
+5. `series` frontmatter 자체는 건드리지 않는다 — 자동 렌더가 그 값을 쓴다.
 
 ### 5. 레거시 마커 검사 (경고만)
 
@@ -85,7 +85,7 @@ frontmatter + 본문을 합쳐 원본 경로에 덮어쓴다. 결과를 짧게 �
 
 > "사후처리 완료:
 > - 태그: `DDD, Aggregate, RDB 스키마, 모델링`
-> - 시리즈 링크: 4개 항목
+> - 시리즈 섹션: 제거 1건 (또는 '없음')
 > - 레거시 마커: 0 (경고 없음)"
 
 ## 분석 시 지킬 원칙
@@ -98,5 +98,4 @@ frontmatter + 본문을 합쳐 원본 경로에 덮어쓴다. 결과를 짧게 �
 
 ## 참조 파일
 
-- `assets/SERIES_SECTION_TEMPLATE.md` — 시리즈 링크 섹션 템플릿
 - 시각물 엔진(레포 루트): `scripts/apply-viz.ts`(inline → co-located `.tsx` SSR 정적 SVG), `scripts/render-viz.ts`(hero → webp), 스키마 `src/lib/viz/schema.ts`

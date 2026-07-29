@@ -9,7 +9,7 @@ description: >
   구조형 시각물은 본문에 ```` ```viz``` ```` 명세만 남겨 viz 엔진(`scripts/apply-viz.ts`)에 위탁한다(ChatGPT/OpenAI 이미지 생성 안 함).
   "/tech-deepdive <메모>", "이 주제로 기술 글 깊게 써줘", "심층 기술 해설 작성",
   "OSI 7계층 글 써줘" 같은 표현에 반응한다. 4축 검토는 `review-post`,
-  태그/시리즈 링크는 `post-finalize`, 발행은 `publish-post`가 맡는다.
+  태그는 `post-finalize`, 발행은 `publish-post`가 맡는다(시리즈 링크 본문 삽입은 폐지).
 argument-hint: <idea-file-path (보통 raws/ 하위)>
 ---
 
