@@ -7,6 +7,7 @@ import {
   // DOM 전역(WheelEvent 등)을 가리지 않도록 별칭으로 받는다 — 601행이 진짜 DOM WheelEvent 를 쓴다.
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
 } from "react";
 import {
   forceCenter,
@@ -143,7 +144,23 @@ function estimateLabelWidth(s: string) {
   return em * KW_FONT;
 }
 
-export default function GraphExplorer({ data }: { data: GraphViewData }) {
+export default function GraphExplorer({
+  data,
+  deco,
+}: {
+  data: GraphViewData;
+  /**
+   * 지도 판(=svg 상자)에 겹쳐 놓는 **구멍** 하나. Astro 의 named slot(`slot="deco"`)
+   * 이 이 prop 으로 들어온다.
+   *
+   * 아일랜드는 여기 뭐가 들어오는지 모른다 — 데코 부품은 전부 `.astro` 라 React
+   * 안에 못 넣고, 바깥에서 절대배치하는 길은 지도 윗변의 y 가 커맨드 바 토큰
+   * 줄바꿈·도움말 토글·후보 칩 줄 수에 따라 움직여서 막혀 있다(테이프가 허공에
+   * 뜬다). 그래서 "지도 상자와 정확히 같은 자리"라는 좌표계만 열어 주고 내용물은
+   * 채우는 쪽(`graph.astro`)이 넘긴다 — `PostList` 의 `first-deco` 와 같은 짜임.
+   */
+  deco?: ReactNode;
+}) {
   const { nodes, links } = useMemo(() => {
     const degree = new Map<string, number>();
     for (const l of data.links) {
@@ -1138,6 +1155,8 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           ⤢
         </button>
       </div>
+      {/* 판 = 지도 상자. deco 구멍이 여기에 겹쳐 앉는다(위 prop 주석). */}
+      <div className="graph-stage">
       <svg
         ref={svgRef}
         viewBox={`0 0 ${W} ${H}`}
@@ -1338,6 +1357,8 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
         </g>
         </g>
       </svg>
+        {deco && <div className="graph-deco">{deco}</div>}
+      </div>
       <style>{`
         /* pan-y: 한 손가락 세로 스와이프는 브라우저의 페이지 스크롤로 남겨두고,
            가로 드래그와 멀티터치만 우리가 받는다. none 으로 두면 지도 위에서
@@ -1357,6 +1378,33 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           background: var(--surface);
           border: 1.5px solid var(--border);
           border-radius: var(--card-radius, 12px);
+        }
+        /* ── 판과 그 위의 구멍 ──
+           .graph-stage 는 지도 상자와 정확히 같은 크기의 배치 좌표계다(딸린 것은
+           svg 하나뿐이라 높이가 svg 를 그대로 따른다). 구멍은 그 위에 inset:0 으로
+           겹치고, 지도는 z-index 1 로 한 겹 들린다 — 구멍에 들어온 것 중 **배경**
+           (판·종이)은 지도 밑으로, **모서리에 걸치는 것**(z를 스스로 올리는 부품)은
+           지도 위로 갈리게 하는 유일한 짜임이다.
+
+           그래서 이 아일랜드의 z 눈금은 이렇게 읽는다:
+             auto  구멍의 배경(판·종이)   1  지도   2  줌 컨트롤   3+  판 모서리 부품
+           줌이 2 인 건 지도가 1 로 올라온 결과다 — 둘 다 1 이면 DOM 뒤쪽인 지도가
+           이겨서 버튼이 통째로 덮인다(실측: Playwright 가 "svg intercepts pointer
+           events" 로 클릭을 거부했다).
+
+           pointer-events:none 은 규칙 9 — 지도는 드래그(pan) 표면이라 그 위에
+           얹힌 것이 포인터를 한 점이라도 먹으면 그 자리에서 팬이 죽는다. */
+        .graph-stage {
+          position: relative;
+        }
+        .graph-stage > svg {
+          position: relative;
+          z-index: 1;
+        }
+        .graph-deco {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
         }
         /* ── 커맨드 바 ──
            입력·토큰·카운터가 한 덩어리다. 바 테두리만 --ink(진하게)이고 나머지
@@ -1757,7 +1805,7 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           position: absolute;
           right: 10px;
           bottom: 10px;
-          z-index: 1;
+          z-index: 2;
           display: flex;
           flex-direction: column;
           gap: 4px;
