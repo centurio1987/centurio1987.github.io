@@ -148,11 +148,14 @@ const generatedCss = rules.join("\n");
   {/* P-03 — 필터를 페이지에 인쇄된 UI 가 아니라 **끼워 넣은 종이**로 읽히게 하는
       클립. 오른쪽에 무는 이유는 왼쪽이 축 라벨로 차 있기 때문이다.
 
-      offset 이 30px 이 아니라 56px 인 건 **카드 위**를 봐야 하기 때문이다(규칙 3):
-      클립은 카드 밖으로 21px 올라오는데 바로 그 자리에 제목 행의 RSS 캡슐이 있어서
-      30px 에서는 둘이 12.2×15.8px 겹쳤다(`bun run deco:verify` 가 잡았다).
-      아래쪽 칩은 x 448 에서 끝나므로 왼쪽으로 26px 더 밀어도 카드 안은 그대로 비어 있다. */}
-  <ClippedCard side="right" offset="56px" class="pf-card">
+      offset 은 패턴의 기본 자리(30px)다. 한때 56px 이었는데, 클립이 카드 밖으로
+      20.8px 올라와 제목 행의 RSS 캡슐과 겹치자 **클립을 옆으로 피신시킨** 값이었다.
+      그 겹침의 진짜 원인은 자리가 아니라 **카드 위 여백이 0 이었던 것**이고
+      (아래 .pf-wrap > :global(.pf-card) 주석 — 여백 규칙이 죽어 있었다), 여백을
+      되살리자 RSS 아래로 19.2px 이 남아 겹침이 사라졌다(실측). 원인을 고친 뒤에도
+      피신 값을 남겨 두면 **사유 없는 26px** 이 되고 주석이 거짓말을 하게 되므로
+      기본 자리로 되돌린다. 판정은 `bun run deco:verify`. */}
+  <ClippedCard side="right" offset="30px" class="pf-card">
   <form class="pf" data-post-filter>
     {/* fieldset/legend 는 브라우저마다 flex 배치가 갈려 role=radiogroup + 보이는
         라벨로 묶는다. 화살표 키 이동은 input[name] 그룹이 그대로 제공한다. */}
