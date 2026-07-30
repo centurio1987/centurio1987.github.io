@@ -6,6 +6,14 @@ import { getAuthor } from "../lib/authors";
 import { formatMonthYear } from "../lib/format";
 import AmbientAurora from "../components/motion/AmbientAurora.tsx";
 import { postUrl, POSTS_URL } from "../lib/urls";
+import HeroCollage from "../components/deco/patterns/HeroCollage.astro";
+import DecoHeading from "../components/deco/patterns/DecoHeading.astro";
+import DecoLayer from "../components/deco/DecoLayer.astro";
+import Stamp from "../components/deco/Stamp.astro";
+import Polaroid from "../components/deco/Polaroid.astro";
+import { TONY_DIECUT, tonyDiecutHeight } from "../lib/deco";
+// 데코 토큰·강도 게이트는 전역이 아니라 쓰는 페이지에서만 들여온다(opt-in 계약).
+import "../styles/deco.css";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
   (a, b) =>
@@ -19,14 +27,25 @@ const hasMore = posts.length > recent.length;
 <BaseLayout title="빵관 토니" ambientFooter>
 
 
+  {/* 홈은 읽는 화면이 아니라 맞이하는 화면이라 데코가 가장 넉넉하다 — 강도 4. */}
   <!-- ── HERO: Editorial Split ── -->
-  <section class="hero">
+  <section class="hero" data-deco="4">
     {/* 아주 옅은 오로라 배경(Phase C). client:media 로 reduced-motion 이면 아일랜드가
         하이드레이트조차 안 돼 코어 청크·React 부하가 0(무JS/reduced 사용자는 정적 hero 그대로). */}
     <AmbientAurora client:media="(prefers-reduced-motion: no-preference)" />
     <div class="hero-inner">
 
       <div class="hero-text">
+        {/* F1 폴라로이드 — 타이틀 우상단. 콜라주 안에 있을 때는 마스코트 위에
+            마스코트 사진이 겹쳤고, 여기서는 타이틀 오른쪽 빈 여백을 쓴다.
+            안은 다이컷(발까지 온전한 653×904)이다 — 아바타용 tony-full.webp 는
+            159×220 이라 66px 액자에도 아쉽고, 다이컷은 콜라주 마스코트와 같은 URL 이라
+            추가 다운로드가 없다. */}
+        <DecoLayer right="22px" top="-52px" rotate={-6} tier={3} z={2} class="hero-photo">
+          <Polaroid caption="관찰력 만렙!" width={120} paper="grid">
+            <img src={TONY_DIECUT} alt="" width="66" height={tonyDiecutHeight(66)} loading="lazy" />
+          </Polaroid>
+        </DecoLayer>
         <span class="hero-hand">반가워요 :)</span>
         <h1>
           빵 굽듯<br />
@@ -41,22 +60,27 @@ const hasMore = posts.length > recent.length;
         </div>
       </div>
 
-      <div class="hero-image" aria-hidden="true">
-        <picture>
-          <source srcset="/tony-deco.webp" type="image/webp" />
-          <img src="/tony-deco.webp" alt="빵관 토니 마스코트" />
-        </picture>
+      {/* 구운 합성물(public/tony-deco.webp) 대신 부품으로 되돌린 콜라주.
+          손글씨 주석이 텍스트라 문구를 고칠 때 그림을 다시 굽지 않는다. */}
+      <div class="hero-image">
+        <HeroCollage
+          noteLeft={"오늘도\n빵빵하게!"}
+          noteRight="빵-하!"
+          mascot={300}
+        />
       </div>
 
     </div>
   </section>
 
   <!-- ── RECENT POSTS: List ── -->
-  <section class="recent">
-    <div class="recent-head">
+  <section class="recent" data-deco="4">
+    {/* P-06 — 제목 + 편수 배지(정보라 스크린리더에 노출된다) + 레터링 테이프.
+        기존 .recent-head 의 윗선·간격을 패턴이 그대로 쥔다(rule). */}
+    <DecoHeading badge={`${recent.length}편`} badgeType="tab" tape="BAKED FRESH">
       <h2>최근 글</h2>
-      {hasMore && <a href={POSTS_URL} class="view-all">전체 보기 →</a>}
-    </div>
+      {hasMore && <a slot="aside" href={POSTS_URL} class="view-all">전체 보기 →</a>}
+    </DecoHeading>
 
     {recent.length > 0 ? (
       <ul class="post-list">
@@ -72,6 +96,15 @@ const hasMore = posts.length > recent.length;
                 <span class="post-title">{post.data.title}</span>
                 <span class="post-arrow" aria-hidden="true">→</span>
               </a>
+              {/* P-07 — 도장은 가장 최신 글 **하나**에만. 전부 찍으면
+                  "이것만 특별"이라는 뜻이 사라진다(DECO_KIT 5절 규칙 4). */}
+              {i === 0 && (
+                /* hover={false} — 도장이 화살표·제목 위에 걸치는 자리라, 호버 갸웃을
+                   받으려고 pointer-events 를 되살리면 그 아래 링크 클릭을 먹는다. */
+                <DecoLayer right="40px" top="-6px" rotate={-13} tier={2} z={2} hover={false}>
+                  <Stamp variant="round" text="NEW" size={52} />
+                </DecoLayer>
+              )}
             </li>
           );
         })}
@@ -126,6 +159,23 @@ const hasMore = posts.length > recent.length;
     position: relative;
     z-index: 1;
   }
+  /* 폴라로이드(.hero-photo)의 절대배치 기준 */
+  .hero-text {
+    position: relative;
+  }
+  /* 타이틀 우상단 폴라로이드. 세로로는 "반가워요 :)" 줄과 타이틀 첫 줄 옆에 걸치고,
+     가로로는 타이틀 오른쪽 여백에 들어간다 — 여백은 실측으로 가장 좁은 데스크톱
+     (769px)에서 129px, 964px 에서 166px 이다(긴 줄 "천천히 만드는" 기준).
+     회전 포함 바운딩 폭이 ~141px 이라 900px 아래에서는 접는다(안 접으면 타이틀에
+     닿는다). 좁은 화면에서 데코를 먼저 접는 건 콜라주와 같은 규칙이다. */
+  .hero-text :global(.hero-photo) {
+    z-index: 2;
+  }
+  @media (max-width: 900px) {
+    .hero-text :global(.hero-photo) {
+      display: none;
+    }
+  }
   .hero-hand {
     font-family: var(--font-hand);
     font-weight: 700;
@@ -176,22 +226,34 @@ const hasMore = posts.length > recent.length;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 0;
   }
-  .hero-image img {
-    width: 100%;
-    max-width: 480px;
-    height: auto;
-    object-fit: contain;
-    /* slight upward float to visually center with text */
-    margin-top: -16px;
-    /* 좌우 '흔들흔들'(디자인 피드백 개정) — 키프레임은 global.css의 @keyframes tony-sway.
-       푸터 저자 라인업(AuthorLineup)이 같은 모션을 공유한다. */
+  /* 콜라주를 칸 폭보다 살짝 넓게 벌린다. 안 벌리면 판이 마스코트 폭으로 오그라들어
+     말풍선·폴라로이드가 마스코트 위로 겹친다(부품들은 판 기준으로 배치되므로).
+     칸 폭에 **딱** 맞추는 것으로도 모자랐다 — 964px 실측에서 판 안쪽이 364px 이라
+     흔들흔들(±4°)로 부푼 마스코트 발자국(≈329px)과 좌우 18px 밖에 안 떨어져,
+     토니가 모눈에 낀 것처럼 보이고 오른쪽 티어 4(번개)가 빵 위로 올라탔다.
+     넘치는 28px 은 칸 사이 gap(36px)·페이지 여백(48px) 안에서만 논다 —
+     텍스트 칸을 좁히지 않으므로 타이틀 옆 폴라로이드 여백도 그대로다. */
+  .hero-image :global(.collage) {
+    /* flex:none 이 없으면 기본 flex-shrink 가 넘치는 28px 을 도로 깎아 칸 폭에 맞춘다. */
+    flex: none;
+    width: calc(100% + 28px);
+    max-width: 500px;
+  }
+  /* 콜라주 안 마스코트의 좌우 '흔들흔들' — 키프레임은 global.css의 @keyframes tony-sway.
+     푸터 저자 라인업(AuthorLineup)이 같은 키프레임을 공유하되 축이 다르다 — 여기는
+     발끝(bottom center)을 축으로 서서 흔들리고, 거기는 걸린 액자가 집게(top center)를
+     축으로 흔들린다.
+     :global 인 이유 — Astro 는 자식 컴포넌트 루트에 자식의 cid 만 붙여서, 부모인
+     이 페이지의 선택자로는 HeroCollage 안을 못 잡는다. .hero-image 로 범위를 묶는다. */
+  .hero-image :global(.mascot) {
     transform-origin: bottom center;
     animation: tony-sway 2.8s steps(1) infinite;
   }
   /* 전역 *{animation:none!important}이 이미 커버하지만 Mascot.astro 선례대로 지점 명시 */
   @media (prefers-reduced-motion: reduce) {
-    .hero-image img {
+    .hero-image :global(.mascot) {
       animation: none;
     }
   }
@@ -200,17 +262,11 @@ const hasMore = posts.length > recent.length;
   .recent {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 8px var(--page-pad) 64px;
+    /* DecoHeading 의 레터링 테이프가 윗선 위로 16px 걸치므로 그만큼 숨통을 준다
+       (8px 이면 히어로 아래 테두리를 타고 넘는다). */
+    padding: 30px var(--page-pad) 64px;
   }
-  .recent-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    border-top: 1.5px solid var(--ink);
-    padding-top: 18px;
-    margin-bottom: 4px;
-  }
-  .recent-head h2 {
+  .recent h2 {
     font-family: var(--font-display);
     font-weight: 400;
     font-size: 22px;
@@ -228,8 +284,18 @@ const hasMore = posts.length > recent.length;
   }
   .post-list {
     list-style: none;
-    margin: 0;
+    /* NEW 도장이 첫 항목 위로 삐져나오므로, 섹션 머리의 "전체 보기" 링크와
+       스치지 않을 만큼 목록을 내린다 */
+    margin: 18px 0 0;
     padding: 0;
+  }
+  /* 도장(DecoLayer)의 절대배치 기준 */
+  .post-list li {
+    position: relative;
+  }
+  /* 도장이 앉을 자리를 첫 항목 제목이 비켜준다 — 제목이 길어도 잉크에 안 깔린다 */
+  .post-list li:first-child .post-title {
+    padding-right: 74px;
   }
   .post-row {
     display: flex;
@@ -277,9 +343,11 @@ const hasMore = posts.length > recent.length;
     .hero-image {
       order: -1;
     }
-    .hero-image img {
-      max-width: 240px;
-      margin: 0 auto;
+    /* 좁은 화면에선 HeroCollage 가 스스로 티어 2~4 를 접고 말풍선만 남긴다
+       (DECO_KIT 5절 규칙 6). 여기서는 판이 화면을 다 먹지 않게 폭만 죈다. */
+    .hero-image :global(.collage) {
+      width: 100%;
+      max-width: 380px;
     }
     .post-row {
       flex-direction: column;
@@ -292,6 +360,10 @@ const hasMore = posts.length > recent.length;
     }
     .post-arrow {
       display: none;
+    }
+    /* 화살표가 사라진 자리로 도장이 들어오므로 제목이 비켜줄 폭도 줄인다 */
+    .post-list li:first-child .post-title {
+      padding-right: 58px;
     }
   }
 </style>

@@ -2,6 +2,10 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostFilter from "../../components/PostFilter.astro";
+import DecoHeading from "../../components/deco/patterns/DecoHeading.astro";
+import DecoLayer from "../../components/deco/DecoLayer.astro";
+import Stamp from "../../components/deco/Stamp.astro";
+import "../../styles/deco.css";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
   (a, b) =>
@@ -11,17 +15,57 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
 ---
 
 <BaseLayout title="글" description="기획 · 아키텍처 · 설계에 관한 글 모음">
-  <section class="wrap">
-    <h1>글</h1>
+  {/* 목록은 읽으러 온 화면 — 홈(4)보다 한 단계 낮은 강도 3. */}
+  <section class="wrap" data-deco="3">
+    {/* P-06 — 제목 옆 부품은 하나만(DECO_KIT 5절 규칙 5). 홈이 인덱스 탭을
+        썼으니 여기는 리본으로 갈라 두 목록이 같은 얼굴이 되지 않게 한다. */}
+    <DecoHeading badge={`전부 ${posts.length}편`} badgeType="ribbon" rule={false}>
+      <h1>글</h1>
+    </DecoHeading>
     {
       posts.length > 0 ? (
-        <PostFilter posts={posts} />
+        <PostFilter posts={posts}>
+          {/* P-07 — 도장은 가장 최신 글 하나에만.
+              top 이 34px 인 건 시리즈 테이프(.series-tape, top:-11px)를 피하려는
+              것이다. 목록 항목의 오른쪽 위는 이미 테이프가 쥐고 있어서, 거기 도장을
+              겹치면 회차 잉크 블록을 가린다 — 테이프 아래 빈 띠로 내려앉힌다.
+              hover={false} 는 데코가 그 아래 글 링크의 클릭을 먹지 않게 한다. */}
+          <DecoLayer
+            slot="first-deco"
+            class="new-stamp"
+            right="0"
+            top="34px"
+            rotate={-12}
+            tier={2}
+            z={2}
+            hover={false}
+          >
+            <Stamp variant="round" text="NEW" size={54} />
+          </DecoLayer>
+        </PostFilter>
       ) : (
         <p class="empty">아직 발행된 글이 없습니다.</p>
       )
     }
   </section>
 </BaseLayout>
+
+{/* PostList 가 그리는 .post-item 을 건드리는 규칙이라 전역으로 낸다(PostFilter 의
+    생성 CSS 와 같은 이유). 선택자는 .pf-wrap 하위로 가둬 /categories 에는 새지 않는다. */}
+<style is:global>
+  /* 시리즈 테이프가 없는 첫 글이면 제목이 도장 자리를 비켜준다 — 있으면 이미
+     테이프 폭만큼 비켜준 상태라 두 번 밀면 제목이 두 줄로 눌린다. */
+  .pf-wrap .post-item:first-child:not(.has-series) .post-title {
+    padding-right: 74px;
+  }
+  /* 좁은 화면에선 접는다(DECO_KIT 5절 규칙 6) — 모바일에선 테이프가 흐름 안으로
+     내려와 오른쪽 여백이 사라지고, 도장이 앉을 빈 띠 자체가 없다. */
+  @media (max-width: 768px) {
+    .pf-wrap .post-item .new-stamp {
+      display: none;
+    }
+  }
+</style>
 
 <style>
   .wrap {
@@ -31,7 +75,7 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
   }
   h1 {
     font-size: clamp(30px, 6vw, 40px);
-    margin: 0 0 18px;
+    margin: 0;
   }
   .empty {
     color: var(--ink-2);

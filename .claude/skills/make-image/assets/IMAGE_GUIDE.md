@@ -64,6 +64,22 @@
 `edges[].label`은 화면에 그려지지 않는다. **정보는 노드 `label`에 담아라**
 (예: 엣지 "invoke" 대신 노드 `"IPC — invoke ↓ · Channel send ↑"`). 엣지에만 적은 정보는 사라진다.
 
+### R3-1. 노드 `shape` 는 정해진 이름만 — 모르는 이름은 **조용히 사각형**이 된다
+
+`renderShapeElements` 의 `default` 가 `rectPath` 라, 오타나 짐작한 이름(mermaid 어휘 `"decision"` 등)을
+써도 경고 없이 평범한 상자로 그려진다. 분기 노드를 넣었는데 다른 노드와 똑같이 보이면 이것이다
+(vpn-anatomy-7 에서 실제로 그랬다 — 분기가 사각형으로 렌더되고 있었다).
+
+쓸 수 있는 이름은 이 15개뿐이고, 이제 **Zod 스키마가 authoring 시점에 막는다**(`src/lib/viz/schema.ts`):
+
+```
+rect · rounded · stadium · circle · ellipse · diamond · cylinder · hexagon
+parallelogram · trapezoid · subroutine · doubleCircle · cube · component · folder
+```
+
+분기·판단 노드는 **`diamond`** 다. 마름모는 같은 bbox 의 사각형보다 쓸 수 있는 넓이가 훨씬 좁으니
+(가장 넓은 곳이 세로 중앙선 한 줄뿐) 라벨은 한 줄로 짧게 두고, 폭을 넉넉히 준다.
+
 ### R4. hero는 `PosterHero`를 쓴다 — 제목·부제만 크게
 
 hero는 본문 최상단이자 **OG 이미지이자 시리즈 카드 썸네일**이다. 작은 썸네일에서 읽히지 않는 글자는 없느니만 못하다.
@@ -87,6 +103,34 @@ await p.goto("http://localhost:4321/posts/<slug>",{waitUntil:"networkidle"});
 const f=p.locator("figure.viz-figure");for(let i=0;i<await f.count();i++)await f.nth(i).screenshot({path:`/tmp/fig-${i+1}.png`});
 await b.close()'
 ```
+
+### R6. 텍스트 넘침은 사람이 아니라 `viz:verify` 가 잡는다
+
+**증상.** 그림의 글이 상자를 벗어나 문장 중간에서 잘린 채 렌더된다.
+
+**원인.** SVG `<text>` 는 리플로도 클리핑도 하지 않는다. 상자보다 긴 라벨은 **에러 없이** 밖으로
+흘러 viewBox 경계에서 잘린다. 빌드도 타입도 초록이다. 게다가 패키지 컴포넌트는 라벨을
+**줄바꿈 없는 단일 `<text>`** 로 그리고, 패키지의 `estimateWidth` 는 글자 종류와 무관하게
+`0.55 × fontSize` 를 쓰므로 **전각인 한글을 약 45% 과소평가**한다 — 패키지의 `wrapText` 를 써도
+한글 줄은 넘치고, "안 잘린다"는 판정 자체가 틀린다.
+
+**해결(구조).** 자주 쓰는 kind 는 레포 로컬 구현으로 대체했다(`src/lib/viz/`, `LOCAL_VIZ_KINDS`):
+`PosterHero` · `Comparison` · `ProcessSteps`. 셋 다 `src/lib/viz/text.ts` 의 전각 기준으로
+**자동 줄바꿈**하고, **높이를 콘텐츠에서 되뽑는다**(저작 viewBox 의 높이는 무시 — 폭만 계약이다).
+그래서 항목이 길어도 넘치지 않고 짧아도 빈 여백이 남지 않는다.
+
+**해결(재발 방지).** 판정을 사람 눈에서 기계로 옮겼다:
+
+```bash
+bun run viz:verify              # 전 글 (astro dev/preview 필요)
+bun run viz:verify vpn-anatomy-7 --base http://localhost:4323
+```
+
+모든 `figure.viz-figure svg` 의 `<text>` 를 담는 상자(`rect[data-viz-part="shape"]`) 또는 viewBox 와
+재서 넘치면 **비0으로 끝난다**. R5(눈으로 보기)는 배치·가독성용으로 남기고, 넘침은 여기서 끊는다.
+
+> 이 규칙이 R1~R5 와 다른 점: **"텍스트를 짧게 써라"는 권고였고 두 번 다 지켜지지 않았다**
+> (KAN-016 에서 고쳤다고 적었으나 vpn-anatomy-7 에서 재발). 권고는 재발을 막지 못한다.
 
 ---
 

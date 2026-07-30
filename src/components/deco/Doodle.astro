@@ -1,47 +1,287 @@
 ---
 /**
- * 두들 D1~D6 — 펜으로 여백에 끄적인 것들.
+ * 두들 D1~D12 — 펜·크레용으로 여백에 끄적인 것들.
  *
  *   D1 sparkle  반짝(4각) 3종     D2 heart    하트 3종
  *   D3 arrow    곡선 화살표        D4 wave     물결 밑줄
  *   D5 emphasis 강조선 · 별표      D6 memo     손글씨 메모
+ *   ── 아래 셋은 결이 다른 "낙서" 계열(굵은 외곽선 + 어긋난 칠) ──
+ *   D7 scribble-heart 낙서 하트   D8 bolt     번개
+ *   D9 barley   보리 · 잎사귀
+ *   ── 아래 셋은 같은 낙서 결인데 **안에 글씨가 들어가는** 풍선 계열 ──
+ *   D10 speech-balloon 말풍선     D11 burst-balloon 폭발 말풍선
+ *   D12 thought-balloon 생각 풍선
  *
  * 테이프·스티커가 "붙인 것"이라면 두들은 "그린 것"이라 그림자가 없다. 종이에서
  * 뜨지 않아야 손그림으로 읽힌다.
  *
+ * **손맛은 CrayonFilters 가 만든다.** 시안의 두들은 하나도 예외 없이 feTurbulence
+ * 필터를 지고 있다 — 굵은 칠은 om-crayon(-dense), 두른 선은 om-ink, 가는 펜은
+ * .rgh 클래스로 om-ink-fine. 이 키트를 처음 들여올 때 "필터는 부품마다 래스터를
+ * 다시 굽는 비용"이라고 보고 넷을 전부 뺐는데, 그건 틀린 판단이었다 — 인라인 SVG
+ * 필터는 브라우저가 그때그때 합성하므로 굽는 단계가 없고, 여백 장식 몇 개의 합성
+ * 비용은 무시할 만하다. 그리고 필터를 빼면 **기하는 같은데 그림이 달라진다**:
+ * 크레용 낙서가 매끈한 벡터 아이콘이 되고 펜 선이 자로 그은 선이 된다. 되돌렸다.
+ *
+ * 필터 id 는 인스턴스마다 유일하다(uid). 왜 문서에 한 번만 심지 않는지는
+ * CrayonFilters.astro 머리글에 있다 — 요약하면 opt-in 과 "없는 id 를 가리킨 SVG 는
+ * 아예 안 그려진다" 두 가지 때문이다.
+ *
  * 기존 모티프(motifs/Sparkle.astro)와 겹쳐 보이지만 역할이 다르다 — Sparkle 은
- * 잉크 외곽선이 있는 브랜드 모티프이고, 여기 D1 은 외곽선 없는 납작한 데코다.
+ * 잉크 외곽선이 있는 브랜드 모티프이고, 여기 D1 은 외곽선 없는 크레용 데코다.
  */
+import CrayonFilters from "./CrayonFilters.astro";
+
 interface Props {
-  variant?: "sparkle" | "heart" | "arrow" | "wave" | "emphasis" | "memo";
-  /** arrow·wave 의 폭(px). 나머지는 무시. */
+  variant?:
+    | "sparkle"
+    | "heart"
+    | "arrow"
+    | "wave"
+    | "emphasis"
+    | "memo"
+    | "scribble-heart"
+    | "bolt"
+    | "barley"
+    | "speech-balloon"
+    | "burst-balloon"
+    | "thought-balloon";
+  /**
+   * arrow·wave 와 낙서 셋(D7~D9)·풍선 셋(D10~D12)의 폭(px). 나머지는 무시.
+   * 높이는 비율로 따라온다.
+   */
   width?: number;
-  /** arrow·wave 의 색. 기본은 종류별 고유색. */
+  /** arrow·wave·memo 의 색. 기본은 종류별 고유색. */
   color?: string;
-  /** arrow 를 좌우 반전(오른쪽에서 왼쪽을 가리킬 때) */
+  /**
+   * 좌우 반전. arrow 는 통째로(오른쪽에서 왼쪽을 가리킬 때), 풍선 셋(D10·D12)은
+   * **그림만** — 글씨는 뒤집히면 안 되므로 그대로 둔다. 꼬리가 달린 풍선을 말하는
+   * 쪽 반대편에 얹을 때 쓴다(D11 은 꼬리가 없어 효과가 없다).
+   */
   flip?: boolean;
-  /** memo 문구. 줄바꿈은 \n. */
+  /** memo·풍선 셋(D10~D12)의 문구. 줄바꿈은 \n. */
   text?: string;
   class?: string;
 }
 const {
   variant = "sparkle",
-  width = 94,
+  width: widthProp,
   color,
   flip = false,
   text = "",
   class: className = "",
 } = Astro.props;
 
+/** arrow·wave 의 기본 폭 */
+const width = widthProp ?? 94;
+
 const memoLines = text.split("\n");
+
+/**
+ * 필터 id 접두사 — 인스턴스끼리 겹치지 않게 센다. .astro 프론트매터는 렌더마다
+ * 다시 실행되므로 모듈 지역 변수로는 셀 수 없어 globalThis 에 센다. 빌드 내내
+ * 값이 계속 커지는데, 필요한 건 "한 문서 안에서 유일"뿐이라 문제되지 않는다.
+ */
+const g = globalThis as { __decoDoodleSeq?: number };
+g.__decoDoodleSeq = (g.__decoDoodleSeq ?? 0) + 1;
+const uid = `dd${g.__decoDoodleSeq}`;
+
+/**
+ * 낙서 셋(D7~D9)의 고유 크기. 종류마다 세로가 크게 달라(번개는 세로로 길다)
+ * width 하나만 넘겨도 높이가 비율로 따라오게 표로 둔다.
+ */
+const SCRIBBLE = {
+  "scribble-heart": [86, 74],
+  bolt: [60, 88],
+  barley: [74, 88],
+} as const;
+const natural = SCRIBBLE[variant as keyof typeof SCRIBBLE];
+const sw = natural ? (widthProp ?? natural[0]) : 0;
+const sh = natural ? Math.round((sw * natural[1]) / natural[0]) : 0;
+
+/**
+ * 풍선 셋(D10~D12)의 자연 크기 + **글씨 몫**.
+ *
+ * 낙서 셋과 달리 그림 안에 글씨가 들어가서, 폭을 줄일 때 SVG 만 줄면 안 된다 —
+ * 글씨 크기와 자리도 같은 배율로 따라와야 풍선 안에 그대로 앉는다. 그래서 자리(top·
+ * left·tw)와 글씨 크기(fs)를 자연 크기 기준으로 표에 적고 배율 k 를 곱한다.
+ *
+ * fs 는 시안(Nanum Pen Script)을 --font-hand(Gaegu)로 환산한 값이다 — D6 메모가
+ * 26px → 23px 로 내려온 그 비율(≈0.88). Gaegu 가 더 넓고 둥글어서 시안 크기를 그대로
+ * 쓰면 글씨가 풍선 밖으로 삐져나온다.
+ *
+ * **top 은 시안 값이 아니라 재서 고친 값이다**(6→9 · 28→31 · 19→21). 글씨를 줄이면
+ * 줄 상자도 같이 짧아지는데 top 을 시안대로 고정하면 글씨 덩어리가 풍선 안에서 위로
+ * 올라붙는다. 실측(풍선 높이를 100 으로 본 글씨 잉크의 중심): 시안 42.3 · 48.0 · 44.2
+ * 인데 시안 top 그대로면 38.9 · 43.5 · 41.0 이 나왔다 — 셋 다 약 3px 높다. 그 3px 을
+ * 되돌린 값이 위 숫자다. 눈대중으로 만지지 말고 다시 재서 고칠 것.
+ *
+ * rot 은 풍선에 대한 **글씨만의** 기울기다. 풍선 자체의 기울기(시안 -3°·4°·-2°)는
+ * 낙서 셋과 같이 부품에 굽지 않고 쓰는 쪽에서 준다 — 여백 어디에 얹느냐에 따라
+ * 각도가 달라지기 때문이다.
+ *
+ * **left·tw 는 viewBox 가 아니라 그림의 속을 재서 넣는다.** D11 이 이걸 어겨서 글씨가
+ * 별 왼쪽 가시를 뚫고 나갔다. 두 가지가 겹친 탓이다.
+ *   ① 별이 viewBox 안에서 오른쪽으로 치우쳐 있다 — 길의 x 범위가 23~106 이라 속의
+ *      중심이 64.6 인데, left:0 + tw:118 은 글씨를 viewBox 중심 59 에 놓는다(5.6 왼쪽).
+ *   ② 12 뿔 별의 **속**은 껍데기보다 훨씬 좁다 — 글씨 밴드에서 48.75 밖에 안 되는데
+ *      "빵-하!"는 fs 23 에서 63.0 이었다. 사각 풍선(D10)에서 통하던 tw:118 을 그대로
+ *      물려받은 값이라 애초에 두 글자밖에 못 들어가는 크기였다.
+ * 그래서 D11 은 속을 재서 left:40.5 · tw:49(중심 65) 로 앉히고 fs 를 17 로 내렸다 —
+ * 재보면 좌우 여유가 1.4 · 1.2 로 남는다. top 31.5 는 그 fs 에서 잉크 중심을 문서화된
+ * 44.2 에 도로 맞춘 값이다(fs 를 내리면 줄 상자가 짧아져 글씨가 위로 올라붙는다).
+ *
+ * 속을 재는 법(`Doodle.astro` 를 고칠 때 다시 돌릴 것): 회전 없는 자리에 풍선을 복제해
+ * 놓고, 잉크 외곽선 path 를 stroke-width + 3.4 로 부풀린 사본에 대고 `isPointInStroke`
+ * ·`isPointInFill` 로 글씨 상자 둘레를 찍는다. 3.4 를 더하는 건 `ink` 필터의
+ * feDisplacementMap scale 이 선을 ±1.7 흔들기 때문이다 — 흔들린 최악까지 봐야 한다.
+ * 세로는 글자별 실제 잉크가 아니라 폰트 전체 밴드(fontBoundingBox)로 잡는다. 부품이
+ * 아무 text 나 받으므로 받침 깊은 글자가 와도 안 넘쳐야 한다.
+ */
+const BALLOON = {
+  "speech-balloon": {
+    w: 126,
+    h: 84,
+    fs: 22,
+    lh: 1.15,
+    top: 9,
+    left: 0,
+    tw: 118,
+    rot: -1.5,
+  },
+  "burst-balloon": {
+    w: 118,
+    h: 92,
+    /* 별이 판 한가운데에 판을 채우고 앉으므로 글씨도 판 중앙(left:0 · tw:118)이 곧
+       별 중앙이다. top 32.8 은 잉크 밴드의 중심을 별의 중심 y=46 에 맞춘 값. */
+    fs: 23,
+    lh: 1.15,
+    top: 32.8,
+    left: 0,
+    tw: 118,
+    rot: -2,
+  },
+  "thought-balloon": {
+    w: 120,
+    h: 90,
+    fs: 18,
+    lh: 1.05,
+    top: 21,
+    left: 12,
+    tw: 96,
+    rot: 0,
+  },
+} as const;
+const bl = BALLOON[variant as keyof typeof BALLOON];
+const bw = bl ? (widthProp ?? bl.w) : 0;
+const bh = bl ? Math.round((bw * bl.h) / bl.w) : 0;
+/** 자연 크기 대비 배율 — 글씨 자리·크기에 그대로 곱한다 */
+const k = bl ? bw / bl.w : 1;
+const px = (n: number) => `${Math.round(n * k * 10) / 10}px`;
+/** 풍선의 그림만 뒤집는다 — 글씨(.balloon-text)는 바깥 span 의 형제라 안 따라간다 */
+const balloonSvgStyle = flip ? "transform:scaleX(-1)" : undefined;
+/**
+ * 글씨 자리도 같이 뒤집는다. 그림만 뒤집으면 글씨가 몸통 중심에서 밀린다 —
+ * 풍선 몸통이 좌우 대칭이 아니기 때문이다(D10 은 꼬리 쪽이, D12 는 방울 쪽이 더 나가
+ * 있고, 그래서 표의 left 가 0·12 로 갈린다). 좌우를 뒤집은 자리는 `w - left - tw` 다.
+ * 실측: D10 을 flip 하고 left 를 그대로 두면 글씨 잉크가 15.2%~79.4% 로 왼쪽에 붙고,
+ * 뒤집은 left(8)를 쓰면 몸통 중심에 앉는다.
+ * 글씨만의 기울기(rot)도 부호를 바꾼다 — 몸통 기울기에 맞춰 그린 값이라 몸통이
+ * 뒤집히면 같이 뒤집혀야 한다.
+ */
+const blLeft = bl ? (flip ? bl.w - bl.left - bl.tw : bl.left) : 0;
+const blRot = bl ? (flip ? -bl.rot : bl.rot) : 0;
+const balloonTextStyle = bl
+  ? [
+      `top:${px(bl.top)}`,
+      `left:${px(blLeft)}`,
+      `width:${px(bl.tw)}`,
+      `font-size:${px(bl.fs)}`,
+      `line-height:${bl.lh}`,
+      ...(blRot ? [`transform:rotate(${blRot}deg)`] : []),
+    ].join(";")
+  : "";
+
+/** D10 말풍선의 몸통 — 오른쪽 아래로 꼬리가 삐져나온다 */
+const SPEECH =
+  "M14 8C34 3 92 2 110 9c11 4 12 40 3 46-14 9-40 7-58 7l-19 16 2-17C22 60 8 56 6 44 4 31 6 12 14 8z";
+/**
+ * D11 폭발 말풍선 — 열두 뿔 별.
+ *
+ * **모양은 안 바꿨다 — 자기 판 안에서 떠 있던 걸 판에 앉혔을 뿐이다.**
+ *
+ * 시안 길을 뜯어보니 손그림이 아니라 완전한 점대칭 별이었다(반사 오차 0.0): 뿔 12개가
+ * 타원(rx 42.3 · ry 37.6) 위에, 패임 12개가 동심 타원(31.0 · 27.7, 깊이 26.5%) 위에
+ * 놓이고, 꼭짓점이 그 타원에서 벗어난 폭은 ±0.9 뿐이다 — 손맛은 기하가 아니라
+ * CrayonFilters 가 낸다. 그래서 **뿔 사이 각(28.0·31.0·34.3·29.6·29.0·28.1 의 불규칙한
+ * 리듬) · 점대칭 · 그 ±0.9 · 패임 깊이 26.5% 를 하나도 안 건드리고** 중심 기준 이방
+ * 확대(x 1.33 · y 1.14)만 먹인 뒤 중심을 판 한가운데로 옮겼다.
+ *
+ * 옛 별은 118×92 짜리 판에 83×74 로 앉아 왼쪽에 23, 아래에 14 의 시안 아트보드 여백을
+ * 이고 있었고 중심도 (59,46)이 아니라 (64.5,41)이었다. 그 여백을 별에 돌려주면
+ * **부품의 배치 상자는 1px 도 안 건드리고** 속이 넓어진다.
+ *   바깥 반지름 42.3·37.6 → 55.2·42.2 (획 두께 몫 3.5 만 남기고 판을 채운다)
+ *   안쪽 반지름 31.0·27.7 → 40.6·30.8 (같은 배율 — 깊이는 26.5% 그대로)
+ * 글씨 밴드에서 잰 속이 48.75 → 66.5 가 되어 fs 를 23 으로 되돌렸다(민트 D10 과 같은
+ * 20.3px 로 렌더된다. 좌우 여유 1.7·1.8). 중심이 판 한가운데로 왔으므로 글씨도
+ * left:0 · tw:118 로 판 중앙에 놓으면 그대로 별 중앙이다.
+ *
+ * **왜 별을 키우는 것 말고는 길이 없었나**: 글씨가 들어가느냐는 `width` 와 무관한
+ * 비율 문제라(글씨도 배율 k 로 같이 커진다) 풍선을 키워도 그대로 넘친다. 패임을 얕게
+ * 파는 걸로도 모자랐다 — fs 23 을 담으려면 안쪽 타원이 rx 44 는 되어야 하는데, 옛
+ * 바깥 반지름 42.3 으로는 깊이가 0 이어도(=별이 아니라 원) 못 미친다. 그래서 판을
+ * 채우는 게 유일한 공짜 여백이었고, 실제로 그걸로 충분해 모양을 안 건드려도 됐다.
+ */
+const BURST =
+  "M51.7 3.8L63.7 15.2L80.9 7.2L84.9 22.1L103.6 19.8L96.9 34.6L114.2 41.4L99.6 51.7L110.2 64.2L91.6 66.5L92.9 81.3L75.6 75.6L66.3 88.2L54.3 76.8L37.1 84.8L33.1 69.9L14.4 72.2L21.1 57.4L3.8 50.6L18.4 40.3L7.8 27.8L26.4 25.5L25.1 10.7L42.4 16.4Z";
+/** D12 생각 풍선의 구름 */
+const CLOUD =
+  "M40 10c14-8 34-7 44 2 14-2 24 6 23 16 9 5 9 18-1 22-2 11-16 17-28 14-11 7-28 6-36-3-13 1-22-8-19-18-8-6-6-19 4-22 1-7 6-11 13-11z";
+/** D12 의 꼬리 — 구름에서 왼쪽 아래로 떨어지는 방울 둘 */
+const THOUGHT_TAILS = [
+  { cx: 30, cy: 72, rx: 9, ry: 7.5 },
+  { cx: 17, cy: 84, rx: 5.5, ry: 4.6 },
+];
+
+/** D7 낙서 하트의 몸통 — 크레용 칠과 잉크 외곽선이 같은 길을 두 번 지난다. */
+const HEART =
+  "M43 68C31 57 12 44 9 30 6 17 15 9 25 10c8 1 15 8 18 14 3-6 10-13 18-14 10-1 19 7 16 20-3 14-22 27-34 38z";
+/** D8 번개 */
+const BOLT = "M38 4L8 44h16L18 84 52 38H33l7-34z";
+/** D9 보리 낟알 — 줄기 오른쪽 4개(deep), 왼쪽 3개(pale) */
+const BARLEY = [
+  { cx: 63, cy: 18, rot: 12, deep: true },
+  { cx: 59, cy: 35, rot: 28, deep: true },
+  { cx: 52, cy: 52, rot: 32, deep: true },
+  { cx: 43, cy: 70, rot: 34, deep: true },
+  { cx: 38, cy: 41, rot: -30, deep: false },
+  { cx: 29, cy: 58, rot: -33, deep: false },
+  { cx: 21, cy: 76, rot: -34, deep: false },
+];
+/** D1 반짝 낱개 — 크기(px)와 색 */
+const SPARKS = [
+  { s: 30, c: "var(--deco-crayon-yellow)" },
+  { s: 18, c: "var(--deco-crayon-blue)" },
+  { s: 11, c: "var(--deco-crayon-pink)" },
+];
+/** D2 하트 낱개 — 글자 크기·색·기울기 */
+const GLYPH_HEARTS = [
+  { s: 30, c: "var(--deco-crayon-red)", rot: -12, op: 1 },
+  { s: 20, c: "var(--deco-crayon-pink)", rot: 9, op: 1 },
+  { s: 26, c: "var(--ink)", rot: -4, op: 0.25 },
+];
 ---
 
 {
   variant === "sparkle" && (
     <span class:list={["sparkles", className]} aria-hidden="true">
-      <span class="sp sp-lg" />
-      <span class="sp sp-md" />
-      <span class="sp sp-sm" />
+      <CrayonFilters id={uid} kinds={["crayon-dense"]} />
+      {SPARKS.map((sp) => (
+        <span
+          class="sp"
+          style={`width:${sp.s}px;height:${sp.s}px;background:${sp.c};filter:url(#${uid}-crayon-dense)`}
+        />
+      ))}
     </span>
   )
 }
@@ -49,9 +289,15 @@ const memoLines = text.split("\n");
 {
   variant === "heart" && (
     <span class:list={["hearts", className]} aria-hidden="true">
-      <span class="ht ht-lg">&hearts;</span>
-      <span class="ht ht-md">&hearts;</span>
-      <span class="ht ht-sm">&hearts;</span>
+      <CrayonFilters id={uid} kinds={["crayon-dense"]} />
+      {GLYPH_HEARTS.map((h) => (
+        <span
+          class="ht"
+          style={`font-size:${h.s}px;color:${h.c};opacity:${h.op};transform:rotate(${h.rot}deg);filter:url(#${uid}-crayon-dense)`}
+        >
+          &hearts;
+        </span>
+      ))}
     </span>
   )
 }
@@ -65,17 +311,18 @@ const memoLines = text.split("\n");
       viewBox="0 0 94 56"
       fill="none"
       aria-hidden="true"
-      style={`${flip ? "transform:scaleX(-1);" : ""}${color ? `--c:${color}` : ""}`}
+      style={`filter:url(#${uid}-ink-fine);${flip ? "transform:scaleX(-1);" : ""}${color ? `--c:${color}` : ""}`}
     >
+      <CrayonFilters id={uid} kinds={["ink-fine"]} />
       <path
         d="M4 50C14 18 44 6 76 14"
-        stroke="var(--c, var(--accent))"
+        stroke="var(--c, var(--deco-crayon-blue, var(--accent)))"
         stroke-width="2.6"
         stroke-linecap="round"
       />
       <path
         d="M62 6L78 14.5L64 24"
-        stroke="var(--c, var(--accent))"
+        stroke="var(--c, var(--deco-crayon-blue, var(--accent)))"
         stroke-width="2.6"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -85,21 +332,25 @@ const memoLines = text.split("\n");
 }
 
 {
+  /* 시안의 D4 는 140×12 에 물결 4산이다. 늘어나는 밑줄이라 preserveAspectRatio 를
+     끄고 쓰는데, viewBox 를 시안대로 두면 기본 폭(140)에서 시안과 같은 산 간격이
+     나온다 — 예전에는 300 폭에 8산을 담아 140 에서 산이 두 배로 촘촘했다. */
   variant === "wave" && (
     <svg
       class:list={["wave", className]}
       width={width}
-      height="11"
-      viewBox="0 0 300 11"
+      height="12"
+      viewBox="0 0 140 12"
       fill="none"
       preserveAspectRatio="none"
       aria-hidden="true"
-      style={color ? `--c:${color}` : undefined}
+      style={`filter:url(#${uid}-ink-fine);${color ? `--c:${color}` : ""}`}
     >
+      <CrayonFilters id={uid} kinds={["ink-fine"]} />
       <path
-        d="M2 7C16 2 30 2 44 7S72 2 86 7 114 2 128 7 156 2 170 7 198 2 212 7 240 2 254 7s20 3 44 -1"
-        stroke="var(--c, var(--deco-pink))"
-        stroke-width="2.6"
+        d="M2 8C14 2 26 2 38 8S62 2 74 8 98 2 110 8s18 2 28 -2"
+        stroke="var(--c, var(--deco-crayon-pink))"
+        stroke-width="3"
         stroke-linecap="round"
       />
     </svg>
@@ -109,19 +360,54 @@ const memoLines = text.split("\n");
 {
   variant === "emphasis" && (
     <span class:list={["emphasis", className]} aria-hidden="true">
-      <span class="speed">
-        <i /><i /><i />
-      </span>
-      <span class="asterisk">
-        <i /><i /><i />
-      </span>
+      {/* 속도선 — 만화에서 뭔가 튀어나올 때 긋는 세 줄 */}
+      <svg
+        class="speed"
+        width="34"
+        height="26"
+        viewBox="0 0 34 26"
+        fill="none"
+        style={`filter:url(#${uid}-ink-fine)`}
+      >
+        <CrayonFilters id={uid} kinds={["ink-fine"]} />
+        <g stroke="var(--ink)" stroke-width="3.2" stroke-linecap="round">
+          <path d="M4 22L1 8" />
+          <path d="M14 22L14 4" />
+          <path d="M24 22L28 8" />
+        </g>
+      </svg>
+      {/* 별표 — 막대 셋을 겹친다 */}
+      <svg
+        class="asterisk"
+        width="28"
+        height="28"
+        viewBox="0 0 28 28"
+        fill="none"
+        style={`filter:url(#${uid}b-ink-fine)`}
+      >
+        <CrayonFilters id={`${uid}b`} kinds={["ink-fine"]} />
+        <g
+          stroke="var(--deco-crayon-red, var(--deco-red))"
+          stroke-width="3.2"
+          stroke-linecap="round"
+        >
+          <path d="M14 3L14 25" />
+          <path d="M4.5 8.5L23.5 19.5" />
+          <path d="M23.5 8.5L4.5 19.5" />
+        </g>
+      </svg>
     </span>
   )
 }
 
 {
   variant === "memo" && (
-    <span class:list={["memo", className]} aria-hidden="true">
+    <span
+      class:list={["memo", className]}
+      style={`filter:url(#${uid}-ink-fine);${color ? `--c:${color}` : ""}`}
+      aria-hidden="true"
+    >
+      <CrayonFilters id={uid} kinds={["ink-fine"]} />
       {memoLines.map((line, i) => (
         <>
           {i > 0 && <br />}
@@ -132,14 +418,297 @@ const memoLines = text.split("\n");
   )
 }
 
+{
+  variant === "scribble-heart" && (
+    <svg
+      class:list={["scribble", "scribble-heart", className]}
+      width={sw}
+      height={sh}
+      viewBox="0 0 86 74"
+      fill="none"
+      aria-hidden="true"
+    >
+      <CrayonFilters id={uid} kinds={["crayon", "ink"]} />
+      <g filter={`url(#${uid}-crayon)`}>
+        <path d={HEART} fill="var(--fill)" transform="translate(2.5 -2)" />
+        <path
+          d="M40 60C30 51 16 41 14 30c-2-9 4-15 11-14 6 1 12 6 15 12"
+          stroke="var(--deep)"
+          stroke-width="9"
+          stroke-linecap="round"
+          opacity="0.8"
+        />
+        <path
+          d="M50 26c4-6 9-9 14-9 7 0 12 6 10 14-2 8-10 16-18 24"
+          stroke="var(--pale)"
+          stroke-width="8"
+          stroke-linecap="round"
+          opacity="0.7"
+        />
+      </g>
+      <g filter={`url(#${uid}-ink)`}>
+        <path
+          d={HEART}
+          stroke="var(--deco-crayon-ink)"
+          stroke-width="3.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M20 12L17 7M34 9L34 4M8 18L3 16"
+          stroke="var(--deco-crayon-ink)"
+          stroke-width="3"
+          stroke-linecap="round"
+        />
+      </g>
+    </svg>
+  )
+}
+
+{
+  variant === "bolt" && (
+    <svg
+      class:list={["scribble", "bolt", className]}
+      width={sw}
+      height={sh}
+      viewBox="0 0 60 88"
+      fill="none"
+      aria-hidden="true"
+    >
+      <CrayonFilters id={uid} kinds={["crayon", "ink"]} />
+      <g filter={`url(#${uid}-crayon)`}>
+        <path d={BOLT} fill="var(--fill)" transform="translate(-2 2.5)" />
+        <path
+          d="M32 12L14 42"
+          stroke="var(--deep)"
+          stroke-width="10"
+          stroke-linecap="round"
+          opacity="0.75"
+        />
+        <path
+          d="M34 44L22 72"
+          stroke="var(--pale)"
+          stroke-width="9"
+          stroke-linecap="round"
+          opacity="0.7"
+        />
+      </g>
+      <g filter={`url(#${uid}-ink)`}>
+        <path
+          d={BOLT}
+          stroke="var(--deco-crayon-ink)"
+          stroke-width="3.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </g>
+    </svg>
+  )
+}
+
+{
+  variant === "barley" && (
+    <svg
+      class:list={["scribble", "barley", className]}
+      width={sw}
+      height={sh}
+      viewBox="0 0 84 100"
+      fill="none"
+      aria-hidden="true"
+    >
+      <CrayonFilters id={uid} kinds={["crayon-dense", "ink"]} />
+      <g filter={`url(#${uid}-crayon-dense)`} transform="translate(2 -2.5)">
+        {BARLEY.map((g) => (
+          <ellipse
+            cx={g.cx}
+            cy={g.cy}
+            rx="6"
+            ry="11.4"
+            transform={`rotate(${g.rot} ${g.cx} ${g.cy})`}
+            fill={g.deep ? "var(--deep)" : "var(--pale)"}
+          />
+        ))}
+      </g>
+      <g
+        filter={`url(#${uid}-ink)`}
+        stroke="var(--deco-crayon-ink)"
+        stroke-width="3.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M20 96C26 82 34 66 46 48 54 36 60 27 64 20" />
+        {BARLEY.map((g) => (
+          <ellipse
+            cx={g.cx}
+            cy={g.cy}
+            rx="6"
+            ry="11.4"
+            transform={`rotate(${g.rot} ${g.cx} ${g.cy})`}
+          />
+        ))}
+      </g>
+    </svg>
+  )
+}
+
+{
+  variant === "speech-balloon" && (
+    <span
+      class:list={["balloon", "speech-balloon", className]}
+      style={`width:${bw}px;height:${bh}px`}
+      aria-hidden="true"
+    >
+      <svg width={bw} height={bh} viewBox="0 0 126 84" fill="none" style={balloonSvgStyle}>
+        <CrayonFilters id={uid} kinds={["crayon", "ink"]} />
+        <g filter={`url(#${uid}-crayon)`} transform="translate(2.5 -2)">
+          <path d={SPEECH} fill="var(--fill)" />
+          <path
+            d="M22 16C42 12 90 12 104 17"
+            stroke="var(--deep)"
+            stroke-width="9"
+            stroke-linecap="round"
+            opacity="0.75"
+          />
+          <path
+            d="M16 42C34 47 82 48 100 44"
+            stroke="var(--pale)"
+            stroke-width="8"
+            stroke-linecap="round"
+            opacity="0.7"
+          />
+        </g>
+        <g filter={`url(#${uid}-ink)`}>
+          <path
+            d={SPEECH}
+            stroke="var(--deco-crayon-ink)"
+            stroke-width="3.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </g>
+      </svg>
+      <span class="balloon-text" style={balloonTextStyle}>
+        {memoLines.map((line, i) => (
+          <>
+            {i > 0 && <br />}
+            {line}
+          </>
+        ))}
+      </span>
+    </span>
+  )
+}
+
+{
+  variant === "burst-balloon" && (
+    <span
+      class:list={["balloon", "burst-balloon", className]}
+      style={`width:${bw}px;height:${bh}px`}
+      aria-hidden="true"
+    >
+      <svg width={bw} height={bh} viewBox="0 0 118 92" fill="none" style={balloonSvgStyle}>
+        <CrayonFilters id={uid} kinds={["crayon", "ink"]} />
+        <g filter={`url(#${uid}-crayon)`} transform="translate(-2 2.5)">
+          <path d={BURST} fill="var(--fill)" />
+          {/* 칠 결 두 줄 — 별과 같은 이방 확대를 먹였다(굵기는 크레용 몫이라 그대로).
+              글씨 밴드(34.7~57.4) 위아래를 지나 글씨를 가리지 않는다. */}
+          <path
+            d="M18.4 28.9C34.4 19.8 66.3 18.6 84.9 26.6"
+            stroke="var(--deep)"
+            stroke-width="9"
+            stroke-linecap="round"
+            opacity="0.7"
+          />
+          <path
+            d="M10.5 58.5C29.1 67.7 74.3 68.8 92.9 58.5"
+            stroke="var(--pale)"
+            stroke-width="8"
+            stroke-linecap="round"
+            opacity="0.7"
+          />
+        </g>
+        <g filter={`url(#${uid}-ink)`}>
+          <path
+            d={BURST}
+            stroke="var(--deco-crayon-ink)"
+            stroke-width="3.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </g>
+      </svg>
+      <span class="balloon-text" style={balloonTextStyle}>
+        {memoLines.map((line, i) => (
+          <>
+            {i > 0 && <br />}
+            {line}
+          </>
+        ))}
+      </span>
+    </span>
+  )
+}
+
+{
+  variant === "thought-balloon" && (
+    <span
+      class:list={["balloon", "thought-balloon", className]}
+      style={`width:${bw}px;height:${bh}px`}
+      aria-hidden="true"
+    >
+      <svg width={bw} height={bh} viewBox="0 0 120 90" fill="none" style={balloonSvgStyle}>
+        <CrayonFilters id={uid} kinds={["crayon", "ink"]} />
+        <g filter={`url(#${uid}-crayon)`} transform="translate(2 -2.5)">
+          <path d={CLOUD} fill="var(--fill)" />
+          {THOUGHT_TAILS.map((t) => (
+            <ellipse cx={t.cx} cy={t.cy} rx={t.rx} ry={t.ry} fill="var(--fill)" />
+          ))}
+          <path
+            d="M34 24C48 18 70 19 82 26"
+            stroke="var(--deep)"
+            stroke-width="9"
+            stroke-linecap="round"
+            opacity="0.7"
+          />
+        </g>
+        <g
+          filter={`url(#${uid}-ink)`}
+          stroke="var(--deco-crayon-ink)"
+          stroke-width="3.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d={CLOUD} />
+          {THOUGHT_TAILS.map((t) => (
+            <ellipse cx={t.cx} cy={t.cy} rx={t.rx} ry={t.ry} />
+          ))}
+        </g>
+      </svg>
+      <span class="balloon-text" style={balloonTextStyle}>
+        {memoLines.map((line, i) => (
+          <>
+            {i > 0 && <br />}
+            {line}
+          </>
+        ))}
+      </span>
+    </span>
+  )
+}
+
 <style>
-  /* ── D1 반짝 (4각) ── */
+  /* ── D1 반짝 (4각) ──
+     SVG path 가 아니라 시안대로 clip-path 를 쓴다. 필터를 SVG 안에 두면
+     feDisplacementMap 의 scale 이 **viewBox 단위**로 해석돼, 100 단위를 30px 에
+     그리는 별에서는 결이 3배 이상 잘게 갈린다(매끈한 별이 된다). HTML 요소에
+     CSS filter 로 걸면 scale 이 곧 CSS px 여서 시안과 같은 굵기로 떨린다. */
   .sparkles {
     display: inline-flex;
     align-items: center;
     gap: 12px;
   }
   .sp {
+    display: block;
     clip-path: polygon(
       50% 0,
       57% 43%,
@@ -151,21 +720,6 @@ const memoLines = text.split("\n");
       43% 43%
     );
   }
-  .sp-lg {
-    width: 30px;
-    height: 30px;
-    background: var(--pop);
-  }
-  .sp-md {
-    width: 18px;
-    height: 18px;
-    background: var(--accent);
-  }
-  .sp-sm {
-    width: 11px;
-    height: 11px;
-    background: var(--deco-pink);
-  }
 
   /* ── D2 하트 ── */
   .hearts {
@@ -174,21 +728,8 @@ const memoLines = text.split("\n");
     gap: 10px;
     line-height: 1;
   }
-  .ht-lg {
-    font-size: 30px;
-    color: var(--deco-red);
-    transform: rotate(-12deg);
-  }
-  .ht-md {
-    font-size: 20px;
-    color: var(--deco-pink);
-    transform: rotate(9deg);
-  }
-  .ht-sm {
-    font-size: 26px;
-    color: var(--ink);
-    opacity: 0.25;
-    transform: rotate(-4deg);
+  .ht {
+    line-height: 1;
   }
 
   .arrow,
@@ -203,47 +744,78 @@ const memoLines = text.split("\n");
     align-items: center;
     gap: 22px;
   }
-  /* 속도선 — 만화에서 뭔가 튀어나올 때 긋는 세 줄 */
-  .speed {
-    display: flex;
-    align-items: flex-end;
-    gap: 4px;
-  }
-  .speed i {
-    width: 3px;
-    height: 14px;
-    border-radius: 2px;
-    background: var(--ink);
-  }
-  .speed i:nth-child(1) {
-    transform: rotate(-22deg);
-  }
-  .speed i:nth-child(2) {
-    height: 20px;
-  }
-  .speed i:nth-child(3) {
-    transform: rotate(22deg);
-  }
-  /* 별표 — 막대 셋을 60도씩 돌려 겹친다 */
+  .speed,
   .asterisk {
+    display: block;
+    overflow: visible;
+  }
+
+  /* ── D7·D8·D9 낙서 두들 ────────────────────────────────────────────────
+   * D1~D6 이 "가는 펜으로 그은 것"이라면 이 셋은 "크레용으로 칠하고 굵게 두른 것"이다.
+   * 세 겹으로 만든다 — 칠을 2~3px 어긋나게 두고(선 밖으로 삐져나온 색) 그 위에 짙은
+   * 결·옅은 결을 엇갈려 긋고, 마지막에 같은 길을 굵은 잉크로 두른다. 칠만 하면
+   * 스티커로 읽히고, 선만 두르면 아이콘이 된다.
+   *
+   * 색은 시안 hex 그대로다(--deco-crayon-*). 코어 팔레트로 환산했다가 되돌린
+   * 이유는 deco.css 머리글에 있다.
+   */
+  .scribble {
+    display: block;
+    overflow: visible;
+  }
+  .scribble-heart {
+    --fill: var(--deco-crayon-pink);
+    --deep: var(--deco-crayon-pink-deep);
+    --pale: var(--deco-crayon-pink-pale);
+  }
+  .bolt {
+    --fill: var(--deco-crayon-yellow);
+    --deep: var(--deco-crayon-yellow-deep);
+    --pale: var(--deco-crayon-yellow-pale);
+  }
+  .barley {
+    --deep: var(--deco-crayon-wheat);
+    --pale: var(--deco-crayon-wheat-pale);
+  }
+
+  /* ── D10·D11·D12 풍선 두들 ─────────────────────────────────────────────
+   * 낙서 셋과 같은 필기구인데(크레용 칠 + 굵은 잉크) **안에 글씨가 들어간다.**
+   * 글씨를 SVG <text> 로 넣지 않고 HTML 로 얹는 이유는 시안이 그렇게 그렸기
+   * 때문이기도 하지만, 실질적으로는 줄바꿈이다 — <text> 는 줄바꿈이 없어 <tspan>
+   * 마다 dy 를 손으로 적어야 하고, 그러면 D6 메모처럼 \n 으로 쓸 수가 없다.
+   *
+   * 글씨엔 필터를 걸지 않는다(시안도 .rgh 를 안 붙였다). Gaegu 는 이미 손글씨라
+   * 노이즈를 더하면 읽기가 나빠지기만 한다.
+   */
+  .balloon {
     position: relative;
-    width: 22px;
-    height: 22px;
+    display: block;
   }
-  .asterisk i {
+  .balloon svg {
+    display: block;
+    overflow: visible;
+  }
+  .balloon-text {
     position: absolute;
-    inset: 0;
-    margin: auto;
-    width: 3px;
-    height: 22px;
-    border-radius: 2px;
-    background: var(--deco-red);
+    font-family: var(--font-hand);
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
   }
-  .asterisk i:nth-child(2) {
-    transform: rotate(60deg);
+  .speech-balloon {
+    --fill: var(--deco-crayon-mint);
+    --deep: var(--deco-crayon-mint-deep);
+    --pale: var(--deco-crayon-mint-pale);
   }
-  .asterisk i:nth-child(3) {
-    transform: rotate(-60deg);
+  .burst-balloon {
+    --fill: var(--deco-crayon-pink);
+    --deep: var(--deco-crayon-pink-deep);
+    /* 하트(D7)보다 한 단 밝은 옅은 결 — 이유는 deco.css */
+    --pale: var(--deco-crayon-pink-pale-2);
+  }
+  .thought-balloon {
+    --fill: var(--deco-crayon-peri);
+    --deep: var(--deco-crayon-peri-deep);
   }
 
   /* ── D6 손글씨 메모 ── */
@@ -253,7 +825,7 @@ const memoLines = text.split("\n");
     font-weight: 700;
     font-size: 23px;
     line-height: 1.25;
-    color: var(--ink-2);
+    color: var(--c, var(--ink-2));
     text-align: center;
   }
 </style>

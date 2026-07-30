@@ -1,25 +1,55 @@
 ---
 /**
- * 스티커 S1~S6.
+ * 스티커 S1~S9.
  *
  *   S1 speech  말풍선(꼬리 달림)   S2 ribbon  리본 배너(양끝 V 홈)
  *   S3 star    별 3종              S4 diecut  원형 다이컷
  *   S5 tag     택 라벨(구멍 뚫린)  S6 tony    토니 다이컷(이미지)
+ *   S7 name-plate  이름 라벨       S8 name-pill  이름 다이컷
+ *   S9 name-blank  이름 기입 라벨
+ *
+ * **S7~S9 는 "이름을 적는 자리" 셋이다** — 셋이 같은 말을 담는데도 따로 있는 이유는
+ * 격이 다르기 때문이다. S7 은 학회 명찰처럼 **인쇄된 판**(머리띠 + 손글씨), S8 은 오려
+ * 붙인 **다이컷 배지**(흰 여백 + 그림자), S9 은 아직 **빈칸**이라 점선과 밑줄이 있다.
+ * 그래서 S9 만 테두리가 점선이고 S8 만 다이컷 테두리를 진다.
  *
  * S1·S4 의 흰 테두리는 box-shadow 스프레드로 그린다 — border 로 그리면 꼬리(회전한
  * 사각형)와 몸통의 테두리가 겹치는 자리에 이음매가 보인다. spread 그림자는 실루엣
  * 바깥으로만 번져서 꼬리가 몸통에 자연스럽게 파묻힌다.
  *
+ * S1 은 `tone` 으로 두 화자를 가른다(핑크·블루). 예전엔 쓰는 쪽에서
+ * `:global(.speech-blue .tail)` 로 배경·꼬리색을 덮었는데, 부품 내부 구조를 밖에서 아는
+ * 셈이라 부품이 바뀌면 조용히 깨졌다.
+ *
+ * **말풍선은 "붙인 것" 하나뿐이다** — 손으로 그린 말풍선 룩을 잠깐 들였다가 뺐다.
+ * 여백에 끄적인 것은 말풍선이 아니라 **손글씨 + 화살표**(D6+D3)이고, 그게 필요한
+ * 자리(히어로 콜라주)는 그쪽으로 갔다. 말풍선까지 두 룩을 두면 같은 역할이 두 벌이 된다.
+ *
  * 텍스트를 담는 종류(speech·ribbon·diecut·tag)는 기본이 장식이라 스크린리더에서
  * 감춘다. 그 문구가 정보면 decorative={false} 로 노출한다.
  */
-import { TONY_DIECUT } from "../../lib/deco";
+import { TONY_DIECUT, tonyDiecutHeight } from "../../lib/deco";
 
 interface Props {
-  variant?: "speech" | "ribbon" | "star" | "diecut" | "tag" | "tony";
-  /** 스티커에 얹을 문구. star·tony 에서는 무시된다. */
+  variant?:
+    | "speech"
+    | "ribbon"
+    | "star"
+    | "diecut"
+    | "tag"
+    | "tony"
+    | "name-plate"
+    | "name-pill"
+    | "name-blank";
+  /** 스티커에 얹을 문구. star·tony 에서는 무시된다. 줄바꿈은 \n (speech). */
   text?: string;
-  /** tony 의 렌더 폭(px). 원본은 660px 이라 그 이하로 쓴다. */
+  /** S7 머리띠 · S9 앞머리의 활자 라벨. 대문자 짧은 말만(자간이 넓다). */
+  label?: string;
+  /** S9 오른쪽 위 원형 배지의 글자. 한 글자 기준. */
+  badge?: string;
+  /** S1 말풍선의 색. 두 화자를 가를 때 쓴다. */
+  tone?: "pink" | "blue";
+  /** tony 의 렌더 폭(px). 원본은 653px 이라 그 이하로 쓴다. */
   size?: number;
   /** false 면 문구를 스크린리더에 노출한다(기본 true = 순수 장식) */
   decorative?: boolean;
@@ -28,6 +58,9 @@ interface Props {
 const {
   variant = "speech",
   text = "",
+  label = variant === "name-blank" ? "FROM" : "NAME",
+  badge = "T",
+  tone = "pink",
   size = 104,
   decorative = true,
   class: className = "",
@@ -38,7 +71,7 @@ const hidden = decorative ? "true" : undefined;
 
 {
   variant === "speech" && (
-    <span class:list={["speech", className]} aria-hidden={hidden}>
+    <span class:list={["speech", tone, className]} aria-hidden={hidden}>
       {text}
       <span class="tail" aria-hidden="true" />
     </span>
@@ -81,13 +114,45 @@ const hidden = decorative ? "true" : undefined;
 }
 
 {
+  variant === "name-plate" && (
+    <span class:list={["nameplate", className]} aria-hidden={hidden}>
+      <span class="np-head">{label}</span>
+      <span class="np-name">{text}</span>
+    </span>
+  )
+}
+
+{
+  variant === "name-pill" && (
+    <span class:list={["namepill", className]} aria-hidden={hidden}>
+      <span class="np-star" aria-hidden="true" />
+      <span class="np-text">{text}</span>
+    </span>
+  )
+}
+
+{
+  variant === "name-blank" && (
+    <span class:list={["nameblank", className]} aria-hidden={hidden}>
+      <span class="nb-row">
+        <span class="nb-label">{label}</span>
+        <span class="nb-name">{text}</span>
+      </span>
+      <span class="nb-badge" aria-hidden="true">
+        {badge}
+      </span>
+    </span>
+  )
+}
+
+{
   variant === "tony" && (
     <img
       class:list={["tony", "deco-diecut", className]}
       src={TONY_DIECUT}
       alt={decorative ? "" : "빵관 토니 마스코트 스티커"}
       width={size}
-      height={Math.round((size * 975) / 712)}
+      height={tonyDiecutHeight(size)}
       loading="lazy"
       decoding="async"
     />
@@ -100,7 +165,7 @@ const hidden = decorative ? "true" : undefined;
     position: relative;
     display: inline-block;
     padding: 7px 14px 9px;
-    background: var(--deco-pink-tint);
+    background: var(--sp-fill);
     border-radius: 15px;
     box-shadow:
       0 0 0 var(--deco-diecut) #fffcf6,
@@ -109,8 +174,20 @@ const hidden = decorative ? "true" : undefined;
     font-weight: 700;
     font-size: 19px;
     line-height: 1.2;
-    color: var(--deco-pink-ink);
     text-align: center;
+    color: var(--sp-ink);
+    /* 글쓴이가 넣은 \n 을 줄바꿈으로 지킨다 — 덩어리 모양이 문구 길이에 따라
+       멋대로 갈리지 않게. */
+    white-space: pre-line;
+  }
+  /* 톤 — fill 은 꼬리도 써야 해서 변수로 흘린다 */
+  .speech.pink {
+    --sp-fill: var(--deco-pink-tint);
+    --sp-ink: var(--deco-pink-ink);
+  }
+  .speech.blue {
+    --sp-fill: var(--accent-tint);
+    --sp-ink: var(--accent);
   }
   .tail {
     position: absolute;
@@ -118,7 +195,7 @@ const hidden = decorative ? "true" : undefined;
     bottom: -7px;
     width: 13px;
     height: 13px;
-    background: var(--deco-pink-tint);
+    background: var(--sp-fill);
     box-shadow: 0 0 0 var(--deco-diecut) #fffcf6;
     border-radius: 2px;
     transform: rotate(45deg);
@@ -151,7 +228,10 @@ const hidden = decorative ? "true" : undefined;
     align-items: center;
     gap: 14px;
   }
-  .star {
+  /* S8 이름 다이컷의 작은 별도 같은 실루엣이다 — 별이 두 모양이면 같은 키트로
+     안 읽히므로 clip-path 는 한 군데서만 적는다. */
+  .star,
+  .np-star {
     clip-path: polygon(
       50% 0,
       61% 35%,
@@ -236,6 +316,133 @@ const hidden = decorative ? "true" : undefined;
     letter-spacing: 0.12em;
     color: var(--ink);
     white-space: nowrap;
+  }
+
+  /* ── S7 이름 라벨 ──
+     머리띠와 몸통이 한 장으로 보여야 해서 라운드는 바깥에서 한 번만 주고 overflow 로
+     자른다(머리띠에 따로 라운드를 주면 1.5px 테두리와 어긋난 두 겹이 보인다).
+     inline-block + overflow:hidden 이라 베이스라인이 아래 마진 끝으로 내려가, 글 흐름에
+     그냥 놓아도 디센더 빈틈이 생기지 않는다. */
+  .nameplate {
+    display: inline-block;
+    /* 시안 값은 150 인데 그쪽 판은 content-box 라 테두리가 밖에 붙어 총 153 이다.
+       이 레포는 전역 border-box 라 150 을 그대로 쓰면 판이 3px 좁아진다. */
+    width: 153px;
+    border-radius: 5px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1.5px solid var(--ink);
+    box-shadow: 2px 3px 0 rgba(32, 38, 74, 0.12);
+  }
+  .np-head {
+    display: block;
+    padding: 4px 0;
+    background: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-align: center;
+    /* 어두운 띠 위 글자는 --surface 가 아니라 스티커 흰색이다 — T4 레터링 테이프의
+       on-dark 와 같은 값. */
+    color: #fffcf6;
+  }
+  .np-name {
+    display: block;
+    padding: 7px 12px 9px;
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1;
+    text-align: center;
+    color: var(--accent);
+  }
+
+  /* ── S8 이름 다이컷 ── */
+  .namepill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 15px 8px;
+    border-radius: 999px;
+    background: var(--deco-pink-tint);
+    box-shadow:
+      0 0 0 var(--deco-diecut) #fffcf6,
+      0 3px 7px rgba(32, 38, 74, 0.16);
+  }
+  .np-star {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    background: var(--pop);
+  }
+  .np-text {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 21px;
+    line-height: 1;
+    color: var(--deco-pink-ink);
+    white-space: nowrap;
+  }
+
+  /* ── S9 이름 기입 라벨 ──
+     아직 안 적은 칸이라는 게 요점이다: 테두리가 점선이고 이름 자리에 밑줄이 있다.
+     그래서 다이컷 흰 테두리도 없다 — 오려 붙인 게 아니라 끼워 넣은 서식이다. */
+  .nameblank {
+    position: relative;
+    display: inline-block;
+    width: 152px;
+    padding: 9px 13px 11px;
+    box-sizing: border-box;
+    background: var(--surface);
+    border: 1.5px dashed rgba(32, 38, 74, 0.45);
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(32, 38, 74, 0.1);
+  }
+  .nb-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .nb-label {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--ink-3);
+  }
+  /* 밑줄은 이름 길이가 아니라 남은 칸 전체를 긋는다(flex:1) — 서식의 빈칸이라
+     글자에 딱 맞으면 이미 채워진 것으로 보인다. */
+  .nb-name {
+    flex: 1;
+    padding-bottom: 2px;
+    border-bottom: 1.5px solid rgba(32, 38, 74, 0.25);
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 21px;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .nb-badge {
+    position: absolute;
+    right: -9px;
+    top: -9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent-tint);
+    /* --deco-diecut(5px)보다 한 픽셀 얇다. 26px 짜리에 5px 를 두르면 테두리가
+       배지보다 도드라진다. */
+    box-shadow: 0 0 0 4px #fffcf6;
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1;
+    color: var(--accent);
   }
 
   /* ── S6 토니 다이컷 ── */

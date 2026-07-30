@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "gen:motion": "bun scripts/gen-motion-css.ts",
+    "viz:verify": "bun scripts/verify-viz.ts",
     "graph:refresh": "bash scripts/refresh-graph.sh && bash scripts/graph-stamp.sh",
     "graph:stamp": "bash scripts/graph-stamp.sh",
     "graph:request": "bash scripts/graph-request.sh",

@@ -1,0 +1,119 @@
+---
+/**
+ * W1 — 마 실 · 걸이줄.
+ *
+ * 판 위에 가로로 가로지르는 실. **처짐(sag)이 반드시 있어야 한다** — 곧게 뻗은 선은
+ * 걸이줄이 아니라 밑줄로 읽힌다. 양 끝에 못(앵커) 두 개를 박아 "여기 매달았다"를 만든다.
+ *
+ * 가운데 slot 에 하나를 걸 수 있다(집게·택·폴라로이드). 여러 개를 걸 짜임은 부품이
+ * 아니라 그 자리에서 얹는 조합이다 — /design/deco 의 W3 칸이 그 예시다.
+ *
+ *   <Twine width={220}><Clothespin height={34} /></Twine>
+ */
+interface Props {
+  /**
+   * 실의 가로 길이. 수는 px, 문자열은 CSS 길이 그대로 쓴다(`"100%"`·`clamp(...)`).
+   * 실은 걸리는 판만큼 길어야 하는데 판 폭이 유동인 자리가 있어서다(푸터 저자 라인업).
+   */
+  width?: number | string;
+  /** 가운데가 얼마나 처지는가(px). 이 값이 곧 부품 높이다. */
+  sag?: number;
+  /**
+   * 양 끝 못. 끝을 다른 것으로 물릴 때(집게 등) 끈다 — 못과 집게가 한 점에 겹치면
+   * 고정 장치가 두 개가 된다.
+   */
+  anchors?: boolean;
+  class?: string;
+}
+const {
+  width = 190,
+  sag = 62,
+  anchors = true,
+  class: className = "",
+} = Astro.props;
+const w = typeof width === "number" ? `${width}px` : width;
+---
+
+<span
+  class:list={["twine", className]}
+  style={`--w:${w};--h:${sag}px`}
+  aria-hidden="true"
+>
+  <svg
+    class="line"
+    viewBox="0 0 190 70"
+    preserveAspectRatio="none"
+    fill="none"
+    aria-hidden="true"
+  >
+    {/* 실 밑에 깔리는 옅은 한 줄 — 꼬임의 그늘. 없으면 점선이 종이에 안 앉는다. */}
+    <path
+      d="M2 12C46 52 144 52 188 10"
+      stroke="color-mix(in srgb, var(--ink) 16%, transparent)"
+      stroke-width="1"
+      stroke-linecap="round"
+      vector-effect="non-scaling-stroke"
+    />
+    <path
+      d="M2 12C46 52 144 52 188 10"
+      stroke="var(--deco-twine)"
+      stroke-width="2.6"
+      stroke-dasharray="6 3"
+      stroke-linecap="round"
+      vector-effect="non-scaling-stroke"
+    />
+  </svg>
+  {
+    anchors && (
+      <>
+        <span class="anchor left" />
+        <span class="anchor right" />
+      </>
+    )
+  }
+  <span class="hang"><slot /></span>
+</span>
+
+<style>
+  .twine {
+    position: relative;
+    display: block;
+    width: var(--w);
+    height: var(--h);
+  }
+  /*
+   * preserveAspectRatio:none + non-scaling-stroke 로 그린다. 폭에 따라 실이 늘어나도
+   * 처짐(높이)과 실 두께는 그대로여야 하기 때문이다 — 균일 확대로 두면 480px 판을
+   * 가로지를 때 처짐이 160px 까지 늘어나 줄이 아니라 그물이 된다.
+   */
+  .line {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  /* 양 끝 못 — 실 끝점(viewBox y=12·10)에 맞춰 앉힌다 */
+  .anchor {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--deco-twine-ink);
+  }
+  .anchor.left {
+    left: 0;
+    top: calc(var(--h) * 0.07);
+  }
+  .anchor.right {
+    right: 0;
+    top: calc(var(--h) * 0.04);
+  }
+  /* 매다는 자리 — 곡선의 가장 낮은 지점(x 중앙, 높이의 60%) */
+  .hang {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--h) * 0.6);
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+  }
+</style>

@@ -14,6 +14,8 @@ import Tape from "../../components/deco/Tape.astro";
 import Sticker from "../../components/deco/Sticker.astro";
 import Doodle from "../../components/deco/Doodle.astro";
 import Clip from "../../components/deco/Clip.astro";
+import Twine from "../../components/deco/Twine.astro";
+import Clothespin from "../../components/deco/Clothespin.astro";
 import StickyNote from "../../components/deco/StickyNote.astro";
 import IndexTab from "../../components/deco/IndexTab.astro";
 import Polaroid from "../../components/deco/Polaroid.astro";
@@ -27,7 +29,7 @@ import ClippedCard from "../../components/deco/patterns/ClippedCard.astro";
 import TapedQuote from "../../components/deco/patterns/TapedQuote.astro";
 import TapedCode from "../../components/deco/patterns/TapedCode.astro";
 import DecoHeading from "../../components/deco/patterns/DecoHeading.astro";
-import { DECO_INTENSITY, TONY_CUTOUT } from "../../lib/deco";
+import { DECO_INTENSITY, TONY_DIECUT } from "../../lib/deco";
 import "../../styles/deco.css";
 ---
 
@@ -58,12 +60,15 @@ import "../../styles/deco.css";
 
     <p class="group">STICKER</p>
     <div class="grid">
-      <figure class="cell"><span class="code">S1</span><span class="stage"><span style="transform:rotate(-4deg)"><Sticker variant="speech" text="오늘도 빵빵하게!" /></span></span><figcaption>말풍선 스티커</figcaption></figure>
+      <figure class="cell wide"><span class="code">S1</span><span class="stage row gap"><span style="transform:rotate(-4deg)"><Sticker variant="speech" text="오늘도 빵빵하게!" /></span><span style="transform:rotate(5deg)"><Sticker variant="speech" tone="blue" text="빵-하!" /></span></span><figcaption>말풍선 — 핑크 · 블루<br /><small>손글씨로 끄적인 것은 말풍선이 아니라 D6+D3 (아래 P-02)</small></figcaption></figure>
       <figure class="cell"><span class="code">S2</span><span class="stage"><span style="transform:rotate(-2deg)"><Sticker variant="ribbon" text="EP 07 · 완결" /></span></span><figcaption>리본 배너</figcaption></figure>
       <figure class="cell"><span class="code">S3</span><span class="stage"><Sticker variant="star" /></span><figcaption>별 스티커 3종</figcaption></figure>
       <figure class="cell"><span class="code">S4</span><span class="stage"><span style="transform:rotate(8deg)"><Sticker variant="diecut" text="빵-하!" /></span></span><figcaption>원형 다이컷</figcaption></figure>
       <figure class="cell"><span class="code">S5</span><span class="stage"><span style="transform:rotate(-6deg)"><Sticker variant="tag" text="TECH · 29MIN" /></span></span><figcaption>택 라벨</figcaption></figure>
       <figure class="cell"><span class="code">S6</span><span class="stage"><span style="transform:rotate(-5deg)"><Sticker variant="tony" size={96} /></span></span><figcaption>토니 다이컷</figcaption></figure>
+      <figure class="cell"><span class="code">S7</span><span class="stage"><span style="transform:rotate(-2.5deg)"><Sticker variant="name-plate" text="빵관 토니" /></span></span><figcaption>이름 라벨</figcaption></figure>
+      <figure class="cell"><span class="code">S8</span><span class="stage"><span style="transform:rotate(4deg)"><Sticker variant="name-pill" text="토니의 기록장" /></span></span><figcaption>이름 다이컷</figcaption></figure>
+      <figure class="cell"><span class="code">S9</span><span class="stage"><span style="transform:rotate(1.5deg)"><Sticker variant="name-blank" text="토니" /></span></span><figcaption>이름 기입 라벨</figcaption></figure>
     </div>
 
     <p class="group">DOODLE</p>
@@ -74,14 +79,23 @@ import "../../styles/deco.css";
       <figure class="cell"><span class="code">D4</span><span class="stage"><span class="stack"><b>밑줄 두들</b><Doodle variant="wave" width={140} /></span></span><figcaption>물결 밑줄</figcaption></figure>
       <figure class="cell"><span class="code">D5</span><span class="stage"><Doodle variant="emphasis" /></span><figcaption>강조선 · 별표</figcaption></figure>
       <figure class="cell"><span class="code">D6</span><span class="stage"><span style="transform:rotate(-3deg)"><Doodle variant="memo" text={"여기부터 읽으면\n편해요 :)"} /></span></span><figcaption>손글씨 메모</figcaption></figure>
+      <figure class="cell"><span class="code">D7</span><span class="stage"><span style="transform:rotate(-4deg)"><Doodle variant="scribble-heart" /></span></span><figcaption>낙서 하트<br /><small>D2 하트와 다르다 — 이쪽은 굵게 두르고 칠한 것</small></figcaption></figure>
+      <figure class="cell"><span class="code">D8</span><span class="stage"><span style="transform:rotate(3deg)"><Doodle variant="bolt" /></span></span><figcaption>번개 두들</figcaption></figure>
+      <figure class="cell"><span class="code">D9</span><span class="stage"><span style="transform:rotate(-2deg)"><Doodle variant="barley" /></span></span><figcaption>보리 · 잎사귀</figcaption></figure>
+      <figure class="cell"><span class="code">D10</span><span class="stage"><span style="transform:rotate(-3deg)"><Doodle variant="speech-balloon" text={"이거\n진짜 좋아!"} /></span></span><figcaption>말풍선<br /><small>S1 말풍선 스티커와 다르다 — 이쪽은 붙인 게 아니라 그린 것</small></figcaption></figure>
+      <figure class="cell"><span class="code">D11</span><span class="stage"><span style="transform:rotate(4deg)"><Doodle variant="burst-balloon" text="우와!!" /></span></span><figcaption>폭발 말풍선</figcaption></figure>
+      <figure class="cell"><span class="code">D12</span><span class="stage"><span style="transform:rotate(-2deg)"><Doodle variant="thought-balloon" text={"음…\n고민중"} /></span></span><figcaption>생각 풍선</figcaption></figure>
     </div>
 
-    <p class="group">CLIP · MEMO · FRAME · PAPER</p>
+    <p class="group">CLIP · HANG · MEMO · FRAME · PAPER</p>
     <div class="grid">
       <figure class="cell"><span class="code">C1</span><span class="stage gap"><span style="transform:rotate(-16deg)"><Clip variant="clip" /></span><Clip variant="binder" /></span><figcaption>종이 클립 · 집게</figcaption></figure>
+      <figure class="cell"><span class="code">W1</span><span class="stage"><Twine width={172} sag={62}><span class="w1-tag"></span></Twine></span><figcaption>마 실 · 걸이줄<br /><small>처짐이 없으면 밑줄로 읽힌다</small></figcaption></figure>
+      <figure class="cell"><span class="code">W2</span><span class="stage gap"><span style="transform:rotate(-9deg)"><Clothespin height={66} /></span><span style="transform:rotate(14deg)"><Clothespin height={58} /></span></span><figcaption>나무 집게 2종</figcaption></figure>
+      <figure class="cell wide"><span class="code">W3</span><span class="stage"><span class="w3-line"><Twine width={240} sag={64} /><span class="w3-item left"><Polaroid width={54}><img src={TONY_DIECUT} alt="" width="30" height="41" /></Polaroid><span class="w3-pin"><Clothespin height={32} /></span></span><span class="w3-item right"><StickyNote text="오늘 할 일" width={64} /><span class="w3-pin"><Clothespin height={30} /></span></span></span></span><figcaption>실 + 집게 조합<br /><small>부품 셋을 그 자리에서 얹는 조합 — 컴포넌트로 굳히지 않았다</small></figcaption></figure>
       <figure class="cell"><span class="code">M1</span><span class="stage"><span style="transform:rotate(3deg)"><StickyNote text={"MTU 1420,\n여기서 막힘!"} /></span></span><figcaption>포스트잇 메모</figcaption></figure>
       <figure class="cell"><span class="code">M2</span><span class="stage gap"><IndexTab text="최근 글" tone="pink" /><IndexTab text="글 지도" tone="blue" /></span><figcaption>인덱스 탭</figcaption></figure>
-      <figure class="cell"><span class="code">F1</span><span class="stage"><span style="transform:rotate(-3deg)"><Polaroid caption="빵관 토니 ♡" width={74}><img src={TONY_CUTOUT} alt="" width="52" height="71" /></Polaroid></span></span><figcaption>폴라로이드 프레임</figcaption></figure>
+      <figure class="cell"><span class="code">F1</span><span class="stage"><span style="transform:rotate(-3deg)"><Polaroid caption="빵관 토니 ♡" width={74}><img src={TONY_DIECUT} alt="" width="40" height="55" /></Polaroid></span></span><figcaption>폴라로이드 프레임</figcaption></figure>
       <figure class="cell"><span class="code">F2</span><span class="stage"><CornerMount><PaperSurface paper="dot" tone="cream" cell={11} width="96px" height="66px" /></CornerMount></span><figcaption>사진 코너 마운트</figcaption></figure>
       <figure class="cell"><span class="code">P1</span><span class="stage gap"><span style="transform:rotate(-8deg)"><Stamp variant="date" text="2026.07.28" /></span><span style="transform:rotate(-11deg)"><Stamp variant="round" text="BAKED" sub="빵관토니" /></span></span><figcaption>날짜 · 도장 스탬프</figcaption></figure>
       <figure class="cell"><span class="code">P2</span><span class="stage"><span style="transform:rotate(-2deg)"><TicketStub code="EP 07" note="29분 읽기" notch="var(--surface)" /></span></span><figcaption>티켓 스텁</figcaption></figure>
@@ -127,12 +141,14 @@ import "../../styles/deco.css";
 
     <!-- P-02 히어로 콜라주 -->
     <section class="pat">
-      <p class="pat-head"><span class="pid">P-02</span> 히어로 콜라주 — 홈</p>
+      <p class="pat-head">
+        <span class="pid">P-02</span> 히어로 콜라주 — 홈
+        <small>폴라로이드(F1)는 판이 아니라 히어로 타이틀 우상단에 붙는다</small>
+      </p>
       <div class="pat-body">
         <HeroCollage
-          speechLeft={"오늘도\n빵빵하게!"}
-          speechRight="빵-하!"
-          polaroidCaption="관찰력 만렙!"
+          noteLeft={"오늘도\n빵빵하게!"}
+          noteRight="빵-하!"
           mascot={300}
         />
       </div>
@@ -363,9 +379,54 @@ ping: local error: message too long, mtu=1420</code></pre>
     position: absolute;
     bottom: 9px;
     left: 11px;
+    right: 11px;
     font-size: 11px;
     font-weight: 500;
     color: var(--ink-2);
+  }
+  /* 부품을 헷갈릴 만한 칸에만 붙는 한 줄 주석 */
+  .cell figcaption small {
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+
+  /* ── W 칸 전용 데모 마크업 ──────────────────────────────────────────────
+   * W1 의 크라프트 택과 W3 의 매달린 두 장은 **부품이 아니라 이 칸의 예시**다.
+   * 실에 무엇을 매달지는 쓰는 쪽이 정하는 값이라, 부품에 박으면 그때마다 변종이
+   * 하나씩 생긴다(DecoLayer 와 부품을 가른 것과 같은 이유).
+   */
+  .w1-tag {
+    display: block;
+    width: 34px;
+    height: 24px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--deco-wood), var(--deco-wood-2));
+    box-shadow: 0 1px 2px rgba(32, 38, 74, 0.18);
+    transform: rotate(4deg);
+    border-top: 3px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  }
+  .w3-line {
+    position: relative;
+    display: block;
+  }
+  .w3-item {
+    position: absolute;
+    top: 14px;
+  }
+  .w3-item.left {
+    left: 26px;
+    transform: rotate(-4deg);
+  }
+  .w3-item.right {
+    right: 18px;
+    transform: rotate(5deg);
+  }
+  /* 집게는 매달린 것의 위 모서리에 절반 걸친다 */
+  .w3-pin {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   /* ── 강도 ── */
@@ -431,6 +492,10 @@ ping: local error: message too long, mtu=1420</code></pre>
     font-size: 12px;
     color: var(--ink-2);
     margin: 0 0 10px;
+  }
+  .pat-head small {
+    font-size: 11.5px;
+    color: var(--ink-3);
   }
   .pid {
     font-family: var(--font-mono);

@@ -2,6 +2,8 @@
 import { getCollection, render } from "astro:content";
 import PostLayout from "../../layouts/PostLayout.astro";
 import TalkLayout from "../../layouts/TalkLayout.astro";
+import ProseQuote from "../../components/deco/mdx/ProseQuote.astro";
+import ProseCode from "../../components/deco/mdx/ProseCode.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
@@ -13,9 +15,21 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const Layout = post.data.template === "talk" ? TalkLayout : PostLayout;
+const isTalk = post.data.template === "talk";
+const Layout = isTalk ? TalkLayout : PostLayout;
+
+/**
+ * 마크다운이 만든 인용·코드블록에 데코 키트 패턴을 얹는다. 본문 파일을 안 고치고
+ * 생김새만 바꾸는 유일한 접점이라 여기서 꽂는다.
+ *
+ * 폭신 대담(template: "talk")은 제외한다 — TalkLayout 은 자기 시각 언어(PullQuote·
+ * QA)를 따로 갖고 있고, deco.css 를 들여오지 않아 데코 토큰이 아예 없다.
+ */
+const decoComponents = isTalk
+  ? {}
+  : { blockquote: ProseQuote, pre: ProseCode };
 ---
 
 <Layout post={post}>
-  <Content />
+  <Content components={decoComponents} />
 </Layout>

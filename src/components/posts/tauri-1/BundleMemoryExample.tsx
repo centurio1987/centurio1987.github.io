@@ -2,7 +2,7 @@
 // Statistics(평면 카드)는 시리즈(Tauri/Electron) 구분이 안 돼 지표별 좌우 대비로 교체.
 // 면적이 값에 비례(magnitude). 예시 측정 1건이며 대표 절대치가 아님.
 import VizFigure from "../../viz/VizFigure";
-import { Comparison } from "@centurio1987/bbangto-ui-visualization";
+import Comparison from "../../../lib/viz/Comparison";
 
 export default function BundleMemoryExample() {
   return (

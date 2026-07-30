@@ -35,6 +35,33 @@ const comparisonPane = z.object({
   value: z.number().optional(),
 });
 
+/**
+ * 패키지 `NodeShape` 와 **같은 목록이어야 한다**(dist/index.d.ts).
+ *
+ * 느슨하게 `z.string()` 으로 두면 오타·짐작한 이름(`"decision"` 같은 mermaid 어휘)이
+ * 검증을 통과하고, 패키지는 **모르는 shape 를 조용히 사각형으로 그린다**
+ * (`renderShapeElements` 의 default → `rectPath`). 그러면 분기 노드가 평범한 상자로
+ * 렌더돼 저작자의 의도가 소리 없이 사라진다 — 실제로 vpn-anatomy-7 에서 그랬다.
+ * 여기서 막으면 apply-viz 가 명세를 읽는 시점에 이름을 짚어준다.
+ */
+const NODE_SHAPES = [
+  "rect",
+  "rounded",
+  "stadium",
+  "circle",
+  "ellipse",
+  "diamond",
+  "cylinder",
+  "hexagon",
+  "parallelogram",
+  "trapezoid",
+  "subroutine",
+  "doubleCircle",
+  "cube",
+  "component",
+  "folder",
+] as const;
+
 const flowNode = z.object({
   id: z.string(),
   x: z.number(),
@@ -42,7 +69,7 @@ const flowNode = z.object({
   width: z.number(),
   height: z.number(),
   label: z.string().optional(),
-  shape: z.string().optional(),
+  shape: z.enum(NODE_SHAPES).optional(),
   fill: z.string().optional(),
   stroke: z.string().optional(),
   strokeWidth: z.number().optional(),
@@ -133,8 +160,13 @@ export const SUPPORTED_VIZ_KINDS: readonly string[] = [
 /**
  * 패키지가 아니라 **레포 로컬**(`src/lib/viz/<kind>.tsx`)에 구현된 kind.
  * apply-viz 의 코드생성이 import 경로를 여기서 갈라 쓴다.
+ *
+ * 전부 같은 이유로 로컬이다 — 패키지 구현이 라벨을 **줄바꿈 없는 단일 `<text>`**
+ * 로 그려서 한글이 상자·viewBox 를 넘고, SVG 는 넘친 글자를 잘라 버린다.
+ * 로컬 구현은 `text.ts` 의 전각 계산으로 감싸고 높이를 콘텐츠에서 되뽑는다.
+ * 넘침 재발은 `scripts/verify-viz.ts` 가 실제 렌더에서 잡는다.
  */
-export const LOCAL_VIZ_KINDS: readonly string[] = ["PosterHero"];
+export const LOCAL_VIZ_KINDS: readonly string[] = ["PosterHero", "Comparison", "ProcessSteps"];
 
 /** raw(파싱된 JSON)을 검증한다. 실패 시 읽기 좋은 에러 메시지를 던진다. */
 export function parseVizSpec(raw: unknown, blockLabel = "viz block"): VizSpec {

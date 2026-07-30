@@ -8,8 +8,12 @@
  */
 interface Props {
   caption?: string;
-  /** 사진 칸의 폭(px). 높이는 4:3 비율로 따라간다. */
-  width?: number;
+  /**
+   * 사진 칸의 폭. 높이는 4:3 비율로 따라간다. 수는 px, 문자열은 CSS 길이 그대로
+   * 쓴다(`clamp(...)`) — 액자를 여럿 나란히 세우는 자리에선 좁은 화면에서 액자가
+   * 서로 겹치므로 폭이 유동이어야 한다(푸터 저자 라인업).
+   */
+  width?: number | string;
   /** 사진 칸 바탕 무늬 */
   paper?: "grid" | "dot" | "plain";
   class?: string;
@@ -24,7 +28,7 @@ const {
 
 <span
   class:list={["polaroid", className]}
-  style={`--w:${width}px`}
+  style={`--w:${typeof width === "number" ? `${width}px` : width}`}
   aria-hidden="true"
 >
   <span class:list={["shot", paper]}><slot /></span>

@@ -80,8 +80,12 @@ async function buildHtml(spec: VizSpec): Promise<{ html: string; w: number; h: n
 <style>${FONT_IMPORT}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{background:transparent}
-#capture{width:${w}px;height:${h}px;overflow:hidden}
-#capture svg{display:block;width:100%;height:100%}
+/* 높이는 **고정하지 않는다** — 폭만 맞추고 SVG 의 고유 비율을 따르게 둔다.
+   일부 로컬 kind(Comparison·ProcessSteps)는 viewBox 높이를 콘텐츠에서 되뽑으므로,
+   저작 viewBox 로 계산한 ${h}px 에 가두면 preserveAspectRatio 가 letterbox 를
+   만들어 위아래에 빈 띠가 낀다. hero(PosterHero)는 viewBox 가 고정이라 결과가 같다. */
+#capture{width:${w}px;overflow:hidden}
+#capture svg{display:block;width:100%;height:auto}
 ${shim}
 </style></head><body><div id="capture">${markup}</div></body></html>`;
   return { html, w, h };
