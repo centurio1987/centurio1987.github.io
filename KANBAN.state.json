@@ -1,6 +1,6 @@
 {
   "next_id": 57,
-  "next_seq": 205,
+  "next_seq": 209,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -556,15 +556,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-049": {
-      "col": "backlog",
+      "col": "done",
       "title": "글지도에서 그래프가 확장 되어도 전체를 조감할 수 있도록, 확대, 축소와 캔버스 내 위치 이동 기능을 추가해라.",
-      "memo": "",
+      "memo": "월드(레이아웃 공간)와 뷰포트를 분리해 구현. transform 2단 중첩(.graph-pan 사용자 카메라 × .graph-viewport 필터 fit)으로 자동 fit의 settle 추종을 유지한 채 카메라를 얹었다. 월드는 글 수에 비례 확장(worldScale=√(n/30), 상한 3) — 29편인 현재는 정확히 1.0이라 화면 변화 0. 제스처는 자체 포인터 이벤트(d3-zoom 미도입, 페이로드 유지) + non-passive wheel(ctrl/meta일 때만 줌, 평 휠은 페이지 스크롤), touch-action:pan-y, 지연 포인터 캡처(임계 5px)로 드래그≠클릭. ＋ − ⤢ 버튼으로 키보드 전용 경로 확보. 부채는 뷰포트 인식으로 확대 후에도 화면 안. 실측: Playwright 20/20(줌 클램프·팬 잠금·리스너 누수·pointercancel 복구·reduced-motion 포함), 빌드 42페이지 클린. 미검증: iOS Safari 실기기 touch-action(Chromium만 확인), 두 손가락 핀치는 후속.",
       "verbatim": "",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-29",
+      "최종": "ai",
+      "갱신": "2026-07-30",
       "title_hash": "5745988e1176a387fb80deeba9e9f448cb4df59d",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "memo_hash": "6b95df18bb173f3f07cab33086520fbb832d2459",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-050": {
@@ -580,15 +580,15 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-051": {
-      "col": "backlog",
+      "col": "done",
       "title": "글지도에 연도별 필터를 추가해라.",
-      "memo": "",
+      "memo": "'연도별'을 데이터에 적응시켜 구현 — 29편이 전부 2026년이라 연도 칩은 '2026' 하나뿐인 죽은 UI가 된다. 36개월(3년)까지는 월 단위, 넘으면 연 단위로 접힌다(graph.astro에서 판정·집계·라벨까지 끝내 hydration 위험 차단). 눈금 도메인은 빈 칸도 count 0으로 채운 연속 구간 — 안 그러면 5월과 9월이 붙어 시간축이 거짓말을 한다. UI는 유저가 Claude Design으로 제공한 1e안(커맨드 바 + 토큰 + 끌어서 조절하는 게이지)으로 구현: 축별 칩 행 대신 입력 하나에 필터를 토큰으로 쌓고, 기간은 양끝 손잡이 게이지, 키워드는 AND. 드래그 중에는 값만 칸에 스냅하고 선은 손끝을 그대로 따라간다(손잡이는 칸이 아니라 가장 가까운 칸 경계에 스냅 — 칸 포함으로 재면 hi 손잡이가 늘 한 칸=280px 뒤처졌다). 실측: 1e 41/41 · 드래그 추종 14/14(커서 대비 오차 0px) · 12칸 mock에서 밴드 평행이동 15/15 · 드래그 프레임 중앙값 8.3ms. noFilter 센티널에 range 포함(빠뜨리면 기간 필터가 무음으로 무시되는 유일한 지점).",
       "verbatim": "",
       "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-07-29",
+      "최종": "ai",
+      "갱신": "2026-07-30",
       "title_hash": "73bfcde587ef16aacaa8db505f98b1f8bb1de2c3",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "memo_hash": "e33c46fb66d9f7ccc0ab7b220c8de7eda68d0e18",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-052": {
@@ -658,9 +658,7 @@
     "KAN-032",
     "KAN-047",
     "KAN-048",
-    "KAN-049",
     "KAN-050",
-    "KAN-051",
     "KAN-052",
     "KAN-053",
     "KAN-054",
@@ -707,9 +705,49 @@
     "KAN-042",
     "KAN-045",
     "KAN-056",
-    "KAN-055"
+    "KAN-055",
+    "KAN-049",
+    "KAN-051"
   ],
   "recent": [
+    {
+      "seq": 208,
+      "t": "2026-07-30T12:06",
+      "a": "ai",
+      "id": "KAN-051",
+      "op": "edit",
+      "field": "memo",
+      "before": "",
+      "after": "'연도별'을 데이터에 적응시켜 구현 — 29편이 전부 2026년이라 연도 칩은 '2026' 하나뿐인 죽은 UI가 된다. 36개월(3년)까지는 월 단위, 넘으면 연 단위로 접힌다(graph.astro에서 판정·집계·라벨까지 끝내 hydration 위험 차단). 눈금 도메인은 빈 칸도 count 0으로 채운 연속 구간 — 안 그러면 5월과 9월이 붙어 시간축이 거짓말을 한다. UI는 유저가 Claude Design으로 제공한 1e안(커맨드 바 + 토큰 + 끌어서 조절하는 게이지)으로 구현: 축별 칩 행 대신 입력 하나에 필터를 토큰으로 쌓고, 기간은 양끝 손잡이 게이지, 키워드는 AND. 드래그 중에는 값만 칸에 스냅하고 선은 손끝을 그대로 따라간다(손잡이는 칸이 아니라 가장 가까운 칸 경계에 스냅 — 칸 포함으로 재면 hi 손잡이가 늘 한 칸=280px 뒤처졌다). 실측: 1e 41/41 · 드래그 추종 14/14(커서 대비 오차 0px) · 12칸 mock에서 밴드 평행이동 15/15 · 드래그 프레임 중앙값 8.3ms. noFilter 센티널에 range 포함(빠뜨리면 기간 필터가 무음으로 무시되는 유일한 지점)."
+    },
+    {
+      "seq": 207,
+      "t": "2026-07-30T12:06",
+      "a": "ai",
+      "id": "KAN-051",
+      "op": "move",
+      "from": "backlog",
+      "to": "done"
+    },
+    {
+      "seq": 206,
+      "t": "2026-07-30T12:06",
+      "a": "ai",
+      "id": "KAN-049",
+      "op": "edit",
+      "field": "memo",
+      "before": "",
+      "after": "월드(레이아웃 공간)와 뷰포트를 분리해 구현. transform 2단 중첩(.graph-pan 사용자 카메라 × .graph-viewport 필터 fit)으로 자동 fit의 settle 추종을 유지한 채 카메라를 얹었다. 월드는 글 수에 비례 확장(worldScale=√(n/30), 상한 3) — 29편인 현재는 정확히 1.0이라 화면 변화 0. 제스처는 자체 포인터 이벤트(d3-zoom 미도입, 페이로드 유지) + non-passive wheel(ctrl/meta일 때만 줌, 평 휠은 페이지 스크롤), touch-action:pan-y, 지연 포인터 캡처(임계 5px)로 드래그≠클릭. ＋ − ⤢ 버튼으로 키보드 전용 경로 확보. 부채는 뷰포트 인식으로 확대 후에도 화면 안. 실측: Playwright 20/20(줌 클램프·팬 잠금·리스너 누수·pointercancel 복구·reduced-motion 포함), 빌드 42페이지 클린. 미검증: iOS Safari 실기기 touch-action(Chromium만 확인), 두 손가락 핀치는 후속."
+    },
+    {
+      "seq": 205,
+      "t": "2026-07-30T12:06",
+      "a": "ai",
+      "id": "KAN-049",
+      "op": "move",
+      "from": "backlog",
+      "to": "done"
+    },
     {
       "seq": 204,
       "t": "2026-07-29T16:28",
@@ -1155,45 +1193,6 @@
       "field": "memo",
       "before": "**KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다.",
       "after": "✅ KAN-046 부트스트랩으로 흡수·완료(2026-07-29, main 24ef578): 커버리지 25편(vpn-anatomy-1·4 포함), verify-graph 통과, 증분 복구 실측 완료 — 이후 그래프 갱신은 main 머지 직후 bun run graph:refresh 1회면 바뀐 글만 LLM을 탄다. 실측·결정 상세는 KAN-046. || **KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다."
-    },
-    {
-      "seq": 158,
-      "t": "2026-07-29T08:47",
-      "a": "ai",
-      "id": "KAN-046",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
-    },
-    {
-      "seq": 157,
-      "t": "2026-07-29T08:47",
-      "a": "ai",
-      "id": "KAN-046",
-      "op": "edit",
-      "field": "memo",
-      "before": "**상태: 코드·규약 완료(머지 2394fcf). 남은 건 main 워크트리에서 부트스트랩 1회.** || **문제**: 글 1편 발행마다 24편 전량이 LLM 재추출됐다(실측 graphify-out/.graphify_analysis.json: 1,257,753 in / 279,644 out, claude-cli로 40~60분). N에 선형이라 편당 발행 누적 O(N²). || **근본 원인(소스 확인)**: graphify 0.9.4는 콘텐츠 해시 캐시로 LLM 호출 전에 안 바뀐 글을 걸러내는데 이 레포는 두 겹으로 죽어 있었다. ⓐ graphify-out/cache/ 가 .gitignore. ⓑ 더 근본적으로 graphify 자신이 이 레이아웃에서 캐시를 한 건도 못 쓴다 — save_semantic_cache() 가 out_root/<source_file> 실재 여부를 보는데 source_file 은 스캔 루트(src/content/posts/) 기준 상대경로이고 --out . 은 레포 루트라 경로 불일치로 통째 skip. 같은 절대/상대 불일치가 _manifest_files 에도 있어 manifest.json 은 문서 코퍼스에서 항상 {} (첫 커밋부터 비어 있던 이유). || **해결**: scripts/seed-graph-cache.py 가 추출 직후 source_file 을 절대경로로 바꿔 graphify 자신의 save_semantic_cache(root=레포루트) 로 캐시를 심고 check_semantic_cache() 로 전 글 적중을 자체 검증한다(해시는 graphify 함수 그대로 — 재구현 없음). manifest 는 커밋하지 않는다(빈 파일이 있기만 해도 incremental_mode 가 켜져 삭제 감지가 죽고 지운 글 노드가 영구 잔존). || **실측(스크래치 프로브, 글 2편)**: 콜드 34,657 in / 6,168 out → 캐시 적중 시 'semantic cache: 2 hit / 0 miss', LLM 0콜, 토큰 0, 그래프는 26노드·41엣지로 동일. 1편만 수정 시 '1 hit / 1 miss'. || **산출물**: scripts/refresh-graph.sh(가드 3종) + scripts/seed-graph-cache.py + verify-graph.ts 검사 ④ + .gitignore 재작성 + package.json graph:refresh/graph:verify + ship-post 2벌·CLAUDE.md·README 규약 동기화. || ===== 다음 세션 인계(부트스트랩) ===== || **어디서**: 반드시 main 체크아웃 /Users/centurio/centurio1987.github.io 에서. 링크된 워크트리에서는 refresh-graph.sh 가드가 비0으로 막는다(의도된 동작). || **무엇을**: `bun run graph:refresh` 한 번. 캐시가 비어 있어 콜드런이라 40~60분. 이건 KAN-044가 예정해 둔 전량 재생성을 흡수한 것이라 추가 비용이 아니다. || **부트스트랩 전 상태는 정상이 아니다**: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 `bun run graph:verify` 가 ①③④로 실패한다. 이게 기대 상태다 — 고치려 들지 말고 부트스트랩을 돌려라. || **합격 기준(순서대로)**: ① 콜드런이 exit 0 (스크립트가 seed-cache 자체검증 + verify-graph 까지 자동으로 돈다). ② `ls graphify-out/cache/semantic/*.json | wc -l` 이 글 수(24) 이상. ③ **무변경 재실행이 공짜인가(핵심)** — 아무것도 안 고치고 `bun run graph:refresh` 재실행 → 로그에 'semantic cache: 24 hit / 0 miss', 'tokens' 줄 없음(또는 0), 1분 내 종료. ④ **캐시 churn 확인** — ③ 직후 `git diff --stat graphify-out/cache/semantic/` 이 비어야 한다. ⑤ `bun run build` 통과 + `bun run preview` 로 /graph 렌더와 임의 글의 연관 글 섹션 육안 확인, src/data/graph.json 의 concepts[].communityName 이 'Community N' 플레이스홀더로 퇴화하지 않았는지 확인(label --missing-only 정합이 먹었다는 증거). || **④가 깨지면(캐시 JSON 이 매번 달라지면)**: 커밋 노이즈가 커지므로 캐시 커밋 정책을 재고해야 한다. 다만 갱신이 main 전용이라 캐시를 커밋 안 해도 main 로컬에 남아 증분은 계속 동작한다 — 그 경우 .gitignore 에 graphify-out/cache/ 를 되돌리고 CLAUDE.md·README 의 '절대 gitignore 하지 마라' 문구를 'main 로컬 전용 상태'로 고쳐라. 기능 자체는 유지된다. || **커밋 경로**: graphify-out/ (cache/ast · cache/stat-index.json · manifest.json · graph.html · logs/ · 날짜백업은 .gitignore 가 이미 제외) + src/data/graph.json. 커밋 전 `git status --porcelain graphify-out/` 로 .gitignore 가 놓친 신규 부산물이 없는지 눈으로 확인해라. || **실패 시 폐기**: 자동 롤백하지 마라. `git diff --name-only graphify-out/ src/data/graph.json` 으로 손수정이 섞였는지 먼저 보고 나서 `git checkout --` 한다. || **끝나면**: 이 카드에 기준선 실측 4케이스(무변경 / 1편 본문 변경 / .mdx 프론트매터만 변경 / 시리즈 링크 삽입으로 형제 편 다수 변경)의 토큰·소요시간을 기록하고 검토로 옮겨라. KAN-044 도 함께 닫는다. || **주의**: .mdx 는 프론트매터까지 해시된다(cache.py 스트립은 .md 전용) — post-finalize 의 tags·시리즈 링크 삽입이 형제 편 재추출을 유발한다. claude-cli 는 청크당 입력 하한이 ~30k라 1편 추가도 완전 공짜는 아니다(전량 1.26M 대비 ~95% 절감). 브랜치 커밋 4b92642 메시지에는 옛 번호 KAN-045 가 남아 있다 — 실제 카드는 이것.",
-      "after": "✅ 부트스트랩 완료(2026-07-29, main 24ef578). 콜드 전량 재추출(1.66M in/352k out·~50분)로 커버리지 22편→25편(vpn-anatomy-1·4 포함). 합격기준 ①②③⑤ 통과: verify-graph 통과 · 캐시 25건 · build 38p 통과 · /graph·연관글 렌더 확인 · communityName 실명(플레이스홀더 0). || ③(핵심) 무변경 재실행 0토큰 실측 — 증분 복구 목표 달성. || ④(캐시 무변경 fixpoint) 미성립: graphify 클러스터링 비결정성으로 웜→웜에도 9파일 churn + graph.json ~560줄 churn. 유저 결정=캐시 계속 커밋(노이즈 감수) — 커밋 노이즈 대부분이 graph.json 자체라 gitignore 폴백은 이점 적음. CLAUDE.md/README '절대 gitignore 하지 마라' 규약 유지. || 기준선 실측(in/out·벽시계·hit/miss): 콜드 1,655,027/351,992·~50분 · 무변경 0/0·1s·25hit/0 · 1편본문(tauri-1) 59,336/10,101·86s·24hit/1miss · .mdx프론트매터만(updatedDate) 59,138/10,300·86s·24hit/1miss(→ cache.py 프론트매터 스트립 .md전용 확정: post-finalize의 tags·updatedDate·시리즈링크가 그 글 재추출 유발) · 형제3편(osi-7-layers-2·3·4) 181,821/51,825·438s·22hit/3miss. 증분비용=바뀐 글 수에 선형(글당 ~59k in), 1편=이전 전량(1.66M) 대비 ~96%절감. || 부수 버그수정(24ef578): refresh-graph.sh 가드③ — 캐시 디렉터리 없는 콜드 상태에서 find가 set -e pipefail로 경고도 못 찍고 스크립트를 죽이던 버그 → mkdir -p graphify-out/cache/semantic 선행. || 원인·해결 상세는 CLAUDE.md graphify 절 + 커밋 2394fcf/24ef578. KAN-044 함께 검토 이동."
-    },
-    {
-      "seq": 156,
-      "t": "2026-07-29T08:44",
-      "a": "유저",
-      "id": "KAN-044",
-      "op": "edit",
-      "field": "memo",
-      "before": "**KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다.",
-      "after": "**KAN-046으로 전제가 바뀌었다** — 근거 ①(매 실행 전량 재추출)은 원인이 규명·수정됐고, ②③은 '그래프 갱신은 main 워크트리 전용' 규약과 refresh-graph.sh 가드로 해소됐다. 이 카드는 'VPN 7편 모아서 1회'가 아니라 **KAN-046 부트스트랩 1회로 흡수**된다. 부트스트랩 후에는 main 머지 직후마다 `bun run graph:refresh` 를 돌리면 되고, 바뀐 글만 LLM 을 타므로 모아둘 이유가 없다. || 현재 상태: 커밋된 그래프는 22편(vpn-anatomy-1·4 누락)이라 verify-graph 가 실패한다 — 부트스트랩 전까지 연관 글·/graph 는 frontmatter 폴백으로 degrade(기능은 동작). || 절차는 KAN-046 참조. KAN-046 부트스트랩 완료 시 이 카드도 함께 닫는다."
-    },
-    {
-      "seq": 153,
-      "t": "2026-07-28T23:40",
-      "a": "ai",
-      "id": "KAN-037",
-      "op": "edit",
-      "field": "memo",
-      "before": "vpn-anatomy-3 · IPsec① IKEv2: SA/SPI/SPD, IKE_SA_INIT→IKE_AUTH, UDP 500/4500, IKEv2 헤더·payload(SA/KE/Ni/Nr/AUTH) 캡처 분해(암호 payload는 복호 준비 시). 구현:strongSwan. IPsec=프레임워크 오해정리. 선수링크:EP2. gate:KAN-033·034.",
-      "after": "vpn-anatomy-3 · IPsec① IKEv2: SA/SPI/SPD, IKE_SA_INIT→IKE_AUTH, UDP 500/4500, IKEv2 헤더·payload(SA/KE/Ni/Nr/AUTH) 캡처 분해. 구현:strongSwan. IPsec=프레임워크 오해정리. 선수링크:EP2. gate:KAN-033·034(둘 다 해제). || 인계(2026-07-28, 착수 전 조사만 완료·본문 미착수): 이어받기 전에 draft/KAN-037-HANDOFF.md 를 먼저 읽을 것. 요지 — ① 저자는 author:ppangto(빵토 연구원)로 확정(EP1·EP2·EP4와 통일, angle의 '빵토 선생님' 병기는 오기). series는 'VPN의 해부', order:3, category:skills. ② 캡처는 이미 있다(KAN-043 산출, ~/blog-research/raws/captures/vpn-anatomy-3/{ike_sa_init.txt,ike_auth.txt,ike.pcap}) — EP1이 '3편부터 캡처와 함께'라 약속했으므로 발췌 인용은 필수. ③ 실측 확인분: 4메시지(500/500→4500/4500 NAT-T 전환), 프레임−42=IKE Length(포트500) vs 프레임−46(포트4500, non-ESP marker 4B), 첫 메시지 Responder SPI 전부 0, SA payload 40=4+36 / Proposal 36=8+12+8+8 덧셈 일치, AEAD라 INTEG transform 부재, NAT_DETECTION_* Notify→포트 4500 전환이 캡처 안에서 원인·결과로 완결, IKE_AUTH는 SK{} 암호문(복호 미확립). ④ RFC 7296 원문 직접 확인분(헤더 28B 오프셋·Generic Payload Header 4B·Proposal/Transform 고정부 8B·속성 TV/TLV·Exchange/Payload/Transform 코드값·§1.2 4메시지·§2.14 키유도·§2.15 AUTH·§2.23 NAT-T)으로 angle open question ①②는 해소. ⑤ 코퍼스 raws/009 §2.2의 Flags 비트 서술은 오류 — I=0x08·V=0x10·R=0x20으로 정정해 쓸 것. ⑥ raws/011(실장 보고)이 raws/010(설계)보다 최신. ⑦ 정책: 그래프 재생성은 KAN-044대로 편당 생략, 시리즈 링크는 KAN-042 소관, EP4가 이미 다룬 ESP·NAT-T 캡슐화·MTU는 중복 금지. ⑧ 인계문서 §6의 'EP2 미발행' 서술은 stale — EP2는 로컬 main에 발행됨(93a161e)."
     }
   ]
 }
