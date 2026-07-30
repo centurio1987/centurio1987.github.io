@@ -127,6 +127,12 @@ function tapeMetrics(name: string) {
               )}
             </span>
           </a>
+          {/* 데코 자리 — 목록의 **첫 항목에만** 열리는 named slot (P-07 NEW 도장).
+              부품을 여기서 import 하지 않는 이유는 데코 키트가 opt-in 이기 때문이다:
+              PostList 는 /categories·/graph 에서도 쓰이는데, 여기서 Stamp 를 들이면
+              데코를 안 쓰는 그 페이지들까지 부품 CSS 를 지고 간다. 채우는 쪽(=deco.css
+              를 들여온 페이지)이 내용물을 넘긴다. */}
+          {i === 0 && <slot name="first-deco" />}
         </li>
       );
     })

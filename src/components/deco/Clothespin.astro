@@ -1,0 +1,81 @@
+---
+/**
+ * W2 — 나무 집게.
+ *
+ * 걸이줄(W1)에 무언가를 물리는 부품. 세로로 서 있고, 물린 것 위쪽에 절반쯤 걸치게
+ * 배치한다(테이프와 같은 규칙 — 안쪽에만 있으면 문 게 아니라 무늬로 읽힌다).
+ *
+ * 크기는 height 하나로 정한다. 폭·홈·스프링 위치가 전부 높이에서 비례로 나오므로
+ * 큰 집게(66)와 줄에 물리는 작은 집게(32)가 같은 물건으로 보인다.
+ */
+interface Props {
+  /** 집게 길이(px). 폭은 여기서 나온다(약 1/3). */
+  height?: number;
+  class?: string;
+}
+const { height = 66, class: className = "" } = Astro.props;
+const width = Math.round(height * 0.34);
+---
+
+<span
+  class:list={["pin", className]}
+  style={`--h:${height}px;--w:${width}px`}
+  aria-hidden="true"
+>
+  <span class="body"></span>
+  <span class="groove"></span>
+  <span class="coil"></span>
+  <span class="spring"></span>
+</span>
+
+<style>
+  .pin {
+    position: relative;
+    display: block;
+    width: var(--w);
+    height: var(--h);
+  }
+  /* 나뭇결 — 가로 3단 그라디언트가 원통을 만든다(평면이면 종이 조각으로 읽힌다) */
+  .body {
+    position: absolute;
+    inset: 0;
+    border-radius: 4px 4px 6px 6px;
+    background: linear-gradient(
+      90deg,
+      var(--deco-wood),
+      var(--deco-wood-2) 62%,
+      var(--deco-wood-3)
+    );
+    box-shadow: 0 2px 4px rgba(32, 38, 74, 0.2);
+  }
+  /* 두 짝 사이 틈 */
+  .groove {
+    position: absolute;
+    left: calc(50% - 1px);
+    top: 3%;
+    width: 2px;
+    height: 94%;
+    background: color-mix(in srgb, var(--ink) 18%, transparent);
+  }
+  /* 스프링 — 나무 위로 양쪽 3px 씩 튀어나온다. 이게 없으면 그냥 나무 막대다. */
+  .spring {
+    position: absolute;
+    left: -3px;
+    top: 38%;
+    width: calc(var(--w) + 6px);
+    height: max(4px, calc(var(--h) * 0.135));
+    border-radius: 5px;
+    background: linear-gradient(180deg, var(--deco-metal), var(--deco-metal-2));
+    box-shadow: 0 1px 1px rgba(32, 38, 74, 0.25);
+  }
+  /* 위쪽 감김 한 줄 */
+  .coil {
+    position: absolute;
+    left: -1px;
+    top: 33%;
+    width: calc(var(--w) + 2px);
+    height: max(2px, calc(var(--h) * 0.045));
+    border-radius: 2px;
+    background: var(--deco-metal);
+  }
+</style>

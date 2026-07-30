@@ -171,3 +171,5 @@
 {"seq": 168, "t": "2026-07-29T13:24", "a": "ai", "id": "KAN-033", "op": "move", "from": "review", "to": "done"}
 {"seq": 169, "t": "2026-07-29T13:24", "a": "ai", "id": "KAN-034", "op": "move", "from": "review", "to": "done"}
 {"seq": 170, "t": "2026-07-29T13:24", "a": "ai", "id": "KAN-038", "op": "move", "from": "review", "to": "done"}
+{"seq": 171, "t": "2026-07-29T13:24", "a": "ai", "id": "KAN-035", "op": "move", "from": "review", "to": "done"}
+{"seq": 172, "t": "2026-07-29T13:24", "a": "ai", "id": "KAN-036", "op": "move", "from": "review", "to": "done"}

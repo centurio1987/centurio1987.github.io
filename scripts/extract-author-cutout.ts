@@ -17,9 +17,38 @@
  *
  * 공통: 바운딩 박스로 크롭 → 지정 높이로 축소(이때 (A)의 계단 알파도 부드러워진다)
  *
+ * **(D) 단색 배경 + 접지 그림자 3D 렌더** (`--bg-tol` + `--shadow-floor`)
+ *     tony-fullbody-master.webp 같은 렌더는 (A)로 오리면 두 군데서 깨진다:
+ *       ① 흰 배가 뜯긴다 — 엉덩이 림라이트(sat 25 · r−b 25)가 isPaper 를 통과해서,
+ *          fill 이 실루엣 가장자리에서 배 경계까지 저채도 통로를 타고 들어온다.
+ *       ② 발밑 접지 그림자가 캐릭터와 한 덩어리로 남는다(안쪽 옅은 부분이 짙은 테두리에
+ *          갇혀 fill 이 못 닿는다). 다이컷 흰 테두리가 그 얼룩까지 감싸버린다.
+ *     그래서 (D)는 배경 판정을 두 단계로 쪼갠다:
+ *       1단계 `--bg-tol` — 테두리 색에서 ±tol 인 **납작한 배경만** 채운다. 렌더 배경은
+ *              노이즈가 거의 없으니(이 마스터는 테두리 편차 최대 3.8) tol 도 그만큼 좁게
+ *              잡는다. **넓히면 흰 털이 배경으로 넘어간다** — tol 4→10 하나로 중성 흰색
+ *              78,923px 이 배경 후보가 되고, 그게 귀·볼·배를 갉아먹는다.
+ *       2단계 `--shadow-floor <y>` — 그 행부터 아래에서만 접지 그림자를 배경에 이어 붙인다.
+ *
+ *     **그림자와 털은 색으로 못 가른다.** 배경 위에 옅게 얹힌 분홍 털(=실루엣 가장자리
+ *     블렌드)과 배경을 눌러 어둡게 만든 그림자는 채도·명도·색상비가 전부 겹친다(실측:
+ *     털 블렌드 250,226,221 → 채도 29 · 채널비 편차 0.047 / 그림자 224,203,194 → 채도 30 ·
+ *     편차 0.047. 같다). 그래서 2단계는 색이 아니라 **기하**로 가른다 — 띠 안에서 배경은
+ *     "채도 `--core-sat` 이상인 코어에서 `--rim` 밖"인 픽셀이다. 띠 아래에 있는 캐릭터는
+ *     고채도 분홍 다리뿐이라 코어가 곧 다리이고, 털 림은 코어에 붙어 있으니 살아남고,
+ *     바닥에 퍼진 그림자는 코어에서 멀어 지워진다. 채도 문턱만으로 자르면 이 림(다리
+ *     좌측 10px)이 같이 깎여 floor 행에 계단이 생긴다.
+ *
+ *     floor 는 **흰 배 아래 · 그림자가 실루엣 밖으로 번지기 시작하는 행 위**로 잡는다
+ *     (이 마스터: 배 1022 · 번짐 1028 → 1026). 원본이 바뀌면 다시 재야 한다.
+ *
  * 사용:
  *   bun scripts/extract-author-cutout.ts --src public/tony-deco.webp \
  *     --out public/images/authors/tony-full.webp [--height 440] [--force]
+ *   # (D) 마스코트 다이컷 — 값의 근거는 design-concept/DECO_KIT.md 자산 절
+ *   bun scripts/extract-author-cutout.ts --src design-concept/authors/tony-fullbody-master.webp \
+ *     --out public/images/deco/tony-diecut.webp --height 904 \
+ *     --bg-tol 4 --shadow-floor 1026 --force
  *
  * 원본(마스터)이 사는 곳: 사이트가 직접 참조하는 원본은 public/(예: public/tony-deco.webp,
  * public/images/authors/ppangto-teacher.webp)에 있고, 컷아웃 재생성용으로만 보관하는 원본은
@@ -38,6 +67,14 @@ interface Args {
   out: string;
   height: number;
   force: boolean;
+  /** (D) 단색 배경 허용 오차. 주면 자동 판정을 건너뛰고 (C)/(D) 경로로 간다. */
+  bgTol?: number;
+  /** (D) 이 행부터 아래는 "다리 + 바닥 그림자"뿐인 구간 */
+  shadowFloor?: number;
+  /** (D) 캐릭터 코어로 볼 채도 하한 */
+  coreSat: number;
+  /** (D) 코어를 이만큼 넓힌 자리는 털 림으로 보고 지키지 않는다 [가로, 세로] */
+  rim: [number, number];
 }
 
 function parseArgs(argv: string[]): Args {
@@ -49,15 +86,27 @@ function parseArgs(argv: string[]): Args {
   const out = get("--out");
   if (!src || !out) {
     console.error(
-      "사용: bun scripts/extract-author-cutout.ts --src <원본> --out <결과.webp> [--height 440] [--force]",
+      "사용: bun scripts/extract-author-cutout.ts --src <원본> --out <결과.webp> [--height 440] [--force]\n" +
+        "      [--bg-tol N] [--shadow-floor Y] [--core-sat N] [--rim RX,RY]" +
+        "   ← (D) 단색 배경 + 접지 그림자",
     );
     process.exit(1);
   }
+  const num = (flag: string) => {
+    const v = get(flag);
+    return v === undefined ? undefined : Number(v);
+  };
+  const rimArg = get("--rim");
+  const rim = rimArg?.split(",").map(Number) ?? [];
   return {
     src,
     out,
     height: Number(get("--height") ?? 440),
     force: argv.includes("--force"),
+    bgTol: num("--bg-tol"),
+    shadowFloor: num("--shadow-floor"),
+    coreSat: num("--core-sat") ?? 50,
+    rim: [rim[0] ?? 10, rim[1] ?? rim[0] ?? 4],
   };
 }
 
@@ -100,6 +149,40 @@ interface Extraction {
 
 /** 알파가 이만큼은 돼야 "캐릭터 픽셀". 발밑 옅은 그림자를 걸러내는 문턱이기도 하다. */
 const ALPHA_MIN = 8;
+
+/** 마스크를 가로 rx · 세로 ry 로 팽창(분리형 최대 필터). r 이 작아 창을 그대로 훑는다. */
+function dilate(
+  src: Uint8Array,
+  W: number,
+  H: number,
+  rx: number,
+  ry: number,
+): Uint8Array {
+  const mid = new Uint8Array(W * H);
+  for (let y = 0; y < H; y++) {
+    const row = y * W;
+    for (let x = 0; x < W; x++) {
+      let v = src[row + x];
+      for (let d = 1; d <= rx && !v; d++) {
+        if (x - d >= 0 && src[row + x - d]) v = 1;
+        if (x + d < W && src[row + x + d]) v = 1;
+      }
+      mid[row + x] = v;
+    }
+  }
+  const out = new Uint8Array(W * H);
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      let v = mid[y * W + x];
+      for (let d = 1; d <= ry && !v; d++) {
+        if (y - d >= 0 && mid[(y - d) * W + x]) v = 1;
+        if (y + d < H && mid[(y + d) * W + x]) v = 1;
+      }
+      out[y * W + x] = v;
+    }
+  }
+  return out;
+}
 
 /** 테두리 한 줄이 대부분 투명하면 (B) 이미 오려진 원본으로 본다. */
 function borderIsTransparent(buf: Buffer, W: number, H: number): boolean {
@@ -201,26 +284,54 @@ function cutOutFromDeco(buf: Buffer, W: number, H: number): Extraction {
 }
 
 /**
- * (C) 단색(보통 흰색) 배경 컷: 테두리 색과 가까운 픽셀만 배경으로 본다.
- * 허용 오차를 좁게 잡는 이유 — 캐릭터의 흰 볼털이 흰 배경과 맞닿아 있어서,
+ * (C) 단색(보통 흰색) 배경 컷 · (D) 거기에 접지 그림자까지.
+ *
+ * 기본 허용 오차를 좁게 잡는 이유 — 캐릭터의 흰 볼털이 흰 배경과 맞닿아 있어서,
  * 넉넉하게 잡으면 fill이 털 속으로 새어 들어가 얼굴이 뚫린다.
+ * `floor` 를 주면 그 행부터 아래에서 접지 그림자를 배경에 이어 붙인다((D)).
+ *
+ * 그림자 판정이 색이 아니라 기하인 이유는 파일 머리에 적어뒀다 — 요약하면 옅게 얹힌
+ * 털과 배경을 누른 그림자는 색이 같다. 그래서 **채도 코어(= 띠 아래에서는 분홍 다리)를
+ * rim 만큼 넓힌 영역**을 캐릭터로 지키고, 그 밖의 것만 그림자로 본다.
  */
 function cutOutFromSolidBg(
   buf: Buffer,
   W: number,
   H: number,
   bg: [number, number, number],
+  tol = 4,
+  floor?: number,
+  coreSat = 50,
+  rim: [number, number] = [10, 4],
 ): Extraction {
-  const TOL = 4;
+  const nearBg = (r: number, g: number, b: number) =>
+    Math.abs(r - bg[0]) <= tol &&
+    Math.abs(g - bg[1]) <= tol &&
+    Math.abs(b - bg[2]) <= tol;
+
+  let nearCore: Uint8Array | null = null;
+  if (floor !== undefined) {
+    const core = new Uint8Array(W * H);
+    for (let p = 0; p < W * H; p++) {
+      const i = p * 4;
+      const max = Math.max(buf[i], buf[i + 1], buf[i + 2]);
+      const min = Math.min(buf[i], buf[i + 1], buf[i + 2]);
+      core[p] = max - min >= coreSat ? 1 : 0;
+    }
+    nearCore = dilate(core, W, H, rim[0], rim[1]);
+  }
+
   return cutOutByFloodFill(
     buf,
     W,
     H,
-    (r, g, b) =>
-      Math.abs(r - bg[0]) <= TOL &&
-      Math.abs(g - bg[1]) <= TOL &&
-      Math.abs(b - bg[2]) <= TOL,
-    `단색 배경(rgb ${bg.map((c) => Math.round(c)).join(",")}) 제거`,
+    (r, g, b, x, y) =>
+      nearBg(r, g, b) ||
+      (nearCore !== null && y >= floor! && !nearCore[y * W + x]),
+    `단색 배경(rgb ${bg.map((c) => Math.round(c)).join(",")}, ±${tol}) 제거` +
+      (floor !== undefined
+        ? ` + y≥${floor} 접지 그림자 제거(채도 ≥${coreSat} 코어에서 ${rim[0]}×${rim[1]}px 밖)`
+        : ""),
   );
 }
 
@@ -229,7 +340,13 @@ function cutOutByFloodFill(
   buf: Buffer,
   W: number,
   H: number,
-  isBackground: (r: number, g: number, b: number) => boolean,
+  isBackground: (
+    r: number,
+    g: number,
+    b: number,
+    x: number,
+    y: number,
+  ) => boolean,
   label0: string,
 ): Extraction {
   // ① 테두리에서 배경색 flood fill
@@ -246,9 +363,9 @@ function cutOutByFloodFill(
     const p = stack.pop()!;
     if (mask[p] === BG) continue;
     const i = p * 4;
-    if (!isBackground(buf[i], buf[i + 1], buf[i + 2])) continue;
-    mask[p] = BG;
     const x = p % W;
+    if (!isBackground(buf[i], buf[i + 1], buf[i + 2], x, (p - x) / W)) continue;
+    mask[p] = BG;
     if (x > 0) stack.push(p - 1);
     if (x < W - 1) stack.push(p + 1);
     if (p >= W) stack.push(p - W);
@@ -316,7 +433,8 @@ function cutOutByFloodFill(
   };
 }
 
-const { src, out, height, force } = parseArgs(process.argv.slice(2));
+const { src, out, height, force, bgTol, shadowFloor, coreSat, rim } =
+  parseArgs(process.argv.slice(2));
 
 if (!existsSync(src)) {
   console.error(`원본이 없다: ${src}`);
@@ -346,11 +464,25 @@ const solidBg =
     ? borderColor
     : null;
 
+/**
+ * `--bg-tol` 은 자동 판정을 덮는다 — (D) 원본은 배경이 **종이색**이라 자동으로는 (A)로
+ * 가는데, (A)가 이 렌더에서 깨지는 이유는 파일 머리에 적어뒀다.
+ */
+if (bgTol !== undefined && !borderColor) {
+  console.error(
+    "--bg-tol 을 줬지만 테두리 색이 균일하지 않다 — 단색 배경 원본이 아니다.",
+  );
+  process.exit(1);
+}
+const forcedBg = bgTol !== undefined ? borderColor : null;
+
 const { box, coverage, note } = isTransparent
   ? boxFromAlpha(buf, W, H) //             (B) 이미 투명
-  : solidBg
-    ? cutOutFromSolidBg(buf, W, H, solidBg) // (C) 종이색 아닌 단색 배경
-    : cutOutFromDeco(buf, W, H); //           (A) 데코 컷
+  : forcedBg
+    ? cutOutFromSolidBg(buf, W, H, forcedBg, bgTol, shadowFloor, coreSat, rim) // (D)
+    : solidBg
+      ? cutOutFromSolidBg(buf, W, H, solidBg) // (C) 종이색 아닌 단색 배경
+      : cutOutFromDeco(buf, W, H); //           (A) 데코 컷
 
 // 캐릭터가 화면의 극히 일부라면 판정이 틀린 것 → 조용히 이상한 결과를 내지 않는다
 if (coverage < 0.05) {

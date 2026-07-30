@@ -7,18 +7,42 @@
  */
 
 /**
- * 토니 다이컷 스티커(투명 배경, 원본 712×975 → 660px 폭).
+ * 토니 다이컷 스티커(투명 배경, 653×904).
  *
- * public/tony-deco.webp(장식이 구워진 1254² 합성물)에서 마스코트만 떼어낸 것이다.
- * 시안이 쓰던 tony-cutout.png / tony-sticker.png 는 들여오지 않았다 — 같은 그림이
- * PNG 로 1.7MB 더 늘어날 뿐이고, 흰 다이컷 테두리는 이미 합성물에 그려져 있다.
+ * 마스터는 design-concept/authors/tony-fullbody-master.webp(장식 없는 1254² 렌더)이고,
+ * scripts/extract-author-cutout.ts 의 (D) 경로로 오려낸다. 예전에는 장식이 구워진
+ * public/tony-deco.webp 에서 떼어냈는데, 거기서는 **오른 다리가 이름표 종이에 가려져**
+ * 발까지 온전한 실루엣이 아예 존재하지 않았다(자세한 내력은 DECO_KIT.md 자산 절).
+ * 흰 다이컷 테두리는 이 파일에 없다 — .deco-diecut 유틸이 CSS 로 그린다.
  */
 export const TONY_DIECUT = "/images/deco/tony-diecut.webp";
 
-/** 작은 자리(아바타·폴라로이드 안)용 컷아웃. 161×220 이라 ~160px 까지만 쓴다. */
-export const TONY_CUTOUT = "/images/authors/tony-full.webp";
+/**
+ * 다이컷의 실측 크기. 크롭이 실루엣에 딱 붙어 있어서 **다시 오리면 폭이 바뀐다**
+ * (실제로 바뀌었다: 666×904 → 653×904). 세 군데서 비율을 각자 적어두면 그때마다
+ * 한 곳을 빼먹으니, width 만 주면 height 를 내주는 헬퍼로 모아둔다.
+ */
+export const TONY_DIECUT_SIZE = { width: 653, height: 904 } as const;
 
-export type DecoGroup = "tape" | "sticker" | "doodle" | "clip" | "paper";
+export function tonyDiecutHeight(width: number): number {
+  return Math.round(
+    (width * TONY_DIECUT_SIZE.height) / TONY_DIECUT_SIZE.width,
+  );
+}
+
+/*
+ * 액자 안(F1 폴라로이드)에도 TONY_DIECUT 을 쓴다 — 아바타용
+ * /images/authors/tony-full.webp 는 159×220 이라 액자에 넣기엔 해상도가 아쉽고,
+ * 다이컷은 크지만 히어로 마스코트와 같은 URL 이라 이미 받아둔 그림이다.
+ */
+
+export type DecoGroup =
+  | "tape"
+  | "sticker"
+  | "doodle"
+  | "clip"
+  | "hang"
+  | "paper";
 
 export interface DecoPart {
   /** 시안 카탈로그 코드 */
@@ -51,8 +75,28 @@ export const DECO_CATALOG: DecoPart[] = [
   { code: "D4", variant: "wave", label: "물결 밑줄", group: "doodle" },
   { code: "D5", variant: "emphasis", label: "강조선 · 별표", group: "doodle" },
   { code: "D6", variant: "memo", label: "손글씨 메모", group: "doodle" },
+  // D7~D9 는 같은 Doodle 이지만 결이 다른 낙서 계열(굵은 외곽선 + 어긋난 칠)
+  { code: "D7", variant: "scribble-heart", label: "낙서 하트", group: "doodle" },
+  { code: "D8", variant: "bolt", label: "번개 두들", group: "doodle" },
+  { code: "D9", variant: "barley", label: "보리 · 잎사귀", group: "doodle" },
+  // D10~D12 는 같은 낙서 결에 글씨가 들어가는 풍선 계열
+  { code: "D10", variant: "speech-balloon", label: "말풍선", group: "doodle" },
+  {
+    code: "D11",
+    variant: "burst-balloon",
+    label: "폭발 말풍선",
+    group: "doodle",
+  },
+  {
+    code: "D12",
+    variant: "thought-balloon",
+    label: "생각 풍선",
+    group: "doodle",
+  },
 
   { code: "C1", variant: "clip", label: "종이 클립 · 집게", group: "clip" },
+  { code: "W1", variant: "twine", label: "마 실 · 걸이줄", group: "hang" },
+  { code: "W2", variant: "clothespin", label: "나무 집게", group: "hang" },
   { code: "M1", variant: "note", label: "포스트잇 메모", group: "clip" },
   { code: "M2", variant: "tab", label: "인덱스 탭", group: "clip" },
   { code: "F1", variant: "polaroid", label: "폴라로이드 프레임", group: "clip" },

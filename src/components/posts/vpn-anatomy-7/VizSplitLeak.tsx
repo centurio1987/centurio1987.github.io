@@ -28,7 +28,7 @@ export default function VizSplitLeak() {
       "width": 150,
       "height": 60,
       "label": "라우팅·리졸버 분기",
-      "shape": "decision"
+      "shape": "diamond"
     },
     {
       "id": "tunnel",

@@ -8,9 +8,9 @@
  * 안 쓰는 페이지까지 토큰·키프레임을 지고 간다.
  *
  * 원본 시안(Claude Design "데코 키트")은 자체 팔레트(#E9E2D3/#24314F/#2540E8)와 폰트
- * (Gothic A1 / Nanum Pen Script)로 그려졌지만, 여기서는 **전부 블로그 토큰으로 환산**한다.
- * 시안 색을 그대로 들여오면 팔레트가 두 벌이 되고, Nanum Pen 을 들여오면 한국어 웹폰트가
- * 5종에서 6종으로 늘어난다(손글씨는 이미 Gaegu 가 --font-hand 로 있다).
+ * (Gothic A1 / Nanum Pen Script)로 그려졌다. 종이·테이프·스티커 쪽은 **블로그 토큰으로
+ * 환산**한다 — 시안 색을 통째로 들여오면 팔레트가 두 벌이 되고, Nanum Pen 을 들여오면
+ * 한국어 웹폰트가 5종에서 6종으로 늘어난다(손글씨는 이미 Gaegu 가 --font-hand 로 있다).
  *
  *   시안 → 블로그
  *   #E9E2D3 배경 크림 → var(--paper)      #24314F 잉크 → var(--ink)
@@ -18,8 +18,16 @@
  *   #F0C24A 옐로     → var(--pop)        Gothic A1     → var(--font-body)
  *   #F4A9B4 핑크     → --deco-pink ↓     Nanum Pen     → var(--font-hand) (Gaegu)
  *   #E8564E 레드     → --deco-red  ↓     Space Mono    → var(--font-mono)
+ *   #C9A87A 마 실    → --deco-twine ↓        (걸이줄·나무 집게 W1~W2)
+ *   #E4C79A 나무     → --deco-wood ↓
  *
- * 핑크·레드만 코어에 대응짝이 없어 아래에서 새로 정의한다. 코어 tokens.css 가 아니라
+ * **두들의 크레용 색은 예외로 시안 hex 를 그대로 쓴다**(--deco-crayon-* ↓). 한 번
+ * 코어 팔레트로 환산해 봤다가(--deco-pink·--pop 에 color-mix) 되돌렸다 — 크레용은
+ * 맑은 색을 눌러 칠한 것이라, 코어 쪽으로 한 단 어둡고 탁하게 내려앉으면 크레용이
+ * 아니라 **물감 바른 벡터 도형**으로 읽힌다. 두들만 쓰는 색이라 팔레트가 두 벌이
+ * 되는 문제도 없다(본문·UI·테이프는 이 색을 안 쓴다).
+ *
+ * 코어에 대응짝이 없는 색만 아래에서 새로 정의한다. 코어 tokens.css 가 아니라
  * 여기 두는 이유는 데코 전용이기 때문이다 — 본문·UI 는 이 색을 쓰지 않는다.
  */
 
@@ -30,9 +38,55 @@
   --deco-pink-ink: #a84f66;
   --deco-red: #cf5049;
 
+  /* ── 두들 크레용 색 (시안 hex 그대로 — 위 머리글 참고) ────────────────
+     칠 하나에 세 단(fill / deep / pale)이 필요하다. 시안의 크레용은 단색이 아니라
+     "밑칠 + 그 위에 두 번 더 눌러 그은 결"이라, 짙은 결과 옅은 결이 밑칠 위를
+     엇갈려 지나야 손으로 칠한 것으로 읽힌다. */
+  --deco-crayon-pink: #f5a3a8;
+  --deco-crayon-pink-deep: #ee8790;
+  --deco-crayon-pink-pale: #f7b4b7;
+  /* 폭발 말풍선(D11)의 옅은 결만 하트(D7)보다 한 단 더 밝다. 시안이 그렇게 그렸고,
+     이유가 있다 — 이쪽은 결이 **글씨 밑을 지나가서** 하트만큼 진하면 글씨를 먹는다. */
+  --deco-crayon-pink-pale-2: #f9c4c7;
+  --deco-crayon-yellow: #f5c24b;
+  --deco-crayon-yellow-deep: #edae2e;
+  --deco-crayon-yellow-pale: #f8d477;
+  /* 보리(D9)는 노랑보다 한 단 밀 빛이다 */
+  --deco-crayon-wheat: #efc474;
+  --deco-crayon-wheat-pale: #f6dca8;
+  /* 말풍선(D10) 민트 */
+  --deco-crayon-mint: #a9dccb;
+  --deco-crayon-mint-deep: #8ccbb6;
+  --deco-crayon-mint-pale: #c6eadd;
+  /* 생각 풍선(D12) 페리윙클 — 결이 짙은 것 한 겹뿐이라 pale 이 없다.
+     구름은 덩어리가 이미 여러 개라, 옅은 결을 한 겹 더 얹으면 얼룩으로 읽힌다. */
+  --deco-crayon-peri: #c9c9f0;
+  --deco-crayon-peri-deep: #a8a8e2;
+  /* 반짝·하트 낱개(D1·D2)용 — 크레용 계열의 코발트·레드 */
+  --deco-crayon-blue: #2540e8;
+  --deco-crayon-red: #e8564e;
+
+  /* 낙서 두들의 잉크 외곽선. 코어 --ink(네이비)를 쓰지 않는 이유는, 크레용
+     낙서는 흑연 쪽 웜블랙으로 둘러야 손으로 그린 것으로 읽히고 네이비로 두르면
+     선이 너무 깨끗해 벡터 도형처럼 보이기 때문이다. */
+  --deco-crayon-ink: #2b2a28;
+
+  /* 마 실 · 나무 집게(W1~W2) — 크라프트 계열. T6 찢은 크라프트와 같은 결이지만
+     그쪽은 한 종류에만 쓰여 Tape.astro 안에 인라인으로 있고, 이 셋은 부품 둘이
+     나눠 쓰므로 토큰으로 뺀다. */
+  --deco-twine: #c9a87a;
+  --deco-twine-ink: #b08f5f;
+  --deco-wood: #e4c79a;
+  --deco-wood-2: #d3b183;
+  --deco-wood-3: #c2a271;
+  /* 집게 스프링 — 이 키트에서 유일한 금속 */
+  --deco-metal: #c6c9d4;
+  --deco-metal-2: #9ea3b4;
+
   /* 종이·테이프 바탕 */
   --deco-tape-yellow: rgba(216, 163, 63, 0.42);
-  --deco-tape-vellum: rgba(255, 255, 255, 0.62);
+  /* 벨럼은 순백이 아니라 크림 쪽으로 데운 반투명이다 — 이유는 Tape.astro 의 .vellum */
+  --deco-tape-vellum: rgba(253, 248, 236, 0.66);
   --deco-note: #f4e3b2;
   --deco-note-2: #ecd79c;
   --deco-note-ink: #6b5312;

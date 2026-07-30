@@ -6,9 +6,16 @@
  * 출발점이기도 하다 — 지금 홈에 걸린 public/tony-deco.webp 는 말풍선·반짝·테이프·
  * 캡션이 **한 장의 래스터에 구워진** 그림이다. 이 패턴은 그 그림을 부품으로 되돌린다.
  * 그래서 얻는 것:
- *   ① 문구를 고칠 때 이미지를 다시 굽지 않는다(말풍선이 텍스트다)
+ *   ① 문구를 고칠 때 이미지를 다시 굽지 않는다(말풍선 안 글씨가 텍스트다)
  *   ② 강도 한 손잡이로 장식을 접었다 폈다 한다
  *   ③ 마스코트만 교체해도 나머지가 따라온다
+ *
+ * 얹은 것: 말풍선 ×2(D10·D11, 티어 1) · 반짝 낱개 ×2 + 코너 테이프 ×2 + 우하단
+ * 이름 기입 라벨(S9, 티어 2) · D9 보리(3) · D7 낙서 하트 + D8 번개(4).
+ * 낙서 셋(D7~D9)은 크레용 계열이라 덩치가
+ * 크고, 그래서 **마스코트 실루엣이 비켜 주는 좌우 여백**에만 앉는다 — 든 앞발이
+ * 왼쪽으로 가장 내밀는 높이(y≈40~48%)와 빵 왕관이 오른쪽 끝까지 차는 높이
+ * (y≈15~45%)를 피한 자리가 각 DecoLayer 의 좌표다.
  *
  * 좌표 규칙: **세로는 %, 가로 중 판 밖으로 걸치는 것은 px**.
  *   - 세로(top/bottom)를 % 로 두면 마스코트 키에 따라 같이 내려앉는다.
@@ -22,24 +29,23 @@ import DecoLayer from "../DecoLayer.astro";
 import Tape from "../Tape.astro";
 import Sticker from "../Sticker.astro";
 import Doodle from "../Doodle.astro";
-import Polaroid from "../Polaroid.astro";
-import { TONY_CUTOUT } from "../../../lib/deco";
+import { TONY_DIECUT, tonyDiecutHeight } from "../../../lib/deco";
 
 interface Props {
-  /** 왼쪽 말풍선 문구. 줄바꿈은 \n. */
-  speechLeft?: string;
-  /** 오른쪽 말풍선 문구 */
-  speechRight?: string;
-  /** 폴라로이드 캡션. 비우면 폴라로이드를 안 붙인다. */
-  polaroidCaption?: string;
+  /** 왼쪽 말풍선(D10) 문구. 줄바꿈은 \n. */
+  noteLeft?: string;
+  /** 오른쪽 폭발 풍선(D11) 문구 — 한 줄짜리 감탄 자리다 */
+  noteRight?: string;
+  /** 우하단 이름 기입 라벨(S9)에 적는 이름. 빈 문자열이면 라벨을 뺀다. */
+  name?: string;
   /** 마스코트 폭(px) */
   mascot?: number;
   class?: string;
 }
 const {
-  speechLeft = "오늘도\n빵빵하게!",
-  speechRight = "빵-하!",
-  polaroidCaption = "",
+  noteLeft = "오늘도\n빵빵하게!",
+  noteRight = "빵-하!",
+  name = "빵관 토니",
   mascot = 330,
   class: className = "",
 } = Astro.props;
@@ -51,32 +57,40 @@ const {
       {/* 주인공 — 데코가 아니라 콘텐츠라 DecoLayer 를 안 두른다 */}
       <img
         class="mascot deco-diecut"
-        src="/images/deco/tony-diecut.webp"
+        src={TONY_DIECUT}
         alt="빵 든 빵관 토니 마스코트"
         style={`--m:${mascot}px`}
         width={mascot}
-        height={Math.round((mascot * 975) / 712)}
+        height={tonyDiecutHeight(mascot)}
         fetchpriority="high"
         decoding="async"
       />
 
-      {/* ── 티어 1: 항상 보이는 두 말풍선 ── */}
-      <DecoLayer left="-14px" top="18%" rotate={-8} tier={1} z={2}>
-        <Sticker variant="speech" text={speechLeft} />
+      {/* ── 티어 1: 항상 보이는 말풍선 두 개 ──
+          원래는 손글씨 + 곡선 화살표(D6+D3)였다 — 여백에 끄적여 마스코트를 가리키는
+          주석. 지금은 마스코트가 **말하는** 것으로 바꿨고, 그래서 풍선 셋(D10·D11)이
+          그 자리에 온다. 화살표는 같이 없앤다: 꼬리가 화살표와 같은 일(가리키기)을
+          하는데 둘 다 두면 한 말에 손가락이 두 개 붙는다.
+          종류를 갈라 쓰는 이유 — 왼쪽은 이어지는 인사라 꼬리 달린 말풍선(D10),
+          오른쪽 "빵-하!"는 한 마디 감탄이라 폭발 풍선(D11)이다. D10 의 꼬리는
+          왼쪽 아래를 향해 나므로 왼쪽 자리에서는 flip 해 마스코트 쪽으로 돌린다.
+          기울기는 시안의 풍선 각도(-3° · 4°) 그대로 — 예전 주석의 -7°/6° 을 그대로
+          쓰면 덩치가 큰 풍선에서는 삐뚤어 보인다. */}
+      <DecoLayer left="-16px" top="13%" rotate={-3} tier={1} z={2}>
+        <Doodle variant="speech-balloon" text={noteLeft} width={116} flip />
       </DecoLayer>
-      <DecoLayer right="-10px" top="10%" rotate={7} tier={1} z={2}>
-        <Sticker variant="speech" text={speechRight} class="speech-blue" />
+      <DecoLayer right="-12px" top="7%" rotate={4} tier={1} z={2}>
+        <Doodle variant="burst-balloon" text={noteRight} width={104} />
       </DecoLayer>
 
-      {/* ── 티어 2: 반짝·하트 ── */}
-      <DecoLayer left="7%" top="6%" rotate={0} tier={2} z={2}>
+      {/* ── 티어 2: 갓 구운 빵 위 반짝 낱개 둘 ──
+          위에서 대각으로 흩어진다(왼쪽 위 ↔ 오른쪽, 주석 아래). 오른쪽 것은 빵 왕관에
+          살짝 걸치는 자리다 — 갓 구운 것에 앉은 반짝으로 읽힌다. */}
+      <DecoLayer left="8%" top="7%" rotate={0} tier={2} z={2}>
         <span class="one-sparkle lg"></span>
       </DecoLayer>
-      <DecoLayer right="13%" top="28%" rotate={0} tier={2} z={2}>
+      <DecoLayer right="4%" top="30%" rotate={0} tier={2} z={2}>
         <span class="one-sparkle md"></span>
-      </DecoLayer>
-      <DecoLayer right="6%" top="40%" rotate={-14} tier={2} z={2}>
-        <span class="one-heart">&hearts;</span>
       </DecoLayer>
 
       {/* ── 티어 2: 대각 코너 테이프 ── */}
@@ -87,26 +101,47 @@ const {
         <Tape variant="stripe" width={120} />
       </DecoLayer>
 
-      {/* ── 티어 3: 속도선 ── */}
-      <DecoLayer left="5%" top="47%" rotate={-12} tier={3} z={2}>
-        <Doodle variant="emphasis" class="speed-only" />
-      </DecoLayer>
-
-      {/* ── 티어 4: 작은 하트 하나 더 ── */}
-      <DecoLayer left="6%" bottom="24%" rotate={10} tier={4} z={2}>
-        <span class="one-heart sm">&hearts;</span>
-      </DecoLayer>
-
-      {/* ── 티어 3: 폴라로이드(캡션이 있을 때만) ── */}
+      {/* ── 티어 2: 우하단 이름 기입 라벨(S9) — 그림에 붙인 명찰 ──
+          판 오른쪽 아래는 원래 코너 테이프만 있던 자리다. 거기에 이름 서식을 끼워
+          "누구를 그린 것인가"를 적는다 — 머리띠를 `NAME` 으로 두는 이유(기본값은
+          `FROM`): 여기 이름은 보낸 사람이 아니라 이 그림의 주인공이다.
+          자리는 코너 테이프와의 다툼으로 정해졌다(§5 규칙 8). 테이프는 bottom:-3%
+          에서 32px 높이인데 -6° 로 기울어 **왼쪽 끝이 12px 더 올라온다** — 라벨이
+          겹치는 x 구간(테이프 왼쪽 절반)에서 테이프 윗변은 판 밑에서 ≈31px 다.
+          그래서 bottom 은 7% 가 아니라 11%(≈50px)다. 마스코트와는 일부러 겹친다:
+          그림 위에 붙인 명찰로 읽혀야 하므로 z 를 마스코트(1) 위로 올린다. */}
       {
-        polaroidCaption && (
-          <DecoLayer right="4%" bottom="4%" rotate={-3} tier={3} z={3}>
-            <Polaroid caption={polaroidCaption} width={150} paper="grid">
-              <img src={TONY_CUTOUT} alt="" width="62" height="85" loading="lazy" />
-            </Polaroid>
+        name && (
+          <DecoLayer right="4%" bottom="11%" rotate={-8} tier={2} z={3}>
+            <Sticker variant="name-blank" text={name} label="NAME" />
           </DecoLayer>
         )
       }
+
+      {/* ── 티어 3: D9 보리 — 발밑에 선 서명 ──
+          낙서 셋 중 하나만 티어 3 인 이유: 셋 다 4 로 두면 강도 3 에서 판이 예전
+          모습으로 돌아간다. 남길 하나로 보리를 고른 건 색이 가장 옅고(--pop-tint)
+          "빵의 재료"라 이 마스코트 옆에서 뜻이 서기 때문이다. 오른쪽으로 기운 결이라
+          마스코트를 향해 고개를 끄덕인다. */}
+      <DecoLayer left="2%" bottom="9%" rotate={5} tier={3} z={2}>
+        <Doodle variant="barley" width={52} />
+      </DecoLayer>
+
+      {/* ── 티어 4: 낙서 둘이 가운데서 마주 본다 ──
+          예전에는 이 자리에 `&hearts;` 글리프 둘과 D5 의 속도선(별표를 CSS 로 지운
+          반쪽짜리)이 있었다. 셋 다 부품이 아니라 콜라주 안에서만 사는 임시물이라
+          카탈로그 부품으로 갈아 끼웠다 — 하트는 D7, 기운은 D8 이 온전히 대신한다.
+          자리는 실루엣이 비켜 주는 좌우 여백뿐이다: 왼쪽은 든 앞발(y≈40~48%) 옆,
+          오른쪽은 주석 아래. */}
+      <DecoLayer left="0%" top="48%" rotate={-9} tier={4} z={2}>
+        <Doodle variant="scribble-heart" width={50} />
+      </DecoLayer>
+      <DecoLayer right="3%" top="44%" rotate={8} tier={4} z={2}>
+        <Doodle variant="bolt" width={34} />
+      </DecoLayer>
+
+      {/* 폴라로이드(F1)는 여기 없다 — 판 안에서는 마스코트 위에 마스코트 사진이
+          겹쳐 붙는 꼴이었다. 히어로 텍스트 칸 우상단으로 옮겼다(index.astro). */}
     </div>
   </PaperSurface>
 </div>
@@ -122,30 +157,29 @@ const {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* 마스코트 높이 + 위아래 숨통 */
+    /* 위아래 숨통. min-height 로는 못 준다 — 다이컷 비율이 1:1.38 이라 마스코트
+       높이가 이미 폭의 1.18 배를 넘고, 게다가 흔들흔들(±4°)이 위아래로 각 10px 씩
+       더 부풀린다. 그래서 판 높이가 마스코트에 딱 붙어 귀와 발이 모눈 가장자리에
+       닿아 있었다. 패딩이라 **판이 그만큼 커지고**, 부품 좌표(%)는 패딩 박스
+       기준이라 비율 그대로 따라 내려온다. */
+    padding: 18px 0;
     min-height: calc(var(--m, 330px) * 1.18);
   }
   .mascot {
     position: relative;
     z-index: 1;
-    width: var(--m, 330px);
+    /* 흔들흔들(±4°)이 발자국을 폭의 약 1.1 배로 부풀리므로, 판이 좁아지면 마스코트가
+       먼저 물러선다 — 안 그러면 판보다 넓어져 귀·빵이 모눈 밖으로 나간다. 31vw 는
+       ~968px 아래에서만 물려서, 데스크톱 넓은 쪽 크기(--m)는 건드리지 않는다.
+       좁은 화면 몫은 아래 768px 규칙이 따로 쥔다(판이 한 칸을 통째로 쓰므로 더 크다). */
+    width: min(var(--m, 330px), 31vw);
     height: auto;
     border-radius: 0;
   }
 
-  /* 오른쪽 말풍선만 파랑 계열 — 두 화자를 구분한다.
-     :global 로 감싸는 이유 — Astro 는 자식 컴포넌트 루트에 자식의 cid 만 붙이므로
-     class 를 넘겨도 여기(부모) 선택자로는 못 잡는다. .stage 로 범위를 묶어 샌다는
-     문제는 막는다. */
-  .stage :global(.speech-blue) {
-    background: var(--accent-tint);
-    color: var(--accent);
-  }
-  .stage :global(.speech-blue .tail) {
-    background: var(--accent-tint);
-  }
-
-  /* 콜라주에는 반짝이 하나씩 흩어져야 해서, 3종 묶음(D1)이 아니라 낱개를 쓴다 */
+  /* 콜라주에는 반짝이 하나씩 흩어져야 해서, 3종 묶음(D1)이 아니라 낱개를 쓴다.
+     하트·기운은 반대로 카탈로그 부품(D7·D8)을 그대로 쓴다 — 낱개로 흩을 게 아니라
+     "크레용으로 큼직하게 그린 것" 하나면 되는 자리라서, 여기서 흉내 낼 이유가 없다. */
   .one-sparkle {
     display: block;
     background: var(--pop);
@@ -168,23 +202,6 @@ const {
     width: 20px;
     height: 20px;
     background: var(--accent);
-  }
-  .one-heart {
-    display: block;
-    font-size: 26px;
-    line-height: 1;
-    color: var(--deco-red);
-  }
-  .one-heart.sm {
-    font-size: 20px;
-    color: var(--deco-pink);
-  }
-  /* D5 에서 속도선만 — 별표는 콜라주에서 과하다 (위와 같은 이유로 :global) */
-  .stage :global(.speed-only .asterisk) {
-    display: none;
-  }
-  .stage :global(.speed-only i) {
-    opacity: 0.5;
   }
 
   @media (max-width: 768px) {

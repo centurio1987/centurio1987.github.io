@@ -1,83 +1,236 @@
 ---
 import { AUTHORS } from "../lib/authors";
+import Twine from "./deco/Twine.astro";
+import Clothespin from "./deco/Clothespin.astro";
+import Polaroid from "./deco/Polaroid.astro";
+// 데코 키트는 opt-in(쓰는 쪽에서 import)이고 이 컴포넌트가 곧 쓰는 쪽이다 —
+// 걸이줄·집게가 --deco-twine/--deco-wood/--deco-metal 을 쓴다.
+// ⚠ 이 컴포넌트는 푸터에 있어 **모든 페이지**에 뜬다. 그래서 deco.css 의 opt-in 이
+// 여기서만은 사실상 전역이 된다(토큰 + 키프레임 하나, gzip 1KB 미만). 그 예외를
+// DECO_KIT.md §7 에 적어 뒀다.
+import "../styles/deco.css";
 
 /**
- * 저자 라인업 — 등록된 저자들의 전신 컷아웃을 한 줄로 세운다(푸터의 임시 마스코트 대체).
+ * 저자 라인업 — 저자들의 전신 컷아웃을 **폴라로이드에 담아 걸이줄에 매단다**.
  *
- * 그림은 authors.ts의 `fullBody`(배경을 오려낸 투명 webp)에서 온다. **채운 저자만 선다** —
+ * 그림은 authors.ts의 `fullBody`(배경을 오려낸 투명 webp)에서 온다. **채운 저자만 걸린다** —
  * 전신 원본이 없는 퍼소나는 조용히 빠지고, 나중에 컷아웃만 구워 넣으면(scripts/extract-author-cutout.ts)
  * 이 컴포넌트 수정 없이 자동으로 합류한다.
  *
- * 모션은 홈 히어로 토니와 동일한 스윙(global.css의 @keyframes tony-sway, 2.8s steps(1) ±4deg).
- * 다만 넷이 한 몸처럼 동시에 꺾이면 기계적이라, --i로 음수 딜레이를 줘 위상만 어긋낸다
- * (모션 자체는 그대로 — 딜레이가 음수라 첫 화면부터 이미 흔들리는 중이다).
+ * ── 짜임 (데코 키트 W1 걸이줄 + W2 집게 + F1 폴라로이드)
+ * `/design/deco` 의 W3 칸("실 + 집게 조합")은 컴포넌트로 굳히지 않고 레시피로 남겨 둔
+ * 짜임이고, 이 자리가 그게 실제 지면에 앉은 첫 곳이다. 굳힌 값 셋:
+ *
+ *  1. **매다는 x 는 그리드 열의 중심**이다(저자 n명이면 (i+0.5)/n). 절대배치 %로 두면
+ *     칸 높이를 손으로 계산해야 하고(액자 높이가 F1 의 패딩에 딸려 있다), flex 로 두면
+ *     x 가 칸 폭에 따라 흔들려 아래 2번이 어긋난다. `minmax(0,1fr)` 이라 액자가 칸보다
+ *     넓어져도 열 중심은 격자에 고정된다.
+ *  2. **매달리는 높이는 실의 처짐 곡선에서 뽑는다**(`sagAt`). 넷을 같은 높이에 걸면
+ *     줄은 처져 있는데 사진만 수평이라 줄이 걸이줄이 아니라 밑줄로 읽힌다. 값을 표로
+ *     베껴 두지 않고 Twine 의 path 를 그 x 에서 풀는 이유는 저자가 늘거나 줄면 열 중심이
+ *     전부 옮겨가기 때문이다 — 베낀 표는 그때 조용히 상한다.
+ *  3. **양 끝은 못 대신 집게로 문다**(`anchors={false}`). 못과 집게가 한 점에 겹치면
+ *     고정 장치가 두 개가 되므로 못을 끄고, 집게를 실 끝점 좌표에 앉힌다.
+ *
+ * ── 모션: 스윙은 그림에서 **액자로 옮겼다**
+ * 예전에는 컷아웃 자체가 tony-sway 로 흔들렸지만, 액자에 담기는 순간 그건 사진이다 —
+ * 멈춘 순간이 흔들리면 안 된다. 대신 줄에 걸린 액자가 집게를 축으로 흔들린다
+ * (`transform-origin: top center`). 키프레임·주기·위상 어긋냄(--i)은 홈 히어로 토니와
+ * 그대로 공유한다. 손으로 비뚤게 건 기울기는 `rotate` 프로퍼티로 주는데, animation 이
+ * 쓰는 `transform` 과 **별개 프로퍼티라 둘이 겹쳐 적용된다**(래퍼를 하나 더 두지 않아도
+ * 된다). 집게는 `.swing` 밖에 있어 제자리다 — 줄에 물린 집게는 사진과 함께 흔들리지 않는다.
  */
 interface Props {
-  /** 그림 한 칸의 높이(px). 폭은 이 값에서 파생된다. */
+  /** 사진 칸 최대 폭(px). 액자·인물 크기가 여기서 파생된다. */
   size?: number;
   class?: string;
 }
-const { size = 56, class: className = "" } = Astro.props;
+const { size = 88, class: className = "" } = Astro.props;
 
 const lineup = AUTHORS.filter((a) => a.fullBody);
+
+/** 실이 얼마나 처지는가(px). 폭이 늘어도 처짐은 고정이다(W1 의 계약). */
+const SAG = 46;
+
+/**
+ * Twine 의 실 곡선을 그대로 옮긴 값 — `M2 12 C46 52 144 52 188 10`, viewBox 190×70.
+ * **Twine.astro 의 path 와 한 쌍이다**: 실 모양을 고치면 여기도 같이 고쳐야 걸린 사진이
+ * 줄에서 떠오르거나 파묻힌다.
+ */
+const CURVE = { x: [2, 46, 144, 188], y: [12, 52, 52, 10], w: 190, h: 70 };
+
+const cubic = (a: number[], t: number) => {
+  const u = 1 - t;
+  return (
+    u * u * u * a[0] +
+    3 * u * u * t * a[1] +
+    3 * u * t * t * a[2] +
+    t * t * t * a[3]
+  );
+};
+
+/**
+ * 실 위 가로 f(0~1) 지점이 처진 정도(0~1, sag 에 곱해 쓴다).
+ * x(t)가 단조증가라 이분법으로 t 를 찾는다(30회 = 1e-9 이하 오차, 픽셀보다 훨씬 촘촘).
+ * 실은 `preserveAspectRatio="none"` 이라 x 는 폭에 비례해 늘어나고 y 는 sag 에 비례하므로,
+ * 이 비율은 폭과 무관하다.
+ */
+function sagAt(f: number): number {
+  const target = f * CURVE.w;
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 30; i++) {
+    const mid = (lo + hi) / 2;
+    if (cubic(CURVE.x, mid) < target) lo = mid;
+    else hi = mid;
+  }
+  return cubic(CURVE.y, (lo + hi) / 2) / CURVE.h;
+}
+
+/** 손으로 비뚤게 건 기울기 — §5 규칙 7(-12°~12°) 안에서 서로 다르게, 개수와 무관하게 돌려 쓴다. */
+const TILT = [-4, 3, -2.5, 5];
+
+/**
+ * 액자 캡션은 **퍼소나 이름의 마지막 낱말**만 쓴다(빵관 토니 → 토니, 빵토 연구원 → 연구원).
+ * 온전한 이름은 좁은 화면의 액자 폭(56px)을 넘어서 F1 의 캡션이 사진 칸보다 넓어지고,
+ * 그러면 inline-block 액자가 캡션 폭까지 벌어져 사진이 한쪽으로 밀린다. 온전한 이름은
+ * 아래 aria-label 에 그대로 남는다.
+ */
+const shortName = (name: string) => name.split(" ").at(-1) ?? name;
+
+const hung = lineup.map((author, i) => ({
+  author,
+  i,
+  y: sagAt((i + 0.5) / lineup.length),
+  rot: TILT[i % TILT.length],
+}));
 ---
 
 {
   lineup.length > 0 && (
     <div
       class={`author-lineup ${className}`}
-      style={`--figure-base:${size}px`}
+      style={`--card-max:${size}px;--sag:${SAG}px;--n:${lineup.length}`}
       role="img"
       aria-label={`빵관 토니 블로그 저자들 — ${lineup.map((a) => a.name).join(", ")}`}
     >
-      {lineup.map((author, i) => (
-        <span class="figure" style={`--i:${i}`}>
-          <img src={author.fullBody} alt="" loading="lazy" decoding="async" />
+      <Twine width="100%" sag={SAG} anchors={false} />
+
+      {hung.map(({ author, i, y, rot }) => (
+        <span class="hung" style={`--i:${i};--y:${y.toFixed(4)};--rot:${rot}deg`}>
+          <span class="swing">
+            <Polaroid
+              width="var(--card)"
+              caption={shortName(author.name)}
+              paper="grid"
+            >
+              <img
+                src={author.fullBody}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </Polaroid>
+          </span>
+          {/* 집게는 문 것 위로 절반 걸친다(§5 — 안쪽에만 있으면 문 게 아니라 무늬다) */}
+          <span class="clip">
+            <Clothespin height={26} />
+          </span>
         </span>
       ))}
+
+      {/* 실 양 끝을 무는 집게 — 자리는 곡선의 끝점 (2,12)·(188,10) 그대로 */}
+      <span class="end left">
+        <Clothespin height={32} />
+      </span>
+      <span class="end right">
+        <Clothespin height={32} />
+      </span>
     </div>
   )
 }
 
 <style>
   .author-lineup {
-    /* size prop은 --figure-base(인라인)로만 받고, 실제로 쓰는 --figure-h는 여기서 파생한다.
-       인라인 커스텀 프로퍼티는 스타일시트 규칙을 항상 이기므로, --figure-h를 인라인으로
-       직접 박으면 아래 모바일 축소 규칙이 영영 적용되지 않는다. */
-    --figure-h: var(--figure-base);
-    display: flex;
-    align-items: flex-end; /* 같은 바닥선 위에 나란히 선다 */
-    justify-content: center;
-    gap: 4px;
+    /* 액자 폭은 유동이다 — 열 하나가 폭/n 이라 넓은 화면에선 --card-max 로 묶고 좁은
+       화면에선 vw 로 줄여야 옆 액자와 겹치지 않는다. 15vw 로 뒀다가 14vw 로 죈 이유는
+       390px 실측에서 액자 사이가 3px 밖에 안 남아 서로 맞닿아 보였기 때문이다(→ ~12px).
+       320px 에서는 열이 70px 이라 회전한 액자 모서리가 몇 px 겹치는데, 줄에 걸린 사진이
+       살짝 겹치는 건 흠이 아니라서 그대로 둔다.
+       size prop 을 --card-max 로만 받는 이유는, --card 를 인라인으로 박으면 인라인
+       커스텀 프로퍼티가 스타일시트 규칙을 항상 이겨 이 clamp 가 죽기 때문이다. */
+    --card: clamp(54px, 14vw, var(--card-max));
+    position: relative;
+    /* 푸터 안쪽은 `align-items:center` 인 세로 flex 라, 이걸 안 주면 라인업이
+       shrink-to-fit(=액자 폭의 합)으로 줄어든다. 그러면 열 사이 여백이 0 이 되어
+       액자가 서로 맞닿고, 실은 사진 뒤에 가려 한 줄로 걸린 것으로 안 읽힌다
+       (실측: 964px 에서 판이 624px 이 아니라 408px 이었다). */
+    width: 100%;
+    display: grid;
+    /* auto 최소값을 0 으로 눌러야 액자가 칸보다 넓어져도 열 중심이 격자에 남는다 */
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    align-items: start;
     margin-bottom: 4px;
   }
-  .figure {
-    /* 칸을 고정해 이미지 로드 전에도 자리가 흔들리지 않는다(폭은 캐릭터 비율 여유분). */
-    display: block;
-    width: calc(var(--figure-h) * 0.78);
-    height: var(--figure-h);
+  /* 실은 라인업 전체 폭을 가로지른다. 절대배치라 기준이 패딩 박스인데 이 판엔 패딩이
+     없어서, 아래 .end 의 % 좌표와 그리드 열 중심이 같은 폭 위에 놓인다.
+     ⚠ `:global()` 인 이유 — Astro 는 자식 컴포넌트 루트에 **자식의 cid 만** 붙이므로
+     class 를 넘겨도 부모 선택자가 매칭되지 않는다(DECO_KIT.md §3 의 함정). 실을 그리드
+     흐름에서 빼내는 건 배치라서 부품에 prop 을 새로 팔 일이 아니고, 지역 조상 아래
+     `:global()` 이 이 경우의 정해진 길이다. */
+  .author-lineup > :global(.twine) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
   }
-  .figure img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: bottom center;
-    /* 홈 히어로와 같은 스윙. 발끝을 축으로 좌우로 '탁탁'. */
-    transform-origin: bottom center;
+  /* `.hang` 이 아니라 `.hung` 인 이유 — Twine 이 자기 가운데 슬롯에 이미 `.hang` 을 쓴다.
+     스코프가 갈려 CSS 는 안 부딪히지만, 같은 판에 뜻이 다른 같은 이름이 둘 있으면
+     DOM 을 훑을 때 헷갈린다(실제로 실측 스크립트가 Twine 의 빈 슬롯을 액자로 셌다). */
+  .hung {
+    position: relative;
+    /* 열 중심에 맞춘다(짜임 1번). stretch 가 아니어야 폭이 액자에 맞게 줄어든다. */
+    justify-self: center;
+    /* 처짐 곡선 위 자기 자리까지 내려온다(짜임 2번) */
+    margin-top: calc(var(--y) * var(--sag));
+  }
+  .swing {
+    display: block;
+    /* 집게가 문 지점이 축이다 */
+    transform-origin: top center;
+    /* 손으로 비뚤게 건 기울기. transform 이 아니라 rotate 프로퍼티라 아래
+       animation(transform)과 겹쳐 적용된다 — 래퍼를 더 두지 않아도 된다. */
+    rotate: var(--rot);
+    /* 홈 히어로 토니와 같은 스윙. 넷이 한 몸처럼 꺾이면 기계적이라 --i 로 위상만
+       어긋낸다(딜레이가 음수라 첫 화면부터 이미 흔들리는 중이다). */
     animation: tony-sway 2.8s steps(1) infinite;
-    /* 위상만 어긋내 옆 사람과 반대로 기울게(0.7s = 반 포즈) */
     animation-delay: calc(var(--i) * -0.7s);
   }
-  @media (max-width: 560px) {
-    .author-lineup {
-      /* 좁은 화면에선 한 단계 작게. 호출자가 size를 바꿔도 비율로 따라온다. */
-      --figure-h: calc(var(--figure-base) * 0.75);
-      gap: 2px;
-    }
+  .clip {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  /* 실 끝점 — viewBox 의 (2,12)·(188,10)을 폭·sag 비율로 환산(2/190=1.05%, 12/70=0.171).
+     집게(높이 32)는 실을 가운데 물어야 하므로 절반만큼 끌어올린다. */
+  .end {
+    position: absolute;
+    transform: translateX(-50%);
+  }
+  .end.left {
+    left: 1.05%;
+    top: calc(var(--sag) * 0.171 - 16px);
+    rotate: -8deg;
+  }
+  .end.right {
+    left: 98.95%;
+    top: calc(var(--sag) * 0.143 - 16px);
+    rotate: 7deg;
   }
   /* 전역 *{animation:none!important}이 이미 커버하지만 Mascot.astro 선례대로 지점 명시 */
   @media (prefers-reduced-motion: reduce) {
-    .figure img {
+    .swing {
       animation: none;
     }
   }

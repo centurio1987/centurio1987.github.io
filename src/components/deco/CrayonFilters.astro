@@ -1,0 +1,164 @@
+---
+/**
+ * 두들의 손맛 필터 — 시안 "데코 키트"의 feTurbulence 넷을 그대로 들여온 것.
+ *
+ * 이 넷이 없으면 두들은 **매끈한 벡터 도형**이 된다. 시안의 두들이 크레용·펜으로
+ * 그린 것처럼 보이는 이유가 이 필터라서, 기하(path d)만 옮기면 "같은 모양 다른 그림"이
+ * 나온다. 실제로 한 번 그렇게 들여왔다가 되돌렸다.
+ *
+ *   crayon        칠을 떨고(scale 5.5) 얼룩으로 파낸다 — 큼직한 크레용 칠(D7·D8·D10~D12)
+ *   crayon-dense  같은 결에 결이 더 촘촘하고 덜 파인다 — 작은 칠(D1·D2·D9 낟알)
+ *   ink           굵은 외곽선을 떤다(scale 3.4) — 낙서·풍선 셋의 두른 선
+ *   ink-fine      가는 선을 살짝만 떤다(scale 1.9) — 펜 두들(D3~D6)
+ *
+ * **id 는 인스턴스마다 다르다.** 필터를 문서 어딘가에 한 번만 심어 두는 방식(전역
+ * 레이아웃·페이지 defs)을 쓰지 않은 이유는 두 가지다.
+ *   ① 데코 키트는 opt-in 이다 — deco.css 를 안 들여온 페이지에서도 부품 하나만
+ *      쓸 수 있어야 하는데, 문서 defs 를 전제로 하면 그게 깨진다.
+ *   ② SVG 의 filter **속성**이 없는 id 를 가리키면 그 요소는 아예 **그려지지 않는다**
+ *      (CSS filter 처럼 조용히 무시되지 않는다). 심는 걸 잊은 페이지에서 두들이
+ *      사라지는 사고가 나므로, 참조와 정의를 같은 컴포넌트 안에 묶어 둔다.
+ * 대신 같은 정의가 인스턴스마다 반복된다 — 필터 하나가 300~640B 이고 gzip 이
+ * 반복 문자열을 잘 접으므로, 위 두 사고보다 싸다고 봤다.
+ *
+ * 감싸개는 어디에 놓든 **0×0 <svg>** 하나다. 부품이 SVG(D3~D5·D7~D9)일 때는 중첩
+ * <svg> 가 되고 HTML(D1·D2·D6)일 때는 흐름 밖 0×0 요소가 되는데, 어느 쪽이든 자리를
+ * 차지하지 않고 defs 는 문서에 남아 url(#id) 로 잡힌다. 경우마다 감싸개를 바꾸면
+ * 필터 정의를 두 벌 적게 되므로 한 가지로 통일했다.
+ */
+interface Props {
+  /** id 접두사. 필터 id 는 `${id}-crayon` 꼴이 된다. */
+  id: string;
+  /** 실제로 쓰는 것만 심는다 */
+  kinds: ("crayon" | "crayon-dense" | "ink" | "ink-fine")[];
+}
+const { id, kinds } = Astro.props;
+---
+
+<svg
+  aria-hidden="true"
+  width="0"
+  height="0"
+  style="position:absolute;width:0;height:0;overflow:hidden"
+>
+  <defs>
+    {
+      kinds.includes("crayon") && (
+        <filter id={`${id}-crayon`} x="-25%" y="-25%" width="150%" height="150%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.5"
+            numOctaves="4"
+            seed="5"
+            result="ed"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="ed"
+            scale="5.5"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="wob"
+          />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.14 0.2"
+            numOctaves="5"
+            seed="17"
+            result="blot"
+          />
+          <feColorMatrix in="blot" type="luminanceToAlpha" result="lum" />
+          <feComponentTransfer in="lum" result="patch">
+            <feFuncA type="table" tableValues="1 1 0.86 0.34 0.72 0.2" />
+          </feComponentTransfer>
+          <feComposite in="wob" in2="patch" operator="in" />
+        </filter>
+      )
+    }
+    {
+      kinds.includes("crayon-dense") && (
+        <filter
+          id={`${id}-crayon-dense`}
+          x="-25%"
+          y="-25%"
+          width="150%"
+          height="150%"
+        >
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.55"
+            numOctaves="4"
+            seed="31"
+            result="ed2"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="ed2"
+            scale="4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="wob2"
+          />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.18 0.24"
+            numOctaves="4"
+            seed="43"
+            result="blot2"
+          />
+          <feColorMatrix in="blot2" type="luminanceToAlpha" result="lum2" />
+          <feComponentTransfer in="lum2" result="patch2">
+            <feFuncA type="table" tableValues="1 1 0.95 0.6 0.88 0.5" />
+          </feComponentTransfer>
+          <feComposite in="wob2" in2="patch2" operator="in" />
+        </filter>
+      )
+    }
+    {
+      kinds.includes("ink") && (
+        <filter id={`${id}-ink`} x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.06 0.05"
+            numOctaves="4"
+            seed="11"
+            result="n"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="3.4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      )
+    }
+    {
+      kinds.includes("ink-fine") && (
+        <filter
+          id={`${id}-ink-fine`}
+          x="-22%"
+          y="-22%"
+          width="144%"
+          height="144%"
+        >
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.09 0.11"
+            numOctaves="3"
+            seed="23"
+            result="nf"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="nf"
+            scale="1.9"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      )
+    }
+  </defs>
+</svg>

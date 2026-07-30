@@ -10,11 +10,17 @@ import PostNav from "../components/PostNav.astro";
 import SeriesEpisodes from "../components/SeriesEpisodes.astro";
 import PostToc from "../components/PostToc.astro";
 import Squiggle from "../components/motifs/Squiggle.astro";
+import TicketStub from "../components/deco/TicketStub.astro";
+import Stamp from "../components/deco/Stamp.astro";
 import { formatDate, readingTime } from "../lib/format";
 import { getAuthor } from "../lib/authors";
 import { getRelatedPosts } from "../lib/related";
+import { getSeriesPosts, episodeNumber } from "../lib/seriesNav";
 import { getCollection, type CollectionEntry } from "astro:content";
 import type { MarkdownHeading } from "astro";
+// 데코 키트는 opt-in — 인용(P-04) · 코드블록(P-05) · 시리즈 꼬리말(P-08)이 여기 살아서
+// 이 레이아웃이 토큰·강도 게이트를 지고 온다. TalkLayout 은 들여오지 않는다.
+import "../styles/deco.css";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -27,6 +33,14 @@ const author = getAuthor(post.data.author);
 const minutes = readingTime(post.body);
 const allPosts = await getCollection("posts", ({ data }) => !data.draft);
 const related = getRelatedPosts(post, allPosts);
+
+// ── P-08 시리즈 꼬리말 ──
+// 티켓 스텁은 값이 **둘**일 때 쓰는 부품이라 (이 회차, 전체 편수) 짝을 넣는다.
+// 완결 도장은 마지막 편에만 — 매 편 찍으면 "여기서 끝"이라는 뜻이 사라진다.
+const seriesPosts = getSeriesPosts(post, allPosts);
+const seriesEp = seriesPosts.length > 1 ? episodeNumber(post, seriesPosts) : null;
+const isSeriesEnd =
+  seriesEp != null && seriesPosts[seriesPosts.length - 1].id === post.id;
 
 const slug = post.id.replace(/\.(md|mdx)$/, "");
 let postImage = "/tony-deco.webp";
@@ -65,7 +79,9 @@ if (fs.existsSync(heroPath)) {
 ---
 
 <BaseLayout title={title} description={description} image={postImage} type="article">
-  <article class="post">
+  {/* 읽는 화면이라 강도 3(은근하게) — 인용 테이프·코드 테이프까지만 보이고
+      잉여 장식(티어 4)은 접힌다. DECO_KIT 2절. */}
+  <article class="post" data-deco="3">
     {
       author.isAI && author.banner && (
         <AiBanner
@@ -99,6 +115,32 @@ if (fs.existsSync(heroPath)) {
     }
     <PostNav post={post} allPosts={allPosts} />
     <SeriesEpisodes post={post} allPosts={allPosts} />
+    {
+      seriesEp != null && (
+        /* P-08 — 티켓 + 손글씨 (+ 마지막 편이면 완결 도장).
+           티켓 문구는 PostNav·SeriesEpisodes 가 이미 읽어주는 값이라 장식으로 두고,
+           읽히는 건 손글씨 한 줄이다. */
+        <div class="series-foot">
+          <span class="foot-ticket">
+            <TicketStub
+              code={`EP ${String(seriesEp).padStart(2, "0")}`}
+              note={`총 ${seriesPosts.length}편`}
+              notch="var(--paper)"
+            />
+          </span>
+          <p class="foot-hand">
+            {isSeriesEnd
+              ? "시리즈 끝! 여기까지 읽어주셔서 고마워요 ♡"
+              : "여기까지가 이번 편. 다음 편에서 이어집니다."}
+          </p>
+          {isSeriesEnd && (
+            <span class="foot-stamp" aria-hidden="true">
+              <Stamp variant="round" text="BAKED" sub="빵관토니" size={58} />
+            </span>
+          )}
+        </div>
+      )
+    }
     <div class="post-author-card">
       <AuthorProfile authorId={author.id} />
     </div>
@@ -160,6 +202,36 @@ if (fs.existsSync(heroPath)) {
   .post-author-card {
     margin-top: 56px;
   }
+
+  /* ── P-08 시리즈 꼬리말 ── */
+  .series-foot {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 34px;
+    padding-top: 22px;
+    border-top: 1px dashed var(--border);
+  }
+  /* 손으로 얹은 티가 나게 살짝 기운다 — 각도는 -12°~12° 안(DECO_KIT 5절 규칙 7) */
+  .foot-ticket {
+    display: inline-flex;
+    transform: rotate(-1.5deg);
+  }
+  .foot-hand {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--ink-3);
+  }
+  .foot-stamp {
+    display: inline-flex;
+    flex: none;
+    transform: rotate(-12deg);
+  }
 </style>
 
 <style is:global>
@@ -197,18 +269,50 @@ if (fs.existsSync(heroPath)) {
   .prose ol {
     margin: 16px 0;
   }
+  /* 인용의 틀은 P-04(TapedQuote)와 같은 얼굴로 맞춘다.
+   *
+   * 데코를 얹는 통로인 MDX `components` 매핑은 **.mdx 에만 먹는다** — 순수 마크다운
+   * (.md) 글 3편(algorithm-at-40-prologue · aside-arc · welcome)은 ProseQuote 를
+   * 거치지 않고 이 규칙으로 그려진다. 그래서 여기를 예전 모습(코발트 선 + surface
+   * 바탕)으로 두면 같은 블로그 안에 인용이 두 얼굴이 된다.
+   *
+   * 틀(분홍 세로선 · 바탕 없음 · 큰 글씨)은 여기서 맞추고, **테이프만** 데코로
+   * 남긴다 — 즉 .md 글은 "테이프 안 붙은 같은 인용"이지 다른 디자인이 아니다.
+   * 타이포 값은 TapedQuote 의 blockquote 규칙과 같게 유지한다(둘이 갈리면 이 의도가
+   * 깨진다). 감싼 .taped-quote 쪽 규칙은 cid 덕에 특이도가 높아 이걸 덮어쓴다. */
   .prose blockquote {
-    margin: 24px 0;
-    padding: 8px 18px;
-    border-left: 3px solid var(--accent);
-    background: var(--surface);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    color: var(--ink-2);
+    margin: 34px 0;
+    padding: 6px 0 6px 22px;
+    border-left: 3px solid var(--deco-pink);
+    background: none;
+    border-radius: 0;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.8;
+    color: var(--ink);
   }
   .prose img {
     display: block;
     max-width: 100%;
     height: auto;
     margin: 24px auto;
+  }
+
+  /* ── 데코: 테이프는 글마다 한 장씩만 ────────────────────────────────────────
+   * 마크다운의 인용·코드블록은 ProseQuote·ProseCode 어댑터를 거쳐 패턴 P-04·P-05 로
+   * 그려진다. 그런데 인용이 11개(container-anatomy-3), 코드블록이 42개(tauri-2)인
+   * 글이 있어서 전부 테이프를 붙이면 테이프가 "붙인 것"이 아니라 인용·코드의 기본
+   * 장식으로 읽힌다 — 도장을 한 항목에만 찍는 이유(DECO_KIT 5절 규칙 4)와 같다.
+   *
+   * 그래서 **먼저 나온 형제 뒤로는 테이프를 접는다**. 세는 주체가 CSS 라서 렌더 순서
+   * 같은 것에 기대지 않고, 글 파일도 안 건드린다. 선택자 끝을 span.deco-layer 로
+   * 두는 건 DecoLayer 의 티어 게이트(.deco-layer.t3{display:var(--deco-t3)})와
+   * 특이도가 같아지는 걸 피하려는 것이다(타입 선택자 하나로 이긴다).
+   *
+   * 인용·코드가 목록/인용 안에 중첩되면 부모가 달라 각자 첫 장을 갖는다 — 드물고,
+   * 그 경우엔 오히려 그 블록이 따로 붙은 것으로 읽혀 문제되지 않는다. */
+  .prose .taped-quote ~ .taped-quote span.deco-layer,
+  .prose .taped-code ~ .taped-code span.deco-layer {
+    display: none;
   }
 </style>

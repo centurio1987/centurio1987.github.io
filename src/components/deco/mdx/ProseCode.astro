@@ -1,0 +1,24 @@
+---
+/**
+ * 마크다운 코드블록(`<pre>`)을 패턴 P-05(TapedCode)로 감싸는 어댑터.
+ *
+ * MDX 의 `components` 매핑(`<Content components={{ pre: ProseCode }} />`)으로 꽂힌다.
+ * 본문 파일을 한 줄도 고치지 않고 코드블록에 데코를 얹기 위한 유일한 접점이다.
+ *
+ * Shiki 가 만든 원래 속성(class="astro-code …" · style · tabindex · data-language)을
+ * 그대로 되돌려줘야 하이라이팅이 산다 — 그래서 받은 props 를 통째로 다시 뿌린다.
+ *
+ * 라벨·포스트잇은 비워 둔다. 문구를 넣으려면 그 코드블록이 무슨 뜻인지 알아야 하는데
+ * 이 어댑터는 블록의 내용을 모른다(그런 강조가 필요하면 글에서 TapedCode 를 직접 쓴다).
+ * 그래서 여기 얹히는 건 오른쪽 위 사선 테이프 한 장뿐이고, 그마저도 **글의 첫
+ * 코드블록에만** 남는다 — 나머지는 PostLayout 의 전역 규칙이 접는다. 42개짜리 글
+ * (tauri-2)이 있어서, 전부 붙이면 테이프가 코드블록의 기본 장식처럼 읽힌다.
+ */
+import TapedCode from "../patterns/TapedCode.astro";
+
+const props = Astro.props;
+---
+
+<TapedCode>
+  <pre {...props}><slot /></pre>
+</TapedCode>

@@ -1,8 +1,12 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import PostList from "./PostList.astro";
+import ClippedCard from "./deco/patterns/ClippedCard.astro";
 import { getCategory } from "../lib/categories";
 import { getAuthor, AUTHORS } from "../lib/authors";
+// 데코 키트는 opt-in(쓰는 쪽에서 import)이고, 이 컴포넌트가 곧 쓰는 쪽이다 —
+// 아래 필터 카드가 P-03 ClippedCard 라서 토큰·강도 게이트를 스스로 지고 온다.
+import "../styles/deco.css";
 
 /**
  * PostFilter — 카테고리 × 글쓴이 2축 패싯 필터가 붙은 글 목록 (KAN-025).
@@ -138,7 +142,12 @@ rules.push(`.pf-wrap .post-item{border-top:1px dashed var(--border)}`);
 const generatedCss = rules.join("\n");
 ---
 
-<div class="pf-wrap">
+{/* 목록은 읽으러 온 화면이라 홈(4)보다 한 단계 낮은 강도 3 — 클립은 보이되
+    잉여 장식은 접힌다. */}
+<div class="pf-wrap" data-deco="3">
+  {/* P-03 — 필터를 페이지에 인쇄된 UI 가 아니라 **끼워 넣은 종이**로 읽히게 하는
+      클립. 오른쪽에 무는 이유는 왼쪽이 축 라벨로 차 있기 때문이다. */}
+  <ClippedCard side="right" offset="30px" class="pf-card">
   <form class="pf" data-post-filter>
     {/* fieldset/legend 는 브라우저마다 flex 배치가 갈려 role=radiogroup + 보이는
         라벨로 묶는다. 화살표 키 이동은 input[name] 그룹이 그대로 제공한다. */}
@@ -198,8 +207,12 @@ const generatedCss = rules.join("\n");
       </div>
     </div>
   </form>
+  </ClippedCard>
 
-  <PostList posts={posts} />
+  <PostList posts={posts}>
+    {/* 페이지가 넘긴 데코(P-07 도장)를 목록 첫 항목으로 그대로 흘려보낸다 */}
+    <slot name="first-deco" slot="first-deco" />
+  </PostList>
 
   <p class="pf-empty" role="status">
     고른 조합에 해당하는 글이 아직 없어요. 다른 카테고리나 글쓴이를 골라보세요.
@@ -209,12 +222,21 @@ const generatedCss = rules.join("\n");
 <style is:inline set:html={generatedCss}></style>
 
 <style>
+  /* 클립이 카드 위로 19px 물고 나오므로 그만큼 위 숨통을 준다 */
+  .pf-card {
+    margin: 16px 0 4px;
+  }
   .pf {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin: 0 0 4px;
-    padding: 0 0 14px;
+    margin: 0;
+    /* 끼워 넣은 종이 — 클립이 물 자리가 있으려면 판이 눈에 보여야 한다.
+       바탕은 크림 한 톤(본문 종이와 구분되되 목록보다 뒤로 물러난다). */
+    padding: 16px 18px 14px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
   }
   .pf-axis {
     display: flex;

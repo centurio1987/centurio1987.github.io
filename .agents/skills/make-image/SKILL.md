@@ -36,7 +36,7 @@ tech-deepdive (구조형·hero 자리에 ```viz``` 명세 블록을 남김)
   - `target:"inline"` → `src/components/posts/<slug>/<Name>.tsx` 생성 + MDX 상단 import 삽입 + 블록을 `<Name />`로 치환(무 client directive = SSR 정적 SVG).
   - `target:"hero"` → `public/images/<slug>/<name>.webp` 생성 + 블록을 `![alt](/images/<slug>/<name>.webp)`로 치환.
   - 잔존 `viz` 블록 0개(검사 통과).
-- **v1 지원 kind(5종)**: `ProcessSteps`(단계) · `Comparison`(비교) · `Flowchart`(흐름) · `Statistics`(수치) · `PosterEditorial`(hero). 그 외/오타는 Zod 검증 실패로 명확히 보고. (`src/lib/viz/schema.ts`)
+- **v1 지원 kind(6종)**: `ProcessSteps`(단계) · `Comparison`(비교) · `Flowchart`(흐름) · `Statistics`(수치) · `PosterHero`(hero, 로컬 kind) · `PosterEditorial`(패키지 원본 — hero로는 쓰지 마라, 긴 제목이 잘린다). 그 외/오타는 Zod 검증 실패로 명확히 보고. (`src/lib/viz/schema.ts`)
 
 ## viz 블록 문법
 
@@ -69,7 +69,10 @@ bun scripts/apply-viz.ts <대상 MDX> [--slug <slug>] [--force]
 - `bunx tsc --noEmit` 로 생성된 `.tsx` 타입 확인.
 - `bun run build` 통과 확인(단일 JSX 오류가 전체 빌드 파괴).
 - 인라인 SVG 색 페인트는 **`astro preview`(HTTP)** 로 확인한다. `file://`는 외부 스타일시트 적용 quirk로 색이 안 칠해져 보일 수 있으니 판단 근거로 쓰지 않는다.
-- **렌더 규격(`assets/IMAGE_GUIDE.md` R1~R5)을 실제 화면으로 확인한다.** 빌드 통과는 "그림이 읽힌다"를 보장하지 않는다.
+- **`bun run viz:verify [slug]` 로 텍스트 넘침을 기계로 판정한다(필수).** 실제 렌더에서 모든 `<text>` 를
+  담는 상자·viewBox 와 재서 넘치면 비0으로 끝난다. SVG 는 넘친 글자를 에러 없이 잘라 렌더하므로
+  빌드·타입·눈대중 어느 것도 이걸 못 잡는다 — 실제로 KAN-016 이후 vpn-anatomy-7 에서 재발했다(R6).
+- **나머지 렌더 규격(`assets/IMAGE_GUIDE.md` R1~R5)은 실제 화면으로 확인한다.** 빌드 통과는 "그림이 읽힌다"를 보장하지 않는다.
   viewBox 폭 ≤ 620(글자 크기) · Flowchart 엣지 축정렬 + `routing:"straight"`(화살표가 노드를 관통·꺾임) ·
   엣지 label 미렌더(정보는 노드 label로) · hero는 썸네일에서 제목이 읽히는 크기. 캡처 스니펫은 R5에 있다.
   → tauri-1·tauri-2에서 연속으로 지적받은 항목이다. **명세를 쓰는 시점에 지켜라.**
