@@ -9,6 +9,7 @@ import type {
 } from "../components/graph/GraphExplorer.tsx";
 import { getCategory } from "../lib/categories";
 import { graphData, hasGraphData } from "../lib/graph";
+import { formatMonthYear, formatYear } from "../lib/format";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
   (a, b) =>
@@ -110,6 +111,58 @@ const links: GraphViewLink[] = [...pairs.values()]
   })
   .sort((x, y) => (x.source + x.target < y.source + y.target ? -1 : 1));
 
+// ── 기간 축: 범위 게이지용 버킷 (KAN-051) ──
+// 칩이 아니라 끌어서 범위를 잡는 게이지이므로, 글이 없는 달도 **칸을 차지해야** 한다.
+// 있는 달만 늘어놓으면 5월과 9월이 나란히 붙어 시간축이 거짓말을 한다. 그래서 처음
+// 글부터 마지막 글까지 **연속 도메인**을 만들고 count 0 인 칸도 그대로 남긴다.
+//
+// 눈금 단위는 데이터에 적응한다 — 36개월(3년)까지는 월, 넘으면 연으로 접는다.
+// 글이 쌓여 3년을 넘기는 날 코드 수정 없이 연 단위로 승격된다.
+// 라벨·정렬·집계를 전부 여기서 끝내고 클라이언트는 map 만 한다(hydration 안전).
+const MONTH_SPAN_MAX = 36;
+const ymOf = (d: Date) => d.getFullYear() * 12 + d.getMonth();
+const ymValues = posts.map((p) => ymOf(p.data.pubDate));
+const ymLo = Math.min(...ymValues);
+const ymHi = Math.max(...ymValues);
+const periodMode: "year" | "month" =
+  ymHi - ymLo + 1 <= MONTH_SPAN_MAX ? "month" : "year";
+
+const periodKeyOf = (d: Date) =>
+  periodMode === "year"
+    ? String(d.getFullYear())
+    : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+
+const periodCount = new Map<string, number>();
+for (const p of posts) {
+  const key = periodKeyOf(p.data.pubDate);
+  periodCount.set(key, (periodCount.get(key) ?? 0) + 1);
+}
+
+// 오름차순 연속 버킷. 라벨은 사이트 표기 규약을 그대로 쓴다(formatYear/formatMonthYear
+// 둘 다 Intl 미사용 → SSR/CSR 동일). 키는 고정 폭 제로패딩이라 코드포인트 비교로 충분
+// 하다(localeCompare 금지 — 서버/브라우저 collation 차이가 hydration mismatch 를 낸다).
+const periodBuckets: { key: string; label: string; count: number }[] = [];
+if (periodMode === "year") {
+  for (let y = Math.floor(ymLo / 12); y <= Math.floor(ymHi / 12); y++) {
+    const key = String(y);
+    periodBuckets.push({
+      key,
+      label: formatYear(new Date(y, 0, 1)),
+      count: periodCount.get(key) ?? 0,
+    });
+  }
+} else {
+  for (let m = ymLo; m <= ymHi; m++) {
+    const d = new Date(Math.floor(m / 12), m % 12, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    periodBuckets.push({
+      key,
+      label: formatMonthYear(d),
+      count: periodCount.get(key) ?? 0,
+    });
+  }
+}
+
 const viewPosts = posts.map((p) => {
   const cat = getCategory(p.data.category);
   const byLabel = conceptsBySlug.get(p.id) ?? new Map<string, number>();
@@ -131,6 +184,7 @@ const viewPosts = posts.map((p) => {
     searchText: [p.data.title, ...p.data.tags, ...ranked.map(([l]) => l)]
       .join(" ")
       .toLowerCase(),
+    periodKey: periodKeyOf(p.data.pubDate),
   };
 });
 
@@ -143,6 +197,9 @@ const viewData: GraphViewData = {
   posts: viewPosts,
   links,
   legend: legendCats,
+  periodBuckets,
+  periodMode,
+  totalPosts: posts.length,
 };
 ---
 
