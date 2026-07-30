@@ -202,7 +202,11 @@ import "../../styles/deco.css";
       <div class="pat-body pad">
         <TapedBoard paper="dot" tone="cream" cell={24} tapeA="check" tapeB="vellum" corners="top">
           <div class="map-stage">
-            <DecoLayer left="34px" top="-14px" rotate={-2} tier={1} z={4}>
+            {/* left 는 34px 이 아니라 128px 이다 — 좌상 테이프가 -20px 에서 126px
+                폭이라 판 안쪽 106px 까지 차지한다(§5 규칙 8). 34px 에 두면 탭이
+                테이프에 통째로 물려 둘 다 안 읽힌다(실측: 테이프 오른끝 108 vs
+                탭 왼끝 34.7). 실제 지면(/graph)도 같은 값을 쓴다. */}
+            <DecoLayer left="128px" top="-14px" rotate={-2} tier={1} z={4}>
               <IndexTab text="MAP · 29" tone="blue" />
             </DecoLayer>
             <span class="map-note">
