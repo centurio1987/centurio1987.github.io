@@ -222,9 +222,21 @@ const generatedCss = rules.join("\n");
 <style is:inline set:html={generatedCss}></style>
 
 <style>
-  /* 클립이 카드 위로 19px 물고 나오므로 그만큼 위 숨통을 준다 */
-  .pf-card {
-    margin: 16px 0 4px;
+  /* 선택자를 `.pf-card` 로 쓰면 안 된다 — 그건 ClippedCard 에 넘긴 class 라 그 루트엔
+     ClippedCard 의 cid 만 찍히고, 여기서 스코프된 규칙은 영영 매칭되지 않는다
+     (CLAUDE.md "부모 scoped CSS 로 부품을 못 고친다"). 앞서 있던 `margin:16px 0 4px`
+     은 그래서 한 번도 먹은 적이 없고, 실제 여백은 0 이었다(실측). 내 요소인 .pf-wrap
+     아래로 :global 을 파야 닿는다.
+
+     값은 **부품이 카드 밖으로 나오는 만큼을 빼고** 남는 게 실제 숨통이라 그만큼 얹었다.
+       · 위 40px — 클립은 22×58 을 14° 돌린 것이라 회전 bbox 가 61.6px 이고,
+         top:-19px 에 (61.6-58)/2=1.8 이 더해져 카드 위로 20.8px 나온다. 여백이 0 일 땐
+         그 20.8px 이 통째로 머리 행을 침범했고, 그 열엔 RSS 캡슐이 서 있다
+         (가로 35.4px × 세로 20.8px 겹침 — 실측). 40px 이면 RSS 아래로 19px 이 남는다.
+       · 아래 20px — 목록 첫 항목의 시리즈 테이프가 post-list 패딩(12px) 위로 솟아
+         카드 바닥과 2px 까지 붙었다(호버 시 3px 더 들려 더 좁아진다). 22px 로 벌린다. */
+  .pf-wrap > :global(.pf-card) {
+    margin: 40px 0 20px;
   }
   .pf {
     display: flex;
