@@ -147,19 +147,28 @@ function estimateLabelWidth(s: string) {
 export default function GraphExplorer({
   data,
   deco,
+  decoFilter,
+  decoHelp,
 }: {
   data: GraphViewData;
   /**
-   * 지도 판(=svg 상자)에 겹쳐 놓는 **구멍** 하나. Astro 의 named slot(`slot="deco"`)
-   * 이 이 prop 으로 들어온다.
+   * 데코를 얹을 자리에 뚫어 둔 **구멍** 셋. Astro 의 named slot 이 prop 으로 들어온다
+   * (`slot="deco"` · `"deco-filter"` · `"deco-help"` → kebab 은 camelCase 로 바뀐다).
    *
    * 아일랜드는 여기 뭐가 들어오는지 모른다 — 데코 부품은 전부 `.astro` 라 React
-   * 안에 못 넣고, 바깥에서 절대배치하는 길은 지도 윗변의 y 가 커맨드 바 토큰
-   * 줄바꿈·도움말 토글·후보 칩 줄 수에 따라 움직여서 막혀 있다(테이프가 허공에
-   * 뜬다). 그래서 "지도 상자와 정확히 같은 자리"라는 좌표계만 열어 주고 내용물은
-   * 채우는 쪽(`graph.astro`)이 넘긴다 — `PostList` 의 `first-deco` 와 같은 짜임.
+   * 안에 못 넣고, 바깥에서 절대배치하는 길은 각 블록의 y 가 커맨드 바 토큰 줄바꿈·
+   * 도움말 토글·후보 칩 줄 수에 따라 움직여서 막혀 있다(부품이 허공에 뜬다).
+   * 그래서 "이 블록과 정확히 같은 자리"라는 좌표계만 열어 주고 내용물은 채우는 쪽
+   * (`graph.astro`)이 넘긴다 — `PostList` 의 `first-deco` 와 같은 짜임.
+   *
+   * 셋 다 같은 `.graph-deco`(inset:0 · pointer-events:none) 를 쓰지만 **지도 판만**
+   * 배경(종이)을 깔기 때문에 거기서만 z 를 갈라야 한다(아래 .graph-stage 주석).
    */
   deco?: ReactNode;
+  /** 후보 패널(필터 판)에 겹치는 구멍 */
+  decoFilter?: ReactNode;
+  /** 도움말 패널에 겹치는 구멍 — 패널이 열릴 때만 존재한다 */
+  decoHelp?: ReactNode;
 }) {
   const { nodes, links } = useMemo(() => {
     const degree = new Map<string, number>();
@@ -968,13 +977,20 @@ export default function GraphExplorer({
         </button>
       </div>
       {/* 설명 카피는 상시 노출 대신 도움말 안으로 — 지도가 첫 화면을 차지하도록. */}
-      {helpOpen && (
-        <div className="graph-help">
-          {HELP_LINES.map((line) => (
-            <p key={line}>{line}</p>
-          ))}
-        </div>
-      )}
+      {/* 여닫이를 `helpOpen && …` 가 아니라 `hidden` 으로 하는 이유는 **슬롯이
+          살아남게 하려는 것**이다. Astro 는 SSR 때 이 컴포넌트를 한 번 그리고,
+          하이드레이션 스크립트는 그 결과에 남은 `<astro-slot>` 엘리먼트에서 슬롯
+          HTML 을 되찾는다. 조건부로 감싸면 SSR 시점(helpOpen=false)에 astro-slot 이
+          아예 안 나와서 decoHelp 가 클라이언트에 **영영 도착하지 못한다** — 처음만
+          비는 게 아니라 열어도 끝까지 빈다(실측으로 잡았다).
+          `hidden` 은 UA 기본이 display:none 이고 이 파일 어디도 .graph-help 의
+          display 를 지정하지 않으므로 닫힘 상태의 레이아웃 비용은 그대로 0 이다. */}
+      <div className="graph-help" hidden={!helpOpen}>
+        {HELP_LINES.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+        {decoHelp && <div className="graph-deco">{decoHelp}</div>}
+      </div>
 
       {/* ── 후보 패널 ── 커맨드 바에 무엇을 넣을 수 있는지 항상 열어 둔다. */}
       <div className="graph-cands">
@@ -1126,6 +1142,7 @@ export default function GraphExplorer({
         {catCands.length === 0 && kwCands.length === 0 && (
           <p className="cand-none">후보가 없어요. 다른 말로 적어보세요.</p>
         )}
+        {decoFilter && <div className="graph-deco">{decoFilter}</div>}
       </div>
       {filterActive && visibleCount === 0 && (
         <p className="graph-empty">
@@ -1515,7 +1532,11 @@ export default function GraphExplorer({
           color: var(--accent);
           border-color: var(--accent);
         }
+        /* position:relative 는 데코 구멍(.graph-deco)의 배치 기준 — 없으면 구멍이
+           조상 중 첫 배치 컨텍스트로 튄다. 이 둘은 지도 판과 달리 배경을 깔지 않고
+           부품만 얹으므로 z 를 가를 필요가 없다(부품이 자기 z 로 위에 온다). */
         .graph-help {
+          position: relative;
           margin: 0 0 10px;
           padding: 11px 13px;
           border: 1px dashed color-mix(in srgb, var(--accent) 30%, transparent);
@@ -1535,6 +1556,7 @@ export default function GraphExplorer({
 
         /* ── 후보 패널 ── 한 단 안쪽으로 들어간 표면(--paper)이라 커맨드 바가 위에 뜬다. */
         .graph-cands {
+          position: relative;
           margin-bottom: 12px;
           padding: 10px;
           border: 1.5px solid var(--border);

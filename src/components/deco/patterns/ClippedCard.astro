@@ -19,6 +19,18 @@ interface Props {
   offset?: string;
   rotate?: number;
   tier?: 1 | 2 | 3 | 4;
+  /**
+   * 클립의 호버 갸웃. 기본 켬.
+   *
+   * 끄는 이유는 모션이 싫어서가 아니라 **입력** 때문이다 — `DecoLayer` 는 갸웃을
+   * 받으려고 자식의 `pointer-events` 를 되살리는데(§5 규칙 9), 그 되살림은 조상의
+   * `pointer-events:none` 을 이긴다. 클립은 카드 **밖 위쪽**으로 나오므로 그 위에
+   * 무엇이 있느냐가 문제가 된다: 글 지도의 후보 패널은 바로 위가 커맨드 바(=텍스트
+   * 입력)라, 안 끄면 클립이 그 자리의 클릭을 먹어 입력이 죽는다.
+   *
+   * `TapedBoard` 의 같은 이름 prop 과 같은 이유·같은 꼴이다.
+   */
+  hover?: boolean;
   class?: string;
 }
 const {
@@ -27,6 +39,7 @@ const {
   offset = "26px",
   rotate = side === "right" ? 14 : -16,
   tier = 2,
+  hover = true,
   class: className = "",
 } = Astro.props;
 ---
@@ -40,6 +53,7 @@ const {
     rotate={rotate}
     tier={tier}
     z={2}
+    hover={hover}
   >
     <Clip variant={variant} />
   </DecoLayer>

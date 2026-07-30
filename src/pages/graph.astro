@@ -11,8 +11,11 @@ import { getCategory } from "../lib/categories";
 import { graphData, hasGraphData } from "../lib/graph";
 import { formatMonthYear, formatYear } from "../lib/format";
 import TapedBoard from "../components/deco/patterns/TapedBoard.astro";
+import ClippedCard from "../components/deco/patterns/ClippedCard.astro";
+import DecoHeading from "../components/deco/patterns/DecoHeading.astro";
 import DecoLayer from "../components/deco/DecoLayer.astro";
 import IndexTab from "../components/deco/IndexTab.astro";
+import Tape from "../components/deco/Tape.astro";
 import "../styles/deco.css";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
@@ -216,7 +219,13 @@ const viewData: GraphViewData = {
       1c 의 메모+화살표)는 첫 드래그에 거짓말이 된다. */}
   <section class="graph-page" data-deco="3">
     <header class="graph-header">
-      <h1>글 지도</h1>
+      {/* P-06 — 배지 없이 레터링 테이프만. 편수 배지를 빼는 이유는 커맨드 바에 이미
+          라이브 카운터(글 12/29)가 있어서다: 한 화면에 편수가 둘이 되는데 저쪽만
+          필터에 따라 움직인다. 인덱스 탭도 못 쓴다 — 지도 판의 MAP 탭과 한 지면에
+          탭이 둘이 된다(5절 규칙 5 의 정신). */}
+      <DecoHeading tape="YOU ARE HERE" rule={false} class="graph-heading">
+        <h1>글 지도</h1>
+      </DecoHeading>
       <p class="lead">
         글과 글 사이의 연관을 그린 지도입니다. 원 하나가 글이고, 선은 두 글이
         이어져 있다는 뜻이에요. 글에 포인터를 올리면 그 글의 연관 키워드가
@@ -258,6 +267,43 @@ const viewData: GraphViewData = {
                 </DecoLayer>
               </TapedBoard>
             </div>
+
+            {/* P-03 — 후보 패널은 /posts 의 PostFilter 와 **같은 역할의 필터 판**이라
+                같은 처우를 준다(크림 바탕은 아래 is:global). ClippedCard 를 값만
+                베끼지 않고 **빈 판으로 펴서** 쓰는 이유는 드리프트 차단이다 —
+                클립의 top/rotate/tier/z 가 ClippedCard.astro 한 곳에만 남으므로
+                나중에 그 파일만 고쳐도 두 지면이 갈릴 수 없다. 지도 판을 svg 뒤에
+                깐 것과 같은 수법(감쌀 수 없으면 겹쳐 편다).
+
+                **offset 이 모서리(30px)가 아니라 140px 인 건 규칙 3 때문이다.**
+                클립은 판 밖으로만 나오는 게 아니라 안쪽으로도 41px 내려오는데,
+                이 판의 첫 행은 양 끝이 **다 차 있다** — 왼쪽에 "기간 범위 · 월 단위"
+                (x 17~119), 오른쪽에 기간·편수 읽기(x 665~847, 1280px 실측).
+                /posts 가 side="right" 를 쓸 수 있는 건 그 카드의 오른쪽이 비어서지
+                오른쪽이 정답이라서가 아니다(§3 "내용이 비어 있는 쪽을 골라").
+                그래서 둘 사이 빈 구간에 문다: 140px 이면 상자가 132~170 이라
+                라벨(~119)과 읽기(665~) 어느 쪽도 안 건드리고, 세로로도 게이지
+                트랙(y 43)보다 위(y ~41)에서 끝난다. */}
+            <div slot="deco-filter" class="cands-clip">
+              <ClippedCard side="left" offset="140px" hover={false} />
+            </div>
+
+            {/* P-05 짜임 — 펼쳐 둔 안내 쪽지에 테이프 한 장. 오른쪽에 두는 건
+                클립(왼쪽 위)과 세로로 겹치지 않게 하려는 것이다: 도움말이 열리면
+                두 패널이 위아래로 붙는다. 도움말은 토글이라 이 데코의 비용은
+                열릴 때만 든다. */}
+            <div slot="deco-help">
+              <DecoLayer
+                top="-13px"
+                right="44px"
+                rotate={7}
+                tier={3}
+                z={2}
+                hover={false}
+              >
+                <Tape variant="dot" width={96} />
+              </DecoLayer>
+            </div>
           </GraphExplorer>
           <noscript>
             <PostList posts={posts} />
@@ -279,11 +325,18 @@ const viewData: GraphViewData = {
     margin: 0 auto;
     padding: 56px var(--page-pad) 64px;
   }
+  /* margin 이 0 인 건 P-06 때문이다 — DecoHeading 은 align-items:flex-end 인 flex
+     행이라 감싼 h1 의 아래 마진이 그대로 행 높이가 되어 테이프 기준선이 들린다.
+     /posts 가 같은 이유로 h1 { margin: 0 } 을 둔다. 원래 이 h1 이 지고 있던 10px 은
+     아래 .graph-heading 으로 옮겼다. */
   .graph-header h1 {
     font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(28px, 5vw, 38px);
-    margin: 0 0 10px;
+    margin: 0;
+  }
+  .graph-heading {
+    margin-bottom: 10px;
   }
   .lead {
     font-size: 17px;
@@ -310,13 +363,34 @@ const viewData: GraphViewData = {
     height: 100%;
   }
 
-  /* 좁은 화면에선 테이프·탭을 접는다(DECO_KIT 5절 규칙 6). 접는 이유가 여기서는
-     취향이 아니라 계산이다 — --page-pad 가 clamp(20px,5vw,48px) 라 470px 아래에서
-     페이지 여백이 20px 대로 줄어드는데, 좌상 테이프는 left:-20px 에 -10° 라
-     판 밖으로 ≈23px 나간다. 그대로 두면 가로 스크롤이 생긴다. 판(모눈 종이)은
-     여백을 안 쓰므로 그대로 남는다. */
+  /* ── P-03 클립 ──
+     판과 같은 수법으로 편다. ClippedCard 는 슬롯을 비운 채 쓰므로 남는 건 클립
+     하나뿐이고, 자리는 후보 패널과 정확히 겹친다. 클립이 top 기준이라 높이는
+     사실 안 써도 맞지만, 판과 같은 규약으로 두어 다음 사람이 헷갈리지 않게 한다. */
+  .cands-clip {
+    position: absolute;
+    inset: 0;
+  }
+  .cands-clip :global(.clipped-card) {
+    height: 100%;
+  }
+
+  /* 좁은 화면에선 판의 테이프·탭과 **클립을 함께** 접는다(DECO_KIT 5절 규칙 6 —
+     "데코는 여백에 사는데 모바일엔 여백이 없다"). 접는 이유가 둘 다 계산이다:
+
+     · 판 테이프 — --page-pad 가 clamp(20px,5vw,48px) 라 470px 아래에서 페이지 여백이
+       20px 대로 줄어드는데 좌상 테이프는 판 밖으로 ≈23px 나간다 → 가로 스크롤.
+     · 클립 — 물릴 자리가 **사라진다**. 첫 행 양 끝(라벨·기간 읽기) 사이 빈 구간이
+       실측으로 1280px 546 → 768px 373 → 480px 114 → **390px 32px** 로 줄어드는데
+       클립 상자는 37px 다. 390px 에서는 어디에 물려도 글자를 덮는다(규칙 3).
+       한 문턱으로 묶어 768px 에서 같이 접는다 — 480px 은 아직 들어가지만 문턱을
+       둘로 나누면 다음 사람이 왜 갈렸는지 알 수 없다.
+
+     도움말 테이프는 남는다 — 그쪽은 문단 위 빈 띠라 폭이 줄어도 자리가 안 사라진다.
+     머리 레터링 테이프(티어 3)와 크림 바탕도 남으므로 좁은 화면이 맨몸이 되진 않는다. */
   @media (max-width: 768px) {
-    .graph-board :global(.deco-layer) {
+    .graph-board :global(.deco-layer),
+    .cands-clip :global(.deco-layer) {
       display: none;
     }
   }
@@ -339,5 +413,33 @@ const viewData: GraphViewData = {
      상쇄되므로**(12+30 이 아니라 30) 여기 값이 곧 최종 간격이다. */
   .graph-page .graph-explorer .graph-stage {
     margin-top: 30px;
+  }
+
+  /* ── 후보 패널·도움말 = 끼워 넣은 종이 ──
+     후보 패널은 /posts 의 PostFilter(.pf)와 **같은 역할의 필터 판**이라 바탕도 같은
+     값을 쓴다(--cream: 본문 종이 --paper 보다 한 톤 어둑). 한쪽만 크림이면 한 블로그에
+     필터 판이 두 얼굴이 된다. 도움말도 같은 종이로 맞춘다 — 점선 테두리와 45° 해치는
+     그대로 둔다(그 둘이 이미 "임시로 펼친 쪽지"라는 뜻이고 테이프가 그걸 완성한다). */
+  .graph-page .graph-explorer .graph-cands,
+  .graph-page .graph-explorer .graph-help {
+    background: var(--cream);
+  }
+  /* 클립은 top:-19px 에 -16° 라 패널 밖 ≈21px 까지 올라가는데, 이 둘의 위 간격은
+     둘 다 10px(앞 블록의 margin-bottom) 뿐이라 클립이 커맨드 바의 진한 --ink
+     테두리를 문다. 지도 판에서 겪은 것과 같은 함정이고 마진 상쇄도 같다 —
+     **인접 형제 마진은 합쳐지지 않고 큰 쪽으로 상쇄되므로** 여기 값이 곧 최종 간격이다.
+     도움말은 닫히면 요소 자체가 없으므로 그 여백은 열릴 때만 든다. */
+  .graph-page .graph-explorer .graph-cands {
+    margin-top: 26px;
+  }
+  .graph-page .graph-explorer .graph-help {
+    margin-top: 24px;
+    /* 테이프가 자리를 차지하는 만큼 첫 줄을 내린다(원래 11px). 도트 테이프는
+       top:-13px 에 7° 라 패널 **안쪽으로 26.7px** 내려오는데, 넓은 화면에서는 첫 줄이
+       일찍 끝나 안 겹치지만 **769px 이하에서는 글이 폭을 꽉 채워 꼬리를 덮는다**
+       (규칙 3 — 실측으로 잡았다: 769px 에서 27.5×14.7px 겹침).
+       데코를 옮기는 대신 판을 키워 푼다 — 히어로 콜라주에서 마스코트 자리를 푼 것과
+       같은 수법이고, 위로 더 밀면 이번엔 테이프가 커맨드 바를 문다. */
+    padding-top: 32px;
   }
 </style>
