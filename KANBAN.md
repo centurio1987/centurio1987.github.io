@@ -32,12 +32,6 @@
 ## 할 일
 - `KAN-048` 포스트에 좋아요를 누르는 기능을 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
   - 메모: 실행전략(5단계): ① 인프라 Cloudflare Workers+D1 — 무료 Workers 10만req/일·D1 쓰기 10만행/일, 저활동 정지 없음(Supabase 는 7일 정지로 탈락) ② 스키마 counts(slug,likes,shares)+dedupe(sha256(salt+ip+slug+day)), 증가는 ON CONFLICT DO UPDATE 로 원자적, 원본 IP 미저장 ③ 엔드포인트 GET /stats?slugs= 배치조회·POST /like(IP당 1일 1회, 토글 허용)·POST /share, CORS 오리진 고정 ④ 프론트 React 아일랜드 금지 — .astro + is:inline vanilla 를 astro:page-load 바인딩, 숫자 폭 예약으로 CLS 0, 조회 실패시 숫자만 숨기고 글에는 영향 0 ⑤ 공유수는 플랫폼 카운트 API 부재로 '공유 버튼 클릭' 집계(X·링크복사·navigator.share) — 라벨을 정직하게 표기
-- `KAN-058` 글지도에 데코를 반영하기 위한 계획을 수립해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
-  - 메모: 계획 수립 완료(실행 대기). 전제 — 지도 개편(KAN-049·051 줌·팬·기간 게이지)이 main 에 착지해, KAN-057 이 글 지도 데코를 되돌렸던 사유(같은 파일을 두 브랜치에서 고치는 충돌)가 해소됐다. ① 핵심 제약: 데코 부품은 전부 .astro 인데 지도는 client:load React 아일랜드라 안에 못 넣는다. 바깥에서 절대배치하는 길도 막혀 있다 — 지도 윗변의 y 가 커맨드 바 토큰 줄바꿈·도움말 토글·후보 칩 줄 수에 따라 움직여서 테이프가 허공에 뜬다. → GraphExplorer 가 svg 를 position:relative 래퍼로 감싸고 named slot 구멍 하나만 여는 방식을 쓴다(아일랜드는 데코 지식 0 — PostList 의 first-deco 슬롯과 같은 짜임). 슬롯→React prop 전달은 착수 시 첫 검증 대상이고, 안 되면 폴백은 판이 explorer 전체를 감싸는 것(모눈이 커맨드 바 뒤까지 깔리는 손해를 진다). ② 얹을 것(강도 3 — 목록·상세와 같게, 지도는 조작하러 온 화면이다): P-01 TapedBoard corners=top·paper=grid·tone=surface·cell 24 로 svg 만 감싸고, M2 IndexTab "MAP"(tone=blue, 티어1)을 left:128px 에 문다 — 좌상 테이프가 -20px 에서 126px 폭이라 106px 까지 차지한다(규칙 8). 그 외에는 없다. ③ 안 얹는 것과 근거: h1 옆 P-06 배지는 뺀다 — 커맨드 바에 이미 라이브 카운터(글 12/29)가 있어 한 화면에 편수가 둘이 된다. 인덱스 탭 문구에서 편수를 뺀 이유도 같다(시안의 "MAP · 29" 는 정적 그림이라 가능했던 값이다). 시안 1c 의 지도 위 메모+화살표(D6+D3)는 금지 — 지도는 팬·줌하므로 무언가를 가리키는 데코는 첫 드래그에 거짓말이 된다. 이 지면의 규칙: 데코는 액자에만 얹고 내용에는 안 얹는다. 도움말 포스트잇(M1)·빈 결과 메모는 다음 후보(상태 UI 에 장식은 노이즈), noscript·그래프 없음 폴백의 PostList 는 /categories 와 같은 이유로 맨몸으로 둔다. ④ 같이 고쳐야 하는 것: svg 의 background:--surface·1.5px --border·radius 를 걷어낸다(안 하면 액자가 둘이 된다) — graph.astro 의 style is:global 을 .graph-page 아래로 가둬 처리한다(posts/index.astro 선례). corners=diagonal 은 금지다 — 줌 버튼이 right:10px·bottom:10px 절대배치라 우하 테이프와 겹친다. 모든 DecoLayer 는 hover={false} — DecoLayer 는 호버 갸웃을 위해 자식 pointer-events 를 되살리는데 지도는 드래그(pan) 표면이고 svg 가 touch-action:pan-y 다(규칙 9). tone=cream 을 쓰려면 svg 안의 --surface 세 곳(노드·키워드 라벨 halo stroke)이 크림 위에서 흰 테두리로 떠오르므로 --map-paper 변수로 빼야 한다 → 1차는 tone=surface 로 배경색을 그대로 두고 모눈만 더한다. .graph-page 위 여백 ≥16px(테이프가 top:-14px 로 걸친다), 768px 이하 탭 접힘 검토(규칙 6). ⑤ 단계: (1) 아일랜드에 구멍만 뚫는 커밋 — 화면 변화 0 (2) graph.astro 에서 deco.css import + data-deco=3 + 슬롯 주입 + svg 스킨 무력화 (3) 렌더 검증 뒤 DECO_KIT §7 표에 /graph 줄 추가 + "얹었다가 되돌렸다" 문단 교체, CLAUDE.md 데코 절의 "글 지도는 뺐다" 문단 갱신. ⑥ 검증: bun run build green, /graph 에서 판 윗변 근처 드래그로 팬이 살아 있는지·게이지 드래그·줌 버튼 클릭 확인. 곁가지로 카탈로그 /design/deco 의 P-01 데모가 탭을 left:34px 에 두어 좌상 테이프(106px)와 겹치는 것으로 보이니 같이 확인한다.
-  - 원문:
-    ```text
-    글지도에 데코를 반영하기 위한 계획을 수립해라.
-    ```
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26
@@ -246,4 +240,35 @@
   - 원문:
     ```text
     블로그에 데코를 적용하는 태스크를 생성해라
+    ```
+- `KAN-058` 글지도에 데코를 반영하기 위한 계획을 수립해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
+  - 메모: 완료(2026-07-30). **2차에서 지면 전체로 다시 설계했다** — 1차는 카드에 적힌 계획대로 지도 상자 하나만 얹고 끝냈고, 그 결과 머리·커맨드 바·도움말·후보 패널·빈 상태·줌 컨트롤이 검토조차 안 된 채 남았다(유저 지적: 성실의 의무 위반). 총 8커밋. ■ 1차(3): 아일랜드 데코 슬롯 구멍 · 지도 판 P-01 + MAP 탭 · 카탈로그 탭 위치 교정. ■ 2차(5): 겹침·가로챔 판정 스크립트(deco:verify) · /posts 클립×RSS 기존 결함 교정 · 지면 전체 데코 · 문서 · 칸반. ■ 얹은 곳 3+1: 머리 P-06 레터링 테이프(YOU ARE HERE, 배지 없음) · 후보 패널 P-03 ClippedCard + 크림(=/posts PostFilter 와 한 쌍, 최대 누락이었다) · 도움말 크림 + T5 도트 테이프 · 지도 판 P-01 + M2. 안 얹은 곳 열둘은 요소별 근거를 DECO_KIT §7 규칙 7 에 남겼다. ■ 구조적 판단 셋: (a) ClippedCard 를 값만 베끼지 않고 **빈 판으로 펴서** 쓴다 — 클립 값이 ClippedCard.astro 한 곳에만 남아 드리프트가 구조적으로 불가능(ChatGPT 외부검토의 유효 지적). (b) 도움말은 helpOpen && … 가 아니라 **hidden** 으로 여닫는다 — 조건부로 감싸면 SSR 에 astro-slot 이 안 나오고 하이드레이션이 거기서 슬롯을 되찾으므로 데코가 클라이언트에 영영 도착 못 한다(열어도 끝까지 빈다). (c) ClippedCard 에도 hover prop — TapedBoard 와 똑같은 구멍. ■ 실측값: 클립 offset 140px(첫 행 양 끝이 다 차 있어 모서리에 못 문다) · 도움말 padding-top 32px(769px 이하에서 글이 폭을 채워 테이프가 꼬리를 덮었다 — 1280px 만 봤으면 못 잡는다) · 여백 26/24/30px(인접 형제 마진 상쇄) · 768px 이하 클립도 접음(빈 구간 546→32px < 클립 37px). ■ 재발 방지가 핵심 산출물이다: verify-deco: dist/ 를 http://localhost:54213 로 띄운다 (astro preview)…
+verify-deco: http://localhost:54213 검사
+
+  ok   /graph @1280  (데코 5 × 글자런 58)
+  ok   /graph @1280 도움말 열림  (데코 6 × 글자런 62)
+  ok   /graph @769  (데코 5 × 글자런 58)
+  ok   /graph @769 도움말 열림  (데코 6 × 글자런 62)
+  ok   /graph @768  (데코 1 × 글자런 58)
+  ok   /graph @768 도움말 열림  (데코 2 × 글자런 62)
+  ok   /graph @480  (데코 1 × 글자런 60)
+  ok   /graph @480 도움말 열림  (데코 2 × 글자런 67)
+  ok   /graph @390  (데코 1 × 글자런 61)
+  ok   /graph @390 도움말 열림  (데코 2 × 글자런 69)
+  ok   /posts @1280  (데코 2 × 글자런 503)
+  ok   /posts @769  (데코 2 × 글자런 499)
+  ok   /posts @768  (데코 1 × 글자런 476)
+  ok   /posts @480  (데코 1 × 글자런 524)
+  ok   /posts @390  (데코 1 × 글자런 549)
+  ok   / @1280  (데코 11 × 글자런 7)
+  ok   / @769  (데코 10 × 글자런 7)
+  ok   / @768  (데코 2 × 글자런 7)
+  ok   / @480  (데코 2 × 글자런 7)
+  ok   / @390  (데코 2 × 글자런 7)
+
+지면 3개 × 폭 5개, 검사 20회.
+✓ 겹침·가로챔·오버플로 없음 가 지면 3 × 폭 5 × 상태별로 **데코 상자 × 실제 글자 런**(Range.getClientRects — 요소 상자로 재면 폭 100% <p> 때문에 거짓 양성)과 도달 가능성·오버플로를 판정한다. 클립이 라벨을 덮은 것도, 도움말 테이프 거짓 양성도, /posts 기존 결함도 전부 이걸로 갈렸다. ■ 미해결: tone=cream(svg 안 --surface 3곳) · 빈 상태/게이지 소제목은 근거를 남기고 비움 · 이 레포엔 typescript 가 없어 타입 체크는 못 돌림. push 는 안 했다.
+  - 원문:
+    ```text
+    글지도에 데코를 반영하기 위한 계획을 수립해라.
     ```

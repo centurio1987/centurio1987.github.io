@@ -7,6 +7,7 @@ import {
   // DOM 전역(WheelEvent 등)을 가리지 않도록 별칭으로 받는다 — 601행이 진짜 DOM WheelEvent 를 쓴다.
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
 } from "react";
 import {
   forceCenter,
@@ -143,7 +144,32 @@ function estimateLabelWidth(s: string) {
   return em * KW_FONT;
 }
 
-export default function GraphExplorer({ data }: { data: GraphViewData }) {
+export default function GraphExplorer({
+  data,
+  deco,
+  decoFilter,
+  decoHelp,
+}: {
+  data: GraphViewData;
+  /**
+   * 데코를 얹을 자리에 뚫어 둔 **구멍** 셋. Astro 의 named slot 이 prop 으로 들어온다
+   * (`slot="deco"` · `"deco-filter"` · `"deco-help"` → kebab 은 camelCase 로 바뀐다).
+   *
+   * 아일랜드는 여기 뭐가 들어오는지 모른다 — 데코 부품은 전부 `.astro` 라 React
+   * 안에 못 넣고, 바깥에서 절대배치하는 길은 각 블록의 y 가 커맨드 바 토큰 줄바꿈·
+   * 도움말 토글·후보 칩 줄 수에 따라 움직여서 막혀 있다(부품이 허공에 뜬다).
+   * 그래서 "이 블록과 정확히 같은 자리"라는 좌표계만 열어 주고 내용물은 채우는 쪽
+   * (`graph.astro`)이 넘긴다 — `PostList` 의 `first-deco` 와 같은 짜임.
+   *
+   * 셋 다 같은 `.graph-deco`(inset:0 · pointer-events:none) 를 쓰지만 **지도 판만**
+   * 배경(종이)을 깔기 때문에 거기서만 z 를 갈라야 한다(아래 .graph-stage 주석).
+   */
+  deco?: ReactNode;
+  /** 후보 패널(필터 판)에 겹치는 구멍 */
+  decoFilter?: ReactNode;
+  /** 도움말 패널에 겹치는 구멍 — 패널이 열릴 때만 존재한다 */
+  decoHelp?: ReactNode;
+}) {
   const { nodes, links } = useMemo(() => {
     const degree = new Map<string, number>();
     for (const l of data.links) {
@@ -951,13 +977,20 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
         </button>
       </div>
       {/* 설명 카피는 상시 노출 대신 도움말 안으로 — 지도가 첫 화면을 차지하도록. */}
-      {helpOpen && (
-        <div className="graph-help">
-          {HELP_LINES.map((line) => (
-            <p key={line}>{line}</p>
-          ))}
-        </div>
-      )}
+      {/* 여닫이를 `helpOpen && …` 가 아니라 `hidden` 으로 하는 이유는 **슬롯이
+          살아남게 하려는 것**이다. Astro 는 SSR 때 이 컴포넌트를 한 번 그리고,
+          하이드레이션 스크립트는 그 결과에 남은 `<astro-slot>` 엘리먼트에서 슬롯
+          HTML 을 되찾는다. 조건부로 감싸면 SSR 시점(helpOpen=false)에 astro-slot 이
+          아예 안 나와서 decoHelp 가 클라이언트에 **영영 도착하지 못한다** — 처음만
+          비는 게 아니라 열어도 끝까지 빈다(실측으로 잡았다).
+          `hidden` 은 UA 기본이 display:none 이고 이 파일 어디도 .graph-help 의
+          display 를 지정하지 않으므로 닫힘 상태의 레이아웃 비용은 그대로 0 이다. */}
+      <div className="graph-help" hidden={!helpOpen}>
+        {HELP_LINES.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+        {decoHelp && <div className="graph-deco">{decoHelp}</div>}
+      </div>
 
       {/* ── 후보 패널 ── 커맨드 바에 무엇을 넣을 수 있는지 항상 열어 둔다. */}
       <div className="graph-cands">
@@ -1109,6 +1142,7 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
         {catCands.length === 0 && kwCands.length === 0 && (
           <p className="cand-none">후보가 없어요. 다른 말로 적어보세요.</p>
         )}
+        {decoFilter && <div className="graph-deco">{decoFilter}</div>}
       </div>
       {filterActive && visibleCount === 0 && (
         <p className="graph-empty">
@@ -1138,6 +1172,8 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           ⤢
         </button>
       </div>
+      {/* 판 = 지도 상자. deco 구멍이 여기에 겹쳐 앉는다(위 prop 주석). */}
+      <div className="graph-stage">
       <svg
         ref={svgRef}
         viewBox={`0 0 ${W} ${H}`}
@@ -1338,6 +1374,8 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
         </g>
         </g>
       </svg>
+        {deco && <div className="graph-deco">{deco}</div>}
+      </div>
       <style>{`
         /* pan-y: 한 손가락 세로 스와이프는 브라우저의 페이지 스크롤로 남겨두고,
            가로 드래그와 멀티터치만 우리가 받는다. none 으로 두면 지도 위에서
@@ -1357,6 +1395,33 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           background: var(--surface);
           border: 1.5px solid var(--border);
           border-radius: var(--card-radius, 12px);
+        }
+        /* ── 판과 그 위의 구멍 ──
+           .graph-stage 는 지도 상자와 정확히 같은 크기의 배치 좌표계다(딸린 것은
+           svg 하나뿐이라 높이가 svg 를 그대로 따른다). 구멍은 그 위에 inset:0 으로
+           겹치고, 지도는 z-index 1 로 한 겹 들린다 — 구멍에 들어온 것 중 **배경**
+           (판·종이)은 지도 밑으로, **모서리에 걸치는 것**(z를 스스로 올리는 부품)은
+           지도 위로 갈리게 하는 유일한 짜임이다.
+
+           그래서 이 아일랜드의 z 눈금은 이렇게 읽는다:
+             auto  구멍의 배경(판·종이)   1  지도   2  줌 컨트롤   3+  판 모서리 부품
+           줌이 2 인 건 지도가 1 로 올라온 결과다 — 둘 다 1 이면 DOM 뒤쪽인 지도가
+           이겨서 버튼이 통째로 덮인다(실측: Playwright 가 "svg intercepts pointer
+           events" 로 클릭을 거부했다).
+
+           pointer-events:none 은 규칙 9 — 지도는 드래그(pan) 표면이라 그 위에
+           얹힌 것이 포인터를 한 점이라도 먹으면 그 자리에서 팬이 죽는다. */
+        .graph-stage {
+          position: relative;
+        }
+        .graph-stage > svg {
+          position: relative;
+          z-index: 1;
+        }
+        .graph-deco {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
         }
         /* ── 커맨드 바 ──
            입력·토큰·카운터가 한 덩어리다. 바 테두리만 --ink(진하게)이고 나머지
@@ -1467,7 +1532,11 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           color: var(--accent);
           border-color: var(--accent);
         }
+        /* position:relative 는 데코 구멍(.graph-deco)의 배치 기준 — 없으면 구멍이
+           조상 중 첫 배치 컨텍스트로 튄다. 이 둘은 지도 판과 달리 배경을 깔지 않고
+           부품만 얹으므로 z 를 가를 필요가 없다(부품이 자기 z 로 위에 온다). */
         .graph-help {
+          position: relative;
           margin: 0 0 10px;
           padding: 11px 13px;
           border: 1px dashed color-mix(in srgb, var(--accent) 30%, transparent);
@@ -1487,6 +1556,7 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
 
         /* ── 후보 패널 ── 한 단 안쪽으로 들어간 표면(--paper)이라 커맨드 바가 위에 뜬다. */
         .graph-cands {
+          position: relative;
           margin-bottom: 12px;
           padding: 10px;
           border: 1.5px solid var(--border);
@@ -1757,7 +1827,7 @@ export default function GraphExplorer({ data }: { data: GraphViewData }) {
           position: absolute;
           right: 10px;
           bottom: 10px;
-          z-index: 1;
+          z-index: 2;
           display: flex;
           flex-direction: column;
           gap: 4px;

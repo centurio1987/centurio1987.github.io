@@ -1,6 +1,6 @@
 {
   "next_id": 59,
-  "next_seq": 229,
+  "next_seq": 232,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -640,15 +640,15 @@
       "verbatim_hash": "7d62be42369ad6271a871fc748898f873a994dfe"
     },
     "KAN-058": {
-      "col": "todo",
+      "col": "done",
       "title": "글지도에 데코를 반영하기 위한 계획을 수립해라.",
-      "memo": "계획 수립 완료(실행 대기). 전제 — 지도 개편(KAN-049·051 줌·팬·기간 게이지)이 main 에 착지해, KAN-057 이 글 지도 데코를 되돌렸던 사유(같은 파일을 두 브랜치에서 고치는 충돌)가 해소됐다. ① 핵심 제약: 데코 부품은 전부 .astro 인데 지도는 client:load React 아일랜드라 안에 못 넣는다. 바깥에서 절대배치하는 길도 막혀 있다 — 지도 윗변의 y 가 커맨드 바 토큰 줄바꿈·도움말 토글·후보 칩 줄 수에 따라 움직여서 테이프가 허공에 뜬다. → GraphExplorer 가 svg 를 position:relative 래퍼로 감싸고 named slot 구멍 하나만 여는 방식을 쓴다(아일랜드는 데코 지식 0 — PostList 의 first-deco 슬롯과 같은 짜임). 슬롯→React prop 전달은 착수 시 첫 검증 대상이고, 안 되면 폴백은 판이 explorer 전체를 감싸는 것(모눈이 커맨드 바 뒤까지 깔리는 손해를 진다). ② 얹을 것(강도 3 — 목록·상세와 같게, 지도는 조작하러 온 화면이다): P-01 TapedBoard corners=top·paper=grid·tone=surface·cell 24 로 svg 만 감싸고, M2 IndexTab \"MAP\"(tone=blue, 티어1)을 left:128px 에 문다 — 좌상 테이프가 -20px 에서 126px 폭이라 106px 까지 차지한다(규칙 8). 그 외에는 없다. ③ 안 얹는 것과 근거: h1 옆 P-06 배지는 뺀다 — 커맨드 바에 이미 라이브 카운터(글 12/29)가 있어 한 화면에 편수가 둘이 된다. 인덱스 탭 문구에서 편수를 뺀 이유도 같다(시안의 \"MAP · 29\" 는 정적 그림이라 가능했던 값이다). 시안 1c 의 지도 위 메모+화살표(D6+D3)는 금지 — 지도는 팬·줌하므로 무언가를 가리키는 데코는 첫 드래그에 거짓말이 된다. 이 지면의 규칙: 데코는 액자에만 얹고 내용에는 안 얹는다. 도움말 포스트잇(M1)·빈 결과 메모는 다음 후보(상태 UI 에 장식은 노이즈), noscript·그래프 없음 폴백의 PostList 는 /categories 와 같은 이유로 맨몸으로 둔다. ④ 같이 고쳐야 하는 것: svg 의 background:--surface·1.5px --border·radius 를 걷어낸다(안 하면 액자가 둘이 된다) — graph.astro 의 style is:global 을 .graph-page 아래로 가둬 처리한다(posts/index.astro 선례). corners=diagonal 은 금지다 — 줌 버튼이 right:10px·bottom:10px 절대배치라 우하 테이프와 겹친다. 모든 DecoLayer 는 hover={false} — DecoLayer 는 호버 갸웃을 위해 자식 pointer-events 를 되살리는데 지도는 드래그(pan) 표면이고 svg 가 touch-action:pan-y 다(규칙 9). tone=cream 을 쓰려면 svg 안의 --surface 세 곳(노드·키워드 라벨 halo stroke)이 크림 위에서 흰 테두리로 떠오르므로 --map-paper 변수로 빼야 한다 → 1차는 tone=surface 로 배경색을 그대로 두고 모눈만 더한다. .graph-page 위 여백 ≥16px(테이프가 top:-14px 로 걸친다), 768px 이하 탭 접힘 검토(규칙 6). ⑤ 단계: (1) 아일랜드에 구멍만 뚫는 커밋 — 화면 변화 0 (2) graph.astro 에서 deco.css import + data-deco=3 + 슬롯 주입 + svg 스킨 무력화 (3) 렌더 검증 뒤 DECO_KIT §7 표에 /graph 줄 추가 + \"얹었다가 되돌렸다\" 문단 교체, CLAUDE.md 데코 절의 \"글 지도는 뺐다\" 문단 갱신. ⑥ 검증: bun run build green, /graph 에서 판 윗변 근처 드래그로 팬이 살아 있는지·게이지 드래그·줌 버튼 클릭 확인. 곁가지로 카탈로그 /design/deco 의 P-01 데모가 탭을 left:34px 에 두어 좌상 테이프(106px)와 겹치는 것으로 보이니 같이 확인한다.",
+      "memo": "완료(2026-07-30). **2차에서 지면 전체로 다시 설계했다** — 1차는 카드에 적힌 계획대로 지도 상자 하나만 얹고 끝냈고, 그 결과 머리·커맨드 바·도움말·후보 패널·빈 상태·줌 컨트롤이 검토조차 안 된 채 남았다(유저 지적: 성실의 의무 위반). 총 8커밋. ■ 1차(3): 아일랜드 데코 슬롯 구멍 · 지도 판 P-01 + MAP 탭 · 카탈로그 탭 위치 교정. ■ 2차(5): 겹침·가로챔 판정 스크립트(deco:verify) · /posts 클립×RSS 기존 결함 교정 · 지면 전체 데코 · 문서 · 칸반. ■ 얹은 곳 3+1: 머리 P-06 레터링 테이프(YOU ARE HERE, 배지 없음) · 후보 패널 P-03 ClippedCard + 크림(=/posts PostFilter 와 한 쌍, 최대 누락이었다) · 도움말 크림 + T5 도트 테이프 · 지도 판 P-01 + M2. 안 얹은 곳 열둘은 요소별 근거를 DECO_KIT §7 규칙 7 에 남겼다. ■ 구조적 판단 셋: (a) ClippedCard 를 값만 베끼지 않고 **빈 판으로 펴서** 쓴다 — 클립 값이 ClippedCard.astro 한 곳에만 남아 드리프트가 구조적으로 불가능(ChatGPT 외부검토의 유효 지적). (b) 도움말은 helpOpen && … 가 아니라 **hidden** 으로 여닫는다 — 조건부로 감싸면 SSR 에 astro-slot 이 안 나오고 하이드레이션이 거기서 슬롯을 되찾으므로 데코가 클라이언트에 영영 도착 못 한다(열어도 끝까지 빈다). (c) ClippedCard 에도 hover prop — TapedBoard 와 똑같은 구멍. ■ 실측값: 클립 offset 140px(첫 행 양 끝이 다 차 있어 모서리에 못 문다) · 도움말 padding-top 32px(769px 이하에서 글이 폭을 채워 테이프가 꼬리를 덮었다 — 1280px 만 봤으면 못 잡는다) · 여백 26/24/30px(인접 형제 마진 상쇄) · 768px 이하 클립도 접음(빈 구간 546→32px < 클립 37px). ■ 재발 방지가 핵심 산출물이다: verify-deco: dist/ 를 http://localhost:54213 로 띄운다 (astro preview)…\nverify-deco: http://localhost:54213 검사\n\n  ok   /graph @1280  (데코 5 × 글자런 58)\n  ok   /graph @1280 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @769  (데코 5 × 글자런 58)\n  ok   /graph @769 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @768  (데코 1 × 글자런 58)\n  ok   /graph @768 도움말 열림  (데코 2 × 글자런 62)\n  ok   /graph @480  (데코 1 × 글자런 60)\n  ok   /graph @480 도움말 열림  (데코 2 × 글자런 67)\n  ok   /graph @390  (데코 1 × 글자런 61)\n  ok   /graph @390 도움말 열림  (데코 2 × 글자런 69)\n  ok   /posts @1280  (데코 2 × 글자런 503)\n  ok   /posts @769  (데코 2 × 글자런 499)\n  ok   /posts @768  (데코 1 × 글자런 476)\n  ok   /posts @480  (데코 1 × 글자런 524)\n  ok   /posts @390  (데코 1 × 글자런 549)\n  ok   / @1280  (데코 11 × 글자런 7)\n  ok   / @769  (데코 10 × 글자런 7)\n  ok   / @768  (데코 2 × 글자런 7)\n  ok   / @480  (데코 2 × 글자런 7)\n  ok   / @390  (데코 2 × 글자런 7)\n\n지면 3개 × 폭 5개, 검사 20회.\n✓ 겹침·가로챔·오버플로 없음 가 지면 3 × 폭 5 × 상태별로 **데코 상자 × 실제 글자 런**(Range.getClientRects — 요소 상자로 재면 폭 100% <p> 때문에 거짓 양성)과 도달 가능성·오버플로를 판정한다. 클립이 라벨을 덮은 것도, 도움말 테이프 거짓 양성도, /posts 기존 결함도 전부 이걸로 갈렸다. ■ 미해결: tone=cream(svg 안 --surface 3곳) · 빈 상태/게이지 소제목은 근거를 남기고 비움 · 이 레포엔 typescript 가 없어 타입 체크는 못 돌림. push 는 안 했다.",
       "verbatim": "글지도에 데코를 반영하기 위한 계획을 수립해라.",
       "생성": "유저",
       "최종": "ai",
       "갱신": "2026-07-30",
       "title_hash": "5f0b67356b4f777b7ac8be84869f5a5691c1a9ac",
-      "memo_hash": "4ddc6ed072402316c381daf13697f38af07f8798",
+      "memo_hash": "2afa09765c44913efffec1f97f538db0437bfd21",
       "verbatim_hash": "5f0b67356b4f777b7ac8be84869f5a5691c1a9ac"
     }
   },
@@ -710,6 +710,35 @@
     "KAN-058"
   ],
   "recent": [
+    {
+      "seq": 231,
+      "t": "2026-07-30T16:55",
+      "a": "ai",
+      "id": "KAN-058",
+      "op": "edit",
+      "field": "memo",
+      "before": "완료(2026-07-30). 3커밋: ① 아일랜드에 데코 슬롯 구멍(GraphExplorer 가 svg 를 .graph-stage 로 감싸고 slot=\"deco\" → props.deco 를 연다 — 화면 변화 0) ② 글 지도에 P-01 판 + M2 MAP 탭 ③ 카탈로그 P-01 탭 위치 교정 + 문서. 계획에서 바뀐 것 셋: (a) 판이 svg 를 **감싸지** 못한다 — 슬롯 HTML 은 이미 렌더된 것이라 React 가 그린 svg 를 감쌀 수 없어서, TapedBoard 를 inset:0 배경으로 깔고 지도를 z-index:1 로 들어올려 종이는 밑/테이프·탭은 위로 갈랐다. (b) 그 결과 줌 버튼(z-index:1)이 지도에 덮여 z 를 2 로 올렸다(Playwright 가 \"svg intercepts pointer events\" 로 잡았다). (c) hover={false} 를 넘길 방법이 없어 TapedBoard 에 hover prop 을 팠다 — 테이프 두 장이 패턴 안에 박혀 있었고, 안 끄면 DecoLayer 의 pointer-events 되살림이 조상의 none 을 이겨 테이프 띠에서 팬이 죽는다. 실측으로 굳힌 값: 탭 left 128px(테이프가 판 안쪽 106px 까지 차지) · 판 위 여백 30px(테이프가 판 밖 24.7px, 인접 형제 마진은 상쇄되므로 12+30 이 아니라 30) · 768px 이하 테이프·탭 접기(--page-pad 가 20px 까지 줄어 테이프가 ≈23px 넘쳐 가로 스크롤). 검증: build green, 판 윗변·탭 아래·우상 테이프 밑 hit-test 모두 svg, 확대 후 그 띠에서 팬 동작, 줌 3버튼·노드 클릭·게이지/칩/입력 전부 도달 가능, 1280/769/768/480/390px 오버플로 없음. 곁가지 확인 결과 카탈로그 P-01 데모가 실제로 탭을 34px 에 두어 테이프(오른끝 108)에 물려 있었고 128px 로 교정했다. 미해결로 남긴 것: tone=cream(svg 안 --surface 3곳이 크림 위에서 흰 테두리로 뜬다 → --map-paper 로 빼야 함) · 도움말 포스트잇 M1 · 빈 결과 메모. push 는 안 했다.",
+      "after": "완료(2026-07-30). **2차에서 지면 전체로 다시 설계했다** — 1차는 카드에 적힌 계획대로 지도 상자 하나만 얹고 끝냈고, 그 결과 머리·커맨드 바·도움말·후보 패널·빈 상태·줌 컨트롤이 검토조차 안 된 채 남았다(유저 지적: 성실의 의무 위반). 총 8커밋. ■ 1차(3): 아일랜드 데코 슬롯 구멍 · 지도 판 P-01 + MAP 탭 · 카탈로그 탭 위치 교정. ■ 2차(5): 겹침·가로챔 판정 스크립트(deco:verify) · /posts 클립×RSS 기존 결함 교정 · 지면 전체 데코 · 문서 · 칸반. ■ 얹은 곳 3+1: 머리 P-06 레터링 테이프(YOU ARE HERE, 배지 없음) · 후보 패널 P-03 ClippedCard + 크림(=/posts PostFilter 와 한 쌍, 최대 누락이었다) · 도움말 크림 + T5 도트 테이프 · 지도 판 P-01 + M2. 안 얹은 곳 열둘은 요소별 근거를 DECO_KIT §7 규칙 7 에 남겼다. ■ 구조적 판단 셋: (a) ClippedCard 를 값만 베끼지 않고 **빈 판으로 펴서** 쓴다 — 클립 값이 ClippedCard.astro 한 곳에만 남아 드리프트가 구조적으로 불가능(ChatGPT 외부검토의 유효 지적). (b) 도움말은 helpOpen && … 가 아니라 **hidden** 으로 여닫는다 — 조건부로 감싸면 SSR 에 astro-slot 이 안 나오고 하이드레이션이 거기서 슬롯을 되찾으므로 데코가 클라이언트에 영영 도착 못 한다(열어도 끝까지 빈다). (c) ClippedCard 에도 hover prop — TapedBoard 와 똑같은 구멍. ■ 실측값: 클립 offset 140px(첫 행 양 끝이 다 차 있어 모서리에 못 문다) · 도움말 padding-top 32px(769px 이하에서 글이 폭을 채워 테이프가 꼬리를 덮었다 — 1280px 만 봤으면 못 잡는다) · 여백 26/24/30px(인접 형제 마진 상쇄) · 768px 이하 클립도 접음(빈 구간 546→32px < 클립 37px). ■ 재발 방지가 핵심 산출물이다: verify-deco: dist/ 를 http://localhost:54213 로 띄운다 (astro preview)…\nverify-deco: http://localhost:54213 검사\n\n  ok   /graph @1280  (데코 5 × 글자런 58)\n  ok   /graph @1280 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @769  (데코 5 × 글자런 58)\n  ok   /graph @769 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @768  (데코 1 × 글자런 58)\n  ok   /graph @768 도움말 열림  (데코 2 × 글자런 62)\n  ok   /graph @480  (데코 1 × 글자런 60)\n  ok   /graph @480 도움말 열림  (데코 2 × 글자런 67)\n  ok   /graph @390  (데코 1 × 글자런 61)\n  ok   /graph @390 도움말 열림  (데코 2 × 글자런 69)\n  ok   /posts @1280  (데코 2 × 글자런 503)\n  ok   /posts @769  (데코 2 × 글자런 499)\n  ok   /posts @768  (데코 1 × 글자런 476)\n  ok   /posts @480  (데코 1 × 글자런 524)\n  ok   /posts @390  (데코 1 × 글자런 549)\n  ok   / @1280  (데코 11 × 글자런 7)\n  ok   / @769  (데코 10 × 글자런 7)\n  ok   / @768  (데코 2 × 글자런 7)\n  ok   / @480  (데코 2 × 글자런 7)\n  ok   / @390  (데코 2 × 글자런 7)\n\n지면 3개 × 폭 5개, 검사 20회.\n✓ 겹침·가로챔·오버플로 없음 가 지면 3 × 폭 5 × 상태별로 **데코 상자 × 실제 글자 런**(Range.getClientRects — 요소 상자로 재면 폭 100% <p> 때문에 거짓 양성)과 도달 가능성·오버플로를 판정한다. 클립이 라벨을 덮은 것도, 도움말 테이프 거짓 양성도, /posts 기존 결함도 전부 이걸로 갈렸다. ■ 미해결: tone=cream(svg 안 --surface 3곳) · 빈 상태/게이지 소제목은 근거를 남기고 비움 · 이 레포엔 typescript 가 없어 타입 체크는 못 돌림. push 는 안 했다."
+    },
+    {
+      "seq": 230,
+      "t": "2026-07-30T16:00",
+      "a": "ai",
+      "id": "KAN-058",
+      "op": "move",
+      "from": "todo",
+      "to": "done"
+    },
+    {
+      "seq": 229,
+      "t": "2026-07-30T16:00",
+      "a": "ai",
+      "id": "KAN-058",
+      "op": "edit",
+      "field": "memo",
+      "before": "계획 수립 완료(실행 대기). 전제 — 지도 개편(KAN-049·051 줌·팬·기간 게이지)이 main 에 착지해, KAN-057 이 글 지도 데코를 되돌렸던 사유(같은 파일을 두 브랜치에서 고치는 충돌)가 해소됐다. ① 핵심 제약: 데코 부품은 전부 .astro 인데 지도는 client:load React 아일랜드라 안에 못 넣는다. 바깥에서 절대배치하는 길도 막혀 있다 — 지도 윗변의 y 가 커맨드 바 토큰 줄바꿈·도움말 토글·후보 칩 줄 수에 따라 움직여서 테이프가 허공에 뜬다. → GraphExplorer 가 svg 를 position:relative 래퍼로 감싸고 named slot 구멍 하나만 여는 방식을 쓴다(아일랜드는 데코 지식 0 — PostList 의 first-deco 슬롯과 같은 짜임). 슬롯→React prop 전달은 착수 시 첫 검증 대상이고, 안 되면 폴백은 판이 explorer 전체를 감싸는 것(모눈이 커맨드 바 뒤까지 깔리는 손해를 진다). ② 얹을 것(강도 3 — 목록·상세와 같게, 지도는 조작하러 온 화면이다): P-01 TapedBoard corners=top·paper=grid·tone=surface·cell 24 로 svg 만 감싸고, M2 IndexTab \"MAP\"(tone=blue, 티어1)을 left:128px 에 문다 — 좌상 테이프가 -20px 에서 126px 폭이라 106px 까지 차지한다(규칙 8). 그 외에는 없다. ③ 안 얹는 것과 근거: h1 옆 P-06 배지는 뺀다 — 커맨드 바에 이미 라이브 카운터(글 12/29)가 있어 한 화면에 편수가 둘이 된다. 인덱스 탭 문구에서 편수를 뺀 이유도 같다(시안의 \"MAP · 29\" 는 정적 그림이라 가능했던 값이다). 시안 1c 의 지도 위 메모+화살표(D6+D3)는 금지 — 지도는 팬·줌하므로 무언가를 가리키는 데코는 첫 드래그에 거짓말이 된다. 이 지면의 규칙: 데코는 액자에만 얹고 내용에는 안 얹는다. 도움말 포스트잇(M1)·빈 결과 메모는 다음 후보(상태 UI 에 장식은 노이즈), noscript·그래프 없음 폴백의 PostList 는 /categories 와 같은 이유로 맨몸으로 둔다. ④ 같이 고쳐야 하는 것: svg 의 background:--surface·1.5px --border·radius 를 걷어낸다(안 하면 액자가 둘이 된다) — graph.astro 의 style is:global 을 .graph-page 아래로 가둬 처리한다(posts/index.astro 선례). corners=diagonal 은 금지다 — 줌 버튼이 right:10px·bottom:10px 절대배치라 우하 테이프와 겹친다. 모든 DecoLayer 는 hover={false} — DecoLayer 는 호버 갸웃을 위해 자식 pointer-events 를 되살리는데 지도는 드래그(pan) 표면이고 svg 가 touch-action:pan-y 다(규칙 9). tone=cream 을 쓰려면 svg 안의 --surface 세 곳(노드·키워드 라벨 halo stroke)이 크림 위에서 흰 테두리로 떠오르므로 --map-paper 변수로 빼야 한다 → 1차는 tone=surface 로 배경색을 그대로 두고 모눈만 더한다. .graph-page 위 여백 ≥16px(테이프가 top:-14px 로 걸친다), 768px 이하 탭 접힘 검토(규칙 6). ⑤ 단계: (1) 아일랜드에 구멍만 뚫는 커밋 — 화면 변화 0 (2) graph.astro 에서 deco.css import + data-deco=3 + 슬롯 주입 + svg 스킨 무력화 (3) 렌더 검증 뒤 DECO_KIT §7 표에 /graph 줄 추가 + \"얹었다가 되돌렸다\" 문단 교체, CLAUDE.md 데코 절의 \"글 지도는 뺐다\" 문단 갱신. ⑥ 검증: bun run build green, /graph 에서 판 윗변 근처 드래그로 팬이 살아 있는지·게이지 드래그·줌 버튼 클릭 확인. 곁가지로 카탈로그 /design/deco 의 P-01 데모가 탭을 left:34px 에 두어 좌상 테이프(106px)와 겹치는 것으로 보이니 같이 확인한다.",
+      "after": "완료(2026-07-30). 3커밋: ① 아일랜드에 데코 슬롯 구멍(GraphExplorer 가 svg 를 .graph-stage 로 감싸고 slot=\"deco\" → props.deco 를 연다 — 화면 변화 0) ② 글 지도에 P-01 판 + M2 MAP 탭 ③ 카탈로그 P-01 탭 위치 교정 + 문서. 계획에서 바뀐 것 셋: (a) 판이 svg 를 **감싸지** 못한다 — 슬롯 HTML 은 이미 렌더된 것이라 React 가 그린 svg 를 감쌀 수 없어서, TapedBoard 를 inset:0 배경으로 깔고 지도를 z-index:1 로 들어올려 종이는 밑/테이프·탭은 위로 갈랐다. (b) 그 결과 줌 버튼(z-index:1)이 지도에 덮여 z 를 2 로 올렸다(Playwright 가 \"svg intercepts pointer events\" 로 잡았다). (c) hover={false} 를 넘길 방법이 없어 TapedBoard 에 hover prop 을 팠다 — 테이프 두 장이 패턴 안에 박혀 있었고, 안 끄면 DecoLayer 의 pointer-events 되살림이 조상의 none 을 이겨 테이프 띠에서 팬이 죽는다. 실측으로 굳힌 값: 탭 left 128px(테이프가 판 안쪽 106px 까지 차지) · 판 위 여백 30px(테이프가 판 밖 24.7px, 인접 형제 마진은 상쇄되므로 12+30 이 아니라 30) · 768px 이하 테이프·탭 접기(--page-pad 가 20px 까지 줄어 테이프가 ≈23px 넘쳐 가로 스크롤). 검증: build green, 판 윗변·탭 아래·우상 테이프 밑 hit-test 모두 svg, 확대 후 그 띠에서 팬 동작, 줌 3버튼·노드 클릭·게이지/칩/입력 전부 도달 가능, 1280/769/768/480/390px 오버플로 없음. 곁가지 확인 결과 카탈로그 P-01 데모가 실제로 탭을 34px 에 두어 테이프(오른끝 108)에 물려 있었고 128px 로 교정했다. 미해결로 남긴 것: tone=cream(svg 안 --surface 3곳이 크림 위에서 흰 테두리로 뜬다 → --map-paper 로 빼야 함) · 도움말 포스트잇 M1 · 빈 결과 메모. push 는 안 했다."
+    },
     {
       "seq": 228,
       "t": "2026-07-30T15:36",
@@ -1162,34 +1191,6 @@
       "field": "memo",
       "before": "vpn-anatomy-7 · 선택·운영 총정리: 선택 매트릭스(보안·성능·NAT친화·모바일로밍·운영복잡도), 운영 함정(MTU블랙홀·DNS leak·kill switch·split tunnel), 성능(오버헤드·커널vs유저스페이스), 세 가족 최종 비교표, 전편 회수. 선수링크:EP3~6.",
       "after": "완료(검토 대기). vpn-anatomy-7 발행 — 커밋 3610efb, 머지 44e000b, origin/main 반영 확인(2026-07-29 사후 검증). 선택 매트릭스 5축(보안·성능·NAT친화·모바일로밍·운영복잡도) + 운영 함정(MTU 블랙홀·DNS 유출·split tunnel·kill switch) + 세 가족 최종 비교표 + 전편 회수. || 후속 통합 패스 b4b4e7f 에서 선택 매트릭스·오버헤드표의 ⚠︎TBD 7셀을 형제편(EP4·EP5·EP6) 실측·서술로 확정 — 창작 수치 0, MOBIKE=RFC 4555·유효 터널 MTU ≈1438~1448B 등. 표의 셀마다 근거 주석({/* 근거: EP5 wg-sizes.txt … */})을 달아 캡처 파일까지 역추적 가능. 크기 인용은 UDP 페이로드 vs 프레임 계층을 전부 명시(CLAUDE.md 규약). viz 3종(MtuTriage·VizSplitLeak·KernelVsUserspace) + 시뮬 SplitTunnelLab. || 2026-07-29 검증: build 42p exit 0 · 그래프 conceptCount 38."
-    },
-    {
-      "seq": 181,
-      "t": "2026-07-29T13:33",
-      "a": "ai",
-      "id": "KAN-040",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
-    },
-    {
-      "seq": 180,
-      "t": "2026-07-29T13:33",
-      "a": "ai",
-      "id": "KAN-040",
-      "op": "edit",
-      "field": "memo",
-      "before": "vpn-anatomy-6 · TLS-VPN: TLS1.3 제어/데이터 채널, tls-auth/tls-crypt, OpenVPN2.6 UDP/TCP(TCP-over-TCP meltdown), SSL-VPN/WebVPN clientless, 패킷+TLS record 캡처 분해(data channel 내부는 암호문). 선수링크:OSI(L6)·EP2. gate:KAN-034.",
-      "after": "완료(검토 대기). vpn-anatomy-6 발행 — 커밋 7e3e330, 머지 88aeaf7, origin/main 반영 확인(2026-07-29 사후 검증). TLS-VPN/OpenVPN: 제어 채널만 TLS 를 빌려 쓰는 구조, opcode 1바이트 설계, tls-auth vs tls-crypt 가 캡처 두 장에서 갈리는 지점, P_DATA_V2 AEAD 헤더 24B, TCP-over-TCP meltdown. || 캡처 발췌 4곳(openvpn-opcode.txt tls-crypt 모드 Frame 1·3 / openvpn-tls-auth.txt Frame 2 / openvpn-compare.txt) — 전부 파일 경로·모드·프레임 번호까지 출처 표기. 데이터 채널 복호 불가(2.6 SSLKEYLOGFILE 미방출)를 위조 없이 명시. viz 3종 + 시뮬 OpcodeByte. || 2026-07-29 검증: build 42p exit 0 · 그래프 conceptCount 30."
-    },
-    {
-      "seq": 179,
-      "t": "2026-07-29T13:33",
-      "a": "ai",
-      "id": "KAN-039",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
     }
   ]
 }

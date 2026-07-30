@@ -29,6 +29,15 @@ interface Props {
    */
   corners?: "diagonal" | "top";
   tapeWidth?: number;
+  /**
+   * 테이프의 호버 갸웃. 기본 켬.
+   *
+   * 끄는 이유는 모션이 싫어서가 아니라 **입력** 때문이다 — `DecoLayer` 는 갸웃을
+   * 받으려고 자식의 `pointer-events` 를 되살리는데(§5 규칙 9), 그 되살림은 조상의
+   * `pointer-events:none` 을 이긴다. 판이 드래그·클릭 표면 위에 겹쳐 앉는 자리
+   * (글 지도)에서는 테이프가 그 자리의 제스처를 통째로 먹는다.
+   */
+  hover?: boolean;
   class?: string;
 }
 const {
@@ -39,6 +48,7 @@ const {
   tapeB = "stripe",
   corners = "diagonal",
   tapeWidth = 126,
+  hover = true,
   class: className = "",
 } = Astro.props;
 ---
@@ -49,17 +59,17 @@ const {
   </PaperSurface>
 
   {/* 테이프는 티어 2 — 강도를 낮추면 판만 남는다 */}
-  <DecoLayer top="-14px" left="-20px" rotate={-10} tier={2} z={3}>
+  <DecoLayer top="-14px" left="-20px" rotate={-10} tier={2} z={3} hover={hover}>
     <Tape variant={tapeA} width={tapeWidth} />
   </DecoLayer>
 
   {
     corners === "diagonal" ? (
-      <DecoLayer bottom="-13px" right="-18px" rotate={-6} tier={2} z={3}>
+      <DecoLayer bottom="-13px" right="-18px" rotate={-6} tier={2} z={3} hover={hover}>
         <Tape variant={tapeB} width={tapeWidth - 8} />
       </DecoLayer>
     ) : (
-      <DecoLayer top="-12px" right="-18px" rotate={9} tier={2} z={3}>
+      <DecoLayer top="-12px" right="-18px" rotate={9} tier={2} z={3} hover={hover}>
         <Tape variant={tapeB} width={tapeWidth - 8} />
       </DecoLayer>
     )
