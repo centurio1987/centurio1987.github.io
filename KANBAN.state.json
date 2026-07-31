@@ -1,6 +1,6 @@
 {
-  "next_id": 59,
-  "next_seq": 232,
+  "next_id": 60,
+  "next_seq": 234,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -642,20 +642,33 @@
     "KAN-058": {
       "col": "done",
       "title": "글지도에 데코를 반영하기 위한 계획을 수립해라.",
-      "memo": "완료(2026-07-30). **2차에서 지면 전체로 다시 설계했다** — 1차는 카드에 적힌 계획대로 지도 상자 하나만 얹고 끝냈고, 그 결과 머리·커맨드 바·도움말·후보 패널·빈 상태·줌 컨트롤이 검토조차 안 된 채 남았다(유저 지적: 성실의 의무 위반). 총 8커밋. ■ 1차(3): 아일랜드 데코 슬롯 구멍 · 지도 판 P-01 + MAP 탭 · 카탈로그 탭 위치 교정. ■ 2차(5): 겹침·가로챔 판정 스크립트(deco:verify) · /posts 클립×RSS 기존 결함 교정 · 지면 전체 데코 · 문서 · 칸반. ■ 얹은 곳 3+1: 머리 P-06 레터링 테이프(YOU ARE HERE, 배지 없음) · 후보 패널 P-03 ClippedCard + 크림(=/posts PostFilter 와 한 쌍, 최대 누락이었다) · 도움말 크림 + T5 도트 테이프 · 지도 판 P-01 + M2. 안 얹은 곳 열둘은 요소별 근거를 DECO_KIT §7 규칙 7 에 남겼다. ■ 구조적 판단 셋: (a) ClippedCard 를 값만 베끼지 않고 **빈 판으로 펴서** 쓴다 — 클립 값이 ClippedCard.astro 한 곳에만 남아 드리프트가 구조적으로 불가능(ChatGPT 외부검토의 유효 지적). (b) 도움말은 helpOpen && … 가 아니라 **hidden** 으로 여닫는다 — 조건부로 감싸면 SSR 에 astro-slot 이 안 나오고 하이드레이션이 거기서 슬롯을 되찾으므로 데코가 클라이언트에 영영 도착 못 한다(열어도 끝까지 빈다). (c) ClippedCard 에도 hover prop — TapedBoard 와 똑같은 구멍. ■ 실측값: 클립 offset 140px(첫 행 양 끝이 다 차 있어 모서리에 못 문다) · 도움말 padding-top 32px(769px 이하에서 글이 폭을 채워 테이프가 꼬리를 덮었다 — 1280px 만 봤으면 못 잡는다) · 여백 26/24/30px(인접 형제 마진 상쇄) · 768px 이하 클립도 접음(빈 구간 546→32px < 클립 37px). ■ 재발 방지가 핵심 산출물이다: verify-deco: dist/ 를 http://localhost:54213 로 띄운다 (astro preview)…\nverify-deco: http://localhost:54213 검사\n\n  ok   /graph @1280  (데코 5 × 글자런 58)\n  ok   /graph @1280 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @769  (데코 5 × 글자런 58)\n  ok   /graph @769 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @768  (데코 1 × 글자런 58)\n  ok   /graph @768 도움말 열림  (데코 2 × 글자런 62)\n  ok   /graph @480  (데코 1 × 글자런 60)\n  ok   /graph @480 도움말 열림  (데코 2 × 글자런 67)\n  ok   /graph @390  (데코 1 × 글자런 61)\n  ok   /graph @390 도움말 열림  (데코 2 × 글자런 69)\n  ok   /posts @1280  (데코 2 × 글자런 503)\n  ok   /posts @769  (데코 2 × 글자런 499)\n  ok   /posts @768  (데코 1 × 글자런 476)\n  ok   /posts @480  (데코 1 × 글자런 524)\n  ok   /posts @390  (데코 1 × 글자런 549)\n  ok   / @1280  (데코 11 × 글자런 7)\n  ok   / @769  (데코 10 × 글자런 7)\n  ok   / @768  (데코 2 × 글자런 7)\n  ok   / @480  (데코 2 × 글자런 7)\n  ok   / @390  (데코 2 × 글자런 7)\n\n지면 3개 × 폭 5개, 검사 20회.\n✓ 겹침·가로챔·오버플로 없음 가 지면 3 × 폭 5 × 상태별로 **데코 상자 × 실제 글자 런**(Range.getClientRects — 요소 상자로 재면 폭 100% <p> 때문에 거짓 양성)과 도달 가능성·오버플로를 판정한다. 클립이 라벨을 덮은 것도, 도움말 테이프 거짓 양성도, /posts 기존 결함도 전부 이걸로 갈렸다. ■ 미해결: tone=cream(svg 안 --surface 3곳) · 빈 상태/게이지 소제목은 근거를 남기고 비움 · 이 레포엔 typescript 가 없어 타입 체크는 못 돌림. push 는 안 했다.",
+      "memo": "완료(2026-07-30). **2차에서 지면 전체로 다시 설계했다** — 1차는 카드에 적힌 계획대로 지도 상자 하나만 얹고 끝냈고, 그 결과 머리·커맨드 바·도움말·후보 패널·빈 상태·줌 컨트롤이 검토조차 안 된 채 남았다(유저 지적: 성실의 의무 위반). 총 8커밋. ■ 1차(3): 아일랜드 데코 슬롯 구멍 · 지도 판 P-01 + MAP 탭 · 카탈로그 탭 위치 교정. ■ 2차(5): 겹침·가로챔 판정 스크립트(deco:verify) · /posts 클립×RSS 기존 결함 교정 · 지면 전체 데코 · 문서 · 칸반. ■ 얹은 곳 3+1: 머리 P-06 레터링 테이프(YOU ARE HERE, 배지 없음) · 후보 패널 P-03 ClippedCard + 크림(=/posts PostFilter 와 한 쌍, 최대 누락이었다) · 도움말 크림 + T5 도트 테이프 · 지도 판 P-01 + M2. 안 얹은 곳 열둘은 요소별 근거를 DECO_KIT §7 규칙 7 에 남겼다. ■ 구조적 판단 셋: (a) ClippedCard 를 값만 베끼지 않고 **빈 판으로 펴서** 쓴다 — 클립 값이 ClippedCard.astro 한 곳에만 남아 드리프트가 구조적으로 불가능(ChatGPT 외부검토의 유효 지적). (b) 도움말은 helpOpen && … 가 아니라 **hidden** 으로 여닫는다 — 조건부로 감싸면 SSR 에 astro-slot 이 안 나오고 하이드레이션이 거기서 슬롯을 되찾으므로 데코가 클라이언트에 영영 도착 못 한다(열어도 끝까지 빈다). (c) ClippedCard 에도 hover prop — TapedBoard 와 똑같은 구멍. ■ 실측값: 클립 offset 140px(첫 행 양 끝이 다 차 있어 모서리에 못 문다) · 도움말 padding-top 32px(769px 이하에서 글이 폭을 채워 테이프가 꼬리를 덮었다 — 1280px 만 봤으면 못 잡는다) · 여백 26/24/30px(인접 형제 마진 상쇄) · 768px 이하 클립도 접음(빈 구간 546→32px < 클립 37px). ■ 재발 방지가 핵심 산출물이다: verify-deco: dist/ 를 http://localhost:54213 로 띄운다 (astro preview)…",
       "verbatim": "글지도에 데코를 반영하기 위한 계획을 수립해라.",
       "생성": "유저",
-      "최종": "ai",
-      "갱신": "2026-07-30",
+      "최종": "유저",
+      "갱신": "2026-07-31",
       "title_hash": "5f0b67356b4f777b7ac8be84869f5a5691c1a9ac",
-      "memo_hash": "2afa09765c44913efffec1f97f538db0437bfd21",
+      "memo_hash": "8e46e3e06c7a1a9ccac6dc07b4d9749a5822e848",
       "verbatim_hash": "5f0b67356b4f777b7ac8be84869f5a5691c1a9ac"
+    },
+    "KAN-059": {
+      "col": "backlog",
+      "title": "메인 화면의 이미지가 다른 요소들보다 늦게 뜨는 경우, 사용자 경험이 불쾌해진다. 배포 환경에선 늦게 뜨는 현상이 잘 나타난다. 이를 해소하기 위해 성능 측면에서의 전략과 ux 측면 전략(fallback loading 이라던가)을 구상하라.",
+      "memo": "",
+      "verbatim": "",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-07-31",
+      "title_hash": "5f5ffe6b88a23ff91599988c2f3785716108ecd7",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
     "KAN-024",
     "KAN-030",
     "KAN-032",
+    "KAN-059",
     "KAN-048",
     "KAN-001",
     "KAN-002",
@@ -710,6 +723,27 @@
     "KAN-058"
   ],
   "recent": [
+    {
+      "seq": 233,
+      "t": "2026-07-31T14:07",
+      "a": "유저",
+      "id": "KAN-058",
+      "op": "edit",
+      "field": "memo",
+      "before": "완료(2026-07-30). **2차에서 지면 전체로 다시 설계했다** — 1차는 카드에 적힌 계획대로 지도 상자 하나만 얹고 끝냈고, 그 결과 머리·커맨드 바·도움말·후보 패널·빈 상태·줌 컨트롤이 검토조차 안 된 채 남았다(유저 지적: 성실의 의무 위반). 총 8커밋. ■ 1차(3): 아일랜드 데코 슬롯 구멍 · 지도 판 P-01 + MAP 탭 · 카탈로그 탭 위치 교정. ■ 2차(5): 겹침·가로챔 판정 스크립트(deco:verify) · /posts 클립×RSS 기존 결함 교정 · 지면 전체 데코 · 문서 · 칸반. ■ 얹은 곳 3+1: 머리 P-06 레터링 테이프(YOU ARE HERE, 배지 없음) · 후보 패널 P-03 ClippedCard + 크림(=/posts PostFilter 와 한 쌍, 최대 누락이었다) · 도움말 크림 + T5 도트 테이프 · 지도 판 P-01 + M2. 안 얹은 곳 열둘은 요소별 근거를 DECO_KIT §7 규칙 7 에 남겼다. ■ 구조적 판단 셋: (a) ClippedCard 를 값만 베끼지 않고 **빈 판으로 펴서** 쓴다 — 클립 값이 ClippedCard.astro 한 곳에만 남아 드리프트가 구조적으로 불가능(ChatGPT 외부검토의 유효 지적). (b) 도움말은 helpOpen && … 가 아니라 **hidden** 으로 여닫는다 — 조건부로 감싸면 SSR 에 astro-slot 이 안 나오고 하이드레이션이 거기서 슬롯을 되찾으므로 데코가 클라이언트에 영영 도착 못 한다(열어도 끝까지 빈다). (c) ClippedCard 에도 hover prop — TapedBoard 와 똑같은 구멍. ■ 실측값: 클립 offset 140px(첫 행 양 끝이 다 차 있어 모서리에 못 문다) · 도움말 padding-top 32px(769px 이하에서 글이 폭을 채워 테이프가 꼬리를 덮었다 — 1280px 만 봤으면 못 잡는다) · 여백 26/24/30px(인접 형제 마진 상쇄) · 768px 이하 클립도 접음(빈 구간 546→32px < 클립 37px). ■ 재발 방지가 핵심 산출물이다: verify-deco: dist/ 를 http://localhost:54213 로 띄운다 (astro preview)…\nverify-deco: http://localhost:54213 검사\n\n  ok   /graph @1280  (데코 5 × 글자런 58)\n  ok   /graph @1280 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @769  (데코 5 × 글자런 58)\n  ok   /graph @769 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @768  (데코 1 × 글자런 58)\n  ok   /graph @768 도움말 열림  (데코 2 × 글자런 62)\n  ok   /graph @480  (데코 1 × 글자런 60)\n  ok   /graph @480 도움말 열림  (데코 2 × 글자런 67)\n  ok   /graph @390  (데코 1 × 글자런 61)\n  ok   /graph @390 도움말 열림  (데코 2 × 글자런 69)\n  ok   /posts @1280  (데코 2 × 글자런 503)\n  ok   /posts @769  (데코 2 × 글자런 499)\n  ok   /posts @768  (데코 1 × 글자런 476)\n  ok   /posts @480  (데코 1 × 글자런 524)\n  ok   /posts @390  (데코 1 × 글자런 549)\n  ok   / @1280  (데코 11 × 글자런 7)\n  ok   / @769  (데코 10 × 글자런 7)\n  ok   / @768  (데코 2 × 글자런 7)\n  ok   / @480  (데코 2 × 글자런 7)\n  ok   / @390  (데코 2 × 글자런 7)\n\n지면 3개 × 폭 5개, 검사 20회.\n✓ 겹침·가로챔·오버플로 없음 가 지면 3 × 폭 5 × 상태별로 **데코 상자 × 실제 글자 런**(Range.getClientRects — 요소 상자로 재면 폭 100% <p> 때문에 거짓 양성)과 도달 가능성·오버플로를 판정한다. 클립이 라벨을 덮은 것도, 도움말 테이프 거짓 양성도, /posts 기존 결함도 전부 이걸로 갈렸다. ■ 미해결: tone=cream(svg 안 --surface 3곳) · 빈 상태/게이지 소제목은 근거를 남기고 비움 · 이 레포엔 typescript 가 없어 타입 체크는 못 돌림. push 는 안 했다.",
+      "after": "완료(2026-07-30). **2차에서 지면 전체로 다시 설계했다** — 1차는 카드에 적힌 계획대로 지도 상자 하나만 얹고 끝냈고, 그 결과 머리·커맨드 바·도움말·후보 패널·빈 상태·줌 컨트롤이 검토조차 안 된 채 남았다(유저 지적: 성실의 의무 위반). 총 8커밋. ■ 1차(3): 아일랜드 데코 슬롯 구멍 · 지도 판 P-01 + MAP 탭 · 카탈로그 탭 위치 교정. ■ 2차(5): 겹침·가로챔 판정 스크립트(deco:verify) · /posts 클립×RSS 기존 결함 교정 · 지면 전체 데코 · 문서 · 칸반. ■ 얹은 곳 3+1: 머리 P-06 레터링 테이프(YOU ARE HERE, 배지 없음) · 후보 패널 P-03 ClippedCard + 크림(=/posts PostFilter 와 한 쌍, 최대 누락이었다) · 도움말 크림 + T5 도트 테이프 · 지도 판 P-01 + M2. 안 얹은 곳 열둘은 요소별 근거를 DECO_KIT §7 규칙 7 에 남겼다. ■ 구조적 판단 셋: (a) ClippedCard 를 값만 베끼지 않고 **빈 판으로 펴서** 쓴다 — 클립 값이 ClippedCard.astro 한 곳에만 남아 드리프트가 구조적으로 불가능(ChatGPT 외부검토의 유효 지적). (b) 도움말은 helpOpen && … 가 아니라 **hidden** 으로 여닫는다 — 조건부로 감싸면 SSR 에 astro-slot 이 안 나오고 하이드레이션이 거기서 슬롯을 되찾으므로 데코가 클라이언트에 영영 도착 못 한다(열어도 끝까지 빈다). (c) ClippedCard 에도 hover prop — TapedBoard 와 똑같은 구멍. ■ 실측값: 클립 offset 140px(첫 행 양 끝이 다 차 있어 모서리에 못 문다) · 도움말 padding-top 32px(769px 이하에서 글이 폭을 채워 테이프가 꼬리를 덮었다 — 1280px 만 봤으면 못 잡는다) · 여백 26/24/30px(인접 형제 마진 상쇄) · 768px 이하 클립도 접음(빈 구간 546→32px < 클립 37px). ■ 재발 방지가 핵심 산출물이다: verify-deco: dist/ 를 http://localhost:54213 로 띄운다 (astro preview)…"
+    },
+    {
+      "seq": 232,
+      "t": "2026-07-31T14:07",
+      "a": "유저",
+      "id": "KAN-059",
+      "op": "create",
+      "col": "backlog",
+      "title": "메인 화면의 이미지가 다른 요소들보다 늦게 뜨는 경우, 사용자 경험이 불쾌해진다. 배포 환경에선 늦게 뜨는 현상이 잘 나타난다. 이를 해소하기 위해 성능 측면에서의 전략과 ux 측면 전략(fallback loading 이라던가)을 구상하라.",
+      "memo": "",
+      "verbatim": ""
+    },
     {
       "seq": 231,
       "t": "2026-07-30T16:55",
@@ -1172,25 +1206,6 @@
       "field": "memo",
       "before": "VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 정확성: 스펙 레이아웃 vs 실제 캡처 분리, wire-level은 EP3~. 하위카드 KAN-033~041.",
       "after": "VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 정확성: 스펙 레이아웃 vs 실제 캡처 분리, wire-level은 EP3~. 하위카드 KAN-033~041. || ✅ 완료(검토 대기) — 2026-07-29 전수 검증: EP1~EP7 7편 전량 발행(draft:false)·origin/main 반영 확인(0f69b18 기준 7편 모두 존재). series \"VPN의 해부\" order 1~7 · author ppangto 통일 · category skills 통일. bun run build 42p exit 0, 내부 링크 /posts/vpn-anatomy-1~7 전량 생존, 그래프 커버리지 29/29편(VPN 7편 conceptCount 27~54로 껍데기 없음). 하위카드 KAN-033·034(리서치)·035~041(집필 7편)·043(캡처 랩)·044·046(그래프) 전부 완료. || 유저 요구 \"실제 캡처와 완벽히 똑같은 실물 패킷\" 이행 현황: EP3·5·6·7 은 랩 캡처 발췌를 출처 표기와 함께 인용 완료. **EP4만 미이행** — 아티팩트는 실재하나 본문은 스펙 유도 레이아웃 그대로다(발행 시점에 캡처가 없었음). 잔여 2건은 별도 카드로 분리되어 할 일에 남아 있다: KAN-045(EP4 캡처 발췌 retro 삽입) · KAN-042(시리즈 링크 섹션, EP1만 보유)."
-    },
-    {
-      "seq": 183,
-      "t": "2026-07-29T13:34",
-      "a": "ai",
-      "id": "KAN-041",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
-    },
-    {
-      "seq": 182,
-      "t": "2026-07-29T13:34",
-      "a": "ai",
-      "id": "KAN-041",
-      "op": "edit",
-      "field": "memo",
-      "before": "vpn-anatomy-7 · 선택·운영 총정리: 선택 매트릭스(보안·성능·NAT친화·모바일로밍·운영복잡도), 운영 함정(MTU블랙홀·DNS leak·kill switch·split tunnel), 성능(오버헤드·커널vs유저스페이스), 세 가족 최종 비교표, 전편 회수. 선수링크:EP3~6.",
-      "after": "완료(검토 대기). vpn-anatomy-7 발행 — 커밋 3610efb, 머지 44e000b, origin/main 반영 확인(2026-07-29 사후 검증). 선택 매트릭스 5축(보안·성능·NAT친화·모바일로밍·운영복잡도) + 운영 함정(MTU 블랙홀·DNS 유출·split tunnel·kill switch) + 세 가족 최종 비교표 + 전편 회수. || 후속 통합 패스 b4b4e7f 에서 선택 매트릭스·오버헤드표의 ⚠︎TBD 7셀을 형제편(EP4·EP5·EP6) 실측·서술로 확정 — 창작 수치 0, MOBIKE=RFC 4555·유효 터널 MTU ≈1438~1448B 등. 표의 셀마다 근거 주석({/* 근거: EP5 wg-sizes.txt … */})을 달아 캡처 파일까지 역추적 가능. 크기 인용은 UDP 페이로드 vs 프레임 계층을 전부 명시(CLAUDE.md 규약). viz 3종(MtuTriage·VizSplitLeak·KernelVsUserspace) + 시뮬 SplitTunnelLab. || 2026-07-29 검증: build 42p exit 0 · 그래프 conceptCount 38."
     }
   ]
 }
