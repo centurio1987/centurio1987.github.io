@@ -1,6 +1,6 @@
 {
   "next_id": 60,
-  "next_seq": 234,
+  "next_seq": 235,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -653,13 +653,13 @@
     },
     "KAN-059": {
       "col": "backlog",
-      "title": "메인 화면의 이미지가 다른 요소들보다 늦게 뜨는 경우, 사용자 경험이 불쾌해진다. 배포 환경에선 늦게 뜨는 현상이 잘 나타난다. 이를 해소하기 위해 성능 측면에서의 전략과 ux 측면 전략(fallback loading 이라던가)을 구상하라.",
+      "title": "메인 화면 이미지가 늦게 뜨는 문제 — 성능·UX 전략 구상",
       "memo": "",
       "verbatim": "",
       "생성": "유저",
-      "최종": "유저",
+      "최종": "ai",
       "갱신": "2026-07-31",
-      "title_hash": "5f5ffe6b88a23ff91599988c2f3785716108ecd7",
+      "title_hash": "323f27cb46b7340ca3c7433d110fb523833b5692",
       "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
@@ -723,6 +723,16 @@
     "KAN-058"
   ],
   "recent": [
+    {
+      "seq": 234,
+      "t": "2026-07-31T14:09",
+      "a": "ai",
+      "id": "KAN-059",
+      "op": "edit",
+      "field": "title",
+      "before": "메인 화면의 이미지가 다른 요소들보다 늦게 뜨는 경우, 사용자 경험이 불쾌해진다. 배포 환경에선 늦게 뜨는 현상이 잘 나타난다. 이를 해소하기 위해 성능 측면에서의 전략과 ux 측면 전략(fallback loading 이라던가)을 구상하라.",
+      "after": "메인 화면 이미지가 늦게 뜨는 문제 — 성능·UX 전략 구상"
+    },
     {
       "seq": 233,
       "t": "2026-07-31T14:07",
@@ -1196,16 +1206,6 @@
       "op": "move",
       "from": "todo",
       "to": "review"
-    },
-    {
-      "seq": 184,
-      "t": "2026-07-29T13:34",
-      "a": "ai",
-      "id": "KAN-031",
-      "op": "edit",
-      "field": "memo",
-      "before": "VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 정확성: 스펙 레이아웃 vs 실제 캡처 분리, wire-level은 EP3~. 하위카드 KAN-033~041.",
-      "after": "VPN 해부 시리즈 총괄. author:ppangto, category:skills, slug vpn-anatomy-N. 확정 7편: EP1 큰그림 / EP2 암호기반 / EP3 IPsec-IKEv2 / EP4 IPsec-ESP·NAT-T / EP5 WireGuard / EP6 TLS-VPN / EP7 선택·운영. 정확성: 스펙 레이아웃 vs 실제 캡처 분리, wire-level은 EP3~. 하위카드 KAN-033~041. || ✅ 완료(검토 대기) — 2026-07-29 전수 검증: EP1~EP7 7편 전량 발행(draft:false)·origin/main 반영 확인(0f69b18 기준 7편 모두 존재). series \"VPN의 해부\" order 1~7 · author ppangto 통일 · category skills 통일. bun run build 42p exit 0, 내부 링크 /posts/vpn-anatomy-1~7 전량 생존, 그래프 커버리지 29/29편(VPN 7편 conceptCount 27~54로 껍데기 없음). 하위카드 KAN-033·034(리서치)·035~041(집필 7편)·043(캡처 랩)·044·046(그래프) 전부 완료. || 유저 요구 \"실제 캡처와 완벽히 똑같은 실물 패킷\" 이행 현황: EP3·5·6·7 은 랩 캡처 발췌를 출처 표기와 함께 인용 완료. **EP4만 미이행** — 아티팩트는 실재하나 본문은 스펙 유도 레이아웃 그대로다(발행 시점에 캡처가 없었음). 잔여 2건은 별도 카드로 분리되어 할 일에 남아 있다: KAN-045(EP4 캡처 발췌 retro 삽입) · KAN-042(시리즈 링크 섹션, EP1만 보유)."
     }
   ]
 }
