@@ -652,7 +652,15 @@ svg 안에서 `--surface` 를 쓰는 곳이 셋(노드 · 키워드 라벨 halo 
 |---|---|---|
 | `design-concept/authors/tony-fullbody-master.webp` | 1254², 187KB | **마스터** — 배포 안 됨, 컷아웃 재생성용 |
 | `public/images/deco/tony-diecut.webp` | 653×904, 78KB | S6 · 히어로 콜라주 · **F1 액자 안** |
-| `public/images/authors/tony-full.webp` | 159×220 | 저자 아바타 전용 (`src/lib/authors.ts`) |
+| `public/images/authors/tony-full.webp` | 159×220 | 푸터 저자 라인업 전용 (`AuthorMeta.fullBody`) |
+| `public/images/authors/tony.webp` | 512², 알파 | 프로필 아바타 — 얼굴 샷 (`AuthorMeta.avatar`) |
+
+**저자 그림은 두 벌이다 — 전신 컷아웃과 얼굴 샷.** 둘 다 같은 전신 마스터에서 굽지만
+자르는 스크립트가 다르다(전신 = `extract-author-cutout.ts` · 얼굴 = `make-author-face.ts`).
+전신을 아바타로 돌려 쓰지 마라 — 프로필 카드가 104px **원**이라 그 안에서 얼굴이 20px 로
+줄어 누가 누군지 안 보인다. 반대로 얼굴 샷을 라인업에 세울 수도 없다(발이 없다).
+얼굴 크롭 자리 네 개를 `make-author-face.ts` 의 표 하나에 모아 둔 것도 같은 이유다 —
+한 명만 따로 자르면 목록에서 얼굴 크기가 제각각이 된다.
 
 액자(F1) 안에도 다이컷을 쓴다 — 히어로 마스코트와 같은 URL 이라 추가 다운로드가 없다.
 
@@ -667,6 +675,14 @@ bun scripts/extract-author-cutout.ts --src design-concept/authors/tony-fullbody-
   --out public/images/deco/tony-diecut.webp  --height 904 --bg-tol 4 --shadow-floor 1026 --force
 bun scripts/extract-author-cutout.ts --src design-concept/authors/tony-fullbody-master.webp \
   --out public/images/authors/tony-full.webp --height 220 --bg-tol 4 --shadow-floor 1026 --force
+```
+
+**얼굴 샷은 네 저자를 한 번에 굽는다** — 프레이밍이 서로 맞아야 하므로 인자가 아니라
+스크립트 안의 표다. 끝나면 목록용 64px 사본도 다시 굽는다(그게 얼굴 샷을 원본으로 삼는다):
+
+```bash
+bun scripts/make-author-face.ts      # → public/images/authors/<id>.webp (512², 알파)
+bun scripts/make-author-avatars.ts   # → public/images/authors/<id>-sm.webp (64²)
 ```
 
 **왜 마스터를 따로 두는가 — 구운 합성물에는 온전한 실루엣이 없다.** 원래는

@@ -4,6 +4,13 @@ export interface AuthorMeta {
   role: string;
   handle: string;
   bio: string;
+  /**
+   * 프로필 카드(104px 원)·목록(22px)에 쓰는 **얼굴 샷**. 배경을 오려낸 투명 webp 라
+   * 어느 지면의 종이색 위에도 그대로 앉는다(`.ap-avatar` 가 `--paper` 를 깔아 둔다).
+   * `scripts/make-author-face.ts` 가 전신 마스터에서 머리 + 어깨만 잘라 굽는다 —
+   * 네 저자의 프레이밍이 서로 맞아야 하므로 크롭 자리는 그 스크립트의 표 하나에 모여 있다.
+   * **전신샷을 넣지 마라**: 원 안에서 얼굴이 20px 로 줄어 누가 누군지 안 보인다.
+   */
   avatar?: string;
   /**
    * 배경을 오려낸 전신 컷아웃(투명 webp) — 푸터 저자 라인업에 세워지는 그림.
@@ -36,7 +43,9 @@ export const AUTHORS: AuthorMeta[] = [
     role: "글 굽는 사람",
     handle: "@ppangwan-tony",
     bio: "Serious Work, Joyful Wit. 진지한 일 이야기를 토실토실하게 구워 씁니다.",
-    avatar: "/tony-deco.webp",
+    // 예전엔 /tony-deco.webp(장식 구운 전신 합성물)를 그대로 썼다 — 원 안에서 얼굴이
+    // 뭉개지고 혼자만 모눈 배경을 지고 있었다. 그 파일은 OG 기본 이미지로 계속 산다.
+    avatar: "/images/authors/tony.webp",
     fullBody: "/images/authors/tony-full.webp",
     avatarSm: "/images/authors/tony-sm.webp",
     isAI: false,

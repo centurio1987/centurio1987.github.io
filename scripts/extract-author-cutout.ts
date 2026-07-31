@@ -50,9 +50,11 @@
  *     --out public/images/deco/tony-diecut.webp --height 904 \
  *     --bg-tol 4 --shadow-floor 1026 --force
  *
- * 원본(마스터)이 사는 곳: 사이트가 직접 참조하는 원본은 public/(예: public/tony-deco.webp,
- * public/images/authors/ppangto-teacher.webp)에 있고, 컷아웃 재생성용으로만 보관하는 원본은
- * 배포 산출물을 불리지 않도록 design-concept/authors/에 둔다.
+ * 원본(마스터)이 사는 곳: **전신 마스터와 데코 컷은 전부 design-concept/authors/** 에 둔다
+ * (`<id>-fullbody-master.webp` = 장식 없는 렌더 · `<id>-deco.webp` = 장식이 구워진 그림).
+ * 배포 산출물을 불리지 않으려는 것이고, public/ 에는 **구운 결과물만** 남는다 — 얼굴 샷
+ * 아바타(`scripts/make-author-face.ts`)와 전신 컷아웃(이 스크립트). 예외는
+ * public/tony-deco.webp 하나로, 사이트가 OG 기본 이미지로 직접 참조한다.
  *
  * 새 저자 전신샷이 생기면 이 명령만 다시 돌리면 된다. 결과 webp는 커밋한다
  * (astro build는 이 스크립트를 돌지 않고 커밋된 webp만 소비한다).

@@ -49,7 +49,9 @@ Astro static site. Source lives entirely under `src/`; `public/` is served at th
 Posts are markdown in `src/content/posts/`. Frontmatter schema (`src/content.config.ts`):
 `title` (req), `description`, `pubDate` (req, date), `updatedDate`, `category` (req, enum), `author` (enum from `src/lib/authors.ts`, default `"tony"`), `tags` (string[]), `series`, `order`, `draft` (default false).
 
-**Authors**: `tony` (빵관 토니, 사람) · `ppangto` (빵토 연구원, AI 완전 집필). Author appears in post meta, post lists, and as a profile card (`AuthorProfile.astro`) at the bottom of every post. If the author has `isAI: true`, an AI banner (`AiBanner.astro`, image at `public/images/authors/ai-banner.webp`) renders at the top of the post — AI가 완전 집필한 글은 frontmatter에 `author: ppangto`만 지정하면 된다.
+**Authors**: `tony` (빵관 토니, 사람) · `ppangto` (빵토 연구원, AI 완전 집필). Author appears in post meta, post lists, and as a profile card (`AuthorProfile.astro`) at the bottom of every post.
+
+**저자 그림은 마스터 하나에서 두 벌로 굽는다** — 원본은 전부 `design-concept/authors/`(배포 안 함)에 있고, `public/images/authors/`엔 구운 결과물만 남는다. 얼굴 샷 `<id>.webp`(프로필 카드 104px 원 · 목록 22px)는 `scripts/make-author-face.ts`, 전신 컷아웃 `<id>-full.webp`(푸터 라인업)는 `scripts/extract-author-cutout.ts`가 만든다. 셋 다 **배경을 오려낸 투명 webp**라 어느 지면의 종이색 위에도 그대로 앉는다(`.ap-avatar`가 `--paper`를 깐다) — 마스터마다 배경이 크림/흰색/투명으로 갈리는데 그걸 그대로 두면 원 네 개의 바탕색이 미묘하게 어긋난다. **전신샷을 아바타로 돌려 쓰지 마라**(원 안에서 얼굴이 20px로 줄어 누가 누군지 안 보인다). 얼굴 크롭 자리 네 개가 `make-author-face.ts`의 표 하나에 모여 있는 이유는 한 명만 따로 자르면 목록에서 얼굴 크기가 제각각이 되기 때문이고, `bgTol`은 눈대중이 아니라 마스터마다 잰 값이다(흰 볼털 하이라이트가 흰 배경과 같은 255까지 올라가서 넓히면 fill이 볼을 뚫는다 — `extract-author-cutout.ts` (D) 절과 같은 함정). 얼굴 샷을 다시 구우면 **`make-author-avatars.ts`로 64px 사본까지** 다시 굽는다. 근거와 재생성 명령은 `DECO_KIT.md` 8절. If the author has `isAI: true`, an AI banner (`AiBanner.astro`, image at `public/images/authors/ai-banner.webp`) renders at the top of the post — AI가 완전 집필한 글은 frontmatter에 `author: ppangto`만 지정하면 된다.
 
 **Series patterns** (모든 포스트에 자동 적용, `src/lib/seriesNav.ts`가 단일 소스):
 - `PostNav.astro` — 이전화/다음화 카드. 시리즈 글은 `order` 기준 EP 네비게이션, 그 외는 발행일 기준.
