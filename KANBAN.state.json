@@ -1,6 +1,6 @@
 {
   "next_id": 60,
-  "next_seq": 235,
+  "next_seq": 236,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -654,13 +654,13 @@
     "KAN-059": {
       "col": "backlog",
       "title": "메인 화면 이미지가 늦게 뜨는 문제 — 성능·UX 전략 구상",
-      "memo": "",
+      "memo": "배포 환경(GitHub Pages)에서 더 두드러진다는 유저 관찰. 두 갈래로 구상한다 — ① 성능: 로딩 우선순위(fetchpriority·preload)·lazy 경계·포맷/용량·치수 예약 ② UX: fallback loading·플레이스홀더 등 늦게 떠도 덜 불쾌하게 만드는 장치. 착수 시 현행부터 잴 것 — 홈(/)이 지금 이미지 7장(히어로 다이컷 ×2 · /tony-face.webp · 푸터 저자 라인업 4장)을 싣고 그중 5장이 loading=lazy 다. 푸터 라인업은 모든 페이지에 있으므로 홈만의 문제가 아닐 수 있다.",
       "verbatim": "",
       "생성": "유저",
       "최종": "ai",
       "갱신": "2026-07-31",
       "title_hash": "323f27cb46b7340ca3c7433d110fb523833b5692",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "memo_hash": "c1ffc5ca40283678fcd1eba7f384fa4cbc4aec0d",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
@@ -723,6 +723,16 @@
     "KAN-058"
   ],
   "recent": [
+    {
+      "seq": 235,
+      "t": "2026-07-31T14:09",
+      "a": "ai",
+      "id": "KAN-059",
+      "op": "edit",
+      "field": "memo",
+      "before": "",
+      "after": "배포 환경(GitHub Pages)에서 더 두드러진다는 유저 관찰. 두 갈래로 구상한다 — ① 성능: 로딩 우선순위(fetchpriority·preload)·lazy 경계·포맷/용량·치수 예약 ② UX: fallback loading·플레이스홀더 등 늦게 떠도 덜 불쾌하게 만드는 장치. 착수 시 현행부터 잴 것 — 홈(/)이 지금 이미지 7장(히어로 다이컷 ×2 · /tony-face.webp · 푸터 저자 라인업 4장)을 싣고 그중 5장이 loading=lazy 다. 푸터 라인업은 모든 페이지에 있으므로 홈만의 문제가 아닐 수 있다."
+    },
     {
       "seq": 234,
       "t": "2026-07-31T14:09",
@@ -1197,15 +1207,6 @@
       "field": "memo",
       "before": "선행조건(gating): 같은 series 'VPN의 해부' 글이 2편 이상 main에 발행된 뒤 착수. KAN-038(EP4) 발행 시점에는 시리즈 내 발행 글이 0편이라 '## 이 시리즈의 다른 글' 섹션을 넣으면 목록이 빈 채로 들어가 생략했다(형제 시리즈 osi/webrtc/auth-authz는 모두 이 섹션을 보유 — 관례 이탈 상태). 조치: EP1~3(KAN-035~037, 병렬 워크트리)·EP5~7 머지 후 발행된 각 편에 post-finalize 재실행(멱등 — 기존 섹션 통째 교체). 함께 확인할 것: vpn-anatomy-4 본문의 내부 링크 /posts/vpn-anatomy-2·3·5 가 해당 편 발행 전까지 404이므로 전편 발행 후 링크 생존 확인. SeriesEpisodes/PostNav 자동 렌더와 중복되지 않는지도 육안 점검.",
       "after": "⚠️ 부분 수행 — 2026-07-29 재검증. 착수 조건(같은 series 2편 이상 발행)은 이미 충족을 넘어섰다: EP1~7 전량 발행 완료. || 현황: **EP1만 \"## 이 시리즈의 다른 글\" 섹션 보유**(커밋 b4b4e7f 가 \"(작성 예정)\" 6건을 라이브 링크로 전환). **EP2~EP7 6편은 미보유.** 형제 시리즈 실측 — osi-7-layers 6/6 · webrtc 3/3 · auth-authz 4/4 는 전편 보유, container-anatomy 0/4 · tauri 0/2 는 미보유. 즉 관례가 두 갈래로 갈려 있어 \"이탈\"이라 단정할 수 없다. || 해소된 우려: 내부 링크 404 걱정은 사라졌다 — /posts/vpn-anatomy-1~7 이 전부 실재해 VPN 본문의 포스트 링크 9종 전량 생존 확인(build 42p exit 0). || 남은 판단(유저 결정 필요): PostNav·SeriesEpisodes 가 모든 글에 시리즈 네비를 **자동 렌더**하므로 수동 섹션은 중복일 수 있다. ⓐ EP2~7 에 post-finalize 재실행해 7편 통일 · ⓑ 자동 렌더로 충분하다고 보고 EP1 섹션을 오히려 제거해 통일 · ⓒ 현상 유지하고 카드 종료 — 셋 중 택일. ⓐ 를 고를 경우 KAN-045(EP4 본문 수정)와 함께 처리하면 재빌드 1회로 끝난다."
-    },
-    {
-      "seq": 185,
-      "t": "2026-07-29T13:34",
-      "a": "ai",
-      "id": "KAN-031",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
     }
   ]
 }
