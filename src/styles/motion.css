@@ -227,3 +227,25 @@ html.reveal-ready [data-reveal="draw"][data-reveal-visible] {
 @keyframes bbangto-draw-on {
   to { stroke-dashoffset: 0; }
 }
+
+/* --- 이미지 도착 대기 계약 (blog-owned, KAN-059) ---------------------------
+ * `[data-imgwait]` 는 **그림이 도착할 때까지 자리를 비워 두는** 표식이다.
+ * src/lib/motion/imgWait.ts 가 준비되면 data-imgready 를 세팅한다.
+ *
+ * 왜 개별 이미지 페이드가 아니라 "판 단위 대기"인가 —
+ * 홈 히어로에서 늦게 뜨는 건 그림 한 장이 아니라 **구도**였다. 말풍선·테이프·반짝·
+ * 이름표는 CSS/SVG 라 즉시 그려지는데 주인공(마스코트 래스터)만 늦어서, 데코가 빈
+ * 모눈종이를 가리키며 말을 거는 화면이 몇 백 ms 씩 떴다(실측 스크린샷). 그래서
+ * 마스코트가 준비될 때까지 **판 전체**를 비워 두고 한 번에 들여보낸다.
+ *
+ * 안전 원칙은 리빌 계약과 같다(콘텐츠는 절대 못 숨긴다):
+ *  - 숨김은 <html class="reveal-ready"> 뒤에서만 산다. 무JS·reduced-motion·IO 미지원이면
+ *    클래스가 없어 **지금과 똑같이** 즉시 보인다.
+ *  - imgWait.ts 에 상한 타임아웃이 있어 그림이 영영 안 와도(404·오프라인) 반드시 보인다.
+ *  - 대기 대상은 판이지 텍스트가 아니다 — 히어로 제목·CTA 는 그대로 먼저 뜬다.        */
+html.reveal-ready [data-imgwait] { opacity: 0; }
+html.reveal-ready [data-imgwait][data-imgready] {
+  opacity: 1;
+  transition: opacity var(--bbangto-motion-duration-slow)
+    var(--bbangto-motion-easing-out);
+}

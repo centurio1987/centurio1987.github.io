@@ -107,6 +107,23 @@ variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives a
   `data-astro-cid` 만 붙인다. prop 이나 지역 조상 아래 `:global()` 을 쓴다.
 - 폭신 대담(`template: "talk"`)은 자기 시각 언어가 있고 `deco.css` 를 안 들여오므로 제외한다.
 
+### 이미지 로딩 (KAN-059)
+
+첫 화면 그림이 텍스트보다 늦게 떠서 "데코는 다 그려졌는데 주인공만 없는" 화면이 뜨던 문제.
+**폰트와의 회선 다툼**이 원인이었다 — 한국어 웹폰트 3종의 서브셋 30여 개(~530KB)가 VeryHigh 로
+회선을 물고, 이미지는 그 뒤에 줄을 섰다. 개선 후 실측(Slow 3G · CPU 4×): LCP 7.3s → 3.3s,
+마스코트가 **첫 페인트에 포함**된다. 셋만 지키면 된다.
+
+- **첫 화면 큰 그림은 `BaseLayout` 의 `preloadImages` 로 넘긴다. 딱 하나, LCP 후보만.**
+  이 `<link rel=preload>` 는 반드시 폰트 스타일시트 **위**에 놓인다 — 순서가 곧 전부다.
+  여럿 넣으면 서로 대역을 나눠 가져 아무것도 안 빨라진다.
+- **화면 안 그림에 `loading="lazy"` 를 붙이지 마라.** 지연 로드가 안 걸릴뿐더러 브라우저가
+  우선순위까지 낮춘다(헤더 로고가 그래서 Low 로 깔려 FCP 뒤에 도착했다 → `fetchpriority="high"`).
+- **`[data-imgwait]`(그림 올 때까지 판을 비워 두는 표식)을 LCP 요소에 걸지 마라.** 보이는
+  시점이 JS 이벤트에 묶여 LCP 가 메인스레드 사정에 끌려다닌다 — 히어로에 걸었다가 같은
+  빌드에서 1032·1748·2760ms 가 나와 되돌렸다. **화면 밖 그림에만** 값이 있다(현재 푸터 저자
+  라인업 하나). 계약·안전 원칙은 `src/styles/motion.css` 의 "이미지 도착 대기" 절.
+
 ## Writing workflow (skills in `.claude/skills/`)
 
 ```

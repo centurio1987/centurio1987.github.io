@@ -6,6 +6,9 @@ interface Props {
 const { size = 26 } = Astro.props;
 // 얼굴 아바타는 워드마크보다 크게(1.35) 잡는다 — 디자인 피드백 "이미지가 더 커야 한다".
 // 예전 스파클(0.7)·1차 아바타(0.95)보다 확실히 커서 헤더에서 토니 얼굴이 또렷하게 뜬다.
+// fetchpriority="high" 인 이유(KAN-059): 모든 페이지 최상단 첫 그림인데도 브라우저 기본
+// 휴리스틱은 이걸 Low 로 깔아 실측에서 FCP(1024ms)보다 늦은 1127ms 에 도착했다 —
+// 워드마크만 뜬 채 옆에 회색 원이 남는다. 4.2KB 라 앞으로 당겨도 뺏는 대역이 없다.
 const faceSize = Math.round(size * 1.35);
 ---
 
@@ -23,6 +26,7 @@ const faceSize = Math.round(size * 1.35);
     alt=""
     aria-hidden="true"
     decoding="async"
+    fetchpriority="high"
   />
   <span class="wordmark">빵관 토니</span>
 </a>

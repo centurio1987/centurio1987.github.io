@@ -124,11 +124,16 @@ const hung = lineup.map((author, i) => ({
               caption={shortName(author.name)}
               paper="grid"
             >
+              {/* 판이 아니라 **사진 한 장씩** 기다린다 (KAN-059) — 빈 액자는 F1 이
+                  원래 가진 정상 상태("빈 폴라로이드")라 감출 이유가 없고, 감추면
+                  아무것도 안 걸린 빨랫줄만 남는다. 화면 밖 lazy 라 도착이 늦다
+                  (실측: 마지막 장 3.7s) — 스크롤로 내려왔을 때 톡 튀지 않게만 한다. */}
               <img
                 src={author.fullBody}
                 alt=""
                 loading="lazy"
                 decoding="async"
+                data-imgwait
               />
             </Polaroid>
           </span>

@@ -24,7 +24,9 @@ const recent = posts.slice(0, 6);
 const hasMore = posts.length > recent.length;
 ---
 
-<BaseLayout title="빵관 토니" ambientFooter>
+{/* preloadImages — 히어로 마스코트가 이 페이지의 LCP 다(실측). 폰트가 회선을 물기 전에
+    줄을 세운다. 하나만 넣는 이유는 BaseLayout 의 prop 주석에 있다. */}
+<BaseLayout title="빵관 토니" ambientFooter preloadImages={[TONY_DIECUT]}>
 
 
   {/* 홈은 읽는 화면이 아니라 맞이하는 화면이라 데코가 가장 넉넉하다 — 강도 4. */}
@@ -43,7 +45,16 @@ const hasMore = posts.length > recent.length;
             추가 다운로드가 없다. */}
         <DecoLayer right="22px" top="-52px" rotate={-6} tier={3} z={2} class="hero-photo">
           <Polaroid caption="관찰력 만렙!" width={120} paper="grid">
-            <img src={TONY_DIECUT} alt="" width="66" height={tonyDiecutHeight(66)} loading="lazy" />
+            {/* loading="lazy" 를 뗐다 (KAN-059) — 데스크톱 첫 화면 안에 있는 그림이라
+                지연 로드 대상이 아니고, lazy 는 브라우저에서 우선순위까지 낮춘다.
+                마스코트와 **같은 URL** 이므로 추가 다운로드는 여전히 0 이다. */}
+            <img
+              src={TONY_DIECUT}
+              alt=""
+              width="66"
+              height={tonyDiecutHeight(66)}
+              decoding="async"
+            />
           </Polaroid>
         </DecoLayer>
         <span class="hero-hand">반가워요 :)</span>

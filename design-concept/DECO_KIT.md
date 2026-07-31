@@ -651,7 +651,7 @@ svg 안에서 `--surface` 를 쓰는 곳이 셋(노드 · 키워드 라벨 halo 
 | 파일 | 크기 | 쓰임 |
 |---|---|---|
 | `design-concept/authors/tony-fullbody-master.webp` | 1254², 187KB | **마스터** — 배포 안 됨, 컷아웃 재생성용 |
-| `public/images/deco/tony-diecut.webp` | 653×904, 78KB | S6 · 히어로 콜라주 · **F1 액자 안** |
+| `public/images/deco/tony-diecut.webp` | 653×904, 45KB | S6 · 히어로 콜라주 · **F1 액자 안** |
 | `public/images/authors/tony-full.webp` | 159×220 | 푸터 저자 라인업 전용 (`AuthorMeta.fullBody`) |
 | `public/images/authors/tony.webp` | 512², 알파 | 프로필 아바타 — 얼굴 샷 (`AuthorMeta.avatar`) |
 
@@ -672,10 +672,17 @@ svg 안에서 `--surface` 를 쓰는 곳이 셋(노드 · 키워드 라벨 halo 
 
 ```bash
 bun scripts/extract-author-cutout.ts --src design-concept/authors/tony-fullbody-master.webp \
-  --out public/images/deco/tony-diecut.webp  --height 904 --bg-tol 4 --shadow-floor 1026 --force
+  --out public/images/deco/tony-diecut.webp  --height 904 --quality 75 --bg-tol 4 --shadow-floor 1026 --force
 bun scripts/extract-author-cutout.ts --src design-concept/authors/tony-fullbody-master.webp \
   --out public/images/authors/tony-full.webp --height 220 --bg-tol 4 --shadow-floor 1026 --force
 ```
+
+**다이컷만 `--quality 75` 인 이유** (기본값 86, KAN-059) — 이 파일은 이 사이트에서 첫 화면에
+크게 걸리는 **유일한 큰 래스터**이자 홈의 LCP 요소다. 바이트가 곧 체감 지연이라 화질 여유를
+현금화했다: 78KB → 45KB(-42%). 실제 표시 배율(300 CSS px, 2× DPR = 600px)의 4배로 확대해
+q86·q78·q75·q70 을 나란히 놓고 봐도 구분이 안 됐다. **알파는 100 그대로 둔다** — 컷아웃의
+알파는 거의 이진이라 90 으로 낮춰도 0.8KB 밖에 안 줄면서 실루엣 경계 픽셀의 0.42% 를
+건드린다(실측). 색만 깎는 게 남는 장사다. 라인업 컷아웃(220px, 9~13KB)은 기본 86 그대로다.
 
 **얼굴 샷은 네 저자를 한 번에 굽는다** — 프레이밍이 서로 맞아야 하므로 인자가 아니라
 스크립트 안의 표다. 끝나면 목록용 64px 사본도 다시 굽는다(그게 얼굴 샷을 원본으로 삼는다):

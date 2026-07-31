@@ -47,7 +47,7 @@
  *     --out public/images/authors/tony-full.webp [--height 440] [--force]
  *   # (D) 마스코트 다이컷 — 값의 근거는 design-concept/DECO_KIT.md 자산 절
  *   bun scripts/extract-author-cutout.ts --src design-concept/authors/tony-fullbody-master.webp \
- *     --out public/images/deco/tony-diecut.webp --height 904 \
+ *     --out public/images/deco/tony-diecut.webp --height 904 --quality 75 \
  *     --bg-tol 4 --shadow-floor 1026 --force
  *
  * 원본(마스터)이 사는 곳: **전신 마스터와 데코 컷은 전부 design-concept/authors/** 에 둔다
@@ -77,6 +77,14 @@ interface Args {
   coreSat: number;
   /** (D) 코어를 이만큼 넓힌 자리는 털 림으로 보고 지키지 않는다 [가로, 세로] */
   rim: [number, number];
+  /**
+   * webp 색상 품질. 기본 86 은 220px 짜리 라인업 컷아웃(9~13KB)에 맞춘 값이고,
+   * **화면에 크게 걸리는 다이컷은 낮춰 굽는다** — 히어로 마스코트는 이 레포에서
+   * above-the-fold 로 나가는 유일한 큰 래스터라 바이트가 곧 체감 지연이다(KAN-059).
+   * 알파는 항상 100 이다: 컷아웃의 알파는 거의 이진이라 90 으로 낮춰도 0.8KB 밖에
+   * 안 줄면서 실루엣 경계 픽셀의 0.42% 를 건드린다(실측). 색만 깎는 게 남는 장사다.
+   */
+  quality: number;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -89,6 +97,7 @@ function parseArgs(argv: string[]): Args {
   if (!src || !out) {
     console.error(
       "사용: bun scripts/extract-author-cutout.ts --src <원본> --out <결과.webp> [--height 440] [--force]\n" +
+        "      [--quality 86]\n" +
         "      [--bg-tol N] [--shadow-floor Y] [--core-sat N] [--rim RX,RY]" +
         "   ← (D) 단색 배경 + 접지 그림자",
     );
@@ -109,6 +118,7 @@ function parseArgs(argv: string[]): Args {
     shadowFloor: num("--shadow-floor"),
     coreSat: num("--core-sat") ?? 50,
     rim: [rim[0] ?? 10, rim[1] ?? rim[0] ?? 4],
+    quality: num("--quality") ?? 86,
   };
 }
 
@@ -435,7 +445,7 @@ function cutOutByFloodFill(
   };
 }
 
-const { src, out, height, force, bgTol, shadowFloor, coreSat, rim } =
+const { src, out, height, force, bgTol, shadowFloor, coreSat, rim, quality } =
   parseArgs(process.argv.slice(2));
 
 if (!existsSync(src)) {
@@ -504,7 +514,7 @@ await mkdir(dirname(out), { recursive: true });
 await sharp(buf, { raw: { width: W, height: H, channels: 4 } })
   .extract({ left, top, width, height: cropH })
   .resize({ height, fit: "inside", withoutEnlargement: true })
-  .webp({ quality: 86, effort: 6, alphaQuality: 100 })
+  .webp({ quality, effort: 6, alphaQuality: 100 })
   .toFile(out);
 
 const result = await sharp(out).metadata();
