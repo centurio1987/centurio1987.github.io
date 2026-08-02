@@ -94,6 +94,7 @@ title: <제목>                 # 필수. 없으면 원고 첫머리/파일명�
 description: <한 줄 요약>       # 권장. 본문에서 한 줄로 요약(새 주장 만들지 말 것)
 pubDate: <YYYY-MM-DD>         # 필수. 기본은 오늘 날짜, 사용자 확인
 category: <슬러그>             # 필수. 아래 목록 중 하나 (불확실하면 추정 후 한 번 확인)
+author: tony                  # 필수. 이 경로는 사람이 쓴 원고이므로 기본 tony — 아래 참조
 tags: [..]                    # 선택. 본문 기반 3~8개(확신 없으면 비워 두고 post-finalize에 맡김)
 series: <시리즈명>             # 선택. 원고에 시리즈 성격이 명시된 경우만
 order: <숫자>                  # 선택 (시리즈 정렬용)
@@ -103,9 +104,12 @@ draft: true                   # draft/ 단계이므로 true
 
 - **제목**: 본문에 명시된 제목이 없으면 파일명(예: `aside: 드디어 arc를 벗어나나`)이나 도입부에서 자연스러운 제목을 **도출**해 사용자에게 한 번 확인받는다. 본문에 H1(`# `)을 새로 심지 않는다 — 제목은 레이아웃이 frontmatter로 렌더한다.
 - **category**: 아래 슬러그 중 하나. 스키마 enum에 없는 값은 절대 쓰지 않는다. 불확실하면 추정값을 제시하고 확인한다.
+- **author**: 이 스킬의 입력은 **사람이 직접 쓴 완성 원고**이므로 기본값은 `tony` 다.
+  그래도 **필드를 비워 두지 않고 명시**한다 — 스키마 기본값에 기대면 나중에 저자를 바꿔도 흔적이 안 남는다.
+  원고가 특정 퍼소나 목소리로 쓰였다면 `src/lib/authors.ts` 의 해당 id를 쓰고, 애매하면 묻는다.
 - **기존 frontmatter 보존**: 이미 있던 필드는 지우지 말고 재사용/보완만.
 
-**카테고리 슬러그**: `planning`(기획) · `architecture`(아키텍처) · `strategy`(전략) · `skills`(기술) · `design`(설계) · `research`(리서치) · `quality`(품질) · `leadership`(리더십). `src/content.config.ts` enum·`src/lib/categories.ts` 와 일치해야 한다.
+**카테고리 슬러그**: `planning`(기획) · `architecture`(아키텍처) · `strategy`(전략) · `skills`(기술) · `learning`(학습) · `design`(설계) · `research`(리서치) · `quality`(품질) · `leadership`(리더십). `src/content.config.ts` enum·`src/lib/categories.ts` 와 일치해야 한다.
 
 ### 5. 밈 삽입 (`<<meme:>>` → meme-inserter 위탁)
 

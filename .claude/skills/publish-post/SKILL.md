@@ -63,6 +63,7 @@ title: <제목>                      # 필수
 description: <한 줄 요약>           # 권장
 pubDate: <YYYY-MM-DD>              # 필수. 기본은 오늘 날짜, 사용자 확인
 category: <슬러그>                  # 필수. 아래 목록 중 하나
+author: <저자 id>                   # 필수. 아래 "저자 결정" 참조 — 생략 금지
 tags: [..]                         # 선택 (post-finalize가 채울 수도 있음)
 series: <시리즈명>                  # 선택
 order: <숫자>                       # 선택 (시리즈 정렬용)
@@ -70,15 +71,35 @@ draft: false                       # 발행이므로 false
 ---
 ```
 
-**카테고리 슬러그**: `planning`(기획) · `architecture`(아키텍처) · `strategy`(전략) · `skills`(기술) · `design`(설계) · `research`(리서치) · `quality`(품질) · `leadership`(리더십)
+**카테고리 슬러그**: `planning`(기획) · `architecture`(아키텍처) · `strategy`(전략) · `skills`(기술) · `learning`(학습) · `design`(설계) · `research`(리서치) · `quality`(품질) · `leadership`(리더십)
+— 정본은 `src/lib/categories.ts`. 이 목록과 어긋나면 코드 쪽이 옳다.
 
 draft frontmatter에 `category` 가 이미 있으면 재사용하고, 없거나 불확실하면 본문을 보고 추정한 뒤 사용자에게 한 번 확인한다. 스키마 enum에 없는 값은 절대 쓰지 않는다.
+
+**저자 결정 (`author`) — 생략하지 마라.**
+
+스키마 기본값은 `tony`(사람 저자)다. 즉 **`author`를 안 적으면 AI가 쓴 글이 사람 이름으로 발행된다.**
+`src/lib/authors.ts` 의 id 중 하나를 **반드시 명시**한다:
+
+| id | 누구 | 언제 |
+| --- | --- | --- |
+| `tony` | 빵관 토니 (사람) | 사람이 직접 쓴 개인 회고·에세이·사이트 공지 |
+| `ppangto` | 빵토 연구원 (AI) | AI가 완전 집필한 기술 심층 시리즈 (기본값에 가장 가깝다) |
+| `ppangto-prof` | 빵토 교수님 (AI) | 폭신 대담 |
+| `ppangto-teacher` | 빵토 선생님 (AI) | 자료구조·알고리즘 강의 톤 |
+
+- draft frontmatter에 `author` 가 있으면 그대로 쓴다.
+- 없으면: **시리즈 글이면 선수 편의 `author` 를 따라간다**
+  (`grep -H "^author:" src/content/posts/*.mdx` — `-h` 로 훑으면 순서가 어긋나 오독하기 쉽다).
+- 시리즈가 아니고 판단이 서지 않으면 **추정하지 말고 사용자에게 묻는다.**
+- **"○○의 해부" 같은 제목 패턴은 저자 단서가 아니다** — `ppangto` 와 `ppangto-teacher` 가 모두 쓴다.
 
 ### 5. 발행 전 확인
 
 편집/이동 전에 사용자에게 보여준다:
 - 생성될 경로 `src/content/posts/<slug>.md`
-- 최종 frontmatter (title, pubDate, category, tags, series 등)
+- 최종 frontmatter (title, pubDate, category, **author**, tags, series 등)
+  — `author` 가 비어 있으면 **여기서 멈추고 묻는다.** 확인 없이 기본값으로 넘어가지 않는다.
 - 스캐폴드 제거 여부
 
 확인을 받은 뒤 6단계로.
@@ -102,12 +123,15 @@ config.ts 등 별도 등록 파일 수정은 없다.
 - **destructive 작업**(draft 삭제, 포스트 생성)은 5단계 확인 전까지 수행하지 않는다.
 - frontmatter는 반드시 `src/content.config.ts` 스키마를 통과해야 한다. 특히 `pubDate`(날짜), `category`(enum), `draft`(불리언).
 - 새 카테고리를 멋대로 만들지 않는다 — enum에 없으면 사용자에게 어느 카테고리인지 묻는다.
+- **`author` 를 비워 두지 않는다.** 스키마 기본값이 `tony`(사람)라서, 비우면 AI가 쓴 글이
+  사람 이름으로 조용히 발행된다 — 화면에는 AI 배너도 안 붙는다. 확신이 없으면 묻는다.
 - 스캐폴드 잔재가 있어 사용자가 "취소"를 고르면 즉시 종료하고 정리할 섹션을 알린다.
 
 ## 참조 파일
 
 - `/src/content.config.ts` — 콘텐츠 컬렉션 스키마(필드·enum)
 - `/src/lib/categories.ts` — 카테고리 슬러그·라벨·색
+- `/src/lib/authors.ts` — 저자/퍼소나 id·이름·`isAI`(AI 배너 렌더 조건)
 - `.claude/skills/post-draft/SKILL.md` — 선행 스킬
 
 ## 관련 스킬

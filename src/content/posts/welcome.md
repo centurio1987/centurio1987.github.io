@@ -3,6 +3,7 @@ title: 블로그를 Astro로 새로 지었습니다
 description: "글쓰기에 집중하기 위해 Astro 5와 마크다운/MDX 기반으로 블로그를 다시 지은 전환 기록. 콘텐츠 중심의 정적 아키텍처와 집필 워크플로우를 소개합니다."
 pubDate: 2026-05-29
 category: strategy
+author: tony
 tags:
   - Astro
   - 블로그

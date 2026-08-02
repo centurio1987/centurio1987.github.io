@@ -3,6 +3,7 @@ title: [글 제목 — 무엇을 끝까지 이해시킬 것인가]
 description: [한 줄 요약 — 이 글을 읽으면 무엇을 할 수 있게 되는가]
 pubDate: [YYYY-MM-DD]
 category: [skills|architecture|...]   # src/lib/categories.ts enum 중
+author: [ppangto]                     # 필수 — src/lib/authors.ts id. 아래 메모 참조
 tags: []                              # 비워둠 — post-finalize가 채움
 # series: [시리즈명]                   # 시리즈일 때만
 # order: [1]                           # 시리즈일 때만
@@ -10,6 +11,15 @@ draft: true
 ---
 
 {/*
+  author 를 비워 두면 스키마 기본값 `tony`(사람 저자)로 렌더된다 — AI가 쓴 글이 사람 이름으로
+  나가고 AI 배너도 안 붙는다. 반드시 명시한다.
+    ppangto          기술 심층 시리즈의 기본 저자 (AI 완전 집필)
+    ppangto-teacher  자료구조·알고리즘 강의 톤
+    ppangto-prof     폭신 대담
+    tony             사람이 직접 쓴 글 — 이 템플릿의 경로가 아니다
+  시리즈 글이면 선수 편의 저자를 따라간다: grep -H "^author:" src/content/posts/*.mdx
+  ("○○의 해부" 같은 제목 패턴은 저자 단서가 아니다 — 여러 퍼소나가 함께 쓴다.)
+
   draft 단계 MDX. tech-deepdive 가 생성하고 publish-post 가 정식화한다.
   - 인터랙티브 시뮬: co-located .tsx 를 import 해서 <Comp client:visible /> 로 삽입(react-sim).
     (MDX 본문에 인라인으로 정의한 컴포넌트는 client:* 가 hydration 되지 않는다.)

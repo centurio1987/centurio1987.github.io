@@ -32,6 +32,7 @@ disable-model-invocation: true
    description: 
    pubDate: <오늘 YYYY-MM-DD>
    category: <category>
+   author: <저자 id — 아래 "저자" 절 참조. 비워 두지 않는다>
    tags: []
    draft: true
    ---
@@ -55,9 +56,18 @@ disable-model-invocation: true
 
 ## 카테고리 슬러그
 
-`planning`(기획) · `architecture`(아키텍처) · `strategy`(전략) · `skills`(기술) · `design`(설계) · `research`(리서치) · `quality`(품질) · `leadership`(리더십)
+`planning`(기획) · `architecture`(아키텍처) · `strategy`(전략) · `skills`(기술) · `learning`(학습) · `design`(설계) · `research`(리서치) · `quality`(품질) · `leadership`(리더십)
 
 `src/content.config.ts` 의 enum 과 일치해야 한다.
+
+## 저자 (`author`)
+
+스켈레톤이라도 **`author` 를 비워 두지 않는다.** 스키마 기본값이 `tony`(사람 저자)라서,
+비워 두면 나중에 AI가 채운 본문이 사람 이름으로 발행되고 AI 배너도 붙지 않는다.
+
+`src/lib/authors.ts` 의 id 중 하나를 쓴다 — `tony`(사람) · `ppangto`(기술 심층 AI) ·
+`ppangto-prof`(폭신 대담) · `ppangto-teacher`(자료구조·알고리즘).
+인자로 안 받았으면 **누가 쓸 글인지 한 번 묻는다.** `--talk` 경로는 대담 템플릿의 값을 따른다.
 
 ## 주의
 

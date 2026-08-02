@@ -3,6 +3,7 @@ title: "aside: 드디어 arc의 악령에서 벗어나나"
 description: "Arc Browser 이후 브라우저 대안을 전전하다 aside에서 느낀 UI와 AI 사용 경험에 대한 기록."
 pubDate: 2026-07-08
 category: research
+author: tony
 tags:
   - Arc Browser
   - aside
