@@ -7,7 +7,8 @@ description: >
   엄밀한 정의·장비·프로토콜·실무 시나리오·오해 포인트·실습 과제를 담고, **React 시뮬레이션은 `react-sim`,
   구조형 이미지는 `make-image`에 명세를 남겨 위탁**한다. 단일 글 또는 순서 있는 시리즈로 쓸 수 있다.
   "/tech-deepdive <메모>", "이 주제로 기술 글 깊게 써줘", "심층 기술 해설 작성",
-  "OSI 7계층 글 써줘" 같은 표현에 반응한다. 4축 미시 검토는 `review-post`, 거시 검토는 `review-writing`,
+  "OSI 7계층 글 써줘" 같은 표현에 반응한다. 집필 직후 AI 문체 윤문은 `humanize-post`,
+  5축 미시 검토는 `review-post`, 거시 검토는 `review-writing`,
   개념이미지/태그/시리즈는 `post-finalize`, 발행은 `publish-post`, 배포는 `ship-post`가 맡는다.
 argument-hint: <angle 경로(~/blog-research/wiki/angles/) 또는 raws/ 글감>
 ---
@@ -17,7 +18,7 @@ argument-hint: <angle 경로(~/blog-research/wiki/angles/) 또는 raws/ 글감>
 글감 메모를 받아 **해부학적으로 깊은 기술 해설 글**을 MDX로 끝까지 집필하고, 외부 모델(codex/agy)에게
 **누락·모순·사실성** 검토를 받아 보강한 뒤 `draft/<stem>.mdx` 완성 초안을 만든다.
 
-이 스킬의 책임은 **본문 작성 + 외부 검토까지**다. 4축 한국어 리뷰(`review-post`), 이미지·태그·시리즈
+이 스킬의 책임은 **본문 작성 + 외부 검토까지**다. AI 문체 윤문(`humanize-post`), 5축 한국어 리뷰(`review-post`), 이미지·태그·시리즈
 링크(`post-finalize`), 정식 발행(`publish-post`)은 후속 스킬이 맡는다. 실제 "글 써줘" 요청을 발행까지
 끝내는 일은 `tech-article-publisher` 서브에이전트가 이 스킬을 첫 단계로 호출해 오케스트레이션한다.
 
@@ -26,7 +27,7 @@ argument-hint: <angle 경로(~/blog-research/wiki/angles/) 또는 raws/ 글감>
 ```
 research → ~/blog-research/wiki/angles/<slug>.md   (자료 수집·ingest 완료된 angle)
   → [tech-deepdive]   draft/<stem>.mdx   (angle+STYLE_GUIDE로 집필 + 시뮬/이미지 위탁 + 외부검토 반영)
-  → review-post (4축 미시) → review-writing (설득·구조·문체) → quality-gate (기술 체크리스트+보완) → post-finalize (개념이미지/태그/시리즈) → publish-post → ship-post
+  → humanize-post (AI 리듬 윤문) → review-post (5축 미시) → review-writing (설득·구조·문체) → quality-gate (기술 체크리스트+보완) → post-finalize (개념이미지/태그/시리즈) → publish-post → ship-post
 ```
 
 입력은 보통 **research가 만든 angle 페이지**(+연결된 topic/entity 페이지, 근거 raws)다. 리서치를 건너뛴 글
@@ -45,6 +46,10 @@ research → ~/blog-research/wiki/angles/<slug>.md   (자료 수집·ingest 완�
 - **한국어 본문 + 기술 용어 원어**(TCP, MTU, ARP 등은 원어 유지).
 - **내 문체.** `../_shared/STYLE_GUIDE.md`를 따른다 — Part 1(샘플 추출 문체 사실)은 절대 기준, Part 2(일반 글쓰기 규칙)도 준수. 거시 검토(`review-writing`)가 이 가이드로 문체 일치를 채점한다.
 - **자연스러운 한국어.** `../_shared/NATURAL_KOREAN_GUIDE.md`를 따른다 — 번역기에서 갓 뽑은 듯한 영어투(`X라는 신화`=the myth of, `비싼 오해`=costly misconception, 무생물 주어·가주어·이중 피동·`~에 대하여`/`~을 통해` 남발)를 쓰지 않고, 그 뜻을 **한국어 화자라면 어떻게 말할지로 다시 쓴다.** 레지스터(서정/일상/정론)를 의식해 고른다. 검토(`review-writing`)가 이 가이드로 채점한다.
+- **AI 문체 회피.** `../_shared/AI_KOREAN_PATTERNS.md` Part A를 집필 중에 의식한다 — 쉼표를 문법적으로 가능한 모든 자리에
+  찍지 않고, 같은 종결 어절을 3연속 쓰지 않으며, `중요한 역할을 합니다`·`시사하는 바가 큽니다`·`살펴보겠습니다` 같은
+  빈 상찬을 쓰지 않는다. 섹션마다 **단문 강타**를 하나씩 심는다. 집필 직후 `humanize-post`가 등급(A~D)으로 판정한다.
+  **단, Part B(저자 색 보호 9항목)는 그대로 쓴다** — `결론적으로`·만연체·당위 마무리는 저자 문체다.
 
 ## 동작 순서
 
@@ -101,7 +106,7 @@ bash .claude/skills/tech-deepdive/scripts/review-article.sh "draft/<stem>.mdx"
 ### 5. 완료 안내 + 인계
 
 - 만든 파일 경로(`draft/<stem>.mdx`, co-located 컴포넌트), 외부 검토 결과 요지(미통과면 그 사실)를 보고한다.
-- 다음 단계 안내: `review-post`(4축 미시) → `review-writing`(설득·구조·문체) → `quality-gate`(기술 체크리스트+보완) → `post-finalize`(개념이미지/태그/시리즈) → `publish-post`(발행) → `ship-post`(빌드 재검증+푸시).
+- 다음 단계 안내: `humanize-post`(AI 리듬 윤문) → `review-post`(5축 미시) → `review-writing`(설득·구조·문체) → `quality-gate`(기술 체크리스트+보완) → `post-finalize`(개념이미지/태그/시리즈) → `publish-post`(발행) → `ship-post`(빌드 재검증+푸시).
 - 시리즈면 남은 편 목록과 "다음 편 쓰려면 같은 스킬 재호출"을 안내한다.
 
 ## 참조 파일
@@ -110,6 +115,7 @@ bash .claude/skills/tech-deepdive/scripts/review-article.sh "draft/<stem>.mdx"
 - `assets/SECTION_PATTERNS.md` — 섹션 유형별 작성 메뉴(목적·필수요소·좋은예/나쁜예) = ORDER 다관점 체크리스트
 - `../_shared/STYLE_GUIDE.md` — 내 문체 가이드(집필 기준, `review-writing`과 공유)
 - `../_shared/NATURAL_KOREAN_GUIDE.md` — 영어투 교정 + 수사 팔레트(자연스러운 한국어, `review-writing`과 공유)
+- `../_shared/AI_KOREAN_PATTERNS.md` — AI 기계 리듬 6범주 + **Part B 저자 색 보호 목록**(`humanize-post`·`review-post`와 공유)
 - `../react-sim/assets/REACT_SIM_GUIDE.md` — React 시뮬레이션 규약(`react-sim` 스킬이 소유, 집필은 명세만 남기고 위탁)
 - `../make-image/assets/IMAGE_GUIDE.md` — 구조형 시각물(viz) kind·규격(`make-image` 스킬이 소유, 집필은 ```viz``` 명세만 남기고 위탁)
 - `design-concept/DIAGRAM_STYLE_GUIDE.md` — 다이어그램 디자인 원칙·역할 팔레트
@@ -121,7 +127,7 @@ bash .claude/skills/tech-deepdive/scripts/review-article.sh "draft/<stem>.mdx"
 
 ## 주의
 
-- 이 스킬은 **본문 + 외부검토까지만**. 발행/이미지 생성/4축 리뷰는 후속 스킬에 맡긴다.
+- 이 스킬은 **본문 + 외부검토까지만**. 발행/이미지 생성/AI 문체 윤문/5축 리뷰는 후속 스킬에 맡긴다.
 - 억지로 모든 섹션을 채우지 않는다 — 뺀 칸은 이유를 남긴다.
 - 외부 검토 미통과(둘 다 실패) 상태를 "완성"으로 보고하지 않는다.
 - MDX 작성 후에는 `bun run build`가 통과하는지 확인한다(JSX 문법 오류 1건이 사이트 전체 빌드를 깬다).

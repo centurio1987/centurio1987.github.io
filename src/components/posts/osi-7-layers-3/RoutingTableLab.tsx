@@ -199,7 +199,7 @@ export default function RoutingTableLab() {
             <strong style={{ color: TEAL }}>
               {winner.route.cidr} ({winner.route.via}, {winner.route.dev})
             </strong>{" "}
-            선택. 여러 경로가 동시에 매치돼도 <strong>가장 긴 /{winner.len}</strong>가 이깁니다.
+            선택. 여러 경로가 동시에 매치돼도 <strong>가장 긴 /{winner.len}</strong>를 고릅니다.
           </p>
         ) : (
           <p style={{ margin: 0, color: "#6b6357" }}>
@@ -209,7 +209,7 @@ export default function RoutingTableLab() {
       </div>
 
       <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 10 }}>
-        <code>10.20.30.5</code>는 /8·/16·/24에 모두 걸리지만 가장 구체적인 /24가 이깁니다.
+        <code>10.20.30.5</code>는 /8·/16·/24에 모두 걸리지만 선택되는 것은 가장 구체적인 /24입니다.
         <code> 10.99.0.1</code>은 /8만 걸리고, <code>8.8.8.8</code>은 아무 데도 안 걸려 결국{" "}
         <code>0.0.0.0/0</code> 기본 경로로 갑니다 — 그래서 default route를 "최후의 보루"라 부릅니다.
       </figcaption>

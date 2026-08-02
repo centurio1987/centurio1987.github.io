@@ -130,11 +130,31 @@ variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives a
 raws/<memo>.md   (user writes idea fragments)
   → post-draft    → draft/<memo>-draft.md   (3 plot candidates + topic cautions)
   → user picks a plot, writes the body
-  → review-post   (4-axis Korean review: 맞춤법/개연성/테크니컬 라이팅/몰입도)
+  → humanize-post (AI 문체 제거 — 스캔→등급(A~D)→윤문. **에이전트가 본문을 쓴 경우에만**)
+  → review-post   (5-axis Korean review: 맞춤법/개연성/테크니컬 라이팅/몰입도/AI 문체 잔존)
   → make-image    (```viz``` blocks → bbangto-ui-visualization components; inline SVG + hero webp)
   → post-finalize (tags, series links, <<meme:>> delegation — NO image generation)
   → publish-post  → src/content/posts/<slug>.mdx  (sets Astro frontmatter, deletes draft)
 ```
+
+심층 기술 글은 더 긴 경로를 탄다:
+
+```
+research → tech-deepdive(집필) → humanize-post(AI 리듬) → review-post(미시)
+  → review-writing(거시) → quality-gate(기술) → post-finalize → publish-post → ship-post
+```
+
+**한국어 품질 기준 3종 (`.claude/skills/_shared/`)** — 겹치지 않게 나뉘어 있다:
+
+| 문서 | 잡는 것 | 소유 단계 |
+| --- | --- | --- |
+| `STYLE_GUIDE.md` | 저자 고유 목소리 (Part 1은 절대 기준) | tech-deepdive · review-writing |
+| `NATURAL_KOREAN_GUIDE.md` | 영어투 — 문장 **골격**이 영어 | review-post |
+| `AI_KOREAN_PATTERNS.md` | AI 기계 리듬 — 문장 **박자**가 기계 | humanize-post |
+
+`AI_KOREAN_PATTERNS.md`의 **Part B(저자 색 보호 9항목)** 는 다른 모든 규칙보다 우선한다.
+`결론적으로`·만연체·당위 마무리·병렬 점층·한자어 인용은 **AI 티가 아니라 저자 문체다. 고치지 마라.**
+사람이 직접 쓴 원고(`raw-to-draft` 경로)에는 `humanize-post`와 AI 문체 축을 **돌리지 않는다.**
 
 ### Packet captures: VPN 캡처 랩 (별도 레포)
 

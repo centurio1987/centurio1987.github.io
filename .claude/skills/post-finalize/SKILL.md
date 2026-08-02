@@ -10,7 +10,7 @@ description: >
   **`make-image`(apply-viz 엔진)가 이미 구현**하므로, 이 스킬은 이미지를 생성하지 않는다.
   잔존한 레거시 마커(`[[[...]]]`·```figure```·`(( ))`)를 만나면 경고만 한다.
   "/post-finalize <파일경로>", "이 글 후처리해줘", "포스트 마무리해줘", "태그 뽑아줘" 같은 표현에 반응한다.
-  새 글 스캐폴드 작성은 `post-draft`, 4축 리뷰는 `review-post` 가 담당한다.
+  새 글 스캐폴드 작성은 `post-draft`, 5축 리뷰는 `review-post` 가 담당한다.
 argument-hint: <post-file-path>
 ---
 

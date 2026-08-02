@@ -21,7 +21,7 @@ argument-hint: <article-file (보통 draft/*.mdx)>
 ## 워크플로우 상의 위치
 
 ```
-tech-deepdive → review-post → [quality-gate: 채점→보완→재채점 (≤3회)] → post-finalize → publish-post
+tech-deepdive → humanize-post → review-post → review-writing → [quality-gate: 채점→보완→재채점 (≤3회)] → post-finalize → publish-post → ship-post
 ```
 
 발행 오케스트레이터(`tech-article-publisher`)는 이 스킬을 **발행 전 필수 게이트**로 호출한다.
