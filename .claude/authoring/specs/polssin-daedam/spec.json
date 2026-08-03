@@ -1,0 +1,119 @@
+{
+  "$schema": "authoring-kit/spec@1",
+  "schema_version": 1,
+  "id": "polssin-daedam",
+  "label": "폭신 대담",
+  "version": "1.0.0",
+  "source": {
+    "origin": "reverse-extraction",
+    "refs": [
+      "blog src/templates/talk-episode.mdx — 에피소드 스캐폴드",
+      "blog src/lib/talk.ts — 화자 듀오 설정",
+      "blog src/layouts/TalkLayout.astro · src/components/talk/{QA,PullQuote}.astro",
+      "blog CLAUDE.md — 폭신 대담 절"
+    ],
+    "note": "**발행 에피소드가 0편이다.** 레이아웃·컴포넌트·템플릿은 만들어져 있으나 실제 글이 아직 없어, 참조 구현 대신 **매체 구조**에서 골격을 폈다. `<QA n q>` 가 질문 단위를 강제하고 `<PullQuote>` 가 정수 한 문장을 요구한다 — 이 둘이 사실상의 명세다."
+  },
+  "voice": {
+    "default": "ppangtolab-prof",
+    "allowed": ["ppangtolab-prof"]
+  },
+  "sections": [
+    {
+      "id": "frontmatter",
+      "label": "대담 설정",
+      "required": true,
+      "order": 10,
+      "heading_fixed": false,
+      "_note": "template: talk 이 레이아웃을 활성화한다. series·order 가 EP 번호와 네비게이션을 구동한다"
+    },
+    {
+      "id": "qa",
+      "label": "질문과 답변",
+      "required": true,
+      "order": 20,
+      "heading_fixed": false,
+      "repeat": true,
+      "_note": "<QA n q> 블록. n 은 1부터 연속, q 는 질문문. 목차는 q 에서 자동 생성되므로 따로 쓰지 않는다"
+    },
+    {
+      "id": "pullquote",
+      "label": "정수 한 문장",
+      "required": true,
+      "order": 30,
+      "heading_fixed": false,
+      "_note": "<PullQuote>. 에피소드가 도달한 지점 한 문장"
+    }
+  ],
+  "principles": [
+    {
+      "code": "SP1",
+      "level": "MUST",
+      "axis": "structure",
+      "text": "`<QA n q>` 로만 본문을 쓴다. `n` 은 1부터 빠짐없이 연속하고 `q` 는 질문문이다. **오늘의 질문 목차를 손으로 쓰지 않는다** — `q` 에서 자동 생성되므로 손으로 쓰면 두 벌이 되어 어긋난다"
+    },
+    {
+      "code": "SP2",
+      "level": "MUST",
+      "axis": "structure",
+      "text": "한 `<QA>` 는 **질문 하나만** 다룬다. 답변이 옆으로 새어 다른 주제를 함께 다루면 그건 다음 질문의 몫이다"
+    },
+    {
+      "code": "SP3",
+      "level": "MUST",
+      "axis": "scope-principle",
+      "text": "질문은 **고민에서 나온다.** 설명을 끌어내기 위한 형식적 질문(`그렇다면 X 란 무엇인가요?`)을 쓰지 않는다. 인터뷰어가 실제로 막힌 지점이 질문이 된다"
+    },
+    {
+      "code": "SP4",
+      "level": "MUST",
+      "axis": "structure",
+      "text": "`<PullQuote>` 는 **요약이 아니라 도달점**이다. 앞 내용을 줄인 문장이면 실패다. 에피소드당 1~2개"
+    },
+    {
+      "code": "SP5",
+      "level": "MUST",
+      "axis": "structure",
+      "text": "frontmatter 에 `template: talk` 이 있어야 대담 레이아웃이 산다. `series` 와 `order` 가 EP 번호·이전화/다음화·지난 대담 카드를 모두 구동하므로 비워 두지 않는다"
+    },
+    {
+      "code": "SP6",
+      "level": "MUST",
+      "axis": "structure",
+      "text": "`author` 는 **인터뷰어**다(대담을 기록해 올리는 쪽). 답변 화자인 교수님은 `talk.ts` 가 잡으므로 frontmatter 에 적지 않는다"
+    },
+    {
+      "code": "SP7",
+      "level": "SHOULD",
+      "axis": "comprehension",
+      "text": "질문이 깊어지는 순서로 배열한다. 뒤 질문이 앞 답변을 딛고 서면 대담이 한 갈래로 읽힌다"
+    },
+    {
+      "code": "SP8",
+      "level": "MUST",
+      "axis": "evidence",
+      "text": "교수님이 모르는 것은 모른다고 말하게 둔다. 확신 없는 답을 확신처럼 쓰지 않는다 — 대담의 신뢰는 그 지점에서 갈린다"
+    }
+  ],
+  "conditional_rule": "`<PullQuote>` 는 에피소드당 1~2개이며 질문 사이 아무 자리에나 둘 수 있다. 그 외 조건부 절은 없다 — 이 글 종류는 골격이 매체에 고정돼 있다.",
+  "template": {
+    "kind": "mdx",
+    "template_ref": "talk",
+    "slot_style": "bracket-inline",
+    "outputs": [{ "format": "mdx", "dir": "content" }]
+  },
+  "placeholders": {
+    "profile": "std-v1",
+    "legacy_accept": ["bracket-inline"]
+  },
+  "gate": {
+    "rubric": "default",
+    "max_rounds": 3,
+    "external_review": {
+      "enabled": true,
+      "axes": "review-axes/article.md",
+      "failure_policy": "warn",
+      "redact": "none"
+    }
+  }
+}

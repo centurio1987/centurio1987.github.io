@@ -1,0 +1,192 @@
+{
+  "$schema": "authoring-kit/spec@1",
+  "schema_version": 1,
+  "id": "tech-deepdive",
+  "label": "기술 해부 글",
+  "version": "1.0.0",
+  "source": {
+    "origin": "reverse-extraction",
+    "refs": [
+      "blog .claude/skills/tech-deepdive/SKILL.md — ORDER 원칙 + 동작 순서 5단계",
+      "blog .claude/skills/tech-deepdive/assets/ARTICLE_TEMPLATE.mdx — 섹션 골격",
+      "blog .claude/skills/tech-deepdive/assets/SECTION_PATTERNS.md — 다관점 메뉴 12종",
+      "blog src/content.config.ts — frontmatter 스키마(Zod)"
+    ],
+    "note": "ORDER 원칙 10개 중 **문체 3개는 여기 넣지 않았다** — `내 문체`·`자연스러운 한국어`·`AI 문체 회피`는 각각 L1(voice)·L0(grammar)·L0(machine-rhythm) 소유다. 축 소유권상 L2 가 선언할 수 없고, 선언하면 `validate` 가 거부한다. 그 셋이 여기 섞여 있던 것이 '한 저자의 문체가 모든 퍼소나에 강제'된 경로였다."
+  },
+  "voice": {
+    "default": "ppangtolab-researcher",
+    "allowed": ["ppangtolab-researcher", "ppangtolab-teacher", "ppangto"]
+  },
+  "sections": [
+    {
+      "id": "intro",
+      "label": "들어가며 — 왜 이걸 알아야 하는가",
+      "required": true,
+      "order": 10,
+      "heading_fixed": false
+    },
+    {
+      "id": "overview",
+      "label": "한눈에 보기",
+      "required": true,
+      "order": 20,
+      "heading_fixed": false
+    },
+    {
+      "id": "definition",
+      "label": "엄밀한 정의",
+      "required": true,
+      "order": 30,
+      "heading_fixed": false
+    },
+    {
+      "id": "mechanism",
+      "label": "핵심 원리 — 어떻게/왜 그렇게 동작하는가",
+      "required": true,
+      "order": 40,
+      "heading_fixed": false
+    },
+    {
+      "id": "mechanism.sim",
+      "label": "시뮬레이션으로 보기",
+      "required": false,
+      "order": 41,
+      "parent": "mechanism",
+      "condition": "상태 변화가 시간축을 타는 개념일 때. React 시뮬은 매체 스킬(react-sim) 소관이다"
+    },
+    {
+      "id": "devices",
+      "label": "관련 장비",
+      "required": false,
+      "order": 50,
+      "condition": "물리 계층·네트워크 장비가 개념 이해에 필요한 경우만"
+    },
+    {
+      "id": "protocols",
+      "label": "관련 프로토콜·기술",
+      "required": false,
+      "order": 60,
+      "condition": "주변 기술과의 경계를 그어야 이해되는 경우만"
+    },
+    {
+      "id": "scenario",
+      "label": "실무 시나리오 워크스루",
+      "required": true,
+      "order": 70,
+      "heading_fixed": false,
+      "repeat": true
+    },
+    {
+      "id": "misconception",
+      "label": "오해하기 쉬운 포인트",
+      "required": true,
+      "order": 80,
+      "heading_fixed": false
+    },
+    {
+      "id": "pitfalls",
+      "label": "함정과 베스트 프랙티스",
+      "required": false,
+      "order": 90,
+      "condition": "구현·실무 성격의 글에 한정. 개념 해설 글에는 붙이지 않는다"
+    },
+    {
+      "id": "exercise",
+      "label": "직접 해보기 (실습 과제)",
+      "required": false,
+      "order": 100,
+      "condition": "독자가 손을 움직여 확인할 수 있는 주제일 때 권장"
+    },
+    {
+      "id": "closing",
+      "label": "마무리 — 핵심 다시 짚기",
+      "required": true,
+      "order": 110,
+      "heading_fixed": false
+    }
+  ],
+  "principles": [
+    {
+      "code": "SP1",
+      "level": "MUST",
+      "axis": "comprehension",
+      "text": "독자 = 고객. 독자가 이해하지 못하면 실패다. '어떻게든 이해시킨다'는 태도로 쓴다"
+    },
+    {
+      "code": "SP2",
+      "level": "MUST",
+      "axis": "structure",
+      "text": "점진적 공개 — 쉬운 것에서 어려운 것 순서로 쌓아 비전문가도 따라오게 한다. 앞 절이 뒤 절의 전제를 이미 놓아 두어야 한다"
+    },
+    {
+      "code": "SP3",
+      "level": "MUST",
+      "axis": "scope-principle",
+      "text": "해부학적 깊이 — 표면 설명에서 멈추지 않는다. '왜 그렇게 동작하는가'까지 파고든다. 스펙·용어 나열로 절을 채우면 실패다"
+    },
+    {
+      "code": "SP4",
+      "level": "MUST",
+      "axis": "structure",
+      "text": "다관점 — 한 개념을 여러 각도로 비춘다. 엄밀한 정의·비유·다이어그램·실무 사례·구현 코드·실습·오해 포인트·시뮬레이션·함정↔베스트프랙티스 중 **최소 3종**. 메뉴는 `SECTION_PATTERNS.md` 12종"
+    },
+    {
+      "code": "SP5",
+      "level": "MUST",
+      "axis": "scope-principle",
+      "text": "몰입·설득으로 연다 — 왜 중요한지, 무슨 문제를 푸는지를 먼저 건다. 정의부터 들이밀지 않는다"
+    },
+    {
+      "code": "SP6",
+      "level": "MUST",
+      "axis": "evidence",
+      "text": "한국어 본문 + 기술 용어 원어 — TCP·MTU·ARP 같은 용어는 번역하지 않고 원어를 유지한다. 임의로 한국어화하면 검색도 대조도 안 된다"
+    },
+    {
+      "code": "SP7",
+      "level": "MUST",
+      "axis": "structure",
+      "text": "frontmatter 필수 필드 — `title`·`description`·`pubDate`·`category`·`author`. `category` 는 `src/lib/categories.ts` 의 9종과 정확히 일치하고, `author` 는 `src/lib/authors.ts` 의 id 와 일치한다. **`author` 를 비워 두지 않는다** — 기본값으로 떨어지면 AI 글이 사람 이름으로 나간다"
+    },
+    {
+      "code": "SP8",
+      "level": "SHOULD",
+      "axis": "structure",
+      "text": "조건부 절의 생략은 판단이지 누락이 아니다. 빼기로 했으면 게이트 보고에 사유 한 줄을 남긴다"
+    },
+    {
+      "code": "SP9",
+      "level": "MUST",
+      "axis": "evidence",
+      "text": "시각 자료는 **실제로 렌더**한다. `[diagram: …]` 같은 텍스트 표시자만 남기면 미완성이다. 다이어그램·시뮬·이미지 생성은 매체 스킬(`react-sim`·`make-image`·`react-mdx-diagram`)에 위탁한다"
+    },
+    {
+      "code": "SP10",
+      "level": "SHOULD",
+      "axis": "scope-principle",
+      "text": "시리즈 글이면 `series`·`order` 를 채운다. 이전화·다음화 네비게이션과 지난 에피소드 카드가 이 두 값으로만 구동된다"
+    }
+  ],
+  "conditional_rule": "`관련 장비`·`관련 프로토콜·기술`·`함정과 베스트 프랙티스`·`직접 해보기`·`시뮬레이션으로 보기` 는 조건부다. 주제가 요구하지 않으면 빼고, 뺀 사유를 게이트 보고에 남긴다. 필수 6절(들어가며·한눈에 보기·엄밀한 정의·핵심 원리·실무 시나리오·오해 포인트·마무리)은 뺄 수 없다.",
+  "template": {
+    "kind": "mdx",
+    "template_ref": "article",
+    "slot_style": "bracket-inline",
+    "outputs": [{ "format": "mdx", "dir": "content" }]
+  },
+  "placeholders": {
+    "profile": "std-v1",
+    "legacy_accept": ["bracket-inline", "brace-descriptive"]
+  },
+  "gate": {
+    "rubric": "default",
+    "max_rounds": 3,
+    "external_review": {
+      "enabled": true,
+      "axes": "review-axes/article.md",
+      "failure_policy": "hard-fail",
+      "redact": "none"
+    }
+  }
+}

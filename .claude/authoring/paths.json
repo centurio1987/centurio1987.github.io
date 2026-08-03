@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "_note": "명세(spec)는 논리, 이 파일은 물리다. 경로·빌드 명령을 spec 에 넣으면 같은 spec 을 다른 프로젝트에서 못 쓴다.",
+  "dirs": {
+    "raw": "raws",
+    "draft": "draft",
+    "content": "src/content/posts",
+    "images": "public/images"
+  },
+  "taxonomy": "src/lib/categories.ts",
+  "authors": "src/lib/authors.ts",
+  "templates": {
+    "article": ".claude/skills/tech-deepdive/assets/ARTICLE_TEMPLATE.mdx",
+    "talk": "src/templates/talk-episode.mdx"
+  },
+  "commands": {
+    "build": "bun run build",
+    "verify_viz": "bun run viz:verify",
+    "verify_deco": "bun run deco:verify"
+  },
+  "exemplars": {
+    "tech-deepdive": [
+      "src/content/posts/vpn-anatomy-1.mdx",
+      "src/content/posts/container-anatomy-1.mdx"
+    ],
+    "polssin-daedam": []
+  },
+  "section_menu": ".claude/skills/tech-deepdive/assets/SECTION_PATTERNS.md"
+}
