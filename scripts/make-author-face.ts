@@ -66,15 +66,15 @@ const FACES: Record<string, FaceCrop> = {
     size: 620,
     bgTol: 3,
   },
-  "ppangto-prof": {
-    master: "design-concept/authors/ppangto-prof-fullbody-master.webp",
+  "ppangtolab-prof": {
+    master: "design-concept/authors/ppangtolab-prof-fullbody-master.webp",
     left: 348,
     top: 140,
     size: 600,
     bgTol: 3,
   },
-  "ppangto-teacher": {
-    master: "design-concept/authors/ppangto-teacher-fullbody-master.webp",
+  "ppangtolab-teacher": {
+    master: "design-concept/authors/ppangtolab-teacher-fullbody-master.webp",
     left: 265,
     top: 200,
     size: 560,

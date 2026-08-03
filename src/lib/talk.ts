@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { getAuthor } from "./authors";
 
-const interviewee = getAuthor("ppangto-prof");
+const interviewee = getAuthor("ppangtolab-prof");
 
 // 폭신 대담(인터뷰 시리즈) 설정 — TalkLayout · QA · PullQuote의 단일 소스
 // interviewee(빵토 교수님)의 이름·아바타는 authors.ts 퍼소나 레지스트리에서 파생된다(중복 방지).

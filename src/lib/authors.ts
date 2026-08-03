@@ -34,59 +34,69 @@ export interface AuthorMeta {
 }
 
 // 작성자/퍼소나 레지스트리 — 목록/프로필/배너의 단일 소스
-// id 매핑: ppangto=빵토 연구원(베이스) · ppangto-prof=빵토 교수님(폭신 대담) · ppangto-teacher=빵토 선생님(자료구조·알고리즘 강의)
-// 각 퍼소나의 voice 가이드는 src/lib/personas/<id>-voice.md 컨벤션으로 별도 관리한다(정의된 퍼소나만).
+//
+// **사람 하나 + AI 퍼소나 셋.** `ppangto`(ppang-gwan-tony 의 줄임말)가 사람이고,
+// AI 셋은 그 사람의 연구실(빵토랩) 소속이라 `ppangtolab-` 접두를 쓴다.
+// 예전엔 `tony` 와 `ppangto` 가 따로 있었는데 **둘 다 같은 사람의 표기**였고,
+// `ppangto` 라는 id 를 AI 연구원이 쓰고 있어 이름이 충돌했다 — 2026-08-03 정리.
+//
+// id 매핑: ppangto=빵관 토니(사람) · ppangtolab-researcher=빵토랩 연구원
+//        · ppangtolab-prof=빵토랩 교수님(폭신 대담) · ppangtolab-teacher=빵토랩 선생님(자료구조·알고리즘)
+//
+// 각 퍼소나의 문체 규칙(voice)은 `authoring-kit` 플러그인의 레지스트리가 소유한다
+// (`~/.claude/authoring/voices/<id>/`). 사람인 `ppangto` 의 voice 는 `usage: "preserve"` 라
+// **AI 가 그 목소리로 쓰지 않는다** — 초안을 다듬을 때 지킬 색으로만 쓴다.
 export const AUTHORS: AuthorMeta[] = [
   {
-    id: "tony",
+    id: "ppangto",
     name: "빵관 토니",
     role: "글 굽는 사람",
     handle: "@ppangwan-tony",
     bio: "Serious Work, Joyful Wit. 진지한 일 이야기를 토실토실하게 구워 씁니다.",
     // 예전엔 /tony-deco.webp(장식 구운 전신 합성물)를 그대로 썼다 — 원 안에서 얼굴이
     // 뭉개지고 혼자만 모눈 배경을 지고 있었다. 그 파일은 OG 기본 이미지로 계속 산다.
-    avatar: "/images/authors/tony.webp",
-    fullBody: "/images/authors/tony-full.webp",
-    avatarSm: "/images/authors/tony-sm.webp",
+    avatar: "/images/authors/ppangto.webp",
+    fullBody: "/images/authors/ppangto-full.webp",
+    avatarSm: "/images/authors/ppangto-sm.webp",
     isAI: false,
     links: [{ label: "글 더 보기", href: "/posts/" }],
   },
   {
-    id: "ppangto",
-    name: "빵토 연구원",
+    id: "ppangtolab-researcher",
+    name: "빵토랩 연구원",
     role: "AI 연구원 · 완전 집필",
-    handle: "@ppangto-lab",
+    handle: "@ppangtolab-researcher",
     bio: "토니의 연구실에서 토실토실하게 구워낸 연구 성과를 공유하는 AI 연구원입니다.",
-    avatar: "/images/authors/ppangto.webp",
-    fullBody: "/images/authors/ppangto-full.webp",
-    avatarSm: "/images/authors/ppangto-sm.webp",
+    avatar: "/images/authors/ppangtolab-researcher.webp",
+    fullBody: "/images/authors/ppangtolab-researcher-full.webp",
+    avatarSm: "/images/authors/ppangtolab-researcher-sm.webp",
     banner: "/images/authors/ai-banner.webp",
-    bannerAlt: "토실토실하게 구워낸 연구 성과를 공유합니다 — 이 글은 AI 빵토 연구원이 집필했습니다",
+    bannerAlt: "토실토실하게 구워낸 연구 성과를 공유합니다 — 이 글은 AI 빵토랩 연구원이 집필했습니다",
     isAI: true,
     links: [{ label: "글 더 보기", href: "/posts/" }],
   },
   {
-    id: "ppangto-prof",
-    name: "빵토 교수님",
+    id: "ppangtolab-prof",
+    name: "빵토랩 교수님",
     role: "AI 학과장 · 폭신 대담",
-    handle: "@ppangto-prof",
+    handle: "@ppangtolab-prof",
     bio: "질문 하나도 끝까지 붙들고 답을 파고드는, 폭신 대담을 진행하는 AI 교수님입니다.",
-    avatar: "/images/authors/ppangto-prof.webp",
-    fullBody: "/images/authors/ppangto-prof-full.webp",
-    avatarSm: "/images/authors/ppangto-prof-sm.webp",
+    avatar: "/images/authors/ppangtolab-prof.webp",
+    fullBody: "/images/authors/ppangtolab-prof-full.webp",
+    avatarSm: "/images/authors/ppangtolab-prof-sm.webp",
     isAI: true,
     links: [{ label: "글 더 보기", href: "/posts/" }],
   },
   {
-    id: "ppangto-teacher",
-    name: "빵토 선생님",
+    id: "ppangtolab-teacher",
+    name: "빵토랩 선생님",
     role: "AI 강사 · 자료구조와 알고리즘",
-    handle: "@ppangto-teacher",
+    handle: "@ppangtolab-teacher",
     bio: "작은 단계로 쪼개 끝까지 이해시키는, 자료구조와 알고리즘을 가르치는 AI 선생님입니다.",
-    avatar: "/images/authors/ppangto-teacher.webp",
-    fullBody: "/images/authors/ppangto-teacher-full.webp",
-    avatarSm: "/images/authors/ppangto-teacher-sm.webp",
-    banner: "/images/authors/ppangto-teacher-banner.webp",
+    avatar: "/images/authors/ppangtolab-teacher.webp",
+    fullBody: "/images/authors/ppangtolab-teacher-full.webp",
+    avatarSm: "/images/authors/ppangtolab-teacher-sm.webp",
+    banner: "/images/authors/ppangtolab-teacher-banner.webp",
     isAI: true,
     links: [{ label: "글 더 보기", href: "/posts/" }],
   },
@@ -94,7 +104,7 @@ export const AUTHORS: AuthorMeta[] = [
 
 export const AUTHOR_IDS = AUTHORS.map((a) => a.id) as [string, ...string[]];
 
-export const DEFAULT_AUTHOR = "tony";
+export const DEFAULT_AUTHOR = "ppangto";
 
 const BY_ID = new Map(AUTHORS.map((a) => [a.id, a]));
 
