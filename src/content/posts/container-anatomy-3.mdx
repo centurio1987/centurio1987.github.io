@@ -67,7 +67,7 @@ import CriCallTrace from "../../components/posts/container-anatomy-3/CriCallTrac
 
 여기가 방향을 거꾸로 알기 쉬운 대목입니다. 잠깐, 확인 하나만 해 볼까요? **kubelet과 런타임 중 누가 서버일까요?**
 
-문서는 이렇게 못박습니다 — **"kubelet은 gRPC로 컨테이너 런타임에 연결할 때 클라이언트 역할을 한다."**
+문서는 이렇게 정합니다 — **"kubelet은 gRPC로 컨테이너 런타임에 연결할 때 클라이언트 역할을 한다."**
 
 ```text
   kubelet ──── gRPC 요청 ────▶ containerd / CRI-O
@@ -277,7 +277,7 @@ CRI가 규정하는 gRPC 서비스는 딱 둘입니다. 이름이 역할을 그�
 
 CRI 설정에서 가장 흔하게 밟는 함정을 하나 보겠습니다. **cgroup 드라이버 불일치**입니다.
 
-EP1에서 cgroup이 자원 분량을 자르는 축이라고 했죠. 그 cgroup을 **누가 관리하느냐**에는 두 가지 방식이 있습니다.
+EP1에서 cgroup이 자원 분량을 자르는 기준이라고 했죠. 그 cgroup을 **누가 관리하느냐**에는 두 가지 방식이 있습니다.
 
 | 드라이버 | 설명 |
 | --- | --- |

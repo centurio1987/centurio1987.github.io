@@ -24,9 +24,9 @@ import EncodingLab from "../../components/posts/osi-7-layers-5/EncodingLab";
 
 ## 솔직한 전제: 이 두 계층은 인터넷에서 흐릿하다
 
-1편에서 짚었듯, 오늘날 인터넷 구현에는 L5를 맡은 프로그램과 L6를 맡은 프로그램이 또렷한 독립 계층으로 존재하지 않습니다. RFC 1122의 인터넷 4계층 모델은 OSI의 Application·Presentation·Session 기능을 **사실상 application 영역에 함께** 둡니다. 이건 우연이 아니라 인터넷의 설계 철학인 **end-to-end argument**의 결과죠. 표현과 세션 같은 기능은 중간 네트워크가 아니라 양 끝 application이 가장 잘 처리하니, 굳이 독립 계층으로 못 박지 않고 application과 library에 맡긴 것입니다.
+1편에서 짚었듯, 오늘날 인터넷 구현에는 L5를 맡은 프로그램과 L6를 맡은 프로그램이 또렷한 독립 계층으로 존재하지 않습니다. RFC 1122의 인터넷 4계층 모델은 OSI의 Application·Presentation·Session 기능을 **사실상 application 영역에 함께** 둡니다. 이건 우연이 아니라 인터넷의 설계 철학인 **end-to-end argument**의 결과죠. 표현과 세션 같은 기능은 중간 네트워크가 아니라 양 끝 application이 가장 잘 처리하니, 굳이 독립 계층으로 정해 두지 않고 application과 library에 맡긴 것입니다.
 
-그래서 이 글은 L5나 L6라는 이름의 프로그램을 찾지 않습니다. 대신 **두 책임**을 봅니다. 어디에 구현돼 있든, 의미를 주고받는 거의 모든 통신이 마주치는 문제이기 때문입니다(물론 opaque한 byte만 중계하거나 단발 datagram만 던지는 경우엔 둘 다 필요 없기도 합니다). TLS를 L6에, cookie를 L5에 억지로 못 박는 대신 이건 표현의 책임이고 저건 세션의 책임이라는 렌즈로 읽겠습니다.
+그래서 이 글은 L5나 L6라는 이름의 프로그램을 찾지 않습니다. 대신 **두 책임**을 봅니다. 어디에 구현돼 있든, 의미를 주고받는 거의 모든 통신이 마주치는 문제이기 때문입니다(물론 opaque한 byte만 중계하거나 단발 datagram만 던지는 경우엔 둘 다 필요 없기도 합니다). TLS를 L6에, cookie를 L5에 억지로 정하는 대신 이건 표현의 책임이고 저건 세션의 책임이라는 렌즈로 읽겠습니다.
 
 ## L6 표현: 같은 bytes, 같은 뜻
 

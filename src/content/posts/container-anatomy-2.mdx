@@ -119,7 +119,7 @@ runc가 받는 것은 **filesystem bundle(파일시스템 번들)**입니다. �
 ```
 
 - **`ociVersion`** — REQUIRED. 이 번들이 따르는 런타임 스펙 버전이고, **SemVer v2.0.0 형식**이어야 합니다.
-- **`root`** — 스키마상으로는 OPTIONAL이지만 실제로는 조건부입니다. 스펙은 **리눅스를 포함한 그 밖의 모든 플랫폼에서 REQUIRED**, Windows Server Container에서도 REQUIRED라고 하면서, **Hyper-V Container에서는 오히려 설정하면 안 된다(MUST NOT be set)**고 못박습니다. 격리 방식이 다르면 root 파일시스템을 다루는 주체도 달라지기 때문입니다. 그 안의 `path`는 REQUIRED.
+- **`root`** — 스키마상으로는 OPTIONAL이지만 실제로는 조건부입니다. 스펙은 **리눅스를 포함한 그 밖의 모든 플랫폼에서 REQUIRED**, Windows Server Container에서도 REQUIRED라고 하면서, **Hyper-V Container에서는 오히려 설정하면 안 된다(MUST NOT be set)**고 정합니다. 격리 방식이 다르면 root 파일시스템을 다루는 주체도 달라지기 때문입니다. 그 안의 `path`는 REQUIRED.
 - **`mounts`** — OPTIONAL. 각 항목의 `destination`(컨테이너 안 경로)은 REQUIRED.
 - **`process`** — 여기가 흥미롭습니다.
 
@@ -152,7 +152,7 @@ EP1에서 본 `create`와 `start`의 분리가 여기서 되돌아옵니다. 스
 
 <VizProcessSteps2 />
 
-그리고 `create` 단계에 대해 스펙은 이렇게 못박습니다 — **"사용자 지정 프로그램은 이 시점에 실행돼서는 안 된다(MUST NOT)."**
+그리고 `create` 단계에 대해 스펙은 이렇게 정합니다 — **"사용자 지정 프로그램은 이 시점에 실행돼서는 안 된다(MUST NOT)."**
 
 이게 왜 필요한지 그림으로 보겠습니다.
 

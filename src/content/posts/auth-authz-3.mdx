@@ -222,12 +222,12 @@ GET .../auth?client_id=photo-app&request_uri=urn:ietf:params:oauth:request_uri:b
 
 ## 자주 틀리는 포인트
 
-- ❌ **"토큰을 프론트채널(URL)로 받는다(Implicit)."** → Implicit 그랜트(`response_type=token`)는 토큰 유출·재생에 취약해 **폐기 방향**입니다(RFC 9700). 언제나 **`code`**로 받아 백채널에서 교환하십시오.
-- ❌ **"SPA에 `client_secret`을 넣는다."** → 브라우저에 있는 비밀은 비밀이 아닙니다. SPA·모바일은 **public 클라이언트 + PKCE**로 갑니다.
-- ❌ **"`redirect_uri`를 접두어/와일드카드로 느슨하게 등록한다."** → open redirect·mix-up의 입구입니다. RFC 6749·8252·9700에 걸쳐 **정확 문자열 매칭**이 요구됩니다(네이티브 앱 loopback 등 좁은 예외).
-- ❌ **"PKCE만 있으면 `state`는 빼도 된다"거나 그 반대.** → 서로 대체가 아닙니다. **PKCE(S256)와 `state`를 함께** 쓰고, 콜백에서 `state`를 반드시 검증하십시오.
-- ❌ **"ID Token의 `nonce`는 안 봐도 된다."** → nonce 검증을 빼면 다른 세션의 ID Token 주입을 못 막습니다. Implicit/Hybrid에선 필수, Code Flow에서도 **로그인 replay 방어로 권장**됩니다.
-- ❌ **"코드를 여러 번 써도 되겠지."** → 인가 코드는 **일회용**입니다. 재사용은 거부되며, 재사용 시도는 침해 신호로 다뤄야 합니다.
+- **하지 말 것 — "토큰을 프론트채널(URL)로 받는다(Implicit)."** → Implicit 그랜트(`response_type=token`)는 토큰 유출·재생에 취약해 **폐기 방향**입니다(RFC 9700). 언제나 **`code`**로 받아 백채널에서 교환하십시오.
+- **하지 말 것 — "SPA에 `client_secret`을 넣는다."** → 브라우저에 있는 비밀은 비밀이 아닙니다. SPA·모바일은 **public 클라이언트 + PKCE**로 갑니다.
+- **하지 말 것 — "`redirect_uri`를 접두어/와일드카드로 느슨하게 등록한다."** → open redirect·mix-up의 입구입니다. RFC 6749·8252·9700에 걸쳐 **정확 문자열 매칭**이 요구됩니다(네이티브 앱 loopback 등 좁은 예외).
+- **하지 말 것 — "PKCE만 있으면 `state`는 빼도 된다"거나 그 반대.** → 서로 대체가 아닙니다. **PKCE(S256)와 `state`를 함께** 쓰고, 콜백에서 `state`를 반드시 검증하십시오.
+- **하지 말 것 — "ID Token의 `nonce`는 안 봐도 된다."** → nonce 검증을 빼면 다른 세션의 ID Token 주입을 못 막습니다. Implicit/Hybrid에선 필수, Code Flow에서도 **로그인 replay 방어로 권장**됩니다.
+- **하지 말 것 — "코드를 여러 번 써도 되겠지."** → 인가 코드는 **일회용**입니다. 재사용은 거부되며, 재사용 시도는 침해 신호로 다뤄야 합니다.
 
 ## 직접 해보기: PKCE 플로우 스테퍼
 

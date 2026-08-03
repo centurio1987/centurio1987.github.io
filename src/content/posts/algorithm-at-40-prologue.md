@@ -3,7 +3,7 @@ title: 40살인데 알고리즘 해도 괜찮을까요 - 프롤로그
 description: 프로그래밍 재능에 대한 자각과 커리어의 우회로를 지나, 40을 앞두고 알고리즘을 다시 마주하게 된 기록.
 pubDate: 2026-07-08
 category: learning
-author: tony
+author: ppangto
 tags:
   - 알고리즘
   - 프로그래밍
