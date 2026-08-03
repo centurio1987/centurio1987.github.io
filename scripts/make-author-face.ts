@@ -52,15 +52,15 @@ interface FaceCrop {
  * 비율**을 맞춘 값이다(마스터마다 캐릭터가 판에서 차지하는 크기가 다르다).
  */
 const FACES: Record<string, FaceCrop> = {
-  tony: {
-    master: "design-concept/authors/tony-fullbody-master.webp",
+  ppangto: {
+    master: "design-concept/authors/ppangto-fullbody-master.webp",
     left: 330,
     top: 150,
     size: 620,
     bgTol: 4, // DECO_KIT 8절에서 잰 값 — 10으로 넓히면 흰 털이 배경으로 넘어간다
   },
-  ppangto: {
-    master: "design-concept/authors/ppangto-fullbody-master.webp",
+  "ppangtolab-researcher": {
+    master: "design-concept/authors/ppangtolab-researcher-fullbody-master.webp",
     left: 395,
     top: 120,
     size: 620,

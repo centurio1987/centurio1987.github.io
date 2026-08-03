@@ -1,8 +1,7 @@
 ---
 name: research
 description: >
-  기술 글 집필 **전 단계**의 자료 수집 스킬. 주제/글감을 받아 ① `assets/RESEARCH_GUIDE.md`
-  규칙대로 웹에서 신뢰 소스 5개 이상을 수집·충실히 정리해 `~/blog-research/raws/NNN-slug.md`
+  기술 글 집필 **전 단계**의 자료 수집 스킬. 주제/글감을 받아 ① `web-research` 플러그인에 위임해 신뢰 소스를 수집하고, 그 결과를 `assets/RESEARCH_GUIDE.md` 의 산출물 형식으로 정리해 `~/blog-research/raws/NNN-slug.md`
   (불변 원본)로 저장하고, ② `~/blog-research/CLAUDE.md`(LLM Wiki 스키마)의 Ingest 연산대로
   위키에 통합(요약·교차링크·angle 추출·index/log 갱신)하며, ③ git-shipper(haiku)로 blog-research
   레포를 commit&push 한다. 출력은 집필에 바로 넘길 **angle 페이지 경로**다.
@@ -26,7 +25,7 @@ argument-hint: <주제 또는 글감 (자유 텍스트)>
 
 ```
 [research]  주제 → ~/blog-research/raws/NNN-slug.md (불변) → wiki ingest → angle 페이지 → commit&push
-  → tech-deepdive (angle을 입력으로 집필) → review-post → review-writing → quality-gate → post-finalize → publish-post → ship-post
+  → tech-deepdive (angle을 입력으로 집필) → quality-gate → post-finalize → publish-post → ship-post
 ```
 
 ## 입력 / 출력 계약
@@ -39,13 +38,24 @@ argument-hint: <주제 또는 글감 (자유 텍스트)>
 
 ## 동작 순서
 
-### 1. 웹 수집 (RESEARCH_GUIDE 규칙)
+### 1. 웹 수집 — `web-research` 플러그인에 위임한다
 
-`assets/RESEARCH_GUIDE.md`를 **그대로** 따른다. 요지:
-- `WebSearch`로 후보를 찾고 `WebFetch`로 본문을 확인한다. **최신 자료 우선**("최신"은 실행 시점 기준, 고정 날짜 금지).
-- **신뢰 소스 5개 이상**, 1차 자료 우선. 광고성·협찬 글 제외.
-- **주장마다 출처 연결**, 게시일·조회일 기록, 중복 제거, 수치·버전·고유명사는 원문 그대로.
-- 출처 없는 정보·추측·창작 금지. 충돌하면 양쪽 다 기록. 모르면 "open question"으로 남긴다.
+```
+Skill(web-research:research) <주제>
+```
+
+수집 자체는 이 스킬이 하지 않는다. `web-research` 가 소주제로 쪼개 워커에 병렬 위임하고
+(메인 컨텍스트 보호), 출처 추적이 되는 구조화 findings 를 텍스트로 돌려준다.
+
+**같은 수집 규칙을 두 곳에 두지 않는다.** `assets/RESEARCH_GUIDE.md` 의 수집 규칙
+— 최신성(고정 날짜 금지) · 신뢰 소스 5개 이상 · 1차 자료 우선 · 주장마다 출처 연결 ·
+게시일·조회일 기록 · 수치·버전·고유명사는 원문 그대로 · 출처 없는 정보와 추측 금지 ·
+충돌하면 양쪽 기록 · 모르면 open question — 은 `web-research` 가 이미 같은 내용을
+갖고 있었다. 두 벌로 두면 갈라진다.
+
+`RESEARCH_GUIDE.md` 에서 이 프로젝트가 계속 소유하는 것은 **산출물 형식**뿐이다 —
+raws 문서의 구성(개요 → 소주제별 충실 정리 → open questions → 주장↔소스 매핑 → 소스 목록).
+그건 아래 2단계에서 쓴다.
 
 ### 2. raws에 불변 저장
 
@@ -82,7 +92,8 @@ argument-hint: <주제 또는 글감 (자유 텍스트)>
 
 ## 참조 파일
 
-- `assets/RESEARCH_GUIDE.md` — 웹 수집 규칙(최신성·신뢰 소스·출처 연결·금지 사항·산출물 형식).
+- `assets/RESEARCH_GUIDE.md` — **산출물 형식만** 이 프로젝트가 소유한다(raws 문서 구성).
+  수집 규칙은 `web-research` 플러그인이 소유한다 — 같은 규칙을 두 벌로 두지 않는다.
 - `~/blog-research/CLAUDE.md` — LLM Wiki 스키마(Ingest/Query/Lint 연산, 페이지 규약). **ingest는 이 문서를 따른다.**
 - `scripts/git-commit-push.sh` — 공유 git 가드(git-shipper가 호출).
 

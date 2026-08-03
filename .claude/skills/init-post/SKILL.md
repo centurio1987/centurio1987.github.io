@@ -45,7 +45,7 @@ disable-model-invocation: true
 
 ## 폭신 대담 에피소드 (`--talk`)
 
-`--talk` 플래그가 있거나 "대담", "인터뷰 에피소드", "빵토 교수님" 언급이 있으면 마크다운 스켈레톤 대신 **대담 템플릿 자산을 복사**한다:
+`--talk` 플래그가 있거나 "대담", "인터뷰 에피소드", "빵토랩 교수님" 언급이 있으면 마크다운 스켈레톤 대신 **대담 템플릿 자산을 복사**한다:
 
 1. `src/templates/talk-episode.mdx` 를 `src/content/posts/<slug>.mdx` 로 복사한다 (확장자 `.mdx` 필수).
 2. frontmatter를 인자로 채운다: `title`, `category`, `pubDate`(오늘), 그리고 `order` 는 같은 `series` 글의 최대 order + 1 로 자동 계산한다.
@@ -62,11 +62,11 @@ disable-model-invocation: true
 
 ## 저자 (`author`)
 
-스켈레톤이라도 **`author` 를 비워 두지 않는다.** 스키마 기본값이 `tony`(사람 저자)라서,
+스켈레톤이라도 **`author` 를 비워 두지 않는다.** 스키마 기본값이 `ppangto`(사람 저자)라서,
 비워 두면 나중에 AI가 채운 본문이 사람 이름으로 발행되고 AI 배너도 붙지 않는다.
 
-`src/lib/authors.ts` 의 id 중 하나를 쓴다 — `tony`(사람) · `ppangto`(기술 심층 AI) ·
-`ppangto-prof`(폭신 대담) · `ppangto-teacher`(자료구조·알고리즘).
+`src/lib/authors.ts` 의 id 중 하나를 쓴다 — `ppangto`(사람) · `ppangtolab-researcher`(기술 심층 AI) ·
+`ppangtolab-prof`(폭신 대담) · `ppangtolab-teacher`(자료구조·알고리즘).
 인자로 안 받았으면 **누가 쓸 글인지 한 번 묻는다.** `--talk` 경로는 대담 템플릿의 값을 따른다.
 
 ## 주의

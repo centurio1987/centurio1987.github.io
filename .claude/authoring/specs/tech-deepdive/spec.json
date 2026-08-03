@@ -16,7 +16,11 @@
   },
   "voice": {
     "default": "ppangtolab-researcher",
-    "allowed": ["ppangtolab-researcher", "ppangtolab-teacher", "ppangto"]
+    "allowed": [
+      "ppangtolab-researcher",
+      "ppangtolab-teacher",
+      "ppangto"
+    ]
   },
   "sections": [
     {
@@ -166,6 +170,18 @@
       "level": "SHOULD",
       "axis": "scope-principle",
       "text": "시리즈 글이면 `series`·`order` 를 채운다. 이전화·다음화 네비게이션과 지난 에피소드 카드가 이 두 값으로만 구동된다"
+    },
+    {
+      "code": "SP11",
+      "level": "SHOULD",
+      "axis": "structure",
+      "text": "글 목적에 맞는 형식이 실제로 서 있는가 — 설득형은 PREP(주장→근거→예시→재주장), 설명형은 3WR(What·Why·hoW·Result), 학습형은 4MAT(Why·What·How·If), 서사형은 플롯·시퀀스. **형식 이름을 본문에 쓰라는 게 아니라 그 골격이 실제로 서 있어야 한다는 뜻이다.** 구 `review-writing/assets/WRITING_CHECKLIST.md` S1 에서 이관"
+    },
+    {
+      "code": "SP12",
+      "level": "SHOULD",
+      "axis": "structure",
+      "text": "설명이 길어지는 자리에는 **말보다 그림을 먼저** 놓는다. 산문 3~4문단이 시각 자료 없이 이어지면 신호다. 무엇으로 그리는지는 매체 소관이고(SP9), 이 항목은 **어디에 필요한지**를 본다. 구 `WRITING_CHECKLIST.md` S3 에서 이관"
     }
   ],
   "conditional_rule": "`관련 장비`·`관련 프로토콜·기술`·`함정과 베스트 프랙티스`·`직접 해보기`·`시뮬레이션으로 보기` 는 조건부다. 주제가 요구하지 않으면 빼고, 뺀 사유를 게이트 보고에 남긴다. 필수 6절(들어가며·한눈에 보기·엄밀한 정의·핵심 원리·실무 시나리오·오해 포인트·마무리)은 뺄 수 없다.",
@@ -173,11 +189,19 @@
     "kind": "mdx",
     "template_ref": "article",
     "slot_style": "bracket-inline",
-    "outputs": [{ "format": "mdx", "dir": "content" }]
+    "outputs": [
+      {
+        "format": "mdx",
+        "dir": "content"
+      }
+    ]
   },
   "placeholders": {
     "profile": "std-v1",
-    "legacy_accept": ["bracket-inline", "brace-descriptive"]
+    "legacy_accept": [
+      "bracket-inline",
+      "brace-descriptive"
+    ]
   },
   "gate": {
     "rubric": "default",
