@@ -125,7 +125,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6Ii4uLiJ9  ← 헤더
 - `HttpOnly`: JavaScript에서 쿠키 접근 차단(XSS로 인한 탈취 차단).
 - `SameSite`: 크로스사이트 요청에 쿠키를 동반할지 제한(CSRF 완화).
 
-여기서 **가장 흔한 착각**을 짚겠습니다. "`SameSite=Lax`면 CSRF는 끝"이라는 생각입니다. 아닙니다. OWASP는 SameSite를 **방어심화(defense-in-depth) 통제일 뿐 제대로 된 CSRF 방어를 대체하지 못한다**고 정합니다. `Lax`는 안전 메서드(GET 등)를 쓰는 최상위 내비게이션에는 여전히 쿠키를 허용하므로, 상태 변경 작업이 GET으로 도달 가능하면 뚫립니다. 게다가 SameSite의 'site' 판정은 **등록가능 도메인(registrable domain, Public Suffix List 기준)**이라 `a.example.com`과 `b.example.com`은 **same-site로 취급**됩니다 — 형제 서브도메인이 신뢰 경계가 되지 못한다는 뜻입니다. **SameSite는 CSRF 토큰을 대체하지 말고 함께 써야 합니다.**
+여기서 **가장 흔한 착각**을 짚겠습니다. "`SameSite=Lax`면 CSRF는 끝"이라는 생각입니다. 아닙니다. OWASP는 SameSite를 **방어심화(defense-in-depth) 통제일 뿐 제대로 된 CSRF 방어를 대체하지 못한다**고 정합니다. `Lax`는 안전 메서드(GET 등)를 쓰는 최상위 내비게이션에는 여전히 쿠키를 허용하므로, 상태 변경 작업이 GET으로 도달 가능하면 뚫립니다. 게다가 SameSite의 'site' 판정은 **등록가능 도메인(registrable domain, Public Suffix List 기준)**이라 `a.example.com`과 `b.example.com`은 **same-site로 취급**됩니다 — 나란한 서브도메인끼리는 신뢰 경계가 되지 못한다는 뜻입니다. **SameSite는 CSRF 토큰을 대체하지 말고 함께 써야 합니다.**
 
 ## 프로토콜 분류: 무엇이 어디에 있나
 

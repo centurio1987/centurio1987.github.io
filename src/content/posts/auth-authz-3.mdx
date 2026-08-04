@@ -244,7 +244,7 @@ GET .../auth?client_id=photo-app&request_uri=urn:ietf:params:oauth:request_uri:b
 - `state`(CSRF 관례) · **PKCE**(코드 주입+CSRF) · `nonce`(ID Token 재생) — 셋이 막는 것이 다르다.
 - ID Token은 서명·`iss`·`aud`·`exp`에 더해 **`nonce`**까지 검증해야 "방금, 우리 앱을 위한 로그인"이 된다.
 
-실무 결론 하나만 챙기신다면: **Authorization Code + PKCE(S256)를 기본값으로 두고, `redirect_uri`는 정확 매칭, 콜백에선 `state`와 ID Token의 `nonce`를 반드시 검증하라**는 것입니다. 이제 토큰을 **얻고**(3편) **검증하는**(2편) 전 과정을 손에 넣으셨습니다. 다음 4편 「실무 베스트 프랙티스」에서는 이 모두를 실제 시스템에 얹습니다 — nginx `auth_request`로 인증을 위임하고, Redis 세션과 BFF로 토큰을 안전하게 보관하며, 인가 모델(RBAC/ABAC)로 "무엇을 해도 되는가"를 판단하는 실습으로.
+실무 결론 하나만 챙기신다면: **Authorization Code + PKCE(S256)를 기본값으로 두고, `redirect_uri`는 정확 매칭, 콜백에선 `state`와 ID Token의 `nonce`를 반드시 검증하라**는 것입니다. 이제 토큰을 **얻고**(3편) **검증하는**(2편) 전 과정을 익히셨습니다. 다음 4편 「실무 베스트 프랙티스」에서는 이 모두를 실제 시스템에 얹습니다 — nginx `auth_request`로 인증을 위임하고, Redis 세션과 BFF로 토큰을 안전하게 보관하며, 인가 모델(RBAC/ABAC)로 "무엇을 해도 되는가"를 판단하는 실습으로.
 
 ## 근거와 더 읽을 거리
 

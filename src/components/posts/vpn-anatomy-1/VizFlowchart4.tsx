@@ -5,11 +5,11 @@ import { Flowchart } from "@centurio1987/bbangto-ui-visualization";
 
 export default function VizFlowchart4() {
   return (
-    <VizFigure caption={"세 가족과, 각 가족을 해부할 편 — 이 시리즈의 지도"}>
+    <VizFigure caption={"세 계열과, 각 계열을 해부할 편 — 이 시리즈의 구성"}>
       <Flowchart
         accessible="img"
-        title={"IPsec 계열·WireGuard·TLS-VPN 계열 세 가족과 각각을 다루는 에피소드 번호"}
-        desc={"세 가족과, 각 가족을 해부할 편 — 이 시리즈의 지도"}
+        title={"IPsec 계열·WireGuard·TLS-VPN 계열 셋과 각각을 다루는 에피소드 번호"}
+        desc={"세 계열과, 각 계열을 해부할 편 — 이 시리즈의 구성"}
         viewBox="0 0 600 290"
         data={{
   "nodes": [
