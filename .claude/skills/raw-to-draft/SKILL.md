@@ -35,7 +35,7 @@ argument-hint: <완성된 원고 경로 (보통 raws/ 하위)>
 ```
 raws/<완성 원고>.md    (사용자가 처음부터 끝까지 씀)
   → [raw-to-draft]     draft/<원고>-draft.md   (맞춤법 교정 + frontmatter + 밈)
-  → (선택) review-post  4축 검토
+  → (선택) review-post  5축 검토   ※ AI 문체 축(5)은 사람이 쓴 원고이므로 건너뛴다
   → publish-post        src/content/posts/<slug>.md 발행
   → (선택) post-finalize 태그·시리즈·밈
 ```
@@ -171,7 +171,9 @@ python3 .claude/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 ## 관련 스킬
 
 - `post-draft` — raws가 **조각/단서**일 때 플롯 스캐폴드 생성(이 스킬과 반대 입구)
-- `review-post` — 형식화 후 4축(맞춤법/개연성/테크니컬 라이팅/몰입도) 검토
+- `review-post` — 형식화 후 5축(맞춤법/개연성/테크니컬 라이팅/몰입도/AI 문체) 검토.
+  **단, 이 경로로 들어온 글은 저자가 직접 쓴 원고이므로 AI 문체 축과 `humanize-post`는 돌리지 않는다** —
+  사람이 쓴 글에 AI 탐지 규칙을 들이대면 저자 문체만 깎인다.
 - `publish-post` — draft → `src/content/posts/` 정식 발행(`draft:false`)
 - `post-finalize` — 발행물 태그·밈(이미지 생성 없음. 시리즈 링크 삽입은 폐지)
 - `make-image` — ```viz``` 구조형 시각물·hero(bbangto-ui-visualization)
