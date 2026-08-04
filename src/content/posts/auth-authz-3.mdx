@@ -156,9 +156,9 @@ code_challenge_method : S256
 
 이제 로그인 한 번을 **처음부터 끝까지** 실제 데이터로 밟겠습니다(Keycloak 기준, 17+ 경로).
 
-### 1단계 — Discovery로 엔드포인트를 안다
+### 1단계 — PKCE 준비와 Discovery
 
-하드코딩 대신, 발급자의 discovery 문서에서 엔드포인트를 얻습니다(경로 `.well-known/openid-configuration`은 **OIDC 표준**):
+클라이언트 내부에서 두 가지를 먼저 끝냅니다. 하나는 **PKCE 준비** — 앞 "핵심 원리" 절 그대로 `code_verifier`를 만들고 `code_challenge`를 해시해 둡니다. 다른 하나는 엔드포인트 확인 — 하드코딩 대신 발급자의 discovery 문서에서 얻습니다(경로 `.well-known/openid-configuration`은 **OIDC 표준**):
 
 ```bash
 curl -s 'https://auth.example.com/realms/demo/.well-known/openid-configuration' | jq .
