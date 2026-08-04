@@ -1,0 +1,202 @@
+---
+/**
+ * 두들 마크 — **이모지 자리에 놓는 손그림 기호.**
+ *
+ * 왜 이모지를 안 쓰는지, 어떤 마크가 있는지, 왜 글씨엔 필터를 안 거는지는 전부
+ * `src/lib/doodleMarks.ts` 머리글에 있다. 이 파일은 그 표를 지면에 그리기만 한다.
+ *
+ * 이 부품은 데코 키트의 다른 부품들과 **성격이 다르다.** 나머지는 여백에 얹는
+ * 장식이라 `aria-hidden` · `pointer-events:none` · 강도(`data-deco`) 게이트를
+ * 지는데, 마크는 본문 **문장 안에서 뜻을 진다**(`❌` 는 장식이 아니라 그 항목의
+ * 판정이다). 그래서 셋 다 반대로 간다:
+ *   - 기본이 `role="img"` + `aria-label` 이다(장식으로 쓸 땐 `label={false}`).
+ *   - 강도로 사라지지 않는다 — `data-deco="1"` 인 지면에서도 그려져야 한다.
+ *     사라지면 "흔한 오해" 목록에서 맞는 항목과 틀린 항목이 구분되지 않는다.
+ *   - `deco.css` 없이도 그려진다(색 토큰마다 시안 hex fallback). 폭신 대담처럼
+ *     데코를 안 들여오는 지면에서도 본문은 마크를 쓸 수 있어야 한다.
+ *
+ * **크기는 `size` 하나로 정해진다.** 시안의 자연 크기 40px 을 1 로 보고 나머지를
+ * 비율로 환산하므로, `size` 를 `em` 으로 주면 마크가 **앉은 자리의 글자 크기를
+ * 따라간다**(제목 안에서는 크게, 본문에서는 본문 크기로). px 로 굳히면 반응형
+ * 타이포에서 마크만 제자리에 남는다.
+ *
+ * **색은 못 바꾼다 — prop 이 없다.** 마크마다 정해진 펜 색이 뜻의 일부이기
+ * 때문이다(X 는 빨강, O 는 코발트). 다른 색이 필요하면 색을 덮는 게 아니라
+ * 다른 마크를 고르는 게 맞다. 게다가 별·하트는 칠과 외곽선이 두 색이라
+ * "색 하나로 덮기"가 애초에 성립하지 않는다.
+ *
+ * MDX 본문에서는 import 없이 `<Mark name="no" />` 로 쓴다 —
+ * `src/pages/posts/[...slug].astro` 가 `components` 로 꽂아 준다.
+ */
+import CrayonFilters from "./CrayonFilters.astro";
+import {
+  DOODLE_MARKS,
+  isMarkName,
+  type DoodleMarkName,
+} from "../../lib/doodleMarks";
+
+interface Props {
+  name: DoodleMarkName;
+  /**
+   * 시안 자연 크기(40px)에 해당하는 길이. 기본 `1.15em` — 본문 글자보다 한 뼘
+   * 크되 줄 높이를 밀지 않는 값이다.
+   */
+  size?: string;
+  /**
+   * 스크린리더에 읽히는 뜻. 기본은 표의 한국어 이름(`아님`·`동의`…).
+   * 문장이 이미 같은 뜻을 말하고 있어 두 번 읽히면 `false` 로 끈다.
+   */
+  label?: string | false;
+  /** 기울기(deg) 덮어쓰기. 같은 마크가 여러 줄에 붙을 때 각도를 흩는 용도. */
+  tilt?: number;
+  /** 기준선 대비 세로 보정. 기본값은 아래 CSS 의 `--dm-shift`. */
+  shift?: string;
+  class?: string;
+}
+
+const {
+  name,
+  size = "1.15em",
+  label,
+  tilt: tiltProp,
+  shift,
+  class: className = "",
+} = Astro.props;
+
+if (!isMarkName(name)) {
+  /* 오타를 조용한 빈 자리로 남기지 않고 빌드를 세운다 — 마크는 뜻을 지고 있어서
+     빠지면 문장이 틀리는데, 안 그려진 기호는 교정에서 눈에 잘 안 띈다. */
+  throw new Error(
+    `[DoodleMark] 알 수 없는 마크 이름: "${name}". 목록은 src/lib/doodleMarks.ts (카탈로그: /design/deco).`,
+  );
+}
+
+const mark = DOODLE_MARKS[name];
+const tilt = tiltProp ?? mark.tilt;
+
+/** 필터 id 접두사 — Doodle.astro 와 같은 이유로 globalThis 에 센다(그 머리글 참고). */
+const g = globalThis as { __decoMarkSeq?: number };
+g.__decoMarkSeq = (g.__decoMarkSeq ?? 0) + 1;
+const uid = `dm${g.__decoMarkSeq}`;
+
+/** 시안 40px = size. 마크의 모든 치수가 이 비율로 따라온다. */
+const u = (n: number) => `calc(${size} * ${(n / 40).toFixed(4)})`;
+
+/**
+ * 기준선 맞춤 — 두 필기구가 서로 다른 규칙을 따른다. 실측(픽셀 잉크 기준,
+ * `deviceScaleFactor:3` 스크린샷에서 잉크 상자를 재서 뽑았다)으로 굳힌 값이다.
+ *
+ * **글씨 마크는 기준선에 앉힌다(보정 0).** 손으로 쓴 기호는 글자라서 옆 글자와
+ * 같은 줄에 서야 하고, 크기가 커진 만큼 위로 솟는 게 맞다. 잉크 중심으로 치면
+ * 본문보다 0.13em 쯤 낮게 앉는데(실측: `X` 0.14 · `O` 0.06 · `ㅎㅎ` 0.15)
+ * 그건 어긋난 게 아니라 라틴 대문자가 한글 옆에 설 때 늘 그렇다. 가운데로
+ * 끌어올리면 `…`(0.36) · `ㅠㅠ`(0.25) 처럼 **기준선에 붙는 게 정답인** 글자가
+ * 공중에 뜬다 — 이 둘이 낮게 나오는 건 잉크가 원래 아래에 있어서다.
+ *
+ * **그림 마크는 잉크를 가운데 맞춘다.** 기준선이 없는 그림이라 앉힐 선이 없다.
+ * `display:block` 인 SVG 는 줄 상자를 만들지 않으므로 이 inline-block 의 기준선은
+ * **아래 모서리**가 된다 — 즉 아무것도 안 하면 마크가 통째로 기준선 위에 선다.
+ * 그래서 자기 높이의 절반만큼 내리고(`-h/2`), 본문 잉크 중심이 기준선보다
+ * `0.426em` 위에 있는 만큼 되올린다.
+ *
+ * **높이에서 뽑는 게 핵심이다** — 마크마다 세로가 다르다(물결 밑줄 18 ~ 별 40).
+ * 고정값을 적으면 낮은 마크가 가라앉는다. `0.426em` 은 눈대중이 아니라 실측값:
+ * `--dm-shift` 를 훑으면서 잉크 중심 차이를 재면 `delta = (0.426 − h/2) − shift`
+ * 라는 직선이 나오고, 서로 다른 크기의 마크 둘이 같은 직선 위에 있었다.
+ * 본문 폰트를 바꾸면 이 상수도 다시 재야 한다(한글 잉크가 기준선 위로 얼마나
+ * 올라오는지가 폰트마다 다르다).
+ */
+const shiftDefault =
+  mark.kind === "glyph"
+    ? "0px"
+    : `calc(${size} * ${(-mark.h / 80).toFixed(4)} + 0.426em)`;
+
+const boxStyle = [
+  tilt ? `transform:rotate(${tilt}deg)` : "",
+  `--dm-shift:${shift ?? shiftDefault}`,
+]
+  .filter(Boolean)
+  .join(";");
+
+/**
+ * 시안은 4방향 text-shadow 로 Gaegu 를 한 단 더 눌러 쓴다. 두께를 px 이 아니라
+ * **글자 크기 기준 em** 으로 환산해야 마크를 키워도 굵기 비율이 유지된다.
+ */
+const glyphStyle =
+  mark.kind === "glyph"
+    ? (() => {
+        const w = (mark.weight / mark.fs).toFixed(4);
+        const shadow = [`${w}em 0`, `-${w}em 0`, `0 ${w}em`, `0 -${w}em`]
+          .map((o) => `${o} currentColor`)
+          .join(",");
+        return `font-size:${u(mark.fs)};color:${mark.color};text-shadow:${shadow}`;
+      })()
+    : "";
+
+const svgBody = mark.kind === "svg" ? mark.body.replaceAll("{ID}", uid) : "";
+---
+
+<span
+  class:list={["dmark", `dmark-${name}`, className]}
+  style={boxStyle}
+  role={label === false ? undefined : "img"}
+  aria-label={label === false ? undefined : (label ?? mark.label)}
+  aria-hidden={label === false ? "true" : undefined}
+>
+  {
+    mark.kind === "glyph" ? (
+      <b class="dmark-ink dmark-glyph" style={glyphStyle} set:html={mark.char} />
+    ) : (
+      <svg
+        class="dmark-ink"
+        width={u(mark.w)}
+        height={u(mark.h)}
+        viewBox={`0 0 ${mark.w} ${mark.h}`}
+        fill="none"
+        aria-hidden="true"
+      >
+        <CrayonFilters id={uid} kinds={mark.filters} />
+        <Fragment set:html={svgBody} />
+      </svg>
+    )
+  }
+</span>
+
+<style>
+  /* 마크는 글의 흐름 안에 앉는다 — 여백에 얹는 다른 부품과 달리 자리를 차지하고
+     포인터를 죽이지 않는다(뜻을 지고 있으므로 선택·복사가 되어야 한다).
+     `transform` 이 걸리므로 inline 이 아니라 inline-block 이다. */
+  .dmark {
+    /* 실제 값은 부품이 마크마다 계산해 인라인으로 넘긴다(위 `shiftDefault`).
+       여기 기본값은 인라인 style 이 없을 때의 안전값이다. */
+    --dm-shift: 0px;
+    display: inline-block;
+    /* 기울어진 상자가 옆 글자에 닿지 않게 좌우로 한 톨씩만 띄운다 */
+    margin: 0 0.06em;
+    vertical-align: var(--dm-shift);
+    line-height: 0;
+  }
+
+  .dmark-ink {
+    display: block;
+  }
+
+  /* 글씨 마크. Gaegu 를 굵게 눌러 쓴 것이라 필터를 걸지 않는다(lib 머리글).
+     `line-height:1` 이라 상자 높이가 곧 글자 크기가 된다. */
+  .dmark-glyph {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    line-height: 1;
+    /* 손으로 쓴 기호는 자간이 좁다 — ㅇㅇ·ㅠㅠ 처럼 두 글자짜리에서 티가 난다 */
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+
+  /* 호버 갸웃 — 데코 키트의 다른 부품과 같은 동작이되, `deco.css` 를 안 들여온
+     지면에서는 아무 일도 일어나지 않는다(토큰이 없으면 `none`).
+     기울기는 상자(.dmark)에, 갸웃은 잉크(.dmark-ink)에 걸어 둘이 안 싸우게 한다 —
+     한 요소에 겹치면 애니메이션 첫 프레임에서 기울기가 0 으로 튄다. */
+  .dmark:hover .dmark-ink {
+    animation: var(--deco-wob, none);
+  }
+</style>

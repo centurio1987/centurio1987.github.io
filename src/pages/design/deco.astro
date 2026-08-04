@@ -13,6 +13,7 @@ import DecoLayer from "../../components/deco/DecoLayer.astro";
 import Tape from "../../components/deco/Tape.astro";
 import Sticker from "../../components/deco/Sticker.astro";
 import Doodle from "../../components/deco/Doodle.astro";
+import DoodleMark from "../../components/deco/DoodleMark.astro";
 import Clip from "../../components/deco/Clip.astro";
 import Twine from "../../components/deco/Twine.astro";
 import Clothespin from "../../components/deco/Clothespin.astro";
@@ -30,6 +31,7 @@ import TapedQuote from "../../components/deco/patterns/TapedQuote.astro";
 import TapedCode from "../../components/deco/patterns/TapedCode.astro";
 import DecoHeading from "../../components/deco/patterns/DecoHeading.astro";
 import { DECO_INTENSITY, TONY_DIECUT } from "../../lib/deco";
+import { DOODLE_MARKS, MARK_NAMES } from "../../lib/doodleMarks";
 import "../../styles/deco.css";
 ---
 
@@ -85,6 +87,54 @@ import "../../styles/deco.css";
       <figure class="cell"><span class="code">D10</span><span class="stage"><span style="transform:rotate(-3deg)"><Doodle variant="speech-balloon" text={"이거\n진짜 좋아!"} /></span></span><figcaption>말풍선<br /><small>S1 말풍선 스티커와 다르다 — 이쪽은 붙인 게 아니라 그린 것</small></figcaption></figure>
       <figure class="cell"><span class="code">D11</span><span class="stage"><span style="transform:rotate(4deg)"><Doodle variant="burst-balloon" text="우와!!" /></span></span><figcaption>폭발 말풍선</figcaption></figure>
       <figure class="cell"><span class="code">D12</span><span class="stage"><span style="transform:rotate(-2deg)"><Doodle variant="thought-balloon" text={"음…\n고민중"} /></span></span><figcaption>생각 풍선</figcaption></figure>
+    </div>
+
+    <p class="group">DOODLE MARK <small>이모지 자리에 놓는 손그림 기호</small></p>
+    <p class="note-p">
+      본문에서 <code>❌</code>·<code>✅</code>·<code>⚠</code> 가 놓이던 자리에 넣습니다.
+      다른 부품과 달리 <b>여백이 아니라 문장 안</b>에 앉고, 뜻을 지고 있어서
+      <code>data-deco</code> 강도로 사라지지 않으며 기본으로
+      <code>aria-label</code>을 답니다. MDX 본문에서는 import 없이
+      <code>&lt;Mark name="no" /&gt;</code> 로 씁니다.
+      크기는 <code>size</code>(기본 <code>1.15em</code>) 하나로 정해지고
+      <code>em</code> 이라 앉은 자리의 글자 크기를 따라갑니다.
+    </p>
+    <div class="marks">
+      {
+        MARK_NAMES.map((n) => (
+          <figure class="mark-cell">
+            <span class="mark-stage">
+              <DoodleMark name={n} label={false} />
+            </span>
+            <figcaption>
+              <b>{DOODLE_MARKS[n].label}</b>
+              <code>{n}</code>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+    <div class="mark-demo">
+      <p class="mark-demo-h">본문에 앉은 모습 — 크기는 글자를 따라간다</p>
+      <ul>
+        <li>
+          <DoodleMark name="no" /> <b>"VPN은 암호화된 프록시다."</b> → 계층과 적용
+          범위가 다릅니다.
+        </li>
+        <li>
+          <DoodleMark name="check" /> 터널은 <b>인터페이스</b>로 붙습니다 — 라우팅
+          표가 트래픽의 향방을 정합니다.
+        </li>
+        <li>
+          <DoodleMark name="warn" /> 리프레시 토큰을 회전 없이 오래 쓰면 유출
+          한 번이 영구 권한이 됩니다.
+        </li>
+      </ul>
+      <p>
+        문단 안에서도 같은 크기로 앉습니다 <DoodleMark name="haha" /> — 제목에
+        쓰면 제목 크기를 따라갑니다.
+      </p>
+      <h3>제목에 앉은 마크 <DoodleMark name="star" /></h3>
     </div>
 
     <p class="group">CLIP · HANG · MEMO · FRAME · PAPER</p>
@@ -326,6 +376,96 @@ ping: local error: message too long, mtu=1420</code></pre>
     letter-spacing: 0.16em;
     color: var(--ink-3);
     margin: 24px 0 12px;
+  }
+
+  .group small {
+    font-family: var(--font-body);
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    margin-left: 8px;
+  }
+
+  /* ── 두들 마크 셀 ──
+     부품 셀(.cell)보다 훨씬 촘촘하다 — 마크는 하나가 작고 수가 많아서,
+     같은 212px 칸에 넣으면 한 화면에 열도 안 들어오고 셀마다 여백만 남는다. */
+  .marks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(94px, 1fr));
+    gap: 8px;
+  }
+  .mark-cell {
+    margin: 0;
+    padding: 10px 4px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 1px 2px rgba(32, 38, 74, 0.06);
+  }
+  /* 마크는 앉은 자리의 글자 크기를 따라가므로(부품이 `em` 으로 잰다) 칸에
+     글자 크기를 하나 정해 주면 **자연 비율 그대로** 서로 견줘 볼 수 있다.
+     px 로 못 박으면 세로가 낮은 마크(48×18 물결 밑줄)가 40×40 짜리와 같은
+     크기로 부풀어 카탈로그가 거짓말을 한다.
+     높이를 고정하는 건 라벨 줄이 셀마다 어긋나지 않게 하기 위해서다. */
+  .mark-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    font-size: 30px;
+  }
+  .mark-cell figcaption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .mark-cell figcaption b {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .mark-cell figcaption code {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--ink-3);
+    word-break: break-all;
+  }
+
+  /* 본문 맥락 데모 — 마크가 글자를 따라 커지는지 한눈에 보라고 둔 자리다 */
+  .mark-demo {
+    margin-top: 14px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .mark-demo-h {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    margin: 0 0 10px;
+  }
+  .mark-demo ul {
+    margin: 0 0 12px;
+    padding-left: 20px;
+  }
+  .mark-demo li,
+  .mark-demo p {
+    line-height: 1.75;
+    color: var(--ink-2);
+  }
+  .mark-demo h3 {
+    margin: 14px 0 0;
+    font-size: 24px;
   }
 
   /* ── 부품 셀 ── */

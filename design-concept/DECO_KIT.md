@@ -173,6 +173,49 @@ Astro 는 자식 컴포넌트 루트에 **자식의** `data-astro-cid` 만 붙�
 두들은 **그림자가 없다** — 종이에서 뜨면 손그림으로 안 읽힌다.
 (기존 `motifs/Sparkle.astro` 와 다르다: 그쪽은 잉크 외곽선이 있는 브랜드 모티프.)
 
+### DOODLE MARK — `<DoodleMark name>` (본문에서는 `<Mark name>`)
+
+시안의 `DOODLE MARK · 자주 쓰는 기호` 51종. **여백 장식이 아니라 본문 기호다** — 글 안에서
+`❌`·`✅`·`⚠` 가 놓이던 자리에 앉는다. 표는 `src/lib/doodleMarks.ts` 하나이고, 부품·
+카탈로그(`/design/deco`)·발행 가드(`scripts/check-post-markers.ts`)가 전부 거기를 읽는다.
+
+| 갈래 | 이름 |
+|---|---|
+| 기호(글씨) | `ok` `no` `bang` `bang-bang` `huh` `huh-bang` `plus` `minus` `equals` `percent` `hash` `at` `amp` `tilde` `ellipsis` `yesyes` `gogo` `cry` `haha` |
+| 표시 | `check` `check-double` `checkbox` `star` `star-outline` `sparkle` `heart` `heart-outline` `note` |
+| 화살표 | `arrow-right` `arrow-left` `arrow-up` `arrow-down` `trend-up` `trend-down` `arrow-curve` `redo` `arrow-both` |
+| 도형 | `triangle` `square` `diamond` `circle` |
+| 그림 | `smile` `frown` `sun` `cloud` `umbrella` `flag` |
+| 강조 | `cross` `circle-loop` `wavy` `warn` |
+
+props: `name` · `size`(기본 `1.15em`) · `label`(기본은 표의 한국어 이름, `false` 면 장식) ·
+`tilt` · `shift` · `class`. **색 prop 은 없다** — 마크의 색이 뜻의 일부이고(X 는 빨강),
+별·하트는 칠과 외곽선이 두 색이라 "색 하나로 덮기"가 성립하지 않는다.
+
+굳힌 판단 넷:
+
+- **다른 부품과 규칙이 반대다.** 뜻을 지고 있어서 `aria-hidden` 이 아니라 `role="img"` +
+  `aria-label` 이 기본이고, **강도(`data-deco`)로 사라지지 않으며**(사라지면 "흔한 오해"
+  목록에서 맞는 항목과 틀린 항목이 같은 모양이 된다), 포인터도 죽이지 않는다(선택·복사가
+  되어야 한다). `deco.css` 없이도 그려지도록 색 토큰마다 시안 hex fallback 을 함께 적는다 —
+  그래서 `deco.css` 를 안 들여오는 폭신 대담 본문에서도 쓸 수 있다.
+- **글씨 마크엔 필터를 안 건다.** 시안은 열아홉에 `om-ink-fine` 을 걸었지만 뺐다. 풍선
+  글씨에서 이미 내린 판단(Gaegu 는 이미 손글씨)과 같고, 이유가 하나 더 있다 — 위 "`scale` 은
+  걸리는 요소의 좌표계 단위다" 함정의 **반대 방향**이다. CSS filter 의 `scale 1.9` 는 CSS px
+  이라 시안 44px 칩에서 4.3% 이던 흔들림이 본문 크기(≈19px)에서 10% 가 되어 굵은 획이 끊긴다.
+  같은 이유로 시안이 HTML+`clip-path` 로 그린 `sparkle` 은 **SVG path 로 옮겼다**(viewBox
+  단위라 크기와 무관하게 결이 같다). D1 을 HTML 로 둔 것과 결론이 갈리는 건 방향이 반대라서다:
+  D1 은 SVG 로 옮기면 결이 **잘아지고**, 마크는 HTML 로 두면 결이 **거칠어진다**.
+- **기준선 맞춤이 필기구마다 다르고, 상수는 실측이다.** 글씨는 기준선에 앉힌다(보정 0) —
+  가운데로 끌어올리면 `…`·`ㅠㅠ` 처럼 기준선에 붙는 게 정답인 글자가 뜬다. 그림은 잉크를
+  가운데 맞춘다: `display:block` 인 SVG 는 줄 상자를 안 만들어 inline-block 의 기준선이
+  아래 모서리가 되므로 `calc(size * -h/80 + 0.426em)` 으로 절반 내리고 되올린다.
+  **높이에서 뽑는 게 핵심이다**(세로가 18~40 으로 갈린다). `0.426em` 은 `--dm-shift` 를
+  훑으며 픽셀 잉크 중심을 재서 뽑은 값이고(`delta = (0.426 − h/2) − shift`), 지금 그림 마크
+  전부가 본문 잉크 중심 ±0.04em 안에 든다. **본문 폰트를 바꾸면 다시 재라.**
+- **색은 `--deco-pen-*` 으로 시안 hex 그대로다** — 크레용과 같은 근거다(코어로 환산하면
+  펜 자국이 아니라 UI 아이콘으로 읽힌다). blue·red·ink 는 크레용 통에 같은 값이 있어 잇는다.
+
 **D7~D9 는 결이 다른 "낙서" 계열이다.** D1~D6 이 가는 펜으로 그은 것이라면 이 셋은
 크레용으로 칠하고 굵게 두른 것이다 — 칠을 2~3px **어긋나게** 두고(선 밖으로 삐져나온
 색) 그 위에 같은 길을 굵은 잉크로 두른다. 색만 채우면 스티커로 읽히고 선만 두르면
