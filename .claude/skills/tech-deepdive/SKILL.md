@@ -105,6 +105,7 @@ research → ~/blog-research/wiki/angles/<slug>.md   (자료 수집·ingest 완�
 - 크기는 `size`(기본 `1.15em`)로 조절하고, 문장이 이미 같은 뜻을 말해 스크린리더에 두 번 읽히면 `label={false}`.
 - **뜻이 없는 이모지는 마크로 바꾸지 말고 아예 안 쓴다.** `🚀`로 시작한다고 글이 빨라지지 않는다.
 - **코드블록·터미널 출력 안의 `★`·`✔`는 그대로 둔다** — 인용한 화면이라 고치면 인용이 거짓이 된다.
+- **제목(`##`·`###`)에는 마크를 쓰지 않는다.** 목차가 JSX 에서 텍스트를 못 뽑아 `자주 틀리는 포인트 ( → 교정)` 처럼 구멍이 난다. 제목에서는 기호 대신 말로 쓴다.
 - frontmatter는 임시값으로 채우되 `src/content.config.ts` 스키마와 호환되게 둔다(정식화는 `publish-post`).
 - draft 단계 컴포넌트는 `src/components/posts/<draft-slug>/`에 두고 발행 시 `publish-post`가 위치/슬러그를 정리한다.
 

@@ -11,6 +11,7 @@
  *   - ```` ```viz ````   (미처리 viz 블록 — apply-viz 누락)
  *   - ```` ```figure ```` (구 make-image 블록)
  *   - `<<meme:`          (미치환 밈)
+ *   - 본문 이모지          (두들 마크로 갈아 끼울 자리 — 아래 EMOJI_RE 주석)
  * (`(( ))` 는 수식/코드 오탐 위험이 커 하드 검사에서 제외 — 필요 시 수동 확인)
  *
  * 사용: bun scripts/check-post-markers.ts   (문제 있으면 종료코드 1)
@@ -33,17 +34,21 @@ const LINE_MARKERS: { re: RegExp; label: string }[] = [
 ];
 
 /**
- * 본문 이모지 — **경고만 한다(하드 실패 아님).**
+ * 본문 이모지 — **하드 실패.**
  *
- * 왜 경고인가: 이 가드가 생기기 전에 발행된 글 열일곱 편에 `❌`·`✅` 가 이미
- * 들어 있다. 하드 실패로 만들면 그 글들을 손보기 전까지 **아무 글도 발행되지
- * 않는다** — 남의 글을 인질로 잡는 게이트가 된다. 새 글은 집필 단계(`tech-deepdive`
- * · `review-post` · `post-finalize`)에서 이미 막히고, 이 경고는 그 셋이 다 새면
- * 발행 직전에 눈에 띄라고 두는 마지막 그물이다. 옛 글을 다 옮기고 나면 하드
- * 실패로 올릴 수 있다(KANBAN KAN-062).
+ * 처음엔 경고였다. 이 가드가 생겼을 때 이미 발행된 글 열넷에 `❌`·`✅`·`⚠` 83건이
+ * 들어 있어서, 하드로 두면 그 글들을 손보기 전까지 **아무 글도 발행되지 않는**
+ * 인질 게이트가 되기 때문이었다. KAN-062 로 그 83건을 전부 두들 마크로 옮겼으니
+ * 이제 하드로 올린다 — 새 글은 집필 단계(`tech-deepdive` · `review-post` ·
+ * `post-finalize`)에서 이미 막히고, 이건 그 셋이 다 새면 발행을 세우는 마지막 그물이다.
  *
  * 코드블록 안은 안 센다 — 터미널 출력이나 ASCII 도식에 든 `★`·`✔` 는 본문 장식이
  * 아니라 **인용한 화면**이라 손대면 인용이 거짓이 된다.
+ *
+ * **제목(`#`~`######`)에는 마크를 넣지 못한다.** 목차(`PostToc`)가 `render()` 의
+ * `headings` 에서 텍스트만 뽑아 쓰는데 JSX 는 텍스트를 안 남기므로, 제목에 마크를
+ * 꽂으면 목차에 `자주 틀리는 포인트 ( → 교정)` 같은 구멍이 뚫리고 앵커 slug 도
+ * 흔들린다. 제목의 이모지는 **말로 풀어 쓴다**(`(❌ → 교정)` → `(오해 → 교정)`).
  *
  * **잡는 범위는 매핑표에서 뽑는다.** 유니코드 블록으로 훑으면 안 된다 — 화살표
  * 블록(U+2190~21FF)에는 `→`·`↔` 가, 기타기호 블록에는 `♭` 가 들어 있는데 셋 다
@@ -98,8 +103,8 @@ async function main() {
   if (emoji.length > 0) {
     const byFile = new Map<string, EmojiHit[]>();
     for (const e of emoji) byFile.set(e.file, [...(byFile.get(e.file) ?? []), e]);
-    console.warn(
-      `[check-post-markers] ⚠ 본문 이모지 ${emoji.length}건 (${byFile.size}개 글) — 두들 마크로 갈아 끼울 자리:`,
+    console.error(
+      `[check-post-markers] ✗ 본문 이모지 ${emoji.length}건 (${byFile.size}개 글) — 두들 마크로 갈아 끼워야 한다:`,
     );
     for (const [file, list] of byFile) {
       const seen = new Map<string, { lines: number[]; suggest: string | null }>();
@@ -114,24 +119,24 @@ async function main() {
           : "대응 없음 → 지운다";
         return `${ch}×${v.lines.length} → ${to}`;
       });
-      console.warn(`  ${file}`);
-      for (const p of parts) console.warn(`      ${p}`);
+      console.error(`  ${file}`);
+      for (const p of parts) console.error(`      ${p}`);
     }
-    console.warn("  → 표는 src/lib/doodleMarks.ts, 카탈로그는 /design/deco. 코드블록 안은 세지 않는다.");
+    console.error("  → 표는 src/lib/doodleMarks.ts, 카탈로그는 /design/deco. 코드블록 안은 세지 않는다.");
+    console.error("  → 제목에는 마크를 넣지 못한다(목차가 JSX 를 못 읽는다) — 말로 풀어 쓴다.");
   }
 
-  if (hits.length === 0) {
-    console.log(`[check-post-markers] ✓ ${entries.length}개 글에 미처리 마커 없음`);
-    return;
+  if (hits.length > 0) {
+    console.error(`[check-post-markers] ✗ 미처리 마커 ${hits.length}건 — 발행 전 처리(또는 제거)해야 한다:`);
+    for (const h of hits) {
+      console.error(`  ${h.file}:${h.line}  ${h.marker}`);
+      console.error(`      ${h.text}`);
+    }
+    console.error("  → 구조형은 make-image(```viz```), 밈은 meme-inserter 로 처리. 레거시 마커는 viz 로 대체하거나 제거.");
   }
 
-  console.error(`[check-post-markers] ✗ 미처리 마커 ${hits.length}건 — 발행 전 처리(또는 제거)해야 한다:`);
-  for (const h of hits) {
-    console.error(`  ${h.file}:${h.line}  ${h.marker}`);
-    console.error(`      ${h.text}`);
-  }
-  console.error("  → 구조형은 make-image(```viz```), 밈은 meme-inserter 로 처리. 레거시 마커는 viz 로 대체하거나 제거.");
-  process.exit(1);
+  if (hits.length > 0 || emoji.length > 0) process.exit(1);
+  console.log(`[check-post-markers] ✓ ${entries.length}개 글에 미처리 마커·본문 이모지 없음`);
 }
 
 main().catch((e) => {

@@ -469,7 +469,7 @@ state not managed for field `cache` on command `scan_folder`
 
 훑기가 오래 걸리므로 커맨드를 `async`로 바꾸고 싶어집니다. 그런데 여기서 Rust 초심자와 경력자를 가리지 않고 걸리는 함정이 나옵니다.
 
-**❌ 안티패턴 — 컴파일되지 않습니다.**
+<Mark name="no" /> **안티패턴 — 컴파일되지 않습니다.**
 
 ```rust
 #[tauri::command]
@@ -483,7 +483,7 @@ async fn scan_folder(folder_path: String, cache: State<'_, ScanCache>) -> Result
 
 **결과:** 컴파일 실패입니다. `std::sync::Mutex`가 주는 `MutexGuard`는 `Send`를 구현하지 않기 때문에, `.await` 지점을 건너 살아 있으면 이 future 자체가 스레드 간 이동이 불가능해집니다. Tauri는 async 커맨드를 별도 태스크로 넘겨 실행하므로 future가 `Send`여야 하고, 그래서 빌드가 막힙니다. **테스트를 돌릴 필요도 없이 `cargo build`에서 재현되는, 가장 정직한 종류의 실패**입니다.
 
-**✅ 정석 1 — 잠금 구간을 `await` 바깥으로 밀어낸다.**
+<Mark name="check" /> **정석 1 — 잠금 구간을 `await` 바깥으로 밀어낸다.**
 
 ```rust
 #[tauri::command]
@@ -502,7 +502,7 @@ async fn scan_folder(folder_path: String, cache: State<'_, ScanCache>) -> Result
 }
 ```
 
-**✅ 정석 2 — 정말로 잠금을 `await` 너머까지 들고 가야 한다면, 비동기 Mutex를 쓴다.**
+<Mark name="check" /> **정석 2 — 정말로 잠금을 `await` 너머까지 들고 가야 한다면, 비동기 Mutex를 쓴다.**
 
 ```rust
 use tauri::async_runtime::Mutex;   // tokio 기반 async Mutex

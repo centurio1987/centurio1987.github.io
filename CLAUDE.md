@@ -168,9 +168,12 @@ research → tech-deepdive(집필) → humanize-post(AI 리듬) → review-post(
 `<Mark name="check" />` · `<Mark name="warn" />` 을 쓴다(MDX 에서 import 불필요).
 **뜻이 있는 기호는 지우지 말고 갈아 끼우고, 매핑에 없는 것은 장식이므로 지운다** —
 `❌` 는 그 항목의 판정이라 지우면 맞는 항목과 틀린 항목이 같은 모양이 된다.
-**코드블록 안의 `★`·`✔` 는 인용한 화면이라 건드리지 않는다.** 매핑표는
+**코드블록 안의 `★`·`✔` 는 인용한 화면이라 건드리지 않는다.**
+**제목에는 마크를 넣지 못한다 — 말로 풀어 쓴다**(목차 `PostToc` 는 `headings` 의 텍스트만
+쓰는데 JSX 는 텍스트를 안 남겨 `자주 틀리는 포인트 ( → 교정)` 처럼 뚫린다). 볼드 앞머리는
+마크를 볼드 **밖**으로 뺀다(`**❌ 안티패턴**` → `<Mark name="no" /> **안티패턴**`). 매핑표는
 `src/lib/doodleMarks.ts`(`EMOJI_TO_MARK`), 카탈로그는 `/design/deco`, 발행 직전 그물은
-`bun scripts/check-post-markers.ts`(경고만 — 이유는 그 파일 주석).
+`bun scripts/check-post-markers.ts`(**하드 실패** — KAN-062 로 옛 글 83건을 다 옮긴 뒤 올렸다).
 
 ### Packet captures: VPN 캡처 랩 (별도 레포)
 
