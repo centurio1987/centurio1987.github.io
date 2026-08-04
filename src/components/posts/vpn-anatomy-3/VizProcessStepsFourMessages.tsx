@@ -5,11 +5,11 @@ import ProcessSteps from "../../../lib/viz/ProcessSteps";
 
 export default function VizProcessStepsFourMessages() {
   return (
-    <VizFigure caption={"IKE_SA_INIT 두 개로 공유 비밀을 세우고, IKE_AUTH 두 개로 서로를 인증하며 SA를 완성한다"}>
+    <VizFigure caption={"IKE_SA_INIT 두 개로 공유 비밀을 만들고, IKE_AUTH 두 개로 서로를 인증하며 SA를 완성한다"}>
       <ProcessSteps
         accessible="img"
         title={"IKE_SA_INIT 요청·응답과 IKE_AUTH 요청·응답의 네 단계"}
-        desc={"IKE_SA_INIT 두 개로 공유 비밀을 세우고, IKE_AUTH 두 개로 서로를 인증하며 SA를 완성한다"}
+        desc={"IKE_SA_INIT 두 개로 공유 비밀을 만들고, IKE_AUTH 두 개로 서로를 인증하며 SA를 완성한다"}
         viewBox="0 0 480 520"
         orientation="vertical"
         data={{
@@ -20,7 +20,7 @@ export default function VizProcessStepsFourMessages() {
     },
     {
       "title": "② IKE_SA_INIT 응답 · UDP 500",
-      "description": "SA 선택 · KEr · Nr — 여기서 공유 비밀 g^ir이 선다"
+      "description": "SA 선택 · KEr · Nr — 여기서 공유 비밀 g^ir이 만들어진다"
     },
     {
       "title": "③ IKE_AUTH 요청 · UDP 4500",

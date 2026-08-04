@@ -17,7 +17,7 @@ import LoopbackNegotiationDemo from "../../components/posts/webrtc-1/LoopbackNeg
 
 ![WebRTC 해부 1편 — 두 브라우저는 어떻게 직접 손을 잡는가](/images/webrtc-1/hero.webp)
 
-화상회의 기능을 붙였습니다. 집에서 테스트할 땐 완벽했습니다. 그런데 고객사 사무실에서 시연하는 날, 영상이 끝내 연결되지 않습니다. 같은 코드, 같은 브라우저인데 회사 방화벽 뒤에서만 통화가 서지 않습니다. "P2P라 서버도 필요 없다더니, 대체 왜 안 되는 거지?"
+화상회의 기능을 붙였습니다. 집에서 테스트할 땐 완벽했습니다. 그런데 고객사 사무실에서 시연하는 날, 영상이 끝내 연결되지 않습니다. 같은 코드, 같은 브라우저인데 회사 방화벽 뒤에서만 통화가 연결되지 않습니다. "P2P라 서버도 필요 없다더니, 대체 왜 안 되는 거지?"
 
 이 글을 끝까지 읽으시면, 그 순간 머릿속에 **연결 협상의 전 과정**이 그려지게 됩니다. 어디서 무엇이 오갔고, 어느 단계에서 막혔으며, `chrome://webrtc-internals`의 어느 줄을 봐야 하는지를 스스로 추적하고 진단할 수 있게 되는 것 — 그것이 이 글의 목표입니다.
 
@@ -90,9 +90,9 @@ WebRTC는 단일 프로토콜이 아닙니다. 브라우저에 내장된 **실�
 
 각 프로토콜을 스펙 덤프로 늘어놓으면 길을 잃습니다. "무슨 문제를 푸는가"를 한두 줄로 압축하겠습니다.
 
-- **STUN (RFC 8489)** — *문제*: NAT 뒤의 나는 내 공인 IP:포트를 모릅니다. *해결*: STUN 서버에 바인딩 요청을 보내면 "네가 이렇게 보인다"고 알려줍니다. 이렇게 발견한 후보가 **srflx(server-reflexive)**입니다. STUN은 경로만 알려줄 뿐 데이터를 중계하지 않습니다. 참고로 STUN 바인딩 요청은 *서버 대상*만이 아니라 두 피어 사이의 연결성 점검에도 쓰이며, 이 과정에서 미리 몰랐던 매핑이 새로 드러나면 **prflx(peer-reflexive)** 후보가 됩니다.
+- **STUN (RFC 8489)** — *문제*: NAT 뒤의 나는 내 공인 IP:포트를 모릅니다. *해결*: STUN 서버에 바인딩 요청을 보내면 "네가 이렇게 보인다"고 알려줍니다. 이렇게 발견한 후보가 **srflx**(server-reflexive)입니다. STUN은 경로만 알려줄 뿐 데이터를 중계하지 않습니다. 참고로 STUN 바인딩 요청은 *서버 대상*만이 아니라 두 피어 사이의 연결성 점검에도 쓰이며, 이 과정에서 미리 몰랐던 매핑이 새로 드러나면 **prflx(peer-reflexive)** 후보가 됩니다.
 - **TURN (RFC 8656)** — *문제*: 직접 경로가 안 뚫립니다. *해결*: TURN 서버가 양쪽 트래픽을 **릴레이**합니다. 이렇게 확보한 후보가 **relay**입니다. 전송은 UDP·TCP·TLS를 쓸 수 있어, UDP가 막힌 망에서는 TCP/TLS 릴레이가 마지막 보루가 됩니다(단, 어떤 transport를 쓸지는 제공한 ICE 서버 URL과 우선순위·망 상황의 결과이지 브라우저가 보장하는 고정 폴백 순서가 아닙니다).
-- **ICE (RFC 8445)** — *문제*: host·srflx·prflx·relay 후보가 여러 개인데 어느 쌍으로 연결할까요. *해결*: 한쪽이 **controlling**, 다른 쪽이 **controlled** 역할을 맡고, 후보마다 우선순위를 매겨(RFC 8445 권고 타입 선호도는 host 126 > prflx 110 > srflx 100 > relay 0이고, 여기에 local preference·component ID가 더해집니다 — 본문 랩은 타입 단계만 단순화했습니다) 후보 쌍 체크리스트를 만듭니다. 각 쌍에 연결성 점검(STUN 바인딩 요청을 실제로 주고받아 통하는지 확인)을 돌리고, controlling 측이 통하는 쌍 하나를 **nominate(지명)**해 selected pair로 확정합니다.
+- **ICE (RFC 8445)** — *문제*: host·srflx·prflx·relay 후보가 여러 개인데 어느 쌍으로 연결할까요. *해결*: 한쪽이 **controlling**, 다른 쪽이 **controlled** 역할을 맡고, 후보마다 우선순위를 매겨(RFC 8445 권고 타입 선호도는 host 126 > prflx 110 > srflx 100 > relay 0이고, 여기에 local preference·component ID가 더해집니다 — 본문 랩은 타입 단계만 단순화했습니다) 후보 쌍 체크리스트를 만듭니다. 각 쌍에 연결성 점검(STUN 바인딩 요청을 실제로 주고받아 통하는지 확인)을 돌리고, controlling 측이 통하는 쌍 하나를 **nominate**(지명)해 selected pair로 확정합니다.
 - **trickle ICE (RFC 8838)** — *문제*: 후보를 다 모은 다음에 보내면 연결이 느립니다. *해결*: 후보를 발견하는 족족 시그널링으로 흘려보내(`onicecandidate`) 점검을 일찍 시작합니다. 오늘날의 사실상 표준입니다. 끝을 알릴 땐 빈 후보(`end-of-candidates`)를 보내고, 상대의 trickle 수신 지원 여부는 `canTrickleIceCandidates`로 압니다 — 이 종료 신호를 빠뜨리면 `iceGatheringState`가 안 끝나 `checking`에 머무는 사고가 납니다.
 - **SDP (RFC 8866)** — *문제*: 코덱·트랜스포트·미디어 구성을 무슨 형식으로 적을까요. *해결*: 세션을 텍스트로 기술하는 형식입니다(m-line, codec, ICE ufrag/pwd, DTLS fingerprint 등). Offer/Answer는 이 SDP를 주고받는 패턴입니다. 한 가지 주의하실 점 — SDP 문자열을 손으로 고치는 *SDP munging*은 브라우저 호환성과 재협상을 깨기 쉽습니다. 코덱 선호는 `transceiver.setCodecPreferences()`, 송신 파라미터는 `sender.setParameters()` 같은 **API를 우선**하십시오.
 - **DTLS-SRTP (RFC 5764)** — *문제*: 미디어를 어떻게 암호화할까요. *해결*: 연결성이 확보된 경로 위에서 DTLS 핸드셰이크로 키를 만들고, 그 키로 SRTP를 보호합니다. WebRTC에서 **암호화는 선택이 아니라 의무**입니다.
@@ -144,7 +144,7 @@ trickle ICE는 후보를 비동기로 흘려보내므로, **Answer(또는 원격
 
 도입부의 그 문제입니다. 단계별로 추적하겠습니다.
 
-1. **증상** — 집(가정용 NAT)에서는 되는데 사무실에서만 통화가 서지 않습니다. `iceConnectionState`가 `checking`에서 `failed`로 떨어집니다.
+1. **증상** — 집(가정용 NAT)에서는 되는데 사무실에서만 통화가 연결되지 않습니다. `iceConnectionState`가 `checking`에서 `failed`로 떨어집니다.
 2. **원리** — 기업망은 UDP를 광범위하게 막거나, 엄격한 NAT(대상 의존적 매핑/필터링)를 쓰는 경우가 많습니다. 그러면 host·srflx 후보 쌍의 연결성 점검이 모두 실패합니다.
 3. **진단** — `chrome://webrtc-internals`를 위에서부터 단계적으로 읽습니다. ① `iceGatheringState`로 후보가 다 모였는지, ② `onicecandidateerror`로 STUN/TURN 요청이 거부됐는지(자격증명·도달성), ③ `getStats()`의 `candidate-pair` 중 지명된(`nominated`/`selected`) 쌍이 있는지(`state: succeeded`)와 그 로컬/원격 후보 타입(host/srflx/relay), ④ `transport`의 `selectedCandidatePairId`와 DTLS 상태(`dtlsState`)까지 봅니다. relay 후보 자체가 없다면 TURN이 구성되지 않은 것이고, relay 후보는 있는데 점검에서 떨어진다면 TURN 도달성·자격증명을 의심합니다.
 4. **해결** — TURN 서버를 붙이되, UDP·TCP·TLS transport를 함께 제공해 UDP가 막힌 망에서도 릴레이가 동작하도록 구성합니다. ICE는 가용한 후보 중 우선순위·점검 결과에 따라 경로를 고르므로 이는 고정 폴백이 아니라 *선택지를 넓혀 두는 일*입니다. TURN-over-TLS의 표준 포트는 5349지만, 기업망의 443만 열린 정책을 통과하려고 **443에 별도 배치**하는 운영 관행이 흔합니다(단, 443이라도 TLS 검사·HTTP CONNECT 강제 프록시 환경에서는 통과를 보장하지 않습니다). 헷갈리기 쉬운 경계 하나 — 브라우저↔TURN 구간의 transport(`turns:`의 UDP/TCP/TLS)와 TURN↔상대 peer 구간의 릴레이 transport는 별개입니다. TURN을 붙였는데도 실패하면 자격증명 만료·방화벽의 해당 포트 차단·TURN 서버 도달성을 차례로 의심합니다.

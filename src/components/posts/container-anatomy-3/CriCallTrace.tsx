@@ -8,7 +8,7 @@ import { useState } from "react";
  *  - 샌드박스가 네트워크와 IP 를 소유하고, 컨테이너는 그 안에 들어간다.
  *  - RuntimeService 와 ImageService 가 번갈아 불린다.
  *
- * pause 컨테이너는 RunPodSandbox 를 받은 런타임이 내부적으로 세우는 것이라
+ * pause 컨테이너는 RunPodSandbox 를 받은 런타임이 내부적으로 만드는 것이라
  * 별도의 CRI 호출 단계로 두지 않는다(본문 서술과 일치).
  */
 
@@ -26,7 +26,7 @@ const STEPS: Step[] = [
   {
     call: "RunPodSandbox",
     svc: "RuntimeService",
-    what: "파드의 껍데기를 만듭니다. 네트워크 네임스페이스가 생기고 IP가 할당되며, 런타임이 내부적으로 pause 컨테이너를 세워 그 네임스페이스를 붙잡습니다.",
+    what: "파드의 껍데기를 만듭니다. 네트워크 네임스페이스가 생기고 IP가 할당되며, 런타임이 내부적으로 pause 컨테이너를 만들어 그 네임스페이스를 붙잡습니다.",
     ifMissing: "컨테이너를 넣을 곳이 없습니다. 파드 IP도, localhost 통신도 성립하지 않습니다.",
   },
   {

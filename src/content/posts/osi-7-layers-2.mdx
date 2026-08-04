@@ -46,7 +46,7 @@ L1을 전선으로만 생각하면 절반을 놓칩니다. L1이 실제로 지�
 
 ### 충돌 영역과 duplex: hub와 switch를 가르는 분수령
 
-옛 Ethernet은 하나의 전선을 여러 호스트가 나눠 썼습니다. 둘이 동시에 말하면 신호가 겹쳐 **충돌(collision)**이 났고요. 그래서 CSMA/CD(Carrier Sense Multiple Access with Collision Detection)라는 규칙이 필요했습니다. 말하기 전에 매체를 들어 보고(carrier sense), 충돌이 감지되면 잠시 멈췄다 다시 시도한다는 것이죠.
+옛 Ethernet은 하나의 전선을 여러 호스트가 나눠 썼습니다. 둘이 동시에 말하면 신호가 겹쳐 **충돌**(collision)이 났고요. 그래서 CSMA/CD(Carrier Sense Multiple Access with Collision Detection)라는 규칙이 필요했습니다. 말하기 전에 매체를 들어 보고(carrier sense), 충돌이 감지되면 잠시 멈췄다 다시 시도한다는 것이죠.
 
 hub는 이 시절의 장비입니다. 들어온 신호를 모든 port로 그대로 반복해 내보내니, **hub에 물린 모두가 하나의 충돌 영역(collision domain)을 나눠 쓰게** 됩니다. 누군가 말하는 동안 나머지는 기다려야 하고요.
 
@@ -93,7 +93,7 @@ L1이 비트를 신호로 옮긴다면, L2는 그 비트를 **프레임이라는
 
 ## 핵심 원리: 스위치는 어떻게 학습하는가
 
-switch가 똑똑해 보이는 비결은 의외로 단순합니다. 처음엔 아무것도 모릅니다. 프레임이 들어올 때마다 **source MAC과 들어온 port를 짝지어 기억**해 두고, destination MAC이 테이블에 있으면 그 port로만 보내고 없으면 **모든 port로 복제(flooding)**합니다. 직접 보내 보겠습니다.
+switch가 똑똑해 보이는 비결은 의외로 단순합니다. 처음엔 아무것도 모릅니다. 프레임이 들어올 때마다 **source MAC과 들어온 port를 짝지어 기억**해 두고, destination MAC이 테이블에 있으면 그 port로만 보내고 없으면 **모든 port로 복제**(flooding)합니다. 직접 보내 보겠습니다.
 
 <SwitchLearningLab client:visible />
 
@@ -107,7 +107,7 @@ switch가 똑똑해 보이는 비결은 의외로 단순합니다. 처음엔 아
 
 ## VLAN: 하나의 스위치를 여러 망으로 쪼개기
 
-broadcast domain이 커질수록 broadcast 잡음도 늘고 보안 경계도 흐려집니다. 그렇다고 부서마다 물리 switch를 따로 사자니 낭비고요. **VLAN(IEEE 802.1Q)**은 하나의 물리 인프라를 여러 논리 broadcast domain으로 나눠 이 문제를 풉니다.
+broadcast domain이 커질수록 broadcast 잡음도 늘고 보안 경계도 흐려집니다. 그렇다고 부서마다 물리 switch를 따로 사자니 낭비고요. **VLAN**(IEEE 802.1Q)은 하나의 물리 인프라를 여러 논리 broadcast domain으로 나눠 이 문제를 풉니다.
 
 비결은 아까 FrameAnatomy에서 끼워 본 그 **4바이트 태그**입니다. 앞 2바이트는 TPID(Tag Protocol Identifier, 0x8100 — 이 다음이 VLAN 태그라는 표식)이고, 뒤 2바이트 TCI(Tag Control Information)에는 **VLAN ID(VID, 12비트, 1~4094)** 외에 QoS(Quality of Service, 서비스 품질) 우선순위 PCP(Priority Code Point, 3비트), 폐기 적격 표시 DEI(Drop Eligible Indicator, 1비트)가 함께 들어갑니다. switch는 이 VID로 같은 VLAN끼리만 프레임을 전달하고요. VLAN 10의 broadcast는 VLAN 20으로 새지 않습니다. 물리적으로 같은 switch에 꽂혀 있어도 그렇습니다.
 
@@ -136,7 +136,7 @@ trunk에는 보통 태그 없이 오가는 **native VLAN**이 하나 있는데, 
 
 ## ARP: IP는 아는데 프레임은 누구에게 보낼까
 
-여기서 L2와 L3가 만납니다. 호스트는 보낼 대상의 **IP는 알지만 MAC은 모릅니다.** 프레임을 만들려면 destination MAC이 있어야 하는데 말이죠. 이 간극을 메우는 것이 **ARP(Address Resolution Protocol, RFC 826)**입니다.
+여기서 L2와 L3가 만납니다. 호스트는 보낼 대상의 **IP는 알지만 MAC은 모릅니다.** 프레임을 만들려면 destination MAC이 있어야 하는데 말이죠. 이 간극을 메우는 것이 **ARP**(Address Resolution Protocol, RFC 826)입니다.
 
 동작은 모르면 일단 뿌린다는 L2의 방식 그대로입니다.
 
@@ -169,7 +169,7 @@ trunk에는 보통 태그 없이 오가는 **native VLAN**이 하나 있는데, 
 
 - **Gratuitous ARP**: 아무도 묻지 않았는데 이 IP는 이제 내 MAC이라고 알리는 것(ARP Announcement)입니다. 가상 IP가 다른 장비로 넘어가는 failover에서 주소가 이사 왔다는 사실을 broadcast로 알려 모두의 cache를 갱신시키죠. 다만 **IP 충돌 감지(ACD, Address Conflict Detection; RFC 5227)는 이 일방적 announcement만으로 되지 않습니다.** 표준은 sender IP를 `0.0.0.0`으로 둔 별도의 **ARP Probe**를 먼저 보내 응답이 오는지로 충돌을 확인합니다. 한편 ARP에는 인증이 없어서, 공격자가 거짓 매핑을 주입하면 그것이 곧 **ARP spoofing**입니다.
 - **Proxy ARP**: 정작 그 IP의 주인이 아닌 router가 대신 자기 MAC으로 응답하도록 하는 설정입니다. 그래서 엉뚱한 장비가 ARP에 답하는 것처럼 보이는 진단 결과가 나올 수 있고요.
-- **IPv6에는 ARP가 없습니다.** 대신 **Neighbor Discovery(ND, RFC 4861)**가 ICMPv6(Internet Control Message Protocol version 6) 위에서 주소 해석을 맡습니다(ND는 그 밖에 router·prefix discovery와 도달성 추적까지 떠맡지만 여기서는 주소 해석만 봅니다). ARP와의 결정적 차이는 broadcast가 아니라 **solicited-node multicast**로 물어 관계없는 호스트를 덜 깨운다는 점이죠. ARP는 IPv4 쪽, ND는 IPv6 쪽으로 기억해 두시면 됩니다.
+- **IPv6에는 ARP가 없습니다.** 대신 **Neighbor Discovery**(ND, RFC 4861)가 ICMPv6(Internet Control Message Protocol version 6) 위에서 주소 해석을 맡습니다(ND는 그 밖에 router·prefix discovery와 도달성 추적까지 떠맡지만 여기서는 주소 해석만 봅니다). ARP와의 결정적 차이는 broadcast가 아니라 **solicited-node multicast**로 물어 관계없는 호스트를 덜 깨운다는 점이죠. ARP는 IPv4 쪽, ND는 IPv6 쪽으로 기억해 두시면 됩니다.
 
 ## STP: L2에서 루프가 치명적인 이유
 
@@ -177,7 +177,7 @@ trunk에는 보통 태그 없이 오가는 **native VLAN**이 하나 있는데, 
 
 그래서 switch 사이에 루프가 생긴 상태에서 broadcast 프레임이 하나 들어오면, 그 프레임은 루프를 **영원히 돌며 매 바퀴 복제**됩니다. 순식간에 대역폭이 broadcast 사본으로 가득 차는 **broadcast storm**이 일어나 망 전체가 멈춰 서죠. L3에 있는 TTL이라는 안전장치가 L2에는 없기 때문입니다.
 
-**STP(Spanning Tree Protocol)**는 이 문제를 풉니다. switch들이 BPDU(Bridge Protocol Data Unit)라는 메시지를 주고받아 우선순위가 가장 높은 하나를 **root bridge**로 뽑고, 각 switch는 root로 가는 최적 경로의 port(root port)와 각 세그먼트의 대표 port(designated port)를 정한 뒤 나머지 잉여 경로(alternate port)를 차단해 루프 없는 트리를 만듭니다. 평소에는 차단해 두다가 주 경로가 끊기면 차단했던 경로를 살려 복구하고요.
+**STP**(Spanning Tree Protocol)는 이 문제를 풉니다. switch들이 BPDU(Bridge Protocol Data Unit)라는 메시지를 주고받아 우선순위가 가장 높은 하나를 **root bridge**로 뽑고, 각 switch는 root로 가는 최적 경로의 port(root port)와 각 세그먼트의 대표 port(designated port)를 정한 뒤 나머지 잉여 경로(alternate port)를 차단해 루프 없는 트리를 만듭니다. 평소에는 차단해 두다가 주 경로가 끊기면 차단했던 경로를 살려 복구하고요.
 
 대가도 있습니다. 전통 STP에서 port는 연결 직후 곧장 데이터를 보내지 못하고 listening과 learning 상태를 거치며 **약 30초간 프레임을 버립니다.** 그래서 PC를 꽂자마자 DHCP(Dynamic Host Configuration Protocol, 동적 호스트 구성 프로토콜)가 실패하는 일이 생기죠. 호스트가 붙는 종단 port에는 이 지연을 건너뛰는 PortFast(RSTP(Rapid Spanning Tree Protocol)의 edge port)를 설정합니다. 표준 쪽 사정을 덧붙이면, 독립 문서였던 IEEE 802.1D가 2022년 철회되면서 STP·RSTP 규정이 **IEEE 802.1Q로 통합**됐습니다. 현장에서는 빠른 RSTP 외에 VLAN별로 독립 트리를 구성하는 MSTP(Multiple Spanning Tree Protocol)나 Rapid PVST+(Per-VLAN Spanning Tree Plus)가 흔하고, 데이터센터는 MLAG(Multi-Chassis Link Aggregation)·EVPN(Ethernet VPN)처럼 STP에 덜 기대는 설계로 가기도 합니다. 무엇을 쓰든 목적은 하나입니다. 이중화가 주는 안정성을 루프의 위험과 맞바꾸지 않는 것이죠.
 

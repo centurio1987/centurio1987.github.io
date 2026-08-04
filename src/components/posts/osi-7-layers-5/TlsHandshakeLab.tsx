@@ -20,7 +20,7 @@ const STEPS: Step[] = [
     dir: null,
     enc: "plain",
     carries: [],
-    note: "이미 Part 4의 3-way handshake로 TCP 연결은 섰습니다. 하지만 지금 오가는 모든 byte는 평문입니다. TLS는 이 위에 '같은 뜻 + 비밀'을 얹습니다.",
+    note: "이미 Part 4의 3-way handshake로 TCP 연결은 수립됐습니다. 하지만 지금 오가는 모든 byte는 평문입니다. TLS는 이 위에 '같은 뜻 + 비밀'을 얹습니다.",
   },
   {
     title: "1. ClientHello →",
@@ -54,7 +54,7 @@ const STEPS: Step[] = [
     dir: "c2s",
     enc: "encrypted",
     carries: ["Finished (handshake 무결성 확인)"],
-    note: "클라이언트가 인증서 체인·hostname을 검증하고, 자기도 Finished를 보내 handshake가 변조되지 않았음을 확인합니다. 메시지 1왕복(1-RTT) 만에 보안 채널이 섭니다.",
+    note: "클라이언트가 인증서 체인·hostname을 검증하고, 자기도 Finished를 보내 handshake가 변조되지 않았음을 확인합니다. 메시지 1왕복(1-RTT) 만에 보안 채널이 열립니다.",
   },
   {
     title: "4. Application Data ↔ (암호화)",

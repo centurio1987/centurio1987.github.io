@@ -20,7 +20,7 @@ export default function VizProcessSteps4() {
     },
     {
       "title": "내부 TCP 재전송",
-      "description": "터널링되는 앱의 TCP가 재전송 타이머를 세운다"
+      "description": "터널링되는 앱의 TCP가 재전송 타이머를 건다"
     },
     {
       "title": "외부 TCP도 재전송",
