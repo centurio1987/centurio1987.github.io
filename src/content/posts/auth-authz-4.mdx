@@ -30,7 +30,7 @@ import AuthRequestLab from "../../components/posts/auth-authz-4/AuthRequestLab";
 
 시리즈 전체를 관통하는 실무 원칙을 한 장으로 모았습니다.
 
-| 영역 | 정석 — 해야 할 것 | 안티패턴 — 하지 말 것 |
+| 영역 | <Mark name="check" /> 해야 할 것 | <Mark name="no" /> 하지 말 것 |
 |---|---|---|
 | **흐름** | Authorization Code + PKCE(S256), state·nonce·redirect 정확매칭 | Implicit·ROPC·`plain` |
 | **클라이언트 인증** | confidential은 인증(비대칭 private_key_jwt·mTLS 선호) | SPA에 secret, 약한 secret |
@@ -120,8 +120,8 @@ Redis 자체도 잠급니다 — **AUTH/ACL·TLS·네트워크 격리**, 세션 
 이걸 빠뜨리는 것이 OWASP Top 10:2025 **1위 A01(Broken Access Control)**입니다. 대표 유형이 **IDOR**(식별자만 바꿔 남의 레코드 접근)와 **함수 레벨 접근제어 누락**(POST/PUT/DELETE에 권한 검사 부재)입니다.
 
 ```text
-안티패턴 —  GET /api/orders/12345          # 토큰만 유효하면 통과 → 남의 주문도 보임(IDOR)
-정석 —  GET /api/orders/12345
+❌  GET /api/orders/12345          # 토큰만 유효하면 통과 → 남의 주문도 보임(IDOR)
+✅  GET /api/orders/12345
     → 토큰 검증(2편) 후: order.owner == token.sub 인지 확인, 아니면 403
 ```
 
@@ -139,13 +139,13 @@ BFF·세션 쿠키를 쓰면 편하지만, 쿠키가 **자동 전송**되는 특
 
 시리즈를 마무리하며, 실무에서 특히 뼈아픈 실수들을 모았습니다.
 
-- **하지 말 것 — 토큰을 `localStorage`에 둔다.** → XSS 한 번에 끝. **BFF + HttpOnly 세션 쿠키**로.
-- **하지 말 것 — `X-User` 같은 신원 헤더를 프록시에서 안 덮어쓴다.** → 클라이언트가 위조합니다. **인증 결과(`$user`)로 덮어쓰도록** 설정.
-- **하지 말 것 — 백엔드를 외부에 노출한 채 엣지에서만 인증한다.** → 직접 접근으로 통째 우회. 내부망·mTLS로 막고, 인가는 **앱에서도** 다시.
-- **하지 말 것 — 엣지(게이트웨이)에서 세밀한 인가까지 다 한다.** → 단일 결정점·관리 지옥. 엣지는 거친 인증, 세밀한 인가는 리소스 서버.
-- **하지 말 것 — 리프레시 토큰을 회전 없이 오래 쓴다.** → 유출 시 무한정 악용. **회전 + 재사용 감지**.
-- **하지 말 것 — 토큰이 유효하면 인가된 것으로 본다.** → IDOR·권한 상승의 문. **deny-by-default + 소유권 검증**.
-- **하지 말 것 — `SameSite`만 걸고 CSRF는 끝이라 여긴다.** → 보조일 뿐. **CSRF 토큰과 함께**.
+- <Mark name="no" /> **토큰을 `localStorage`에 둔다.** → XSS 한 번에 끝. **BFF + HttpOnly 세션 쿠키**로.
+- <Mark name="no" /> **`X-User` 같은 신원 헤더를 프록시에서 안 덮어쓴다.** → 클라이언트가 위조합니다. **인증 결과(`$user`)로 덮어쓰도록** 설정.
+- <Mark name="no" /> **백엔드를 외부에 노출한 채 엣지에서만 인증한다.** → 직접 접근으로 통째 우회. 내부망·mTLS로 막고, 인가는 **앱에서도** 다시.
+- <Mark name="no" /> **엣지(게이트웨이)에서 세밀한 인가까지 다 한다.** → 단일 결정점·관리 지옥. 엣지는 거친 인증, 세밀한 인가는 리소스 서버.
+- <Mark name="no" /> **리프레시 토큰을 회전 없이 오래 쓴다.** → 유출 시 무한정 악용. **회전 + 재사용 감지**.
+- <Mark name="no" /> **토큰이 유효하면 인가된 것으로 본다.** → IDOR·권한 상승의 문. **deny-by-default + 소유권 검증**.
+- <Mark name="no" /> **`SameSite`만 걸고 CSRF는 끝이라 여긴다.** → 보조일 뿐. **CSRF 토큰과 함께**.
 
 ## 직접 해보기: auth_request 시퀀스 랩
 

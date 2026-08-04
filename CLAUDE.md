@@ -106,6 +106,12 @@ variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives a
 - **부모 scoped CSS 로 부품을 못 고친다** — Astro 는 자식 컴포넌트 루트에 자식의
   `data-astro-cid` 만 붙인다. prop 이나 지역 조상 아래 `:global()` 을 쓴다.
 - 폭신 대담(`template: "talk"`)은 자기 시각 언어가 있고 `deco.css` 를 안 들여오므로 제외한다.
+- **두들 마크(`DoodleMark.astro`)만 예외다 — 장식이 아니라 본문 기호다.** 본문에서
+  **이모지 대신** 쓰는 손그림 기호 51종으로, MDX 에서 import 없이 `<Mark name="no" />`
+  로 쓴다(`[...slug].astro` 가 꽂아 준다 — 대담에도 꽂힌다). 위 규칙 셋이 전부 뒤집힌다:
+  강도로 사라지지 않고, `aria-label` 을 달며, `deco.css` 없이도 그려진다. 표는
+  `src/lib/doodleMarks.ts` 하나이고 카탈로그는 `/design/deco`. 필기구별 필터·기준선
+  규칙(전부 실측값)은 `deco-kit` 스킬.
 
 ### 이미지 로딩 (KAN-059)
 
@@ -133,7 +139,7 @@ raws/<memo>.md   (user writes idea fragments)
   → humanize-post (AI 문체 제거 — 스캔→등급(A~D)→윤문. **에이전트가 본문을 쓴 경우에만**)
   → review-post   (5-axis Korean review: 맞춤법/개연성/테크니컬 라이팅/몰입도/AI 문체 잔존)
   → make-image    (```viz``` blocks → bbangto-ui-visualization components; inline SVG + hero webp)
-  → post-finalize (tags, series links, <<meme:>> delegation — NO image generation)
+  → post-finalize (tags, series links, <<meme:>> delegation, emoji→두들 마크 — NO image generation)
   → publish-post  → src/content/posts/<slug>.mdx  (sets Astro frontmatter, deletes draft)
 ```
 
@@ -144,17 +150,46 @@ research → tech-deepdive(집필) → humanize-post(AI 리듬) → review-post(
   → review-writing(거시) → quality-gate(기술) → post-finalize → publish-post → ship-post
 ```
 
-**한국어 품질 기준 3종 (`.claude/skills/_shared/`)** — 겹치지 않게 나뉘어 있다:
+**집필 규칙은 이 저장소에 없다 — `authoring-kit` 플러그인이 소유한다.**
+세 저장소(blog · code_test · resume)가 같은 규칙을 각자 한 벌씩 들고 있다가 갈라진 것을
+정리한 결과다. 이 저장소에는 **매체 결정**(시각 자료 위탁 · 두들 마크 · 발행 파이프라인)만 남는다.
 
-| 문서 | 잡는 것 | 소유 단계 |
+| 층 | 무엇 | 어디 |
 | --- | --- | --- |
-| `STYLE_GUIDE.md` | 저자 고유 목소리 (Part 1은 절대 기준) | tech-deepdive · review-writing |
-| `NATURAL_KOREAN_GUIDE.md` | 영어투 — 문장 **골격**이 영어 | review-post |
-| `AI_KOREAN_PATTERNS.md` | AI 기계 리듬 — 문장 **박자**가 기계 | humanize-post |
+| L0 공통 원칙 | 증거 · 문법 · 이해 · AI 기계 리듬 | `~/.claude/authoring/principles/` |
+| L1 퍼소나 | 빵관 토니 · 빵토랩 연구원 · 교수님 · 선생님 | `~/.claude/authoring/voices/` |
+| L2 글 명세 | `tech-deepdive` · `polssin-daedam` | `.claude/authoring/specs/` |
 
-`AI_KOREAN_PATTERNS.md`의 **Part B(저자 색 보호 9항목)** 는 다른 모든 규칙보다 우선한다.
-`결론적으로`·만연체·당위 마무리·병렬 점층·한자어 인용은 **AI 티가 아니라 저자 문체다. 고치지 마라.**
-사람이 직접 쓴 원고(`raw-to-draft` 경로)에는 `humanize-post`와 AI 문체 축을 **돌리지 않는다.**
+**규칙 갈래마다 소유 층이 하나다.** 증거·문법·이해는 L0 단독이고 어떤 퍼소나도 무력화하지
+못한다. 말투·호흡·독자 장치·어휘는 L1 단독, 항목 골격과 그 글만의 원칙은 L2 단독이다.
+이 소유권이 없던 시절 **한 저자의 문체가 모든 퍼소나에 강제되던** 것을 고친 구조다.
+
+**퍼소나마다 쓰임이 다르다.** `ppangto`(빵관 토니)는 `usage: "preserve"` 라
+**AI 가 그 목소리로 새로 쓰지 않는다** — 사용자가 직접 쓴 초안을 다듬을 때 지킬 색으로만
+본다. 빵토랩 셋은 `generate` 다. `author` frontmatter 가 어느 voice 를 쓸지 정한다.
+
+규칙 전문을 보려면:
+
+```bash
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/authoring.py show spec tech-deepdive
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/authoring.py resolve --voice <id> --spec <id> --profile main
+```
+
+`.claude/authoring.lock.json` 이 규칙 조합을 고정한다. `lock` 이 stale 이면 규칙이 바뀐
+것이므로 무엇이 바뀌었는지 보고 진행할지 정한다.
+
+**본문에 이모지를 쓰지 않는다 — 두들 마크로 쓴다.** `- ❌ **"…"**` 꼴의 "흔한 오해" 목록은
+이 블로그가 자주 쓰는 형식인데, 이모지로 쓰면 기기마다 다른 그림이 나오고 컬러 이모지 폰트가
+종이·크레용 팔레트와 겉돌며 AI 문체 신호(P3)로도 잡힌다. 대신 `<Mark name="no" />` ·
+`<Mark name="check" />` · `<Mark name="warn" />` 을 쓴다(MDX 에서 import 불필요).
+**뜻이 있는 기호는 지우지 말고 갈아 끼우고, 매핑에 없는 것은 장식이므로 지운다** —
+`❌` 는 그 항목의 판정이라 지우면 맞는 항목과 틀린 항목이 같은 모양이 된다.
+**코드블록 안의 `★`·`✔` 는 인용한 화면이라 건드리지 않는다.**
+**제목에는 마크를 넣지 못한다 — 말로 풀어 쓴다**(목차 `PostToc` 는 `headings` 의 텍스트만
+쓰는데 JSX 는 텍스트를 안 남겨 `자주 틀리는 포인트 ( → 교정)` 처럼 뚫린다). 볼드 앞머리는
+마크를 볼드 **밖**으로 뺀다(`**❌ 안티패턴**` → `<Mark name="no" /> **안티패턴**`). 매핑표는
+`src/lib/doodleMarks.ts`(`EMOJI_TO_MARK`), 카탈로그는 `/design/deco`, 발행 직전 그물은
+`bun scripts/check-post-markers.ts`(**하드 실패** — KAN-062 로 옛 글 83건을 다 옮긴 뒤 올렸다).
 
 ### Packet captures: VPN 캡처 랩 (별도 레포)
 

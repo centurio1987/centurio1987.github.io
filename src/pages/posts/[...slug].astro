@@ -4,6 +4,7 @@ import PostLayout from "../../layouts/PostLayout.astro";
 import TalkLayout from "../../layouts/TalkLayout.astro";
 import ProseQuote from "../../components/deco/mdx/ProseQuote.astro";
 import ProseCode from "../../components/deco/mdx/ProseCode.astro";
+import DoodleMark from "../../components/deco/DoodleMark.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
@@ -23,10 +24,16 @@ const isTalk = post.data.template === "talk";
  *
  * 폭신 대담(template: "talk")은 제외한다 — TalkLayout 은 자기 시각 언어(PullQuote·
  * QA)를 따로 갖고 있고, deco.css 를 들여오지 않아 데코 토큰이 아예 없다.
+ *
+ * **`Mark` 만은 대담에도 꽂는다.** 나머지 둘은 지면을 꾸미는 것이지만 두들 마크는
+ * 이모지를 대신해 **문장 안에서 뜻을 지는** 기호라, 템플릿이 다르다고 빠지면 본문이
+ * 틀린다. `DoodleMark` 는 색 토큰마다 시안 hex fallback 을 들고 있어 deco.css 없이도
+ * 그려진다(그 부품 머리글). MDX 는 스코프에 없는 대문자 태그를 `components` 에서
+ * 찾으므로, 글에 import 를 적지 않아도 `<Mark name="no" />` 로 쓸 수 있다.
  */
 const decoComponents = isTalk
-  ? {}
-  : { blockquote: ProseQuote, pre: ProseCode };
+  ? { Mark: DoodleMark }
+  : { blockquote: ProseQuote, pre: ProseCode, Mark: DoodleMark };
 ---
 
 {
