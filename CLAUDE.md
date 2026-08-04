@@ -187,6 +187,16 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/authoring.py resolve --voice <id> --spec <
 `src/lib/doodleMarks.ts`(`EMOJI_TO_MARK`), 카탈로그는 `/design/deco`, 발행 직전 그물은
 `bun scripts/check-post-markers.ts`(**하드 실패** — KAN-062 로 옛 글 83건을 다 옮긴 뒤 올렸다).
 
+**강조는 조사 앞에서 끊지 않는다 — `**창(window)**이` 는 화면에 별표가 그대로 나온다.**
+CommonMark 는 닫는 `**` 의 **앞이 문장부호이면 뒤가 공백이나 문장부호일 때만** 강조를 닫는데,
+한국어는 조사가 곧바로 붙어 이 조건이 깨진다. 괄호 병기 · 따옴표 인용 · 코드스팬으로 끝나는
+볼드가 전부 여기 걸리고, **빌드도 타입도 초록이라 눈 말고는 잡히지 않았다**(지적 당시 발행 글
+25편에 177쌍). 그래서 게이트가 있다 — `bun scripts/check-emphasis.ts`(소스) ·
+`--dist`(렌더된 HTML, 정본). **둘 다 CI 하드 실패**이고 `ship-post` · `review-post` ·
+`post-finalize` 가 같은 스크립트를 부른다. 표준 수리 셋: `**용어(term)**조사` →
+`**용어**(term)조사`, `**"인용"**조사` → `"**인용**"조사`,
+`` **`코드`**조사 `` → `` **`코드`조사** ``.
+
 ### Packet captures: VPN 캡처 랩 (별도 레포)
 
 Wire-level 증거가 필요한 글(현재는 **VPN 해부 EP3~EP7**)은 캡처를 **직접 뜨지 않는다** —

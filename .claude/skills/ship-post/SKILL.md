@@ -32,7 +32,9 @@ git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스�
 
 ### 1. 최종 재검증
 - **미처리 마커 하드 게이트**: `bun scripts/check-post-markers.ts` 실행 → 발행 글에 `[[[…]]]`·```viz```·```figure```·`<<meme:` 잔존이 있으면 **종료코드 1**. 실패면 **push로 넘어가지 않고** 처리(구조형은 make-image, 밈은 meme-inserter, 레거시는 viz로 대체/제거) 후 재검증. (CI `main.yml`도 동일 가드를 build 전에 돌린다.)
+- **강조 렌더링 하드 게이트**: `bun scripts/check-emphasis.ts` 실행 → 강조가 닫히지 않아 별표째 화면에 나오는 자리가 있으면 **종료코드 1**. 한국어는 조사가 닫는 `**` 에 곧바로 붙어 `**창(window)**이` 가 강조로 성립하지 않는데, **빌드도 타입도 초록이라 이 게이트 말고는 잡히지 않는다.** (CI `main.yml` 도 build 전에 같은 가드를 돌린다.)
 - **`bun run build`** 실행 → 회귀 없이 통과하는지 확인(JSX/MDX 오류 1건이 전체 빌드를 깬다). 실패면 멈추고 원인 보고.
+- **빌드 뒤 `bun scripts/check-emphasis.ts --dist`** → 렌더된 HTML 을 직접 훑는 정본 검증. 소스 모드가 놓친 것이 여기서 잡힌다.
 - **링크/이미지 재검증**:
   - 참조 이미지 경로가 실제로 존재하는지, co-located `.tsx` import 경로가 발행 위치 기준으로 맞는지.
   - 참조 이미지 경로(`/images/<slug>/…`)가 `public/images/<slug>/`에 실제로 존재하는지.
