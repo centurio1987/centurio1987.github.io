@@ -136,8 +136,9 @@ variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives a
 raws/<memo>.md   (user writes idea fragments)
   → post-draft    → draft/<memo>-draft.md   (3 plot candidates + topic cautions)
   → user picks a plot, writes the body
-  → humanize-post (AI 문체 제거 — 스캔→등급(A~D)→윤문. **에이전트가 본문을 쓴 경우에만**)
   → review-post   (5-axis Korean review: 맞춤법/개연성/테크니컬 라이팅/몰입도/AI 문체 잔존)
+       AI 문체 등급이 C·D 면 authoring-kit:authoring-gate 로 넘긴다 — 보완 루프에
+       수정률 상한·의미 보존 가드가 있다. **에이전트가 본문을 쓴 경우에만**
   → make-image    (```viz``` blocks → bbangto-ui-visualization components; inline SVG + hero webp)
   → post-finalize (tags, series links, <<meme:>> delegation, emoji→두들 마크 — NO image generation)
   → publish-post  → src/content/posts/<slug>.mdx  (sets Astro frontmatter, deletes draft)
@@ -146,8 +147,11 @@ raws/<memo>.md   (user writes idea fragments)
 심층 기술 글은 더 긴 경로를 탄다:
 
 ```
-research → tech-deepdive(집필) → humanize-post(AI 리듬) → review-post(미시)
-  → review-writing(거시) → quality-gate(기술) → post-finalize → publish-post → ship-post
+research → tech-deepdive(집필) → review-post(미시) → review-writing(거시)
+  → quality-gate(기술) → post-finalize → publish-post → ship-post
+
+AI 리듬(`machine-rhythm`)은 별도 단계가 아니다 — 집필 시점에 L0 규칙으로 걸리고,
+남은 것은 `authoring-gate` 의 보완 루프가 수정률 상한·의미 보존 가드와 함께 처리한다.
 ```
 
 **집필 규칙은 이 저장소에 없다 — `authoring-kit` 플러그인이 소유한다.**

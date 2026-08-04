@@ -176,8 +176,9 @@ python3 .claude/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 
 - `post-draft` — raws가 **조각/단서**일 때 플롯 스캐폴드 생성(이 스킬과 반대 입구)
 - `review-post` — 형식화 후 5축(맞춤법/개연성/테크니컬 라이팅/몰입도/AI 문체) 검토.
-  **단, 이 경로로 들어온 글은 저자가 직접 쓴 원고이므로 AI 문체 축과 `humanize-post`는 돌리지 않는다** —
-  사람이 쓴 글에 AI 탐지 규칙을 들이대면 저자 문체만 깎인다.
+  **단, 이 경로로 들어온 글은 저자가 직접 쓴 원고이므로 AI 문체 축은 돌리지 않는다** —
+  사람이 쓴 글에 AI 탐지 규칙을 들이대면 저자 문체만 깎인다. 게이트를 부를 일이 있으면
+  `ppangto` voice(`usage: preserve`)로 부른다 — 면제 선언이 등급에서 빠진다.
 - `publish-post` — draft → `src/content/posts/` 정식 발행(`draft:false`)
 - `post-finalize` — 발행물 태그·밈(이미지 생성 없음. 시리즈 링크 삽입은 폐지)
 - `make-image` — ```viz``` 구조형 시각물·hero(bbangto-ui-visualization)

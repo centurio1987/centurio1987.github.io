@@ -101,7 +101,7 @@ python3 .claude/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 
 ### 7. 본문 이모지 → 두들 마크 (마지막 그물)
 
-집필(`tech-deepdive`)·윤문(`humanize-post`)·검토(`review-post`)가 다 새고 남은 이모지를 여기서 잡는다.
+집필(`tech-deepdive`)·게이트 보완(`authoring-kit:authoring-gate`)·검토(`review-post`)가 다 새고 남은 이모지를 여기서 잡는다.
 
 ```bash
 bun scripts/check-post-markers.ts     # 파일·글자별로 갈아 끼울 마크까지 찍어 준다

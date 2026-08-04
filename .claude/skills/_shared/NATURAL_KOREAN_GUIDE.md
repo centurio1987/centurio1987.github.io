@@ -55,7 +55,7 @@ misconception`을 직역하면 공격적으로 읽힌다.
 
 > **경계 (2026-07-31 추가)**: 이 문서가 잡는 것은 **영어투**(문장의 *골격*이 영어) 하나다. 쉼표 과다·어미 반복·
 > 버즈워드·헤지 남발 같은 **AI 기계 리듬**은 [`AI_KOREAN_PATTERNS.md`](AI_KOREAN_PATTERNS.md) 소관이고,
-> 교정은 `humanize-post` 단계가 맡는다. **두 문서는 지적 코드를 섞지 않는다** — 영어투는 §A 코드로,
+> 교정은 `authoring-kit:authoring-gate` 의 보완 루프가 맡는다. **두 문서는 지적 코드를 섞지 않는다** — 영어투는 §A 코드로,
 > AI 문체는 P/R/W/H/D/F 코드로만 낸다.
 
 > 근거: `~/blog-research/wiki/topics/korean-writing-styles.md`(서정체·일상체·정론체 + AI 한국어 증상),

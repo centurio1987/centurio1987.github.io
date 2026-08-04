@@ -6,7 +6,7 @@ description: >
   채점 루브릭은 `authoring-kit` 플러그인이 소유하고(`authoring-gate`), 이 스킬은
   **거시 축만 골라 보는 렌즈**와 좋은 사례 근거(`assets/WORMWLRM_NOTES.md`)를 맡는다.
   "/review-writing <파일>", "이 글 설득력·구조 검토해줘", "글쓰기 품질 게이트 돌려줘" 같은
-  표현에 반응한다. 문장·맞춤법 미시 교정은 `review-post`, AI 리듬은 `humanize-post`,
+  표현에 반응한다. 문장·맞춤법 미시 교정은 `review-post`, AI 리듬은 `authoring-kit:authoring-gate`,
   기술 깊이·정확성과 발행 판정은 `quality-gate` 가 맡는다(겹침 금지).
 argument-hint: <article-file (보통 draft/*.mdx)>
 ---
@@ -32,13 +32,13 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/authoring.py lock
 
 | 스킬 | 그 스킬이 보는 것 | 이 스킬이 그 영역에서 하지 않는 것 |
 | --- | --- | --- |
-| `humanize-post` | AI 기계 리듬(L0 `machine-rhythm`) | 리듬 교정을 **직접 하지 않는다** |
+| `authoring-kit:authoring-gate` | AI 기계 리듬(L0 `machine-rhythm`) 채점과 보완 | 리듬 교정을 **직접 하지 않는다** |
 | `review-post` | 맞춤법·번역투(L0 `grammar`)·스캔성 | 맞춤법 재교정을 **하지 않는다** |
 | **review-writing (이 스킬)** | 설득 흐름 · 논리 개연성 · 글 구조 · voice 일치 | — (이게 내 권한 범위) |
 | `quality-gate` | 깊이·정확성 + **발행 여부 판정** | 기술 사실 검증을 **하지 않는다** |
 
 구조를 바꿀 때 **앞 단계의 문장 미세교정을 되돌리지 않는다.** 특히 문단을 재배치하면서
-`humanize-post` 가 심어 둔 단문 강타·어미 변주를 원상복구하지 않도록 주의한다.
+게이트 보완 루프가 심어 둔 단문 강타(R2)·어미 변주(R1b)를 원상복구하지 않도록 주의한다.
 무엇을 왜 고쳤는지 기록해 다음 단계가 다시 건드리지 않게 한다.
 
 **수정 권한**: 설득 흐름·구조 재배치·voice 일치에 한해 `Edit`.
@@ -83,8 +83,8 @@ FAIL 이면:
 
 1. 설득 흐름·구조 재배치·voice 일치는 **이 스킬이 직접 `Edit`** 한다.
 2. **새 집필이 필요한 보완**(없는 근거·사례·절 추가)은 `tech-deepdive` 에 위임한다(해당 부분만 지시).
-3. 맞춤법은 `review-post`, **기계 리듬 등급이 C·D 면 `humanize-post`** 로 돌린다 —
-   리듬 교정에는 **수정률 상한과 의미 보존 6점 가드**가 붙는데 이 스킬에는 그 가드가 없다.
+3. 맞춤법은 `review-post`, **기계 리듬 등급이 C·D 면 `authoring-kit:authoring-gate`** 로 돌린다 —
+   그 보완 루프에는 **수정률 상한(50%)과 의미 보존 6점 가드**가 붙는데 이 스킬에는 그 가드가 없다.
    그쪽을 한 번 돌린 뒤 재채점한다.
 4. 기술 사실은 `quality-gate` 로 돌린다.
 
@@ -103,7 +103,7 @@ PASS 면 다음 단계(`quality-gate`)를 안내한다.
 ## 주의
 
 - **루브릭을 이 파일에 다시 쓰지 않는다.** 기준을 바꾸려면 L0 루브릭이나 spec 을 고친다.
-- **경계 엄수**: 맞춤법(→`review-post`) · AI 리듬(→`humanize-post`) · 기술 사실(→`quality-gate`)
+- **경계 엄수**: 맞춤법(→`review-post`) · AI 리듬(→`authoring-kit:authoring-gate`) · 기술 사실(→`quality-gate`)
   은 손대지 않는다. 구조 변경 시 앞 단계 미세교정을 보존한다.
 - **활성 voice 가 선언한 색은 미흡 근거가 아니다.** voice 의 `axes`·`waivers[]` 에 있는 것을
   "고쳐서" 판정을 좋게 만들면 목소리를 지운 것이다. 어느 저자의 색인지는 voice 가 말한다.

@@ -1,6 +1,10 @@
 # AI 문체 패턴 카탈로그 (기계 리듬 탐지 + 저자 색 보호)
 
-이 문서는 **집필 직후 윤문(`humanize-post`)** 과 **검토(`review-post`·`review-writing`)** 가 공통으로 참조하는,
+> **판정 기준의 정본은 이 문서가 아니다.** Part A·C 는 플러그인의 L0 `machine-rhythm`
+> (`authoring-method/assets/L0_MACHINE_RHYTHM.md`)으로 이관됐고, Part B(저자 색)는 L1 voice 로
+> 분해됐다. 이 저장소에 남은 이유는 **P3 치환 규칙**(본문 이모지 → 두들 마크)처럼
+> `post-finalize`·`deco-kit` 이 쓰는 매체 규약 때문이다. 문체 판정은 L0 를 보라.
+
 *이 글이 AI가 쓴 티가 나는가*에 대한 기준이다.
 
 세 문서의 역할 분담은 이렇게 갈린다. 겹치면 이 표가 우선이다.
@@ -206,7 +210,7 @@ Part 1, 샘플 3편에서 추출한 **관찰된 사실**)이 일반적인 AI 탐
 1~7번은 스캐너가 자동으로 센다:
 
 ```bash
-python3 .claude/skills/humanize-post/scripts/scan_ai_style.py "<파일>"
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/scan_ai_style.py "<파일>" --voice <활성 voice>
 ```
 
 8~10번(상투 구조·저자 색 확인·단문 강타)과 **F1~F4·R4·R6·R7** 은 판단이 필요하므로 **본문을 직접 읽고 채운다.**

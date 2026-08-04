@@ -1,6 +1,7 @@
 {
   "enabledPlugins": {
     "animator@centurio87-plugins": true,
-    "react-mdx-diagram@centurio87-plugins": true
+    "react-mdx-diagram@centurio87-plugins": true,
+    "authoring-kit@centurio87-plugins": true
   }
 }

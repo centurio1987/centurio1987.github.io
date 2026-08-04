@@ -7,7 +7,7 @@ description: >
   블로그 파이프라인에서의 위치만 맡는다. 깊이·완전성·다관점·정확성이 이 게이트가 보는 축이다.
   "/quality-gate <파일>", "이 글 품질 게이트 돌려줘", "발행해도 되는지 봐줘",
   "기준 통과할 때까지 보완해줘" 같은 표현에 반응한다. 문장 단위 다듬기는 `review-post`,
-  AI 리듬은 `humanize-post`, 집필은 `tech-deepdive` 가 맡는다.
+  집필은 `tech-deepdive` 가 맡는다. AI 리듬은 이 게이트의 보완 루프가 직접 맡는다.
 argument-hint: <article-file (보통 draft/*.mdx)>
 ---
 
@@ -32,7 +32,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/authoring.py lock
 ## 1. 워크플로우 상의 위치
 
 ```
-tech-deepdive(집필) → humanize-post(리듬) → review-post(미시) → review-writing(거시)
+tech-deepdive(집필) → review-post(미시) → review-writing(거시)
   → [quality-gate: 채점 → 보완 → 재채점 (≤3R)]   ← 이 스킬
   → post-finalize → publish-post → ship-post
 ```
@@ -88,7 +88,8 @@ MDX 는 JSX 문법 오류 하나가 사이트 전체 빌드를 깬다.
 **위임 경계** — 이 스킬은 *판정과 보완 오케스트레이션*이 책임이다.
 
 - 새 집필이 필요한 보완(누락 절·깊이 부족·시나리오 보강) → `tech-deepdive`
-- 문장·맞춤법 → `review-post` · AI 리듬 → `humanize-post` · 설득·구조 → `review-writing`
+- 문장·맞춤법 → `review-post` · 설득·구조 → `review-writing`
+  (AI 리듬은 넘기지 않는다 — 이 스킬이 부르는 `authoring-gate` 의 보완 루프가 직접 맡는다)
 - 시뮬/빌드 깨짐 → `react-sim` 규약으로 고친다
 
 호출 맥락에 따라:
