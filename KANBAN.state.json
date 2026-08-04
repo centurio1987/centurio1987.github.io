@@ -1,6 +1,6 @@
 {
-  "next_id": 65,
-  "next_seq": 254,
+  "next_id": 66,
+  "next_seq": 255,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -722,6 +722,18 @@
       "title_hash": "3ecfedf31155f347274fccdb1413f2e178241be9",
       "memo_hash": "f426d986f3ce961535eda62a3b0fb0b526dfa0bd",
       "verbatim_hash": "3e11ad54c698b1e344f887c5d88b3784f4aebaf3"
+    },
+    "KAN-065": {
+      "col": "todo",
+      "title": "문체 스윕 후 graph:refresh 1회 (graph.json 라벨 낡음)",
+      "memo": "2026-08-04 「함정」 은유 제거 + F5/D5/D8/D9/D11 전수 스윕으로 본문 27개·컴포넌트 2개의 소제목이 대량 변경됐다. src/data/graph.json 은 그 커밋에 포함하지 않았으므로 라벨이 낡은 상태다(「함정 1: command not found」 등 4건). main 워크트리에서 bun run graph:refresh 1회 → bun run graph:verify. CI 는 stale 을 감지하지 않아 빌드는 통과하지만, 푸시하면 /graph 글 지도와 연관 글에 낡은 라벨이 독자에게 보인다 — 푸시 전에 반드시 먼저 돌린다. graphify-out/cache/semantic/ 삭제 금지, manifest.json 커밋 금지.",
+      "verbatim": "- vpn 7편에서 제목 \"다섯 기준으로 고르고, 운영 함정 셋은 그대로 남습니다\" 의미 조차 알 수 없는 텍스트다. 개선해라.\n- 함정이라는 은유는 쓰지 마라. \n- 새로 개정한 공통 원칙으로 다시 한 번 ai가 작성한 글들을 검토해라. 컨테이너의 해부 4편은 제목부터 원칙을 어기고 있다.",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-08-04",
+      "title_hash": "79c751b0f42c73d7c110a92cc10fd664075c3e7d",
+      "memo_hash": "a0dc5e649a9eb0a27dcb79487f17a811928cfaf0",
+      "verbatim_hash": "09105bc3728f261b21837781767ee95239c7802d"
     }
   },
   "order": [
@@ -785,9 +797,21 @@
     "KAN-051",
     "KAN-057",
     "KAN-058",
-    "KAN-059"
+    "KAN-059",
+    "KAN-065"
   ],
   "recent": [
+    {
+      "seq": 254,
+      "t": "2026-08-04T17:57",
+      "a": "ai",
+      "id": "KAN-065",
+      "op": "create",
+      "col": "todo",
+      "title": "문체 스윕 후 graph:refresh 1회 (graph.json 라벨 낡음)",
+      "memo": "2026-08-04 「함정」 은유 제거 + F5/D5/D8/D9/D11 전수 스윕으로 본문 27개·컴포넌트 2개의 소제목이 대량 변경됐다. src/data/graph.json 은 그 커밋에 포함하지 않았으므로 라벨이 낡은 상태다(「함정 1: command not found」 등 4건). main 워크트리에서 bun run graph:refresh 1회 → bun run graph:verify. CI 는 stale 을 감지하지 않아 빌드는 통과하지만, 푸시하면 /graph 글 지도와 연관 글에 낡은 라벨이 독자에게 보인다 — 푸시 전에 반드시 먼저 돌린다. graphify-out/cache/semantic/ 삭제 금지, manifest.json 커밋 금지.",
+      "verbatim": "- vpn 7편에서 제목 \"다섯 기준으로 고르고, 운영 함정 셋은 그대로 남습니다\" 의미 조차 알 수 없는 텍스트다. 개선해라.\n- 함정이라는 은유는 쓰지 마라. \n- 새로 개정한 공통 원칙으로 다시 한 번 ai가 작성한 글들을 검토해라. 컨테이너의 해부 4편은 제목부터 원칙을 어기고 있다."
+    },
     {
       "seq": 253,
       "t": "2026-08-04T15:01",
@@ -1269,15 +1293,6 @@
       "t": "2026-07-29T17:38",
       "a": "ai",
       "id": "KAN-054",
-      "op": "move",
-      "from": "backlog",
-      "to": "done"
-    },
-    {
-      "seq": 204,
-      "t": "2026-07-29T16:28",
-      "a": "ai",
-      "id": "KAN-055",
       "op": "move",
       "from": "backlog",
       "to": "done"

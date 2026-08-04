@@ -41,6 +41,14 @@
 ## 할 일
 - `KAN-048` 포스트에 좋아요를 누르는 기능을 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
   - 메모: 실행전략(5단계): ① 인프라 Cloudflare Workers+D1 — 무료 Workers 10만req/일·D1 쓰기 10만행/일, 저활동 정지 없음(Supabase 는 7일 정지로 탈락) ② 스키마 counts(slug,likes,shares)+dedupe(sha256(salt+ip+slug+day)), 증가는 ON CONFLICT DO UPDATE 로 원자적, 원본 IP 미저장 ③ 엔드포인트 GET /stats?slugs= 배치조회·POST /like(IP당 1일 1회, 토글 허용)·POST /share, CORS 오리진 고정 ④ 프론트 React 아일랜드 금지 — .astro + is:inline vanilla 를 astro:page-load 바인딩, 숫자 폭 예약으로 CLS 0, 조회 실패시 숫자만 숨기고 글에는 영향 0 ⑤ 공유수는 플랫폼 카운트 API 부재로 '공유 버튼 클릭' 집계(X·링크복사·navigator.share) — 라벨을 정직하게 표기
+- `KAN-065` 문체 스윕 후 graph:refresh 1회 (graph.json 라벨 낡음) — 생성:ai · 최종:ai · 갱신:2026-08-04
+  - 메모: 2026-08-04 「함정」 은유 제거 + F5/D5/D8/D9/D11 전수 스윕으로 본문 27개·컴포넌트 2개의 소제목이 대량 변경됐다. src/data/graph.json 은 그 커밋에 포함하지 않았으므로 라벨이 낡은 상태다(「함정 1: command not found」 등 4건). main 워크트리에서 bun run graph:refresh 1회 → bun run graph:verify. CI 는 stale 을 감지하지 않아 빌드는 통과하지만, 푸시하면 /graph 글 지도와 연관 글에 낡은 라벨이 독자에게 보인다 — 푸시 전에 반드시 먼저 돌린다. graphify-out/cache/semantic/ 삭제 금지, manifest.json 커밋 금지.
+  - 원문:
+    ```text
+    - vpn 7편에서 제목 "다섯 기준으로 고르고, 운영 함정 셋은 그대로 남습니다" 의미 조차 알 수 없는 텍스트다. 개선해라.
+    - 함정이라는 은유는 쓰지 마라. 
+    - 새로 개정한 공통 원칙으로 다시 한 번 ai가 작성한 글들을 검토해라. 컨테이너의 해부 4편은 제목부터 원칙을 어기고 있다.
+    ```
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26
