@@ -17,7 +17,7 @@ No test suite. Verify by building (`build`) and previewing.
 
 Astro static site. Source lives entirely under `src/`; `public/` is served at the site root.
 
-Non-obvious bits the layout alone won't tell you: `src/lib/categories.ts` (8 category slugs)
+Non-obvious bits the layout alone won't tell you: `src/lib/categories.ts` (9 category slugs)
 and `src/lib/authors.ts` (author registry) are **single sources of truth** — don't duplicate
 their contents anywhere. `/raws/` holds USER-authored idea fragments (input to the writing
 workflow below), `/draft/` holds pre-publish work, and `/public/images/<slug>/` holds
@@ -68,22 +68,14 @@ Posts are **auto-discovered** — no sidebar/nav registration needed. A post's U
 
 ### RSS 피드 (KAN-047)
 
-`@astrojs/rss` 기반 정적 피드. 빌드 타임에만 돌고 런타임 의존이 없다.
+`@astrojs/rss` 기반 정적 피드(`/rss.xml` 전체 · `/categories/<slug>/rss.xml` 카테고리별).
+빌드 타임에만 돌고 런타임 의존이 없다. **`src/lib/feed.ts` 가 채널 메타·아이템 조립·상한의 단일 소스다.**
 
-```
-/rss.xml                          전체 피드 (src/pages/rss.xml.ts)
-/categories/<slug>/rss.xml        카테고리별 피드 (src/pages/categories/[category]/rss.xml.ts)
-src/lib/feed.ts                   채널 메타 · 아이템 조립 · 상한의 단일 소스
-```
+절차·굳힌 판단(요약 피드인 이유, 회차 계산 기준, `FEED_MAX_ITEMS`, `dc:creator`, `lastBuildDate`,
+노출 지점)은 **`rss-feeds` 스킬**에 있다 — 피드를 고치기 전에 반드시 읽어라. 아래만 기억하면 된다.
 
-- **요약 피드다 — 본문 전문을 싣지 않는다.** 글이 MDX라 본문에 React 아일랜드(viz 도식·인터랙티브 시뮬)가 섞여 있는데 리더 안에서는 스크립트가 죽어 껍데기만 남는다. 그래서 아이템에는 **표지(enclosure + `content:encoded` 안의 `<img>`) · 요약(`description`) · 시리즈 회차 · 본문 링크**까지만 담는다. 전문 배급이 필요해지면 Container API 로 렌더한 HTML을 sanitize 해 넣는 확장 지점이 `toFeedItem` 하나뿐이다.
-- **회차 표기는 항상 컬렉션 전체를 기준으로 센다.** 카테고리로 거른 부분집합을 `toFeedItem` 에 넘기면 같은 시리즈가 피드마다 다른 편수(`03 / 26` 같은)로 보인다 — `seriesNav.ts` 의 `getSeriesBadge` 주석과 같은 함정이다.
-- **`FEED_MAX_ITEMS = 50`.** 리더는 매 폴링마다 피드 전량을 다시 받으므로 상한이 없으면 비용이 발행 수에 비례해 늘어난다. 넘어간 옛 글은 사이트·사이트맵에 그대로 남는다.
-- **저자는 `<author>` 가 아니라 `dc:creator`.** RSS 스펙상 `<author>` 는 이메일 주소 자리라 이름을 넣으면 피드 검증기가 문다.
-- **`lastBuildDate` 는 최신 글의 `pubDate`** — 빌드 시각을 쓰면 글이 안 바뀐 재배포에도 값이 흔들려 리더가 갱신으로 오인한다. 콘텐츠에서 유도되는 값만 쓴다.
-- 글 없는 카테고리도 **빈 피드를 낸다.** 카테고리 페이지는 항상 존재하므로 그 페이지의 구독 링크가 404로 떨어지면 안 된다.
-- 노출 지점: 모든 페이지 `<head>` 의 자동발견 링크(전체 피드가 항상 **먼저** — 리더 대부분이 첫 항목을 고른다) · 푸터 `RSS` · 목록/카테고리 페이지 제목 옆 `FeedLink.astro` 캡슐. 카테고리 페이지는 `BaseLayout` 의 `feeds` prop 으로 자기 피드를 하나 더 얹는다.
-- 사이트맵은 피드를 싣지 않는다(`@astrojs/sitemap` 이 HTML 페이지만 수집 — 별도 필터 불필요). XSL 스타일시트는 붙이지 않았다 — 브라우저 XSLT 지원이 걷히는 중이라 수명이 짧은 투자다.
+- **요약 피드다 — 본문 전문을 싣지 않는다.** 본문이 MDX라 React 아일랜드가 섞여 있어 리더 안에서는 껍데기만 남는다.
+- **회차 표기는 항상 컬렉션 전체를 기준으로 센다.** 카테고리로 거른 부분집합을 넘기면 같은 시리즈가 피드마다 다른 편수로 보인다.
 
 ### Design
 
@@ -197,25 +189,13 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/authoring.py resolve --voice <id> --spec <
 
 ### Packet captures: VPN 캡처 랩 (별도 레포)
 
-Wire-level 증거가 필요한 글(현재는 **VPN 해부 EP3~EP7**)은 캡처를 **직접 뜨지 않는다.**
-실물 패킷 아티팩트가 이미 생성되어 리서치 레포에 있다:
+Wire-level 증거가 필요한 글(현재는 **VPN 해부 EP3~EP7**)은 캡처를 **직접 뜨지 않는다** —
+실물 패킷 아티팩트가 `~/blog-research/raws/captures/<slug>/` 에 이미 있고, 랩은
+`~/blog-research/lab/vpn-capture-lab/` 이다.
 
-```
-~/blog-research/raws/captures/vpn-anatomy-3/   ike_sa_init.txt  ike_auth.txt  ike.pcap
-~/blog-research/raws/captures/vpn-anatomy-4/   esp-natt.txt  esp-decrypted.txt  esp.pcap
-~/blog-research/raws/captures/vpn-anatomy-5/   wg-handshake.txt  wg-transport.txt  wg-sizes.txt  wg.pcap
-~/blog-research/raws/captures/vpn-anatomy-6/   openvpn-opcode.txt  openvpn-tls-auth.txt  openvpn-compare.txt  *.pcap
-```
-
-- 각 `.txt` 첫머리 주석에 **생성 명령·패키지 버전·캡처 지점·일시**가 박혀 있다 — 그게 출처 표기다.
-- 본문에는 **발췌만**(한 블록 20줄 이내 기준) 넣고, 전문이 필요하면 파일을 가리킨다.
-  **디섹션 값은 위조하지 않는다 — 자른다.** 주소·MAC·키는 이미 문서용/합성값이라 가릴 게 없다.
-- 크기를 인용할 땐 **계층을 밝힌다**(예: WireGuard 148/92는 UDP 페이로드 길이이지 프레임 길이가 아니다).
-- 인용 지침과 편별 매핑은 `~/blog-research/wiki/topics/vpn-capture-lab.md` 와 각 angle 페이지 상단에 있다.
-
-랩 자체는 `~/blog-research/lab/vpn-capture-lab/`(**Lima VM 1개 + network namespace 3개, 컨테이너
-런타임 없음**). 새 캡처가 필요할 때만 그쪽 `README.md` 로 간다 — `make vm && make probe && make topo`.
-설계 근거는 `raws/010`, 실장 보고(함정·실측값)는 **`raws/011`** 이며 후자가 최신이다.
+파일 목록·출처 표기·인용 규약(**발췌만, 디섹션 값은 위조하지 않고 자른다, 크기는 계층을 밝힌다**)은
+**`tech-deepdive` 스킬의 `assets/CAPTURE_CITATION.md`** 에 있다. 정본 위키는
+`~/blog-research/wiki/topics/vpn-capture-lab.md`.
 
 ### Visuals: bbangto-ui-visualization (viz engine) — NOT ChatGPT
 
@@ -225,12 +205,8 @@ All structured visuals (diagrams, charts, infographics, and the hero image) are 
   - `target:"inline"` (default) → co-located `src/components/posts/<slug>/<Name>.tsx` (wraps a package component in `VizFigure`) + MDX import + `<Name />` — renders as **SSR static SVG, no hydration** (zero-JS paint via the global contract shim `src/styles/viz.css`).
   - `target:"hero"` → `scripts/render-viz.ts` (SSR → Playwright → cwebp/sharp) writes `public/images/<slug>/hero.webp` (also the OG/series-thumbnail raster).
 - v1 kinds (`src/lib/viz/schema.ts`, Zod): `ProcessSteps` · `Comparison` · `Flowchart` · `Statistics` · `PosterHero` · `PosterEditorial`. Blog style guide: `src/lib/viz/blogVizStyleGuide.ts` (bound to tokens + `design-concept/DIAGRAM_STYLE_GUIDE.md`).
-- **텍스트 넘침이 이 엔진의 고질병이다 — 셋을 로컬 구현으로 대체했다 (KAN-016 → 재발).** SVG `<text>` 는 리플로도 클리핑도 안 해서, 상자보다 긴 라벨이 **에러 없이** 밖으로 흘러 viewBox 경계에서 잘린다(빌드·타입 모두 초록). 패키지 컴포넌트는 라벨을 **줄바꿈 없는 단일 `<text>`** 로 그리고, 패키지의 `estimateWidth` 는 글자 종류와 무관하게 `0.55 × fontSize` 라 **전각인 한글을 약 45% 과소평가**한다 — 그래서 패키지의 `wrapText` 를 써도 한글은 넘치고 "안 잘린다"는 판정 자체가 틀린다.
-  - `LOCAL_VIZ_KINDS`(`src/lib/viz/<kind>.tsx`) = **`PosterHero` · `Comparison` · `ProcessSteps`**. 셋 다 `src/lib/viz/text.ts` 의 전각 기준으로 어절 균형 줄바꿈을 하고, **높이를 콘텐츠에서 되뽑는다**(저작 viewBox 는 **폭만** 계약이고 높이는 무시 — 그래서 넘치지도, 빈 여백이 남지도 않는다). `Comparison` 은 판의 배치 계산과 렌더가 같은 함수를 쓴다(따로 어림하면 둘이 어긋나 빈 띠나 뚫림이 생긴다).
-  - **hero 는 `PosterHero`를 쓴다** — 패키지의 `PosterEditorial`은 `title`/`subtitle`/`items`를 한 줄 `<text>`로 그려 폭(한글 약 10자)을 넘으면 조용히 잘린다.
-  - `Comparison` 의 `mode:"magnitude"` 와 `ProcessSteps` 의 horizontal·zigzag 은 이 블로그가 안 쓰거나(전자는 상자가 없어 넘칠 대상이 없다) 패키지 구현에 위임한다.
-  - **재발 방지는 권고가 아니라 `bun run viz:verify` 다** (`scripts/verify-viz.ts`). 실제 렌더에서 모든 `<text>` 를 담는 상자·viewBox 와 재서 넘치면 비0으로 끝난다. IMAGE_GUIDE 의 "텍스트는 짧게"(권고) + "눈으로 봐라"(사람)는 두 번 다 놓쳤다. 배경은 `.claude/skills/make-image/assets/IMAGE_GUIDE.md` R6.
-  - `render-viz.ts` 의 `#capture` 는 **폭만 고정한다**(`height:auto`). 높이를 저작 viewBox 로 가두면 콘텐츠 기준 높이를 쓰는 kind 가 letterbox 된다. hero(`PosterHero`)는 viewBox 가 고정이라 래스터는 그대로 1200×676(OG 규격)이다.
+- **텍스트 넘침이 이 엔진의 고질병이다 (KAN-016 → 재발).** SVG `<text>` 는 리플로도 클리핑도 안 해서 긴 라벨이 **에러 없이** 밖으로 흘러 잘린다(빌드·타입 모두 초록). 그래서 자주 쓰는 kind 셋(`PosterHero` · `Comparison` · `ProcessSteps` = `LOCAL_VIZ_KINDS`)을 레포 로컬 구현으로 대체했고, **hero 는 반드시 `PosterHero`** 를 쓴다(패키지의 `PosterEditorial` 은 한 줄 `<text>` 라 한글 약 10자에서 조용히 잘린다).
+  - **재발 방지는 권고가 아니라 `bun run viz:verify` 다** (`scripts/verify-viz.ts`). 비0으로 끝나면 그 그림은 못 나간다. 원인·로컬 구현의 계약(높이는 콘텐츠에서 되뽑고 저작 viewBox 는 폭만 계약)·래스터화 함정은 `.claude/skills/make-image/assets/IMAGE_GUIDE.md` R6.
 - **GitHub Packages**: the package lives on `npm.pkg.github.com`. Project `.npmrc` only maps the `@centurio1987` scope → auth comes from your **global `~/.npmrc`** `read:packages` token, so local dev needs **no per-project setup** (`bun install` just works). CI (`main.yml`, `packages: read`) writes the token to `~/.npmrc` before install (`PACKAGES_READ_TOKEN` PAT if set, else the workflow `GITHUB_TOKEN`). Verify inline paint over **`astro preview` (HTTP)**, not `file://`.
 - **Legacy (retired)**: `[[[…]]]`(OpenAI), ```figure```(make-image HTML templates), `(( ))`(mdx-concept-diagram) → all replaced by ```viz```. The deprecated stubs `scripts/generate-image.ts` / `render-image.ts` / `image-templates.ts` were removed in KAN-015 (viz engine is the only image path).
 

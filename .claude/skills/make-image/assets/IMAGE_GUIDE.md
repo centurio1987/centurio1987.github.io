@@ -129,6 +129,14 @@ bun run viz:verify vpn-anatomy-7 --base http://localhost:4323
 모든 `figure.viz-figure svg` 의 `<text>` 를 담는 상자(`rect[data-viz-part="shape"]`) 또는 viewBox 와
 재서 넘치면 **비0으로 끝난다**. R5(눈으로 보기)는 배치·가독성용으로 남기고, 넘침은 여기서 끊는다.
 
+**곁가지 둘.** `Comparison` 은 판의 배치 계산과 렌더가 **같은 함수**를 쓴다 — 따로 어림하면 둘이
+어긋나 빈 띠나 뚫림이 생긴다. `Comparison` 의 `mode:"magnitude"` 와 `ProcessSteps` 의
+horizontal·zigzag 은 이 블로그가 안 쓰거나(전자는 상자가 없어 넘칠 대상이 없다) 패키지 구현에 위임한다.
+
+**래스터화 함정 — `render-viz.ts` 의 `#capture` 는 폭만 고정한다**(`height:auto`). 높이를 저작
+viewBox 로 가두면 콘텐츠 기준 높이를 쓰는 kind 가 letterbox 된다. hero(`PosterHero`)는 viewBox 가
+고정이라 래스터는 그대로 1200×676(OG 규격)이다.
+
 > 이 규칙이 R1~R5 와 다른 점: **"텍스트를 짧게 써라"는 권고였고 두 번 다 지켜지지 않았다**
 > (KAN-016 에서 고쳤다고 적었으나 vpn-anatomy-7 에서 재발). 권고는 재발을 막지 못한다.
 
