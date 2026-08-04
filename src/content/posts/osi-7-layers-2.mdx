@@ -16,7 +16,7 @@ import FrameAnatomy from "../../components/posts/osi-7-layers-2/FrameAnatomy";
 
 ![L1·L2 해부: 한 LAN 안에서 프레임은 어떻게 길을 찾는가](/images/osi-7-layers-2/hero.webp)
 
-1편에서는 데이터의 여행 전체를 내려다보는 지도를 그렸습니다. 신호가 살아 있는지, 같은 링크의 다음 홉까지 닿는지, 경로가 목적지를 향하는지, 포트가 열려 있는지를 순서대로 묻는 법까지 익혔고요. 이제 그 지도에서 가장 아래 두 층으로 내려가 볼 차례입니다.
+1편에서는 데이터의 여행 전체를 위에서 한 번 훑었습니다. 신호가 살아 있는지, 같은 링크의 다음 홉까지 닿는지, 경로가 목적지를 향하는지, 포트가 열려 있는지를 순서대로 묻는 법까지 익혔고요. 이제 그중 가장 아래 두 층으로 내려가 볼 차례입니다.
 
 옆자리와 똑같은 케이블을 똑같이 꽂았는데 내 PC만 인터넷이 안 됩니다. 연결은 되는데 대용량 다운로드만 기어가기도 하고요. 이런 장애의 답은 거의 언제나 맨 아래 두 계층에 있습니다.
 
@@ -103,7 +103,7 @@ switch가 똑똑해 보이는 비결은 의외로 단순합니다. 처음엔 아
 
 1. **Unknown unicast flooding은 정상입니다.** 학습 전이거나 aging으로 항목이 만료된 뒤에는 unicast 프레임도 flooding됩니다. switch 테이블 항목은 흔히 5분(300초)쯤 쓰이지 않으면 삭제되는데, 이 aging time은 표준으로 정해진 값이 아니라 벤더 기본값일 뿐이고 토폴로지 변경 알림 같은 사건으로 더 빨리 비워지기도 하고요. 이 학습 메커니즘을 역이용한 공격도 있습니다. 가짜 source MAC을 쏟아부어 테이블(CAM, Content Addressable Memory)을 가득 채워 버리면 switch는 더 학습하지 못하고 모든 unicast를 flooding하게 되는데, 이 상태가 곧 hub와 다를 바 없습니다(MAC flooding 공격). 트래픽이 그대로 도청에 노출되죠.
 2. **broadcast는 학습으로 줄일 수 없습니다.** destination이 `ff:ff:ff:ff:ff:ff`면 switch는 (ingress port와 차단 상태 port만 빼고) **같은 VLAN의 forwarding port 전체**로 뿌립니다. ARP 질의가 대표적이죠. 그래서 한 broadcast domain이 지나치게 커지면 broadcast 트래픽만으로도 링크가 붐빕니다. 이것을 쪼개는 도구가 곧 VLAN과 router고요.
-3. **충돌 영역과 broadcast 영역은 서로 다른 축입니다.** switch는 port마다 충돌 영역을 나누지만(그래서 충돌이 사라집니다), 기본적으로는 **하나의 broadcast 영역**을 그대로 유지합니다. 이 둘을 헷갈리면 switch를 더 깔았는데 broadcast 폭주가 왜 안 줄어드는지 알 수 없게 됩니다.
+3. **충돌 영역과 broadcast 영역은 서로 다른 갈래입니다.** switch는 port마다 충돌 영역을 나누지만(그래서 충돌이 사라집니다), 기본적으로는 **하나의 broadcast 영역**을 그대로 유지합니다. 이 둘을 헷갈리면 switch를 더 깔았는데 broadcast 폭주가 왜 안 줄어드는지 알 수 없게 됩니다.
 
 ## VLAN: 하나의 스위치를 여러 망으로 쪼개기
 
@@ -173,7 +173,7 @@ trunk에는 보통 태그 없이 오가는 **native VLAN**이 하나 있는데, 
 
 ## STP: L2에서 루프가 치명적인 이유
 
-안정성을 노리고 switch를 두 경로로 이중화하면 뜻밖의 함정이 생깁니다. **L2 프레임에는 TTL이 없습니다.** IP packet은 Hop Limit이 줄어들다 0이 되면 폐기되지만, Ethernet 프레임에는 몇 홉을 지나왔는지 세는 필드가 아예 없습니다.
+안정성을 노리고 switch를 두 경로로 이중화하면 뜻밖의 문제가 생깁니다. **L2 프레임에는 TTL이 없습니다.** IP packet은 Hop Limit이 줄어들다 0이 되면 폐기되지만, Ethernet 프레임에는 몇 홉을 지나왔는지 세는 필드가 아예 없습니다.
 
 그래서 switch 사이에 루프가 생긴 상태에서 broadcast 프레임이 하나 들어오면, 그 프레임은 루프를 **영원히 돌며 매 바퀴 복제**됩니다. 순식간에 대역폭이 broadcast 사본으로 가득 차는 **broadcast storm**이 일어나 망 전체가 멈춰 서죠. L3에 있는 TTL이라는 안전장치가 L2에는 없기 때문입니다.
 
@@ -227,7 +227,7 @@ sudo tcpdump -ni eth0 arp
 
 1. **"L1은 그냥 케이블이다."** L1은 인코딩과 클럭 회복, duplex 협상까지 책임집니다. duplex mismatch는 케이블이 멀쩡해도 처리량을 떨어뜨립니다.
 2. **"switch는 destination MAC을 미리 다 안다."** 모르면 flooding합니다. 학습은 source MAC을 보고 사후에 이뤄지고, aging으로 만료되면 다시 flooding하고요.
-3. **"충돌 영역을 나누면 broadcast도 준다."** 다른 축입니다. switch는 충돌 영역을 port마다 나누지만 broadcast domain은 그대로 둡니다. broadcast를 나누는 것은 VLAN과 router입니다.
+3. **"충돌 영역을 나누면 broadcast도 준다."** 다른 갈래입니다. switch는 충돌 영역을 port마다 나누지만 broadcast domain은 그대로 둡니다. broadcast를 나누는 것은 VLAN과 router입니다.
 4. **"VLAN은 보안 기능이다."** 일차 목적은 broadcast domain 분할입니다. 보안 효과는 부산물이고, native VLAN 오설정 같은 구멍이 있어 단독 보안 경계로 믿으면 위험합니다.
 5. **"ARP는 라우팅의 일부다."** ARP는 같은 링크 안에서 IP를 MAC으로 잇는 인접 처리입니다(L3 주소를 L2 주소로 잇는 경계라 흔히 L2.5로 분류합니다). 다른 네트워크로 가는 경로 선택(L3)과는 책임이 다릅니다.
 6. **"루프는 그냥 비효율일 뿐이다."** L2에는 TTL이 없어서 루프 하나가 broadcast storm으로 번져 망 전체를 멈춰 세웁니다. STP가 없으면 이중화는 안정 장치가 아니라 위험 요소가 됩니다.

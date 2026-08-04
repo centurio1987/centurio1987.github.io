@@ -28,13 +28,13 @@ import LayerTriage from "../../components/posts/osi-7-layers-1/LayerTriage";
 
 이 글은 그 순서를 따라가는 여정입니다. 끝까지 읽으시면 머릿속에 데이터의 여행 전체가 한 장으로 펼쳐지고, 지금 어느 책임이 제 몫을 못 했는지를 아래에서 위로 짚어 올라갈 수 있게 됩니다. 계층 이름 일곱 개를 외우자는 이야기가 아닙니다. 그 질문을 던질 수 있게 되는 것, 그것이 이 글의 목표입니다.
 
-## 먼저 바로잡기: OSI는 인터넷의 설계도가 아니다
+## 먼저 좌표: OSI는 구현 명세가 아니라 참조 모델입니다
 
 네트워크를 배우기 시작하면 거의 예외 없이 이런 설명과 마주치게 됩니다.
 
 > 인터넷은 OSI 7계층으로 동작한다.
 
-외우기에는 편한 문장이지만, 엄밀히 따지고 들면 사실이 아닙니다.
+외우기에는 편한 문장이고, 계층을 견주어 볼 좌표로는 잘 듣습니다. 다만 엄밀히 따지면 가리키는 대상이 다릅니다.
 
 ISO/IEC 7498-1이 정의하는 OSI(Open Systems Interconnection) 모델은 참조 모델이어서, 서로 다른 표준을 한자리에 놓고 견주어 보거나 기존 표준이 전체 구조의 어디쯤에 놓이는지 설명하려고 만든 좌표계에 가깝습니다. 운영체제가 어떤 함수를 어떤 순서로 부르는지, 패킷의 바이트가 실제로 어떻게 늘어서는지까지 강제하지는 않습니다.
 
@@ -349,7 +349,7 @@ sudo tcpdump -ni any -w osi-lab.pcap 'host example.com and port 443'
 
 Wireshark로 열면 한 줄에 Ethernet, IP, TCP, TLS가 중첩된 구조로 보입니다. 각 계층의 header를 펼치는 순간, 이 글에서 이야기한 캡슐화가 그림이 아니라 실제 field였다는 사실이 눈으로 들어옵니다.
 
-함정은 둘입니다. Linux에서 `-i any`로 잡으면 진짜 Ethernet header 대신 Linux cooked capture(SLL) 헤더가 보이므로, Ethernet frame 자체를 뜯어보려면 `-i eth0`처럼 실제 interface를 지정해야 합니다. 그리고 NIC의 checksum·segmentation offload 때문에 host에서 관찰한 checksum이나 segment 크기가 실제 wire와 달라 보일 수 있습니다. 관찰하는 도구도 관찰하는 위치의 영향을 받습니다.
+여기서 어긋나기 쉬운 자리가 둘입니다. Linux에서 `-i any`로 잡으면 진짜 Ethernet header 대신 Linux cooked capture(SLL) 헤더가 보이므로, Ethernet frame 자체를 뜯어보려면 `-i eth0`처럼 실제 interface를 지정해야 합니다. 그리고 NIC의 checksum·segmentation offload 때문에 host에서 관찰한 checksum이나 segment 크기가 실제 wire와 달라 보일 수 있습니다. 관찰하는 도구도 관찰하는 위치의 영향을 받습니다.
 
 ## 자주 틀리는 일곱 가지
 
@@ -384,11 +384,11 @@ OSI 7계층을 이해했다는 말은 "Please Do Not Throw Sausage Pizza Away" �
 - session과 data representation이 양쪽에서 합의됐는가?
 - application protocol이 기대한 의미로 응답하는가?
 
-실무에서 권해 드리는 기본값은 아래에서 위입니다. 신호부터 확인하고 한 칸씩 올라오면 아무리 늦어도 여섯 번째 질문 안에서 원인을 만나게 되니까요. 위에서 아래로 내려오는 방식이 더 빠를 때도 있지만, 그건 무엇이 바뀌었는지 이미 알고 있을 때의 이야기입니다. 아무 단서도 손에 쥐지 못한 채 top-down으로 시작하면 대개 애먼 곳을 파다 시간을 흘려보내게 되죠.
+실무에서 권해 드리는 기본값은 아래에서 위입니다. 신호부터 확인하고 한 칸씩 올라오면 아무리 늦어도 여섯 번째 질문 안에서 원인을 만나게 되니까요. 위에서 아래로 내려오는 방식이 더 빠를 때도 있지만, 그건 무엇이 바뀌었는지 이미 알고 있을 때의 이야기입니다. 아무 단서도 없이 top-down으로 시작하면 대개 애먼 곳을 파다 시간을 흘려보내게 되죠.
 
 계층은 현실을 정확히 잘라 내는 칼이 아닙니다. 복잡한 현실을 디버깅할 수 있는 크기로 나눠 주는 지도입니다. 그러니 다음에 인터넷이 안 된다는 말을 들으시거든 증상을 한 덩어리로 뭉뚱그리지 마시고, 이 사다리의 어느 칸에서 걸렸는지부터 갈라 보십시오. 진단의 절반은 거기서 끝납니다. 그 습관 하나만은 꼭 몸에 붙이시길 당부드립니다.
 
-이 글은 전체 지도를 그려 보였을 뿐입니다. switch 학습과 flooding, IP 라우팅과 ICMP, TCP 연결 수립과 종료. 그리고 TLS 1.3·QUIC·DNS·HTTP/2의 깊은 동작. 이 모두를 시리즈 뒤편에서 한 계층씩 해부해 나가겠습니다. 다음 편에서는 L1과 L2를 한 묶음으로 다룹니다. Ethernet frame, switch 학습, VLAN, ARP/Neighbor Discovery가 한 LAN 안에서 어떻게 맞물려 도는지 packet 단위로 뜯어보겠습니다.
+이 글은 전체 구성을 한눈에 보였을 뿐입니다. switch 학습과 flooding, IP 라우팅과 ICMP, TCP 연결 수립과 종료. 그리고 TLS 1.3·QUIC·DNS·HTTP/2의 깊은 동작. 이 모두를 시리즈 뒤편에서 한 계층씩 해부해 나가겠습니다. 다음 편에서는 L1과 L2를 한 묶음으로 다룹니다. Ethernet frame, switch 학습, VLAN, ARP/Neighbor Discovery가 한 LAN 안에서 어떻게 맞물려 도는지 packet 단위로 뜯어보겠습니다.
 
 ## 근거와 더 읽을 거리
 

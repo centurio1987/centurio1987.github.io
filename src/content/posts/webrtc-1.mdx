@@ -1,6 +1,6 @@
 ---
 title: "WebRTC 해부 1편 — 두 브라우저는 어떻게 직접 손을 잡는가"
-description: "WebRTC 연결의 세 갈래(시그널링·연결성·보안)를 SDP 협상, ICE/STUN/TURN, DTLS-SRTP까지 추적하며 '서버 없는 P2P'라는 오해를 깬다."
+description: "WebRTC 연결의 세 갈래(시그널링·연결성·보안)를 SDP 협상, ICE/STUN/TURN, DTLS-SRTP까지 추적하며, P2P에도 서버가 어디서 왜 필요한지 짚는다."
 pubDate: 2026-06-22
 updatedDate: 2026-06-23
 category: skills
@@ -21,11 +21,11 @@ import LoopbackNegotiationDemo from "../../components/posts/webrtc-1/LoopbackNeg
 
 이 글을 끝까지 읽으시면, 그 순간 머릿속에 **연결 협상의 전 과정**이 그려지게 됩니다. 어디서 무엇이 오갔고, 어느 단계에서 막혔으며, `chrome://webrtc-internals`의 어느 줄을 봐야 하는지를 스스로 추적하고 진단할 수 있게 되는 것 — 그것이 이 글의 목표입니다.
 
-## 들어가며: "서버 없는 P2P"라는 착각
+## 들어가며: P2P인데 서버가 어디에 필요한가
 
 WebRTC(Web Real-Time Communication)는 브라우저끼리 미디어와 데이터를 **직접** 주고받게 해 주는 기술입니다. 여기까지는 맞습니다. 문제는 그다음에 흔히 따라붙는 결론입니다 — "그러니까 서버가 하나도 필요 없다."
 
-이 명제는 두 군데서 무너집니다. 첫째, 두 브라우저가 서로의 존재와 연결 정보를 알려면 누군가 그 정보를 중간에서 전달해 줘야 합니다. 이 역할(시그널링)은 WebRTC 표준에 포함되어 있지 않습니다. 직접 만들어야 합니다. 둘째, 두 피어가 각자 NAT(Network Address Translation)와 방화벽 뒤에 있으면 직접 경로가 안 뚫리는 경우가 많고, 그때는 트래픽을 중계하는 릴레이 서버(TURN)가 필요합니다.
+이 결론은 두 군데서 어긋납니다. 첫째, 두 브라우저가 서로의 존재와 연결 정보를 알려면 누군가 그 정보를 중간에서 전달해 줘야 합니다. 이 역할(시그널링)은 WebRTC 표준에 포함되어 있지 않습니다. 직접 만들어야 합니다. 둘째, 두 피어가 각자 NAT(Network Address Translation)와 방화벽 뒤에 있으면 직접 경로가 안 뚫리는 경우가 많고, 그때는 트래픽을 중계하는 릴레이 서버(TURN)가 필요합니다.
 
 ![WebRTC 연결 구조: 시그널링으로 정보를 교환하고, 직접 경로를 시도하다 실패하면 TURN 릴레이를 경유한다](/images/webrtc-1/connection-structure.webp)
 
@@ -45,9 +45,9 @@ WebRTC(Web Real-Time Communication)는 브라우저끼리 미디어와 데이터
 
 표준이 갈리는 지점을 미리 짚어 두겠습니다. **SDP(RFC 8866)는 "형식"만 정의합니다.** `createOffer`/`createAnswer`가 어떻게 동작하고 Offer/Answer를 어떻게 처리하는지 같은 *협상 규칙*은 Offer/Answer 모델(RFC 3264)과 그것을 WebRTC에 맞춘 JSEP(RFC 9429)가 정의합니다. 보안 갈래에서 흔한 오해도 하나 짚겠습니다 — 암호화 의무는 미디어와 데이터 모두에 적용되지만 방식이 다릅니다. 미디어는 DTLS로 도출한 키로 SRTP를 보호하고(그래서 "DTLS-SRTP"), 데이터 채널은 SRTP가 아니라 SCTP를 DTLS로 감쌉니다(SCTP-over-DTLS). 지금은 "협상·연결성·보안 세 칸"이라는 골격만 머리에 넣어두시면 충분합니다.
 
-## 먼저 바로잡기: WebRTC는 시그널링을 주지 않는다
+## 먼저 짚을 것: 시그널링은 직접 만드는 몫입니다
 
-가장 뼈아픈 오해부터 깨겠습니다. **WebRTC는 "두 피어가 이미 서로를 찾았다"는 가정에서 시작합니다.** 누가 누구에게 전화를 거는지, 상대가 온라인인지, Offer/Answer SDP와 ICE 후보를 어떤 경로로 주고받을지 — 이 모든 "소개" 과정을 WebRTC는 정의하지 않습니다.
+여기부터 좌표를 잡겠습니다. **WebRTC는 "두 피어가 이미 서로를 찾았다"는 가정에서 시작합니다.** 누가 누구에게 전화를 거는지, 상대가 온라인인지, Offer/Answer SDP와 ICE 후보를 어떤 경로로 주고받을지 — 이 모든 "소개" 과정을 WebRTC는 정의하지 않습니다.
 
 비유하자면 WebRTC는 *통화 자체의 규약*만 표준화하고, *두 사람을 처음 연결해 주는 교환원*은 여러분이 직접 고용해야 합니다. 이 교환원이 바로 시그널링 서버입니다. 보통 WebSocket이나 HTTP 롱폴링으로 구현하고, 거기에 인증·방 관리·presence를 얹습니다. MDN도 이 시그널링 채널을 두고 "이메일이든 엽서든 전서구든 상관없으며, 구현은 여러분 몫"이라고 정합니다.
 
@@ -113,13 +113,13 @@ ICE 후보는 타입에 따라 성격이 다릅니다. 네 종류를 먼저 머�
 
 기본 Offer/Answer는 교과서입니다. 현업에서 통화가 깨지는 지점은 그다음에 있습니다. 이 절에서 집중적으로 다루겠습니다.
 
-### trickle ICE의 타이밍 함정
+### trickle ICE에서 타이밍이 어긋나는 자리
 
 trickle ICE는 후보를 비동기로 흘려보내므로, **Answer(또는 원격 설명)를 받기 전에 ICE 후보가 먼저 도착**할 수 있습니다. 표준상 `remoteDescription`이 아직 `null`인 상태에서 `addIceCandidate`를 부르면 그 Promise는 `InvalidStateError`로 거부됩니다(W3C WebRTC 알고리즘). 그러니 애플리케이션 레벨에서 **원격 설명이 적용되기 전 도착한 후보를 직접 큐에 쌓아 두었다가 설명 적용 후 추가**하는 것이 표준적인 처리입니다. "가끔 첫 통화만 연결이 느리거나 실패한다"의 흔한 원인이 바로 이 경합입니다.
 
 ### glare: 동시에 전화를 걸면
 
-양쪽이 거의 동시에 `setLocalDescription(offer)`를 호출하면 둘 다 `have-local-offer` 상태가 되어 상대의 Offer를 받아들일 수 없습니다. 이 충돌을 **glare**라 합니다. "Offer는 한쪽만 보낸다"는 가정이 깨지는 순간입니다.
+양쪽이 거의 동시에 `setLocalDescription(offer)`를 호출하면 둘 다 `have-local-offer` 상태가 되어 상대의 Offer를 받아들일 수 없습니다. 이 충돌을 **glare**라 합니다. "Offer는 한쪽만 보낸다"는 가정이 성립하지 않는 순간입니다.
 
 표준 해법이 **perfect negotiation** 패턴입니다. 두 피어에 역할을 부여합니다 — **polite peer**와 **impolite peer**. glare가 나면 polite peer는 자기 Offer를 롤백(rollback)하고 상대 Offer(와 함께 도착한 후보)를 받아들이며, impolite peer는 충돌해 들어온 상대 Offer를 무시하고 자기 진행을 유지합니다. 이렇게 비대칭 규칙을 두면 충돌이 결정론적으로 풀립니다. 이 패턴 덕분에 "누가 발신자인지"를 앱이 일일이 조율하지 않고도 양쪽이 자유롭게 협상을 시작할 수 있습니다. 그리고 caller·callee가 같은 코드를 공유한다는 것 — 이것이 이 패턴의 가장 큰 미덕입니다.
 
@@ -129,7 +129,7 @@ trickle ICE는 후보를 비동기로 흘려보내므로, **Answer(또는 원격
 
 ## 보안·운영 필수
 
-암호화가 의무라는 건 시작일 뿐이고, 운영에서 발목을 잡는 항목들이 따로 있습니다.
+암호화가 의무라는 건 시작일 뿐이고, 운영에서 더 봐야 할 항목들이 따로 있습니다.
 
 - **미디어 캡처에 secure context가 필요합니다** — 정확히 하자면, 보안 컨텍스트(HTTPS, 또는 localhost) 제약은 `getUserMedia` 같은 **미디어 캡처 API**에 걸립니다. `RTCPeerConnection` 자체는 secure-context 전용으로 명세되어 있지 않습니다. 그래도 실서비스는 카메라/마이크를 쓰므로 결국 HTTPS가 사실상 필수입니다 — "로컬에선 됐는데 배포하니 카메라가 안 잡힌다"의 흔한 원인이 HTTP 배포입니다.
 - **암호화가 신원을 보장하지는 않습니다(시그널링 MITM)** — DTLS가 미디어를 암호화해도, 상대가 *내가 통화하려던 그 사람*인지는 SDP 안의 DTLS fingerprint가 시그널링으로 정직하게 전달됐다는 전제에서만 성립합니다(DTLS는 제시된 fingerprint에 대응하는 종단을 인증할 뿐, 그 fingerprint가 의도한 사람의 것인지는 인증하지 않습니다). 악성 또는 가로채인 시그널링 서버가 fingerprint를 바꿔치기하면 중간자(MITM)가 가능합니다(RFC 8827). 시그널링의 TLS·인증·메시지 무결성은 *전송 중* 공격은 막지만, 시그널링 서버 자체가 악의적인 경우는 막지 못합니다 — 그건 종단 간 fingerprint 대조나 인증된 identity(RFC 8827의 identity provider)로만 닫힙니다. 신뢰 모델에 "시그널링 서버를 어디까지 믿는가"를 명시하셔야 합니다.

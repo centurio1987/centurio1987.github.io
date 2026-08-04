@@ -133,7 +133,7 @@ export default function EncodingLab() {
       <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 14 }}>
         <code>café</code>의 <code>é</code>는 UTF-8에서 2byte(<code>C3 A9</code>)인데, 이걸 Latin-1로
         읽으면 그 2byte가 각각 한 글자가 돼 <code>café</code>가 <code>cafÃ©</code>로 깨집니다. 바로 이
-        “byte는 같은데 해석이 달라 뜻이 무너지는” 문제를 막는 게 L6의 일이고, 그래서 HTML·HTTP는{" "}
+        “byte는 같은데 해석이 달라 뜻이 어긋나는” 문제를 막는 게 L6의 일이고, 그래서 HTML·HTTP는{" "}
         <code>charset=utf-8</code>을 명시합니다. (실무의 깨짐은 Latin-1보다 Windows-1252인 경우가 많지만
         원리는 같습니다.)
       </figcaption>

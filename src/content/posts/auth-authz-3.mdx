@@ -18,7 +18,7 @@ import PkceFlowStepper from "../../components/posts/auth-authz-3/PkceFlowStepper
 
 "소셜 로그인"을 눌러 보신 적이 있을 겁니다. 버튼을 누르면 주소창이 IdP(구글·Keycloak)로 튕겼다가, 로그인·동의를 거치고, 다시 우리 앱으로 되돌아옵니다. 그 몇 번의 리다이렉트 동안 무슨 일이 벌어지는지 물으면 대부분 말문이 막힙니다. 그리고 여기서 사고가 납니다 — 옛날 방식(Implicit)은 **토큰을 주소창(URL fragment)에 실어** 돌려줬고, 그 토큰은 브라우저 히스토리·로그·악성 JS 접근으로 새어 나가고, 재생 방어나 sender-constraint도 없었습니다. 어떤 개발자는 SPA에 **client_secret을 박아** 넣었다가, 브라우저 개발자도구를 연 누구에게나 그 비밀을 넘겨줬습니다.
 
-이 글을 끝까지 읽으시면, 그 리다이렉트 춤의 **모든 스텝**이 보이게 됩니다. **Authorization Code + PKCE**가 왜 오늘의 표준이고, `code_verifier`와 `code_challenge`가 무엇을 막으며, `state`와 `nonce`가 각각 어떤 공격을 방어하는지 — 실제 요청·응답 데이터를 손에 쥐고 추적할 수 있게 됩니다.
+이 글을 끝까지 읽으시면, 그 리다이렉트 춤의 **모든 스텝**이 보이게 됩니다. **Authorization Code + PKCE**가 왜 오늘의 표준이고, `code_verifier`와 `code_challenge`가 무엇을 막으며, `state`와 `nonce`가 각각 어떤 공격을 방어하는지 — 실제 요청·응답 데이터를 놓고 추적할 수 있게 됩니다.
 
 ## 들어가며: 왜 이렇게 여러 번 튕기는가
 

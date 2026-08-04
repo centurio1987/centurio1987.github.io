@@ -453,7 +453,7 @@ WHERE c1 = 1 AND (c2 > 1 OR (c2 = 1 AND c3 > 1))
 
 이것이 앞의 표에서 cursor 열을 안쪽 지목 방식에 넘긴 이유입니다. 커서 계약은 봉투의 규격이지 편지의 내용이 아니에요.
 
-덤으로 실무 함정이 하나 딸려 옵니다. 3번 줄 때문에 **`first` 없이 `last`/`before` 로 역방향 페이징을 할 때 `hasNextPage` 는 false 가 정답**입니다. 그 값을 뒤에 더 없다는 뜻으로 읽으면 틀려요.
+덤으로 실무에서 어긋나기 쉬운 자리가 하나 딸려 옵니다. 3번 줄 때문에 **`first` 없이 `last`/`before` 로 역방향 페이징을 할 때 `hasNextPage` 는 false 가 정답**입니다. 그 값을 뒤에 더 없다는 뜻으로 읽으면 틀려요.
 
 ```text
  앞으로 읽을 때   first + after    →  hasNextPage 를 본다

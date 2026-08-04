@@ -36,7 +36,7 @@ export default function VizProcessSteps2() {
     },
     {
       "title": "5. 상태",
-      "description": "State · Mutex · async 함정"
+      "description": "State · Mutex · async 안티패턴"
     },
     {
       "title": "6. 진행률",
