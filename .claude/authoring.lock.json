@@ -12,10 +12,10 @@
   "principles": {
     "source": "/Users/centurio/.claude/authoring/principles",
     "remote": "git@github.com:centurio1987/my-claude-env.git",
-    "revision": "da66c6b9f6d9087b7840a09ddd5cb6738e6914d0",
+    "revision": "0f08bb2d81b25246fb5b980c0b4823c2ef6e8627",
     "files": {
       "L0_MACHINE_RHYTHM.md": "sha256:97dd9725166037d8",
-      "L0_NATURAL_KOREAN.md": "sha256:049fca7ed8aa4f7d",
+      "L0_NATURAL_KOREAN.md": "sha256:da59678c9479aba4",
       "L0_PRINCIPLES.md": "sha256:b11c70ec0e997b92",
       "QUALITY_RUBRIC.md": "sha256:796a3779a981fb08"
     }
