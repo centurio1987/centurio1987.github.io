@@ -10,7 +10,7 @@ description: >
   **`make-image`(apply-viz 엔진)가 이미 구현**하므로, 이 스킬은 이미지를 생성하지 않는다.
   잔존한 레거시 마커(`[[[...]]]`·```figure```·`(( ))`)를 만나면 경고만 한다.
   "/post-finalize <파일경로>", "이 글 후처리해줘", "포스트 마무리해줘", "태그 뽑아줘" 같은 표현에 반응한다.
-  새 글 스캐폴드 작성은 `post-draft`, 4축 리뷰는 `review-post` 가 담당한다.
+  새 글 스캐폴드 작성은 `post-draft`, 5축 리뷰는 `review-post` 가 담당한다.
 argument-hint: <post-file-path>
 ---
 
@@ -99,7 +99,20 @@ python3 .claude/skills/meme-inserter/scripts/find_markers.py "<대상 파일>"
 
 이 스킬은 이미지를 생성하지 않으므로 `OPENAI_API_KEY` 가 필요 없다.
 
-### 7. 저장 + 요약 보고
+### 7. 본문 이모지 → 두들 마크 (마지막 그물)
+
+집필(`tech-deepdive`)·윤문(`humanize-post`)·검토(`review-post`)가 다 새고 남은 이모지를 여기서 잡는다.
+
+```bash
+bun scripts/check-post-markers.ts     # 파일·글자별로 갈아 끼울 마크까지 찍어 준다
+```
+
+- **뜻이 있는 기호(`❌`·`✅`·`⚠` …)는 지우지 말고 `<Mark name="..." />` 로 치환한다.** MDX 본문에서 import 없이 바로 쓴다. 매핑은 `src/lib/doodleMarks.ts` 의 `EMOJI_TO_MARK`, 마크 51종 카탈로그는 `/design/deco`.
+- **매핑에 없으면 삭제한다.** 대응이 없다는 건 그 이모지가 뜻이 아니라 꾸밈이라는 뜻이다.
+- **코드블록 안은 절대 건드리지 않는다** — `★`·`✔` 로 그린 ASCII 도식은 인용한 화면이다. 체커도 펜스 안은 세지 않는다.
+- 근거와 판정 기준은 `_shared/AI_KOREAN_PATTERNS.md` 의 **P3 치환 규칙**.
+
+### 8. 저장 + 요약 보고
 
 frontmatter + 본문을 합쳐 원본 경로에 덮어쓴다. 결과를 짧게 보고:
 
@@ -107,7 +120,8 @@ frontmatter + 본문을 합쳐 원본 경로에 덮어쓴다. 결과를 짧게 �
 > - 태그: `DDD, Aggregate, RDB 스키마, 모델링`
 > - 시리즈 섹션: 제거 1건 (또는 '없음')
 > - 밈: 1개
-> - 레거시 마커: 0 (경고 없음)"
+> - 레거시 마커: 0 (경고 없음)
+> - 본문 이모지: 3건 → 두들 마크 치환 (`❌`×2 → `no`, `⚠`×1 → `warn`)"
 
 ## 분석 시 지킬 원칙
 

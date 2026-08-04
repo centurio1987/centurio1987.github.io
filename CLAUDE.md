@@ -106,6 +106,12 @@ variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives a
 - **부모 scoped CSS 로 부품을 못 고친다** — Astro 는 자식 컴포넌트 루트에 자식의
   `data-astro-cid` 만 붙인다. prop 이나 지역 조상 아래 `:global()` 을 쓴다.
 - 폭신 대담(`template: "talk"`)은 자기 시각 언어가 있고 `deco.css` 를 안 들여오므로 제외한다.
+- **두들 마크(`DoodleMark.astro`)만 예외다 — 장식이 아니라 본문 기호다.** 본문에서
+  **이모지 대신** 쓰는 손그림 기호 51종으로, MDX 에서 import 없이 `<Mark name="no" />`
+  로 쓴다(`[...slug].astro` 가 꽂아 준다 — 대담에도 꽂힌다). 위 규칙 셋이 전부 뒤집힌다:
+  강도로 사라지지 않고, `aria-label` 을 달며, `deco.css` 없이도 그려진다. 표는
+  `src/lib/doodleMarks.ts` 하나이고 카탈로그는 `/design/deco`. 필기구별 필터·기준선
+  규칙(전부 실측값)은 `deco-kit` 스킬.
 
 ### 이미지 로딩 (KAN-059)
 
@@ -130,11 +136,41 @@ variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives a
 raws/<memo>.md   (user writes idea fragments)
   → post-draft    → draft/<memo>-draft.md   (3 plot candidates + topic cautions)
   → user picks a plot, writes the body
-  → review-post   (4-axis Korean review: 맞춤법/개연성/테크니컬 라이팅/몰입도)
+  → humanize-post (AI 문체 제거 — 스캔→등급(A~D)→윤문. **에이전트가 본문을 쓴 경우에만**)
+  → review-post   (5-axis Korean review: 맞춤법/개연성/테크니컬 라이팅/몰입도/AI 문체 잔존)
   → make-image    (```viz``` blocks → bbangto-ui-visualization components; inline SVG + hero webp)
-  → post-finalize (tags, series links, <<meme:>> delegation — NO image generation)
+  → post-finalize (tags, series links, <<meme:>> delegation, emoji→두들 마크 — NO image generation)
   → publish-post  → src/content/posts/<slug>.mdx  (sets Astro frontmatter, deletes draft)
 ```
+
+심층 기술 글은 더 긴 경로를 탄다:
+
+```
+research → tech-deepdive(집필) → humanize-post(AI 리듬) → review-post(미시)
+  → review-writing(거시) → quality-gate(기술) → post-finalize → publish-post → ship-post
+```
+
+**한국어 품질 기준 3종 (`.claude/skills/_shared/`)** — 겹치지 않게 나뉘어 있다:
+
+| 문서 | 잡는 것 | 소유 단계 |
+| --- | --- | --- |
+| `STYLE_GUIDE.md` | 저자 고유 목소리 (Part 1은 절대 기준) | tech-deepdive · review-writing |
+| `NATURAL_KOREAN_GUIDE.md` | 영어투 — 문장 **골격**이 영어 | review-post |
+| `AI_KOREAN_PATTERNS.md` | AI 기계 리듬 — 문장 **박자**가 기계 | humanize-post |
+
+`AI_KOREAN_PATTERNS.md`의 **Part B(저자 색 보호 9항목)** 는 다른 모든 규칙보다 우선한다.
+`결론적으로`·만연체·당위 마무리·병렬 점층·한자어 인용은 **AI 티가 아니라 저자 문체다. 고치지 마라.**
+사람이 직접 쓴 원고(`raw-to-draft` 경로)에는 `humanize-post`와 AI 문체 축을 **돌리지 않는다.**
+
+**본문에 이모지를 쓰지 않는다 — 두들 마크로 쓴다.** `- ❌ **"…"**` 꼴의 "흔한 오해" 목록은
+이 블로그가 자주 쓰는 형식인데, 이모지로 쓰면 기기마다 다른 그림이 나오고 컬러 이모지 폰트가
+종이·크레용 팔레트와 겉돌며 AI 문체 신호(P3)로도 잡힌다. 대신 `<Mark name="no" />` ·
+`<Mark name="check" />` · `<Mark name="warn" />` 을 쓴다(MDX 에서 import 불필요).
+**뜻이 있는 기호는 지우지 말고 갈아 끼우고, 매핑에 없는 것은 장식이므로 지운다** —
+`❌` 는 그 항목의 판정이라 지우면 맞는 항목과 틀린 항목이 같은 모양이 된다.
+**코드블록 안의 `★`·`✔` 는 인용한 화면이라 건드리지 않는다.** 매핑표는
+`src/lib/doodleMarks.ts`(`EMOJI_TO_MARK`), 카탈로그는 `/design/deco`, 발행 직전 그물은
+`bun scripts/check-post-markers.ts`(경고만 — 이유는 그 파일 주석).
 
 ### Packet captures: VPN 캡처 랩 (별도 레포)
 

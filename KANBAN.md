@@ -27,13 +27,17 @@
     - 실제 코드 구현 및 라인 레벨로 내부적으로 수행되는 플로우를 설명한다.
       - 전체 그림을 이해하기 위해 개념적 레벨 설명 포함
       - 전문성을 위해 실제 spec으로 설명 포함
+      - kernal api를 사용해서 signal을 이용해 dispatch queue를 만드는 지점에서 출발해, tokio 같은 비동기 엔진을 이용해서 만드는 방법으로 점진적 진화 시키는 과정
     ```
 - `KAN-060` 한국어 웹폰트 3종의 첫 화면 회선 점유(~530KB) 완화 방안 검토 — 생성:ai · 최종:ai · 갱신:2026-07-31
   - 메모: KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×).
 - `KAN-061` 홈 배경 모션 아일랜드(AmbientAurora/Waves)가 끌고 오는 JS ~130KB 재검토 — 생성:ai · 최종:ai · 갱신:2026-07-31
   - 메모: KAN-059 실측에서 드러난 별건. 홈(/)이 client.js 56KB + dist.js 67KB(= bbangto-ui-core 배럴) + react 등 ~130KB 를 High 로 받아 4.5초까지 회선·메인스레드를 문다. 받아오는 값은 "아주 옅은 배경 오로라 + 푸터 파도" 하나뿐이다. 이미 client:media 로 reduced-motion 사용자는 청크 로드 0 이고(코어 배럴은 tree-shake 가 안 돼 컴포넌트 1개=67KB gzip — 그래서 전역 Footer 에 안 올린 선례가 있다), 그 판단 자체는 유효하다. 재검토할 것: ① 같은 그림을 CSS 그라디언트/SVG 애니로 대체 가능한지(그러면 JS 0) ② 못 대체하면 client:visible 이나 로드 지연으로 첫 화면 회선 다툼에서 빼기 ③ 그대로 둘 근거를 남기기. 판단 근거는 KAN-059 처럼 실측으로 — 특히 이 JS 가 푸터 저자 라인업 이미지(Low)를 얼마나 뒤로 미는지.
+- 액자 프레임을 디자인 해라. 액자 프레임은 vis 를 데코레이트 하는 목적으로 사용할 거다. 패턴 별로 몇 가지 스크래치로 작성해서, 예시와 함께 별도의 예시 페이지를 랜더링 해서 제공해라. 보고 검토하고 피드백 해서 최종 결정 하겠다.
 
 ## 할 일
+- `KAN-062` 발행된 글 14편의 본문 이모지 83건을 두들 마크로 갈아 끼운다 — 생성:ai · 최종:ai · 갱신:2026-08-03
+  - 메모: KAN-062 앞단(두들 마크 에셋화 + 집필 프로세스 반영)은 끝났고, **옛 글은 손대지 않았다.** 대상은 `bun scripts/check-post-markers.ts` 가 파일·글자별로 찍어 준다 — `❌`×73 → `<Mark name="no" />`, `✅`×5 → `check`, `⚠`×3(+홀로 남은 U+FE0F ×2) → `warn`. 14편: webrtc-1·2·3, container-anatomy-1·4, vpn-anatomy-1·3·6·7, auth-authz-1·2·3·4, tauri-2. **코드블록 안(`★`·`✔` ASCII 도식)은 건드리지 않는다** — 인용한 화면이라 고치면 인용이 거짓이 된다(체커도 펜스 안은 안 센다). 옮기고 나면 `check-post-markers` 의 이모지 검사를 **경고에서 하드 실패로 올린다**(지금 경고인 이유는 그 파일 주석에 있다 — 하드로 두면 옛 글을 손보기 전까지 새 글 발행이 통째로 막힌다). 한 편 옮길 때마다 `bun run build` 로 회귀 확인.
 - `KAN-048` 포스트에 좋아요를 누르는 기능을 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
   - 메모: 실행전략(5단계): ① 인프라 Cloudflare Workers+D1 — 무료 Workers 10만req/일·D1 쓰기 10만행/일, 저활동 정지 없음(Supabase 는 7일 정지로 탈락) ② 스키마 counts(slug,likes,shares)+dedupe(sha256(salt+ip+slug+day)), 증가는 ON CONFLICT DO UPDATE 로 원자적, 원본 IP 미저장 ③ 엔드포인트 GET /stats?slugs= 배치조회·POST /like(IP당 1일 1회, 토글 허용)·POST /share, CORS 오리진 고정 ④ 프론트 React 아일랜드 금지 — .astro + is:inline vanilla 를 astro:page-load 바인딩, 숫자 폭 예약으로 CLS 0, 조회 실패시 숫자만 숨기고 글에는 영향 0 ⑤ 공유수는 플랫폼 카운트 API 부재로 '공유 버튼 클릭' 집계(X·링크복사·navigator.share) — 라벨을 정직하게 표기
 
