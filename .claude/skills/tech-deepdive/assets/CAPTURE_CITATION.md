@@ -21,4 +21,4 @@ Wire-level 증거가 필요한 글(현재는 **VPN 해부 EP3~EP7**)은 캡처�
 
 랩 자체는 `~/blog-research/lab/vpn-capture-lab/`(**Lima VM 1개 + network namespace 3개, 컨테이너
 런타임 없음**). 새 캡처가 필요할 때만 그쪽 `README.md` 로 간다 — `make vm && make probe && make topo`.
-설계 근거는 `raws/010`, 실장 보고(함정·실측값)는 **`raws/011`** 이며 후자가 최신이다.
+설계 근거는 `raws/010`, 실장 보고(주의점·실측값)는 **`raws/011`** 이며 후자가 최신이다.
