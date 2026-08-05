@@ -30,9 +30,55 @@ import ClippedCard from "../../components/deco/patterns/ClippedCard.astro";
 import TapedQuote from "../../components/deco/patterns/TapedQuote.astro";
 import TapedCode from "../../components/deco/patterns/TapedCode.astro";
 import DecoHeading from "../../components/deco/patterns/DecoHeading.astro";
+import PhotoFrame from "../../components/deco/patterns/PhotoFrame.astro";
 import { DECO_INTENSITY, TONY_DIECUT } from "../../lib/deco";
 import { DOODLE_MARKS, MARK_NAMES } from "../../lib/doodleMarks";
+import {
+  PHOTO_FRAMES,
+  FRAME_CASES,
+  VIZ_FRAME_LINEAGE,
+  judgePhotoFrames,
+  pickPhotoFrames,
+  type FrameReject,
+  type PhotoFrameVariant,
+} from "../../lib/photoFrames";
+
+/** 탈락 사유의 사람 말. 코드에는 축 이름만 있고 뜻은 여기서 편다. */
+const REJECT_LABEL: Record<FrameReject, string> = {
+  slots: "칸 수",
+  orient: "비율",
+  crops: "자름",
+  occludes: "가림",
+  noise: "시끄러움",
+  surface: "자리",
+  repeat: "반복",
+};
 import "../../styles/deco.css";
+
+/**
+ * 액자 칸의 시연값 — 부품이 아니라 **이 칸의 예시**다(W1·W3 칸과 같은 판단).
+ * 폭은 시안 값이 아니라 272px 칸 안에 얹은 것까지 들어가게 죈 값이다: 테이프·도장·
+ * 말풍선이 액자 밖으로 14~58px 나가므로, 시안 폭(172~200)을 그대로 두면 칸을 넘는다.
+ */
+const PF_DEMO: Record<
+  PhotoFrameVariant,
+  { width: number; caption?: string; label?: string; note?: string }
+> = {
+  "polaroid-tape": { width: 150, caption: "그날의 빵" },
+  /* 테이프 넷이 코너를 물려면 사진이 테이프보다 충분히 커야 한다 — 150 에서는
+     66px 테이프 넷이 사진보다 커 보여 "문 것"이 아니라 "덮은 것"으로 읽힌다. */
+  "taped-corners": { width: 168 },
+  scrapbook: { width: 156 },
+  film: { width: 152 },
+  pegged: { width: 152 },
+  kraft: { width: 148, caption: "찢어 붙인 조각" },
+  crayon: { width: 152 },
+  diecut: { width: 140 },
+  instax: { width: 128, caption: "07.28 SEOUL", label: "2026" },
+  collage: { width: 112 },
+  vellum: { width: 150, caption: "오늘의 기록", note: "좋다!" },
+  stamped: { width: 140, label: "2026.07.28" },
+};
 ---
 
 <BaseLayout title="데코 키트" description="다이어리 데코 부품·패턴 카탈로그" noindex>
@@ -150,6 +196,122 @@ import "../../styles/deco.css";
       <figure class="cell"><span class="code">P1</span><span class="stage gap"><span style="transform:rotate(-8deg)"><Stamp variant="date" text="2026.07.28" /></span><span style="transform:rotate(-11deg)"><Stamp variant="round" text="BAKED" sub="빵관토니" /></span></span><figcaption>날짜 · 도장 스탬프</figcaption></figure>
       <figure class="cell"><span class="code">P2</span><span class="stage"><span style="transform:rotate(-2deg)"><TicketStub code="EP 07" note="29분 읽기" notch="var(--surface)" /></span></span><figcaption>티켓 스텁</figcaption></figure>
       <figure class="cell wide"><span class="code">B1</span><span class="stage row"><PaperSurface paper="grid" tone="cream" cell={16} width="74px" height="80px" /><PaperSurface paper="dot" tone="cream" cell={14} width="74px" height="80px" /><PaperSurface paper="ruled" tone="cream" cell={16} width="74px" height="80px" /></span><figcaption>모눈 · 도트 · 노트 종이</figcaption></figure>
+    </div>
+
+    <p class="group">
+      PHOTO FRAME <small>사진 한 장을 담는 액자 12종</small>
+    </p>
+    <p class="note-p">
+      위 부품들이 조각 하나라면 이쪽은 <b>사진을 담는 액자</b>입니다. F1·F2 와 겹쳐
+      보이지만 격이 다릅니다 — F1·F2 는 액자 부품 자체이고, PF1~PF12 는 거기에
+      테이프·집게·도장을 얹어 굳힌 <b>조합</b>이라 사는 곳도
+      <code>components/deco/patterns/</code> 입니다. 표는
+      <code>src/lib/photoFrames.ts</code> 하나이고 부품과 이 카탈로그가 같이 읽습니다.
+      아래는 <b>사진을 안 넣은 상태</b>라 종이 무늬가 그대로 보입니다 — 사진을 넣으면
+      그 칸을 <code>object-fit: cover</code> 로 채웁니다.
+      얹은 것(테이프·탭·도장·말풍선)은 티어 2~4 라 강도로 접히지만 액자 자체는
+      남습니다. <b>PF2 만 예외로 티어 1</b> 입니다 — 거기서는 테이프가 곧 액자라
+      접으면 사진만 남습니다.
+    </p>
+    <div class="pf-grid">
+      {
+        PHOTO_FRAMES.map((f) => (
+          <figure class="pf-cell">
+            <span class="code">{f.code}</span>
+            <span class="pf-stage">
+              <PhotoFrame
+                variant={f.variant}
+                width={PF_DEMO[f.variant].width}
+                caption={PF_DEMO[f.variant].caption}
+                label={PF_DEMO[f.variant].label}
+                note={PF_DEMO[f.variant].note}
+              />
+            </span>
+            <figcaption>
+              {f.label}
+              <br />
+              <small>{f.note}</small>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <p class="group">
+      FRAME PICK <small>어떤 케이스에 어떤 액자를 쓰나</small>
+    </p>
+    <p class="note-p">
+      액자가 열둘이라 그때그때 고르면 같은 성격의 그림이 지면마다 다른 액자를 입습니다.
+      그래서 고르는 일을 표에 맡깁니다 — 축은 넷이고(담는 것 · 칸 수 · 비율 · 자리),
+      각 액자가 감당할 수 있는 범위는 <code>photoFrames.ts</code> 의 <code>caps</code> 에
+      있습니다. <b>아래 표는 문서가 아니라 그 로직을 지금 돌린 결과입니다</b> —
+      <code>judgePhotoFrames()</code> 의 반환값을 그대로 그리므로 규칙과 갈릴 수가 없습니다.
+      통과한 것은 <b>조용한 순</b>으로 세웁니다(상한을 안 넘는 한 시끄러운 쪽이 나을 이유가
+      없고, 여럿 나란히 서는 자리에서는 조용한 쪽이 반복을 견딥니다).
+    </p>
+    <div class="picks">
+      {
+        FRAME_CASES.map((c) => {
+          const pass = pickPhotoFrames(c.case);
+          const fail = judgePhotoFrames(c.case).filter((v) => v.rejects.length);
+          return (
+            <section class="pick">
+              <p class="pick-head">
+                <b>{c.where}</b>
+                <code>
+                  {c.case.content} · {c.case.orient ?? "wide"} ·{" "}
+                  {c.case.surface}
+                </code>
+              </p>
+              <p class="pick-note">{c.note}</p>
+              <p class="pick-row">
+                <span class="pick-tag ok">통과 {pass.length}</span>
+                {pass.length ? (
+                  pass.map((f, i) => (
+                    <span class:list={["chip", { first: i === 0 }]}>
+                      <b>{f.code}</b> {f.label}
+                      <i>noise {f.caps.noise}</i>
+                    </span>
+                  ))
+                ) : (
+                  <span class="chip none">쓸 수 있는 액자 없음</span>
+                )}
+              </p>
+              <p class="pick-row">
+                <span class="pick-tag no">탈락 {fail.length}</span>
+                {fail.map((v) => (
+                  <span class="chip dim">
+                    <b>{v.frame.code}</b>
+                    {v.rejects.map((r) => (
+                      <i>{REJECT_LABEL[r]}</i>
+                    ))}
+                  </span>
+                ))}
+              </p>
+            </section>
+          );
+        })
+      }
+    </div>
+    <p class="note-p">
+      마지막 줄이 이 로직의 결론입니다 — <b>도식은 열두 종이 전부 탈락합니다.</b>
+      사진 액자는 칸 비율이 먼저 있고 사진이 거기 맞춰 잘리는 물건인데, 도식을 자르면
+      축 이름과 범례가 잘려 나가 그림이 거짓말이 됩니다. 그래서 도식은 이 표가 아니라
+      <b>무늬만 물려받은 별도 계보</b>를 씁니다(<code>src/styles/viz-frame.css</code> ·
+      카탈로그 <code>/design/viz-frames</code>). 데코 부품이 전부
+      <code>.astro</code> 라 React 트리(<code>VizFigure.tsx</code>)에 못 들어가는 것도
+      같은 결론을 밉니다.
+    </p>
+    <div class="lineage">
+      {
+        VIZ_FRAME_LINEAGE.map((l) => (
+          <p class="lin">
+            <code>{l.frame}</code>
+            <b>{l.from}</b>
+            <span>{l.why}</span>
+          </p>
+        ))
+      }
     </div>
 
     <!-- ══ 02 강도 ══ -->
@@ -532,6 +694,172 @@ ping: local error: message too long, mtu=1420</code></pre>
   .cell figcaption small {
     font-size: 10px;
     color: var(--ink-3);
+  }
+
+  /* ── 사진 프레임 칸 ──
+     부품 셀(212×158)보다 훨씬 크다 — 액자는 사진 칸에 판·여백·캡션이 더해지고,
+     테이프·도장·말풍선이 액자 밖으로 14~58px 나가서 좌우 24px 여백이 있어야
+     칸을 안 넘는다(부품이 스스로 접지 않는 이유는 PhotoFrame.astro 끝 주석). */
+  .pf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+    gap: 16px;
+  }
+  .pf-cell {
+    position: relative;
+    margin: 0;
+    min-height: 322px;
+    padding: 36px 24px 46px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(32, 38, 74, 0.06);
+  }
+  .pf-cell .code {
+    top: 11px;
+    left: 13px;
+  }
+  .pf-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pf-cell figcaption {
+    position: absolute;
+    bottom: 11px;
+    left: 13px;
+    right: 13px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .pf-cell figcaption small {
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+
+  /* ── 선택 로직 표 ──
+     문서가 아니라 로직의 출력이다 — judgePhotoFrames() 를 렌더 시점에 돌린 결과라
+     규칙을 고치면 이 화면이 같이 바뀐다(부품 카탈로그가 컴포넌트를 그리는 것과 같다). */
+  .picks {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .pick {
+    padding: 14px 16px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .pick-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 4px;
+    font-size: 14px;
+  }
+  .pick-head code {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-3);
+  }
+  .pick-note {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .pick-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 6px;
+  }
+  .pick-tag {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 7px;
+    border-radius: 4px;
+  }
+  .pick-tag.ok {
+    background: var(--accent-tint2);
+    color: var(--accent);
+  }
+  .pick-tag.no {
+    background: var(--cream);
+    color: var(--ink-3);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--paper);
+    font-size: 11.5px;
+    color: var(--ink-2);
+  }
+  /* 첫 후보 = 로직이 고르는 것. 나머지는 "써도 되는 것"이라 격이 다르다. */
+  .chip.first {
+    border-color: var(--accent);
+    background: var(--accent-tint2);
+    color: var(--ink);
+  }
+  .chip.none {
+    border-style: dashed;
+    color: var(--ink-3);
+  }
+  .chip.dim {
+    background: transparent;
+    color: var(--ink-3);
+    font-size: 11px;
+  }
+  .chip b {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+  .chip i {
+    font-style: normal;
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+  .chip.dim i::before {
+    content: "·";
+    margin-right: 4px;
+  }
+  .lineage {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0 0 8px;
+  }
+  .lin {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .lin code {
+    min-width: 84px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .lin b {
+    min-width: 108px;
+    font-size: 11.5px;
   }
 
   /* ── W 칸 전용 데모 마크업 ──────────────────────────────────────────────
