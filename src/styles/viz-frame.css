@@ -1,11 +1,12 @@
-/* ── viz 액자 프레임 후보 (KAN-063) ───────────────────────────────────────────
+/* ── viz 액자 프레임 (KAN-063) ─────────────────────────────────────────────────
  *
  * 본문 다이어그램(viz)을 감싸는 액자 7종. 그림은 그대로 두고 **바깥 껍데기만** 바꾼다.
  * 부품은 `src/components/viz/VizFigure.tsx` 의 `frame` prop 이 열고, 카탈로그는
  * `/design/viz-frames`(noindex) 다.
  *
- * **아직 후보다.** 발행된 글 40개는 전부 `frame="none"` 이라 이 파일의 규칙이 하나도
- * 안 걸린다 — 최종 채택은 카탈로그를 보고 정한다.
+ * **본문 도식의 기본값은 `scrapbook` 이다** — 발행된 글 41개가 지금 그걸 입고 있다.
+ * 고른 근거는 `VizFigure` 의 `frame` prop 주석에 있다. 나머지 여섯은 그 자리에서
+ * 골라 덮는 선택지이고, `none` 은 액자를 끄는 탈출구다.
  *
  * ── viz.css 에 안 섞는 이유 ──────────────────────────────────────────────────
  * 그쪽은 패키지 CONTRACT_CSS 를 베껴 온 계약 shim 이고 머리글에 "KEEP IN SYNC with
@@ -243,8 +244,21 @@
 /* ── F-D scrapbook — PF3 계보 (도트 종이 판 + 네 귀퉁이 홀더) ─────────────
  *
  * 예전의 `corner`(홀더만)를 시안 PF3 대로 판까지 갖춘 것으로 올렸다. 선택 로직이
- * 도식에 **가장 안전한 액자**로 꼽는 쪽이다 — 홀더는 귀만 물어서 그림 위로
- * 아무것도 안 내려온다(시안 자신의 설명도 "사진을 하나도 안 가린다"). */
+ * 도식에 **가장 안전한 액자**로 꼽는 쪽이고(홀더는 귀만 물어서 그림 위로 아무것도
+ * 안 내려온다), 그래서 **본문 도식의 기본값**이다.
+ *
+ * ── 판은 도트, 담긴 것은 불투명 — 이게 이 액자의 뼈대다 ────────────────────
+ * 시안 PF3 은 도트 종이 위에 **사진**을 얹는다. 사진은 불투명해서 도트가 사진 위로
+ * 안 올라오지만, 도식은 배경이 투명이라 그대로 두면 도트가 **그림과 캡션 글자
+ * 뒤를 지나간다**(실측: 캡션 한 줄에 도트가 그대로 비쳤다). 그래서 안쪽 칸과
+ * 캡션에 `--surface` 를 깔아 **둘이 한 장의 카드**가 되게 하고, 도트는 그 카드
+ * 둘레의 여백에만 남긴다 — 사진이 하던 일을 카드가 대신한다.
+ *
+ * 홀더가 **판 바깥 모서리가 아니라 그 카드의 모서리**를 무는 이유도 같다. 판
+ * 모서리에 두면 물 것이 없어 "모서리를 비스듬히 잘라낸 판"으로 읽히고, 카드
+ * 모서리에 두면 도트 여백과 불투명 카드의 경계에 흰 삼각형이 얹혀 비로소
+ * **끼운 것**으로 읽힌다. `.viz-frame` 의 패딩과 아래 inset 은 그래서 같은 값이다.
+ */
 
 .viz-figure[data-viz-frame="scrapbook"] .viz-frame {
   padding: 18px 16px;
@@ -254,23 +268,40 @@
   background-size: 11px 11px;
   box-shadow: 0 2px 6px rgba(32, 38, 74, 0.12);
 }
+/* 안쪽 칸 + 캡션 = 판에 끼운 카드 한 장. 둘 사이에 틈이 없어야 한 장으로 읽힌다. */
+.viz-figure[data-viz-frame="scrapbook"] .viz-frame-inner {
+  padding: 14px 12px 8px;
+  background-color: var(--surface);
+}
+.viz-figure[data-viz-frame="scrapbook"] .viz-frame:has(figcaption) figcaption {
+  margin: 0;
+  padding: 2px 14px 13px;
+  background-color: var(--surface);
+}
+/* 캡션이 없으면 카드 아래가 얇아 보인다 — 안쪽 칸이 그 몫을 진다. */
+.viz-figure[data-viz-frame="scrapbook"] .viz-frame:not(:has(figcaption)) .viz-frame-inner {
+  padding-bottom: 14px;
+}
 /* 홀더 넷을 의사요소 둘로는 못 만든다(하나에 하나씩이라 둘뿐이다). 그래서
    background-image 네 장으로 그린다 — `to bottom right` 로 반을 채우면 좌상 삼각형이
-   되고, 방향을 돌려 나머지 셋을 얻는다. 그림자는 gradient 로 못 주므로 filter 로 준다.
+   되고, 방향을 돌려 나머지 셋을 얻는다. 그림자는 gradient 로 못 주므로 filter 로 준다
+   (`CornerMount.astro` 원본은 box-shadow 로 적었는데 그건 clip-path 에 잘려 안 나온다).
 
-   **티어를 안 준다.** `CornerMount.astro` 원본에도 없다(그건 DecoLayer 를 안 쓰는
-   감싸는 컴포넌트다). 홀더가 사라지면 이 액자는 도트 판만 남아 다른 물건이 된다. 테이프는 판 위에 얹힌 것이라 접혀도
-   판이 남지만 홀더는 그렇지 않다. */
+   **티어를 안 준다.** 원본에도 없다(그건 DecoLayer 를 안 쓰는 감싸는 컴포넌트다).
+   홀더가 사라지면 이 액자는 도트 판만 남아 다른 물건이 된다 — 테이프는 판 위에
+   얹힌 것이라 접혀도 판이 남지만 홀더는 그렇지 않다. */
 .viz-figure[data-viz-frame="scrapbook"] .viz-frame-deco {
+  /* 판의 테두리 1px + 패딩(18/16px) — 카드의 바깥 모서리에 정확히 맞춘다 */
+  inset: 19px 17px;
   background-image:
-    linear-gradient(to bottom right, rgba(255, 255, 255, 0.88) 0 50%, transparent 50%),
-    linear-gradient(to bottom left, rgba(255, 255, 255, 0.88) 0 50%, transparent 50%),
-    linear-gradient(to top right, rgba(255, 255, 255, 0.88) 0 50%, transparent 50%),
-    linear-gradient(to top left, rgba(255, 255, 255, 0.88) 0 50%, transparent 50%);
+    linear-gradient(to bottom right, rgba(255, 255, 255, 0.92) 0 50%, transparent 50%),
+    linear-gradient(to bottom left, rgba(255, 255, 255, 0.92) 0 50%, transparent 50%),
+    linear-gradient(to top right, rgba(255, 255, 255, 0.92) 0 50%, transparent 50%),
+    linear-gradient(to top left, rgba(255, 255, 255, 0.92) 0 50%, transparent 50%);
   background-position: top left, top right, bottom left, bottom right;
-  background-size: 20px 20px;
+  background-size: 18px 18px;
   background-repeat: no-repeat;
-  filter: drop-shadow(0 1px 2px rgba(32, 38, 74, 0.16));
+  filter: drop-shadow(0 1px 2px rgba(32, 38, 74, 0.22));
 }
 
 /* ── F-G crayon — PF7 계보 (크레용 칠 + 잉크 선 이중 테두리 + 별 하나) ─────

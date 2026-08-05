@@ -23,8 +23,8 @@ import { blogVizStyleGuide } from "../../lib/viz/blogVizStyleGuide";
 /**
  * 그림을 감싸는 액자(KAN-063). 그림 자체는 그대로 두고 **바깥 껍데기만** 바꾼다.
  *
- *   none       액자 없음(기본) — 지금 발행된 글 41개가 전부 이 값이다
- *   scrapbook  F-D 도트 종이 판 + 네 귀퉁이 홀더
+ *   none       액자 없음 — 액자를 끈 그림의 탈출구(옛 렌더 그대로)
+ *   scrapbook  F-D 도트 종이 판 + 네 귀퉁이 홀더        ← **본문 도식의 기본값**
  *   polaroid   F-A 흰 판 + 가운데 위 마테 + 손글씨 캡션
  *   taped      F-B 모눈 판 + 위 모서리 테이프 두 장
  *   kraft      F-C 네 변이 찢긴 크라프트 판
@@ -109,7 +109,23 @@ export interface VizFigureProps {
   styleGuide?: VisualizationStyleGuide;
   /** 다중 preset 스타일 가이드일 때 활성 preset key. */
   foundationKey?: string;
-  /** 액자(기본 none = 액자 없음). 위 VizFrame 주석 참고. */
+  /**
+   * 액자. 기본은 `scrapbook` — **본문 도식의 기본값을 여기 한 줄로 정한다.**
+   *
+   * `src/components/posts/<slug>/*.tsx` 39개는 `scripts/apply-viz.ts` 가 자동
+   * 생성한 파일이라, 거기에 `frame=` 을 박으면 다음 재생성에서 조용히 지워진다.
+   * 그래서 파일을 40개 고치지 않고 **기본값 하나**로 41개 도식에 액자를 씌운다.
+   *
+   * `scrapbook` 을 고른 근거 둘:
+   *   ① 선택 로직(`photoFrames.ts`)이 조용한 순으로 꼽는 PF3 계보다. 홀더가 귀만
+   *      물어 그림 위로 아무것도 안 내려오므로 축 이름·범례를 가릴 수가 없다.
+   *   ② 글 상세에는 이미 인용·코드블록이 **테이프 판**을 입고 있다. 도식까지
+   *      테이프를 두르면 반복 요소 셋이 같은 물성이 되어 테이프가 벽지가 된다
+   *      (`PostLayout` 이 `.taped-quote ~ .taped-quote` 로 이미 막아 둔 실패다).
+   *      도트 종이 + 코너 홀더는 같은 손이되 다른 물성이다.
+   *
+   * 한 그림만 달리 입히려면 그 자리에서 `frame="…"` 으로 덮는다(`"none"` 포함).
+   */
   frame?: VizFrame;
   className?: string;
   children: ReactNode;
@@ -120,7 +136,7 @@ export default function VizFigure({
   label,
   styleGuide = blogVizStyleGuide,
   foundationKey,
-  frame = "none",
+  frame = "scrapbook",
   className,
   children,
 }: VizFigureProps) {
@@ -141,9 +157,9 @@ export default function VizFigure({
    * 패딩을 0 으로 맞춰 픽셀을 재현하는 길은 막혀 있다 — viz.css 의
    * `.viz-figure > [data-bbangto-viz-style-guide] { width:100% }` 가 **직접 자식**
    * 선택자라, 래퍼를 한 겹만 끼워도 이 규칙이 조용히 죽어 Provider 가 폭 100% 를
-   * 잃는다(빌드도 타입도 초록이라 눈 말고는 안 잡힌다). 그래서 발행된 글 40개는
-   * 아래 early return 으로 지금 렌더를 그대로 유지하고, 액자를 쓸 때만
-   * viz-frame.css 가 그 폭 규칙을 새 경로로 다시 깐다.
+   * 잃는다(빌드도 타입도 초록이라 눈 말고는 안 잡힌다). 액자를 쓸 때는
+   * viz-frame.css 가 그 폭 규칙을 새 경로로 다시 깔고, 이 갈래는 액자를 **끈**
+   * 그림이 옛 렌더 그대로 남게 하는 탈출구로 남는다.
    */
   if (frame === "none") {
     return (
