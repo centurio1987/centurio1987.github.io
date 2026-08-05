@@ -1,0 +1,797 @@
+---
+/**
+ * PF1~PF12 — 사진 프레임. 시안 "데코 키트"의 `PHOTO FRAME` 절을 그대로 들여온 것.
+ *
+ * 부품(Tape·Polaroid·CornerMount…)이 조각 하나라면 이건 **사진 한 장을 담는 액자**다.
+ * 열두 종이 한 컴포넌트에 묶인 이유는 Tape 여섯 종·Sticker 아홉 종과 같다 — 뼈대
+ * (사진 칸 + 그 둘레의 처우)가 하나이고 갈리는 건 처우뿐이다. 표는 `src/lib/photoFrames.ts`.
+ *
+ * ── 굳힌 판단 넷 ────────────────────────────────────────────────────────────
+ *
+ * ① **이미 있는 부품은 다시 안 그린다.** 테이프·코너 마운트·집게·도장·인덱스 탭은
+ *    전부 부품을 불러 쓴다. 값을 베껴 오면 다음 사람이 부품만 고치는 순간 액자가
+ *    조용히 갈린다(ClippedCard 가 클립 좌표를 안 베낀 것과 같은 이유).
+ *    다시 그리는 것은 **부품이 없는 것들뿐**이다 — 필름 퍼포레이션(PF4), 찢은
+ *    크라프트 액자(PF6 — T6 는 테이프 모양이라 액자로 못 쓴다), 크레용 테두리(PF7),
+ *    벨럼 캡션 띠(PF11), 그리고 반짝·별 **낱개**(PF7·PF8). 낱개를 지역에서 그리는 건
+ *    `HeroCollage` 의 `.one-sparkle` 이 이미 낸 선례다 — D1·S3 은 3종 묶음이라
+ *    모서리에 하나만 앉힐 수가 없다.
+ *
+ * ② **액자는 강도로 안 사라지고, 얹은 것만 티어를 진다.** 판·패딩·테두리가 강도에
+ *    따라 사라지면 그림 크기가 페이지 설정에 끌려다닌다 — 데코가 아니라 레이아웃이
+ *    흔들린다. 그래서 티어를 지는 건 PF1 의 테이프, PF9 의 탭, PF11 의 말풍선,
+ *    PF12 의 도장처럼 **없어도 액자가 남는** 것들뿐이다.
+ *    **PF2 는 예외다** — 거기서는 테이프가 곧 액자라, 접으면 사진만 남는다(티어 1).
+ *
+ * ③ **`--deco-*` 토큰마다 hex fallback 을 함께 적는다.** `deco.css` 는 opt-in 이라
+ *    폭신 대담·본문처럼 안 들여오는 지면이 있다. `DoodleMark` 가 같은 이유로 같은
+ *    짜임이다 — 없으면 액자가 색을 잃은 채 그려진다.
+ *
+ * ④ **비율은 시안 실측이고 크기는 caller 가 준다.** 시안은 사진 칸이 172×172·200×150
+ *    처럼 고정이지만 여기 들어오는 그림은 크기가 제각각이라, 폭만 받고 높이는
+ *    `aspect-ratio` 로 뽑는다(`photoFrames.ts` 의 `ratio`). 테이프·집게·도장의 크기는
+ *    반대로 고정이다 — 그것들은 비율이 아니라 **물건**이라 액자가 커진다고 같이 커지면
+ *    스티커가 아니라 무늬로 읽힌다.
+ *
+ * ── 쓰는 법 ────────────────────────────────────────────────────────────────
+ *
+ *   <PhotoFrame variant="polaroid-tape" width={172} caption="그날의 빵">
+ *     <img src="…" alt="" />
+ *   </PhotoFrame>
+ *
+ * 칸이 둘 이상인 액자(PF4 film · PF10 collage)는 named slot 으로 받는다:
+ *
+ *   <PhotoFrame variant="film"><img slot="a" … /><img slot="b" … /></PhotoFrame>
+ *
+ * 사진을 안 넣으면 모눈(또는 도트) 종이가 깔린다 — 시안의 "사진 드롭" 자리가 그 상태다.
+ */
+import Tape from "../Tape.astro";
+import CornerMount from "../CornerMount.astro";
+import PaperSurface from "../PaperSurface.astro";
+import Twine from "../Twine.astro";
+import Clothespin from "../Clothespin.astro";
+import IndexTab from "../IndexTab.astro";
+import Stamp from "../Stamp.astro";
+import Doodle from "../Doodle.astro";
+import DecoLayer from "../DecoLayer.astro";
+import CrayonFilters from "../CrayonFilters.astro";
+import {
+  PHOTO_FRAME_RATIO,
+  type PhotoFrameVariant,
+} from "../../../lib/photoFrames";
+
+interface Props {
+  variant?: PhotoFrameVariant;
+  /**
+   * 사진 칸의 폭. 수는 px, 문자열은 CSS 길이 그대로 쓴다.
+   * **film·collage 는 길이여야 한다**(`%` 불가) — 칸 여럿의 자리를 이 값에서 calc 로 뽑는다.
+   */
+  width?: number | string;
+  /** 세로/가로. 기본은 시안 실측(`photoFrames.ts`). */
+  ratio?: number;
+  /** 액자 아래(또는 위)에 앉는 손글씨 한 줄. caption 자리가 없는 액자에서는 무시된다. */
+  caption?: string;
+  /** 활자 라벨 — PF9 의 인덱스 탭 문구, PF12 의 날짜 도장. */
+  label?: string;
+  /** PF11 말풍선의 문구. 비우면 말풍선이 빠진다. */
+  note?: string;
+  /** 사진이 없을 때 깔리는 바탕 */
+  paper?: "grid" | "dot" | "plain";
+  /** 액자 기울기(deg). 기본은 시안 값. */
+  rotate?: number;
+  class?: string;
+}
+
+const {
+  variant = "polaroid-tape",
+  width = 172,
+  ratio,
+  caption = "",
+  label = "",
+  note = "",
+  paper = "grid",
+  rotate,
+  class: className = "",
+} = Astro.props;
+
+const w = typeof width === "number" ? `${width}px` : width;
+const ar = ratio ?? PHOTO_FRAME_RATIO[variant];
+
+/** 시안의 기본 기울기. rotate prop 이 있으면 그쪽이 이긴다. */
+const TILT: Record<PhotoFrameVariant, number> = {
+  "polaroid-tape": -3,
+  "taped-corners": 2,
+  scrapbook: -1.5,
+  film: 1.5,
+  pegged: -2,
+  kraft: 2,
+  crayon: -1,
+  diecut: 3,
+  instax: -2,
+  collage: 0,
+  vellum: -1,
+  stamped: 1.5,
+};
+const tilt = rotate ?? TILT[variant];
+
+const wellStyle = `--w:${w};--ar:${ar}`;
+const rootStyle = `${wellStyle};--tilt:${tilt}deg`;
+
+/* 크레용 필터 id — 인스턴스마다 유일해야 한다(Doodle 과 같은 짜임·같은 이유). */
+const g = globalThis as { __decoPhotoFrameSeq?: number };
+g.__decoPhotoFrameSeq = (g.__decoPhotoFrameSeq ?? 0) + 1;
+const uid = `pf${g.__decoPhotoFrameSeq}`;
+---
+
+<span
+  class:list={["pf", `v-${variant}`, className]}
+  style={rootStyle}
+  data-photo-frame={variant}
+>
+  {/* ── PF1 폴라로이드 + 마테 ── */}
+  {
+    variant === "polaroid-tape" && (
+      <span class="board polaroid">
+        <span class="tape-mid">
+          <DecoLayer inline rotate={-2} tier={2}>
+            <Tape variant="stripe" width={78} />
+          </DecoLayer>
+        </span>
+        <span class:list={["well", paper]}>
+          <slot />
+        </span>
+        {caption && <span class="hand cap-lg">{caption}</span>}
+      </span>
+    )
+  }
+
+  {/* ── PF2 네 모서리 마테 — 테이프가 곧 액자라 티어를 안 진다 ── */}
+  {
+    variant === "taped-corners" && (
+      <span class="board bare">
+        <span class:list={["well", paper]}>
+          <slot />
+        </span>
+        <DecoLayer left="-20px" top="-14px" rotate={-42} tier={1} z={2}>
+          <Tape variant="check" width={66} />
+        </DecoLayer>
+        <DecoLayer right="-20px" top="-14px" rotate={42} tier={1} z={2}>
+          <Tape variant="letter" label="" width={66} />
+        </DecoLayer>
+        <DecoLayer left="-20px" bottom="-14px" rotate={42} tier={1} z={2}>
+          <Tape variant="dot" width={66} />
+        </DecoLayer>
+        <DecoLayer right="-20px" bottom="-14px" rotate={-42} tier={1} z={2}>
+          <Tape variant="stripe" width={66} />
+        </DecoLayer>
+      </span>
+    )
+  }
+
+  {/* ── PF3 코너 마운트 · 스크랩북 ── */}
+  {
+    variant === "scrapbook" && (
+      <span class="board scrap">
+        <PaperSurface paper="dot" tone="cream" cell={11} radius="0">
+          <span class="pad">
+            <CornerMount inset={-3}>
+              <span class:list={["well", paper]}>
+                <slot />
+              </span>
+            </CornerMount>
+          </span>
+        </PaperSurface>
+      </span>
+    )
+  }
+
+  {/* ── PF4 필름 스트립 2컷 ── */}
+  {
+    variant === "film" && (
+      <span class="board strip">
+        <span class="frame-cell">
+          <span class:list={["well", paper]}>
+            <slot name="a" />
+          </span>
+        </span>
+        <span class="frame-cell">
+          <span class:list={["well", paper]}>
+            <slot name="b" />
+          </span>
+        </span>
+      </span>
+    )
+  }
+
+  {/* ── PF5 마 실 + 나무 집게 ──
+      실은 곧게 두지 않는다 — 처짐이 없으면 걸이줄이 아니라 밑줄로 읽힌다(W1 규칙).
+      다만 판 위 22px 안에서 처져야 해서 sag 를 10 까지 죈다. */}
+  {
+    variant === "pegged" && (
+      <span class="board hung">
+        <span class="cord">
+          <Twine width="100%" sag={10} anchors={false} />
+        </span>
+        <span class="peg">
+          <Clothespin height={34} />
+        </span>
+        <span class="mat">
+          <span class:list={["well", paper]}>
+            <slot />
+          </span>
+        </span>
+      </span>
+    )
+  }
+
+  {/* ── PF6 찢은 크라프트 ── */}
+  {
+    variant === "kraft" && (
+      <span class="board torn">
+        <span class:list={["well", paper]}>
+          <slot />
+        </span>
+        {caption && <span class="hand cap-kraft">{caption}</span>}
+      </span>
+    )
+  }
+
+  {/* ── PF7 크레용 두들 테두리 ── */}
+  {
+    variant === "crayon" && (
+      <span class="board drawn">
+        <span class:list={["well", paper]}>
+          <slot />
+        </span>
+        <CrayonFilters id={uid} kinds={["crayon", "ink"]} />
+        <svg
+          class="border"
+          viewBox="0 0 196 156"
+          preserveAspectRatio="none"
+          fill="none"
+          aria-hidden="true"
+        >
+          <g filter={`url(#${uid}-crayon)`} opacity=".55">
+            <rect
+              x="10"
+              y="10"
+              width="176"
+              height="136"
+              rx="5"
+              stroke="var(--deco-crayon-peri, #c9c9f0)"
+              stroke-width="7"
+              vector-effect="non-scaling-stroke"
+            />
+          </g>
+          <g filter={`url(#${uid}-ink)`}>
+            <rect
+              x="6"
+              y="6"
+              width="184"
+              height="144"
+              rx="5"
+              stroke="var(--deco-crayon-blue, #2540e8)"
+              stroke-width="4"
+              vector-effect="non-scaling-stroke"
+            />
+          </g>
+        </svg>
+        <DecoLayer right="-14px" bottom="-14px" tier={3} z={2}>
+          <span class="one-star" />
+        </DecoLayer>
+      </span>
+    )
+  }
+
+  {/* ── PF8 원형 다이컷 스티커 ── */}
+  {
+    variant === "diecut" && (
+      <span class="board round">
+        <span class:list={["well", paper]}>
+          <slot />
+        </span>
+        <CrayonFilters id={uid} kinds={["crayon-dense"]} />
+        <DecoLayer left="-12px" top="8px" tier={3} z={2}>
+          <span
+            class="one-sparkle lg"
+            style={`filter:url(#${uid}-crayon-dense)`}
+          />
+        </DecoLayer>
+        <DecoLayer right="2px" bottom="-6px" tier={4} z={2}>
+          <span
+            class="one-sparkle sm"
+            style={`filter:url(#${uid}-crayon-dense)`}
+          />
+        </DecoLayer>
+      </span>
+    )
+  }
+
+  {/* ── PF9 인스탁스 + 인덱스 탭 ── */}
+  {
+    variant === "instax" && (
+      <span class="board instax">
+        <span class:list={["well", paper]}>
+          <slot />
+        </span>
+        {caption && <span class="cap-type">{caption}</span>}
+        {label && (
+          <DecoLayer right="-24px" top="16px" tier={3} z={2}>
+            <IndexTab text={label} tone="pink" />
+          </DecoLayer>
+        )}
+      </span>
+    )
+  }
+
+  {/* ── PF10 겹친 콜라주 3장 ── */}
+  {
+    variant === "collage" && (
+      <span class="board pile">
+        <span class="mat p-a">
+          <span class:list={["well", paper]}>
+            <slot name="a" />
+          </span>
+        </span>
+        <span class="mat p-b">
+          <span class:list={["well", paper]}>
+            <slot name="b" />
+          </span>
+        </span>
+        <span class="mat p-c">
+          <span class:list={["well", paper]}>
+            <slot name="c" />
+          </span>
+        </span>
+        <span class="tape-pile">
+          <DecoLayer inline rotate={-8} tier={2}>
+            <Tape variant="letter" label="" width={56} />
+          </DecoLayer>
+        </span>
+      </span>
+    )
+  }
+
+  {/* ── PF11 벨럼 캡션 + 말풍선 — 캡션이 사진 위에 반투명으로 얹힌다 ── */}
+  {
+    variant === "vellum" && (
+      <span class="board veil">
+        <span class:list={["well", paper, "rounded"]}>
+          <slot />
+        </span>
+        {caption && (
+          <span class="veil-band">
+            <span class="hand">{caption}</span>
+          </span>
+        )}
+        {note && (
+          <DecoLayer right="-16px" top="-20px" tier={3} z={2}>
+            <Doodle variant="speech-balloon" text={note} width={74} />
+          </DecoLayer>
+        )}
+      </span>
+    )
+  }
+
+  {/* ── PF12 도장 + 날짜 스탬프 ── */}
+  {
+    variant === "stamped" && (
+      <span class="board plate">
+        <span class:list={["well", paper]}>
+          <slot />
+        </span>
+        <DecoLayer right="-16px" top="-16px" rotate={-12} tier={2} z={2}>
+          <span class="stamp-disc">
+            <Stamp variant="round" text="BAKED" sub="빵관토니" size={66} />
+          </span>
+        </DecoLayer>
+        {label && (
+          <span class="date-side">
+            <DecoLayer inline tier={3}>
+              <Stamp variant="date" text={label} />
+            </DecoLayer>
+          </span>
+        )}
+      </span>
+    )
+  }
+</span>
+
+<style>
+  /* ── 공통 ──────────────────────────────────────────────────────────────── */
+  .pf {
+    position: relative;
+    display: inline-block;
+  }
+  .board {
+    position: relative;
+    display: block;
+    transform: rotate(var(--tilt, 0deg));
+  }
+
+  /* 사진 칸. 폭만 받고 높이는 비율로 뽑는다 — 시안은 칸이 고정이지만 여기 들어오는
+     그림은 크기가 제각각이다. 사진이 없으면 종이 무늬가 그대로 보인다. */
+  .well {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--w);
+    aspect-ratio: 1 / var(--ar);
+    overflow: hidden;
+    background-color: var(--cream);
+  }
+  .well.grid {
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(32, 38, 74, 0.07) 0 1px,
+        transparent 1px 11px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(32, 38, 74, 0.07) 0 1px,
+        transparent 1px 11px
+      );
+  }
+  .well.dot {
+    background-image: radial-gradient(
+      rgba(32, 38, 74, 0.14) 1.4px,
+      transparent 1.5px
+    );
+    background-size: 11px 11px;
+  }
+  .well.rounded {
+    border-radius: 4px;
+  }
+  /* 액자 안 사진은 칸을 채운다. global.css 가 img 에 주는 radius 는 지운다 —
+     액자 안 사진은 각져야 인화지로 읽힌다(Polaroid 와 같은 판단). */
+  .well :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+  }
+
+  /* 손글씨 캡션. 시안은 Nanum Pen 인데 이 레포는 --font-hand(Gaegu)로 환산하므로
+     굵기를 700 으로 올린다(Polaroid 가 낸 선례 — Gaegu 400 은 획이 너무 옅다). */
+  .hand {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+    text-align: center;
+  }
+
+  /* ── PF1 폴라로이드 + 마테 ─────────────────────────────────────────────── */
+  .polaroid {
+    padding: 11px 11px 42px;
+    background: #fffcf6;
+    box-shadow: 0 3px 9px rgba(32, 38, 74, 0.16);
+  }
+  /* DecoLayer 의 transform 은 rotate 전용이라 가운데 맞춤을 겹쳐 쓸 수 없다 —
+     바깥 한 겹이 translate 를 맡는다. */
+  .tape-mid {
+    position: absolute;
+    left: 50%;
+    top: -13px;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .cap-lg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 9px;
+    display: block;
+    font-size: 21px;
+  }
+
+  /* ── PF2 네 모서리 마테 ────────────────────────────────────────────────── */
+  .bare {
+    display: inline-block;
+  }
+
+  /* ── PF3 스크랩북 ──────────────────────────────────────────────────────── */
+  .scrap {
+    display: inline-block;
+    box-shadow: 0 2px 6px rgba(32, 38, 74, 0.12);
+  }
+  /* PaperSurface 는 크기 prop 만 받고 padding 은 안 받는다(부모 scoped CSS 로는
+     자식 루트를 못 고친다) — 여백은 내가 가진 span 이 낸다. */
+  .pad {
+    display: block;
+    padding: 16px;
+  }
+
+  /* ── PF4 필름 스트립 ───────────────────────────────────────────────────── */
+  .strip {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 8px;
+    background: var(--ink);
+    box-shadow: 0 3px 8px rgba(32, 38, 74, 0.2);
+  }
+  /* 퍼포레이션 — 이게 없으면 그냥 검은 판이다 */
+  .strip::before,
+  .strip::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    height: 7px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--surface) 0 8px,
+      transparent 8px 17px
+    );
+  }
+  .strip::before {
+    top: 5px;
+  }
+  .strip::after {
+    bottom: 5px;
+  }
+  .frame-cell {
+    display: flex;
+    padding: 3px;
+    background: var(--cream);
+  }
+
+  /* ── PF5 실 + 집게 ─────────────────────────────────────────────────────── */
+  .hung {
+    padding-top: 22px;
+  }
+  .cord {
+    position: absolute;
+    left: -18px;
+    right: -18px;
+    top: 2px;
+  }
+  .peg {
+    position: absolute;
+    left: 50%;
+    top: -9px;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .mat {
+    display: block;
+    padding: 9px 9px 11px;
+    background: #fffcf6;
+    box-shadow: 0 4px 10px rgba(32, 38, 74, 0.16);
+  }
+
+  /* ── PF6 찢은 크라프트 ─────────────────────────────────────────────────── */
+  /* clip-path 는 box-shadow 를 잘라 버린다 — 그림자는 바깥 한 겹의 drop-shadow 가 낸다.
+     시안은 둘을 같이 적었지만 화면에는 그림자가 안 나온 상태였다. */
+  .v-kraft {
+    filter: drop-shadow(0 3px 6px rgba(32, 38, 74, 0.16));
+  }
+  .torn {
+    padding: 14px 14px 30px;
+    background: linear-gradient(
+      180deg,
+      var(--deco-kraft, rgba(232, 214, 183, 0.98)),
+      var(--deco-kraft-2, rgba(219, 199, 166, 0.98))
+    );
+    /* **가로는 px, 세로는 % 다.** 시안 폴리곤은 가로도 % 인데(96%·5%…) 그건 판이
+       196px 일 때의 값이다 — 액자가 900px 로 넓어지면 5% 가 45px 이 되어 찢긴 자리가
+       여백(20px)을 지나 그림을 파고든다. 찢긴 깊이는 **종이의 성질**이지 판 크기의
+       성질이 아니므로 px 로 고정하고, 세로만 % 로 둬 높이에 따라 무늬가 퍼지게 한다.
+       (196px 기준 환산: 4% → 8px · 3% → 6px · 2% → 4px · 5% → 10px) */
+    clip-path: polygon(
+      0 0,
+      100% 4%,
+      calc(100% - 8px) 26%,
+      100% 52%,
+      calc(100% - 6px) 100%,
+      4px 96%,
+      10px 60%,
+      0 28%
+    );
+  }
+  .cap-kraft {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5px;
+    display: block;
+    font-size: 19px;
+    color: var(--deco-kraft-ink, #6b5a3e);
+  }
+
+  /* ── PF7 크레용 테두리 ─────────────────────────────────────────────────── */
+  .drawn {
+    padding: 11px;
+  }
+  .border {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  /* 낱개 별. S3 은 3종 묶음이라 모서리에 하나만 못 앉힌다 —
+     HeroCollage 의 .one-sparkle 이 같은 사유로 낸 선례를 따른다. */
+  .one-star {
+    display: block;
+    width: 34px;
+    height: 34px;
+    background: var(--deco-pen-gold, #f0c24a);
+    clip-path: polygon(
+      50% 0,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 95%,
+      50% 71%,
+      21% 95%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    );
+    filter: drop-shadow(0 2px 3px rgba(32, 38, 74, 0.2));
+  }
+
+  /* ── PF8 원형 다이컷 ───────────────────────────────────────────────────── */
+  .round {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 50%;
+    background: #fffcf6;
+    box-shadow:
+      0 3px 9px rgba(32, 38, 74, 0.18),
+      0 0 0 2px var(--deco-pen-pink, #f4a9b4);
+  }
+  .round .well {
+    border-radius: 50%;
+  }
+  .one-sparkle {
+    display: block;
+    clip-path: polygon(
+      50% 0,
+      57% 43%,
+      100% 50%,
+      57% 57%,
+      50% 100%,
+      43% 57%,
+      0 50%,
+      43% 43%
+    );
+  }
+  .one-sparkle.lg {
+    width: 30px;
+    height: 30px;
+    background: var(--deco-crayon-blue, #2540e8);
+  }
+  .one-sparkle.sm {
+    width: 20px;
+    height: 20px;
+    background: var(--deco-pen-pink, #f4a9b4);
+  }
+
+  /* ── PF9 인스탁스 ──────────────────────────────────────────────────────── */
+  .instax {
+    padding: 10px 10px 34px;
+    background: #fffcf6;
+    border: 1px solid var(--border);
+    box-shadow: 0 3px 9px rgba(32, 38, 74, 0.15);
+  }
+  /* 인스탁스만 캡션이 활자다 — 손글씨 액자 사이에서 "기계가 찍은 날짜"로 읽혀야 한다 */
+  .cap-type {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+    text-align: center;
+  }
+
+  /* ── PF10 겹친 콜라주 ──────────────────────────────────────────────────── */
+  /* 자리를 전부 --w 에서 뽑는다 — 시안(208×172 안에 116·110·122)의 비율 그대로다.
+     그래서 이 액자만 --w 가 반드시 길이여야 한다(% 를 넣으면 calc 가 깨진다). */
+  .pile {
+    width: calc(var(--w) * 1.793);
+    height: calc(var(--w) * 1.483);
+  }
+  .pile .mat {
+    position: absolute;
+    padding: 6px 6px 15px;
+  }
+  .pile .p-a {
+    left: calc(var(--w) * -0.069);
+    top: 0;
+    padding: 7px 7px 17px;
+    transform: rotate(-5deg);
+  }
+  .pile .p-b {
+    right: calc(var(--w) * -0.086);
+    top: calc(var(--w) * -0.052);
+    transform: rotate(6deg);
+  }
+  .pile .p-b .well {
+    width: calc(var(--w) * 0.948);
+  }
+  .pile .p-c {
+    left: calc(var(--w) * 0.379);
+    bottom: calc(var(--w) * -0.052);
+    transform: rotate(3deg);
+  }
+  .pile .p-c .well {
+    width: calc(var(--w) * 1.052);
+  }
+  .tape-pile {
+    position: absolute;
+    left: calc(var(--w) * 0.121);
+    top: calc(var(--w) * -0.086);
+    z-index: 3;
+  }
+
+  /* ── PF11 벨럼 캡션 ────────────────────────────────────────────────────── */
+  .veil {
+    display: inline-block;
+  }
+  /* 반투명이라 사진이 비친다 — 불투명하게 만들면 액자가 아니라 자막 상자가 된다 */
+  .veil-band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 252, 246, 0.86),
+      rgba(255, 252, 246, 0.78)
+    );
+    border-top: 1px solid rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+  }
+  .veil-band .hand {
+    font-size: 22px;
+  }
+
+  /* ── PF12 도장 ─────────────────────────────────────────────────────────── */
+  .plate {
+    padding: 13px;
+    background: #fffcf6;
+    border: 1px solid var(--border);
+    box-shadow: 0 3px 9px rgba(32, 38, 74, 0.14);
+  }
+  /* 도장 뒤에 종이색을 깔아야 사진 위에 찍힌 게 아니라 액자 위에 찍힌 것으로 읽힌다 */
+  .stamp-disc {
+    display: block;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+  .date-side {
+    position: absolute;
+    left: -11px;
+    bottom: 16px;
+    transform: rotate(-90deg);
+    transform-origin: left bottom;
+    background: var(--surface);
+    z-index: 2;
+  }
+
+  /* ── 좁은 화면을 이 부품이 접지 않는 이유 ─────────────────────────────────
+     테이프·도장·말풍선은 액자 밖으로 14~30px 나가므로 여백이 좁아지면 가로
+     스크롤이 된다 — 글 지도 판(TapedBoard)이 768px 에서 접는 게 그 사유다.
+     그런데 여기서는 접을 수가 없다: PF2 는 **테이프가 곧 액자**라 접으면 사진만
+     남고, PF7·PF12 는 얹은 것이 이름의 절반이다. 게다가 얼마나 나가도 되는지는
+     액자가 아니라 **놓인 자리의 여백**이 정한다.
+     그래서 접기는 쓰는 쪽 몫이다 — 액자를 놓는 칸이 좌우 24px 이상을 남기거나,
+     좁은 화면에서 `data-deco` 강도를 낮춘다(얹은 것은 티어 2~4 라 그때 접힌다).
+     PF2 만 티어 1 인 이유도 이것이다. 검증은 눈이 아니라 `bun run deco:verify`. */
+</style>

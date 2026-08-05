@@ -112,6 +112,13 @@
   --deco-note: #f4e3b2;
   --deco-note-2: #ecd79c;
   --deco-note-ink: #6b5312;
+  /* 찢은 크라프트 **판**(PF6). T6 크라프트 테이프와 같은 결이지만 값이 다르다 —
+     테이프는 좁고 짙게(rgba .95) 찢겨 붙는 조각이고, 이쪽은 사진을 담는 넓은
+     바탕이라 한 단 밝고 불투명에 가깝다. 손글씨 잉크(--deco-kraft-ink)는 이
+     종이 위에서만 읽히는 갈색이라 --deco-note-ink(노랑 계열)를 못 쓴다. */
+  --deco-kraft: rgba(232, 214, 183, 0.98);
+  --deco-kraft-2: rgba(219, 199, 166, 0.98);
+  --deco-kraft-ink: #6b5a3e;
 
   /* 스티커 다이컷 테두리(흰 여백) 두께 */
   --deco-diecut: 5px;
