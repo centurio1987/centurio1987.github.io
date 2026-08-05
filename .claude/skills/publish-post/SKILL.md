@@ -46,7 +46,9 @@ argument-hint: <draft-path> [slug]
 
 `src/content/posts/<slug>.<ext>` 의 `<slug>` 가 곧 URL(`/posts/<slug>`)이 된다.
 
-**확장자**: 본문에 MDX 문법(상단 `import` 문 또는 `<Component client:... />` 같은 JSX/React 시뮬레이션)이 있으면 `.mdx`, 순수 마크다운이면 `.md`. 보통 draft 확장자를 그대로 따른다. `.mdx` 로 발행할 때 import 경로가 `src/content/posts/` 기준으로 올바른지 확인한다(예: co-located 컴포넌트는 발행 위치 기준 상대경로여야 한다).
+**확장자**: **언제나 `.mdx` 다 — 순수 마크다운이라도 `.md` 로 내지 않는다.** 인용·코드블록에 데코를 얹는 통로가 MDX 의 `components` 매핑이고 그건 **`.md` 에는 안 먹는다**. `.md` 로 내면 그 글만 데코 없는 인용·코드가 되어, 한 블로그 안에 「데코가 붙은 글」과 「안 붙은 글」이 갈린다 — 실제로 그렇게 세 편이 갈려 있다가 전부 `.mdx` 로 옮겼다(`deco-kit` 스킬). 빌드·타입·강조 게이트는 이걸 못 잡고 `bun run deco:verify` 만 잡는다. import 경로는 `src/content/posts/` 기준으로 맞춘다(co-located 컴포넌트는 발행 위치 기준 상대경로).
+
+`.md` 본문을 `.mdx` 로 옮길 때 걸리는 것은 하나뿐이다 — **JSX 는 문자열 `style=` 을 못 받는다**(`style="width: 20vw"` → `style={{ width: "20vw" }}`). `{`·`}` 와 짝 없는 `<` 도 MDX 에서는 문법이니 함께 훑는다.
 
 - 기본 제안: 영문 소문자 + 하이픈 슬러그 (깔끔한 URL 위해 권장). 제목/주제에서 생성.
   - 예: 제목 "DDD 도입 시 RDB 스키마 설계" → `ddd-rdb-schema`
