@@ -1,0 +1,336 @@
+---
+/**
+ * viz 액자 프레임 후보 — /design/viz-frames  (KAN-063)
+ *
+ * 본문 다이어그램(viz)을 감싸는 액자 6종을 **실제 그림에 씌워** 그린다. 후보를 보고
+ * 고르기 위한 페이지라, 문서가 아니라 화면이 판단 근거다.
+ *
+ * 부품은 `src/components/viz/VizFigure.tsx` 의 `frame` prop, 그림은
+ * `src/styles/viz-frame.css`, 샘플은 `src/components/viz/samples/`.
+ *
+ * `deco.css` 를 들여오는 이유가 둘이다 — 테이프 색(`--deco-tape-*`)과 강도 게이트
+ * (`[data-deco="n"]`). 없으면 절 05 가 아무것도 안 보여준다.
+ *
+ * 독자용 페이지가 아니라 noindex + 사이트맵 제외(astro.config.mjs).
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SampleComparison from "../../components/viz/samples/SampleComparison";
+import SampleFlowchart from "../../components/viz/samples/SampleFlowchart";
+import SampleProcessSteps from "../../components/viz/samples/SampleProcessSteps";
+import type { VizFrame } from "../../components/viz/VizFigure";
+import "../../styles/deco.css";
+
+interface FrameEntry {
+  code: string;
+  value: VizFrame;
+  name: string;
+  note: string;
+  /** 물려받은 데코 부품(있으면) */
+  from?: string;
+}
+
+const FRAMES: FrameEntry[] = [
+  { code: "—", value: "none", name: "액자 없음", note: "지금 발행된 글 41개가 전부 이 상태" },
+  { code: "F-A", value: "polaroid", name: "폴라로이드", note: "흰 판 + 가운데 위 마테 + 손글씨 캡션", from: "PF1 폴라로이드 + 마테" },
+  { code: "F-B", value: "taped", name: "테이프 판", note: "모눈 종이 + 위 모서리 테이프 두 장", from: "P-01 TapedBoard · T1/T3" },
+  { code: "F-C", value: "kraft", name: "찢은 크라프트", note: "네 변이 다 찢긴 판 — 오려 붙인 조각", from: "PF6 찢은 크라프트" },
+  { code: "F-D", value: "scrapbook", name: "스크랩북", note: "도트 종이 판 + 네 귀퉁이 홀더 — 그림을 하나도 안 가림", from: "PF3 코너 마운트 · 스크랩북" },
+  { code: "F-E", value: "quiet", name: "조용한 액자", note: "1px 테두리 + 얕은 그림자. 캡션은 액자 밖" },
+  { code: "F-F", value: "bare", name: "바탕만", note: "테두리 없이 바탕색 + 여백. 현행에서 한 걸음" },
+];
+
+const DECO_TIERED: VizFrame[] = ["polaroid", "taped"];
+---
+
+<BaseLayout
+  title="viz 액자 프레임 후보"
+  description="본문 다이어그램을 감싸는 액자 6종 후보 카탈로그"
+  noindex
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">VIZ FRAME · KAN-063</p>
+      <h1>viz 액자 프레임 후보</h1>
+      <p class="lede">
+        본문 다이어그램을 감싸는 액자 여섯 가지입니다. 그림 자체는 그대로 두고
+        <b>바깥 껍데기만</b> 바뀝니다. 넷은 데코 키트 부품에서 짜임을 물려받았고
+        (<code>F-A</code>~<code>F-D</code>), 둘은 읽는 화면 쪽으로 차분하게 뺀
+        선택지입니다(<code>F-E</code>·<code>F-F</code>).
+      </p>
+      <p class="lede warn">
+        아직 <b>후보</b>입니다 — 발행된 글 41개는 전부 <code>frame="none"</code>
+        이라 한 픽셀도 안 바뀌었습니다. 보고 고르시면 그때 적용합니다.
+      </p>
+    </header>
+
+    <!-- ══ 01 한눈 비교 ══ -->
+    <h2 class="sec"><span class="no">01</span> 한눈 비교 <small>같은 그림, 액자만 다름</small></h2>
+    <div class="grid">
+      {
+        FRAMES.map((f) => (
+          <section class="cell">
+            <p class="cell-head">
+              <span class="code">{f.code}</span>
+              <b>{f.name}</b>
+              {f.from && <span class="from">{f.from}</span>}
+            </p>
+            <div class="stage">
+              <SampleComparison frame={f.value} />
+            </div>
+            <p class="cell-note">{f.note}</p>
+          </section>
+        ))
+      }
+    </div>
+
+    <!-- ══ 02 비율 견디기 ══ -->
+    <h2 class="sec">
+      <span class="no">02</span> 비율 견디기
+      <small>Comparison·ProcessSteps 는 높이를 콘텐츠에서 되뽑고, Flowchart 는 저작 viewBox 고정</small>
+    </h2>
+    <p class="note-p">
+      액자 아래에 빈 띠가 끼거나 그림이 letterbox 되는지는 <b>비율이 다른 그림</b>에
+      씌워 봐야 압니다. 세 kind 를 같은 액자로 나란히 놓습니다.
+    </p>
+    {
+      FRAMES.filter((f) => f.value !== "none").map((f) => (
+        <section class="pat">
+          <p class="pat-head">
+            <span class="pid">{f.code}</span> {f.name}
+          </p>
+          <div class="triple">
+            <div><SampleComparison frame={f.value} /></div>
+            <div><SampleProcessSteps frame={f.value} /></div>
+            <div><SampleFlowchart frame={f.value} /></div>
+          </div>
+        </section>
+      ))
+    }
+
+    <!-- ══ 03 본문 폭 안에서 ══ -->
+    <h2 class="sec"><span class="no">03</span> 본문 폭 안에서 <small>720px — 실제 글이 이 폭입니다</small></h2>
+    <p class="note-p">
+      위 칸들은 넓어서 액자가 넉넉해 보입니다. 실제 지면은
+      <code>--content-max: 720px</code> 이고, SVG 가 <code>width:100%</code> 라
+      <b>액자 패딩만큼 그림이 줄고 글씨도 같은 비율로 작아집니다</b>. 이 축소는
+      <code>viz:verify</code> 가 못 잡습니다(그건 viewBox 단위로 잽니다) — 그래서 이
+      절이 있습니다.
+    </p>
+    <div class="measure">
+      {
+        FRAMES.map((f) => (
+          <section class="m-row">
+            <p class="m-head">
+              <span class="code">{f.code}</span> {f.name}
+            </p>
+            <SampleProcessSteps frame={f.value} />
+          </section>
+        ))
+      }
+    </div>
+
+    <!-- ══ 04 캡션 유무 ══ -->
+    <h2 class="sec"><span class="no">04</span> 캡션이 없을 때 <small>폴라로이드는 캡션이 액자 구조의 일부입니다</small></h2>
+    <p class="note-p">
+      <code>F-A</code> 는 아래가 두꺼운 것이 물성이라, 캡션이 없으면 그 여백을 무엇이
+      대신할지 정해야 합니다(지금은 아래 패딩을 38px 로 늘려 뒀습니다).
+      <code>F-E</code>·<code>F-F</code> 는 캡션이 액자 <b>밖</b>이라 없어도 액자가 안 변합니다.
+    </p>
+    <div class="grid two">
+      {
+        (["polaroid", "quiet"] as VizFrame[]).map((v) => {
+          const f = FRAMES.find((x) => x.value === v)!;
+          return (
+            <>
+              <section class="cell">
+                <p class="cell-head"><span class="code">{f.code}</span> <b>{f.name}</b> — 캡션 있음</p>
+                <div class="stage"><SampleComparison frame={v} /></div>
+              </section>
+              <section class="cell">
+                <p class="cell-head"><span class="code">{f.code}</span> <b>{f.name}</b> — 캡션 없음</p>
+                <div class="stage"><SampleComparison frame={v} caption={false} /></div>
+              </section>
+            </>
+          );
+        })
+      }
+    </div>
+
+    <!-- ══ 05 강도 ══ -->
+    <h2 class="sec"><span class="no">05</span> 강도 <small>판은 남고, 얹은 것만 접힙니다</small></h2>
+    <p class="note-p">
+      데코 키트의 강도 게이트(<code>data-deco</code>)를 액자에도 그대로 물립니다. 다만
+      <b>티어를 지는 것은 테이프·코너뿐</b>입니다 — 종이 판·패딩·테두리가 강도에 따라
+      사라지면 데코가 아니라 그림 크기가 페이지 설정에 끌려다닙니다. 글 상세는 강도 3
+      입니다.
+    </p>
+    <div class="int-grid">
+      {
+        [2, 3, 4].map((lv) => (
+          <section class="int-cell" data-deco={lv}>
+            <p class="cell-head"><span class="code">강도 {lv}</span></p>
+            {DECO_TIERED.map((v) => (
+              <div class="stage"><SampleComparison frame={v} caption={false} /></div>
+            ))}
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 44px var(--page-pad) 80px;
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--ink-3);
+  }
+  .page-head h1 {
+    margin: 8px 0 14px;
+    font-size: clamp(28px, 5vw, 38px);
+  }
+  .lede {
+    max-width: 60ch;
+    color: var(--ink-2);
+    line-height: 1.75;
+  }
+  .lede.warn {
+    margin-top: 10px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--pop);
+    background: var(--pop-tint);
+    color: var(--pop-ink);
+  }
+
+  .sec {
+    margin: 56px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    font-size: 20px;
+  }
+  .sec .no {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    margin-right: 8px;
+  }
+  .sec small {
+    margin-left: 10px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+  .note-p {
+    max-width: 68ch;
+    margin: 0 0 22px;
+    color: var(--ink-2);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 26px;
+  }
+  .grid.two {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  }
+  .cell-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px;
+    font-size: 14px;
+  }
+  .code {
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-tint2);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .from {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .cell-note {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.6;
+  }
+  /* 판 밖으로 나가는 것(테이프)이 윗칸을 물지 않게 여유를 둔다. 30px 인 근거는
+     글 지도와 같다 — 테이프가 top:-14px·-10° 라 판 밖 24.7px 까지 올라간다(DECO_KIT §7). */
+  .stage {
+    padding-top: 30px;
+  }
+  /* 카탈로그에서는 figure 의 위아래 28px 마진이 칸 사이 gap 과 겹쳐 보인다 */
+  .stage :global(.viz-figure) {
+    margin: 0;
+  }
+
+  .pat {
+    margin-bottom: 40px;
+  }
+  .pat-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .pid {
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    background: var(--cream);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+  .triple {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 26px;
+    align-items: start;
+  }
+  .triple > div {
+    padding-top: 30px;
+  }
+  .triple :global(.viz-figure) {
+    margin: 0;
+  }
+
+  .measure {
+    max-width: var(--content-max);
+  }
+  .m-row {
+    margin-bottom: 34px;
+    padding-top: 30px;
+  }
+  .m-head {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  .int-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 26px;
+    align-items: start;
+  }
+  .int-cell .stage + .stage {
+    margin-top: 22px;
+  }
+</style>

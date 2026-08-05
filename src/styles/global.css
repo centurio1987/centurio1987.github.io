@@ -1,5 +1,10 @@
 @import "./tokens.css";
 @import "./viz.css";
+/* 액자 프레임(KAN-063)은 viz.css 와 따로 둔다 — 그쪽은 패키지 CONTRACT_CSS 를 베껴 온
+   계약 shim 이라 재추출 때 블로그 고유 장식이 함께 갈린다. 전역인 이유는 viz 그림이
+   글 상세와 폭신 대담 양쪽에 나오기 때문이고, 지금은 전부 frame="none" 이라 규칙이
+   하나도 안 걸린다(후보 단계 — 카탈로그는 /design/viz-frames). */
+@import "./viz-frame.css";
 @import "./motion.css";
 
 /* Google Fonts(한국어 전용 폰트 시스템)는 여기서 @import 하지 않는다 — CSS 안의

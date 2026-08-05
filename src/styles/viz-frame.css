@@ -1,0 +1,292 @@
+/* ── viz 액자 프레임 후보 (KAN-063) ───────────────────────────────────────────
+ *
+ * 본문 다이어그램(viz)을 감싸는 액자 6종. 그림은 그대로 두고 **바깥 껍데기만** 바꾼다.
+ * 부품은 `src/components/viz/VizFigure.tsx` 의 `frame` prop 이 열고, 카탈로그는
+ * `/design/viz-frames`(noindex) 다.
+ *
+ * **아직 후보다.** 발행된 글 40개는 전부 `frame="none"` 이라 이 파일의 규칙이 하나도
+ * 안 걸린다 — 최종 채택은 카탈로그를 보고 정한다.
+ *
+ * ── viz.css 에 안 섞는 이유 ──────────────────────────────────────────────────
+ * 그쪽은 패키지 CONTRACT_CSS 를 베껴 온 계약 shim 이고 머리글에 "KEEP IN SYNC with
+ * the package version" 이 박혀 있다. 다음 재추출 때 블로그 고유 장식이 함께 갈린다.
+ *
+ * ── 선택자를 전부 .viz-figure 아래로 가두는 이유 ────────────────────────────
+ * 이 파일은 global.css 가 들여와 **전역**이다(viz 그림은 글 상세와 폭신 대담 양쪽에
+ * 나온다). `.viz-frame`·`.viz-frame-inner`·`.viz-frame-deco` 는 흔한 이름이라 맨몸으로
+ * 두면 나중에 다른 컴포넌트와 부딪힌다. 예외 없이 `.viz-figure[data-viz-frame…]` 로 연다.
+ *
+ * ── 색을 fallback 과 함께 적는 이유 ─────────────────────────────────────────
+ * `--deco-*` 토큰은 `deco.css` 에 있고 그건 opt-in 이다 — **폭신 대담에는 없다.**
+ * `DoodleMark.astro` 와 같은 방식으로 시안 값을 fallback 에 함께 적어, 데코를 안
+ * 들여온 지면에서도 액자가 제 색으로 그려지게 한다. 무늬 자체는 `Tape.astro`·
+ * `CornerMount.astro`·`Polaroid.astro`·`PaperSurface.astro` 에서 그대로 옮겨 왔다
+ * (데코 부품은 전부 `.astro` 라 React 트리에 못 들어가지만, 넷 다 순수 CSS 다).
+ *
+ * ── 캡션이 액자 안이냐 밖이냐는 "어디에 액자를 그리느냐"가 정한다 ───────────
+ * DOM 은 하나다:  figure > .viz-frame > (.viz-frame-inner > svg) + figcaption
+ *   · `.viz-frame`       에 액자를 그리면 캡션이 **액자 안**   (F-A·F-B·F-C·F-D)
+ *   · `.viz-frame-inner` 에 액자를 그리면 캡션이 **액자 밖**   (F-E·F-F)
+ * 프레임마다 DOM 을 가르지 않으려고 이렇게 뒀다.
+ */
+
+/* ── 공통 ────────────────────────────────────────────────────────────────── */
+
+.viz-figure[data-viz-frame] {
+  /* .viz-frame-deco 의 좌표계 */
+  position: relative;
+}
+
+/* viz.css 의 `.viz-figure > [data-bbangto-viz-style-guide] { width:100% }` 는
+   **직접 자식** 선택자라 래퍼가 끼는 순간 안 먹는다. 새 경로로 다시 깐다.
+   (안 깔면 Provider 폭이 shrink-to-fit 이 되어 그림이 좁아진 채 조용히 렌더된다.) */
+.viz-figure[data-viz-frame] .viz-frame-inner > [data-bbangto-viz-style-guide] {
+  width: 100%;
+}
+
+/* 판 위에 얹히는 것(테이프·코너)만 여기 산다. 판 자체에 pointer-events:none 을
+   걸면 그 안의 SVG 까지 포인터가 죽는다. */
+.viz-figure[data-viz-frame] .viz-frame-deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ── F-A polaroid — PF1 계보 (폴라로이드 + 가운데 위 마테) ────────────────
+ *
+ * 시안 PF1 을 도식용으로 다시 짠 것이다. 사진 액자 쪽(`PhotoFrame` variant
+ * `polaroid-tape`)과 **무늬는 같고 뼈대가 다르다**: 저쪽은 칸 비율이 먼저 있고
+ * 사진이 거기 맞춰 잘리지만, 도식은 한 픽셀도 못 자르므로 높이를 그림에서 되뽑는다.
+ * 그래서 `aspect-ratio` 도 `object-fit` 도 안 쓴다(`photoFrames.ts` 의 선택 로직이
+ * 도식에 대해 열두 종을 전부 떨어뜨린 사유가 이것이다).
+ */
+
+.viz-figure[data-viz-frame="polaroid"] .viz-frame {
+  padding: 14px 14px 16px;
+  background: #fffcf6;
+  box-shadow: var(--deco-shadow-lift, 0 5px 9px rgba(32, 38, 74, 0.2));
+}
+
+/* PF1 의 마테 한 장 — 판 **가운데 위**에 걸친다(시안 left:50% · top:-13px · -2°).
+   T2 사선 스트라이프이고 `Tape.astro` 의 .stripe 무늬를 그대로 옮겼다.
+   판 위에만 있고 그림 위로는 안 내려온다 — 그래서 이 액자가 도식에 남았다.
+   티어 2: 강도 2 에서 반투명, 1 에서 사라진다. 판은 그대로 남는다. */
+.viz-figure[data-viz-frame="polaroid"] .viz-frame-deco::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -13px;
+  width: 78px;
+  height: 32px;
+  margin-left: -39px;
+  background: repeating-linear-gradient(
+    48deg,
+    color-mix(in srgb, var(--deco-pink, #e0919f) 62%, transparent) 0 7px,
+    color-mix(in srgb, var(--deco-pink-tint, #f7dde2) 55%, transparent) 7px 15px
+  );
+  clip-path: polygon(0 0, 100% 5%, 97% 100%, 3% 95%);
+  box-shadow: var(--deco-shadow, 0 1px 3px rgba(32, 38, 74, 0.14));
+  opacity: var(--deco-op, 1);
+  transform: rotate(-2deg);
+}
+/* 좁은 화면에서는 접는다 — 판 밖 위로 13px 나가고 `--page-pad` 는 390px 에서 20px 이다 */
+@media (max-width: 768px) {
+  .viz-figure[data-viz-frame="polaroid"] .viz-frame-deco::before {
+    display: none;
+  }
+}
+.viz-figure[data-viz-frame="polaroid"] .viz-frame-inner {
+  padding: 12px 10px;
+  background-color: var(--cream);
+}
+/* 캡션은 액자 안에서 손글씨로 앉는다 — 폴라로이드 아래 여백의 뜻이 그것이다. */
+.viz-figure[data-viz-frame="polaroid"] figcaption {
+  margin-top: 12px;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ink-2);
+}
+/* 캡션이 없으면 아래가 두꺼운 폴라로이드의 물성이 사라진다 — 여백이 대신 진다. */
+.viz-figure[data-viz-frame="polaroid"] .viz-frame:not(:has(figcaption)) {
+  padding-bottom: 38px;
+}
+
+/* ── F-B taped — 모눈 판 + 위 모서리 테이프 두 장 (TapedBoard + Tape.astro) ─ */
+
+.viz-figure[data-viz-frame="taped"] .viz-frame {
+  padding: 22px 18px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(32, 38, 74, 0.07) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(90deg, rgba(32, 38, 74, 0.07) 0 1px, transparent 1px 24px);
+  box-shadow: var(--deco-shadow, 0 1px 3px rgba(32, 38, 74, 0.14));
+}
+
+/* 테이프 두 장은 `.viz-frame-deco` 의 의사요소다. **좌표·크기·각도·티어는
+   `TapedBoard.astro` 에서 그대로 가져왔다** — 세 지면(히어로 보드·글 지도·글 배너)이
+   이미 같은 값을 쓰고 있어서, 여기서 눈대중으로 다시 잡으면 "같은 손이 붙인" 결이
+   깨진다. 그래서 판 밖으로 걸치는 것(left/right 가 음수)도 그대로다 — 안쪽에만
+   있으면 붙인 게 아니라 무늬로 읽힌다는 게 그 패턴의 판단이다.
+
+   티어 2 다. 티어 3(사라짐)이 아니라 2(옅어짐)인 이유는 원본이 그렇기 때문이고,
+   그래서 강도 2 에서 테이프가 반투명으로 남는다. 어느 쪽이든 **판(모눈·패딩·테두리)은
+   강도로 안 사라진다** — 패딩이 강도에 끌려다니면 데코가 아니라 그림 크기가 페이지
+   설정에 따라 흔들린다. */
+.viz-figure[data-viz-frame="taped"] .viz-frame-deco::before,
+.viz-figure[data-viz-frame="taped"] .viz-frame-deco::after {
+  content: "";
+  position: absolute;
+  opacity: var(--deco-op, 1);
+  box-shadow: var(--deco-shadow, 0 1px 3px rgba(32, 38, 74, 0.14));
+}
+/* T1 check — 격자 · 버터 (TapedBoard 좌상: top -14 · left -20 · -10° · w126) */
+.viz-figure[data-viz-frame="taped"] .viz-frame-deco::before {
+  top: -14px;
+  left: -20px;
+  width: 126px;
+  height: 34px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      var(--deco-tape-yellow, rgba(216, 163, 63, 0.42)) 0 12px,
+      transparent 12px 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      var(--deco-tape-yellow, rgba(216, 163, 63, 0.42)) 0 12px,
+      transparent 12px 24px
+    ),
+    rgba(240, 222, 180, 0.62);
+  clip-path: polygon(0 4%, 100% 0, 98% 100%, 2% 96%);
+  transform: rotate(-10deg);
+}
+/* T3 vellum — 반투명. 순백을 안 쓰는 이유는 Tape.astro 의 .vellum 주석 참고.
+   (TapedBoard corners="top" 우상: top -12 · right -18 · 9° · w118 = tapeWidth-8) */
+.viz-figure[data-viz-frame="taped"] .viz-frame-deco::after {
+  top: -12px;
+  right: -18px;
+  width: 118px;
+  height: 30px;
+  background:
+    linear-gradient(
+      104deg,
+      transparent 0 20%,
+      rgba(255, 255, 255, 0.5) 32% 44%,
+      transparent 58%
+    ),
+    linear-gradient(180deg, var(--deco-tape-vellum, rgba(253, 248, 236, 0.66)), rgba(236, 223, 196, 0.6));
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(122, 104, 66, 0.16);
+  clip-path: polygon(0 6%, 100% 0, 99% 100%, 1% 94%);
+  transform: rotate(9deg);
+}
+
+/* 좁은 화면에서는 테이프를 접는다 — `--page-pad` 가 clamp(20px,5vw,48px) 라 390px
+   에서 20px 대로 줄어드는데 테이프는 판 밖 위로 13px, 좌우로는 회전 때문에 더 나간다.
+   글 지도(`/graph`)가 같은 사유로 768px 에서 접는다(DECO_KIT §7). */
+@media (max-width: 768px) {
+  .viz-figure[data-viz-frame="taped"] .viz-frame-deco::before,
+  .viz-figure[data-viz-frame="taped"] .viz-frame-deco::after {
+    display: none;
+  }
+  .viz-figure[data-viz-frame="taped"] .viz-frame {
+    padding-top: 18px;
+  }
+}
+
+/* ── F-C kraft — PF6 계보 (찢은 크라프트 판) ──────────────────────────────
+ *
+ * 예전의 `board`(도트 판만)를 갈아 끼운 것이다. 도트 판은 아래 `scrapbook` 이 이미
+ * 깔고 있어 둘이 겹쳤고, 이쪽은 시안에 실재하는 액자다.
+ *
+ * **`clip-path` 는 `box-shadow` 를 잘라 낸다** — 그림자는 한 겹 바깥
+ * (`.viz-figure`)의 `drop-shadow` 가 낸다. 시안은 둘을 같이 적었지만 화면에는
+ * 그림자가 안 나오고 있었다(`PhotoFrame.astro` 의 `.v-kraft` 와 같은 수리). */
+
+.viz-figure[data-viz-frame="kraft"] {
+  filter: drop-shadow(0 3px 6px rgba(32, 38, 74, 0.16));
+}
+.viz-figure[data-viz-frame="kraft"] .viz-frame {
+  padding: 20px 20px 24px;
+  background: linear-gradient(
+    180deg,
+    var(--deco-kraft, rgba(232, 214, 183, 0.98)),
+    var(--deco-kraft-2, rgba(219, 199, 166, 0.98))
+  );
+  /* 시안 PF6 의 여덟 점 다각형 그대로. 세로가 그림 높이만큼 길어져도 찢긴 자리는
+     %  라 같은 비율로 늘어난다 — 도식마다 높이가 달라서 px 로 적으면 안 된다. */
+  /* **가로는 px, 세로는 % 다.** 시안 폴리곤은 가로도 % 인데(96%·5%…) 그건 판이
+     196px 일 때의 값이다 — 액자가 900px 로 넓어지면 5% 가 45px 이 되어 찢긴 자리가
+     여백(20px)을 지나 그림을 파고든다. 찢긴 깊이는 **종이의 성질**이지 판 크기의
+     성질이 아니므로 px 로 고정하고, 세로만 % 로 둬 높이에 따라 무늬가 퍼지게 한다.
+     (196px 기준 환산: 4% → 8px · 3% → 6px · 2% → 4px · 5% → 10px) */
+  clip-path: polygon(
+    0 0,
+    100% 4%,
+    calc(100% - 8px) 26%,
+    100% 52%,
+    calc(100% - 6px) 100%,
+    4px 96%,
+    10px 60%,
+    0 28%
+  );
+}
+/* 크라프트 종이 위에서는 잉크가 갈색이어야 읽힌다(PF6 캡션과 같은 값) */
+.viz-figure[data-viz-frame="kraft"] figcaption {
+  margin-top: 10px;
+  color: var(--deco-kraft-ink, #6b5a3e);
+}
+
+/* ── F-D scrapbook — PF3 계보 (도트 종이 판 + 네 귀퉁이 홀더) ─────────────
+ *
+ * 예전의 `corner`(홀더만)를 시안 PF3 대로 판까지 갖춘 것으로 올렸다. 선택 로직이
+ * 도식에 **가장 안전한 액자**로 꼽는 쪽이다 — 홀더는 귀만 물어서 그림 위로
+ * 아무것도 안 내려온다(시안 자신의 설명도 "사진을 하나도 안 가린다"). */
+
+.viz-figure[data-viz-frame="scrapbook"] .viz-frame {
+  padding: 18px 16px;
+  border: 1px solid var(--border);
+  background-color: var(--cream);
+  background-image: radial-gradient(rgba(32, 38, 74, 0.14) 1.4px, transparent 1.5px);
+  background-size: 11px 11px;
+  box-shadow: 0 2px 6px rgba(32, 38, 74, 0.12);
+}
+/* 홀더 넷을 의사요소 둘로는 못 만든다(하나에 하나씩이라 둘뿐이다). 그래서
+   background-image 네 장으로 그린다 — `to bottom right` 로 반을 채우면 좌상 삼각형이
+   되고, 방향을 돌려 나머지 셋을 얻는다. 그림자는 gradient 로 못 주므로 filter 로 준다.
+
+   **티어를 안 준다.** `CornerMount.astro` 원본에도 없다(그건 DecoLayer 를 안 쓰는
+   감싸는 컴포넌트다). 홀더가 사라지면 이 액자는 도트 판만 남아 다른 물건이 된다. 테이프는 판 위에 얹힌 것이라 접혀도
+   판이 남지만 홀더는 그렇지 않다. */
+.viz-figure[data-viz-frame="scrapbook"] .viz-frame-deco {
+  background-image:
+    linear-gradient(to bottom right, rgba(255, 255, 255, 0.88) 0 50%, transparent 50%),
+    linear-gradient(to bottom left, rgba(255, 255, 255, 0.88) 0 50%, transparent 50%),
+    linear-gradient(to top right, rgba(255, 255, 255, 0.88) 0 50%, transparent 50%),
+    linear-gradient(to top left, rgba(255, 255, 255, 0.88) 0 50%, transparent 50%);
+  background-position: top left, top right, bottom left, bottom right;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 1px 2px rgba(32, 38, 74, 0.16));
+}
+
+/* ── F-E quiet — 1px 테두리 + 얕은 그림자. 캡션은 액자 밖 ────────────────── */
+
+.viz-figure[data-viz-frame="quiet"] .viz-frame-inner {
+  padding: 20px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  box-shadow: 0 1px 3px rgba(32, 38, 74, 0.08);
+}
+
+/* ── F-F bare — 테두리 없이 바탕 + 패딩만. 캡션은 액자 밖 ────────────────── */
+
+.viz-figure[data-viz-frame="bare"] .viz-frame-inner {
+  padding: 18px 16px;
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+}
