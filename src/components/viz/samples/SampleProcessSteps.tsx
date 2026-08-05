@@ -9,14 +9,15 @@
  * 액자가 letterbox 를 만드는지는 비율이 고정된 그림만 봐서는 모른다.
  */
 import VizFigure, { type VizFrame } from "../VizFigure";
+import type { VizMarkName } from "../VizMark";
 import ProcessSteps from "../../../lib/viz/ProcessSteps";
 import type { SampleProps } from "./SampleComparison";
 
 const CAPTION = "캡슐화 — 원본 패킷은 payload가 되고, 겉에 새 헤더가 붙는다 (개념 레벨)";
 
-export default function SampleProcessSteps({ frame = "none", caption = true }: SampleProps) {
+export default function SampleProcessSteps({ frame = "none", mark, caption = true }: SampleProps) {
   return (
-    <VizFigure frame={frame} caption={caption ? CAPTION : undefined} label={CAPTION}>
+    <VizFigure frame={frame} mark={mark} caption={caption ? CAPTION : undefined} label={CAPTION}>
       <ProcessSteps
         accessible="img"
         title={"원본 패킷이 암호화되어 새 외부 헤더로 감싸이고 게이트웨이에서 복원되는 네 단계"}

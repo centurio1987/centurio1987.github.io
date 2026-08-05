@@ -1,12 +1,13 @@
 /* ── viz 액자 프레임 (KAN-063) ─────────────────────────────────────────────────
  *
- * 본문 다이어그램(viz)을 감싸는 액자 7종. 그림은 그대로 두고 **바깥 껍데기만** 바꾼다.
+ * 본문 다이어그램(viz)을 감싸는 액자 8종. 그림은 그대로 두고 **바깥 껍데기만** 바꾼다.
  * 부품은 `src/components/viz/VizFigure.tsx` 의 `frame` prop 이 열고, 카탈로그는
  * `/design/viz-frames`(noindex) 다.
  *
- * **본문 도식의 기본값은 `scrapbook` 이다** — 발행된 글 41개가 지금 그걸 입고 있다.
- * 고른 근거는 `VizFigure` 의 `frame` prop 주석에 있다. 나머지 여섯은 그 자리에서
- * 골라 덮는 선택지이고, `none` 은 액자를 끄는 탈출구다.
+ * **본문 도식의 기본값은 `polaroid`(F-A) 다** — 유저가 후보 여덟을 보고 고른 값이고
+ * (`/design/frame-picks`), 발행된 글의 도식 41개가 지금 그걸 입고 있다. 귀퉁이 두들
+ * 마크는 **안 붙인다**(같은 자리에서 함께 고른 것). 나머지 일곱은 그 자리에서 골라
+ * 덮는 선택지이고, `none` 은 액자를 끄는 탈출구다.
  *
  * ── viz.css 에 안 섞는 이유 ──────────────────────────────────────────────────
  * 그쪽은 패키지 CONTRACT_CSS 를 베껴 온 계약 shim 이고 머리글에 "KEEP IN SYNC with
@@ -111,6 +112,108 @@
 /* 캡션이 없으면 아래가 두꺼운 폴라로이드의 물성이 사라진다 — 여백이 대신 진다. */
 .viz-figure[data-viz-frame="polaroid"] .viz-frame:not(:has(figcaption)) {
   padding-bottom: 38px;
+}
+
+/* ── F-H note — 마테 뗀 폴라로이드 + 두들 캡션 (유저 지시) ────────────────
+ *
+ * F-A 에서 **판 위의 마테를 떼고**, 캡션을 인쇄된 설명문이 아니라 **사진 밑에 손으로
+ * 적어 둔 쪽지**로 바꾼 것이다. 메모 왼쪽에서 시작한 화살표가 한 번 말린 뒤 그림 쪽으로
+ * 휘어 오른다(유저 지시). 마크업은 `VizNote.tsx`, 펜은 `Doodle.astro` 원본 그대로다.
+ *
+ * ── 왜 마테를 떼면 캡션을 바꿔야 하나 ──────────────────────────────────────
+ * 폴라로이드는 아래 여백이 두꺼운 게 물성이고 마테가 그 판을 위에서 붙잡는다.
+ * 마테만 떼면 "붙인 데 없이 떠 있는 흰 판"이 되어 액자가 아니라 카드로 읽힌다.
+ * 두들이 그 자리를 대신한다 — 판을 **붙잡는 대신 가리켜서** 같은 손이 지나간 티를
+ * 낸다. 그래서 이 액자에서 캡션은 장식이 아니라 액자의 일부다.
+ *
+ * ── 아래 여백은 F-A 그대로 남긴다 (유저 지시) ─────────────────────────────
+ * 한 번은 캡션을 판 **밖**으로 내보냈다가 되돌렸다. 지시는 "설명 텍스트가
+ * 플로팅이긴 하지만 **대체로 프레임 내부에 포괄**하는 형태" 였다. 그래서 이 파일
+ * 머리글의 규칙대로 액자를 `.viz-frame` 에 그려 캡션을 안에 두고, 폴라로이드의
+ * 두꺼운 아래 여백을 F-A 와 같은 값(16px + 캡션)으로 유지한다.
+ *
+ * ── 화살표는 **그림칸 바깥까지만** 올라온다 (유저 지시) ────────────────────
+ * 한 번은 화살표를 그림 위로 올라타게 뒀다(`margin-top:-48px` → 도식 안 12px).
+ * 지시는 "화살표가 **이미지의 바깥 컨테이너까지만** 침범"이라, 지금은 화살촉이
+ * 그림칸(`.viz-frame-inner`) 아래변에서 **2px 아래**에 선다. 겹침이 아니라
+ * **닿는 것**이라 어떤 도식이 와도 라벨·범례를 못 문다 — 옛 값에서 축 이름이
+ * 오는 자리를 확인하라던 단서가 이걸로 없어졌다.
+ *
+ * 밖으로 나가는 건 여전히 화살표뿐이지만 **판 안에서만** 논다. 판 밖으로는
+ * 아무것도 안 나간다 — `--page-pad` 가 390px 에서 20px 까지 줄어서, 좌우로
+ * 나가면 가로 스크롤이 생긴다(`deco:verify` 가 세 폭에서 잡는 바로 그것).
+ *
+ * ── `viz.css` 의 `.viz-figure svg { width:100% }` 를 반드시 되돌려야 한다 ───
+ * 그 규칙은 **도식 SVG 를 칸 폭에 맞추려고** 있는 것인데 선택자가 `.viz-figure` 안의
+ * 모든 svg 를 잡아서, 63px 로 그린 화살표가 캡션 폭까지 늘어나고 `height:auto` 가
+ * 비율을 지켜 세로도 같이 커진다(실측: 판 하나가 화살표 하나로 가득 찼고 메모는
+ * 남은 폭에 밀려 한 글자씩 세로로 쌓였다). 그림은 늘어나야 하고 두들은 안 늘어나야
+ * 하므로 여기서 크기를 px 로 못 박는다. `viz.css` 는 패키지 계약 shim 이라 못 고친다.
+ */
+
+/* 판·그림칸은 F-A 와 같은 값이다 — 이 액자는 "마테를 뗀 폴라로이드"이지
+   다른 액자가 아니다. 값이 갈리면 둘을 나란히 놓았을 때 판 두께가 어긋난다. */
+.viz-figure[data-viz-frame="note"] .viz-frame {
+  padding: 14px 14px 16px;
+  background: #fffcf6;
+  box-shadow: var(--deco-shadow-lift, 0 5px 9px rgba(32, 38, 74, 0.2));
+}
+.viz-figure[data-viz-frame="note"] .viz-frame-inner {
+  padding: 12px 10px;
+  background-color: var(--cream);
+}
+/* 캡션 줄은 폴라로이드 아래 여백 **안**에 앉는다. 화살표가 왼쪽, 메모가 그 오른쪽에
+   붙는다 — 지시대로 "설명 텍스트 좌측에서 시작"하는 배치이고, 왼쪽으로 몰아야
+   화살표가 판 아래 가운데를 밑줄 치지 않고 그림을 겨눈다. */
+.viz-figure[data-viz-frame="note"] figcaption {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+  text-align: left;
+}
+/* 화살표는 캡션 줄에서 위로 솟되 **그림칸 아래변에서 멈춘다**(유저 지시).
+   -12px 은 눈대중이 아니라 그 벽에서 되뽑은 값이다: 캡션 여백이 8px 이고
+   화살촉 꼭짓점은 상자 위에서 6px(viewBox y=8 × 54/72)이므로
+   `margin-top = -(8 + 6 - 2)` 면 꼭짓점이 그림칸 아래변보다 **2px 아래**에 선다.
+   빼 둔 2px 은 `ink-fine` 몫이다 — `feDisplacementMap scale 1.9` 가 선을
+   ±1.4px 흔들어서, 0 으로 맞추면 흔들린 획이 그림칸을 문다.
+   그래서 화살표가 줄 높이를 54-12=42px 먹고 **판 아래 여백이 그만큼 두꺼워진다**.
+   그게 F-A 의 물성이라 되돌릴 값이 아니다.
+   `z-index` 가 필요한 이유: 그림 쪽 Provider 가 자기 쌓임 맥락을 만들 수 있어서,
+   안 올리면 화살표가 도식 뒤로 들어가는 판이 생긴다.
+   티어 3 이라 강도를 낮추면 화살표만 사라지고 메모는 남는다 — 그림 설명이
+   없어지면 그건 데코가 빠진 게 아니라 정보가 빠진 것이다. */
+.viz-figure[data-viz-frame="note"] .viz-note-arrow {
+  display: var(--deco-t3, block);
+  position: relative;
+  z-index: 2;
+  flex: none;
+  width: 72px;
+  height: 54px;
+  margin-top: -12px;
+  /* feDisplacementMap 이 선을 상자 밖으로 민다 — 안 주면 화살촉이 잘린다 */
+  overflow: visible;
+}
+.viz-figure[data-viz-frame="note"] .viz-note-text {
+  /* 손글씨는 길어지면 못 읽는다 — 두세 줄에서 끊기게 폭을 죈다. */
+  max-width: 34ch;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.3;
+  color: var(--ink-2);
+  /* 손으로 적은 쪽지라 판과 평행하지 않다. 원점을 왼쪽 위에 두는 이유는 오른쪽
+     끝이 회전으로 밖으로 밀려나면 좁은 화면에서 판을 넘기 때문이다. */
+  transform: rotate(-2deg);
+  transform-origin: left top;
+}
+/* 좁은 화면에서도 화살표를 남긴다 — 판 안에만 있어서 접을 사유(가로 스크롤)가
+   없다. 폭만 풀어 메모가 남은 자리를 다 쓰게 한다. */
+@media (max-width: 768px) {
+  .viz-figure[data-viz-frame="note"] .viz-note-text {
+    max-width: none;
+  }
 }
 
 /* ── F-B taped — 모눈 판 + 위 모서리 테이프 두 장 (TapedBoard + Tape.astro) ─ */
@@ -244,8 +347,9 @@
 /* ── F-D scrapbook — PF3 계보 (도트 종이 판 + 네 귀퉁이 홀더) ─────────────
  *
  * 예전의 `corner`(홀더만)를 시안 PF3 대로 판까지 갖춘 것으로 올렸다. 선택 로직이
- * 도식에 **가장 안전한 액자**로 꼽는 쪽이고(홀더는 귀만 물어서 그림 위로 아무것도
- * 안 내려온다), 그래서 **본문 도식의 기본값**이다.
+ * 도식에 **가장 안전한 액자**로 꼽는 쪽이다(홀더는 귀만 물어서 그림 위로 아무것도
+ * 안 내려온다) — 한동안 기본값이었고, **지금 기본값은 F-A `polaroid` 다**(유저 선택).
+ * F-A 도 같은 조건을 만족한다(마테가 판 위에만 걸친다).
  *
  * ── 판은 도트, 담긴 것은 불투명 — 이게 이 액자의 뼈대다 ────────────────────
  * 시안 PF3 은 도트 종이 위에 **사진**을 얹는다. 사진은 불투명해서 도트가 사진 위로
@@ -304,9 +408,9 @@
   filter: drop-shadow(0 1px 2px rgba(32, 38, 74, 0.22));
 }
 
-/* ── F-G crayon — PF7 계보 (크레용 칠 + 잉크 선 이중 테두리 + 별 하나) ─────
+/* ── F-G crayon — PF7 계보 (크레용 칠 + 잉크 선 이중 테두리) ──────────────
  *
- * 여섯 중 **유일하게 CSS 로 안 끝나는** 액자다. 손맛이 `feTurbulence` 필터에서
+ * 여덟 중 **CSS 로 안 끝나는** 액자 둘 중 하나다(다른 하나는 F-H). 손맛이 `feTurbulence` 필터에서
  * 나오는데 SVG filter 정의는 CSS 에 못 적어서, `VizFigure` 가 이 figure 안에
  * `<defs>` 를 심고(`CrayonDefs`) 여기서는 그 id 를 CSS 로 참조만 한다.
  *
@@ -353,36 +457,44 @@
   border-width: 4px;
   border-color: var(--deco-crayon-blue, #2540e8);
 }
-/* 별 하나(티어 3) — PF7 우하단. `Doodle`·`PhotoFrame` 의 `.one-star` 와 같은 폴리곤.
-   여기만 티어를 지는 이유는 이게 액자가 아니라 액자에 **얹은 것**이라서다:
-   사라져도 크레용 테두리는 그대로 남는다. */
-.viz-figure[data-viz-frame="crayon"] .viz-crayon::after {
-  content: "";
+/* 마크 자리(티어 3) — 액자 오른쪽 아래 귀퉁이에 걸친다.
+   여기 있던 **금별 스티커를 두들 마크로 갈아 끼웠다**(유저 지시). 스티커는 붙인
+   종이라 액자와 재질이 겹치는데 — 액자도 종이다 — 마크는 그 위에 손으로 그은
+   자국이라 겹치지 않는다. 그림은 `VizMark` 가 `doodleMarks.ts` 표에서 가져온다.
+
+   **액자를 안 가리자고 밖으로 내밀지 않는다.** 판 밖으로 나가면 좁은 화면에서
+   `--page-pad`(390px 에서 20px)를 넘어 가로 스크롤이 생긴다 — 옛 별이 그래서
+   768px 아래에서 접혔다. 마크는 귀퉁이에 걸치되 절반만 나가고, 그마저도
+   테이프·마테와 같은 문턱에서 접는다.
+
+   티어를 지는 이유: 이건 액자가 아니라 액자에 **얹은 것**이라 사라져도 판은 남는다.
+   본문 마크(`DoodleMark`)가 강도로 안 사라지는 것과 정확히 반대다 — 그쪽은 문장
+   안에서 뜻을 지고, 이쪽은 귀퉁이 장식이다. */
+.viz-figure[data-viz-frame] .viz-mark {
   display: var(--deco-t3, block);
   position: absolute;
-  right: -14px;
-  bottom: -14px;
-  width: 34px;
-  height: 34px;
-  background: var(--deco-pen-gold, #f0c24a);
-  clip-path: polygon(
-    50% 0,
-    61% 35%,
-    98% 35%,
-    68% 57%,
-    79% 95%,
-    50% 71%,
-    21% 95%,
-    32% 57%,
-    2% 35%,
-    39% 35%
-  );
-  filter: drop-shadow(0 2px 3px rgba(32, 38, 74, 0.2));
+  right: -10px;
+  bottom: -10px;
+  z-index: 3;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(32, 38, 74, 0.18));
 }
-/* 좁은 화면에서는 별을 접는다 — 판 밖으로 20px 나가는데 `--page-pad` 는 390px 에서
-   20px 이다(테이프·마테와 같은 사유·같은 문턱). 테두리는 판 안에 있어 남는다. */
+/* 액자마다 마크가 앉는 자리가 다르다 — 판 밖으로 나간 몫(kraft 의 찢긴 변,
+   polaroid 의 아래 여백)만큼 안으로 들인다. 값은 각 액자의 패딩에서 뽑았다. */
+/* F-H 는 "마테를 뗀 폴라로이드"라 아래 여백이 같다 — 마크 자리도 같이 간다.
+   한때 F-H 만 마크를 위로 올렸는데, 그건 캡션이 판 밖에 있던 시절의 값이다.
+   지금은 위로 올리면 마크가 **그림 위**에 앉아 도식의 오른쪽 위를 가린다. */
+.viz-figure[data-viz-frame="polaroid"] .viz-mark,
+.viz-figure[data-viz-frame="note"] .viz-mark {
+  right: 6px;
+  bottom: 6px;
+}
+.viz-figure[data-viz-frame="kraft"] .viz-mark {
+  right: 2px;
+  bottom: 2px;
+}
 @media (max-width: 768px) {
-  .viz-figure[data-viz-frame="crayon"] .viz-crayon::after {
+  .viz-figure[data-viz-frame] .viz-mark {
     display: none;
   }
 }

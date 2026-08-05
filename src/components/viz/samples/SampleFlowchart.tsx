@@ -8,14 +8,15 @@
  * 좌표가 저작 viewBox 에 고정이라, 높이를 되뽑는 둘과 액자가 다르게 앉을 수 있다.
  */
 import VizFigure, { type VizFrame } from "../VizFigure";
+import type { VizMarkName } from "../VizMark";
 import { Flowchart } from "@centurio1987/bbangto-ui-visualization";
 import type { SampleProps } from "./SampleComparison";
 
 const CAPTION = "세 계열과, 각 계열을 해부할 편 — 이 시리즈의 구성";
 
-export default function SampleFlowchart({ frame = "none", caption = true }: SampleProps) {
+export default function SampleFlowchart({ frame = "none", mark, caption = true }: SampleProps) {
   return (
-    <VizFigure frame={frame} caption={caption ? CAPTION : undefined} label={CAPTION}>
+    <VizFigure frame={frame} mark={mark} caption={caption ? CAPTION : undefined} label={CAPTION}>
       <Flowchart
         accessible="img"
         title={"IPsec 계열·WireGuard·TLS-VPN 계열 셋과 각각을 다루는 에피소드 번호"}

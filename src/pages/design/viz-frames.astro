@@ -2,9 +2,9 @@
 /**
  * viz 액자 프레임 — /design/viz-frames  (KAN-063)
  *
- * 본문 다이어그램(viz)을 감싸는 액자 7종을 **실제 그림에 씌워** 그린다. 기본값
- * (`scrapbook`)이 왜 그것인지와 나머지를 언제 덮어쓸지를 고르는 페이지라, 문서가
- * 아니라 화면이 판단 근거다.
+ * 본문 다이어그램(viz)을 감싸는 액자 8종을 **실제 그림에 씌워** 그린다. 기본값
+ * (`polaroid` — 유저 선택)이 왜 그것인지와 나머지를 언제 덮어쓸지를 고르는
+ * 페이지라, 문서가 아니라 화면이 판단 근거다.
  *
  * 부품은 `src/components/viz/VizFigure.tsx` 의 `frame` prop, 그림은
  * `src/styles/viz-frame.css`, 샘플은 `src/components/viz/samples/`.
@@ -31,9 +31,10 @@ interface FrameEntry {
 }
 
 const FRAMES: FrameEntry[] = [
-  { code: "F-D", value: "scrapbook", name: "스크랩북", note: "도트 종이 판 + 네 귀퉁이 홀더 — 그림을 하나도 안 가린다. 본문 도식의 기본값", from: "PF3 코너 마운트 · 스크랩북" },
+  { code: "F-A", value: "polaroid", name: "폴라로이드", note: "흰 판 + 가운데 위 마테 + 손글씨 캡션. 본문 도식의 기본값 — 유저 선택", from: "PF1 폴라로이드 + 마테" },
   { code: "—", value: "none", name: "액자 없음", note: "액자를 끈 그림의 탈출구 — 옛 렌더 그대로" },
-  { code: "F-A", value: "polaroid", name: "폴라로이드", note: "흰 판 + 가운데 위 마테 + 손글씨 캡션", from: "PF1 폴라로이드 + 마테" },
+  { code: "F-D", value: "scrapbook", name: "스크랩북", note: "도트 종이 판 + 네 귀퉁이 홀더 — 그림을 하나도 안 가린다", from: "PF3 코너 마운트 · 스크랩북" },
+  { code: "F-H", value: "note", name: "메모 폴라로이드", note: "마테를 떼고 캡션을 말린 화살표·손글씨 메모 두들로 바꾼 판. 아래 여백은 F-A 그대로", from: "PF1 + D3 화살표 · D6 메모" },
   { code: "F-B", value: "taped", name: "테이프 판", note: "모눈 종이 + 위 모서리 테이프 두 장", from: "P-01 TapedBoard · T1/T3" },
   { code: "F-C", value: "kraft", name: "찢은 크라프트", note: "네 변이 다 찢긴 판 — 오려 붙인 조각", from: "PF6 찢은 크라프트" },
   { code: "F-G", value: "crayon", name: "크레용 테두리", note: "크레용 밑선 + 잉크 선 이중 테두리 + 별 하나. 손맛이 SVG 필터라 이 액자만 마크업이 붙는다", from: "PF7 크레용 테두리" },
@@ -41,12 +42,12 @@ const FRAMES: FrameEntry[] = [
   { code: "F-F", value: "bare", name: "바탕만", note: "테두리 없이 바탕색 + 여백. 현행에서 한 걸음" },
 ];
 
-const DECO_TIERED: VizFrame[] = ["polaroid", "taped", "crayon"];
+const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
 ---
 
 <BaseLayout
   title="viz 액자 프레임"
-  description="본문 다이어그램을 감싸는 액자 7종 카탈로그"
+  description="본문 다이어그램을 감싸는 액자 8종 카탈로그"
   noindex
 >
   <div class="wrap">
@@ -54,15 +55,20 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "taped", "crayon"];
       <p class="kicker">VIZ FRAME · KAN-063</p>
       <h1>viz 액자 프레임</h1>
       <p class="lede">
-        본문 다이어그램을 감싸는 액자 일곱 가지입니다. 그림 자체는 그대로 두고
-        <b>바깥 껍데기만</b> 바뀝니다. 다섯은 데코 키트 부품에서 짜임을 물려받았고
-        (<code>F-A</code>~<code>F-D</code>·<code>F-G</code>), 둘은 읽는 화면 쪽으로
-        차분하게 뺀 선택지입니다(<code>F-E</code>·<code>F-F</code>).
+        본문 다이어그램을 감싸는 액자 여덟 가지입니다. 그림 자체는 그대로 두고
+        <b>바깥 껍데기만</b> 바뀝니다. 여섯은 데코 키트 부품에서 짜임을 물려받았고
+        (<code>F-A</code>~<code>F-D</code>·<code>F-G</code>·<code>F-H</code>), 둘은 읽는
+        화면 쪽으로 차분하게 뺀 선택지입니다(<code>F-E</code>·<code>F-F</code>).
       </p>
       <p class="lede warn">
-        발행된 글 41개는 지금 <b>전부 <code>scrapbook</code></b>을 입고 있습니다 —
-        기본값이라 글마다 지정하지 않습니다. 한 그림만 달리 입히려면 그 자리에서
+        발행된 글의 도식 41개는 지금 <b>전부 <code>polaroid</code>(F-A)</b>를 입고
+        있습니다 — 후보 여덟을 보고 고른 값이고, 기본값이라 글마다 지정하지 않습니다.
+        <b>귀퉁이 두들 마크는 안 붙입니다</b>(같은 자리에서 함께 고른 것).
+        한 그림만 달리 입히려면 그 자리에서
         <code>frame="…"</code>으로 덮습니다(<code>"none"</code> 포함).
+        <b>고르는 자리는 여기가 아니라 <a href="/design/frame-picks">/design/frame-picks</a>입니다</b> —
+        이 페이지는 무늬를 비교하는 카탈로그이고, 그쪽은 같은 액자를 실제 글의 문단
+        사이에 놓습니다.
       </p>
     </header>
 

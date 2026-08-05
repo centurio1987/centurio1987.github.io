@@ -19,16 +19,19 @@ import {
   type VisualizationStyleGuide,
 } from "@centurio1987/bbangto-ui-visualization";
 import { blogVizStyleGuide } from "../../lib/viz/blogVizStyleGuide";
+import VizMark, { HandFilters, type VizMarkName } from "./VizMark";
+import VizNote from "./VizNote";
 
 /**
  * 그림을 감싸는 액자(KAN-063). 그림 자체는 그대로 두고 **바깥 껍데기만** 바꾼다.
  *
  *   none       액자 없음 — 액자를 끈 그림의 탈출구(옛 렌더 그대로)
- *   scrapbook  F-D 도트 종이 판 + 네 귀퉁이 홀더        ← **본문 도식의 기본값**
- *   polaroid   F-A 흰 판 + 가운데 위 마테 + 손글씨 캡션
+ *   polaroid   F-A 흰 판 + 가운데 위 마테 + 손글씨 캡션  ← **본문 도식의 기본값**
+ *   scrapbook  F-D 도트 종이 판 + 네 귀퉁이 홀더
+ *   note       F-H 마테 뗀 흰 판 + 캡션을 곡선 화살표·손글씨 메모 두들로
  *   taped      F-B 모눈 판 + 위 모서리 테이프 두 장
  *   kraft      F-C 네 변이 찢긴 크라프트 판
- *   crayon     F-G 크레용 칠 + 잉크 선 이중 테두리 + 별 하나
+ *   crayon     F-G 크레용 칠 + 잉크 선 이중 테두리
  *   quiet      F-E 1px 테두리 + 얕은 그림자
  *   bare       F-F 테두리 없이 바탕색 + 패딩만
  *
@@ -41,64 +44,19 @@ import { blogVizStyleGuide } from "../../lib/viz/blogVizStyleGuide";
  * **여섯 종은 CSS(`src/styles/viz-frame.css`)가 다 그린다.** 데코 부품은 전부
  * `.astro` 라 React 트리에 못 들어가지만 Tape/CornerMount/Polaroid/PaperSurface 가
  * 죄다 순수 CSS(gradient + clip-path)라 무늬를 옮겨 적을 수 있었다. **일곱째
- * `crayon` 만 예외**로 마크업이 더 붙는다 — 아래 `CrayonDefs` 주석.
+ * `crayon` 만 예외**로 마크업이 더 붙는다(SVG 필터 정의는 CSS 에 못 적는다 —
+ * `HandFilters` 주석). 액자 위에 얹는 두들 마크도 같은 이유로 마크업이다.
  */
 export type VizFrame =
   | "none"
   | "polaroid"
+  | "note"
   | "taped"
   | "scrapbook"
   | "kraft"
   | "crayon"
   | "quiet"
   | "bare";
-
-/**
- * F-G crayon 전용 — 손맛 필터 둘(`crayon` 칠 · `ink` 두른 선)을 이 figure 안에 심는다.
- * 값은 `src/components/deco/CrayonFilters.astro` 에서 그대로 가져왔다(같은 손이어야 한다).
- *
- * **이 액자만 CSS 로 안 끝나는 이유가 여기 있다.** SVG `filter` 정의는 CSS 에 못 적고
- * 문서 어딘가에 실물로 있어야 한다 — 다른 다섯 종이 gradient·clip-path 라 전부
- * `viz-frame.css` 에서 끝나는 것과 갈리는 지점이다.
- *
- * **필터를 SVG 안이 아니라 CSS 로 건다.** `feDisplacementMap` 의 `scale` 은 걸리는
- * 요소의 좌표계 단위인데, SVG `<svg preserveAspectRatio="none">` 로 테두리를 그리면
- * 그 단위가 viewBox 라 액자가 넓어질수록 흔들림이 함께 늘어난다(196 기준으로 그린 것을
- * 688px 에 펴면 가로 흔들림이 5.5 → 19px 이 되어 크레용이 아니라 번진 물감이 된다).
- * CSS `filter` 의 좌표계는 **CSS px** 이라 액자 크기와 무관하게 결이 일정하다 —
- * 데코 키트가 두들 D1·D2 를 HTML+CSS filter 로 남겨 둔 것과 같은 판단이다.
- *
- * id 는 `useId()` 로 인스턴스마다 가른다. 한 페이지에 도식이 여럿 올 때 같은 id 가
- * 겹치면 그 자체로 무효 문서이고, 나중에 정의를 갈랐을 때 어느 게 이길지도 안 정해진다.
- * (콜론은 `url(#…)` 안에서 안전하지만 굳이 남길 이유가 없어 털어 낸다.)
- */
-function CrayonDefs({ id }: { id: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      width="0"
-      height="0"
-      style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}
-    >
-      <defs>
-        <filter id={`${id}-crayon`} x="-25%" y="-25%" width="150%" height="150%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves={4} seed={5} result="ed" />
-          <feDisplacementMap in="SourceGraphic" in2="ed" scale={5.5} xChannelSelector="R" yChannelSelector="G" result="wob" />
-          <feTurbulence type="fractalNoise" baseFrequency="0.14 0.2" numOctaves={5} seed={17} result="blot" />
-          <feColorMatrix in="blot" type="luminanceToAlpha" result="lum" />
-          <feComponentTransfer in="lum" result="patch">
-            <feFuncA type="table" tableValues="1 1 0.86 0.34 0.72 0.2" />
-          </feComponentTransfer>
-          <feComposite in="wob" in2="patch" operator="in" />
-        </filter>
-        <filter id={`${id}-ink`} x="-20%" y="-20%" width="140%" height="140%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.06 0.05" numOctaves={4} seed={11} result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale={3.4} xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-    </svg>
-  );
-}
 
 export interface VizFigureProps {
   /** 그림 아래 캡션(선택). */
@@ -110,23 +68,44 @@ export interface VizFigureProps {
   /** 다중 preset 스타일 가이드일 때 활성 preset key. */
   foundationKey?: string;
   /**
-   * 액자. 기본은 `scrapbook` — **본문 도식의 기본값을 여기 한 줄로 정한다.**
+   * 액자. 기본은 `polaroid` (F-A) — **본문 도식의 기본값을 여기 한 줄로 정한다.**
    *
    * `src/components/posts/<slug>/*.tsx` 39개는 `scripts/apply-viz.ts` 가 자동
    * 생성한 파일이라, 거기에 `frame=` 을 박으면 다음 재생성에서 조용히 지워진다.
    * 그래서 파일을 40개 고치지 않고 **기본값 하나**로 41개 도식에 액자를 씌운다.
    *
-   * `scrapbook` 을 고른 근거 둘:
-   *   ① 선택 로직(`photoFrames.ts`)이 조용한 순으로 꼽는 PF3 계보다. 홀더가 귀만
-   *      물어 그림 위로 아무것도 안 내려오므로 축 이름·범례를 가릴 수가 없다.
-   *   ② 글 상세에는 이미 인용·코드블록이 **테이프 판**을 입고 있다. 도식까지
-   *      테이프를 두르면 반복 요소 셋이 같은 물성이 되어 테이프가 벽지가 된다
-   *      (`PostLayout` 이 `.taped-quote ~ .taped-quote` 로 이미 막아 둔 실패다).
-   *      도트 종이 + 코너 홀더는 같은 손이되 다른 물성이다.
+   * **F-A 는 유저가 후보 여덟을 보고 고른 값이다**(`/design/frame-picks`).
+   * 그 판단을 뒤집는 근거가 새로 나오기 전에는 바꾸지 않는다. 그림을 안 가리는
+   * 액자라는 조건은 F-A 도 만족한다 — 마테가 판 **위**에만 걸치고 그림 위로는
+   * 안 내려오며(`viz-frame.css` 의 polaroid 절), 768px 아래에서는 그 마테가 접힌다.
+   *
+   * 한때 기본값이 `scrapbook` 이었고 사유 둘 중 하나가 "인용·코드블록이 이미
+   * **테이프 판**을 입고 있어 도식까지 테이프면 벽지가 된다" 였는데, **그 사유는
+   * 지금 없다** — 인용·코드는 테이프를 떼고 두들 마크로 갈아탔다(`MarkedQuote` ·
+   * `MarkedCode`, `DECO_KIT.md` 규칙 11). F-A 는 애초에 테이프 액자도 아니다.
+   *
+   * 알고 고른 대가 하나: **흰 판(#fffcf6)이 종이색보다 밝아 본문에서 눈에 띈다**
+   * (`/design/frame-picks` 의 F-A 단점 줄). 캡션 없는 그림에서 아래가 비는 쪽은
+   * `:not(:has(figcaption))` 이 아래 여백으로 메운다.
    *
    * 한 그림만 달리 입히려면 그 자리에서 `frame="…"` 으로 덮는다(`"none"` 포함).
    */
   frame?: VizFrame;
+  /**
+   * 액자 귀퉁이에 얹는 두들 마크. 기본은 없음 — **유저가 안 붙이기로 골랐다**
+   * (액자 F-A 를 고른 자리에서 "두들마크는 안 붙여도 된다"). 그래서 발행된
+   * 도식 41개에는 마크가 없다. 부품은 남겨 둔다 — 한 그림만 표시하고 싶을 때
+   * 그 자리에서 `mark="…"` 로 켤 수 있게(`/design/frame-picks` 의 마크 후보 넷).
+   *
+   * **스티커 자리를 대신한다** — 크레용 액자에 있던 금별이 여기로 옮겨 왔다.
+   * 스티커는 붙인 종이라 액자와 재질이 겹치는데(액자도 종이다) 마크는 그 위에
+   * 손으로 그은 자국이라 겹치지 않는다.
+   *
+   * 자리·크기·티어는 액자마다 `viz-frame.css` 가 정한다(`--vzm`). 마크는 장식이라
+   * 티어 3 을 지고 좁은 화면에서 접힌다 — 본문 마크(`DoodleMark`)가 뜻을 져서
+   * 강도로 사라지지 않는 것과 반대다.
+   */
+  mark?: VizMarkName;
   className?: string;
   children: ReactNode;
 }
@@ -136,7 +115,8 @@ export default function VizFigure({
   label,
   styleGuide = blogVizStyleGuide,
   foundationKey,
-  frame = "scrapbook",
+  frame = "polaroid",
+  mark,
   className,
   children,
 }: VizFigureProps) {
@@ -149,7 +129,14 @@ export default function VizFigure({
       {children}
     </VisualizationStyleGuideProvider>
   );
-  const figcaption = caption ? <figcaption>{caption}</figcaption> : null;
+  /**
+   * F-H `note` 만 캡션의 **마크업**이 다르다 — 나머지 액자는 글씨체·자리만 CSS 로
+   * 바꾸는데, 여기서는 캡션 옆에 화살표 두들이 하나 더 서고 글씨에 손맛 필터가
+   * 걸린다(SVG 필터 정의는 CSS 에 못 적는다 — `HandFilters` 주석).
+   */
+  const figcaption = caption ? (
+    <figcaption>{frame === "note" ? <VizNote>{caption}</VizNote> : caption}</figcaption>
+  ) : null;
 
   /**
    * 액자가 없으면 **DOM 을 한 글자도 바꾸지 않는다.**
@@ -186,15 +173,18 @@ export default function VizFigure({
           죽어서, 링크나 툴팁이 든 그림이 하나 들어오는 순간 조용히 먹힌다. */}
       <span className="viz-frame-deco" aria-hidden="true" />
       {/* F-G crayon 만 마크업이 더 붙는다 — 필터 정의를 CSS 에 못 적기 때문이다
-          (위 CrayonDefs 주석). 두 겹을 형제로 두는 이유는 부모에 filter 를 걸면
+          (`HandFilters` 주석). 두 겹을 형제로 두는 이유는 부모에 filter 를 걸면
           자식이 그 필터를 한 번 더 뒤집어써서 결이 두 번 겹치기 때문이다. */}
       {frame === "crayon" && (
         <span className="viz-crayon" aria-hidden="true">
-          <CrayonDefs id={crayonId} />
+          <HandFilters id={crayonId} kinds={["crayon", "ink"]} />
           <span className="cy-fill" style={{ filter: `url(#${crayonId}-crayon)` }} />
           <span className="cy-line" style={{ filter: `url(#${crayonId}-ink)` }} />
         </span>
       )}
+      {/* 마크는 `.viz-frame-deco` 안이 아니라 형제로 둔다 — 그쪽은 액자마다
+          의사요소 둘을 이미 테이프·홀더로 쓰고 있어 자리가 없다. */}
+      {mark && <VizMark name={mark} />}
     </figure>
   );
 }

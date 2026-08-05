@@ -1,0 +1,497 @@
+---
+/**
+ * 액자 고르기 — /design/frame-picks
+ *
+ * `/design/viz-frames` 와 무엇이 다른가: 저쪽은 액자 **부품 카탈로그**라 넓은 칸에
+ * 그림만 놓고 무늬를 비교한다. 이 페이지는 **고르는 자리**다 — 같은 액자를 실제 글의
+ * 문단 사이에, 실제 본문 폭에, 실제 종이색 위에 놓는다. 액자는 그림 하나로 판단할
+ * 수 없다: 위아래 문단과의 간격, 종이 위에서의 대비, 글 하나에 여러 번 나올 때의
+ * 반복감이 실제로 고르는 근거인데 카탈로그 칸에서는 그 셋이 다 안 보인다.
+ *
+ * (스크랩북을 41개에 씌우고 나서야 도트가 캡션 뒤로 지나가고 홀더가 판 모서리를
+ * 자른 것처럼 보이던 것도 카탈로그에서는 안 보였다 — 그게 이 페이지가 생긴 이유다.)
+ *
+ * 고를 것은 둘이었다. **액자 하나**와, 그 귀퉁이에 얹을 **두들 마크 하나**(또는 없음).
+ * 마크는 원래 스티커 자리였고 유저 지시로 갈아 끼웠다 — `VizMark`.
+ *
+ * **결정: 액자는 F-A `polaroid`, 마크는 없음**(유저 선택). `VizFigure` 의 기본값에
+ * 박혀 있고 여기 후보 칸은 **지우지 않고 남긴다** — 다음에 바꿀 일이 생겼을 때
+ * 같은 조건(같은 문단·같은 폭·같은 종이색)에서 다시 비교할 자리가 없으면, 이 페이지가
+ * 생긴 이유가 그대로 되풀이된다.
+ *
+ * 본문 조판은 `PostLayout` 의 `.prose` 값을 그대로 베껴 왔다(18px/1.8 · h3 20px/700 ·
+ * 문단 16px · `--measure`). 여기서 갈리면 이 페이지에서 고른 것이 글에서 달라 보인다.
+ *
+ * 독자용이 아니라 noindex + 사이트맵 제외(astro.config.mjs 가 /design/* 를 뺀다).
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SampleComparison from "../../components/viz/samples/SampleComparison";
+import SampleProcessSteps from "../../components/viz/samples/SampleProcessSteps";
+import type { VizFrame } from "../../components/viz/VizFigure";
+import { VIZ_MARK_NAMES, type VizMarkName } from "../../components/viz/VizMark";
+import { DOODLE_MARKS } from "../../lib/doodleMarks";
+import "../../styles/deco.css";
+
+interface Cand {
+  code: string;
+  value: VizFrame;
+  name: string;
+  /** 이 액자를 고를 이유 한 줄 */
+  pro: string;
+  /** 이 액자를 안 고를 이유 한 줄 — 없으면 안 고를 이유가 없다는 뜻이 아니라 못 찾았다는 뜻 */
+  con: string;
+  from?: string;
+  current?: boolean;
+}
+
+/** 지금 화면에 나가 있는 것을 맨 위에 두되, 「현재」라고 밝히고 나머지와 같은 조건에서 그린다. */
+const CANDS: Cand[] = [
+  {
+    code: "F-A",
+    value: "polaroid",
+    name: "폴라로이드",
+    from: "PF1 폴라로이드",
+    current: true,
+    pro: "캡션이 액자 구조의 일부라 그림과 설명이 한 덩어리로 읽힌다",
+    con: "흰 판이 종이색보다 밝아 본문에서 튄다 — 알고 고른 대가다. 캡션 없는 그림에서는 아래가 비어 여백으로 메운다",
+  },
+  {
+    code: "F-D",
+    value: "scrapbook",
+    name: "스크랩북",
+    from: "PF3 코너 마운트",
+    pro: "홀더가 귀만 물어서 축 이름·범례를 가릴 수가 없다. 그림이 무엇이든 안전하다",
+    con: "도트 종이가 한 글에 다섯 번 나오면 무늬가 눈에 먼저 들어온다",
+  },
+  {
+    code: "F-E",
+    value: "quiet",
+    name: "조용한 액자",
+    pro: "그림을 판에 얹은 티만 내고 물러선다. 여러 번 반복돼도 안 질린다",
+    con: "데코 키트의 손맛이 없다 — 이 블로그가 아니라 아무 블로그처럼 보인다",
+  },
+  {
+    code: "F-F",
+    value: "bare",
+    name: "바탕만",
+    pro: "종이색 한 단 차이로만 그림 자리를 표시한다. 가장 조용하다",
+    con: "테두리가 없어 그림과 본문의 경계가 흐리다. 액자를 씌운 값이 거의 없다",
+  },
+  {
+    code: "F-B",
+    value: "taped",
+    name: "테이프 판",
+    from: "P-01 TapedBoard",
+    pro: "모눈 판이 도식과 결이 맞는다 — 그림 그리는 종이다",
+    con: "모눈이 도식 안 격자·축과 결이 겹친다 — 판의 무늬인지 그림의 눈금인지 한 박자 헷갈린다",
+  },
+  {
+    code: "F-H",
+    value: "note",
+    name: "메모 폴라로이드",
+    from: "PF1 + D3 화살표 · D6 메모",
+    pro: "그림 설명이 인쇄된 캡션이 아니라 사진 밑에 적어 둔 쪽지가 된다. 말린 화살표가 그림칸 아래변까지 올라와 판과 설명이 한 손으로 이어진다 — 닿기만 하고 덮지 않으므로 어떤 도식이 와도 라벨을 안 문다",
+    con: "손글씨라 긴 캡션이 안 들어간다(세 줄이 한계). 화살표가 판 안에서만 놀아야 해서 아래 여백이 F-A 보다 두껍다 — 그림이 작은 도식에서는 판이 아래로 길어 보인다",
+  },
+  {
+    code: "F-C",
+    value: "kraft",
+    name: "찢은 크라프트",
+    from: "PF6 찢은 크라프트",
+    pro: "오려 붙인 조각으로 읽혀서, 그림이 본문에 인용된 것처럼 보인다",
+    con: "크라프트 갈색이 팔레트에서 가장 강한 색이다. 그림 색과 다툰다",
+  },
+  {
+    code: "F-G",
+    value: "crayon",
+    name: "크레용 테두리",
+    from: "PF7 크레용 테두리",
+    pro: "손으로 두른 선이라 데코 키트의 손맛이 가장 세게 남는다",
+    con: "테두리가 굵고 채도가 높다. 그림 안 선들과 굵기가 겹친다",
+  },
+  {
+    code: "—",
+    value: "none",
+    name: "액자 없음",
+    pro: "액자 작업 전 상태. 그림이 종이 위에 맨몸으로 앉는다",
+    con: "인용·코드는 판을 입었는데 그림만 그 언어 밖에 남는다",
+  },
+];
+
+/** 마크 후보 — 유저가 지정한 넷. */
+const MARKS: { name: VizMarkName; label: string; note: string }[] = [
+  { name: "heart", label: DOODLE_MARKS.heart.label, note: "크레용 칠 + 잉크 선. 넷 중 가장 크고 색이 세다" },
+  { name: "heart-outline", label: DOODLE_MARKS["heart-outline"].label, note: "가는 펜 선만. 같은 그림의 조용한 판" },
+  { name: "check", label: DOODLE_MARKS.check.label, note: "민트 한 획. 「확인했다」로 읽힌다" },
+  { name: "check-double", label: DOODLE_MARKS["check-double"].label, note: "코발트 두 획. 체크보다 한 뼘 수다스럽다" },
+];
+
+/** 실제 글에서 그대로 가져온 문단(vpn-anatomy-1). 지어낸 문장으로는 간격 판단이 안 선다. */
+const P1 =
+  "공격 기법을 분류하는 MITRE ATT&CK의 T1572(Protocol Tunneling) 항목은 이 경계를 아주 깔끔하게 적어 두었습니다. 프로토콜 터널링은 “한 프로토콜을 다른 프로토콜 안에 명시적으로 캡슐화하는 것”이며, 단순 프록시와 다른 점은 “프록시는 대체로 트래픽을 그대로 전달하는 반면 터널링은 프로토콜 전체를 감싼다”는 것입니다.";
+const P2 =
+  "감싸는가, 그대로 넘기는가 — 이것이 첫 번째 갈림길입니다. 그러니 “프록시는 암호화를 안 한다”보다 “암호화는 프록시라는 개념의 본질이 아니고, 적용 단위가 애플리케이션이다”라고 기억하시는 편이 오래 맞습니다.";
+---
+
+<BaseLayout
+  title="액자 고르기"
+  description="본문 도식 액자 8종을 실제 글 맥락에 놓고 고르는 시안"
+  noindex
+>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">FRAME PICK · KAN-063</p>
+      <h1>액자 고르기</h1>
+      <p class="lede">
+        본문 도식에 씌울 <b>액자 하나</b>와, 그 귀퉁이에 얹을 <b>두들 마크 하나</b>를
+        고르는 자리입니다. 아래 칸은 전부 <b>실제 글의 문단 사이</b>에, 실제 본문 폭
+        (<code>720px</code>)에, 실제 종이색 위에 놓았습니다 — 액자는 그림 하나만 보고는
+        고를 수 없습니다. 위아래 문단과의 간격, 종이 위에서의 대비, 한 글에 여러 번
+        나올 때의 반복감이 실제로 고르는 근거입니다.
+      </p>
+      <p class="lede warn">
+        <b>고른 것은 <code>polaroid</code>(F-A, 맨 위)이고 두들 마크는 안 붙입니다.</b>
+        발행 글의 도식 41개가 지금 그걸 입고 있습니다 — <code>VizFigure</code> 의
+        기본값 한 줄로 씌웠고, 글 파일은 40개 다 자동 생성물이라 손대지 않았습니다.
+        아래 칸은 <b>고른 뒤에도 남겨 둡니다</b> — 다음에 바꿀 일이 생기면 같은
+        조건에서 다시 비교할 자리가 있어야 합니다. 카탈로그(무늬만 비교)는
+        <a href="/design/viz-frames">/design/viz-frames</a>에 그대로 있습니다.
+      </p>
+    </header>
+
+    <!-- ══ 01 액자 여덟 — 마크 없이 액자만 ══ -->
+    <h2 class="sec">
+      <span class="no">01</span> 액자 후보
+      <small>마크는 빼고 액자만 봅니다 — 축을 하나씩 고릅니다</small>
+    </h2>
+    {
+      CANDS.map((c) => (
+        <section class="pick">
+          <p class="pick-head">
+            <span class="code">{c.code}</span>
+            <b>{c.name}</b>
+            {c.from && <span class="from">{c.from}</span>}
+            {c.current && <span class="now">선택 · 현재</span>}
+          </p>
+          <div class="page">
+            <div class="body">
+              <h3>프록시와 터널은 어디서 갈라지는가</h3>
+              <p>{P1}</p>
+              <SampleComparison frame={c.value} />
+              <p>{P2}</p>
+            </div>
+          </div>
+          <dl class="why">
+            <div><dt>고를 이유</dt><dd>{c.pro}</dd></div>
+            <div><dt>안 고를 이유</dt><dd>{c.con}</dd></div>
+          </dl>
+        </section>
+      ))
+    }
+
+    <!-- ══ 02 한 글에 두 번 ══ -->
+    <h2 class="sec">
+      <span class="no">02</span> 한 글에 두 번
+      <small>반복감 — 이게 카탈로그에서 안 보이는 것입니다</small>
+    </h2>
+    <p class="note-p">
+      실제 글에는 도식이 여러 개 들어갑니다(<code>vpn-anatomy-4</code> 는 한 편에 넷).
+      액자가 한 번 볼 때 예뻐도 두 번째부터 무늬로 읽히면 그건 액자가 아니라 배경입니다.
+      비율이 다른 그림 둘을 연달아 놓습니다.
+    </p>
+    {
+      CANDS.filter((c) => c.value !== "none").map((c) => (
+        <section class="pick">
+          <p class="pick-head">
+            <span class="code">{c.code}</span> <b>{c.name}</b>
+          </p>
+          <div class="page">
+            <div class="body">
+              <p>{P1}</p>
+              <SampleComparison frame={c.value} />
+              <p>{P2}</p>
+              <SampleProcessSteps frame={c.value} />
+              <p>{P2}</p>
+            </div>
+          </div>
+        </section>
+      ))
+    }
+
+    <!-- ══ 03 마크 넷 ══ -->
+    <h2 class="sec">
+      <span class="no">03</span> 마크 후보
+      <small>액자는 고른 값(F-A)으로 고정하고 마크만 바꿉니다</small>
+    </h2>
+    <p class="note-p">
+      원래 크레용 액자 귀퉁이에 <b>금별 스티커</b>가 있었는데 두들 마크로 갈아 끼웠습니다.
+      스티커는 “붙인 종이”라 액자와 재질이 겹치는데(액자도 종이입니다) 마크는 그 위에
+      손으로 그은 자국이라 겹치지 않습니다. 그림·색·기울기는 본문 마크와 같은 표
+      (<code>doodleMarks.ts</code>)에서 옵니다 — 같은 손이어야 하기 때문입니다.
+      <b>고른 것은 「없음」입니다</b>(맨 왼쪽). 나머지 넷은 한 그림만 표시하고 싶을 때
+      그 자리에서 <code>mark="…"</code>로 켜는 선택지로 남습니다.
+    </p>
+    <div class="marks">
+      <section class="mcell">
+        <p class="mhead"><b>없음</b></p>
+        <SampleComparison frame="polaroid" />
+        <p class="mnote">귀퉁이가 비어 있는 상태</p>
+      </section>
+      {
+        MARKS.map((m) => (
+          <section class="mcell">
+            <p class="mhead">
+              <b>{m.label}</b> <code>{m.name}</code>
+            </p>
+            <SampleComparison frame="polaroid" mark={m.name} />
+            <p class="mnote">{m.note}</p>
+          </section>
+        ))
+      }
+    </div>
+
+    <!-- ══ 04 마크 × 액자 ══ -->
+    <h2 class="sec">
+      <span class="no">04</span> 마크 × 액자
+      <small>마크가 액자마다 다르게 앉습니다 — 판 색과 귀퉁이 모양이 달라서입니다</small>
+    </h2>
+    <div class="matrix">
+      {
+        CANDS.filter((c) => c.value !== "none").map((c) => (
+          <section class="mrow">
+            <p class="pick-head">
+              <span class="code">{c.code}</span> <b>{c.name}</b>
+            </p>
+            <div class="mrow-grid">
+              {VIZ_MARK_NAMES.map((n) => (
+                <div class="mcellsm">
+                  <SampleComparison frame={c.value} mark={n} caption={false} />
+                  <p class="mnote">{DOODLE_MARKS[n].label}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+
+    <!-- ══ 05 강도 ══ -->
+    <h2 class="sec">
+      <span class="no">05</span> 강도에서 접히는 것
+      <small>판은 남고 얹은 것만 사라집니다</small>
+    </h2>
+    <p class="note-p">
+      글 상세는 <code>data-deco="3"</code> 입니다. 마크는 티어 3 이라 강도 2 이하에서
+      사라지고, 판·패딩·테두리는 항상 남습니다 — 패딩이 설정에 따라 사라지면 그건
+      데코가 아니라 레이아웃이 흔들리는 것입니다. 마크는 <b>768px 아래에서도</b>
+      접힙니다(판 밖으로 나간 몫이 좁은 화면 여백을 넘습니다).
+    </p>
+    <div class="tiers">
+      {
+        [2, 3, 4].map((t) => (
+          <section class="tcell" data-deco={String(t)}>
+            <p class="mhead"><b>강도 {t}</b></p>
+            <SampleComparison frame="polaroid" mark="check" caption={false} />
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 var(--page-pad) 96px;
+  }
+  .page-head {
+    margin: 8px 0 40px;
+  }
+  .kicker {
+    margin: 0 0 6px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+  }
+  h1 {
+    margin: 0 0 14px;
+    font-size: clamp(28px, 5vw, 38px);
+  }
+  .lede {
+    max-width: 68ch;
+    margin: 0 0 10px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--ink-2);
+  }
+  .lede.warn {
+    padding: 12px 14px;
+    border-left: 3px solid var(--deco-pink, #d98da6);
+    background: var(--surface);
+  }
+  .sec {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 56px 0 10px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-size: 22px;
+  }
+  .sec .no {
+    font-size: 13px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+  }
+  .sec small {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+  .note-p {
+    max-width: 68ch;
+    margin: 0 0 20px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+
+  .pick {
+    margin: 0 0 34px;
+  }
+  .pick-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 0 0 8px;
+    font-size: 15px;
+  }
+  .code {
+    padding: 1px 6px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .from {
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+  .now {
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--deco-pen-mint, #4fae94);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* 실제 지면 재현 — 종이색 위 720px 칸에 PostLayout 의 .prose 값을 그대로 쓴다. */
+  .page {
+    padding: 26px var(--page-pad, 24px);
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 8px);
+  }
+  .body {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--ink);
+    overflow-wrap: break-word;
+  }
+  .body > * {
+    max-width: var(--measure);
+  }
+  .body h3 {
+    margin: 0 0 10px;
+    font-family: var(--font-body);
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .body p {
+    margin: 16px 0;
+  }
+
+  .why {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 18px;
+    margin: 10px 0 0;
+    font-size: 14px;
+  }
+  .why dt {
+    margin: 0 0 2px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-3);
+  }
+  .why dd {
+    margin: 0;
+    color: var(--ink-2);
+    line-height: 1.6;
+  }
+
+  .marks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+  }
+  .mcell {
+    padding: 16px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 8px);
+  }
+  .mhead {
+    margin: 0 0 10px;
+    font-size: 14px;
+  }
+  .mhead code {
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .mnote {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ink-3);
+  }
+
+  .matrix {
+    display: grid;
+    gap: 26px;
+  }
+  .mrow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 16px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 8px);
+  }
+
+  .tiers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+  }
+  .tcell {
+    padding: 16px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 8px);
+  }
+
+  @media (max-width: 700px) {
+    .why {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -484,12 +484,17 @@ export const VIZ_FRAME_LINEAGE: {
   why: string;
 }[] = [
   { frame: "polaroid", from: "PF1", why: "테이프가 판 위에만 있어 그림을 안 덮는다" },
+  {
+    frame: "note",
+    from: "PF1 + D3·D6",
+    why: "폴라로이드에서 마테를 떼고 캡션을 말린 화살표·손글씨 메모 두들로 바꾼 것. 판을 붙잡는 대신 가리켜서 같은 손이 지나간 티를 낸다(유저 지시). 아래 여백은 F-A 그대로 두고 화살표만 그림 위로 올라탄다",
+  },
   { frame: "scrapbook", from: "PF3", why: "코너 마운트는 귀만 문다 — 도식에 가장 안전" },
   { frame: "kraft", from: "PF6", why: "찢긴 변이 여백에만 있다" },
   {
     frame: "crayon",
     from: "PF7",
-    why: "테두리가 판 가장자리에만 있다 — 다만 손맛이 SVG 필터라 이 액자만 마크업이 더 붙는다",
+    why: "테두리가 판 가장자리에만 있다 — 다만 손맛이 SVG 필터라 이 액자만 마크업이 더 붙는다. PF7 의 금별 스티커는 두들 마크로 갈아 끼웠다(액자 공통)",
   },
   { frame: "taped", from: "TapedBoard", why: "시안 PF 가 아니라 이 저장소 패턴 계보" },
   { frame: "quiet", from: "—", why: "대응 시안 없음. 액자가 거의 없는 선택지" },

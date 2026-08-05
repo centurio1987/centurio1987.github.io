@@ -10,19 +10,22 @@
  * 넘긴다. 그래서 카탈로그 전용으로 `frame` 을 받아 넘기는 껍데기를 따로 둔다.
  */
 import VizFigure, { type VizFrame } from "../VizFigure";
+import type { VizMarkName } from "../VizMark";
 import Comparison from "../../../lib/viz/Comparison";
 
 export interface SampleProps {
   frame?: VizFrame;
+  /** 액자 귀퉁이에 얹는 두들 마크(스티커 자리). */
+  mark?: VizMarkName;
   /** 캡션 없는 상태도 카탈로그에서 봐야 한다(폴라로이드는 캡션이 액자 구조의 일부다). */
   caption?: boolean;
 }
 
 const CAPTION = '같은 "IP가 바뀐다", 다른 적용 범위';
 
-export default function SampleComparison({ frame = "none", caption = true }: SampleProps) {
+export default function SampleComparison({ frame = "none", mark, caption = true }: SampleProps) {
   return (
-    <VizFigure frame={frame} caption={caption ? CAPTION : undefined} label={CAPTION}>
+    <VizFigure frame={frame} mark={mark} caption={caption ? CAPTION : undefined} label={CAPTION}>
       <Comparison
         accessible="img"
         title={"프록시는 설정한 애플리케이션만, VPN은 인터페이스 전체를 덮는다"}
