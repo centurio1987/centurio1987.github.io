@@ -13,7 +13,7 @@
  * 렌더는 기본적으로 client directive 없이 SSR 정적 SVG 로 나간다. 색 바인딩은
  * src/styles/viz.css(전역 shim)가 담당한다.
  */
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import {
   VisualizationStyleGuideProvider,
   type VisualizationStyleGuide,
@@ -21,27 +21,27 @@ import {
 import { blogVizStyleGuide } from "../../lib/viz/blogVizStyleGuide";
 
 /**
- * 그림을 감싸는 액자(KAN-063 후보). 그림 자체는 그대로 두고 **바깥 껍데기만** 바꾼다.
+ * 그림을 감싸는 액자(KAN-063). 그림 자체는 그대로 두고 **바깥 껍데기만** 바꾼다.
  *
- *   none      액자 없음(기본) — 지금 발행된 글 전부가 이 값이다
- *   polaroid  F-A 흰 판 + 아래 여백 큰 손글씨 캡션      (Polaroid.astro)
- *   taped     F-B 모눈 판 + 위 모서리 테이프 두 장      (TapedBoard + Tape.astro)
- *   board     F-C 종이 판만                            (PaperSurface.astro)
- *   corner    F-D 네 귀퉁이 삼각 홀더                   (CornerMount.astro)
- *   quiet     F-E 1px 테두리 + 얕은 그림자
- *   bare      F-F 테두리 없이 바탕색 + 패딩만
+ *   none       액자 없음(기본) — 지금 발행된 글 41개가 전부 이 값이다
+ *   scrapbook  F-D 도트 종이 판 + 네 귀퉁이 홀더
+ *   polaroid   F-A 흰 판 + 가운데 위 마테 + 손글씨 캡션
+ *   taped      F-B 모눈 판 + 위 모서리 테이프 두 장
+ *   kraft      F-C 네 변이 찢긴 크라프트 판
+ *   crayon     F-G 크레용 칠 + 잉크 선 이중 테두리 + 별 하나
+ *   quiet      F-E 1px 테두리 + 얕은 그림자
+ *   bare       F-F 테두리 없이 바탕색 + 패딩만
  *
- * 후보 단계이므로 기본값은 "none" 이고, 카탈로그는 /design/viz-frames 다.
- * 그림은 전부 CSS(src/styles/viz-frame.css)가 그린다 — 데코 부품은 전부 `.astro`
- * 라 React 트리 안에 못 들어가지만, Tape/CornerMount/Polaroid/PaperSurface 가
- * 죄다 순수 CSS(gradient + clip-path)라 무늬를 그대로 옮겨 적을 수 있었다.
- */
-/**
- * 액자 여섯 종. 넷은 시안 사진 프레임(PF)에서 **무늬만** 물려받았고 둘은 대응 시안이
- * 없는 조용한 대안이다 — 계보와 사유는 `src/lib/photoFrames.ts` 의
- * `VIZ_FRAME_LINEAGE`. 사진 액자(`PhotoFrame.astro`)를 그대로 못 쓰는 이유도 거기
- * 있다: 그쪽은 칸 비율이 먼저 있어 담긴 것을 자르는데, 도식은 자르면 축 이름과
- * 범례가 잘려 나가 그림이 거짓말이 된다.
+ * 다섯은 시안 사진 프레임(PF)에서 **무늬만** 물려받았고 둘은 대응 시안이 없는 조용한
+ * 대안이다 — 계보와 사유는 `src/lib/photoFrames.ts` 의 `VIZ_FRAME_LINEAGE`,
+ * 카탈로그는 `/design/viz-frames`. 사진 액자(`PhotoFrame.astro`)를 그대로 못 쓰는
+ * 이유도 거기 있다: 그쪽은 칸 비율이 먼저 있어 담긴 것을 자르는데, 도식은 자르면
+ * 축 이름과 범례가 잘려 나가 그림이 거짓말이 된다.
+ *
+ * **여섯 종은 CSS(`src/styles/viz-frame.css`)가 다 그린다.** 데코 부품은 전부
+ * `.astro` 라 React 트리에 못 들어가지만 Tape/CornerMount/Polaroid/PaperSurface 가
+ * 죄다 순수 CSS(gradient + clip-path)라 무늬를 옮겨 적을 수 있었다. **일곱째
+ * `crayon` 만 예외**로 마크업이 더 붙는다 — 아래 `CrayonDefs` 주석.
  */
 export type VizFrame =
   | "none"
@@ -49,8 +49,56 @@ export type VizFrame =
   | "taped"
   | "scrapbook"
   | "kraft"
+  | "crayon"
   | "quiet"
   | "bare";
+
+/**
+ * F-G crayon 전용 — 손맛 필터 둘(`crayon` 칠 · `ink` 두른 선)을 이 figure 안에 심는다.
+ * 값은 `src/components/deco/CrayonFilters.astro` 에서 그대로 가져왔다(같은 손이어야 한다).
+ *
+ * **이 액자만 CSS 로 안 끝나는 이유가 여기 있다.** SVG `filter` 정의는 CSS 에 못 적고
+ * 문서 어딘가에 실물로 있어야 한다 — 다른 다섯 종이 gradient·clip-path 라 전부
+ * `viz-frame.css` 에서 끝나는 것과 갈리는 지점이다.
+ *
+ * **필터를 SVG 안이 아니라 CSS 로 건다.** `feDisplacementMap` 의 `scale` 은 걸리는
+ * 요소의 좌표계 단위인데, SVG `<svg preserveAspectRatio="none">` 로 테두리를 그리면
+ * 그 단위가 viewBox 라 액자가 넓어질수록 흔들림이 함께 늘어난다(196 기준으로 그린 것을
+ * 688px 에 펴면 가로 흔들림이 5.5 → 19px 이 되어 크레용이 아니라 번진 물감이 된다).
+ * CSS `filter` 의 좌표계는 **CSS px** 이라 액자 크기와 무관하게 결이 일정하다 —
+ * 데코 키트가 두들 D1·D2 를 HTML+CSS filter 로 남겨 둔 것과 같은 판단이다.
+ *
+ * id 는 `useId()` 로 인스턴스마다 가른다. 한 페이지에 도식이 여럿 올 때 같은 id 가
+ * 겹치면 그 자체로 무효 문서이고, 나중에 정의를 갈랐을 때 어느 게 이길지도 안 정해진다.
+ * (콜론은 `url(#…)` 안에서 안전하지만 굳이 남길 이유가 없어 털어 낸다.)
+ */
+function CrayonDefs({ id }: { id: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      width="0"
+      height="0"
+      style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}
+    >
+      <defs>
+        <filter id={`${id}-crayon`} x="-25%" y="-25%" width="150%" height="150%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves={4} seed={5} result="ed" />
+          <feDisplacementMap in="SourceGraphic" in2="ed" scale={5.5} xChannelSelector="R" yChannelSelector="G" result="wob" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.14 0.2" numOctaves={5} seed={17} result="blot" />
+          <feColorMatrix in="blot" type="luminanceToAlpha" result="lum" />
+          <feComponentTransfer in="lum" result="patch">
+            <feFuncA type="table" tableValues="1 1 0.86 0.34 0.72 0.2" />
+          </feComponentTransfer>
+          <feComposite in="wob" in2="patch" operator="in" />
+        </filter>
+        <filter id={`${id}-ink`} x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.06 0.05" numOctaves={4} seed={11} result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale={3.4} xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+    </svg>
+  );
+}
 
 export interface VizFigureProps {
   /** 그림 아래 캡션(선택). */
@@ -78,6 +126,7 @@ export default function VizFigure({
 }: VizFigureProps) {
   const figureClass = className ? `viz-figure ${className}` : "viz-figure";
   const ariaLabel = label ?? (typeof caption === "string" ? caption : undefined);
+  const crayonId = useId().replace(/:/g, "");
 
   const provider = (
     <VisualizationStyleGuideProvider styleGuide={styleGuide} foundationKey={foundationKey}>
@@ -120,6 +169,16 @@ export default function VizFigure({
           pointer-events:none 이다 — 판(.viz-frame)에 걸면 그 안의 SVG 까지 포인터가
           죽어서, 링크나 툴팁이 든 그림이 하나 들어오는 순간 조용히 먹힌다. */}
       <span className="viz-frame-deco" aria-hidden="true" />
+      {/* F-G crayon 만 마크업이 더 붙는다 — 필터 정의를 CSS 에 못 적기 때문이다
+          (위 CrayonDefs 주석). 두 겹을 형제로 두는 이유는 부모에 filter 를 걸면
+          자식이 그 필터를 한 번 더 뒤집어써서 결이 두 번 겹치기 때문이다. */}
+      {frame === "crayon" && (
+        <span className="viz-crayon" aria-hidden="true">
+          <CrayonDefs id={crayonId} />
+          <span className="cy-fill" style={{ filter: `url(#${crayonId}-crayon)` }} />
+          <span className="cy-line" style={{ filter: `url(#${crayonId}-ink)` }} />
+        </span>
+      )}
     </figure>
   );
 }

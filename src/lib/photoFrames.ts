@@ -486,6 +486,11 @@ export const VIZ_FRAME_LINEAGE: {
   { frame: "polaroid", from: "PF1", why: "테이프가 판 위에만 있어 그림을 안 덮는다" },
   { frame: "scrapbook", from: "PF3", why: "코너 마운트는 귀만 문다 — 도식에 가장 안전" },
   { frame: "kraft", from: "PF6", why: "찢긴 변이 여백에만 있다" },
+  {
+    frame: "crayon",
+    from: "PF7",
+    why: "테두리가 판 가장자리에만 있다 — 다만 손맛이 SVG 필터라 이 액자만 마크업이 더 붙는다",
+  },
   { frame: "taped", from: "TapedBoard", why: "시안 PF 가 아니라 이 저장소 패턴 계보" },
   { frame: "quiet", from: "—", why: "대응 시안 없음. 액자가 거의 없는 선택지" },
   { frame: "bare", from: "—", why: "대응 시안 없음. 바탕과 여백만" },

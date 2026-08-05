@@ -1,6 +1,6 @@
 /* ── viz 액자 프레임 후보 (KAN-063) ───────────────────────────────────────────
  *
- * 본문 다이어그램(viz)을 감싸는 액자 6종. 그림은 그대로 두고 **바깥 껍데기만** 바꾼다.
+ * 본문 다이어그램(viz)을 감싸는 액자 7종. 그림은 그대로 두고 **바깥 껍데기만** 바꾼다.
  * 부품은 `src/components/viz/VizFigure.tsx` 의 `frame` prop 이 열고, 카탈로그는
  * `/design/viz-frames`(noindex) 다.
  *
@@ -271,6 +271,89 @@
   background-size: 20px 20px;
   background-repeat: no-repeat;
   filter: drop-shadow(0 1px 2px rgba(32, 38, 74, 0.16));
+}
+
+/* ── F-G crayon — PF7 계보 (크레용 칠 + 잉크 선 이중 테두리 + 별 하나) ─────
+ *
+ * 여섯 중 **유일하게 CSS 로 안 끝나는** 액자다. 손맛이 `feTurbulence` 필터에서
+ * 나오는데 SVG filter 정의는 CSS 에 못 적어서, `VizFigure` 가 이 figure 안에
+ * `<defs>` 를 심고(`CrayonDefs`) 여기서는 그 id 를 CSS 로 참조만 한다.
+ *
+ * **테두리는 SVG 가 아니라 CSS border 다.** SVG 로 그려 `preserveAspectRatio="none"`
+ * 으로 펴면 `feDisplacementMap` 의 scale 이 viewBox 단위라 액자 폭에 비례해 흔들린다
+ * (196 기준 5.5 를 688px 에 펴면 가로 19px — 크레용이 아니라 번진 물감이 된다).
+ * CSS filter 는 좌표계가 **CSS px** 이라 액자가 커져도 결이 그대로다: 실제 크레용이
+ * 그렇다(결의 굵기는 크레용의 성질이지 종이 크기의 성질이 아니다).
+ *
+ * 그래서 `PhotoFrame` 의 PF7 과 **무늬는 같고 그리는 수단이 다르다** — 저쪽은 액자가
+ * 196×156 로 고정이라 SVG stroke 로 그려도 결이 안 늘어난다.
+ */
+
+.viz-figure[data-viz-frame="crayon"] .viz-frame {
+  /* 테두리 두 겹이 밖으로 자라므로 그림과 잉크 선 사이 여백을 여기서 번다 */
+  padding: 22px 20px;
+  background-color: var(--surface);
+  border-radius: 3px;
+}
+.viz-figure[data-viz-frame="crayon"] .viz-crayon {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* 두 겹 다 테두리만 있는 빈 상자다. 안쪽을 안 칠하는 이유는 판 바탕(--surface)이
+   이미 있어서고, 칠하면 필터의 얼룩(feComponentTransfer)이 그림 위로 번진다. */
+.viz-figure[data-viz-frame="crayon"] .cy-fill,
+.viz-figure[data-viz-frame="crayon"] .cy-line {
+  position: absolute;
+  border-style: solid;
+  border-radius: 4px;
+}
+/* 크레용 칠 — 안쪽에 깔리는 두꺼운 밑선. PF7 의 stroke 7 · opacity .55 그대로.
+   inset 이 양수라 판 안쪽으로 들어와 앉는다. */
+.viz-figure[data-viz-frame="crayon"] .cy-fill {
+  inset: 4px;
+  border-width: 7px;
+  border-color: var(--deco-crayon-peri, #c9c9f0);
+  opacity: 0.55;
+}
+/* 잉크 선 — 바깥을 두르는 가는 선. PF7 의 stroke 4. */
+.viz-figure[data-viz-frame="crayon"] .cy-line {
+  inset: 0;
+  border-width: 4px;
+  border-color: var(--deco-crayon-blue, #2540e8);
+}
+/* 별 하나(티어 3) — PF7 우하단. `Doodle`·`PhotoFrame` 의 `.one-star` 와 같은 폴리곤.
+   여기만 티어를 지는 이유는 이게 액자가 아니라 액자에 **얹은 것**이라서다:
+   사라져도 크레용 테두리는 그대로 남는다. */
+.viz-figure[data-viz-frame="crayon"] .viz-crayon::after {
+  content: "";
+  display: var(--deco-t3, block);
+  position: absolute;
+  right: -14px;
+  bottom: -14px;
+  width: 34px;
+  height: 34px;
+  background: var(--deco-pen-gold, #f0c24a);
+  clip-path: polygon(
+    50% 0,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 95%,
+    50% 71%,
+    21% 95%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  filter: drop-shadow(0 2px 3px rgba(32, 38, 74, 0.2));
+}
+/* 좁은 화면에서는 별을 접는다 — 판 밖으로 20px 나가는데 `--page-pad` 는 390px 에서
+   20px 이다(테이프·마테와 같은 사유·같은 문턱). 테두리는 판 안에 있어 남는다. */
+@media (max-width: 768px) {
+  .viz-figure[data-viz-frame="crayon"] .viz-crayon::after {
+    display: none;
+  }
 }
 
 /* ── F-E quiet — 1px 테두리 + 얕은 그림자. 캡션은 액자 밖 ────────────────── */
