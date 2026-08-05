@@ -1,20 +1,23 @@
 ---
 /**
- * 마크다운 인용(`<blockquote>`)을 패턴 P-04(TapedQuote)로 감싸는 어댑터.
+ * 마크다운 인용(`<blockquote>`)을 패턴 P-04(MarkedQuote)로 감싸는 어댑터.
  *
  * MDX 의 `components` 매핑(`<Content components={{ blockquote: ProseQuote }} />`)으로
  * 꽂힌다. 본문의 `> …` 문법을 그대로 두고 인용의 생김새만 키트 쪽으로 옮긴다.
  *
  * 손글씨 출처(cite)는 넘기지 않는다 — 마크다운 인용에는 출처를 담을 자리가 없고,
  * 본문 마지막 줄을 출처로 넘겨짚으면 진짜 인용문을 잘라먹는다. 출처를 붙이려면
- * 글에서 TapedQuote 를 직접 쓴다.
+ * 글에서 MarkedQuote 를 직접 쓴다.
  *
- * 테이프는 **글의 첫 인용에만** 남는다(PostLayout 의 전역 규칙). 한 글에 인용이
- * 열 개 넘게 나오는 경우가 있어서, 전부 붙이면 테이프가 인용의 기본 장식이 된다.
+ * **두들 하트는 글의 모든 인용에 붙는다.** 예전에는 첫 인용에만 테이프를 남겼는데
+ * (PostLayout 의 전역 규칙) 그게 "붙은 것과 안 붙은 것"으로 갈려 고장으로 읽혔다 —
+ * 사유는 `MarkedQuote.astro` 머리글. 이 경로가 **모든 글의 모든 인용**을 지난다:
+ * 콘텐츠 컬렉션이 전부 `.mdx` 라 예외가 없다(순수 `.md` 3편도 이 규칙 때문에
+ * `.mdx` 로 옮겼다 — `components` 매핑은 `.md` 에는 안 먹는다).
  */
-import TapedQuote from "../patterns/TapedQuote.astro";
+import MarkedQuote from "../patterns/MarkedQuote.astro";
 ---
 
-<TapedQuote>
+<MarkedQuote>
   <slot />
-</TapedQuote>
+</MarkedQuote>

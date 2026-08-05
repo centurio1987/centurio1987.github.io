@@ -1,0 +1,109 @@
+---
+/**
+ * 패턴 P-05 — 두들 마크를 단 코드블록.
+ *
+ * 시안 1d 의 코드블록에서 뼈대(살짝 띄운 판 + 위쪽 여백)만 남기고, 얹는 것은
+ * **우상단 두번 체크 마크** 하나다.
+ *
+ * ── 예전에는 사선 테이프였다 (유저 지시로 갈아 끼움) ──────────────────────
+ * 이름이 `TapedCode` 였고 블록 위 모서리에 T2 사선 테이프 한 장이 걸쳤다.
+ * P-04 인용이 테이프에서 두들 하트로 갈아탄 뒤로 **한 지면에 손이 둘 남아**
+ * 인용은 그어 놓은 자국, 코드는 붙인 종이가 됐다. 발행 글의 코드블록을 짚어
+ * "이 형태는 두번 체크 마크로 바꿔라"는 지시를 받고 둘을 같은 손으로 맞췄다.
+ *
+ * **여기서 `check-double` 은 뜻이 아니라 장식이다.** 본문에서 같은 그림은
+ * "확인했다"는 판정이지만(`DoodleMark` 머리글), 귀퉁이에 얹히면 성격이 뒤집힌다.
+ * 그래서 `label={false}` 로 스크린리더에서 뺀다 — 코드블록마다 "두번 체크"가
+ * 읽히면 그건 정보가 아니라 소음이다. 넷 중 이걸 고른 건 체크가 코드 옆에 앉으면
+ * "훑어본 자리"로 읽혀, 인용의 하트("마음에 든 문장")와 같은 결의 여백 낙서가
+ * 되기 때문이다.
+ *
+ * ── 데코를 얹을 수 있는 한계 지점 ────────────────────────────────────────
+ * 코드는 한 글자만 가려도 못 쓰게 되므로:
+ *   ① 마크는 블록 **위쪽 밖**(top 음수)에 걸친다. 안으로 내려오면 안 된다.
+ *   ② 포스트잇은 오른쪽 **바깥**으로 밀어낸다(right 음수).
+ * 코드 위를 덮는 데코는 금지다. 강조가 필요하면 코드 안의 하이라이트를 쓴다.
+ *
+ * ── `label`·`note` 는 남겨 뒀다 ──────────────────────────────────────────
+ * 마크다운 어댑터(`ProseCode`)는 둘 다 안 넘기므로 **발행 글의 코드블록에는
+ * 마크 하나만** 붙는다. 글에서 이 패턴을 직접 쓸 때의 확장 자리로만 남는다
+ * (카탈로그 `/design/deco` 의 P-05 가 그 형태를 보여 준다).
+ */
+import DecoLayer from "../DecoLayer.astro";
+import DoodleMark from "../DoodleMark.astro";
+import Tape from "../Tape.astro";
+import StickyNote from "../StickyNote.astro";
+
+interface Props {
+  /** 레터링 테이프 문구. 비우면 테이프를 안 붙인다. */
+  label?: string;
+  /** 포스트잇 문구. 비우면 포스트잇을 안 붙인다. 줄바꿈은 \n. */
+  note?: string;
+  class?: string;
+}
+const { label = "", note = "", class: className = "" } = Astro.props;
+---
+
+<div class:list={["marked-code", { "has-note": note }, className]}>
+  <slot />
+
+  {
+    label && (
+      <DecoLayer class="dl-extra" top="-13px" left="36px" rotate={-5} tier={3} z={2}>
+        {/* 코드블록은 어두운 판이라 on-dark — 기본값은 여기서 통째로 묻힌다 */}
+        <Tape variant="letter" width={110} label={label} tone="dark" />
+      </DecoLayer>
+    )
+  }
+
+  {/* 티어 2 — P-04 하트와 같은 값이다. 3(사라짐)이 아니라 2(옅어짐)인 이유는
+      이게 이제 코드블록의 **유일한** 데코라서다. 3 으로 두면 강도 2 인 지면에서
+      코드만 맨몸이 되어, 지적받은 그 화면(데코가 붙은 것과 안 붙은 것이 섞인
+      화면)이 강도를 낮추는 순간 되살아난다.
+      기울기는 DecoLayer 에 안 준다 — 표의 두번 체크가 이미 3° 다(MarkedQuote 와
+      같은 사정: 두 회전이 겹치면 손자국이 아니라 비뚤어진 인쇄물이 된다).
+      오른쪽으로 내민 12px 은 하트(16px)보다 얕다. 체크는 상자를 가로로 꽉 채우는
+      그림(40×40 중 40)이라 같은 값으로 내밀면 390px 화면의 여백 20px 을 넘는다.
+      `dl-mark` 는 게이트가 **이 층만** 집어 세기 위한 표식이다(verify-deco.ts). */}
+  <DecoLayer class="dl-mark" top="-17px" right="-12px" tier={2} z={2}>
+    <DoodleMark name="check-double" size="30px" label={false} />
+  </DecoLayer>
+
+  {
+    note && (
+      <DecoLayer class="dl-extra" bottom="-26px" right="-30px" rotate={-5} tier={3} z={2}>
+        <StickyNote text={note} width={112} />
+      </DecoLayer>
+    )
+  }
+</div>
+
+<style>
+  .marked-code {
+    position: relative;
+    /* 마크가 위로 17px 삐져나오므로 위 여백을 그만큼 확보한다 */
+    margin: 30px 0;
+  }
+  /* 포스트잇이 오른쪽 밖으로 나가는 만큼 아래 여백도 준다 */
+  .marked-code.has-note {
+    margin-bottom: 44px;
+  }
+  /* 안에 들어온 코드블록은 데코가 얹힐 대비로 살짝 띄운다 */
+  .marked-code :global(pre) {
+    margin: 0;
+    box-shadow: 0 3px 10px rgba(32, 38, 74, 0.14);
+  }
+
+  /* 좁은 화면에서는 포스트잇이 화면 밖으로 나간다 — **얹은 것들만** 접는다.
+     마크는 남긴다: 인용의 하트가 좁은 화면에서도 남는데 코드만 맨몸이 되면
+     "붙은 것과 안 붙은 것이 갈린 화면"이 폭에 따라 되살아난다. 마크가 내민
+     12px 은 390px 에서의 여백 20px 안에 든다(그래서 남길 수 있다). */
+  @media (max-width: 768px) {
+    .marked-code :global(.deco-layer.dl-extra) {
+      display: none;
+    }
+    .marked-code.has-note {
+      margin-bottom: 30px;
+    }
+  }
+</style>

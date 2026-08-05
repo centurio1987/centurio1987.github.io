@@ -27,8 +27,8 @@ import PaperSurface from "../../components/deco/PaperSurface.astro";
 import HeroCollage from "../../components/deco/patterns/HeroCollage.astro";
 import TapedBoard from "../../components/deco/patterns/TapedBoard.astro";
 import ClippedCard from "../../components/deco/patterns/ClippedCard.astro";
-import TapedQuote from "../../components/deco/patterns/TapedQuote.astro";
-import TapedCode from "../../components/deco/patterns/TapedCode.astro";
+import MarkedQuote from "../../components/deco/patterns/MarkedQuote.astro";
+import MarkedCode from "../../components/deco/patterns/MarkedCode.astro";
 import DecoHeading from "../../components/deco/patterns/DecoHeading.astro";
 import PhotoFrame from "../../components/deco/patterns/PhotoFrame.astro";
 import { DECO_INTENSITY, TONY_DIECUT } from "../../lib/deco";
@@ -435,22 +435,22 @@ const PF_DEMO: Record<
 
     <!-- P-04 인용 -->
     <section class="pat">
-      <p class="pat-head"><span class="pid">P-04</span> 테이프로 붙인 인용 — 글 상세</p>
+      <p class="pat-head"><span class="pid">P-04</span> 두들 하트를 단 인용 — 글 상세</p>
       <div class="pat-body pad">
-        <TapedQuote cite="— 여섯 편을 다 굽고 나서">
+        <MarkedQuote cite="— 여섯 편을 다 굽고 나서">
           <p>“프로토콜은 취향이 아니라 제약의 결과다. 남은 건 어디서 새는지 아는 일.”</p>
-        </TapedQuote>
+        </MarkedQuote>
       </div>
     </section>
 
     <!-- P-05 코드블록 -->
     <section class="pat">
-      <p class="pat-head"><span class="pid">P-05</span> 테이프 붙인 코드블록 — 글 상세</p>
+      <p class="pat-head"><span class="pid">P-05</span> 두들 마크를 단 코드블록 — 글 상세</p>
       <div class="pat-body pad">
-        <TapedCode label="CHECK THIS" note={"MTU 1420,\n여기서 다\n막혔었다!"}>
+        <MarkedCode label="CHECK THIS" note={"MTU 1420,\n여기서 다\n막혔었다!"}>
           <pre class="demo-pre"><code>$ ping -M do -s 1420 1.1.1.1
 ping: local error: message too long, mtu=1420</code></pre>
-        </TapedCode>
+        </MarkedCode>
       </div>
     </section>
 

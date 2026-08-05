@@ -30,7 +30,7 @@
  * `verify-viz` 와 같은 이유로 **떠 있는 서버에 알아서 붙지 않는다** — 4321 은 같은 레포의
  * 다른 워크트리가 잡고 있기 쉽고, 그러면 남의 코드를 검사해 이 브랜치의 판정으로 보고한다.
  */
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { spawn, type ChildProcess } from "node:child_process";
 import path from "node:path";
 import type { Page } from "playwright";
@@ -261,10 +261,90 @@ async function main() {
     }
   }
 
+  /* ── 테이프 한 장 규칙 — 글 상세 전수 ────────────────────────────────────
+   * `PostLayout` 은 인용·코드에 테이프를 **글마다 한 장씩만** 남긴다. 그런데 그
+   * 규칙을 CSS 의 `~`(일반 형제)로 적었더니 **같은 부모 안에서만** 세어서,
+   * `<li>` 안에 든 코드블록이 자기 부모의 첫 장이 되어 버렸다 — 아홉 편에서 43장이
+   * 그렇게 샜고 vpn-anatomy-4 는 한 글에 13장이었다. 읽는 쪽에서는 규칙이 안 보이고
+   * 테이프가 글 중간에 불쑥 다시 나타난다.
+   *
+   * **눈으로는 못 잡는다.** 겹치지도 넘치지도 않으므로 위 검사가 전부 초록이고,
+   * 글 하나만 열어 봐서는 "원래 저기 한 장 있나 보다" 로 읽힌다. 세어야 잡힌다.
+   * 그래서 폭·겹침이 아니라 **개수**를 재는 검사가 여기 하나 더 있다. */
+  const postsDir = path.join(ROOT, "dist", "posts");
+  if (existsSync(postsDir)) {
+    const slugs = readdirSync(postsDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => d.name);
+    const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    let over = 0;
+    for (const slug of slugs) {
+      await page.goto(`${base}/posts/${slug}/`, { waitUntil: "domcontentloaded" });
+      const r = await page.evaluate(() => {
+        /**
+         * **원소재를 센다 — 감싼 것을 세면 안 된다.**
+         *
+         * 처음엔 `.marked-quote` 개수와 그 안의 보이는 데코 개수를 견줬는데, 그러면
+         * 어댑터가 아예 안 걸린 인용은 `.marked-quote` 가 0 개라 **"인용 0개 · 하트
+         * 0개 = 통과"** 가 된다. 실제로 그렇게 새어 나갔다: `.md` 세 편을 `.mdx` 로
+         * 옮긴 뒤 낡은 콘텐츠 캐시(`node_modules/.astro/data-store.json`) 때문에
+         * 그 글들만 옛 렌더가 나왔는데 게이트는 초록이었다.
+         *
+         * 그래서 `blockquote`·`pre` 를 세고 **그것이 패턴 안에 들어 있는지**를 본다.
+         * 데코가 안 붙는 경로가 새로 생겨도 여기서 걸린다.
+         */
+        const tally = (raw: string, wrapper: string) => {
+          /* **React 아일랜드 안은 세지 않는다.** 시뮬레이션 컴포넌트가 자기 UI 로
+             그리는 `<pre>`(tauri-2 의 권한 JSON · auth-authz-3 의 PKCE 값)는
+             마크다운 코드블록이 아니라 그 컴포넌트의 화면이다. MDX 의 `components`
+             매핑은 애초에 거기까지 안 닿으므로, 세면 절대 못 고치는 실패가 된다. */
+          const els = [...document.querySelectorAll(`.prose ${raw}`)].filter(
+            (el) => !el.closest("astro-island"),
+          );
+          const decked = els.filter((el) => {
+            const box = el.closest(wrapper);
+            if (!box) return false;
+            /* `.dl-mark` 로 **마크 층만** 집는다. 패턴에는 옵션 층(레터링 테이프·
+               포스트잇)이 더 붙을 수 있어서, 아무 `.deco-layer` 나 집으면 마크가
+               빠진 블록도 옵션 하나로 통과한다. */
+            const l = box.querySelector(":scope > span.deco-layer.dl-mark");
+            return !!l && getComputedStyle(l as HTMLElement).display !== "none";
+          }).length;
+          return { total: els.length, decked };
+        };
+        return {
+          quote: tally("blockquote", ".marked-quote"),
+          code: tally("pre", ".marked-code"),
+        };
+      });
+      checks++;
+      const bare = [
+        r.quote.decked < r.quote.total
+          ? `인용 ${r.quote.total}개 중 하트 ${r.quote.decked}개`
+          : "",
+        r.code.decked < r.code.total
+          ? `코드 ${r.code.total}개 중 두번체크 ${r.code.decked}개`
+          : "",
+      ].filter(Boolean);
+      if (bare.length) {
+        over++;
+        fails.push({
+          where: `/posts/${slug}`,
+          kind: "데코 빠진 반복 요소",
+          detail: bare.join(" · "),
+        });
+      }
+    }
+    await page.close();
+    /* 예전엔 "한 장까지"를 세던 자리다. 규칙이 뒤집혀서(PostLayout 의 데코 절)
+       지금은 **하나라도 빠지면** 실패다 — 붙은 것과 안 붙은 것이 갈리는 게 결함이다. */
+    console.log(`${over ? "FAIL " : "  ok "}  글 상세 ${slugs.length}편 · 인용·코드 데코 전수`);
+  }
+
   await browser.close();
   if (server) server.kill();
 
-  console.log(`\n지면 ${targets.length}개 × 폭 ${WIDTHS.length}개, 검사 ${checks}회.`);
+  console.log(`\n지면 ${targets.length}개 × 폭 ${WIDTHS.length}개 + 글 상세 전수, 검사 ${checks}회.`);
   if (fails.length) {
     console.error(`\n✗ ${fails.length}건 — 데코가 글자를 덮거나 조작을 먹는다.\n`);
     for (const f of fails) console.error(`  [${f.where}] ${f.kind}: ${f.detail}`);
