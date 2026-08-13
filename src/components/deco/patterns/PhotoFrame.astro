@@ -33,6 +33,18 @@
  *    반대로 고정이다 — 그것들은 비율이 아니라 **물건**이라 액자가 커진다고 같이 커지면
  *    스티커가 아니라 무늬로 읽힌다.
  *
+ * ⑤ **액자 판은 안 기운다 — 기울기는 기본값이 아니라 caller 가 켜는 것이다 (유저 지시).**
+ *    원래는 variant 마다 시안 각도(-3°~3°)를 표로 갖고 있어 아무 데나 놓아도 판이
+ *    비스듬히 앉았다. 그게 세 가지를 깼다: ㉠ 담긴 것이 **화면 캡처**면 기운 UI 가
+ *    곧 거짓말이다(수평·수직이 있는 그림이라 사진과 다르다), ㉡ 본문 흐름에 여럿
+ *    이어 놓으면 문단마다 판이 좌우로 흔들려 읽는 눈이 매번 기준선을 다시 잡는다,
+ *    ㉢ 기운 판은 bbox 가 커져 **폭 계산에 각도 몫이 섞인다**(`Shot.astro` 의 폭 상수가
+ *    실제로 그 몫을 이고 있었다). 그래서 기본은 0 이고, 여백·푸터처럼 기울어야 뜻이
+ *    사는 자리에서만 `rotate` 로 명시한다(`AuthorLineup` 이 그 자리다 — 줄에 집게로
+ *    문 사진이라 수평이면 걸린 게 아니라 붙인 것으로 읽힌다).
+ *    **얹은 것은 그대로 기운다** — 테이프·집게·도장·말풍선은 판이 아니라 판 위의
+ *    물건이라, 반듯하면 붙인 자국이 아니라 인쇄된 무늬가 된다.
+ *
  * ── 쓰는 법 ────────────────────────────────────────────────────────────────
  *
  *   <PhotoFrame variant="polaroid-tape" width={172} caption="그날의 빵">
@@ -77,7 +89,10 @@ interface Props {
   note?: string;
   /** 사진이 없을 때 깔리는 바탕 */
   paper?: "grid" | "dot" | "plain";
-  /** 액자 기울기(deg). 기본은 시안 값. */
+  /**
+   * 액자 기울기(deg). **기본은 0 이다** — 위 ⑤. 여백·푸터처럼 비뚤어야 뜻이 사는
+   * 자리에서만 켠다. 시안 값이 필요하면 `PHOTO_FRAME_TILT`(`photoFrames.ts`)를 넘겨라.
+   */
   rotate?: number;
   class?: string;
 }
@@ -97,25 +112,13 @@ const {
 const w = typeof width === "number" ? `${width}px` : width;
 const ar = ratio ?? PHOTO_FRAME_RATIO[variant];
 
-/** 시안의 기본 기울기. rotate prop 이 있으면 그쪽이 이긴다. */
-const TILT: Record<PhotoFrameVariant, number> = {
-  "polaroid-tape": -3,
-  "taped-corners": 2,
-  scrapbook: -1.5,
-  film: 1.5,
-  pegged: -2,
-  kraft: 2,
-  crayon: -1,
-  diecut: 3,
-  instax: -2,
-  collage: 0,
-  vellum: -1,
-  stamped: 1.5,
-};
-const tilt = rotate ?? TILT[variant];
+/* 위 ⑤ — 기본은 반듯하다. 시안 각도는 `PHOTO_FRAME_TILT` 에 재고로 남아 있고
+   켜는 건 caller 몫이다. 0 이면 `--tilt` 도 `.tilted` 도 안 나가서, 반듯한 액자에는
+   transform 이 아예 안 붙는다(rotate(0deg) 도 쌓임 맥락을 만든다). */
+const tilt = rotate ?? 0;
 
 const wellStyle = `--w:${w};--ar:${ar}`;
-const rootStyle = `${wellStyle};--tilt:${tilt}deg`;
+const rootStyle = tilt ? `${wellStyle};--tilt:${tilt}deg` : wellStyle;
 
 /* 크레용 필터 id — 인스턴스마다 유일해야 한다(Doodle 과 같은 짜임·같은 이유). */
 const g = globalThis as { __decoPhotoFrameSeq?: number };
@@ -124,7 +127,7 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
 ---
 
 <span
-  class:list={["pf", `v-${variant}`, className]}
+  class:list={["pf", `v-${variant}`, tilt !== 0 && "tilted", className]}
   style={rootStyle}
   data-photo-frame={variant}
 >
@@ -406,7 +409,11 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
   .board {
     position: relative;
     display: block;
-    transform: rotate(var(--tilt, 0deg));
+  }
+  /* 기울기는 caller 가 켠 것만 붙는다 — 위 ⑤. `.pf` 에 걸고 `.board` 를 찾는 이유는
+     각도가 판 하나가 아니라 **액자 전체**의 성질이라서다(콜라주는 판이 셋이다). */
+  .pf.tilted .board {
+    transform: rotate(var(--tilt));
   }
 
   /* 사진 칸. 폭만 받고 높이는 비율로 뽑는다 — 시안은 칸이 고정이지만 여기 들어오는
@@ -698,7 +705,12 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
 
   /* ── PF10 겹친 콜라주 ──────────────────────────────────────────────────── */
   /* 자리를 전부 --w 에서 뽑는다 — 시안(208×172 안에 116·110·122)의 비율 그대로다.
-     그래서 이 액자만 --w 가 반드시 길이여야 한다(% 를 넣으면 calc 가 깨진다). */
+     그래서 이 액자만 --w 가 반드시 길이여야 한다(% 를 넣으면 calc 가 깨진다).
+
+     **여기 남은 각도는 위 ⑤ 의 예외다.** 셋을 반듯하게 세우면 나란히 어긋난 흰
+     직사각형 세 장이 되어 콜라주가 아니라 어긋난 레이아웃으로 읽힌다 — 이 액자에서
+     각도는 판의 처우가 아니라 **쌓인 모양** 자체이고, 그게 PF10 의 정의다(PF4 의
+     두 칸과 같은 격). 판 하나짜리 액자 열하나는 전부 0 이다. */
   .pile {
     width: calc(var(--w) * 1.793);
     height: calc(var(--w) * 1.483);

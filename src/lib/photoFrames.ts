@@ -510,3 +510,27 @@ export const PHOTO_FRAME_RATIO = Object.fromEntries(
 export const PHOTO_FRAME_SLOTS = Object.fromEntries(
   PHOTO_FRAMES.map((f) => [f.variant, f.slots]),
 ) as Record<PhotoFrameVariant, 1 | 2 | 3>;
+
+/**
+ * variant → 시안 액자 기울기(deg). **기본값이 아니라 재고다** (유저 지시).
+ *
+ * 예전에는 `PhotoFrame` 이 이 표를 기본값으로 읽어 아무 데나 놓아도 판이 비스듬히
+ * 앉았다. 지금 기본은 0 이고, 여백·푸터처럼 비뚤어야 뜻이 사는 자리에서만
+ * `rotate={PHOTO_FRAME_TILT[v]}` 로 켠다 — 사유는 `PhotoFrame.astro` 의 굳힌 판단 ⑤.
+ * 값을 지우지 않고 남기는 이유는 시안 실측이라서다. 눈대중으로 다시 잡으면 열두
+ * 액자의 각도가 제각각 갈린다.
+ */
+export const PHOTO_FRAME_TILT: Record<PhotoFrameVariant, number> = {
+  "polaroid-tape": -3,
+  "taped-corners": 2,
+  scrapbook: -1.5,
+  film: 1.5,
+  pegged: -2,
+  kraft: 2,
+  crayon: -1,
+  diecut: 3,
+  instax: -2,
+  collage: 0,
+  vellum: -1,
+  stamped: 1.5,
+};

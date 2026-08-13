@@ -59,8 +59,16 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
     생성 CSS 와 같은 이유). 선택자는 .pf-wrap 하위로 가둬 /categories 에는 새지 않는다. */}
 <style is:global>
   /* 시리즈 테이프가 없는 첫 글이면 제목이 도장 자리를 비켜준다 — 있으면 이미
-     테이프 폭만큼 비켜준 상태라 두 번 밀면 제목이 두 줄로 눌린다. */
-  .pf-wrap .post-item:first-child:not(.has-series) .post-title {
+     테이프 폭만큼 비켜준 상태라 두 번 밀면 제목이 두 줄로 눌린다.
+     **요약도 같이 비켜야 한다.** 도장(top:34px·54px·-12°)은 아래변이 제목 줄
+     아래까지 내려오는데, 제목이 **한 줄로 끝나면** 요약 첫 줄이 그 띠에 들어와
+     도장에 물린다(실측 1280px: 도장 아래변 485.3 · 요약 첫 줄 476.4~497.4 —
+     겹친 띠 8.9px. 769px 도 같다). 제목이 길어 두 줄이 되던 동안에는 요약이
+     도장 아래로 밀려나 안 보이던 결함이고, 짧은 제목 글이 맨 앞에 서는 순간
+     드러났다 — orca 글이 그 첫 사례다. 값을 제목과 같은 74px 로 두는 이유는
+     비키는 대상이 같은 도장 하나라서다(따로 두면 둘이 조용히 갈린다).
+     요약은 ragged-right 라 줄 길이가 줄어드는 것은 화면에 안 보인다. */
+  .pf-wrap .post-item:first-child:not(.has-series) :is(.post-title, .post-desc) {
     padding-right: 74px;
   }
   /* 좁은 화면에선 접는다(DECO_KIT 5절 규칙 6) — 모바일에선 테이프가 흐름 안으로
