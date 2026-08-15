@@ -1,0 +1,311 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAN-066-KK9Q50 실행 계획</title>
+<style>
+/* manage-kanban 계획 리포트 스타일 — Neobrutalism_Editorial_01 (editorial brutalism)
+ *
+ * 출처: bbangto-ui/packages/style-guide-catalog/src/neobrutalismEditorial.tsx
+ *   라이트 = foundations(semantic) · 다크 = midnightFoundations(makeColorway)
+ *
+ * **왜 사본인가.** @centurio1987/bbangto-ui-visualization 은 React 컴포넌트 + 빌드가
+ * 필요하고 사설 레지스트리(npm.pkg.github.com)에 있다. 리포트는 빌드 없이 열리는 단일
+ * HTML 이고 CSP 로 외부 로드가 막히므로, 패키지를 런타임에 쓸 수 없다. 그래서 토큰 값만
+ * 옮겼다.
+ *
+ * **drift 는 이 주석이 아니라 테스트가 막는다** — scripts/test_report.py 가 위 .tsx 를
+ * 파싱해 아래 값과 대조한다(원본이 없는 머신에서는 skip).
+ */
+
+:root {
+  --ink: #1C1B17;
+  --ink-hover: #2A2823;
+  --cream: #FAF2DD;
+  --paper: #FFFCF2;
+  --cream-sunken: #F3E8C9;
+  --gold: #E9C766;
+  --green: #C2D3B4;
+  --pink: #ECC3C8;
+  --muted: #4A463C;
+  --subtle: #6E6A5E;
+  --faint: #9A9483;
+  --border-width: 2px;
+
+  --bg: var(--cream);
+  --bg-elevated: var(--paper);
+  --bg-sunken: var(--cream-sunken);
+  --fg: var(--ink);
+  --fg-muted: var(--muted);
+  --fg-subtle: var(--subtle);
+  --border: var(--ink);
+  --accent: var(--gold);
+  --accent-2: var(--green);
+  --accent-3: var(--pink);
+  --danger: #C0392B;
+  --ok: #5C7A4A;
+  --warn: #B8860B;
+  --offset: 3px 3px 0 var(--gold);
+  --offset-lg: 5px 5px 0 var(--ink);
+
+  --font-sans: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+/* 다크는 잉크/크림을 뒤집는다(midnight colorway). 시스템 기본은 media query 가,
+ * 명시적 선택은 [data-theme] 가 이긴다 — 둘 다 정의해야 토글이 양방향으로 먹는다. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1C1B17;
+    --bg-elevated: #2A2823;
+    --bg-sunken: #141310;
+    --fg: #FAF2DD;
+    --fg-muted: #C9C2AE;
+    --fg-subtle: #9A9483;
+    --border: #FAF2DD;
+    --offset: 3px 3px 0 #FAF2DD;
+    --offset-lg: 5px 5px 0 #FAF2DD;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1C1B17;
+  --bg-elevated: #2A2823;
+  --bg-sunken: #141310;
+  --fg: #FAF2DD;
+  --fg-muted: #C9C2AE;
+  --fg-subtle: #9A9483;
+  --border: #FAF2DD;
+  --offset: 3px 3px 0 #FAF2DD;
+  --offset-lg: 5px 5px 0 #FAF2DD;
+}
+
+body {
+  margin: 0;
+  padding: 2.5rem 1.25rem 5rem;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.wrap { max-width: 62rem; margin: 0 auto; }
+
+/* 각진 모서리 · 2px 잉크선 · 하드 오프셋. 이 셋이 모티프의 전부다. */
+.card, .kpi, table, pre, .chart {
+  background: var(--bg-elevated);
+  border: var(--border-width) solid var(--border);
+  border-radius: 0;
+}
+.card { padding: 1.25rem 1.5rem; margin: 1.5rem 0; box-shadow: var(--offset); }
+
+h1, h2, h3 { font-weight: 700; margin: 2rem 0 .75rem; }
+h1 { font-size: 38px; line-height: 1.05; letter-spacing: -.01em; margin-top: 0; }
+h2 { font-size: 30px; line-height: 1.1; letter-spacing: -.01em;
+     border-bottom: var(--border-width) solid var(--border); padding-bottom: .35rem; }
+h3 { font-size: 20px; line-height: 1.3; }
+
+.meta { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
+        font-weight: 600; text-transform: uppercase; color: var(--fg-subtle); }
+
+.title-block { border: var(--border-width) solid var(--border); background: var(--accent);
+               color: var(--ink); padding: 1.5rem; box-shadow: var(--offset-lg); }
+.title-block h1, .title-block .meta { color: var(--ink); }
+
+.kpis { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0; }
+.kpi { flex: 1 1 9rem; padding: .9rem 1rem; box-shadow: var(--offset); }
+.kpi b { display: block; font-size: 30px; line-height: 1.1; }
+
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid var(--border); padding: .5rem .7rem; text-align: left;
+         vertical-align: top; font-size: 15px; }
+th { background: var(--bg-sunken); font-weight: 700; }
+
+/* 넓은 것은 페이지가 아니라 자기 안에서 가로 스크롤한다. */
+.scroll { overflow-x: auto; }
+pre { padding: .8rem 1rem; font-family: var(--font-mono); font-size: 13px; overflow-x: auto; }
+code { font-family: var(--font-mono); font-size: .9em; }
+
+.chart { padding: 1rem; margin: 1rem 0; }
+.chart svg { display: block; width: 100%; height: auto; }
+
+.tag { display: inline-block; border: var(--border-width) solid var(--border);
+       padding: 0 .4rem; font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.tag-done { background: var(--ok); color: var(--cream); }
+.tag-doing { background: var(--accent); color: var(--ink); }
+.tag-todo { background: var(--bg-sunken); color: var(--fg-muted); }
+.tag-hold { background: var(--accent-3); color: var(--ink); }
+.tag-warn { background: var(--warn); color: var(--ink); }
+.tag-danger { background: var(--danger); color: var(--cream); }
+
+.note, blockquote { border-left: 5px solid var(--accent); padding-left: 1rem;
+                    color: var(--fg-muted); margin: 1rem 0; }
+ol, ul { padding-left: 1.4rem; }
+li { margin: .25rem 0; }
+
+@media (max-width: 40rem) {
+  h1 { font-size: 30px; } h2 { font-size: 24px; }
+  body { padding: 1.5rem .75rem 3rem; }
+}
+
+</style>
+<div class="wrap">
+<div class="title-block">
+  <p class="meta">KAN-066-KK9Q50 · 진행 중 · 브랜치 KAN-066-KK9Q50</p>
+  <h1>폭신 대담: 대화 원본 → 정형 구조화 저장 기능 (원문 보존 포함)</h1>
+</div>
+
+
+<div class="kpis">
+  <div class="kpi"><span class="meta">work</span><b>0/7</b></div>
+  <div class="kpi"><span class="meta">배치</span><b>3</b></div>
+  <div class="kpi"><span class="meta">보류</span><b>0</b></div>
+  <div class="kpi"><span class="meta">독립성</span><b>OK</b></div>
+</div>
+
+<section class="card"><h3>이 카드가 무엇을 끝내려는가</h3>
+<p>이 일이 끝나면 <strong>대화 원본을 던져 넣는 것만으로 폭신 대담 에피소드 한 편이 나옵니다.</strong></p>
+<p>지금은 그 길이 없어요. 대담 레이아웃도, <code>&lt;QA&gt;</code> 컴포넌트도, 에피소드 템플릿도 다 만들어져 있지만 <strong>거기에 넣을 내용을 어디에 어떤 모양으로 두는지가 안 정해져 있습니다.</strong> 그래서 대담 에피소드가 아직 0편입니다.</p>
+<p>카드 <code>KAN-066-KK9Q50</code>(칸반 보드의 카드 번호입니다)이 요구한 것은 셋이에요. ① 대화 원본을 받아 데이터 구조와 파일 형식을 정형화해 저장할 것 ② 그 과정에서 톤앤매너·비문·맞춤법을 교정할 것 ③ 나중에 방향이 바뀌면 다시 만들 수 있도록 <strong>원문을 따로 보존할 것</strong>.</p>
+<p>루트 독립성은 깨지지 않았습니다 — 다른 최상위 카드와 작업 경로가 겹치지 않아요. 다만 짚어 둘 것이 하나 있습니다. 이 저장소는 공개이고 <code>raws/</code> 도 함께 커밋됩니다. 대화 원본에는 시스템 프롬프트가 통째로 들어 있으니, 무엇을 걸러 낼지를 첫 단계에서 규칙으로 정하겠습니다.</p>
+<h3>왜 이 접근인가</h3>
+<p>먼저 <strong>입력의 실물을 재 봤습니다.</strong> 지금 저장소에 있는 유일한 대화 원본 <code>raws/ddd-transaction-account-discussion.mdx</code> 를 파서로 열어 세어 본 값이에요.</p>
+<pre>파일 전체              100,125 B   노드 51개
+├─ 사람 질문            2,859 B    6개   ← 남길 것
+├─ 모델 답변           20,592 B    5개   ← 남길 것 (빈 껍데기 11개는 뺀 수)
+├─ 시스템 프롬프트     38,190 B   15개   ← 버릴 것
+└─ 도구 호출·기타      나머지     20개   ← 버릴 것
+
+남는 발화 11개 = 23,451 B = 파일의 23.4%</pre>
+<p><strong>대담이 될 부분은 4분의 1도 안 됩니다.</strong> 나머지 4분의 3은 시스템 프롬프트와 도구 호출이에요. 이 상태로는 집필자가 매번 100KB 를 통째로 읽어야 하고, 같은 원본에서 같은 결과가 두 번 나오지도 않습니다.</p>
+<p>반대편 끝, 즉 <strong>도착지는 이미 정해져 있습니다.</strong> 폭신 대담 명세(<code>polssin-daedam</code>)가 글의 골격을 셋으로 못박아 뒀거든요 — 대담 설정 · 질문과 답변 · 정수 한 문장. 그리고 그 명세의 원칙 넷은 전부 <strong>기계가 검사할 수 있는 것</strong>입니다. 질문 번호가 1부터 빠짐없이 이어지는가, 인용구가 한두 개인가, 시리즈와 회차가 채워졌는가, 저자가 인터뷰어로 적혔는가. 사람이 손으로 지킬 규칙이 아니라 <strong>빌더가 지켜 줄 규칙</strong>이라는 뜻이에요.</p>
+<p>그래서 층을 셋으로 나눕니다.</p>
+<pre>  L1 원문        받은 그대로. 아무도 안 고친다
+      │          raws/talks/&lt;slug&gt;/source/ + source.json (sha256)
+      │  ← 스킬: 노이즈 제거 · 질문 재구성 · 톤앤매너·비문·맞춤법 교정
+      ▼
+  L2 정형본      사람이 계속 손보는 정본
+      │          raws/talks/&lt;slug&gt;/talk.md  (Zod 스키마로 계약)
+      │  ← 스크립트: 계약 검사 + 치환뿐
+      ▼
+  L3 발행물      파생물. 손대지 않는다
+                 src/content/posts/talk-&lt;slug&gt;.mdx</pre>
+<p>카드는 &quot;원문/교정본 2계층&quot;을 요구했는데 <strong>하나를 더 얹었습니다.</strong> 왜냐하면 2계층이면 교정본이 곧 발행물이 되기 때문이에요. 발행물에 오타 하나만 손으로 고쳐도 그 순간 원문과 발행물 사이의 연결이 끊어지고, 카드가 요구한 ③(다시 만들기)이 죽습니다. <strong>L3 를 파생물로 못박아야 ③ 이 삽니다.</strong></p>
+<p>경계선을 여기 그은 이유도 같습니다. L1→L2 는 &quot;무엇이 잡음이고 무엇이 대담인가&quot;를 판단하는 일이라 사람 또는 AI 가 해야 하고, L2→L3 는 정해진 검사와 치환뿐이라 스크립트가 해야 해요. &quot;스킬로 만들까 스크립트로 만들까&quot;는 둘 중 하나를 고르는 문제가 아니라 <strong>이 선을 어디에 긋는가</strong>의 문제였습니다.</p>
+<h4>버린 대안 셋</h4>
+<ul>
+<li><strong>원본을 그대로 두고 집필자가 읽어 쓴다</strong> (지금 방식) — 위에서 잰 대로 100KB 중 76.6% 가 잡음이고, 재현이 안 됩니다.</li>
+<li><strong>원본에서 곧장 MDX 를 만든다</strong> (2계층) — 다시 만들기가 불가능해집니다. 카드 요구사항 ③ 을 정면으로 어겨요.</li>
+<li><strong>정형본을 JSON 이나 YAML 로 둔다</strong> — 기계는 편하지만 긴 한국어 답변이 이스케이프와 블록 스칼라에 갇혀 사람이 못 고칩니다. 정본은 사람이 계속 고칠 물건이에요.</li>
+</ul>
+<h3>무엇을 어떤 순서로</h3>
+<p>작업 단위 일곱 개(<code>S1</code>~<code>S7</code>, 실행 계획의 단계 번호입니다)는 <strong>규격 → 기계 → 입구</strong> 순으로 흐릅니다. 옆의 간트 차트가 그 순서를 그림으로 보여 줘요.</p>
+<p><strong>앞의 셋(<code>S1</code>·<code>S2</code>·<code>S3</code>)은 규격입니다.</strong> 원본에서 무엇을 버릴지 정하고(<code>S1</code>), 원문을 어디에 어떻게 봉인할지 정하고(<code>S2</code>), 정형본의 문법과 검사기를 만듭니다(<code>S3</code>). 이 셋이 끝나면 코드가 읽고 쓸 형식이 전부 확정돼요. 되돌리기 가장 비싼 결정이 여기 몰려 있는 대신, <strong>여기까지만 하고 멈춰도 규격 문서와 파서가 남습니다.</strong></p>
+<p><strong>가운데 둘(<code>S4</code>·<code>S5</code>)은 기계입니다.</strong> 정형본을 발행물로 굽는 빌더와, 그 결과가 어긋나지 않았는지 보는 검증기예요. 검증기가 보는 것은 셋입니다 — 원문 해시가 그대로인가, 정형본이 스키마를 통과하는가, 발행물을 다시 구웠을 때 같은 것이 나오는가. 세 번째가 곧 &quot;발행물을 손으로 고치지 않았는가&quot;입니다.</p>
+<p><strong>뒤의 둘(<code>S6</code>·<code>S7</code>)은 사람이 부르는 입구입니다.</strong> <code>talk-ingest</code> 스킬이 원본 투입부터 굽기까지를 한 흐름으로 잇고, 마지막으로 <code>CLAUDE.md</code> · <code>init-post</code> 스킬 · authoring 경로 설정 세 곳에 접점을 적습니다. 문서를 맨 뒤에 두는 이유는 <strong>실제로 도는 것을 확인한 뒤에 써야 하기 때문</strong>이에요. 안 그러면 문서가 계획을 적게 되고, 그건 다음 사람을 속입니다.</p>
+<p>교정을 스킬이 직접 하지 않는다는 점도 미리 말씀드릴게요. 톤앤매너·비문·맞춤법은 <code>authoring-kit</code> 이 소유한 규칙이고, 이 스킬은 그쪽에 위임만 합니다. 이 저장소는 같은 규칙을 여러 곳이 각자 들고 있다가 갈라진 적이 있어서, 규칙을 다시 복제하지 않습니다.</p>
+<h3>두 가지 수행안</h3>
+<p>두 안 모두 작업 단위 일곱 개를 다 합니다. 다른 것은 <strong>묶는 방식</strong>뿐이에요.</p>
+<h4>안 A — 단일 에이전트 순차</h4>
+<p>한 세션이 처음부터 끝까지 순서대로 갑니다. 묶음(배치)은 셋이에요 — 규격 셋, 기계 둘, 입구 둘. 동시에 도는 작업은 없습니다.</p>
+<ul>
+<li><strong>묶음 수</strong>: 3 (작업 3개 / 2개 / 2개)</li>
+<li><strong>동시 실행 폭</strong>: 1</li>
+<li><strong>되돌리기</strong>: 묶음마다 태그가 붙어 통째로 되돌릴 수 있습니다</li>
+<li><strong>강점</strong>: 묶음이 끝날 때마다 결과를 보고 다음 묶음을 조정할 수 있어요. 표본이 하나뿐이라 첫 묶음에서 규칙이 흔들릴 여지가 있는데, 그때 방향을 틀 자리가 생깁니다</li>
+<li><strong>약점</strong>: 묶음이 하나 더 많습니다. 안 B 라면 겹쳐 돌았을 작업이 순서대로 기다려요</li>
+</ul>
+<h4>안 B — 오케스트레이션 병렬</h4>
+<p>첫 묶음에서 <code>S1</code> 과 <code>S2</code> 를 나란히 돌리고, 둘째 묶음에서 기계 갈래와 스킬 갈래를 동시에 갑니다. 묶음은 둘이에요.</p>
+<ul>
+<li><strong>묶음 수</strong>: 2 (작업 3개 / 4개)</li>
+<li><strong>동시 실행 폭</strong>: 2</li>
+<li><strong>되돌리기</strong>: 둘째 묶음은 두 갈래가 얽혀 부분 되돌리기가 어렵습니다</li>
+<li><strong>강점</strong>: 묶음이 하나 줄어듭니다. 규격이 흔들리지 않는다면 더 빨리 끝나요</li>
+<li><strong>약점</strong>: 스킬 갈래가 빌더의 호출 규약을 미리 알아야 합니다. 첫 묶음 끝에 그 규약을 문서로 못박아야 하고, 그게 나중에 바뀌면 스킬 쪽이 재작업입니다</li>
+</ul>
+<p>옆의 비교 차트가 두 안의 묶음 크기와 동시 실행 폭을 나란히 보여 줍니다.</p>
+<p><strong>추천은 안 A 입니다.</strong> 이유는 하나예요 — 대화 원본 표본이 <strong>1건뿐</strong>입니다. 다른 도구의 내보내기 형식이 오면 첫 단계의 규칙이 흔들리는데, 안 B 는 그 흔들림이 스킬 갈래까지 번집니다. 표본이 서너 건 쌓인 뒤라면 안 B 가 나은 선택이 될 거예요.</p>
+<h3>막힐 만한 지점</h3>
+<p><strong>첫째, 표본이 하나입니다.</strong> 이게 이 계획에서 가장 큰 위험이에요. 지금 잰 51개 노드의 분류는 한 도구의 내보내기 형식 하나를 본 결과입니다. 다른 형식이 오면 첫 단계의 규칙이 그대로 통하지 않아요. 그래서 파서를 <strong>형식별 어댑터</strong>로 나누고, 모르는 형식은 추측해서 읽지 않고 <strong>실패시킵니다.</strong> 조용히 잘못 읽는 것보다 멈추는 편이 낫거든요.</p>
+<p><strong>둘째, 원본이 이미 잘려 있을 수 있습니다.</strong> 모델 답변 5개의 바이트 수를 재 보니 4,116 · 4,117 · 4,119 · 4,120 · 4,120 이었어요. 글자 수는 2,205 자에서 2,709 자까지 제각각인데 바이트만 거의 같습니다. <strong>우연으로 보기 어려운 수치예요</strong> — 내보내기 쪽에 상한이 걸려 있을 가능성이 있습니다. 다섯 개 모두 문장 끝에서 깔끔하게 끝나서 육안으로는 안 보였고요. 첫 단계에서 이것부터 확인하겠습니다. 잘린 원본을 정본으로 봉인하면 그 뒤 전부가 헛일이니까요.</p>
+<p><strong>셋째, 첫 단계 자체가 예산을 먹을 수 있습니다.</strong> 100KB 를 통째로 컨텍스트에 올리면 그것만으로 세션이 기웁니다. 그래서 본문을 다 읽지 않고 <code>(출처, 종류, 길이)</code> 표만 먼저 뽑아 보고, 실제 본문은 표본 몇 개만 엽니다 — 위에 적은 숫자들이 그렇게 나온 값이에요.</p>
+<p><strong>넷째, 되돌리기가 비싼 자리는 디렉터리 구조입니다.</strong> 두 번째 단계에서 정하는 레이아웃 위에 나머지 전부가 섭니다. 다행히 첫 묶음은 <strong>기존 파일을 고치지 않고 새 파일만 만들어요.</strong> 되돌릴 때 충돌이 날 여지가 적습니다.</p>
+<p><strong>다섯째, 공개 저장소입니다.</strong> 첫 단계의 필터가 약하면 시스템 프롬프트와 경로가 그대로 커밋됩니다. 필터 규칙을 명시하고, 두 번째 단계에서 표본을 실제로 앉힐 때 눈으로 확인하겠습니다.</p>
+<h3>무엇이 되면 끝인가</h3>
+<p>표본 <code>raws/ddd-transaction-account-discussion.mdx</code> 를 실제 입력으로 넣어서 아래가 전부 초록이면 끝난 것으로 봅니다. 하나라도 비0으로 끝나면 미완이에요.</p>
+<pre>bun run talk:verify        # 원문 해시 · 정형본 스키마 · 발행물 일치
+bun scripts/build-talk.ts raws/talks/&lt;slug&gt;/talk.md   # 다시 구워도 같은가
+bun run build              # 대담 글이 포함된 채로 전 페이지 빌드
+bun scripts/check-post-markers.ts
+bun scripts/check-emphasis.ts &amp;&amp; bun scripts/check-emphasis.ts --dist
+bunx tsc --noEmit</pre>
+<p>그리고 <strong>스크립트가 판정 못 하는 것 셋</strong>은 눈으로 봅니다.</p>
+<ol>
+<li>구워진 글을 미리보기로 열었을 때 대담 레이아웃이 뜨는가 — 배너, 화자 둘, 그리고 질문 목차가 질문문에서 자동으로 생기는가.</li>
+<li>정형본의 한 문장만 고치고 다시 구웠을 때 <strong>그 문장만</strong> 바뀌는가.</li>
+<li>원문 파일의 해시가 파이프라인 전 구간에서 안 바뀌는가.</li>
+</ol>
+<p>3번이 이 카드의 핵심입니다. 원문이 한 바이트라도 움직이면, 이 계획이 세운 세 층 구조가 첫 회에 무너진 것이거든요.</p></section>
+
+<h2>전략</h2>
+<section class="card"><p><strong>입력의 실물을 먼저 봤다.</strong> <code>raws/ddd-transaction-account-discussion.mdx</code> 가 유일한 대화 원본 표본이고 93KB 다. 그 안은 중첩 JSON 그래프(<code>{id, step_index, source, type, content, tool_calls, children}</code>)이며 <code>source</code> 는 <code>USER_EXPLICIT</code> · <code>MODEL</code> · <code>SYSTEM</code>, <code>type</code> 은 <code>USER_INPUT</code> · <code>CONVERSATION_HISTORY</code> · <code>EPHEMERAL_MESSAGE</code> 등으로 갈린다. 사람의 발화보다 시스템 프롬프트 · 도구 호출 · 플래너 잡음이 훨씬 많다. 이 상태로는 <code>&lt;QA n q&gt;</code> 골격에 못 넣고, 매번 집필자 컨텍스트에 93KB 를 통째로 올려야 한다.</p>
+<p><strong>목적지도 이미 정해져 있다.</strong> <code>.claude/authoring/specs/polssin-daedam/spec.json</code> 의 <code>sections</code> 가 <code>frontmatter</code> · <code>qa</code>(repeat) · <code>pullquote</code> 셋이고, 원칙 SP1(<code>n</code> 은 1부터 연속) · SP4(PullQuote 는 요약이 아닌 도달점, 1~2개) · SP5(<code>template: talk</code> · <code>series</code> · <code>order</code>) · SP6(<code>author</code> 는 인터뷰어)은 <strong>전부 기계가 검사할 수 있는 계약</strong>이다. 즉 발행물은 사람이 손으로 쓸 것이 아니라 <strong>구워야 할 것</strong>이다.</p>
+<h4>3계층으로 나눈다</h4>
+<p>카드가 요구한 &quot;원문/교정본 2계층&quot;에 <strong>발행물 1계층을 더해 3계층</strong>으로 간다. 2계층으로 끝내면 교정본이 곧 발행물이 되어, 발행물에 손을 대는 순간 &quot;다시 굽기&quot;가 깨지기 때문이다.</p>
+<p>| 층 | 무엇 | 어디 | 누가 고치나 | |---|---|---|---| | L1 원문 | 받은 그대로. 불변 | <code>raws/talks/&lt;slug&gt;/source.&lt;ext&gt;</code> + <code>source.json</code> | 아무도 | | L2 정형본 | 노이즈 제거 + 교정된 정본 | <code>raws/talks/&lt;slug&gt;/talk.md</code> | 사람 · AI | | L3 발행물 | 파생. 손대지 않는다 | <code>src/content/posts/talk-&lt;slug&gt;.mdx</code> | 빌더만 |</p>
+<p>L1→L2 는 판단이 드는 일(무엇이 질문이고 무엇이 잡음인가, 톤앤매너·비문·맞춤법)이라 <strong>스킬</strong>이 맡는다. L2→L3 는 계약 검사와 치환뿐이라 <strong>스크립트</strong>가 맡는다. &quot;스킬로 만들지 스크립트로 만들지&quot;는 양자택일이 아니라 이 경계선의 문제였다.</p>
+<h4>굳힌 판단 넷</h4>
+<ol>
+<li><strong>L2 는 markdown 이다 (JSON·YAML 아님).</strong> 대담 정본은 사람이 계속 손볼 물건인데 긴 한국어 답변을 JSON 이스케이프나 YAML 블록 스칼라에 가두면 편집이 무너진다. 대신 형식이 흐물해지지 않도록 <strong>Zod 파서</strong>로 계약을 잡는다 — <code>src/lib/viz/schema.ts</code> 가 ``<code>viz</code>`` 블록에 쓴 것과 같은 방식이다.</li>
+<li><strong>저장 위치는 <code>raws/talks/&lt;slug&gt;/</code> 다.</strong> <code>raws/README.md</code> 가 raws 를 &quot;사용자가 직접 작성하는 공간&quot;으로 정의하고 <code>raws/_proceeded/</code> 로 봉인하는 관례가 이미 있다. 별도 루트 디렉터리를 새로 파면 유저 입력의 입구가 둘이 된다.</li>
+<li><strong><code>init-post --talk</code> 와 합치지 않는다.</strong> 그쪽은 원본 없이 바로 쓰는 <strong>빈 스켈레톤</strong> 경로이고 이쪽은 <strong>내용이 찬 것을 굽는</strong> 경로다. 진입점이 다르므로 둘 다 남기고, <code>src/templates/talk-episode.mdx</code> 를 두 경로의 단일 소스로 공유한다.</li>
+<li><strong>L3 는 사람이 안 고친다.</strong> 고치고 싶으면 L2 를 고쳐 다시 굽는다. 이 규약이 없으면 카드가 요구한 &quot;개선 방향이 바뀔 때 다시 굽는다&quot;가 첫 수정에서 죽는다.</li>
+</ol>
+<h4>버린 대안 셋</h4>
+<ul>
+<li><strong>원본을 raws 에 그대로 두고 집필자가 읽어 쓴다</strong>(현행) — 93KB 노이즈를 매번 올려야 하고, 같은 원본에서 같은 결과가 두 번 나오지 않는다.</li>
+<li><strong>원본 → MDX 직행(2계층)</strong> — 교정본이 곧 발행물이라 재생성이 불가능하다. 카드 요구사항 ③ 을 정면으로 어긴다.</li>
+<li><strong>L2 를 JSON/YAML 로</strong> — 기계 친화적이지만 사람이 못 고친다. 정본은 사람이 고치는 물건이라는 전제와 충돌한다.</li>
+</ul>
+<h4>열린 위험 둘</h4>
+<ul>
+<li><strong>표본이 1건이다.</strong> 다른 export 형식(ChatGPT · Claude · 평문 붙여넣기)이 오면 S1 의 정규화 규칙이 흔들린다. 그래서 파서를 형식별 어댑터로 나누고, 모르는 형식은 <strong>추측하지 않고 실패시킨다</strong>.</li>
+<li><strong>KAN-067 과 맞물린다.</strong> 그 카드의 대담 준비 노트가 어디에 앉을지가 정해지면 <code>raws/talks/&lt;slug&gt;/</code> 안에 <code>prep.md</code> 로 들어올 수 있다. 지금은 자리만 비워 둔다.</li>
+</ul></section>
+
+<h2>실행 계획 (WBS)</h2>
+<div class="chart"><svg viewBox="0 0 860 268" role="img" aria-label="WBS 간트"><text x="16" y="57" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">S1</text><rect x="148.0" y="45" width="232.0" height="20" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="156.0" y="59" font-size="12" fill="var(--ink)">원본 정규화 규칙 확정 — raws/ddd-transaction-account-…</text><text x="16" y="87" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">S2</text><rect x="148.0" y="75" width="232.0" height="20" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="156.0" y="89" font-size="12" fill="var(--ink)">L1 원문 보존 규격 — raws/talks/&lt;slug&gt;/ 레이아웃과 sourc…</text><text x="16" y="117" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">S3</text><rect x="148.0" y="105" width="232.0" height="20" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="156.0" y="119" font-size="12" fill="var(--ink)">L2 정형 스키마 + 파서 — talk.md 문법(frontmatter + Q/…</text><text x="16" y="147" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">S4</text><rect x="380.0" y="135" width="232.0" height="20" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="388.0" y="149" font-size="12" fill="var(--ink)">L2 → L3 빌더 — scripts/build-talk.ts 가 talk.md…</text><text x="16" y="177" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">S5</text><rect x="380.0" y="165" width="232.0" height="20" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="388.0" y="179" font-size="12" fill="var(--ink)">검증기 — scripts/verify-talk.ts + package.json …</text><text x="16" y="207" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">S6</text><rect x="612.0" y="195" width="232.0" height="20" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="620.0" y="209" font-size="12" fill="var(--ink)">talk-ingest 스킬 — 원본 투입 → L1 봉인 → L2 초안(노이즈 제…</text><text x="16" y="237" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">S7</text><rect x="612.0" y="225" width="232.0" height="20" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="620.0" y="239" font-size="12" fill="var(--ink)">접점 문서화 — CLAUDE.md 폭신 대담 절, init-post 스킬의 경계…</text><line x1="148.0" y1="34" x2="148.0" y2="264" stroke="var(--border)" stroke-width="2" stroke-dasharray="4 3"/><text x="154.0" y="28" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">배치1</text><line x1="380.0" y1="34" x2="380.0" y2="264" stroke="var(--border)" stroke-width="2" stroke-dasharray="4 3"/><text x="386.0" y="28" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">배치2</text><line x1="612.0" y1="34" x2="612.0" y2="264" stroke="var(--border)" stroke-width="2" stroke-dasharray="4 3"/><text x="618.0" y="28" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">배치3</text></svg></div>
+<div class="scroll"><table>
+<tr><th>work</th><th>내용</th><th>상태</th></tr><tr><td><code>S1</code></td><td>원본 정규화 규칙 확정 — <code>raws/ddd-transaction-account-discussion.mdx</code> 를 표본으로 노이즈 계층(<code>SYSTEM</code>·<code>EPHEMERAL_MESSAGE</code>·<code>tool_calls</code>·<code>USER_SETTINGS_CHANGE</code>)을 전수 분류하고 &quot;무엇을 버리고 무엇을 남기는가&quot;를 규칙 문서로 고정. <strong>완료 기준</strong>: 규칙 문서 + 표본에서 살아남은 발화 수·바이트 수 실측값이 문서에 박힌다</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S2</code></td><td>L1 원문 보존 규격 — <code>raws/talks/&lt;slug&gt;/</code> 레이아웃과 <code>source.json</code>(출처·모델·수집일·형식·sha256) 스키마 확정. <strong>완료 기준</strong>: 표본 1건을 실제로 그 구조로 앉히고, 해시 재계산이 기록값과 일치</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S3</code></td><td>L2 정형 스키마 + 파서 — <code>talk.md</code> 문법(frontmatter + Q/A 마커) 정의와 <code>src/lib/talk/talkSource.ts</code>(Zod). <strong>완료 기준</strong>: 표본 파싱 성공 + 위반 케이스 5종(n 불연속·q 누락·PullQuote 3개·series 누락·author 가 교수님)이 각각 <strong>서로 다른</strong> 에러 메시지로 실패</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S4</code></td><td>L2 → L3 빌더 — <code>scripts/build-talk.ts</code> 가 <code>talk.md</code> 를 <code>src/content/posts/talk-&lt;slug&gt;.mdx</code> 로 굽는다. SP1·SP4·SP5·SP6 계약 검사 내장, 템플릿은 <code>src/templates/talk-episode.mdx</code> 공유. <strong>완료 기준</strong>: 표본을 구워 <code>bun run build</code> 통과 + <code>check-post-markers</code>·<code>check-emphasis --dist</code> 통과</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S5</code></td><td>검증기 — <code>scripts/verify-talk.ts</code> + <code>package.json</code> 의 <code>talk:verify</code>. L2↔L3 어긋남(손으로 고친 발행물)과 L1 해시 불일치를 잡는다. <strong>완료 기준</strong>: 일부러 깨뜨린 3케이스가 전부 비0 종료, 정상 케이스는 0</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S6</code></td><td><code>talk-ingest</code> 스킬 — 원본 투입 → L1 봉인 → L2 초안(노이즈 제거·질문 재구성) → <code>authoring-kit</code> 의 <code>polssin-daedam</code> spec + <code>ppangtolab-prof</code> voice 로 톤앤매너·비문·맞춤법 교정 → <code>build-talk</code> 호출. <strong>완료 기준</strong>: 표본 1건이 원본부터 발행 가능한 MDX 까지 한 흐름에 통과하고, L1 이 한 바이트도 안 바뀐다</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S7</code></td><td>접점 문서화 — <code>CLAUDE.md</code> 폭신 대담 절, <code>init-post</code> 스킬의 경계 한 줄, <code>.claude/authoring/paths.json</code> 의 <code>dirs.talk</code>. <strong>완료 기준</strong>: 세 곳 갱신 + <code>bun run build</code> 재통과</td><td><span class="tag tag-todo">미착수</span></td></tr>
+</table></div>
+
+<h2>배치 구성</h2>
+<div class="chart"><svg viewBox="0 0 860 164" role="img" aria-label="배치 2안 비교"><text x="16" y="52" font-size="14" font-weight="700" fill="var(--fg)">단일 에이전트</text><rect x="190.0" y="30" width="208.7" height="36" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="198.0" y="52" font-size="12" fill="var(--ink)">단계1</text><rect x="404.7" y="30" width="208.7" height="36" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="412.7" y="52" font-size="12" fill="var(--ink)">단계2</text><rect x="619.3" y="30" width="208.7" height="36" fill="var(--bg-sunken)" stroke="var(--border)" stroke-width="2"/><text x="627.3" y="52" font-size="12" fill="var(--ink)">단계3</text><text x="16" y="108" font-size="14" font-weight="700" fill="var(--fg)">오케스트레이션</text><rect x="190.0" y="86" width="208.7" height="36" fill="var(--accent-2)" stroke="var(--border)" stroke-width="2"/><text x="198.0" y="108" font-size="12" fill="var(--ink)">단계1 ×2</text><rect x="404.7" y="86" width="208.7" height="36" fill="var(--accent-2)" stroke="var(--border)" stroke-width="2"/><text x="412.7" y="108" font-size="12" fill="var(--ink)">단계2 ×2</text><rect x="619.3" y="86" width="208.7" height="36" fill="var(--accent-2)" stroke="var(--border)" stroke-width="2"/><text x="627.3" y="108" font-size="12" fill="var(--ink)">단계3 ×2</text><text x="16" y="160" font-size="11" fill="var(--fg-subtle)">배치 크기 기준: work 3~4개 = 한 세션 예산의 절반</text></svg></div>
+<div class="scroll"><table>
+<tr><th>배치</th><th>work</th><th>진행</th><th>배정 출처</th></tr><tr><td>배치1</td><td><code>S1, S2, S3</code></td><td>0/3</td><td>frontmatter</td></tr><tr><td>배치2</td><td><code>S4, S5</code></td><td>0/2</td><td>frontmatter</td></tr><tr><td>배치3</td><td><code>S6, S7</code></td><td>0/2</td><td>frontmatter</td></tr>
+</table></div>
+
+
+<h2>루트 독립성</h2>
+<div class="chart"><svg viewBox="0 0 860 404" role="img" aria-label="경로 레인 × 루트 카드 점유 매트릭스 — 위반 레인 0개"><text x="314.0" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-024</text><text x="314.0" y="40" font-size="12" font-weight="400" fill="var(--fg)">집…</text><text x="322.3" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-030</text><text x="322.3" y="40" font-size="12" font-weight="400" fill="var(--fg)">글…</text><text x="330.6" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-032</text><text x="330.6" y="40" font-size="12" font-weight="400" fill="var(--fg)">프…</text><text x="338.9" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-060</text><text x="338.9" y="40" font-size="12" font-weight="400" fill="var(--fg)">한…</text><text x="347.2" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-061</text><text x="347.2" y="40" font-size="12" font-weight="400" fill="var(--fg)">홈…</text><text x="355.6" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-063</text><text x="355.6" y="40" font-size="12" font-weight="400" fill="var(--fg)">v…</text><text x="363.9" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-048</text><text x="363.9" y="40" font-size="12" font-weight="400" fill="var(--fg)">포…</text><text x="372.2" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-065</text><text x="372.2" y="40" font-size="12" font-weight="400" fill="var(--fg)">문…</text><text x="380.5" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-067-NH9SDQ</text><text x="380.5" y="40" font-size="12" font-weight="400" fill="var(--fg)">폭…</text><text x="388.8" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-001</text><text x="388.8" y="40" font-size="12" font-weight="400" fill="var(--fg)">G…</text><text x="397.1" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-002</text><text x="397.1" y="40" font-size="12" font-weight="400" fill="var(--fg)">도…</text><text x="405.4" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-003</text><text x="405.4" y="40" font-size="12" font-weight="400" fill="var(--fg)">D…</text><text x="413.8" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-004</text><text x="413.8" y="40" font-size="12" font-weight="400" fill="var(--fg)">상…</text><text x="422.1" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-005</text><text x="422.1" y="40" font-size="12" font-weight="400" fill="var(--fg)">모…</text><text x="430.4" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-064</text><text x="430.4" y="40" font-size="12" font-weight="400" fill="var(--fg)">집…</text><text x="438.7" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-062</text><text x="438.7" y="40" font-size="12" font-weight="400" fill="var(--fg)">발…</text><text x="447.0" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-009</text><text x="447.0" y="40" font-size="12" font-weight="400" fill="var(--fg)">K…</text><text x="455.3" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-006</text><text x="455.3" y="40" font-size="12" font-weight="400" fill="var(--fg)">W…</text><text x="463.6" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-014</text><text x="463.6" y="40" font-size="12" font-weight="400" fill="var(--fg)">K…</text><text x="471.9" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-015</text><text x="471.9" y="40" font-size="12" font-weight="400" fill="var(--fg)">d…</text><text x="480.2" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-017</text><text x="480.2" y="40" font-size="12" font-weight="400" fill="var(--fg)">D…</text><text x="488.6" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-018</text><text x="488.6" y="40" font-size="12" font-weight="400" fill="var(--fg)">C…</text><text x="496.9" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-019</text><text x="496.9" y="40" font-size="12" font-weight="400" fill="var(--fg)">낡…</text><text x="505.2" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-020</text><text x="505.2" y="40" font-size="12" font-weight="400" fill="var(--fg)">전…</text><text x="513.5" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-022</text><text x="513.5" y="40" font-size="12" font-weight="400" fill="var(--fg)">O…</text><text x="521.8" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-016</text><text x="521.8" y="40" font-size="12" font-weight="400" fill="var(--fg)">T…</text><text x="530.1" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-007</text><text x="530.1" y="40" font-size="12" font-weight="400" fill="var(--fg)">T…</text><text x="538.4" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-023</text><text x="538.4" y="40" font-size="12" font-weight="400" fill="var(--fg)">g…</text><text x="546.8" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-013</text><text x="546.8" y="40" font-size="12" font-weight="400" fill="var(--fg)">집…</text><text x="555.1" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-011</text><text x="555.1" y="40" font-size="12" font-weight="400" fill="var(--fg)">인…</text><text x="563.4" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-010</text><text x="563.4" y="40" font-size="12" font-weight="400" fill="var(--fg)">K…</text><text x="571.7" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-012</text><text x="571.7" y="40" font-size="12" font-weight="400" fill="var(--fg)">블…</text><text x="580.0" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-008</text><text x="580.0" y="40" font-size="12" font-weight="400" fill="var(--fg)">O…</text><text x="588.3" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-029</text><text x="588.3" y="40" font-size="12" font-weight="400" fill="var(--fg)">글…</text><text x="596.6" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-028</text><text x="596.6" y="40" font-size="12" font-weight="400" fill="var(--fg)">g…</text><text x="604.9" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-027</text><text x="604.9" y="40" font-size="12" font-weight="400" fill="var(--fg)">F…</text><text x="613.2" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-025</text><text x="613.2" y="40" font-size="12" font-weight="400" fill="var(--fg)">글…</text><text x="621.6" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-026</text><text x="621.6" y="40" font-size="12" font-weight="400" fill="var(--fg)">글…</text><text x="629.9" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-033</text><text x="629.9" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="638.2" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-034</text><text x="638.2" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="646.5" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-038</text><text x="646.5" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="654.8" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-035</text><text x="654.8" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="663.1" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-036</text><text x="663.1" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="671.4" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-043</text><text x="671.4" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="679.8" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-046</text><text x="679.8" y="40" font-size="12" font-weight="400" fill="var(--fg)">g…</text><text x="688.1" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-044</text><text x="688.1" y="40" font-size="12" font-weight="400" fill="var(--fg)">g…</text><text x="696.4" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-037</text><text x="696.4" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="704.7" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-039</text><text x="704.7" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="713.0" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-040</text><text x="713.0" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="721.3" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-041</text><text x="721.3" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="729.6" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-031</text><text x="729.6" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="737.9" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-042</text><text x="737.9" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="746.2" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-045</text><text x="746.2" y="40" font-size="12" font-weight="400" fill="var(--fg)">V…</text><text x="754.6" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-056</text><text x="754.6" y="40" font-size="12" font-weight="400" fill="var(--fg)">g…</text><text x="762.9" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-055</text><text x="762.9" y="40" font-size="12" font-weight="400" fill="var(--fg)">포…</text><text x="771.2" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-054</text><text x="771.2" y="40" font-size="12" font-weight="400" fill="var(--fg)">시…</text><text x="779.5" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-050</text><text x="779.5" y="40" font-size="12" font-weight="400" fill="var(--fg)">헤…</text><text x="787.8" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-047</text><text x="787.8" y="40" font-size="12" font-weight="400" fill="var(--fg)">r…</text><text x="796.1" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-049</text><text x="796.1" y="40" font-size="12" font-weight="400" fill="var(--fg)">글…</text><text x="804.4" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-051</text><text x="804.4" y="40" font-size="12" font-weight="400" fill="var(--fg)">글…</text><text x="812.8" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-057</text><text x="812.8" y="40" font-size="12" font-weight="400" fill="var(--fg)">데…</text><text x="821.1" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-058</text><text x="821.1" y="40" font-size="12" font-weight="400" fill="var(--fg)">글…</text><text x="829.4" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">KAN-059</text><text x="829.4" y="40" font-size="12" font-weight="400" fill="var(--fg)">메…</text><rect x="833.7" y="12" width="6.3" height="340" fill="var(--accent)" opacity="0.10"/><text x="837.7" y="26" font-size="11" font-family="var(--font-mono)" fill="var(--fg-subtle)">▶ KAN-066-KK9Q50</text><text x="837.7" y="40" font-size="12" font-weight="700" fill="var(--fg)">폭…</text><line x1="14" y1="46" x2="846" y2="46" stroke="var(--border)" stroke-width="2"/><text x="14" y="67.0" font-size="11.5" font-family="var(--font-mono)" fill="var(--fg-muted)">.claude/authoring/paths.json</text><rect x="837.7" y="52" width="-5.7" height="20" fill="var(--accent)" stroke="var(--border)" stroke-width="2"/><text x="14" y="101.0" font-size="11.5" font-family="var(--font-mono)" fill="var(--fg-muted)">.claude/skills/init-post/SKILL.md</text><rect x="837.7" y="86" width="-5.7" height="20" fill="var(--accent)" stroke="var(--border)" stroke-width="2"/><text x="14" y="135.0" font-size="11.5" font-family="var(--font-mono)" fill="var(--fg-muted)">.claude/skills/talk-ingest/**</text><rect x="837.7" y="120" width="-5.7" height="20" fill="var(--accent)" stroke="var(--border)" stroke-width="2"/><text x="14" y="169.0" font-size="11.5" font-family="var(--font-mono)" fill="var(--fg-muted)">raws/talks/**</text><rect x="837.7" y="154" width="-5.7" height="20" fill="var(--accent)" stroke="var(--border)" stroke-width="2"/><text x="14" y="203.0" font-size="11.5" font-family="var(--font-mono)" fill="var(--fg-muted)">scripts/build-talk.ts</text><rect x="837.7" y="188" width="-5.7" height="20" fill="var(--accent)" stroke="var(--border)" stroke-width="2"/><text x="14" y="237.0" font-size="11.5" font-family="var(--font-mono)" fill="var(--fg-muted)">scripts/verify-talk.ts</text><rect x="837.7" y="222" width="-5.7" height="20" fill="var(--accent)" stroke="var(--border)" stroke-width="2"/><text x="14" y="271.0" font-size="11.5" font-family="var(--font-mono)" fill="var(--fg-muted)">src/lib/talk.ts</text><rect x="837.7" y="256" width="-5.7" height="20" fill="var(--accent)" stroke="var(--border)" stroke-width="2"/><text x="14" y="305.0" font-size="11.5" font-family="var(--font-mono)" fill="var(--fg-muted)">src/lib/talk/**</text><rect x="837.7" y="290" width="-5.7" height="20" fill="var(--accent)" stroke="var(--border)" stroke-width="2"/><text x="14" y="339.0" font-size="11.5" font-family="var(--font-mono)" fill="var(--fg-muted)">src/templates/talk-episode.mdx</text><rect x="837.7" y="324" width="-5.7" height="20" fill="var(--accent)" stroke="var(--border)" stroke-width="2"/><text x="14" y="368" font-size="11.5" font-style="italic" fill="var(--fg-subtle)">scope 미기재로 판정에서 빠진 루트: KAN-024, KAN-030, KAN-032…</text><text x="14" y="392" font-size="12" fill="var(--fg-subtle)">겹치는 레인 없음 — 루트가 서로 독립입니다</text></svg></div>
+<p class="note">이 카드가 속한 루트는 다른 루트와 경로가 겹치지 않습니다. 병렬로 수행해도 충돌하지 않습니다.</p>
+<p class="note">경로 겹침은 신호이지 판정이 아닙니다. DB 스키마·환경변수·패키지
+매니페스트·공유 API 계약처럼 경로에 드러나지 않는 의존은 여기 잡히지 않습니다.</p>
+
+<h2>검증 기준</h2>
+<section class="card"><p>표본 <code>raws/ddd-transaction-account-discussion.mdx</code> 를 실제 입력으로 써서 아래가 전부 초록이면 끝난 것으로 본다. 하나라도 비0이면 미완이다.</p>
+<pre>bun run talk:verify        # L1 해시 · L2 스키마 · L2↔L3 일치
+bun scripts/build-talk.ts raws/talks/&lt;slug&gt;/talk.md --check   # 다시 구워도 결과가 같은가
+bun run build              # 대담 글이 포함된 채로 전 페이지 빌드
+bun scripts/check-post-markers.ts
+bun scripts/check-emphasis.ts &amp;&amp; bun scripts/check-emphasis.ts --dist
+bunx tsc --noEmit</pre>
+<p><strong>눈으로 확인할 것 셋</strong> (스크립트가 판정 못 한다).</p>
+<ol>
+<li>구워진 MDX 를 <code>astro preview</code> 로 열어 대담 레이아웃이 뜨는가 — 배너 · 화자 듀오 · 오늘의 질문 목차가 <code>q</code> 에서 자동 생성되는가.</li>
+<li>L2 를 한 문장 고치고 다시 구웠을 때 그 문장만 바뀌는가(재현성).</li>
+<li>L1 원문 파일의 mtime·해시가 파이프라인 전 구간에서 안 바뀌는가.</li>
+</ol></section>
+
+<p class="meta">생성 근거: KANBAN.md
+KANBAN.cards/KAN-066-KK9Q50.md · 갱신 2026-08-16</p>
+</div>
