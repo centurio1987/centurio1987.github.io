@@ -745,7 +745,18 @@
       "갱신": "2026-08-16",
       "title_hash": "5db638f72ab856b66e8bafb85a5762b9c3ccf858",
       "memo_hash": "7f1b8adac4238c272b05d19d26d48a69adc8e7b2",
-      "verbatim_hash": "f4d97fd42cee9ee39329b85be2d52a6102f54835"
+      "verbatim_hash": "f4d97fd42cee9ee39329b85be2d52a6102f54835",
+      "scope": [
+        "raws/talks/**",
+        "src/lib/talk.ts",
+        "src/lib/talk/**",
+        "scripts/build-talk.ts",
+        "scripts/verify-talk.ts",
+        ".claude/skills/talk-ingest/**",
+        "src/templates/talk-episode.mdx",
+        ".claude/skills/init-post/SKILL.md",
+        ".claude/authoring/paths.json"
+      ]
     },
     "KAN-067-NH9SDQ": {
       "col": "todo",
