@@ -33,13 +33,19 @@ L3 를 파생물로 못박은 것이 이 구조의 핵심이다. 발행물에 �
 raws/talks/
 ├─ README.md                       ← 이 문서
 ├─ _rules/
-│   └─ NORMALIZE_RULES.md          ← 원본에서 무엇을 버리고 남기는가
+│   ├─ NORMALIZE_RULES.md          ← 원본에서 무엇을 버리고 남기는가
+│   └─ TALK_MD.md                  ← L2 정형본의 문법 (정본)
 └─ <slug>/
     ├─ source/                     ← L1. 받은 파일을 이름·확장자 그대로 넣는다
     │   └─ <원본 파일>              여러 개여도 된다
     ├─ source.json                 ← L1 의 출처·해시·무결성
-    └─ talk.md                     ← L2. 정형본 (문법은 S3 에서 확정)
+    └─ talk.md                     ← L2. 정형본
 ```
+
+`talk.md` 를 손으로 쓰거나 고칠 때는 **`_rules/TALK_MD.md` 를 먼저 본다.** 평범한
+마크다운처럼 보이지만 frontmatter 는 YAML 의 문서화된 부분집합만 받고, 질문 번호는
+적지 않으며(순서에서 나온다), 정수 인용구는 `> [!정수]` 로 표시하고 에피소드당
+1~2개다. 구현은 `src/lib/talkSource.ts` 다.
 
 `<slug>` 는 발행 URL 이 아니라 **대담의 이름**이다. 발행물은 `talk-<slug>.mdx` 가 되므로
 여기에 `talk-` 접두사를 또 붙이지 않는다.
