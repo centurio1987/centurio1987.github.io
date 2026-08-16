@@ -282,7 +282,15 @@ function main(argv: string[]): number {
 
   let failed = 0;
   let written = 0;
+  let skipped = 0;
   for (const slug of slugs) {
+    // `--all` 은 아직 정형본이 없는 대담을 건너뛴다. 원문만 봉인해 둔 상태는 정상이지
+    // 실패가 아니다 — 이름을 직접 대면 그때는 실패로 알린다.
+    if (all && !existsSync(join(dirs.talksDir, slug, "talk.md"))) {
+      skipped += 1;
+      console.log(`건너뜀 ${slug} — 정형본(talk.md)이 아직 없습니다`);
+      continue;
+    }
     try {
       const r = buildTalk(slug, dirs);
       if (check) {
@@ -314,6 +322,7 @@ function main(argv: string[]): number {
 
   console.log(
     `\n대담 ${slugs.length}건 · ${check ? "비교" : "굽기"} · 실패 ${failed}` +
+      (skipped ? ` · 건너뜀 ${skipped}` : "") +
       (check ? "" : ` · 새로 쓴 것 ${written}`),
   );
   return failed === 0 ? 0 : 1;
