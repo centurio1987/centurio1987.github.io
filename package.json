@@ -11,6 +11,8 @@
     "gen:motion": "bun scripts/gen-motion-css.ts",
     "viz:verify": "bun scripts/verify-viz.ts",
     "deco:verify": "bun scripts/verify-deco.ts",
+    "talk:build": "bun scripts/build-talk.ts",
+    "talk:verify": "bun scripts/verify-talk.ts",
     "graph:refresh": "bash scripts/refresh-graph.sh && bash scripts/graph-stamp.sh",
     "graph:stamp": "bash scripts/graph-stamp.sh",
     "graph:request": "bash scripts/graph-request.sh",
