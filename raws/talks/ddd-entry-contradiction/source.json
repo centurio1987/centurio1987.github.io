@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "slug": "ddd-entry-contradiction",
+  "adapter": "antigravity-graph-mdx",
+  "origin": {
+    "tool": "Antigravity — conversation-graph-mdx 스킬이 내보낸 MDX",
+    "model": "Gemini 3.1 Pro (High)",
+    "conversedAt": "2026-06-10T16:27:10+09:00",
+    "capturedAt": "2026-08-16",
+    "note": "raws/ 최상위에 있던 것을 KAN-066-KK9Q50 에서 이 레이아웃으로 옮겼다"
+  },
+  "files": [
+    {
+      "path": "source/ddd-transaction-account-discussion.mdx",
+      "bytes": 100125,
+      "sha256": "22ecddf3cfa57c68ff2c564f03f1d23350ea6f60458f00349682db762de2f247"
+    }
+  ],
+  "integrity": {
+    "usable": false,
+    "truncatedNodes": 5,
+    "truncatedBytes": 7527,
+    "keptUtterances": 11,
+    "reason": "남길 답변 5개가 <truncated N bytes> 로 잘려 있다 — L1 로 봉인은 하되 L2 생성은 거부한다 (NORMALIZE_RULES §5)"
+  }
+}

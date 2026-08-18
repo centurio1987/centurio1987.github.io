@@ -5,7 +5,9 @@
     "raw": "raws",
     "draft": "draft",
     "content": "src/content/posts",
-    "images": "public/images"
+    "images": "public/images",
+    "report": "KANBAN.reports",
+    "talk": "raws/talks"
   },
   "taxonomy": "src/lib/categories.ts",
   "authors": "src/lib/authors.ts",

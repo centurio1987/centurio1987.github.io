@@ -38,6 +38,30 @@ Posts are markdown in `src/content/posts/`. Frontmatter schema lives in `src/con
 
 **폭신 대담 (인터뷰 시리즈)**: frontmatter `template: "talk"`로 활성화되는 인터뷰 레이아웃 (`TalkLayout.astro`). 구성: 대담 배너(`public/images/talk/banner.webp`, 없으면 생략) → 시리즈·EP 헤더 → 화자 듀오(글쓴이 × 빵토 교수님) → 오늘의 질문 목차(QA에서 자동 생성) → Q&A 본문 → 태그 → PostNav/SeriesEpisodes/AuthorProfile/RelatedPosts. 본문은 MDX 컴포넌트 `<QA n q>`·`<PullQuote>` (`src/components/talk/`)로 쓴다. 화자·배너 설정은 `src/lib/talk.ts`. 에피소드 템플릿은 자산으로 `src/templates/talk-episode.mdx`에 관리한다 — 새 에피소드는 `init-post --talk`가 이 템플릿을 `src/content/posts/`로 복사해 스캐폴드한다.
 
+**대화 원본에서 만드는 에피소드는 발행물을 직접 쓰지 않는다 — 세 층을 거쳐 굽는다 (KAN-066).**
+빈 스켈레톤을 채우는 `init-post --talk` 와 달리, AI 대화 export 가 입력일 때는 `talk-ingest`
+스킬이 맡는다. 층은 셋이고 **아래로만 흐른다.**
+
+```
+L1 원문   raws/talks/<slug>/source/ + source.json   받은 그대로. 아무도 안 고친다
+L2 정형본 raws/talks/<slug>/talk.md                 사람이 계속 손보는 정본
+L3 발행물 src/content/posts/talk-<slug>.mdx         파생물. 손으로 고치지 않는다
+```
+
+절차·규격·굳힌 판단은 **`talk-ingest` 스킬**과 `raws/talks/README.md`·`_rules/`(정규화 규칙 ·
+`talk.md` 문법)에 있다 — 대담 입력 경로를 손대기 전에 읽어라. 아래만 기억하면 된다.
+
+- **L3 를 손으로 고치지 마라.** 고칠 것이 있으면 L2 를 고치고 `bun run talk:build <slug>` 로
+  다시 굽는다. 발행물을 고치면 다음 굽기에서 그 수정이 조용히 사라지고, "원문이 있으니 언제든
+  다시 만든다"가 거짓이 된다. 어긋남은 눈이 아니라 `bun run talk:verify` 가 잡는다.
+- **`template: talk` 을 `talk.md` 에 쓰지 않는다** — 빌더가 박는다. 두 곳이 값을 들면 다툰다.
+  같은 이유로 **질문 번호도 쓰지 않는다**(`## Q. <질문문>` 만 쓰면 순서에서 나온다).
+- **`source/` 안은 불변이다.** sha256 이 `source.json` 에 박혀 있어 한 바이트만 움직여도 굽기가 거부된다.
+- **잘린 원본(`<truncated N bytes>`)은 정본이 못 된다.** L1 봉인만 하고 L2 를 만들지 않는다 —
+  실측 사례가 있다(`raws/talks/ddd-entry-contradiction`: 답변 5개, 26.8% 유실).
+- **민감 패턴이 발화에 있으면 봉인 자체를 안 한다.** `raws/` 는 공개 저장소에 커밋된다.
+- 검증용 픽스처는 `scripts/fixtures/talk/` 에 둔다 — `raws/talks/` 에 두면 그게 곧 발행 글이 된다.
+
 `category` must be one of the slugs in `src/lib/categories.ts`.
 
 Posts are **auto-discovered** — no sidebar/nav registration needed. A post's URL is `/posts/<file-slug>`; categories list at `/categories/<slug>`. `draft: true` hides a post from listings.

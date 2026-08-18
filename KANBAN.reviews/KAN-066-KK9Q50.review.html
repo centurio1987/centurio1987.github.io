@@ -1,0 +1,268 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAN-066-KK9Q50 검토 요청</title>
+<style>
+/* manage-kanban 계획 리포트 스타일 — Neobrutalism_Editorial_01 (editorial brutalism)
+ *
+ * 출처: bbangto-ui/packages/style-guide-catalog/src/neobrutalismEditorial.tsx
+ *   라이트 = foundations(semantic) · 다크 = midnightFoundations(makeColorway)
+ *
+ * **왜 사본인가.** @centurio1987/bbangto-ui-visualization 은 React 컴포넌트 + 빌드가
+ * 필요하고 사설 레지스트리(npm.pkg.github.com)에 있다. 리포트는 빌드 없이 열리는 단일
+ * HTML 이고 CSP 로 외부 로드가 막히므로, 패키지를 런타임에 쓸 수 없다. 그래서 토큰 값만
+ * 옮겼다.
+ *
+ * **drift 는 이 주석이 아니라 테스트가 막는다** — scripts/test_report.py 가 위 .tsx 를
+ * 파싱해 아래 값과 대조한다(원본이 없는 머신에서는 skip).
+ */
+
+:root {
+  --ink: #1C1B17;
+  --ink-hover: #2A2823;
+  --cream: #FAF2DD;
+  --paper: #FFFCF2;
+  --cream-sunken: #F3E8C9;
+  --gold: #E9C766;
+  --green: #C2D3B4;
+  --pink: #ECC3C8;
+  --muted: #4A463C;
+  --subtle: #6E6A5E;
+  --faint: #9A9483;
+  --border-width: 2px;
+
+  --bg: var(--cream);
+  --bg-elevated: var(--paper);
+  --bg-sunken: var(--cream-sunken);
+  --fg: var(--ink);
+  --fg-muted: var(--muted);
+  --fg-subtle: var(--subtle);
+  --border: var(--ink);
+  --accent: var(--gold);
+  --accent-2: var(--green);
+  --accent-3: var(--pink);
+  --danger: #C0392B;
+  --ok: #5C7A4A;
+  --warn: #B8860B;
+  --offset: 3px 3px 0 var(--gold);
+  --offset-lg: 5px 5px 0 var(--ink);
+
+  --font-sans: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+/* 다크는 잉크/크림을 뒤집는다(midnight colorway). 시스템 기본은 media query 가,
+ * 명시적 선택은 [data-theme] 가 이긴다 — 둘 다 정의해야 토글이 양방향으로 먹는다. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1C1B17;
+    --bg-elevated: #2A2823;
+    --bg-sunken: #141310;
+    --fg: #FAF2DD;
+    --fg-muted: #C9C2AE;
+    --fg-subtle: #9A9483;
+    --border: #FAF2DD;
+    --offset: 3px 3px 0 #FAF2DD;
+    --offset-lg: 5px 5px 0 #FAF2DD;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1C1B17;
+  --bg-elevated: #2A2823;
+  --bg-sunken: #141310;
+  --fg: #FAF2DD;
+  --fg-muted: #C9C2AE;
+  --fg-subtle: #9A9483;
+  --border: #FAF2DD;
+  --offset: 3px 3px 0 #FAF2DD;
+  --offset-lg: 5px 5px 0 #FAF2DD;
+}
+
+body {
+  margin: 0;
+  padding: 2.5rem 1.25rem 5rem;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.wrap { max-width: 62rem; margin: 0 auto; }
+
+/* 각진 모서리 · 2px 잉크선 · 하드 오프셋. 이 셋이 모티프의 전부다. */
+.card, .kpi, table, pre, .chart {
+  background: var(--bg-elevated);
+  border: var(--border-width) solid var(--border);
+  border-radius: 0;
+}
+.card { padding: 1.25rem 1.5rem; margin: 1.5rem 0; box-shadow: var(--offset); }
+
+h1, h2, h3 { font-weight: 700; margin: 2rem 0 .75rem; }
+h1 { font-size: 38px; line-height: 1.05; letter-spacing: -.01em; margin-top: 0; }
+h2 { font-size: 30px; line-height: 1.1; letter-spacing: -.01em;
+     border-bottom: var(--border-width) solid var(--border); padding-bottom: .35rem; }
+h3 { font-size: 20px; line-height: 1.3; }
+
+.meta { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
+        font-weight: 600; text-transform: uppercase; color: var(--fg-subtle); }
+
+.title-block { border: var(--border-width) solid var(--border); background: var(--accent);
+               color: var(--ink); padding: 1.5rem; box-shadow: var(--offset-lg); }
+.title-block h1, .title-block .meta { color: var(--ink); }
+
+.kpis { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0; }
+.kpi { flex: 1 1 9rem; padding: .9rem 1rem; box-shadow: var(--offset); }
+.kpi b { display: block; font-size: 30px; line-height: 1.1; }
+
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid var(--border); padding: .5rem .7rem; text-align: left;
+         vertical-align: top; font-size: 15px; }
+th { background: var(--bg-sunken); font-weight: 700; }
+
+/* 넓은 것은 페이지가 아니라 자기 안에서 가로 스크롤한다. */
+.scroll { overflow-x: auto; }
+pre { padding: .8rem 1rem; font-family: var(--font-mono); font-size: 13px; overflow-x: auto; }
+code { font-family: var(--font-mono); font-size: .9em; }
+
+.chart { padding: 1rem; margin: 1rem 0; }
+.chart svg { display: block; width: 100%; height: auto; }
+
+.tag { display: inline-block; border: var(--border-width) solid var(--border);
+       padding: 0 .4rem; font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.tag-done { background: var(--ok); color: var(--cream); }
+.tag-doing { background: var(--accent); color: var(--ink); }
+.tag-todo { background: var(--bg-sunken); color: var(--fg-muted); }
+.tag-hold { background: var(--accent-3); color: var(--ink); }
+.tag-warn { background: var(--warn); color: var(--ink); }
+.tag-danger { background: var(--danger); color: var(--cream); }
+
+.note, blockquote { border-left: 5px solid var(--accent); padding-left: 1rem;
+                    color: var(--fg-muted); margin: 1rem 0; }
+ol, ul { padding-left: 1.4rem; }
+li { margin: .25rem 0; }
+
+@media (max-width: 40rem) {
+  h1 { font-size: 30px; } h2 { font-size: 24px; }
+  body { padding: 1.5rem .75rem 3rem; }
+}
+
+</style>
+<div class="wrap">
+<div class="title-block">
+  <p class="meta">KAN-066-KK9Q50 · 검토 · 브랜치 KAN-066-KK9Q50</p>
+  <h1>폭신 대담: 대화 원본 → 정형 구조화 저장 기능 (원문 보존 포함) — 검토 요청</h1>
+</div>
+
+
+
+<div class="kpis">
+  <div class="kpi"><span class="meta">변경 파일</span><b>31</b></div>
+  <div class="kpi"><span class="meta">추가 / 삭제</span><b>+3017 −25</b></div>
+  <div class="kpi"><span class="meta">판단 항목</span><b>0/6</b></div>
+  <div class="kpi"><span class="meta">판정</span>
+    <b><span class="tag tag-doing">검토 대기</span></b></div>
+</div>
+
+
+
+<h2>검토 대상</h2>
+<div class="scroll"><table>
+<tr><th>항목</th><th>값</th></tr>
+<tr><td>브랜치</td><td><code>KAN-066-KK9Q50</code></td></tr>
+<tr><td>워크트리</td><td><code>/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-066-KK9Q50</code></td></tr>
+<tr><td>베이스</td><td><code>55635fb</code></td></tr>
+<tr><td>변경 훑기</td><td><code>git diff 55635fb...HEAD</code></td></tr>
+</table></div>
+
+<h3>커밋 12건</h3>
+<pre>3bd1d30 KAN-066-KK9Q50 S7: 접점 문서 — CLAUDE.md · init-post · paths.json (배치3 완료)
+12c7ae1 KAN-066-KK9Q50 S6: talk-ingest 스킬 + ingest-talk.ts — 원본 봉인·정규화
+dcf4fc1 KAN-066-KK9Q50 S5: verify-talk.ts + talk:verify — 자가검사 14종 (배치2 완료)
+86676e6 KAN-066-KK9Q50 S4: build-talk.ts — talk.md 를 발행물로 굽는다 + 픽스처
+db75be2 KAN-066-KK9Q50 S3: talk.md 문법과 Zod 파서 — 위반 9종이 서로 다른 코드로 실패 (배치1 완료)
+7212fa0 KAN-066-KK9Q50 S2: L1 원문 보존 규격 — raws/talks/ 레이아웃과 source.json
+표본 이전
+20e59a1 KAN-066-KK9Q50 S1: 대화 원본 정규화 규칙 확정 — 표본에서 답변 26.8% 유실 검출
+f10ff22 kanban: KAN-066-KK9Q50 계획 리포트 발행 + kanban-report 명세 등록
+052b7ff kanban: KAN-066-KK9Q50 배치 계획 3건 — 규격 확정 / 굽기·검증 / 스킬·문서
+852285b kanban: KAN-066-KK9Q50 실행 문서 — 3계층(원문/정형본/발행물) 전략과 work 7개
+8a9ab16 kanban: KAN-066-KK9Q50 진행 중으로 이동 — 대화 원본 정형 구조화 기능 착수</pre>
+
+<h3>변경 규모</h3>
+<div class="chart"><svg viewBox="0 0 860 530" role="img" aria-label="파일별 변경 규모"><text x="16" y="28" font-size="12" fill="var(--fg-subtle)">파일 31개 중 규모 상위 18개 · 초록 추가 · 빨강 삭제</text><text x="16" y="57" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">scripts/ingest-talk.ts</text><rect x="316.0" y="46" width="528.0" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="852.0" y="58" font-size="11" fill="var(--fg-subtle)">+342 −0</text><text x="16" y="83" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">scripts/verify-talk.ts</text><rect x="316.0" y="72" width="524.9" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="848.9" y="84" font-size="11" fill="var(--fg-subtle)">+340 −0</text><text x="16" y="109" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">src/lib/talkSource.ts</text><rect x="316.0" y="98" width="518.7" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="842.7" y="110" font-size="11" fill="var(--fg-subtle)">+336 −0</text><text x="16" y="135" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">scripts/build-talk.ts</text><rect x="316.0" y="124" width="514.1" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="838.1" y="136" font-size="11" fill="var(--fg-subtle)">+333 −0</text><text x="16" y="161" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.reports/KAN-066-KK9Q50.report.html</text><rect x="316.0" y="150" width="480.1" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="804.1" y="162" font-size="11" fill="var(--fg-subtle)">+311 −0</text><text x="16" y="187" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">raws/talks/_rules/NORMALIZE_RULES.md</text><rect x="316.0" y="176" width="267.1" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="591.1" y="188" font-size="11" fill="var(--fg-subtle)">+173 −0</text><text x="16" y="213" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">raws/talks/_rules/TALK_MD.md</text><rect x="316.0" y="202" width="256.3" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="580.3" y="214" font-size="11" fill="var(--fg-subtle)">+166 −0</text><text x="16" y="239" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.cards/KAN-066-KK9Q50.md</text><rect x="316.0" y="228" width="216.1" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="540.1" y="240" font-size="11" fill="var(--fg-subtle)">+140 −0</text><text x="16" y="265" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">.claude/skills/talk-ingest/SKILL.md</text><rect x="316.0" y="254" width="200.7" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="524.7" y="266" font-size="11" fill="var(--fg-subtle)">+130 −0</text><text x="16" y="291" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.batches/KAN-066-KK9Q50.batch1.md</text><rect x="316.0" y="280" width="183.7" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="507.7" y="292" font-size="11" fill="var(--fg-subtle)">+119 −0</text><text x="16" y="317" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">raws/talks/README.md</text><rect x="316.0" y="306" width="172.9" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="496.9" y="318" font-size="11" fill="var(--fg-subtle)">+112 −0</text><text x="16" y="343" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.batches/KAN-066-KK9Q50.batch3.md</text><rect x="316.0" y="332" width="135.9" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="459.9" y="344" font-size="11" fill="var(--fg-subtle)">+88 −0</text><text x="16" y="369" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.batches/KAN-066-KK9Q50.batch2.md</text><rect x="316.0" y="358" width="111.2" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="435.2" y="370" font-size="11" fill="var(--fg-subtle)">+72 −0</text><text x="16" y="395" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">…/authoring/specs/kanban-report/spec.json</text><rect x="316.0" y="384" width="75.6" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="399.6" y="396" font-size="11" fill="var(--fg-subtle)">+49 −0</text><text x="16" y="421" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">scripts/fixtures/talk/README.md</text><rect x="316.0" y="410" width="75.6" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="399.6" y="422" font-size="11" fill="var(--fg-subtle)">+49 −0</text><text x="16" y="447" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">…ripts/fixtures/talk/minimal/expected.mdx</text><rect x="316.0" y="436" width="71.0" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="395.0" y="448" font-size="11" fill="var(--fg-subtle)">+46 −0</text><text x="16" y="473" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">…de/authoring/specs/kanban-report/spec.md</text><rect x="316.0" y="462" width="69.5" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="393.5" y="474" font-size="11" fill="var(--fg-subtle)">+45 −0</text><text x="16" y="499" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">.kanban/state.json</text><rect x="316.0" y="488" width="41.7" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><rect x="357.7" y="488" width="23.2" height="14" fill="var(--danger)" stroke="var(--border)" stroke-width="2"/><text x="388.8" y="500" font-size="11" fill="var(--fg-subtle)">+27 −15</text></svg></div>
+<div class="scroll"><table>
+<tr><th>파일</th><th>상태</th><th>추가</th><th>삭제</th></tr><tr><td><code>.claude/authoring/paths.json</code></td><td>M</td><td>3</td><td>1</td></tr><tr><td><code>.claude/authoring/specs/kanban-report/spec.json</code></td><td>M</td><td>49</td><td>0</td></tr><tr><td><code>.claude/authoring/specs/kanban-report/spec.md</code></td><td>M</td><td>45</td><td>0</td></tr><tr><td><code>.claude/skills/init-post/SKILL.md</code></td><td>M</td><td>5</td><td>0</td></tr><tr><td><code>.claude/skills/talk-ingest/SKILL.md</code></td><td>M</td><td>130</td><td>0</td></tr><tr><td><code>.kanban/archive.jsonl</code></td><td>M</td><td>1</td><td>0</td></tr><tr><td><code>.kanban/log.md</code></td><td>M</td><td>1</td><td>1</td></tr><tr><td><code>.kanban/state.json</code></td><td>M</td><td>27</td><td>15</td></tr><tr><td><code>CLAUDE.md</code></td><td>M</td><td>24</td><td>0</td></tr><tr><td><code>KANBAN.batches/KAN-066-KK9Q50.batch1.md</code></td><td>M</td><td>119</td><td>0</td></tr><tr><td><code>KANBAN.batches/KAN-066-KK9Q50.batch2.md</code></td><td>M</td><td>72</td><td>0</td></tr><tr><td><code>KANBAN.batches/KAN-066-KK9Q50.batch3.md</code></td><td>M</td><td>88</td><td>0</td></tr><tr><td><code>KANBAN.cards/KAN-066-KK9Q50.md</code></td><td>M</td><td>140</td><td>0</td></tr><tr><td><code>KANBAN.md</code></td><td>M</td><td>7</td><td>6</td></tr><tr><td><code>KANBAN.reports/KAN-066-KK9Q50.report.html</code></td><td>M</td><td>311</td><td>0</td></tr><tr><td><code>draft/ddd-transaction-account-discussion-draft.mdx</code></td><td>M</td><td>2</td><td>2</td></tr><tr><td><code>package.json</code></td><td>M</td><td>2</td><td>0</td></tr><tr><td><code>raws/talks/README.md</code></td><td>M</td><td>112</td><td>0</td></tr><tr><td><code>raws/talks/_rules/NORMALIZE_RULES.md</code></td><td>M</td><td>173</td><td>0</td></tr><tr><td><code>raws/talks/_rules/TALK_MD.md</code></td><td>M</td><td>166</td><td>0</td></tr><tr><td><code>raws/talks/ddd-entry-contradiction/source.json</code></td><td>M</td><td>26</td><td>0</td></tr><tr><td><code>raws/{ =&gt; talks/ddd-entry-contradiction/source}/ddd-transaction-account-discussion.mdx</code></td><td>M</td><td>0</td><td>0</td></tr><tr><td><code>scripts/build-talk.ts</code></td><td>M</td><td>333</td><td>0</td></tr><tr><td><code>scripts/fixtures/talk/README.md</code></td><td>M</td><td>49</td><td>0</td></tr><tr><td><code>scripts/fixtures/talk/minimal/expected.mdx</code></td><td>M</td><td>46</td><td>0</td></tr><tr><td><code>scripts/fixtures/talk/minimal/source.json</code></td><td>M</td><td>26</td><td>0</td></tr><tr><td><code>scripts/fixtures/talk/minimal/source/conversation.mdx</code></td><td>M</td><td>9</td><td>0</td></tr><tr><td><code>scripts/fixtures/talk/minimal/talk.md</code></td><td>M</td><td>33</td><td>0</td></tr><tr><td><code>scripts/ingest-talk.ts</code></td><td>M</td><td>342</td><td>0</td></tr><tr><td><code>scripts/verify-talk.ts</code></td><td>M</td><td>340</td><td>0</td></tr><tr><td><code>src/lib/talkSource.ts</code></td><td>M</td><td>336</td><td>0</td></tr>
+</table></div>
+
+<h3>롤백 태그 10개</h3>
+<pre>kan/KAN-066-KK9Q50/S1
+kan/KAN-066-KK9Q50/S2
+kan/KAN-066-KK9Q50/S3
+kan/KAN-066-KK9Q50/S4
+kan/KAN-066-KK9Q50/S5
+kan/KAN-066-KK9Q50/S6
+kan/KAN-066-KK9Q50/S7
+kan/KAN-066-KK9Q50/batch1
+kan/KAN-066-KK9Q50/batch2
+kan/KAN-066-KK9Q50/batch3</pre>
+
+<h2>검증 — 기준과 실행 결과</h2>
+<section class="card"><p><strong>기준</strong></p>
+<p>아래가 전부 0으로 끝나면 끝난 것으로 본다. 하나라도 비0이면 미완이다.</p>
+<pre>bun run talk:verify        # 3계층 어긋남 + 픽스처 회귀 + 자가검사 14종
+bun scripts/build-talk.ts --all --check   # 발행물이 정형본에서 구운 것과 같은가
+bun run build              # 전 페이지 빌드
+bun scripts/check-post-markers.ts
+bun scripts/check-emphasis.ts &amp;&amp; bun scripts/check-emphasis.ts --dist
+bunx tsc --noEmit          # 워크트리에서는 bunx astro sync 를 먼저</pre>
+<p><strong>2026-08-16 실행 결과 (전부 통과).</strong> <code>talk:verify</code> 0 · <code>build-talk --all --check</code> 0 (건너뜀 1 — <code>ddd-entry-contradiction</code> 은 정형본 없음) · <code>build</code> 46쪽 · 마커 30 · 강조 소스 30/렌더 46 · <code>tsc</code> 0.</p>
+<p><strong>눈으로 확인해야 하는 것 셋</strong> — 스크립트가 판정 못 한다. 셋 다 확인 완료.</p>
+<ol>
+<li><strong>대담 레이아웃이 실제로 뜨는가.</strong> 픽스처를 <code>src/content/posts/</code> 로 옮기고 <code>draft: false</code> 로 <code>bun run build</code> → <code>/posts/talk-minimal/</code> 생성, <code>Q.01</code>·<code>Q.02</code> 자동 번호, <code>&lt;section class=&quot;qa&quot;&gt;</code> 2개, <code>pull-quote</code> 1개, 화자 듀오(빵토 교수님), <code>마치며</code> 확인. 확인 후 그 글은 지웠다 — 가짜 대담을 사이트에 남기지 않는다.</li>
+<li><strong>정형본 한 문장을 고치면 그 문장만 바뀌는가.</strong> 픽스처 <code>talk.md</code> 의 한 문장을 바꿔 다시 구운 결과를 diff → 그 한 줄만 달랐다.</li>
+<li><strong>원문이 파이프라인 전 구간에서 안 움직이는가.</strong> 픽스처 원본을 <code>ingest-talk</code> 로 봉인하고 굽기까지 완주한 뒤 sha256 재계산 → 투입 원본·봉인본 모두 동일.</li>
+</ol>
+<p><strong>남은 것 하나 — 실물 원본으로 도는 완주.</strong> 유일한 실물 원본 <code>raws/talks/ddd-entry-contradiction</code> 은 답변 5개가 잘려 있어(유실 7,527 B = 26.8%) 파이프라인이 정당하게 거부한다. 원본을 다시 받으면 그때 실제 에피소드 1편으로 확인한다. 이 카드의 산출물 자체는 그것과 무관하게 완성돼 있다.</p>
+<p><strong>실행 결과</strong></p>
+<pre>$ bun run talk:verify
+[자가검사] 고장 주입 — 5종
+  ✓ 원문 1바이트 수정 → [minimal] 원문이 움직였습니다 — source/conversation.mdx (기록 2504B/798c7ae3c913…, 지금 2505B/6bd4c4f4dde7…). L1 은 불변입니다
+  ✓ 정형본 스키마 위반 (series 삭제) → [minimal] talk.md — frontmatter 가 스키마에 안 맞습니다 — series: Invalid input: expected string, received undefined
+  ✓ 발행물 손수정 → 다시 구운 결과와 발행물이 다름
+  ✓ 원본이 못 쓰는 상태 (usable=false) → [minimal] 원본이 대담 정본으로 쓸 수 없는 상태입니다 (integrity.usable=false) — 자가검사용 주입
+  ✓ source.json 삭제 → [minimal] source.json 이 없습니다 — L2 는 L1 없이 설 수 없습니다
+
+[verify-talk] ✓ 대담 3계층에 어긋남 없음
+
+$ bun scripts/build-talk.ts --all --check
+건너뜀 ddd-entry-contradiction — 정형본(talk.md)이 아직 없습니다
+
+대담 1건 · 비교 · 실패 0 · 건너뜀 1
+
+$ bun run build
+12:34:29 [build] 46 page(s) built in 2.07s
+12:34:29 [build] Complete!
+
+$ bun scripts/check-post-markers.ts
+[check-post-markers] ✓ 30개 글에 미처리 마커·본문 이모지 없음
+$ bun scripts/check-emphasis.ts
+[check-emphasis] ✓ 30개 파일에 렌더되지 않는 강조 없음 (소스 모드)
+$ bun scripts/check-emphasis.ts --dist
+[check-emphasis] ✓ 46개 파일에 렌더되지 않는 강조 없음 (렌더 모드)
+$ bunx tsc --noEmit
+종료코드 0 (출력 없음)</pre></section>
+
+<h2>판단 항목</h2>
+<ul><li><span class="tag tag-todo">대기</span> 표본 원본을 다시 뽑아 줄 수 있는가 — raws/talks/ddd-entry-contradiction 은 답변 5개가 중간부터 잘려 유실 7,527B(26.8%)라 파이프라인이 정당하게 거부합니다. 봉인만 해 뒀고 지우지 않았습니다. 다시 뽑으면 실물 완주 검증까지 되고, 못 뽑으면 그 대담은 접고 다음 대화부터 씁니다</li><li><span class="tag tag-todo">대기</span> raws/ddd-transaction-account-discussion.mdx 를 복사가 아니라 이동시킨 것을 받아들이는가 — 복사로 두면 대화 원본의 입구가 둘이 된다고 판단해 옮겼습니다. 딸려 깨진 draft/ddd-transaction-account-discussion-draft.mdx 의 참조 2곳(source: 줄, import 경로)도 새 경로로 고쳤습니다. 되돌리려면 git mv 한 번입니다</li><li><span class="tag tag-todo">대기</span> 질문 번호를 talk.md 문법에서 없앤 것 — 계획의 완료 기준은 &#x27;n 불연속을 검출&#x27;이었는데, 번호를 아예 안 쓰게 해서 어긋날 수 없게 바꿨습니다. 검출 쪽을 원하시면 되돌립니다</li><li><span class="tag tag-todo">대기</span> 정수 인용구를 1~2개로 강제한 것 — 명세 SP4 의 &#x27;에피소드당 1~2개&#x27;를 필수로 읽어 0개도 거부합니다. 선택으로 두려면 하한을 0으로 내립니다</li><li><span class="tag tag-todo">대기</span> talk.md frontmatter 를 YAML 전체가 아니라 문서화된 부분집합으로 받는 것 — 블록 스칼라(|)·중첩 맵·여러 줄 배열을 거부합니다. 긴 description 을 여러 줄로 쓰고 싶으면 문법을 늘려야 합니다</li><li><span class="tag tag-todo">대기</span> _rules/ 를 talk-ingest 스킬 자산으로 옮기지 않은 것 — 배치1 계획을 뒤집었습니다. NORMALIZE_RULES 와 TALK_MD 를 갈라 두면 글쓴이가 형식을 찾을 때 두 군데를 뒤지게 됩니다</li></ul>
+
+<h2>판정</h2>
+<section class="card"><p><strong>판정</strong>: (승인 / 반려 중 하나를 적으세요)</p>
+<p><strong>사유</strong>:</p>
+<ul>
+<li>승인이면 → <code>apply --op move --id KAN-066-KK9Q50 --to done</code></li>
+<li>반려면 → <code>apply --op move --id KAN-066-KK9Q50 --to doing</code> 뒤에 <code>doc-log --entry &quot;&lt;반려 사유&gt;&quot;</code></li>
+</ul></section>
+
+<p class="meta">생성 근거: KANBAN.reviews/KAN-066-KK9Q50.review.md
+· KANBAN.md · 갱신 2026-08-16</p>
+</div>

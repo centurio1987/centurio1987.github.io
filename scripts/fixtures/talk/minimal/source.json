@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "slug": "minimal",
+  "adapter": "antigravity-graph-mdx",
+  "origin": {
+    "tool": "픽스처 — 손으로 만든 최소 원본",
+    "model": "Fixture Model (Test)",
+    "conversedAt": "2026-08-01T10:00:00+09:00",
+    "capturedAt": "2026-08-16",
+    "note": "진짜 대화가 아니다. build-talk·verify-talk 검증용이며 raws/talks/ 밖에 산다"
+  },
+  "files": [
+    {
+      "path": "source/conversation.mdx",
+      "bytes": 2504,
+      "sha256": "798c7ae3c913dc2559884830ad0901c952876d7c5114e3da18decf990217e1bd"
+    }
+  ],
+  "integrity": {
+    "usable": true,
+    "truncatedNodes": 0,
+    "truncatedBytes": 0,
+    "keptUtterances": 4,
+    "reason": null
+  }
+}

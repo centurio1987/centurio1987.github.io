@@ -1,6 +1,6 @@
 {
   "next_id": 68,
-  "next_seq": 262,
+  "next_seq": 265,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -736,16 +736,27 @@
       "verbatim_hash": "09105bc3728f261b21837781767ee95239c7802d"
     },
     "KAN-066-KK9Q50": {
-      "col": "todo",
+      "col": "done",
       "title": "폭신 대담: 대화 원본 → 정형 구조화 저장 기능 (원문 보존 포함)",
       "memo": "빵토교수님 대담(template: \"talk\", TalkLayout) 컨텐츠 제작 입력 단계. 대화 원본을 넣으면 ① 데이터 구조·파일 형식을 정형화해 저장(대담 에피소드 MDX 의 <QA n q> 골격과 어디까지 대응시킬지 포함) ② 톤앤매너·비문·맞춤법 교정 ③ 개선 방향이 바뀔 때 다시 굽을 수 있도록 대화 원문을 별도 보존 — 즉 원문/교정본 2계층. 착수 시 정할 것: 저장 위치(raws/ 인지 별도 디렉터리인지)·파일 포맷·스킬로 만들지 스크립트로 만들지·src/templates/talk-episode.mdx 및 init-post --talk 와의 접점.",
       "verbatim": "빵토교수님과의 대담 컨텐츠를 만들기 위해, 대화 원본을 제공하면, 최적 구조화 하여 저장하는 기능이 있어야 한다. 최적 구조화 에서는 데이터 구조, 파일 형식을 정형화 하고, 대화의 톤앤 매너, 비문, 맞춤법을 교정한다. 개선 방향성 수정에 대비해서 대화 원문 또한 보존해야 한다.",
       "생성": "유저",
       "최종": "ai",
-      "갱신": "2026-08-15",
+      "갱신": "2026-08-18",
       "title_hash": "5db638f72ab856b66e8bafb85a5762b9c3ccf858",
       "memo_hash": "7f1b8adac4238c272b05d19d26d48a69adc8e7b2",
-      "verbatim_hash": "f4d97fd42cee9ee39329b85be2d52a6102f54835"
+      "verbatim_hash": "f4d97fd42cee9ee39329b85be2d52a6102f54835",
+      "scope": [
+        "raws/talks/**",
+        "src/lib/talk.ts",
+        "src/lib/talk/**",
+        "scripts/build-talk.ts",
+        "scripts/verify-talk.ts",
+        ".claude/skills/talk-ingest/**",
+        "src/templates/talk-episode.mdx",
+        ".claude/skills/init-post/SKILL.md",
+        ".claude/authoring/paths.json"
+      ]
     },
     "KAN-067-NH9SDQ": {
       "col": "todo",
@@ -769,7 +780,6 @@
     "KAN-063",
     "KAN-048",
     "KAN-065",
-    "KAN-066-KK9Q50",
     "KAN-067-NH9SDQ",
     "KAN-001",
     "KAN-002",
@@ -824,9 +834,40 @@
     "KAN-051",
     "KAN-057",
     "KAN-058",
-    "KAN-059"
+    "KAN-059",
+    "KAN-066-KK9Q50"
   ],
   "recent": [
+    {
+      "seq": 264,
+      "t": "2026-08-18T16:17",
+      "a": "ai",
+      "id": "KAN-066-KK9Q50",
+      "op": "move",
+      "w": "NYGJHE",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 263,
+      "t": "2026-08-16T12:36",
+      "a": "ai",
+      "id": "KAN-066-KK9Q50",
+      "op": "move",
+      "w": "NYGJHE",
+      "from": "doing",
+      "to": "review"
+    },
+    {
+      "seq": 262,
+      "t": "2026-08-16T01:12",
+      "a": "ai",
+      "id": "KAN-066-KK9Q50",
+      "op": "move",
+      "w": "NYGJHE",
+      "from": "todo",
+      "to": "doing"
+    },
     {
       "seq": 261,
       "t": "2026-08-15T23:49",
@@ -1305,34 +1346,6 @@
       "field": "memo",
       "before": "실행전략(4단계): ① @astrojs/rss@4.0.19 설치 — astro peer 제약 없고 zod4 기설치 ② src/pages/rss.xml.js 요약 피드 — draft 제외·pubDate desc·description+hero 절대URL·categories=카테고리+tags, 본문 전문은 MDX 아일랜드 탓에 제외 ③ 발견성 — BaseLayout head 의 link rel=alternate + Footer 구독 링크 ④ 검증 — bun run build 로 dist/rss.xml, W3C Feed Validator, 리더 앱 실물 확인 · 카테고리별 피드는 초판 제외(YAGNI) · astro.config 의 site 설정은 이미 충족",
       "after": "구현 완료(머지 c287f9d). @astrojs/rss 기반 정적 피드 — /rss.xml(전체 29편) + /categories/<slug>/rss.xml(9개). src/lib/feed.ts 가 채널 메타·아이템 조립·상한(FEED_MAX_ITEMS=50)의 단일 소스. 요약 피드(표지·요약·시리즈 회차·본문 링크) — 본문이 MDX 아일랜드라 리더에선 껍데기가 되므로 전문 제외, 확장 지점은 toFeedItem 하나. 저자는 dc:creator(RSS <author>는 이메일 자리), lastBuildDate 는 최신 글 pubDate(빌드 시각은 무변경 재배포에도 흔들림). 노출: 전 페이지 head 자동발견 + 푸터 RSS + 목록/카테고리 제목 옆 FeedLink 캡슐. 검증: bun run build 통과, 피드 10개 xmllint 통과. || 계획 대비 차이 2건 — ① 카테고리별 피드를 '초판 제외(YAGNI)'로 잡아뒀으나 실제로는 포함했다(카테고리가 이미 정본 분류라 getStaticPaths 재사용으로 비용이 낮았고, 글 폭이 넓어 전체 피드가 소음이 되는 문제가 실재). 되돌리려면 src/pages/categories/[category]/rss.xml.ts 삭제 + [category].astro 의 FeedLink/feeds prop 제거면 끝. ② 검증에서 W3C Feed Validator·리더 앱 실물 확인은 미수행(로컬 xmllint + XML 파싱 점검으로 대체) — 배포 후 확인 필요. || 미확인: 목록/카테고리 제목 옆 캡슐 배치의 시각 확인(브라우저 확장 미연결로 빌드 HTML 구조만 확인)."
-    },
-    {
-      "seq": 214,
-      "t": "2026-07-30T01:32",
-      "a": "ai",
-      "id": "KAN-047",
-      "op": "move",
-      "from": "todo",
-      "to": "review"
-    },
-    {
-      "seq": 213,
-      "t": "2026-07-30T00:47",
-      "a": "ai",
-      "id": "KAN-053",
-      "op": "edit",
-      "field": "memo",
-      "before": "",
-      "after": "유저 결정(2026-07-30): 댓글·회원가입 포기. 근거 — 승인제 가입 자체는 Supabase 로 가능하나(Before User Created 훅이 Free 플랜, Postgres 함수로 구현) 내장 메일러 2통/시간 제약과 UGC 렌더가 새로 여는 XSS 표면(정적 호스팅이라 BFF 불가, 세션이 localStorage)이 개인 블로그의 이득 대비 큼. 좋아요·공유 카운트만 KAN-048 로 진행."
-    },
-    {
-      "seq": 212,
-      "t": "2026-07-30T00:47",
-      "a": "ai",
-      "id": "KAN-048",
-      "op": "move",
-      "from": "backlog",
-      "to": "todo"
     }
   ],
   "layout": 2

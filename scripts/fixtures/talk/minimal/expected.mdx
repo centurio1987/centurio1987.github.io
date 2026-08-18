@@ -1,0 +1,46 @@
+---
+title: "미리 채운 캐시는 왜 빠르지 않은가"
+description: "프리패치가 이기는 조건 하나를 찾아서"
+pubDate: 2026-08-01
+category: architecture
+author: ppangto
+tags: ["AI대담", "캐시"]
+series: "폭신함 외길 인생"
+order: 1
+template: talk
+draft: true
+---
+
+import QA from "../../components/talk/QA.astro";
+import PullQuote from "../../components/talk/PullQuote.astro";
+
+{/* 이 파일은 scripts/build-talk.ts 가 scripts/fixtures/talk/minimal/talk.md 에서 구운 파생물입니다.
+    손으로 고치지 마세요 — 고칠 것이 있으면 talk.md 를 고치고 다시 구우세요. */}
+
+<QA n={1} q={"캐시를 미리 채워 두면 언제나 빠릅니까?"}>
+
+아니요. 미리 채운 캐시는 빠른 것이 아니라 **틀릴 준비가 된 것**입니다.
+
+프리패치가 이기는 조건은 하나예요. 다음에 무엇을 볼지 지금 알 수 있을 때입니다.
+모르면 그건 프리패치가 아니라 그냥 미리 낭비한 대역폭이고요.
+
+</QA>
+
+<PullQuote>
+
+예측이 빗나가는 비용은 캐시 미스가 아닙니다. 이미 써 버린 대역폭이에요.
+
+</PullQuote>
+
+<QA n={2} q={"그러면 무엇을 미리 채울지는 어떻게 정합니까?"}>
+
+다음에 볼 것을 맞히려 하지 말고, **이미 본 것이 낡았는지**를 먼저 판정하세요.
+
+순서를 뒤집는 겁니다. 예측은 틀릴 수 있지만 낡음은 잴 수 있거든요.
+
+</QA>
+
+## 마치며
+
+질문을 "무엇을 미리 가져올까"에서 "무엇이 아직 쓸 만한가"로 옮기고 나니
+고민할 것이 훨씬 줄었습니다.
