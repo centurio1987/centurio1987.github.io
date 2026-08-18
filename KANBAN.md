@@ -58,7 +58,7 @@
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
 - `KAN-067-NH9SDQ` 폭신 대담에서 사용할 주제는 아래와 같다. 미리 주제에 대해 리서치를 하고, 대화를 대비한 준비를 해둬라. — 생성:유저 · 최종:ai · 갱신:2026-08-18
   - 메모: 폭신 대담(template: "talk") 에피소드용 주제 2건 + 사전 리서치 요구. 주제① 한 페이지의 여러 시각화가 대규모 aggregated 데이터를 한 번에 당겨와 생기는 반응성 문제 — 유저가 낸 갈래 셋(service worker+IndexedDB 프리패치·stale 판정 / socket 압축 스트리밍 / skeleton·loading UI)에 더해 그 외 방법까지 요구. 성능축·UX축 양쪽에서 볼 것. 주제② 요청이 영속성 데이터 조회에서 시작하면 성능이 DB 질의에 지배되어 자료구조·알고리즘 개입 여지가 없는 문제 — 버퍼로 올리는 것 말고 어떤 전략이 있는지. 착수 시 research 스킬로 두 주제를 수집한 뒤 대담 준비 노트를 만든다. 대화 원본 저장 규격은 KAN-066 과 맞물린다.
-  - 실행 문서: KANBAN.cards/KAN-067-NH9SDQ.md (7/10 · 최근 08-18)
+  - 실행 문서: KANBAN.cards/KAN-067-NH9SDQ.md (9/10 · 최근 08-18)
   - 검토 문서: KANBAN.reviews/KAN-067-NH9SDQ.review.md (판단 0/7 · 검토 대기)
   - 원문:
     ```text

@@ -45,9 +45,9 @@ slug 목록에서 빼기 때문이다 — `raws/talks/<slug>/` 안에 준비 노
 - [x] `S5` 준비 노트 ① 작성 — `raws/talks/_prep/dashboard-bulk-fetch.md` · 완료 기준: 질문 순서 · 의견 판정 · 예상 반론 · 숫자/규격 앵커 · 용어 정리
 - [x] `S6` 준비 노트 ② 작성 — `raws/talks/_prep/db-bound-performance.md` · 완료 기준: S5 와 동일
 - [x] `S7` 접점 문서와 검증 — `raws/talks/_prep/README.md` 신설 + `raws/talks/README.md` 한 줄 + 아래 「검증」 전부 초록
-- [>] `S8` 주제① 추가 리서치 라운드 (검토 판정) — raws/012 의 open question 8건을 겨냥해 다시 수집 · 완료 기준: `~/blog-research/raws/014-*.md` + 위키 갱신 + angle `dashboard-aggregated-fetch-talk` 가 `mature`. 못 메운 항목은 **왜 못 메웠는지**와 함께 남긴다 <!-- claim:s=89ada231 t=2026-08-18T23:17 -->
-- [ ] `S9` 준비 노트 ① 갱신 — 새 근거 반영 · 회차 결정(주제별 1회차, 성능축/UX축 분리 안 함) 반영 · 인용 보류 넷 재판정 · 완료 기준: 노트①의 「나눌 여지」 문구 제거, 앵커 항이 새 근거로 갱신, 보류 유지분은 사유 명시
-- [ ] `S10` 재검증·재검토 요청 · 완료 기준: `talk:verify`·`build` 초록, `review-init --force` 로 요청서 갱신(미응답 판단 항목 3·4·5 를 그대로 남긴 채)
+- [x] `S8` 주제① 추가 리서치 라운드 (검토 판정) — raws/012 의 open question 8건을 겨냥해 다시 수집 · 완료 기준: `~/blog-research/raws/014-*.md` + 위키 갱신 + angle `dashboard-aggregated-fetch-talk` 가 `mature`. 못 메운 항목은 **왜 못 메웠는지**와 함께 남긴다
+- [x] `S9` 준비 노트 ① 갱신 — 새 근거 반영 · 회차 결정(주제별 1회차, 성능축/UX축 분리 안 함) 반영 · 인용 보류 넷 재판정 · 완료 기준: 노트①의 「나눌 여지」 문구 제거, 앵커 항이 새 근거로 갱신, 보류 유지분은 사유 명시
+- [>] `S10` 재검증·재검토 요청 · 완료 기준: `talk:verify`·`build` 초록, `review-init --force` 로 요청서 갱신(미응답 판단 항목 3·4·5 를 그대로 남긴 채) <!-- claim:s=89ada231 t=2026-08-18T23:43 -->
 
 ## 검증
 ```bash
@@ -85,3 +85,7 @@ ls raws/talks/_prep/       # README.md + 준비 노트 2건
 - 2026-08-18T23:16 · s:89ada231 — 검토 판정 — 주제① 추가 리서치 라운드를 돌려 angle 을 mature 로 올린다. 판단 항목 3·4·5 는 미응답
 - 2026-08-18T23:16 · s:89ada231 — `실행 계획` 섹션 교체
 - 2026-08-18T23:17 · s:89ada231 · S8 doing — 착수
+- 2026-08-18T23:43 · s:89ada231 · S8 done — 추가 라운드 — raws/014, angle mature 승격. 8건 중 3 메움·4 부분·1 못 메움. Mejtoft 2022 오인용 정정
+- 2026-08-18T23:43 · s:89ada231 · S9 doing — 착수
+- 2026-08-18T23:43 · s:89ada231 · S9 done — 노트① 갱신 — 회차 결정 반영, 앵커 9행 추가, 인용 배제 목록 6건으로 갱신, Mejtoft 정정 명시
+- 2026-08-18T23:43 · s:89ada231 · S10 doing — 착수

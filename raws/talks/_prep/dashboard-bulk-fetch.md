@@ -3,8 +3,9 @@
 > 이 문서는 **대화에 들고 들어갈 것**이지 대담 원고가 아니다. 답을 적어 두지 않는다 —
 > 적어 두면 대화가 이 문서의 낭독이 된다.
 >
-> 근거: `~/blog-research/raws/012-dashboard-bulk-aggregated-fetch.md` ·
-> 앵글 `wiki/angles/dashboard-aggregated-fetch-talk.md`(draft) ·
+> 근거: `~/blog-research/raws/012-dashboard-bulk-aggregated-fetch.md` +
+> `raws/014-dashboard-bulk-fetch-followup.md`(추가 라운드) ·
+> 앵글 `wiki/angles/dashboard-aggregated-fetch-talk.md`(**mature**) ·
 > topic `dashboard-data-transfer-reduction` · `request-splitting-http-versions` ·
 > `server-push-streaming` · `cache-layer-stale-strategies` ·
 > `perceived-performance-core-web-vitals`
@@ -27,8 +28,8 @@
 7. **스켈레톤이 정말 체감을 바꾸는가.** 그 근거는 어디에 있는가.
 8. **먼저 보여주기와 안 흔들리기가 부딪히면 무엇을 고르는가.** 성능과 UX 가 한 몸이 아닌 자리.
 
-> 8개는 한 회차로 길다. 성능축(1~4)과 UX축(5~8)으로 나눌 여지를 열어 두고 대화한다 —
-> 회차 분리는 대화가 끝난 뒤 정한다.
+> **회차는 주제별로 나누기로 정해졌다**(검토 판정, 2026-08-18). 이 노트가 한 회차이고
+> 주제② 는 다른 회차다. 성능축·UX축으로 더 쪼개지 않는다 — 여덟 질문을 한 흐름으로 간다.
 
 ## 2. 의견 판정
 
@@ -41,15 +42,25 @@
   것이 아니라 **표준에 이미 있다** — `stale-while-revalidate`(RFC 5861).
 - **깨지는 조건 둘.** ⑴ **stale 판정 기준 넷 중 표준이 있는 것은 셋뿐이다.** TTL(`max-age`)
   · ETag 대조(`If-None-Match`) · `stale-while-revalidate` 는 RFC 9111·5861 에 있지만,
-  **"배치 잡 완료 시각을 기준으로 무효화"는 1차 표준도 학술 근거도 못 찾았다**(Imply·
-  ClickHouse 의 정성적 서술뿐). 정작 이 시나리오에 제일 맞아 보이는 기준이 표준 밖이다.
+  **"배치 잡 완료 시각을 기준으로 무효화"는 RFC·학술 수준의 표준이 없다.** RFC 9111 §4.2.2 의
+  heuristic freshness 도 "`Last-Modified` 이후 경과 시간"만 볼 뿐 "작업이 끝났는가"라는 상태는
+  다루지 않는다. 다만 **이름 붙은 정형 패턴 둘은 있다**(추가 라운드에서 확보) — 캐시 키에
+  `updated_at` 을 박아 갱신되면 키 자체가 바뀌게 하는 **key-based cache expiration**(DHH·37signals)
+  과, "어느 시점까지의 데이터가 다 관측됐다"를 나타내는 **watermark**(Akidau et al., PVLDB 8(12),
+  2015). 후자는 논문 저자들이 **"완결성은 일반적으로 정확성과 양립하지 않아 watermark 를 엄밀한
+  정확성 보장 수단으로 쓰지 않는다"**고 스스로 못박는다 — 배치 완료를 stale 신호로 쓰는 것은
+  실용적 근사이지 보장이 아니라는 한계가 그대로 옮겨진다.
   ⑵ **캐시해 뒀다고 남아 있지 않다.** IndexedDB 는 Best-Effort 저장소면 공간 부족 시 LRU 로
   지워지고, **Safari 는 추적 방지가 켜져 있으면 7일 무상호작용 시 스크립트가 만든 데이터를
   선제적으로 지운다**(쿠키는 남긴다). 오리진 데이터는 부분 삭제가 안 되고 통째로 지워진다.
 - **근거.** RFC 9111 · RFC 5861 · MDN storage eviction criteria. topic
   `cache-layer-stale-strategies`.
-- **아직 모르는 것.** IndexedDB 대량 쓰기 성능·메인스레드 블로킹 여부의 1차 근거가 없다.
-  프리패치가 **쓰기 쪽에서** 비용을 만드는지는 이번 조사로 답이 안 났다.
+- **구조는 확정, 정량은 미확보.** W3C IndexedDB 스펙이 **스코프가 겹치는 `readwrite` 트랜잭션은
+  동시에 시작할 수 없다**(직렬화된다)고 정하고, MDN 은 API 자체가 비동기라 메인스레드를 직접 막지
+  않는다고 명시한다. 그러니 "프리패치가 쓰기에서 비용을 만드는가"의 **모양은 안다** — 겹치는 쓰기가
+  줄을 선다. 다만 structured clone 직렬화 비용과 대량 쓰기 실제 처리량은 두 라운드 모두 조건 명시된
+  벤치마크를 못 찾았다("단일 트랜잭션이 여러 트랜잭션보다 약 100배"라는 실무 서술은 측정 조건이
+  없어 인용하지 않는다).
 
 ### 의견 ② HTTP 대신 socket + 압축 스트리밍
 
@@ -58,7 +69,10 @@
 - **깨지는 조건 셋.** ⑴ **이득의 출처를 갈라야 한다.** 조기 렌더는 chunked transfer
   (RFC 9112 §7.1) + NDJSON 으로 HTTP 하나에서도 되고, 서버→클라이언트 단방향이면 **SSE 가
   더 단순한 기본값**이다 — SSE 는 자동 재연결과 `Last-Event-ID` 재개가 **스펙에 내장**돼
-  있는데 WebSocket(RFC 6455)에는 그 급의 표준 재개가 없다. ⑵ **압축은 socket 의 몫이 아니다.**
+  있는데 WebSocket(RFC 6455)에는 그 급의 표준 재개가 없다. SSE 의 커넥션 수 제약은 실재하지만
+  HTTP 버전에 달렸다 — WHATWG 스펙이 "탭을 여러 개 열면 서버당 커넥션 제한에 걸릴 수 있다"고
+  직접 인정하고 **SharedWorker 로 EventSource 하나를 공유하라**고 권고하는데, HTTP/1.1 의
+  오리진당 6 커넥션이 그 배경이고 HTTP/2 에서는 멀티플렉싱이 그 제한을 사실상 무의미하게 만든다. ⑵ **압축은 socket 의 몫이 아니다.**
   전송 압축은 어느 전송 위에서도 하는 일이고, 실측에서 최고 압축은 여전히 Brotli L11 이
   zstd L19 를 앞선다(gzip L6 대비 19.18% vs 14.11%). zstd 는 브라우저 지원이 45/100 이고
   Safari 는 26.1 에서야 부분 지원이다. ⑶ **바이너리 직렬화도 별개 층이다.** Arrow IPC 와
@@ -88,9 +102,16 @@
 문구로** 반복되고, NN/g 공식 사이트 어디에도 그 근거가 없다.
 
 대화에서 쓸 수 있는 것은 "그 숫자는 틀렸다"가 아니라 **"다들 그렇게 말한다"와 "1차 출처가
-실제로 그렇게 말했는가"는 다른 문제라는 구분**이다. Mejtoft et al.(2018, ECCE)은 실재하는
-연구지만 이번 조사에서 원문을 확보하지 못했고(2022 후속은 ACM 403), 그래서 **정확한 수치는
-이 대담에서도 인용하지 않는다.**
+실제로 그렇게 말했는가"는 다른 문제라는 구분**이다. Mejtoft·Långström·Söderström(2018, ECCE'18,
+Article 22, pp.1–4)은 실재하는 연구지만 두 라운드 모두 원문을 확보하지 못했다(ACM DL·ResearchGate
+모두 403, DiVA 에도 수치 재인용 없음). 그래서 **정확한 수치는 이 대담에서도 인용하지 않는다.**
+4쪽 단편이라 통계적 검정력이 큰 연구가 아닐 가능성도 함께 염두에 둔다.
+
+**정정 하나.** 1차 라운드가 "후속 논문 Mejtoft et al.(2022) 'Time for a change'"라고 적은 것은
+틀렸다 — 그 DOI(10.1145/3552327.3552329)를 직접 확인하니 **저자가 Mejtoft 가 아니라 van Nimwegen
+· van Rijn** 이고, 33rd ECCE(2022)에 실린 별개 논문이다. 대화에서 "Mejtoft 가 2022년에 후속
+연구를 냈다"고 말하지 않는다. 인접 연구로는 Söderström·Bååth·Mejtoft(2018, 같은 ECCE'18)의
+로딩 화면 애니메이션 속도 연구가 있다(서지정보만 확인).
 
 ## 3. 의견 셋이 안 덮는 갈래
 
@@ -144,17 +165,24 @@
 
 - **"그건 전송이 아니라 렌더 문제 아닌가."** 맞을 수 있으므로 질문 1에서 층부터 가른다.
   다만 층이 갈린 뒤에도 전송 축은 남는다 — 사전집계·다운샘플링은 렌더 부하도 같이 줄인다.
-- **"HTTP/2 면 요청 수는 신경 안 써도 된다."** 절반만 맞다. **도메인 샤딩이 폐기된 근거는
-  확실하지만**(멀티플렉싱을 방해하므로 불필요를 넘어 해롭다), 요청 하나마다 서버 처리와
-  브라우저 스케줄링 판단이 얹힌다. 그리고 **같은 오리진 안에서 시각화 단위로 쪼개는 것의
-  순비용을 잰 1차 벤치마크는 못 찾았다** — 이건 모른다고 말한다.
-- **"숫자를 대라."** 정량 근거가 있는 곳과 없는 곳이 갈린다. 있다: 압축 비율(HTTP Archive
-  2024-01) · Core Web Vitals 임계값 · `fetchpriority` 적용 사례(LCP 2.6초 → 1.9초, 단
-  측정 조건 세부는 web.dev 요약에 없다). 없다: LTTB·Arrow IPC 의 정량 절감, Arrow vs
-  Protobuf vs JSON 동일 조건 벤치마크, 요청 세분화 순비용, IndexedDB 대량 쓰기.
-- **"부분 렌더가 CLS 를 올린다는 건 실측인가."** 아니다. CLS 정의가 "비동기 로드"와 "기존
-  콘텐츠 앞 DOM 동적 삽입"을 대표 원인으로 꼽으므로 **정의로부터의 논리적 귀결**이고,
-  대시보드 워크로드 실측 사례는 못 찾았다. 이 구분을 먼저 말하고 들어간다.
+- **"HTTP/2 면 요청 수는 신경 안 써도 된다."** 절반만 맞다. 도메인 샤딩이 폐기된 근거는
+  확실하지만(멀티플렉싱을 방해하므로 불필요를 넘어 해롭다), **요청 세분화의 순비용을 잰 실측이
+  있다** — 25개 요청 기준으로 HTTP/1.1 개별 요청을 100% 라 할 때 HTTP/2 개별 요청 56%, 복합
+  응답은 두 버전 모두 30%. 즉 **HTTP/2 에서도 쪼개면 복합 응답보다 약 1.9배 느리다**(HTTP/1.1
+  의 약 3.3배보다는 훨씬 낫다). 요청 수와 시간이 선형은 아니되 무관하지도 않다는 것까지 같은
+  실측에 있다(501개 요청이 51개의 약 2.3배).
+- **"숫자를 대라."** 정량 근거가 있는 곳과 없는 곳이 갈린다. **있다**: 압축 비율(HTTP Archive
+  2024-01) · Core Web Vitals 임계값 · `fetchpriority` 적용 사례(LCP 2.6초 → 1.9초, 단 측정 조건
+  세부는 web.dev 요약에 없다) · 요청 세분화 순비용(Evert Pot 2020 실측) · HTTP/2 스트림 한도
+  (RFC 권장 100 이상, nginx 128, Cloudflare 100~200, Chromium 100·최대 256) · Arrow Flight 처리량
+  (단 HPC 클러스터 조건). **없다**: LTTB 의 정량 절감(원논문이 hCaptcha 로 막혀 두 번 다 못 봤다)
+  · Arrow vs Protobuf vs JSON **동일 조건** 3자 비교 · IndexedDB 대량 쓰기 처리량 · 스켈레톤의
+  실측 수치.
+- **"부분 렌더가 CLS 를 올린다는 건 실측인가."** 아니다, 그리고 **두 라운드를 돌리고도
+  아니다.** CLS 정의가 "비동기 로드"와 "기존 콘텐츠 앞 DOM 동적 삽입"을 대표 원인으로 꼽으므로
+  **정의로부터의 논리적 귀결**이고, RUM 실측 사례는 끝내 못 찾았다(흔히 인용되는 DebugBear 의
+  "1.2초 뒤 박스가 커진다" 사례도 확인해 보니 실측이 아니라 저자가 만든 합성 데모였다).
+  이 구분을 먼저 말하고 들어간다 — "실측됐다"고 말하지 않는다.
 
 ## 5. 앵커
 
@@ -181,9 +209,24 @@
 | localStorage/sessionStorage 각 5MiB | MDN |
 | LTTB 출처 | Sveinn Steinarsson 석사논문(2013). TimescaleDB Toolkit `lttb()` |
 | Arrow 와 Protobuf 는 보완적 — Flight 가 명령=Protobuf, 데이터=Arrow IPC | Apache Arrow 공식 FAQ |
+| 요청 세분화 순비용 — 25개 요청에서 HTTP/1.1 개별 100% 대비 HTTP/2 개별 56%, 복합 응답은 두 버전 모두 30%(= HTTP/2 에서도 쪼개면 약 1.9배 손해). 501개 요청은 51개의 약 2.3배 | Evert Pot, 2020-01-02. AWS t2.medium(us-west-2), 실제 주거용 회선, 50회 반복 |
+| HTTP/2 동시 스트림 한도 — 스펙은 "초기 무제한"이되 100 이상 권장. nginx 기본 128, Cloudflare 기본 100(최대 200), Chromium 커넥션당 100·서버 설정 시 최대 256 | RFC 9113 · nginx·Cloudflare 문서 · Eric Lawrence(Edge) 2019-12-04 |
+| SSE 는 서버당 커넥션 제한에 걸릴 수 있고 스펙이 **SharedWorker 공유**를 권고 | WHATWG HTML §9.2 Authoring notes |
+| HTTP/1.1 오리진당 6 커넥션 — HTTP/2 멀티플렉싱이 이 제한을 사실상 무의미하게 만든다 | Eric Lawrence(Edge) |
+| 겹치는 스코프의 `readwrite` 트랜잭션은 동시 시작 불가(직렬화). API 자체는 비동기라 메인스레드를 직접 막지 않는다 | W3C IndexedDB 스펙 · MDN |
+| 배치 완료를 캐시 무효화 신호로 쓰는 이름 붙은 패턴 둘 — key-based cache expiration(캐시 키에 `updated_at` 을 박는다) · watermark | DHH(37signals) · Akidau et al., "The Dataflow Model", PVLDB 8(12), 2015 |
+| watermark 는 "완결성은 일반적으로 정확성과 양립하지 않는다"고 논문이 스스로 못박는다 — 실용적 근사이지 보장이 아니다 | 같은 논문 |
+| Arrow Flight 처리량 — localhost 16스트림 병렬 최대 10GB/s, 원격 DoGet 1.5~2GB/s, Dremio 쿼리에서 turbodbc 대비 20배·ODBC 대비 30배 | Ahmad·Al Ars·Hofstee, arXiv:2204.03032v2(2022). SurfSara Cartesius HPC, Xeon E5-4650, InfiniBand 4×FDR — **HPC 조건이라 웹 대시보드에 그대로 옮기지 않는다** |
+| 스켈레톤 1차 연구 서지 — Mejtoft·Långström·Söderström(2018), ECCE'18 Article 22, pp.1–4, DOI 10.1145/3232078.3232086 | ACM(본문 미확보) |
 
-**인용하지 않기로 한 값**: 스켈레톤 관련 "이탈률 9~20% 감소" 류(1차 출처 없음) ·
-Mejtoft et al. 의 구체 수치(원문 미확보).
+**인용하지 않기로 한 값** (추가 라운드 뒤에도 유지):
+
+- 스켈레톤 관련 "이탈률 9~20% 감소" 류 — 1차 출처가 없다.
+- Mejtoft et al.(2018)의 구체 수치 — 두 라운드 모두 원문 미확보(ACM DL·ResearchGate 403).
+- "Mejtoft 가 2022년에 후속 연구를 냈다" — **사실이 아니다.** 그 논문의 저자는 van Nimwegen·van Rijn 이다.
+- LTTB 의 정량 절감 — 원논문(skemman.is)이 두 번 다 hCaptcha 로 막혔다.
+- IndexedDB "단일 트랜잭션이 여러 트랜잭션보다 약 100배" — 측정 조건이 없다.
+- "프로그레시브 렌더링이 CLS 를 올린다" 를 **실측으로** 말하는 것 — 정의로부터의 추론까지만 말한다.
 
 ## 6. 용어
 
@@ -205,3 +248,6 @@ Mejtoft et al. 의 구체 수치(원문 미확보).
   예기치 않은 레이아웃 이동.
 - **CrUX(Chrome UX Report)** — Core Web Vitals 의 실사용자 필드 데이터 출처. 28일 롤링.
 - **축출(eviction)** — 브라우저가 저장 공간을 회수하려고 오리진 데이터를 지우는 것.
+- **SharedWorker** — 같은 오리진의 여러 탭이 함께 쓰는 워커. SSE 커넥션을 하나로 모으는 데 쓴다.
+- **watermark** — 스트리밍 처리에서 "이 시점까지의 데이터는 다 관측됐다"고 보는 하한선. 휴리스틱이다.
+- **RUM(Real User Monitoring)** — 실제 사용자 환경에서 모은 성능 데이터. 합성 측정과 구분된다.
