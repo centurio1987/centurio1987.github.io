@@ -2,7 +2,7 @@
 card: KAN-067-NH9SDQ
 title: 폭신 대담에서 사용할 주제는 아래와 같다. 미리 주제에 대해 리서치를 하고, 대화를 대비한 준비를 해둬라.
 created: 2026-08-18
-scope: raws/talks/_prep/**
+scope: raws/talks/_prep/**, raws/talks/README.md
 ---
 
 # KAN-067-NH9SDQ — 폭신 대담에서 사용할 주제는 아래와 같다. 미리 주제에 대해 리서치를 하고, 대화를 대비한 준비를 해둬라.
