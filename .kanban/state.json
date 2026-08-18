@@ -1,6 +1,6 @@
 {
   "next_id": 68,
-  "next_seq": 265,
+  "next_seq": 266,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -699,18 +699,6 @@
       "memo_hash": "2fb98818eb8e4faa9b0bdb58cf277b880132f7c3",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
-    "KAN-063": {
-      "col": "backlog",
-      "title": "viz 도식을 감싸는 액자 프레임 디자인 — 패턴 스크래치 + 예시 페이지",
-      "memo": "",
-      "verbatim": "액자 프레임을 디자인 해라. 액자 프레임은 vis 를 데코레이트 하는 목적으로 사용할 거다. 패턴 별로 몇 가지 스크래치로 작성해서, 예시와 함께 별도의 예시 페이지를 랜더링 해서 제공해라. 보고 검토하고 피드백 해서 최종 결정 하겠다.",
-      "생성": "유저",
-      "최종": "ai",
-      "갱신": "2026-08-04",
-      "title_hash": "1e0695bdd968623c6603262088e1cf2d5ffd2860",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
-      "verbatim_hash": "8d3a18d971afe82f34cdc7bcd2dd9e4e16cb0d8b"
-    },
     "KAN-064": {
       "col": "review",
       "title": "집필 엔진 교체(authoring-kit)에 따른 기존 글 재집필 계획 수립",
@@ -748,14 +736,19 @@
       "verbatim_hash": "f4d97fd42cee9ee39329b85be2d52a6102f54835",
       "scope": [
         "raws/talks/**",
+        "draft/ddd-transaction-account-discussion-draft.mdx",
         "src/lib/talk.ts",
-        "src/lib/talk/**",
+        "src/lib/talkSource.ts",
         "scripts/build-talk.ts",
         "scripts/verify-talk.ts",
+        "scripts/ingest-talk.ts",
+        "scripts/fixtures/talk/**",
         ".claude/skills/talk-ingest/**",
         "src/templates/talk-episode.mdx",
         ".claude/skills/init-post/SKILL.md",
-        ".claude/authoring/paths.json"
+        ".claude/authoring/paths.json",
+        "package.json",
+        "CLAUDE.md"
       ]
     },
     "KAN-067-NH9SDQ": {
@@ -777,7 +770,6 @@
     "KAN-032",
     "KAN-060",
     "KAN-061",
-    "KAN-063",
     "KAN-048",
     "KAN-065",
     "KAN-067-NH9SDQ",
@@ -838,6 +830,17 @@
     "KAN-066-KK9Q50"
   ],
   "recent": [
+    {
+      "seq": 265,
+      "t": "2026-08-18T16:49",
+      "a": "유저",
+      "id": "KAN-063",
+      "op": "archive",
+      "w": "WTCH92",
+      "col": "backlog",
+      "title": "viz 도식을 감싸는 액자 프레임 디자인 — 패턴 스크래치 + 예시 페이지",
+      "memo": ""
+    },
     {
       "seq": 264,
       "t": "2026-08-18T16:17",
@@ -1336,16 +1339,6 @@
       "op": "move",
       "from": "review",
       "to": "done"
-    },
-    {
-      "seq": 215,
-      "t": "2026-07-30T01:33",
-      "a": "ai",
-      "id": "KAN-047",
-      "op": "edit",
-      "field": "memo",
-      "before": "실행전략(4단계): ① @astrojs/rss@4.0.19 설치 — astro peer 제약 없고 zod4 기설치 ② src/pages/rss.xml.js 요약 피드 — draft 제외·pubDate desc·description+hero 절대URL·categories=카테고리+tags, 본문 전문은 MDX 아일랜드 탓에 제외 ③ 발견성 — BaseLayout head 의 link rel=alternate + Footer 구독 링크 ④ 검증 — bun run build 로 dist/rss.xml, W3C Feed Validator, 리더 앱 실물 확인 · 카테고리별 피드는 초판 제외(YAGNI) · astro.config 의 site 설정은 이미 충족",
-      "after": "구현 완료(머지 c287f9d). @astrojs/rss 기반 정적 피드 — /rss.xml(전체 29편) + /categories/<slug>/rss.xml(9개). src/lib/feed.ts 가 채널 메타·아이템 조립·상한(FEED_MAX_ITEMS=50)의 단일 소스. 요약 피드(표지·요약·시리즈 회차·본문 링크) — 본문이 MDX 아일랜드라 리더에선 껍데기가 되므로 전문 제외, 확장 지점은 toFeedItem 하나. 저자는 dc:creator(RSS <author>는 이메일 자리), lastBuildDate 는 최신 글 pubDate(빌드 시각은 무변경 재배포에도 흔들림). 노출: 전 페이지 head 자동발견 + 푸터 RSS + 목록/카테고리 제목 옆 FeedLink 캡슐. 검증: bun run build 통과, 피드 10개 xmllint 통과. || 계획 대비 차이 2건 — ① 카테고리별 피드를 '초판 제외(YAGNI)'로 잡아뒀으나 실제로는 포함했다(카테고리가 이미 정본 분류라 getStaticPaths 재사용으로 비용이 낮았고, 글 폭이 넓어 전체 피드가 소음이 되는 문제가 실재). 되돌리려면 src/pages/categories/[category]/rss.xml.ts 삭제 + [category].astro 의 FeedLink/feeds prop 제거면 끝. ② 검증에서 W3C Feed Validator·리더 앱 실물 확인은 미수행(로컬 xmllint + XML 파싱 점검으로 대체) — 배포 후 확인 필요. || 미확인: 목록/카테고리 제목 옆 캡슐 배치의 시각 확인(브라우저 확장 미연결로 빌드 HTML 구조만 확인)."
     }
   ],
   "layout": 2
