@@ -761,7 +761,10 @@
       "갱신": "2026-08-15",
       "title_hash": "94742035dcdd59c1b673087db9469b81bc3d9f1e",
       "memo_hash": "728992acfdaa2f4067e516c453950928ef1d2ee4",
-      "verbatim_hash": "cd332ecb3b55c9b180a03e4db61536aaf468e8e5"
+      "verbatim_hash": "cd332ecb3b55c9b180a03e4db61536aaf468e8e5",
+      "scope": [
+        "raws/talks/_prep/**"
+      ]
     }
   },
   "order": [
