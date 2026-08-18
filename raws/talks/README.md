@@ -35,6 +35,7 @@ raws/talks/
 ├─ _rules/
 │   ├─ NORMALIZE_RULES.md          ← 원본에서 무엇을 버리고 남기는가
 │   └─ TALK_MD.md                  ← L2 정형본의 문법 (정본)
+├─ _prep/                          ← 대화 **전에** 만드는 준비 노트 (README.md + <slug>.md)
 └─ <slug>/
     ├─ source/                     ← L1. 받은 파일을 이름·확장자 그대로 넣는다
     │   └─ <원본 파일>              여러 개여도 된다
@@ -46,6 +47,10 @@ raws/talks/
 마크다운처럼 보이지만 frontmatter 는 YAML 의 문서화된 부분집합만 받고, 질문 번호는
 적지 않으며(순서에서 나온다), 정수 인용구는 `> [!정수]` 로 표시하고 에피소드당
 1~2개다. 구현은 `src/lib/talkSource.ts` 다.
+
+`_` 로 시작하는 디렉터리는 slug 가 아니다 — `scripts/build-talk.ts` 가 목록에서 뺀다.
+`_prep/` 은 **대화하기 전에** 만드는 것(질문 순서 · 의견 판정 · 예상 반론 · 앵커 · 용어)이
+사는 자리이고, 세 층 어디에도 속하지 않는다. 규격은 `_prep/README.md` 에 있다.
 
 `<slug>` 는 발행 URL 이 아니라 **대담의 이름**이다. 발행물은 `talk-<slug>.mdx` 가 되므로
 여기에 `talk-` 접두사를 또 붙이지 않는다.
