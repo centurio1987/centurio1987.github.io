@@ -38,8 +38,8 @@ slug 목록에서 빼기 때문이다 — `raws/talks/<slug>/` 안에 준비 노
 준비 노트도 둘로 나눈다. 실제로 한 회차로 합칠지는 대화가 끝난 뒤 정한다.
 
 ## 실행 계획
-- [ ] `S1` 주제① 리서치 — 대시보드 대량 aggregated 조회의 반응성 (성능축·UX축) · 완료 기준: `~/blog-research/raws/NNN-*.md` 원본 + 위키 topic 페이지 + angle 경로
-- [ ] `S2` 주제② 리서치 — 영속성 조회에 지배되는 성능, 자료구조·알고리즘 개입 여지 · 완료 기준: S1 과 동일
+- [x] `S1` 주제① 리서치 — 대시보드 대량 aggregated 조회의 반응성 (성능축·UX축) · 완료 기준: `~/blog-research/raws/NNN-*.md` 원본 + 위키 topic 페이지 + angle 경로
+- [x] `S2` 주제② 리서치 — 영속성 조회에 지배되는 성능, 자료구조·알고리즘 개입 여지 · 완료 기준: S1 과 동일
 - [ ] `S3` 유저 의견 셋 사전 판정 — SW+IndexedDB stale 판정 / socket 압축 스트리밍 / skeleton·loading · 완료 기준: 각 건마다 「성립하는 조건 · 깨지는 조건 · 근거 출처」 3항
 - [ ] `S4` 유저가 안 낸 갈래 수집 — 두 주제 각각 · 완료 기준: 갈래 목록 + 갈래마다 적용 조건·치르는 비용·근거
 - [ ] `S5` 준비 노트 ① 작성 — `raws/talks/_prep/dashboard-bulk-fetch.md` · 완료 기준: 질문 순서 · 의견 판정 · 예상 반론 · 숫자/규격 앵커 · 용어 정리
@@ -64,3 +64,7 @@ ls raws/talks/_prep/       # README.md + 준비 노트 2건
 - 2026-08-18T16:52 · s:89ada231 — `전략` 섹션 교체
 - 2026-08-18T16:52 · s:89ada231 — `실행 계획` 섹션 교체
 - 2026-08-18T16:52 · s:89ada231 — `검증` 섹션 교체
+- 2026-08-18T17:16 · s:89ada231 · S1 doing — 착수
+- 2026-08-18T17:16 · s:89ada231 · S2 doing — 착수
+- 2026-08-18T17:36 · s:89ada231 · S1 done — 주제① 리서치 — raws/012 + topic 5건 + angle dashboard-aggregated-fetch-talk(draft). NN/g 스켈레톤 수치 통설이 근거 없음을 확인
+- 2026-08-18T17:36 · s:89ada231 · S2 done — 주제② 리서치 — raws/013 + topic 5건 + angle db-bound-query-strategies(mature). 유저 전제는 부분 성립, 깨지는 조건 3개 확인
