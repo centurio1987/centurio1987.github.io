@@ -45,6 +45,9 @@ slug 목록에서 빼기 때문이다 — `raws/talks/<slug>/` 안에 준비 노
 - [x] `S5` 준비 노트 ① 작성 — `raws/talks/_prep/dashboard-bulk-fetch.md` · 완료 기준: 질문 순서 · 의견 판정 · 예상 반론 · 숫자/규격 앵커 · 용어 정리
 - [x] `S6` 준비 노트 ② 작성 — `raws/talks/_prep/db-bound-performance.md` · 완료 기준: S5 와 동일
 - [x] `S7` 접점 문서와 검증 — `raws/talks/_prep/README.md` 신설 + `raws/talks/README.md` 한 줄 + 아래 「검증」 전부 초록
+- [>] `S8` 주제① 추가 리서치 라운드 (검토 판정) — raws/012 의 open question 8건을 겨냥해 다시 수집 · 완료 기준: `~/blog-research/raws/014-*.md` + 위키 갱신 + angle `dashboard-aggregated-fetch-talk` 가 `mature`. 못 메운 항목은 **왜 못 메웠는지**와 함께 남긴다 <!-- claim:s=89ada231 t=2026-08-18T23:17 -->
+- [ ] `S9` 준비 노트 ① 갱신 — 새 근거 반영 · 회차 결정(주제별 1회차, 성능축/UX축 분리 안 함) 반영 · 인용 보류 넷 재판정 · 완료 기준: 노트①의 「나눌 여지」 문구 제거, 앵커 항이 새 근거로 갱신, 보류 유지분은 사유 명시
+- [ ] `S10` 재검증·재검토 요청 · 완료 기준: `talk:verify`·`build` 초록, `review-init --force` 로 요청서 갱신(미응답 판단 항목 3·4·5 를 그대로 남긴 채)
 
 ## 검증
 ```bash
@@ -78,3 +81,7 @@ ls raws/talks/_prep/       # README.md + 준비 노트 2건
 - 2026-08-18T17:42 · s:89ada231 · S5 done — raws/talks/_prep/dashboard-bulk-fetch.md — 6항(질문순서·의견판정·빠진갈래·예상반론·앵커·용어)
 - 2026-08-18T17:42 · s:89ada231 · S6 done — raws/talks/_prep/db-bound-performance.md — 6항. 전제는 부분 성립, 깨지는 조건 3건
 - 2026-08-18T17:42 · s:89ada231 · S7 done — _prep/README.md 신설 + raws/talks/README.md 반영. talk:verify 대담 1건 유지·build 46쪽 통과
+- 2026-08-18T23:16 · s:89ada231 — 검토 판정 — 회차는 주제별로 나눈다(노트①의 성능축/UX축 분리는 하지 않는다)
+- 2026-08-18T23:16 · s:89ada231 — 검토 판정 — 주제① 추가 리서치 라운드를 돌려 angle 을 mature 로 올린다. 판단 항목 3·4·5 는 미응답
+- 2026-08-18T23:16 · s:89ada231 — `실행 계획` 섹션 교체
+- 2026-08-18T23:17 · s:89ada231 · S8 doing — 착수
