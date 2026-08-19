@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- kanban-fp:e56c7bf98f3078517c2d39af8c0c1e9feb56db68 -->
+<!-- kanban-fp:6995bae049a09f2a6b52ba399f7624c5dc8fd5a5 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KAN-067-NH9SDQ 검토 요청</title>
 <style>
@@ -150,7 +150,7 @@ li { margin: .25rem 0; }
 </style>
 <div class="wrap">
 <div class="title-block">
-  <p class="meta">KAN-067-NH9SDQ · 검토 · 브랜치 KAN-067-NH9SDQ</p>
+  <p class="meta">KAN-067-NH9SDQ · 완료 · 브랜치 KAN-067-NH9SDQ</p>
   <h1>폭신 대담에서 사용할 주제는 아래와 같다. 미리 주제에 대해 리서치를 하고, 대화를 대비한 준비를 해둬라. — 검토 요청</h1>
 </div>
 
@@ -159,9 +159,9 @@ li { margin: .25rem 0; }
 <div class="kpis">
   <div class="kpi"><span class="meta">변경 파일</span><b>16</b></div>
   <div class="kpi"><span class="meta">추가 / 삭제</span><b>+1527 −48</b></div>
-  <div class="kpi"><span class="meta">판단 항목</span><b>0/5</b></div>
+  <div class="kpi"><span class="meta">판단 항목</span><b>2/6</b></div>
   <div class="kpi"><span class="meta">판정</span>
-    <b><span class="tag tag-doing">검토 대기</span></b></div>
+    <b><span class="tag tag-done">승인</span></b></div>
 </div>
 
 
@@ -240,10 +240,10 @@ $ git status --porcelain src/content/posts raws/talks/ddd-entry-contradiction
   겨냥 8건 결과: 메움 3 · 부분 4 · 못 메움 1 (못 메운 것은 사유와 함께 남김)</pre></section>
 
 <h2>판단 항목</h2>
-<ul><li><span class="tag tag-todo">대기</span> [1차 검토 응답 반영 완료] 회차는 주제별로 나눈다 — 노트①의 「성능축·UX축으로 나눌 여지」 문구를 걷어내고 「이 노트가 한 회차, 주제②는 다른 회차」로 못박았습니다. 추가로 정하실 것 없습니다</li><li><span class="tag tag-todo">대기</span> [1차 검토 응답 반영 완료] 주제① 추가 리서치를 돌렸다 — raws/014 신설, angle 이 draft → mature. 겨냥한 8건 중 메움 3(요청 세분화 순비용 실측 · 배치완료 기준 캐시 무효화의 정형 패턴 2종 · SSE 커넥션 제한 스펙 원문) · 부분 4 · 못 메움 1(프로그레시브 렌더링→CLS 실측). 못 메운 것은 「두 라운드를 돌리고도 못 찾았다」로 남겼습니다. 추가로 정하실 것 없습니다</li><li><span class="tag tag-todo">대기</span> [미응답 · 전제가 바뀌었습니다] 인용 보류로 표시한 값을 유지할 것인가 — 1차 검토 때 넷이었고 지금은 여섯입니다. 추가 라운드에서 Mejtoft 2018 원문을 다시 시도했으나 ACM DL·ResearchGate 모두 403 이라 여전히 미확보이고 LTTB 원논문은 두 번 다 hCaptcha 에 막혔습니다. 대신 우리 쪽 오인용을 하나 잡았습니다 — 1차 라운드가 「Mejtoft et al.(2022) 후속 논문」이라고 적은 DOI 의 실제 저자는 van Nimwegen·van Rijn 으로 별개 논문입니다. 지금 고른 값은 여섯 전부 인용 배제 유지이고 노트에 사유와 함께 명시돼 있습니다</li><li><span class="tag tag-todo">대기</span> [미응답 · 값 유지] 준비 노트 자리를 raws/talks/_prep/ 로 둔 것이 맞는가 — 밑줄로 시작해 scripts/build-talk.ts:49 가 slug 목록에서 제외하는 성질을 이용했고 talk:verify 로 재확인했습니다(대담 집계 1건 유지). 대안은 raws/ 최상위에 별도 디렉터리인데 raws/talks/README.md 가 이미 「별도 루트 디렉터리를 새로 파면 유저 입력의 입구가 둘이 된다」고 적어 둔 판단과 부딪혀 뺐습니다</li><li><span class="tag tag-todo">대기</span> [미응답 · 값 유지 · 항목 하나 늘었습니다] ~/.claude/skills/manage-kanban/ 변경을 커밋할 것인가 — 이 카드 범위 밖이고 아직 커밋하지 않았습니다. ① 유저 지시로 독립성 판정에서 완료 카드를 빼고 직렬 중재(dep-serialize · 종료코드 11)를 추가하고 test_dep_policy.py 를 신설했습니다. ② 이번 재검토를 만들다 발견한 결함도 함께 고쳤습니다 — review-init 의 --commits 가 쉼표로도 쪼개져 한국어 커밋 제목이 잘리고(7건이 9건으로) 잘린 조각에 카드 id 가 없어 「남의 커밋이 섞였다」는 거짓 경고가 났습니다. split_commit_lines 로 분리하고 test_review_flow.py 의 픽스처에 쉼표 든 제목을 넣어 회귀를 막았습니다. 테스트 10종 전부 초록입니다. 그 저장소에는 제 것이 아닌 미커밋 변경(board.py·report.py·test_derived.py)이 이미 있어 묶어 커밋하지 않았습니다</li></ul>
+<ul><li><span class="tag tag-todo">대기</span> [1차 검토 응답 반영 완료] 회차는 주제별로 나눈다 — 노트①의 「성능축·UX축으로 나눌 여지」 문구를 걷어내고 「이 노트가 한 회차, 주제②는 다른 회차」로 못박았습니다. 추가로 정하실 것 없습니다</li><li><span class="tag tag-todo">대기</span> [1차 검토 응답 반영 완료] 주제① 추가 리서치를 돌렸다 — raws/014 신설, angle 이 draft → mature. 겨냥한 8건 중 메움 3(요청 세분화 순비용 실측 · 배치완료 기준 캐시 무효화의 정형 패턴 2종 · SSE 커넥션 제한 스펙 원문) · 부분 4 · 못 메움 1(프로그레시브 렌더링→CLS 실측). 못 메운 것은 「두 라운드를 돌리고도 못 찾았다」로 남겼습니다. 추가로 정하실 것 없습니다</li><li><span class="tag tag-todo">대기</span> [미응답 · 전제가 바뀌었습니다] 인용 보류로 표시한 값을 유지할 것인가 — 1차 검토 때 넷이었고 지금은 여섯입니다. 추가 라운드에서 Mejtoft 2018 원문을 다시 시도했으나 ACM DL·ResearchGate 모두 403 이라 여전히 미확보이고 LTTB 원논문은 두 번 다 hCaptcha 에 막혔습니다. 대신 우리 쪽 오인용을 하나 잡았습니다 — 1차 라운드가 「Mejtoft et al.(2022) 후속 논문」이라고 적은 DOI 의 실제 저자는 van Nimwegen·van Rijn 으로 별개 논문입니다. 지금 고른 값은 여섯 전부 인용 배제 유지이고 노트에 사유와 함께 명시돼 있습니다</li><li><span class="tag tag-todo">대기</span> 유지</li><li><span class="tag tag-done">완료</span> [미응답 · 값 유지] 준비 노트 자리를 raws/talks/_prep/ 로 둔 것이 맞는가 — 밑줄로 시작해 scripts/build-talk.ts:49 가 slug 목록에서 제외하는 성질을 이용했고 talk:verify 로 재확인했습니다(대담 집계 1건 유지). 대안은 raws/ 최상위에 별도 디렉터리인데 raws/talks/README.md 가 이미 「별도 루트 디렉터리를 새로 파면 유저 입력의 입구가 둘이 된다」고 적어 둔 판단과 부딪혀 뺐습니다</li><li><span class="tag tag-done">완료</span> [미응답 · 값 유지 · 항목 하나 늘었습니다] ~/.claude/skills/manage-kanban/ 변경을 커밋할 것인가 — 이 카드 범위 밖이고 아직 커밋하지 않았습니다. ① 유저 지시로 독립성 판정에서 완료 카드를 빼고 직렬 중재(dep-serialize · 종료코드 11)를 추가하고 test_dep_policy.py 를 신설했습니다. ② 이번 재검토를 만들다 발견한 결함도 함께 고쳤습니다 — review-init 의 --commits 가 쉼표로도 쪼개져 한국어 커밋 제목이 잘리고(7건이 9건으로) 잘린 조각에 카드 id 가 없어 「남의 커밋이 섞였다」는 거짓 경고가 났습니다. split_commit_lines 로 분리하고 test_review_flow.py 의 픽스처에 쉼표 든 제목을 넣어 회귀를 막았습니다. 테스트 10종 전부 초록입니다. 그 저장소에는 제 것이 아닌 미커밋 변경(board.py·report.py·test_derived.py)이 이미 있어 묶어 커밋하지 않았습니다</li></ul>
 
 <h2>판정</h2>
-<section class="card"><p><strong>판정</strong>: (승인 / 반려 중 하나를 적으세요)</p>
+<section class="card"><p><strong>판정</strong>: 승인</p>
 <p><strong>사유</strong>:</p>
 <ul>
 <li>승인이면 → <code>apply --op move --id KAN-067-NH9SDQ --to done</code></li>
@@ -251,5 +251,5 @@ $ git status --porcelain src/content/posts raws/talks/ddd-entry-contradiction
 </ul></section>
 
 <p class="meta">생성 근거: KANBAN.reviews/KAN-067-NH9SDQ.review.md
-· KANBAN.md · 갱신 2026-08-18</p>
+· KANBAN.md · 갱신 2026-08-19</p>
 </div>

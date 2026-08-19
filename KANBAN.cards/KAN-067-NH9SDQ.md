@@ -90,3 +90,4 @@ ls raws/talks/_prep/       # README.md + 준비 노트 2건
 - 2026-08-18T23:43 · s:89ada231 · S9 done — 노트① 갱신 — 회차 결정 반영, 앵커 9행 추가, 인용 배제 목록 6건으로 갱신, Mejtoft 정정 명시
 - 2026-08-18T23:43 · s:89ada231 · S10 doing — 착수
 - 2026-08-18T23:48 · s:89ada231 · S10 done — 재검증(talk:verify 1건 유지·build 46쪽) + 요청서 갱신. review-init --commits 쉼표 분할 결함도 함께 수정
+- 2026-08-19T09:09 · s:89ada231 — 검토 승인 — 인용 보류 6건 유지, _prep/ 자리 확정, ~/.claude 스킬 변경 커밋 승인
