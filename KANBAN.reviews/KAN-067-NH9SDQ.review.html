@@ -1,0 +1,255 @@
+<meta charset="utf-8">
+<!-- kanban-fp:6995bae049a09f2a6b52ba399f7624c5dc8fd5a5 -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAN-067-NH9SDQ 검토 요청</title>
+<style>
+/* manage-kanban 계획 리포트 스타일 — Neobrutalism_Editorial_01 (editorial brutalism)
+ *
+ * 출처: bbangto-ui/packages/style-guide-catalog/src/neobrutalismEditorial.tsx
+ *   라이트 = foundations(semantic) · 다크 = midnightFoundations(makeColorway)
+ *
+ * **왜 사본인가.** @centurio1987/bbangto-ui-visualization 은 React 컴포넌트 + 빌드가
+ * 필요하고 사설 레지스트리(npm.pkg.github.com)에 있다. 리포트는 빌드 없이 열리는 단일
+ * HTML 이고 CSP 로 외부 로드가 막히므로, 패키지를 런타임에 쓸 수 없다. 그래서 토큰 값만
+ * 옮겼다.
+ *
+ * **drift 는 이 주석이 아니라 테스트가 막는다** — scripts/test_report.py 가 위 .tsx 를
+ * 파싱해 아래 값과 대조한다(원본이 없는 머신에서는 skip).
+ */
+
+:root {
+  --ink: #1C1B17;
+  --ink-hover: #2A2823;
+  --cream: #FAF2DD;
+  --paper: #FFFCF2;
+  --cream-sunken: #F3E8C9;
+  --gold: #E9C766;
+  --green: #C2D3B4;
+  --pink: #ECC3C8;
+  --muted: #4A463C;
+  --subtle: #6E6A5E;
+  --faint: #9A9483;
+  --border-width: 2px;
+
+  --bg: var(--cream);
+  --bg-elevated: var(--paper);
+  --bg-sunken: var(--cream-sunken);
+  --fg: var(--ink);
+  --fg-muted: var(--muted);
+  --fg-subtle: var(--subtle);
+  --border: var(--ink);
+  --accent: var(--gold);
+  --accent-2: var(--green);
+  --accent-3: var(--pink);
+  --danger: #C0392B;
+  --ok: #5C7A4A;
+  --warn: #B8860B;
+  --offset: 3px 3px 0 var(--gold);
+  --offset-lg: 5px 5px 0 var(--ink);
+
+  --font-sans: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+/* 다크는 잉크/크림을 뒤집는다(midnight colorway). 시스템 기본은 media query 가,
+ * 명시적 선택은 [data-theme] 가 이긴다 — 둘 다 정의해야 토글이 양방향으로 먹는다. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1C1B17;
+    --bg-elevated: #2A2823;
+    --bg-sunken: #141310;
+    --fg: #FAF2DD;
+    --fg-muted: #C9C2AE;
+    --fg-subtle: #9A9483;
+    --border: #FAF2DD;
+    --offset: 3px 3px 0 #FAF2DD;
+    --offset-lg: 5px 5px 0 #FAF2DD;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1C1B17;
+  --bg-elevated: #2A2823;
+  --bg-sunken: #141310;
+  --fg: #FAF2DD;
+  --fg-muted: #C9C2AE;
+  --fg-subtle: #9A9483;
+  --border: #FAF2DD;
+  --offset: 3px 3px 0 #FAF2DD;
+  --offset-lg: 5px 5px 0 #FAF2DD;
+}
+
+body {
+  margin: 0;
+  padding: 2.5rem 1.25rem 5rem;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.wrap { max-width: 62rem; margin: 0 auto; }
+
+/* 각진 모서리 · 2px 잉크선 · 하드 오프셋. 이 셋이 모티프의 전부다. */
+.card, .kpi, table, pre, .chart {
+  background: var(--bg-elevated);
+  border: var(--border-width) solid var(--border);
+  border-radius: 0;
+}
+.card { padding: 1.25rem 1.5rem; margin: 1.5rem 0; box-shadow: var(--offset); }
+
+h1, h2, h3 { font-weight: 700; margin: 2rem 0 .75rem; }
+h1 { font-size: 38px; line-height: 1.05; letter-spacing: -.01em; margin-top: 0; }
+h2 { font-size: 30px; line-height: 1.1; letter-spacing: -.01em;
+     border-bottom: var(--border-width) solid var(--border); padding-bottom: .35rem; }
+h3 { font-size: 20px; line-height: 1.3; }
+
+.meta { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
+        font-weight: 600; text-transform: uppercase; color: var(--fg-subtle); }
+
+.title-block { border: var(--border-width) solid var(--border); background: var(--accent);
+               color: var(--ink); padding: 1.5rem; box-shadow: var(--offset-lg); }
+.title-block h1, .title-block .meta { color: var(--ink); }
+
+.kpis { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0; }
+.kpi { flex: 1 1 9rem; padding: .9rem 1rem; box-shadow: var(--offset); }
+.kpi b { display: block; font-size: 30px; line-height: 1.1; }
+
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid var(--border); padding: .5rem .7rem; text-align: left;
+         vertical-align: top; font-size: 15px; }
+th { background: var(--bg-sunken); font-weight: 700; }
+
+/* 넓은 것은 페이지가 아니라 자기 안에서 가로 스크롤한다. */
+.scroll { overflow-x: auto; }
+pre { padding: .8rem 1rem; font-family: var(--font-mono); font-size: 13px; overflow-x: auto; }
+code { font-family: var(--font-mono); font-size: .9em; }
+
+.chart { padding: 1rem; margin: 1rem 0; }
+.chart svg { display: block; width: 100%; height: auto; }
+
+.tag { display: inline-block; border: var(--border-width) solid var(--border);
+       padding: 0 .4rem; font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.tag-done { background: var(--ok); color: var(--cream); }
+.tag-doing { background: var(--accent); color: var(--ink); }
+.tag-todo { background: var(--bg-sunken); color: var(--fg-muted); }
+.tag-hold { background: var(--accent-3); color: var(--ink); }
+.tag-warn { background: var(--warn); color: var(--ink); }
+.tag-danger { background: var(--danger); color: var(--cream); }
+
+.note, blockquote { border-left: 5px solid var(--accent); padding-left: 1rem;
+                    color: var(--fg-muted); margin: 1rem 0; }
+ol, ul { padding-left: 1.4rem; }
+li { margin: .25rem 0; }
+
+@media (max-width: 40rem) {
+  h1 { font-size: 30px; } h2 { font-size: 24px; }
+  body { padding: 1.5rem .75rem 3rem; }
+}
+
+</style>
+<div class="wrap">
+<div class="title-block">
+  <p class="meta">KAN-067-NH9SDQ · 완료 · 브랜치 KAN-067-NH9SDQ</p>
+  <h1>폭신 대담에서 사용할 주제는 아래와 같다. 미리 주제에 대해 리서치를 하고, 대화를 대비한 준비를 해둬라. — 검토 요청</h1>
+</div>
+
+
+
+<div class="kpis">
+  <div class="kpi"><span class="meta">변경 파일</span><b>16</b></div>
+  <div class="kpi"><span class="meta">추가 / 삭제</span><b>+1527 −48</b></div>
+  <div class="kpi"><span class="meta">판단 항목</span><b>2/6</b></div>
+  <div class="kpi"><span class="meta">판정</span>
+    <b><span class="tag tag-done">승인</span></b></div>
+</div>
+
+
+
+<h2>검토 대상</h2>
+<div class="scroll"><table>
+<tr><th>항목</th><th>값</th></tr>
+<tr><td>브랜치</td><td><code>KAN-067-NH9SDQ</code></td></tr>
+<tr><td>워크트리</td><td><code>/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-067-NH9SDQ</code></td></tr>
+<tr><td>베이스</td><td><code>06e9d96</code></td></tr>
+<tr><td>변경 훑기</td><td><code>git diff 06e9d96...HEAD</code></td></tr>
+</table></div>
+
+<h3>커밋 7건</h3>
+<pre>52000d6 KAN-067-NH9SDQ S8·S9 완료 — 주제① 추가 리서치(angle mature)와 노트① 갱신
+d3a28fa kanban: KAN-067-NH9SDQ 검토 피드백 반영 — 회차는 주제별, 주제① 추가 리서치 (S8~S10 · 배치4)
+f03884d kanban: KAN-067-NH9SDQ 검토 요청 — 준비 노트 2건, 판단 항목 5건
+b89eb17 KAN-067-NH9SDQ S3~S7 완료 — 대담 준비 노트 2건 · _prep 규격 (배치2·3 완료)
+fae53bc KAN-067-NH9SDQ S1·S2 완료 — 두 주제 리서치·위키 ingest (배치1 완료)
+86dff03 kanban: KAN-067-NH9SDQ 착수 — 진행 중 이동 · 수행안 혼합(배치1만 병렬) 확정
+c23d9bd kanban: KAN-067-NH9SDQ 착수 전 계획 — 전략·WBS 7단계·배치 3개·계획 리포트</pre>
+
+<h3>변경 규모</h3>
+<div class="chart"><svg viewBox="0 0 860 478" role="img" aria-label="파일별 변경 규모"><text x="16" y="28" font-size="12" fill="var(--fg-subtle)">파일 16개 중 규모 상위 16개 · 초록 추가 · 빨강 삭제</text><text x="16" y="57" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">raws/talks/_prep/dashboard-bulk-fetch.md</text><rect x="316.0" y="46" width="528.0" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="852.0" y="58" font-size="11" fill="var(--fg-subtle)">+253 −0</text><text x="16" y="83" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.reviews/KAN-067-NH9SDQ.review.html</text><rect x="316.0" y="72" width="517.6" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="841.6" y="84" font-size="11" fill="var(--fg-subtle)">+248 −0</text><text x="16" y="109" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.reports/KAN-067-NH9SDQ.report.html</text><rect x="316.0" y="98" width="500.9" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="824.9" y="110" font-size="11" fill="var(--fg-subtle)">+240 −0</text><text x="16" y="135" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.reviews/KAN-067-NH9SDQ.review.md</text><rect x="316.0" y="124" width="298.4" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="622.4" y="136" font-size="11" fill="var(--fg-subtle)">+143 −0</text><text x="16" y="161" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">raws/talks/_prep/db-bound-performance.md</text><rect x="316.0" y="150" width="288.0" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="612.0" y="162" font-size="11" fill="var(--fg-subtle)">+138 −0</text><text x="16" y="187" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.batches/KAN-067-NH9SDQ.batch4.md</text><rect x="316.0" y="176" width="194.1" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="518.1" y="188" font-size="11" fill="var(--fg-subtle)">+93 −0</text><text x="16" y="213" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.cards/KAN-067-NH9SDQ.md</text><rect x="316.0" y="202" width="189.9" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="513.9" y="214" font-size="11" fill="var(--fg-subtle)">+91 −0</text><text x="16" y="239" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.batches/KAN-067-NH9SDQ.batch1.md</text><rect x="316.0" y="228" width="160.7" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="484.7" y="240" font-size="11" fill="var(--fg-subtle)">+77 −0</text><text x="16" y="265" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">.kanban/state.json</text><rect x="316.0" y="254" width="83.5" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><rect x="399.5" y="254" width="68.9" height="14" fill="var(--danger)" stroke="var(--border)" stroke-width="2"/><text x="476.3" y="266" font-size="11" fill="var(--fg-subtle)">+40 −33</text><text x="16" y="291" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.batches/KAN-067-NH9SDQ.batch3.md</text><rect x="316.0" y="280" width="141.9" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="465.9" y="292" font-size="11" fill="var(--fg-subtle)">+68 −0</text><text x="16" y="317" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.batches/KAN-067-NH9SDQ.batch2.md</text><rect x="316.0" y="306" width="123.1" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="447.1" y="318" font-size="11" fill="var(--fg-subtle)">+59 −0</text><text x="16" y="343" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">raws/talks/_prep/README.md</text><rect x="316.0" y="332" width="108.5" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="432.5" y="344" font-size="11" fill="var(--fg-subtle)">+52 −0</text><text x="16" y="369" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">KANBAN.md</text><rect x="316.0" y="358" width="29.2" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><rect x="345.2" y="358" width="25.0" height="14" fill="var(--danger)" stroke="var(--border)" stroke-width="2"/><text x="378.3" y="370" font-size="11" fill="var(--fg-subtle)">+14 −12</text><text x="16" y="395" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">.kanban/log.md</text><rect x="316.0" y="384" width="6.3" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><rect x="322.3" y="384" width="6.3" height="14" fill="var(--danger)" stroke="var(--border)" stroke-width="2"/><text x="336.5" y="396" font-size="11" fill="var(--fg-subtle)">+3 −3</text><text x="16" y="421" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">raws/talks/README.md</text><rect x="316.0" y="410" width="10.4" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="334.4" y="422" font-size="11" fill="var(--fg-subtle)">+5 −0</text><text x="16" y="447" font-size="12" font-family="var(--font-mono)" fill="var(--fg-muted)">.kanban/archive.jsonl</text><rect x="316.0" y="436" width="6.3" height="14" fill="var(--ok)" stroke="var(--border)" stroke-width="2"/><text x="330.3" y="448" font-size="11" fill="var(--fg-subtle)">+3 −0</text></svg></div>
+<div class="scroll"><table>
+<tr><th>파일</th><th>상태</th><th>추가</th><th>삭제</th></tr><tr><td><code>.kanban/archive.jsonl</code></td><td>M</td><td>3</td><td>0</td></tr><tr><td><code>.kanban/log.md</code></td><td>M</td><td>3</td><td>3</td></tr><tr><td><code>.kanban/state.json</code></td><td>M</td><td>40</td><td>33</td></tr><tr><td><code>KANBAN.batches/KAN-067-NH9SDQ.batch1.md</code></td><td>M</td><td>77</td><td>0</td></tr><tr><td><code>KANBAN.batches/KAN-067-NH9SDQ.batch2.md</code></td><td>M</td><td>59</td><td>0</td></tr><tr><td><code>KANBAN.batches/KAN-067-NH9SDQ.batch3.md</code></td><td>M</td><td>68</td><td>0</td></tr><tr><td><code>KANBAN.batches/KAN-067-NH9SDQ.batch4.md</code></td><td>M</td><td>93</td><td>0</td></tr><tr><td><code>KANBAN.cards/KAN-067-NH9SDQ.md</code></td><td>M</td><td>91</td><td>0</td></tr><tr><td><code>KANBAN.md</code></td><td>M</td><td>14</td><td>12</td></tr><tr><td><code>KANBAN.reports/KAN-067-NH9SDQ.report.html</code></td><td>M</td><td>240</td><td>0</td></tr><tr><td><code>KANBAN.reviews/KAN-067-NH9SDQ.review.html</code></td><td>M</td><td>248</td><td>0</td></tr><tr><td><code>KANBAN.reviews/KAN-067-NH9SDQ.review.md</code></td><td>M</td><td>143</td><td>0</td></tr><tr><td><code>raws/talks/README.md</code></td><td>M</td><td>5</td><td>0</td></tr><tr><td><code>raws/talks/_prep/README.md</code></td><td>M</td><td>52</td><td>0</td></tr><tr><td><code>raws/talks/_prep/dashboard-bulk-fetch.md</code></td><td>M</td><td>253</td><td>0</td></tr><tr><td><code>raws/talks/_prep/db-bound-performance.md</code></td><td>M</td><td>138</td><td>0</td></tr>
+</table></div>
+
+<h3>롤백 태그 13개</h3>
+<pre>kan/KAN-067-NH9SDQ/S1
+kan/KAN-067-NH9SDQ/S2
+kan/KAN-067-NH9SDQ/S3
+kan/KAN-067-NH9SDQ/S4
+kan/KAN-067-NH9SDQ/S5
+kan/KAN-067-NH9SDQ/S6
+kan/KAN-067-NH9SDQ/S7
+kan/KAN-067-NH9SDQ/S8
+kan/KAN-067-NH9SDQ/S9
+kan/KAN-067-NH9SDQ/batch1
+kan/KAN-067-NH9SDQ/batch2
+kan/KAN-067-NH9SDQ/batch3
+kan/KAN-067-NH9SDQ/batch4</pre>
+
+<h2>검증 — 기준과 실행 결과</h2>
+<section class="card"><p><strong>기준</strong></p>
+<pre>bun run talk:verify        # _prep/ 이 slug 로 오인되지 않는가 — 대담 집계가 기존과 같아야 한다
+bun run build              # 회귀 없음
+ls raws/talks/_prep/       # README.md + 준비 노트 2건</pre>
+<ul>
+<li><code>~/blog-research/wiki/topics/</code> 에 주제별 topic 페이지가 생겼고 <code>index.md</code>·<code>log.md</code> 가 갱신됐다.</li>
+<li>준비 노트 두 건이 각각 다섯 항(질문 순서 · 의견 판정 · 예상 반론 · 앵커 · 용어)을 모두 갖췄다.</li>
+<li>유저 의견 셋이 <strong>각각</strong> 판정돼 있다 — &quot;대체로 맞다&quot; 같은 뭉뚱그림이 없다.</li>
+<li>노트의 모든 수치·규격에 출처가 붙어 있다. 출처 없는 값은 적지 않는다.</li>
+<li><code>src/content/posts/</code> 와 <code>raws/talks/&lt;slug&gt;/</code> 는 이 카드에서 <strong>바뀌지 않았다</strong>(대화 전이다).</li>
+</ul>
+<p><strong>실행 결과</strong></p>
+<pre>$ bun run talk:verify
+[대담] raws/talks/ — 1건            ← 착수 전과 같다. _prep/ 은 slug 로 안 세어진다
+  · ddd-entry-contradiction — 봉인만 됨 (integrity.usable=false, 정형본 없음)
+[자가검사] 파서 규격 위반 9종 · 고장 주입 5종 — 전부 통과
+[verify-talk] ✓ 대담 3계층에 어긋남 없음
+
+$ bun run build
+[build] 46 page(s) built in 2.14s
+[build] Complete!
+
+$ ls raws/talks/_prep/
+README.md  dashboard-bulk-fetch.md  db-bound-performance.md
+
+$ git status --porcelain src/content/posts raws/talks/ddd-entry-contradiction
+(비어 있음 — 대화 전이므로 발행물·원문은 바뀌지 않아야 한다)
+
+추가 라운드(S8) 검증 — ~/blog-research 커밋 e2d7725
+  raws/014 신규(012 는 불변 확인), topic 5종 sources [012, 014] 로 갱신,
+  angle dashboard-aggregated-fetch-talk: draft → mature
+  겨냥 8건 결과: 메움 3 · 부분 4 · 못 메움 1 (못 메운 것은 사유와 함께 남김)</pre></section>
+
+<h2>판단 항목</h2>
+<ul><li><span class="tag tag-todo">대기</span> [1차 검토 응답 반영 완료] 회차는 주제별로 나눈다 — 노트①의 「성능축·UX축으로 나눌 여지」 문구를 걷어내고 「이 노트가 한 회차, 주제②는 다른 회차」로 못박았습니다. 추가로 정하실 것 없습니다</li><li><span class="tag tag-todo">대기</span> [1차 검토 응답 반영 완료] 주제① 추가 리서치를 돌렸다 — raws/014 신설, angle 이 draft → mature. 겨냥한 8건 중 메움 3(요청 세분화 순비용 실측 · 배치완료 기준 캐시 무효화의 정형 패턴 2종 · SSE 커넥션 제한 스펙 원문) · 부분 4 · 못 메움 1(프로그레시브 렌더링→CLS 실측). 못 메운 것은 「두 라운드를 돌리고도 못 찾았다」로 남겼습니다. 추가로 정하실 것 없습니다</li><li><span class="tag tag-todo">대기</span> [미응답 · 전제가 바뀌었습니다] 인용 보류로 표시한 값을 유지할 것인가 — 1차 검토 때 넷이었고 지금은 여섯입니다. 추가 라운드에서 Mejtoft 2018 원문을 다시 시도했으나 ACM DL·ResearchGate 모두 403 이라 여전히 미확보이고 LTTB 원논문은 두 번 다 hCaptcha 에 막혔습니다. 대신 우리 쪽 오인용을 하나 잡았습니다 — 1차 라운드가 「Mejtoft et al.(2022) 후속 논문」이라고 적은 DOI 의 실제 저자는 van Nimwegen·van Rijn 으로 별개 논문입니다. 지금 고른 값은 여섯 전부 인용 배제 유지이고 노트에 사유와 함께 명시돼 있습니다</li><li><span class="tag tag-todo">대기</span> 유지</li><li><span class="tag tag-done">완료</span> [미응답 · 값 유지] 준비 노트 자리를 raws/talks/_prep/ 로 둔 것이 맞는가 — 밑줄로 시작해 scripts/build-talk.ts:49 가 slug 목록에서 제외하는 성질을 이용했고 talk:verify 로 재확인했습니다(대담 집계 1건 유지). 대안은 raws/ 최상위에 별도 디렉터리인데 raws/talks/README.md 가 이미 「별도 루트 디렉터리를 새로 파면 유저 입력의 입구가 둘이 된다」고 적어 둔 판단과 부딪혀 뺐습니다</li><li><span class="tag tag-done">완료</span> [미응답 · 값 유지 · 항목 하나 늘었습니다] ~/.claude/skills/manage-kanban/ 변경을 커밋할 것인가 — 이 카드 범위 밖이고 아직 커밋하지 않았습니다. ① 유저 지시로 독립성 판정에서 완료 카드를 빼고 직렬 중재(dep-serialize · 종료코드 11)를 추가하고 test_dep_policy.py 를 신설했습니다. ② 이번 재검토를 만들다 발견한 결함도 함께 고쳤습니다 — review-init 의 --commits 가 쉼표로도 쪼개져 한국어 커밋 제목이 잘리고(7건이 9건으로) 잘린 조각에 카드 id 가 없어 「남의 커밋이 섞였다」는 거짓 경고가 났습니다. split_commit_lines 로 분리하고 test_review_flow.py 의 픽스처에 쉼표 든 제목을 넣어 회귀를 막았습니다. 테스트 10종 전부 초록입니다. 그 저장소에는 제 것이 아닌 미커밋 변경(board.py·report.py·test_derived.py)이 이미 있어 묶어 커밋하지 않았습니다</li></ul>
+
+<h2>판정</h2>
+<section class="card"><p><strong>판정</strong>: 승인</p>
+<p><strong>사유</strong>:</p>
+<ul>
+<li>승인이면 → <code>apply --op move --id KAN-067-NH9SDQ --to done</code></li>
+<li>반려면 → <code>apply --op move --id KAN-067-NH9SDQ --to doing</code> 뒤에 <code>doc-log --entry &quot;&lt;반려 사유&gt;&quot;</code></li>
+</ul></section>
+
+<p class="meta">생성 근거: KANBAN.reviews/KAN-067-NH9SDQ.review.md
+· KANBAN.md · 갱신 2026-08-19</p>
+</div>
