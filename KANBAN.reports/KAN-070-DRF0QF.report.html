@@ -1,0 +1,339 @@
+<meta charset="utf-8">
+<!-- kanban-fp:2795a0e56ffe34070c08246b3d21ea7b0b24bbb5 voiced -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAN-070-DRF0QF 실행 계획</title>
+<style>
+/* manage-kanban 계획 리포트 스타일 — Neobrutalism_Editorial_01 (editorial brutalism)
+ *
+ * 출처: bbangto-ui/packages/style-guide-catalog/src/neobrutalismEditorial.tsx
+ *   라이트 = foundations(semantic) · 다크 = midnightFoundations(makeColorway)
+ *
+ * **왜 사본인가.** @centurio1987/bbangto-ui-visualization 은 React 컴포넌트 + 빌드가
+ * 필요하고 사설 레지스트리(npm.pkg.github.com)에 있다. 리포트는 빌드 없이 열리는 단일
+ * HTML 이고 CSP 로 외부 로드가 막히므로, 패키지를 런타임에 쓸 수 없다. 그래서 토큰 값만
+ * 옮겼다.
+ *
+ * **drift 는 이 주석이 아니라 테스트가 막는다** — scripts/test_report.py 가 위 .tsx 를
+ * 파싱해 아래 값과 대조한다(원본이 없는 머신에서는 skip).
+ */
+
+:root {
+  --ink: #1C1B17;
+  --ink-hover: #2A2823;
+  --cream: #FAF2DD;
+  --paper: #FFFCF2;
+  --cream-sunken: #F3E8C9;
+  --gold: #E9C766;
+  --green: #C2D3B4;
+  --pink: #ECC3C8;
+  --muted: #4A463C;
+  --subtle: #6E6A5E;
+  --faint: #9A9483;
+  --border-width: 2px;
+
+  --bg: var(--cream);
+  --bg-elevated: var(--paper);
+  --bg-sunken: var(--cream-sunken);
+  --fg: var(--ink);
+  --fg-muted: var(--muted);
+  --fg-subtle: var(--subtle);
+  --border: var(--ink);
+  --accent: var(--gold);
+  --accent-2: var(--green);
+  --accent-3: var(--pink);
+  --danger: #C0392B;
+  --ok: #5C7A4A;
+  --warn: #B8860B;
+  --offset: 3px 3px 0 var(--gold);
+  --offset-lg: 5px 5px 0 var(--ink);
+
+  --font-sans: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+/* 다크는 잉크/크림을 뒤집는다(midnight colorway). 시스템 기본은 media query 가,
+ * 명시적 선택은 [data-theme] 가 이긴다 — 둘 다 정의해야 토글이 양방향으로 먹는다. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1C1B17;
+    --bg-elevated: #2A2823;
+    --bg-sunken: #141310;
+    --fg: #FAF2DD;
+    --fg-muted: #C9C2AE;
+    --fg-subtle: #9A9483;
+    --border: #FAF2DD;
+    --offset: 3px 3px 0 #FAF2DD;
+    --offset-lg: 5px 5px 0 #FAF2DD;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1C1B17;
+  --bg-elevated: #2A2823;
+  --bg-sunken: #141310;
+  --fg: #FAF2DD;
+  --fg-muted: #C9C2AE;
+  --fg-subtle: #9A9483;
+  --border: #FAF2DD;
+  --offset: 3px 3px 0 #FAF2DD;
+  --offset-lg: 5px 5px 0 #FAF2DD;
+}
+
+body {
+  margin: 0;
+  padding: 2.5rem 1.25rem 5rem;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.wrap { max-width: 62rem; margin: 0 auto; }
+
+/* 각진 모서리 · 2px 잉크선 · 하드 오프셋. 이 셋이 모티프의 전부다. */
+.card, .kpi, table, pre, .chart {
+  background: var(--bg-elevated);
+  border: var(--border-width) solid var(--border);
+  border-radius: 0;
+}
+.card { padding: 1.25rem 1.5rem; margin: 1.5rem 0; box-shadow: var(--offset); }
+
+h1, h2, h3 { font-weight: 700; margin: 2rem 0 .75rem; }
+h1 { font-size: 38px; line-height: 1.05; letter-spacing: -.01em; margin-top: 0; }
+h2 { font-size: 30px; line-height: 1.1; letter-spacing: -.01em;
+     border-bottom: var(--border-width) solid var(--border); padding-bottom: .35rem; }
+h3 { font-size: 20px; line-height: 1.3; }
+
+.meta { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
+        font-weight: 600; text-transform: uppercase; color: var(--fg-subtle); }
+
+.title-block { border: var(--border-width) solid var(--border); background: var(--accent);
+               color: var(--ink); padding: 1.5rem; box-shadow: var(--offset-lg); }
+.title-block h1, .title-block .meta { color: var(--ink); }
+
+.kpis { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0; }
+.kpi { flex: 1 1 9rem; padding: .9rem 1rem; box-shadow: var(--offset); }
+.kpi b { display: block; font-size: 30px; line-height: 1.1; }
+
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid var(--border); padding: .5rem .7rem; text-align: left;
+         vertical-align: top; font-size: 15px; }
+th { background: var(--bg-sunken); font-weight: 700; }
+
+/* 넓은 것은 페이지가 아니라 자기 안에서 가로 스크롤한다. */
+.scroll { overflow-x: auto; }
+pre { padding: .8rem 1rem; font-family: var(--font-mono); font-size: 13px; overflow-x: auto; }
+code { font-family: var(--font-mono); font-size: .9em; }
+
+.chart { padding: 1rem; margin: 1rem 0; }
+.chart svg { display: block; width: 100%; height: auto; }
+
+.tag { display: inline-block; border: var(--border-width) solid var(--border);
+       padding: 0 .4rem; font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.tag-done { background: var(--ok); color: var(--cream); }
+.tag-doing { background: var(--accent); color: var(--ink); }
+.tag-todo { background: var(--bg-sunken); color: var(--fg-muted); }
+.tag-hold { background: var(--accent-3); color: var(--ink); }
+.tag-warn { background: var(--warn); color: var(--ink); }
+.tag-danger { background: var(--danger); color: var(--cream); }
+/* 승계 칩은 판정 태그(승인·반려·미정)와 **다른 종류의 사실**이다 — 판정은 이 문서가
+ * 내린 상태이고 승계는 어디서 왔는가다. 위 여섯 중 하나를 빌려 쓰면 훑는 눈이 그것을
+ * 상태로 읽으므로, 어느 것과도 안 겹치게 잉크와 바탕을 뒤집는다. 토큰을 뒤집는 것이라
+ * 다크에서도 그대로 선다(리터럴을 박으면 그 자리만 안 뒤집힌다). */
+.tag-inh { background: var(--fg); color: var(--bg); }
+
+.note, blockquote { border-left: 5px solid var(--accent); padding-left: 1rem;
+                    color: var(--fg-muted); margin: 1rem 0; }
+ol, ul { padding-left: 1.4rem; }
+li { margin: .25rem 0; }
+
+/* ─── 승계 — 넘어온 의견임이 접기 밖에서 보여야 한다 ──────────────────────────
+ * 승계 사실은 `inherit` 값으로 이미 있었는데, 화면에는 상세(접기) 안의 텍스트 한 줄로만
+ * 있었다. 그래서 훑는 사람은 이 의견이 남의 검토서에서 넘어온 것인지 모른 채 판정한다 —
+ * 값을 가르는 것과 화면에서 드러나는 것은 다른 일이고, 이 블록이 뒤엣것이다.
+ *
+ * 왼쪽 띠는 이 스타일이 이미 쓰는 모티프다(.note·blockquote 가 accent, 검토 화면의 조작
+ * 자리가 accent-2). 승계는 남은 accent-3 을 쓴다 — 셋이 한 항목 안에 같이 서므로 자리마다
+ * 색이 달라야 "여기는 무엇을 하는 자리인가"가 색으로 읽힌다.
+ *
+ * 검토 화면 전용 CSS(report.py 의 REVIEW_CSS)가 아니라 여기 두는 이유: 그쪽은 **판정을
+ * 내릴 수 있는 문서**에만 실린다. 승계된 검토서(판정이 다른 문서로 넘어간 쪽)도 자기가
+ * 물려받은 의견을 그대로 들고 있어서, 거기 두면 그 화면에서만 띠가 통째로 빠진다. */
+.inh { border-left: 5px solid var(--accent-3); background: var(--bg-sunken);
+       padding: .5rem .75rem; margin: .5rem 0 .7rem; }
+/* 머리의 승계 알림은 문서 전체의 사실이라 절 사이 간격과 카드 여백을 그대로 쓴다. */
+.card.inh { padding: 1rem 1.25rem; margin: 1.5rem 0; }
+.inh-row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: baseline;
+           margin: .2rem 0; }
+/* 라벨 폭을 맞춘다 — 줄이 여럿인데 값의 시작이 들쭉날쭉하면 무엇이 무엇의 값인지가
+   눈으로 안 붙는다. */
+.inh-row > .meta:first-child { margin: 0; min-width: 4.5rem; }
+.inh-val { flex: 1 1 16rem; color: var(--fg-muted); }
+/* 계보는 좁은 화면에서 페이지를 밀 수 있다. 가로 스크롤 대신 접어 내린다 — 홉이 낱개
+   조각이라 줄이 바뀌어도 읽는 순서가 안 깨진다. */
+.inh-chain { display: flex; flex-wrap: wrap; gap: .35rem; align-items: baseline; }
+.inh-arrow { color: var(--fg-subtle); }
+
+@media (max-width: 40rem) {
+  h1 { font-size: 30px; } h2 { font-size: 24px; }
+  body { padding: 1.5rem .75rem 3rem; }
+}
+
+</style>
+<div class="wrap">
+<div class="title-block">
+  <p class="meta">KAN-070-DRF0QF · 할 일 · 브랜치 KAN-070-DRF0QF</p>
+  <h1>UI 토큰 게이트를 세운다 — verify-tokens 래칫 신설과 집필 규칙 개정</h1>
+</div>
+
+
+<div class="kpis">
+  <div class="kpi"><span class="meta">work</span><b>0/10</b></div>
+  <div class="kpi"><span class="meta">배치</span><b>4</b></div>
+  <div class="kpi"><span class="meta">보류</span><b>0</b></div>
+  <div class="kpi"><span class="meta">독립성</span><b>1</b></div>
+</div>
+
+<section class="card"><h3>이 카드가 무엇을 끝내려는가</h3>
+<p><code>KAN-070-DRF0QF</code> 는 이 블로그의 칸반 보드에 있는 카드 하나의 이름이에요. 앞의 <code>KAN-070</code> 은 사람이 읽는 번호이고 뒤의 여섯 글자는 다른 워크트리에서 같은 번호가 나와도 섞이지 않게 해 주는 꼬리표입니다. 이 카드가 하려는 일은 하나예요 — <strong>디자인 토큰을 안 쓴 값이 새로 들어오는 것을 CI 에서 그 자리에 막는 게이트를 세우는 것</strong>입니다.</p>
+<p>왜 지금이냐면, 바로 앞 카드가 낸 진단이 이렇게 끝났기 때문이에요.</p>
+<pre>전체 3,539 히트  →  준수 1,303 (44.3%)
+                    위반 1,567   ← 토큰 밖 580 + 문서 규칙 밖 987
+                    드리프트 71
+                    정당한 예외 3
+                    판정 불가 595</pre>
+<p>준수율이 44.3% 라는 것보다 중요한 것은 <strong>그 수를 지금 아무도 다시 셀 수 없다</strong>는 사실이에요. 진단에 쓰인 판정기 넷이 세션 스크래치패드에만 있어서, 재부팅 한 번이면 사라집니다. 그래서 이 카드의 첫 걸음은 게이트를 짜는 것이 아니라 그 판정기를 레포로 옮기는 일이에요.</p>
+<blockquote>루트 독립성은 어떤가요 — <strong>겹침이 딱 하나 있고, 이미 용인으로 기록해 뒀습니다.</strong> <code>scripts/tokens-baseline.json</code> 을 이 카드가 만들고 <code>KAN-072</code> 가 갱신해요. 다만 그 파일은 손으로 고치는 파일이 아니라 명령이 굽는 생성물이라, <code>src/styles/motion.css</code> 와 같은 모양입니다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹쳐요.</blockquote>
+<h3>왜 이 접근인가</h3>
+<p>진단은 &quot;첫 수는 게이트다&quot;라고 정했고 그 판단은 그대로 따릅니다. 다만 <strong>형태를 하나 바꿨어요</strong> — 진단이 적은 &quot;CI 하드 실패&quot; 대신 <strong>래칫</strong>으로 세웁니다. 래칫은 지금 숫자를 기준선으로 박아 두고 <strong>늘면 실패, 줄면 통과</strong>로 판정하는 방식이에요.</p>
+<p>왜 그래야 하는지는 숫자를 넣어 보면 바로 보입니다.</p>
+<pre>하드월로 올리면            래칫으로 올리면
+─────────────────          ─────────────────
+위반 1,567 &gt; 0             위반 1,567 == 기준선 1,567
+   ↓ CI 실패                  ↓ CI 통과
+   ↓ deploy: needs(build)     ↓ 새 리터럴 1건 들어오면 1,568 &gt; 1,567
+   ↓ 사이트 배포 중단            ↓ 그 자리에서 실패</pre>
+<p><code>main.yml</code> 은 빌드와 배포가 한 잡이라 게이트가 죽으면 <strong>사이트 배포까지 멈춰요.</strong> 그러면 게이트는 첫 수가 아니라 1,567건을 다 갚은 뒤에야 켤 수 있는 마지막 수가 되고, 그 사이 새로 들어오는 리터럴은 아무도 못 막습니다.</p>
+<p>이 레포에 래칫 선례가 있느냐 하면 <strong>없어요.</strong> 성문 선례는 「다 갚고 하드월」 하나뿐입니다 — <code>check-post-markers</code> 가 옛 글 83건을 다 옮긴 뒤에 하드 실패로 올라갔어요. 그러니 이 선택의 근거는 &quot;선례를 따른다&quot;가 아니라 <strong>선례를 못 따르는 이유가 규모</strong>라는 것입니다. 83건과 1,567건은 자릿수가 다르고, 0 으로 수렴하면 그때 하드월로 승격합니다.</p>
+<p>한 가지가 더 있어요. <strong>게이트가 무엇을 정본으로 삼느냐</strong>입니다.</p>
+<pre>안 됨:  게이트 ── 파싱 ──&gt; DESIGN_CONCEPT.md §9 (산문 한 줄)
+                              ↑ 서식이 바뀌면 파서가 깨진다
+                              ↑ KAN-072 가 규칙을 고치면 게이트를 다시 열어야 한다
+
+맞음:  게이트 ── 파싱 ──&gt; src/styles/tokens.css (--space-* · --text-*)
+                              ↑ KAN-072.2 가 토큰을 세우면 게이트는 문서를 아예 안 읽는다</pre>
+<p>이렇게 두면 코드(이 카드)와 데이터(<code>KAN-072</code>)의 의존이 <strong>경로 겹침 없이 한 방향으로만</strong> 흐릅니다. 경로에 안 드러나는 의존은 <code>dep-check</code> 가 못 잡으니, 애초에 만들지 않는 편이 싸요.</p>
+<h3>무엇을 어떤 순서로</h3>
+<p>work 는 열입니다. work 는 실행 계획의 한 단계를 가리키는 말이고 <code>S1</code>~<code>S10</code> 이 그 id 예요. 간트 차트가 위에 있으니 여기서는 <strong>왜 그 순서인지</strong>만 짚겠습니다.</p>
+<p>순서를 만드는 것은 셋이에요.</p>
+<pre>S1 ──┬──&gt; 나머지 전부      회수한 참조 JSON 이 모든 완료 판정의 기준선
+     │
+S2 ──┴──&gt; S3 · S4 · S5     축 모듈의 공통 계약이 여기서 정해진다
+                 │
+                 └──&gt; S6 ──&gt; S7 ──&gt; S8
+                      자가검사가 먼저 서야 래칫이 죽은 걸 알아챈다</pre>
+<p><code>S1</code> 이 맨 앞인 이유는 앞에서 말한 그대로예요 — 판정기가 없으면 게이트가 옳게 옮겨졌는지 <strong>대조할 상대 자체가 없습니다.</strong> 그리고 회수본에는 출력 JSON 이 함께 있어서, 총계가 아니라 <code>파일:줄:속성:값</code> 단위로 맞춰 볼 수 있어요. 총계만 맞추면 두 군데가 서로 상쇄돼도 통과합니다.</p>
+<p><code>S6</code>(자가검사)이 <code>S7</code>(래칫) 앞인 것도 이유가 있어요. 부채가 1,567 에서 0 으로 줄어드는 동안 게이트가 조용히 고장 나면, 래칫은 &quot;줄었다&quot;를 통과로 읽습니다. <strong>죽은 게이트와 다 갚은 게이트가 화면에서 같은 모양이 돼요.</strong> 그래서 축마다 고장 픽스처를 넣어, 게이트를 통째로 무력화하면 자가검사가 먼저 빨개지게 만듭니다.</p>
+<h3>두 가지 수행안</h3>
+<p>두 안을 나란히 놓고 골랐습니다. <strong>유저는 오케스트레이션을 골랐어요.</strong> 비교표는 위에 있으니 여기서는 각 안이 무엇을 전제하고 무엇을 감수하는지 씁니다.</p>
+<h4>단일 에이전트 — 배치 3개 · 병렬 폭 1</h4>
+<p>한 세션이 순서대로 <code>S1·S2·S3</code> → <code>S4·S5·S6</code> → <code>S7·S8·S9·S10</code> 을 갑니다. 배치는 한 세션 예산의 절반을 넘지 않는 work 묶음이고, 이 안에서는 셋으로 갈립니다.</p>
+<pre>배치1  S1 회수 · S2 스켈레톤 · S3 색축      무게중심 = S3 히트 단위 대조
+배치2  S4 fallback · S5 문서축 · S6 자가검사  S5 끝에 유저 확인 1회
+배치3  S7 래칫 · S8 배선 · S9 규칙 · S10 예외표</pre>
+<p><strong>전제는 없습니다.</strong> 게이트가 스크립트 하나로 남고, 이것이 이 레포의 기존 규약이에요 — <code>verify-viz</code> · <code>verify-deco</code> · <code>verify-widths</code> · <code>verify-talk</code> · <code>verify-graph</code> 다섯이 전부 단일 파일입니다. 감수하는 것은 시간이 아니라 <strong>직렬성</strong>이에요. 축 셋이 서로를 기다립니다.</p>
+<h4>오케스트레이션 — 배치 4개 · 병렬 폭 3 (채택)</h4>
+<p>축 셋을 동시에 포팅합니다.</p>
+<pre>배치1  S1 회수                              단독 · 모든 것의 선행
+배치2  S2 스켈레톤  ‖  S9 규칙 개정          병렬 2
+배치3  S3 색축 ‖ S4 fallback ‖ S5 문서축      병렬 3
+배치4  S6 자가검사 · S7 래칫 · S8 배선 · S10 예외표</pre>
+<p><strong>전제가 하나 붙어요.</strong> 세 세션이 같은 <code>verify-tokens.ts</code> 를 동시에 못 고치니까 축마다 모듈을 갖습니다 — <code>scripts/lib/tokens/color.ts</code> · <code>fallback.ts</code> · <code>docrule.ts</code>. 그러면 게이트가 파일 넷이 되고, <code>scripts/lib/</code> 라는 자리는 이 레포에 아직 없어요. 새 관례를 만드는 셈입니다.</p>
+<p>감수하는 것은 셋이고 대책도 셋이에요.</p>
+<p>| 감수 | 대책 | | --- | --- | | 게이트가 파일 넷이 된다 | 규약은 <strong>진입점 하나</strong>가 진다 — 셰뱅·&quot;왜 필요한가&quot; 주석·<code>failures</code>/<code>notes</code> 분리·<code>exit 1</code>. 축 모듈은 판정만 돌려준다 | | 축마다 세션이 달라 판정이 갈린다 | <code>S2</code> 가 <strong>계약을 먼저 박는다</strong> — 토큰 사전·파일 목록·제외 규칙은 진입점이 한 번 만들어 넘긴다 | | 히트 단위 대조를 세 번 해야 한다 | 이건 오히려 이점이에요. 회수한 참조 JSON 이 축마다 하나씩이라 모듈과 <strong>1:1로 맞습니다</strong> |</p>
+<p>세 번째 줄이 이 안을 고를 만하게 만드는 자리입니다. 참조 JSON 셋이 축 모듈 셋과 그대로 짝을 이루니까, 세 세션이 각자 자기 파일 하나만 열고 각자 자기 기준으로 완료를 판정해요.</p>
+<h3>막힐 만한 지점</h3>
+<p>넷입니다. 앞의 둘은 시간이 지나면 손쓸 수 없게 되는 종류예요.</p>
+<pre>① /private/tmp 휘발     ── 회수 전에 재부팅되면 진단 수치를 영영 재현 못 함
+② 계약을 덜 박고 배치3   ── 어긋남이 히트 단위 대조에서야 드러남
+③ CI 가 배포와 한 잡     ── 게이트 오탐이 글 발행을 막음
+④ 범위 확장의 유혹       ── .ts 28개를 넣으면 진단 수치와 안 맞음</pre>
+<p>①은 <strong>이미 손을 써 뒀습니다</strong> — 19개 파일을 작업 트리로 옮겼고 <code>cmp</code> 로 19/19 바이트 동일을 확인했어요. 남은 위험은 커밋 전 유실 하나뿐입니다. 그래서 배치1 이 work 하나짜리예요.</p>
+<p>②는 배치2 의 유일한 실패 모드예요. 축마다 다른 세션이 제외 규칙이나 판정 모양을 스스로 정하면, 그 어긋남은 배치3 한복판에서 드러납니다. 대조가 세 번이라 <strong>어느 축이 틀렸는지는 보이지만</strong> 고치는 비용은 이미 병렬로 세 갈래 벌어진 뒤에 떨어져요.</p>
+<p>③은 래칫을 고른 이유이면서 동시에 래칫의 값이기도 합니다. 그래서 <code>--warn-only</code> 탈출구를 만들되 CI 에서는 쓰지 않아요. ④는 규칙으로 막습니다 — <strong>감사와 똑같은 파일집합으로 먼저 짜서 수치가 맞는 것을 확인하고</strong>, 확장은 별도 work 로 두고 기준선 상승분을 기록에 남깁니다.</p>
+<h3>무엇이 되면 끝인가</h3>
+<p>여섯입니다. 앞의 셋이 게이트가 <strong>옳은지</strong>를 보고, 뒤의 셋이 게이트가 <strong>무는지</strong>를 봅니다.</p>
+<pre>옳은가  1. tokens:verify 가 드리프트 71 · 토큰 밖 580 · fallback 23 을 보고한다
+        2. 참조 JSON 과 히트 단위 차집합이 0 이다 (총계 일치로는 부족)
+        3. 자가검사에서 고장 픽스처 여섯이 각자 다른 사유로 실패한다
+
+무는가  4. 리터럴 한 줄을 더하면 비0 + 그 파일:줄을 지목한다. 지우면 0
+        5. CI 가 초록이고, 위반 브랜치에서는 그 스텝만 빨갛다
+        6. REACT_SIM_GUIDE 와 CLAUDE.md 에 &quot;조화&quot; 같은 판정 불가 낱말이 0건이다</pre>
+<p>2번이 이 카드에서 제일 엄한 기준이에요. 게이트가 감사와 <strong>같은 총계</strong>를 내는 것으로는 부족합니다. 한 군데를 더 세고 다른 한 군데를 덜 세면 총계는 그대로거든요. 그래서 <code>파일:줄:속성:값:판정</code> 다섯 쪽 모두로 맞춰 보고, 차집합이 한 건이라도 남으면 이식이 틀린 겁니다.</p>
+<p>그리고 회귀도 함께 봅니다 — <code>bun run build</code> 46페이지, 기존 게이트 넷, 그리고 <code>bun run gen:motion</code> 후 <code>motion.css</code> 가 안 흔들렸는지까지요.</p></section>
+
+<h2>전략</h2>
+<section class="card"><p>감사(<code>design-concept/UI_CONSISTENCY_AUDIT.md</code>)가 &quot;첫 수는 게이트다&quot;라고 정한 것을 그대로 따르되, <strong>형태를 하드월에서 래칫으로 바꾼다.</strong></p>
+<p><strong>왜 래칫인가.</strong> 감사 P3-1 은 &quot;CI 하드 실패&quot;라고 적었다. 그런데 지금 위반이 1,567건이라 그대로 CI 에 꽂으면 첫 푸시부터 빨간불이 되고, 더 나쁜 것은 <code>.github/workflows/main.yml</code> 이 <code>build</code> → <code>deploy</code>(<code>needs: build</code>) 한 잡이라 <strong>게이트가 죽으면 사이트 배포가 통째로 멈춘다</strong>는 점이다. 그러면 게이트가 첫 수가 아니라 마지막 수가 되고, 그 사이 새 리터럴 유입을 못 막는다.</p>
+<p><strong>선례를 따르는 것이 아니라 선례를 못 따르는 이유가 규모다.</strong> 이 레포의 성문 선례는 「다 갚고 하드월」 하나뿐이다 — <code>CLAUDE.md:212</code> 의 <code>check-post-markers</code> 가 KAN-062 로 옛 글 83건을 다 옮긴 뒤 올라갔다. 래칫은 이 레포에 전례가 없다. 83건과 1,567건은 자릿수가 다르고, &quot;먼저 다 갚기&quot;가 첫 수가 될 수 없는 것이 그 차이의 결과다. 0 으로 수렴하면 그때 순수 하드월로 승격한다.</p>
+<p><strong>게이트의 정본은 문서가 아니라 <code>src/styles/tokens.css</code> 하나다.</strong> 감사 판정기 <code>s4-docrules.py:23</code> 은 스케일을 코드에 박아 뒀다(<code>SPACING_SCALE</code>·<code>FONT_ROLES</code>). 그대로 올리면 KAN-072 가 <code>DESIGN_CONCEPT.md</code> §9 를 고쳐도 게이트는 옛 스케일로 판정한다. 문서를 정규식으로 파싱하는 것도 답이 아니다 — §9 는 산문 한 줄이고 §5 는 줄글이라 파서가 문서 서식에 묶인다. 색·radius 축은 이미 <code>tokens.css</code> 를 읽어 값→토큰 사전을 만든다 (<code>s3-scan.py:49-71</code>). KAN-072.2 가 <code>--space-*</code>·<code>--text-*</code> 를 세우면 <strong>게이트는 문서를 아예 안 읽는다.</strong> 그래야 이 카드(코드)와 KAN-072(데이터)의 의존이 경로 겹침 없이 한 방향으로만 흐른다.</p>
+<p><strong>버린 대안 셋.</strong></p>
+<ul>
+<li><strong>하드월(감사 원안)</strong> — 위 이유로 게이트가 마지막 수가 된다.</li>
+<li><strong>경고만(CI 에 넣되 실패 안 시킴)</strong> — 아무도 안 본다. 게이트의 값은 막는 데 있다.</li>
+<li><strong><code>HEAD</code> vs <code>HEAD^</code> 로 베이스라인 파일 없이 래칫</strong> — 겹침이 0 이 되지만 <code>actions/checkout@v7</code> 에 <code>fetch-depth: 2</code> 가 필요하고, squash 머지에서 &quot;직전&quot;이 흔들리며, &quot;지금 N 에서 버틴다&quot;는 의도를 사람이 읽을 수 없다.</li>
+</ul>
+<p><strong>제약 넷.</strong></p>
+<ol>
+<li><strong><code>scripts/tokens-baseline.json</code> 은 이 카드 소유인데 KAN-072 가 갱신한다.</strong> 경로로는 겹침이지만 <code>motion.css</code> 와 같은 모양이다 — 커밋된 결정론적 생성물이고 갱신 명령이 정본이다. <code>dep-waive</code> 로 명시 용인한다. 스코프를 비틀어 없애려 들면 이 카드의 CI 활성화가 KAN-072.1 완료에 묶여 병렬이 깨진다.</li>
+<li><strong>감사와 똑같은 파일집합으로 먼저 짠다.</strong> <code>.ts</code> 28개·<code>.mdx</code> 31개는 미측정이라 범위를 넓히면 베이스라인이 감사 수치와 안 맞고, 그러면 P3-1 의 검증 기준(&quot;같은 수로 보고해야 한다&quot;)과 부딪힌다. 확장은 별도 work 로 두고 상승분을 <code>doc-log</code> 에 남긴다.</li>
+<li><strong><code>AUTO-GENERATED</code> 파일 41개와 <code>src/styles/motion.css</code>·<code>viz.css</code> 는 스캔에서 뺀다.</strong> 앞은 <code>apply-viz</code> 생성물이고(발행 글에 원본 ``<code>viz</code>`` 블록이 0개라 지금은 재생성도 불가), 뒤는 생성물·패키지 복제물이다.</li>
+<li><strong>자가검사가 없으면 안 된다.</strong> 1,567 → 0 으로 수렴하는 동안 게이트가 죽어도 카운트는 계속 줄어든 것처럼 보인다. <code>verify-talk.ts:selfTestFaults()</code> 형식을 그대로 쓴다.</li>
+</ol>
+<p>---</p>
+<p><strong>수행 방식은 오케스트레이션이다 (유저 선택, 2026-08-25).</strong> 배치 4개 · 병렬 폭 3. 단일 에이전트 3배치와 나란히 놓고 고른 결과다. 이 선택이 <strong>전제 하나를 강제</strong>하고, 그 전제가 다시 리스크 셋을 만든다. 셋 다 대책이 있어야 선택이 성립한다.</p>
+<p><strong>전제 — 축을 파일로 분리한다.</strong> <code>S3</code>·<code>S4</code>·<code>S5</code> 가 병렬로 돌려면 같은 <code>scripts/verify-tokens.ts</code> 를 세 세션이 동시에 못 고치므로 축마다 모듈을 갖는다.</p>
+<pre>scripts/verify-tokens.ts            진입점 — 규약을 지고, 축 모듈을 불러 모은다
+scripts/lib/tokens/color.ts         S3 — 색·radius·선 굵기      ↔ s4-classify.json
+scripts/lib/tokens/fallback.ts      S4 — var(--x, fb) 108자리   ↔ s4-fallback.json
+scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-docrules.json</pre>
+<p><strong>대책 셋.</strong></p>
+<ol>
+<li><strong>게이트가 파일 넷이 되는 것</strong> — 기존 <code>verify-*.ts</code> 다섯은 전부 단일 파일이고 <code>scripts/lib/</code> 라는 자리는 이 레포에 아직 없다. 새 관례를 만드는 것이므로 그 사실을 적어 둔다. 지키는 것은 파일 수가 아니라 <strong>진입점 하나</strong>다 — 셰뱅 · &quot;왜 필요한가&quot; 머리주석 · <code>failures[]</code>/<code>notes[]</code> 분리 · <code>console.error(&quot;고치는 법: …&quot;)</code> · <code>process.exit(1)</code> 은 전부 <code>verify-tokens.ts</code> 가 진다. 축 모듈은 규약을 지지 않고 판정만 돌려준다.</li>
+<li><strong>축마다 다른 세션이 짜면 판정 규칙이 갈리는 것</strong> — <code>S2</code> 가 <strong>공통 계약을 먼저 박는다.</strong> 축 모듈은 같은 시그니처(<code>scan(files: string[]): Hit[]</code>)와 같은 <code>Verdict</code> 타입을 쓰고, 토큰 사전(<code>tokens.css</code> 파싱)·파일 목록·제외 규칙(<code>AUTO-GENERATED</code>·생성물)은 진입점이 한 번 만들어 넘긴다. 축 모듈이 각자 파일을 훑으면 제외 규칙이 세 벌이 된다. 그래서 <code>S2</code> 가 배치3 전체의 선행이고, 배치2에 혼자 있지 않고 <code>S9</code> 와 함께 있다.</li>
+<li><strong>히트 단위 대조를 세 번 해야 하는 것</strong> — 이건 비용이 아니라 오히려 이 안의 이점이다. 회수한 참조 JSON 이 이미 축마다 하나씩이라(<code>s4-classify</code> ↔ 색 · <code>s4-fallback</code> ↔ fallback · <code>s4-docrules</code> ↔ 문서 축) 모듈과 <strong>1:1로 맞는다.</strong> 축 모듈의 완료 기준을 자기 참조 JSON 과의 차집합 0 으로 두면 세 세션이 서로를 안 기다린다.</li>
+</ol></section>
+
+<h2>실행 계획 (WBS)</h2>
+<div class="chart"><svg viewBox="0 0 860 358" role="img" aria-label="WBS 간트"><text x="16" y="57" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S1</text><rect x="148.0" y="45" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="156.0" y="59" font-size="12" fill="#1C1B17">판정기 회수 — 스크래치패드의 판정기와 출력 JSON 을 레포로 옮긴다</text><text x="16" y="87" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S2</text><rect x="322.0" y="75" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="330.0" y="89" font-size="12" fill="#1C1B17">스켈레톤 — 레포 게이트 규약대로 scripts/verify-tokens.ts …</text><text x="16" y="117" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S3</text><rect x="496.0" y="105" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="504.0" y="119" font-size="12" fill="#1C1B17">색·radius·선굵기 축 포팅 — 대조 상대는 tokens.css 하나</text><text x="16" y="147" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S4</text><rect x="496.0" y="135" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="504.0" y="149" font-size="12" fill="#1C1B17">fallback 축 포팅 — var(--x, fb) 108자리</text><text x="16" y="177" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S5</text><rect x="496.0" y="165" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="504.0" y="179" font-size="12" fill="#1C1B17">문서 축 포팅 + 축 재분류 — 간격을 spacing/dimension/posi…</text><text x="16" y="207" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S6</text><rect x="670.0" y="195" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="678.0" y="209" font-size="12" fill="#1C1B17">자가검사 — 축마다 고장 픽스처</text><text x="16" y="237" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S7</text><rect x="670.0" y="225" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="678.0" y="239" font-size="12" fill="#1C1B17">래칫 + 베이스라인 — --update-baseline</text><text x="16" y="267" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S8</text><rect x="670.0" y="255" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="678.0" y="269" font-size="12" fill="#1C1B17">배선 — package.json 의 tokens:verify 와 CI 스텝</text><text x="16" y="297" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S9</text><rect x="322.0" y="285" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="330.0" y="299" font-size="12" fill="#1C1B17">규칙 개정 — REACT_SIM_GUIDE 의 &quot;조화&quot;를 판정 가능한 말로</text><text x="16" y="327" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S10</text><rect x="670.0" y="315" width="174.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="678.0" y="329" font-size="12" fill="#1C1B17">예외 표 — 근거 문서 위치를 필수 필드로</text><line x1="148.0" y1="34" x2="148.0" y2="354" stroke="#1C1B17" stroke-width="2" stroke-dasharray="4 3"/><text x="154.0" y="28" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">배치1</text><line x1="322.0" y1="34" x2="322.0" y2="354" stroke="#1C1B17" stroke-width="2" stroke-dasharray="4 3"/><text x="328.0" y="28" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">배치2</text><line x1="496.0" y1="34" x2="496.0" y2="354" stroke="#1C1B17" stroke-width="2" stroke-dasharray="4 3"/><text x="502.0" y="28" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">배치3</text><line x1="670.0" y1="34" x2="670.0" y2="354" stroke="#1C1B17" stroke-width="2" stroke-dasharray="4 3"/><text x="676.0" y="28" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">배치4</text></svg></div>
+<div class="scroll"><table>
+<tr><th>work</th><th>내용</th><th>상태</th></tr><tr><td><code>S1</code></td><td>판정기 회수 — 스크래치패드의 판정기와 출력 JSON 을 레포로 옮긴다</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S2</code></td><td>스켈레톤 — 레포 게이트 규약대로 <code>scripts/verify-tokens.ts</code> 를 세운다</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S3</code></td><td>색·radius·선굵기 축 포팅 — 대조 상대는 <code>tokens.css</code> 하나</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S4</code></td><td>fallback 축 포팅 — <code>var(--x, fb)</code> 108자리</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S5</code></td><td>문서 축 포팅 + 축 재분류 — 간격을 spacing/dimension/position 셋으로</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S6</code></td><td>자가검사 — 축마다 고장 픽스처</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S7</code></td><td>래칫 + 베이스라인 — <code>--update-baseline</code></td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S8</code></td><td>배선 — <code>package.json</code> 의 <code>tokens:verify</code> 와 CI 스텝</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S9</code></td><td>규칙 개정 — REACT_SIM_GUIDE 의 &quot;조화&quot;를 판정 가능한 말로</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S10</code></td><td>예외 표 — 근거 문서 위치를 필수 필드로</td><td><span class="tag tag-todo">미착수</span></td></tr>
+</table></div>
+
+<h2>배치 구성</h2>
+<div class="chart"><svg viewBox="0 0 860 164" role="img" aria-label="배치 2안 비교"><text x="16" y="52" font-size="14" font-weight="700" fill="#1C1B17">단일 에이전트</text><rect x="190.0" y="30" width="155.0" height="36" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="198.0" y="52" font-size="12" fill="#1C1B17">단계1</text><rect x="351.0" y="30" width="155.0" height="36" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="359.0" y="52" font-size="12" fill="#1C1B17">단계2</text><rect x="512.0" y="30" width="155.0" height="36" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="520.0" y="52" font-size="12" fill="#1C1B17">단계3</text><rect x="673.0" y="30" width="155.0" height="36" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="681.0" y="52" font-size="12" fill="#1C1B17">단계4</text><text x="16" y="108" font-size="14" font-weight="700" fill="#1C1B17">오케스트레이션</text><rect x="190.0" y="86" width="155.0" height="36" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="198.0" y="108" font-size="12" fill="#1C1B17">단계1 ×2</text><rect x="351.0" y="86" width="155.0" height="36" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="359.0" y="108" font-size="12" fill="#1C1B17">단계2 ×2</text><rect x="512.0" y="86" width="155.0" height="36" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="520.0" y="108" font-size="12" fill="#1C1B17">단계3 ×2</text><rect x="673.0" y="86" width="155.0" height="36" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="681.0" y="108" font-size="12" fill="#1C1B17">단계4 ×2</text><text x="16" y="160" font-size="11" fill="#6E6A5E">배치 크기 기준: work 3~4개 = 한 세션 예산의 절반</text></svg></div>
+<div class="scroll"><table>
+<tr><th>배치</th><th>work</th><th>진행</th><th>배정 출처</th></tr><tr><td>배치1</td><td><code>S1</code></td><td>0/1</td><td>frontmatter</td></tr><tr><td>배치2</td><td><code>S2, S9</code></td><td>0/2</td><td>frontmatter</td></tr><tr><td>배치3</td><td><code>S3, S4, S5</code></td><td>0/3</td><td>frontmatter</td></tr><tr><td>배치4</td><td><code>S6, S7, S8, S10</code></td><td>0/4</td><td>frontmatter</td></tr>
+</table></div>
+
+
+<h2>루트 독립성</h2>
+<div class="chart"><svg viewBox="0 0 860 1016" role="img" aria-label="경로 레인 × 루트 카드 점유 매트릭스 — 위반 레인 1개"><text x="314.0" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-024</text><text x="314.0" y="40" font-size="12" font-weight="400" fill="#1C1B17">집필 파…</text><text x="347.2" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-030</text><text x="347.2" y="40" font-size="12" font-weight="400" fill="#1C1B17">글 목록…</text><text x="380.5" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-032</text><text x="380.5" y="40" font-size="12" font-weight="400" fill="#1C1B17">프로그래…</text><text x="413.8" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-060</text><text x="413.8" y="40" font-size="12" font-weight="400" fill="#1C1B17">한국어 …</text><text x="447.0" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-061</text><text x="447.0" y="40" font-size="12" font-weight="400" fill="#1C1B17">홈 배경…</text><text x="480.2" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-048</text><text x="480.2" y="40" font-size="12" font-weight="400" fill="#1C1B17">포스트에…</text><text x="513.5" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-065</text><text x="513.5" y="40" font-size="12" font-weight="400" fill="#1C1B17">문체 스…</text><rect x="542.8" y="12" width="31.2" height="952" fill="#E9C766" opacity="0.10"/><text x="546.8" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">▶ KAN-070-DRF0QF</text><text x="546.8" y="40" font-size="12" font-weight="700" fill="#1C1B17">토큰 게…</text><text x="580.0" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-071-6361MY</text><text x="580.0" y="40" font-size="12" font-weight="400" fill="#1C1B17">선언 층…</text><text x="613.2" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-072-CPJCT1</text><text x="613.2" y="40" font-size="12" font-weight="400" fill="#1C1B17">토큰 정…</text><text x="646.5" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-001</text><text x="646.5" y="40" font-size="12" font-weight="400" fill="#1C1B17">Grap…</text><text x="679.8" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-002</text><text x="679.8" y="40" font-size="12" font-weight="400" fill="#1C1B17">도메인 …</text><text x="713.0" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-003</text><text x="713.0" y="40" font-size="12" font-weight="400" fill="#1C1B17">DDD에…</text><text x="746.2" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-004</text><text x="746.2" y="40" font-size="12" font-weight="400" fill="#1C1B17">상속이냐…</text><text x="779.5" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-005</text><text x="779.5" y="40" font-size="12" font-weight="400" fill="#1C1B17">모델링 …</text><text x="812.8" y="26" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">KAN-064</text><text x="812.8" y="40" font-size="12" font-weight="400" fill="#1C1B17">집필 엔…</text><line x1="14" y1="46" x2="846" y2="46" stroke="#1C1B17" stroke-width="2"/><rect x="14" y="47" width="832" height="32" fill="#C0392B" opacity="0.15"/><text x="14" y="67.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#C0392B">scripts/tokens-baseline.json</text><rect x="546.8" y="52" width="19.2" height="20" fill="#C0392B" stroke="#1C1B17" stroke-width="2"/><rect x="613.2" y="52" width="19.2" height="20" fill="#C0392B" stroke="#1C1B17" stroke-width="2"/><text x="14" y="101.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">.claude/skills/react-sim/**</text><rect x="546.8" y="86" width="19.2" height="20" fill="#E9C766" stroke="#1C1B17" stroke-width="2"/><text x="14" y="135.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">.github/workflows/main.yml</text><rect x="546.8" y="120" width="19.2" height="20" fill="#E9C766" stroke="#1C1B17" stroke-width="2"/><text x="14" y="169.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">CLAUDE.md</text><rect x="546.8" y="154" width="19.2" height="20" fill="#E9C766" stroke="#1C1B17" stroke-width="2"/><text x="14" y="203.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">design-concept/**</text><rect x="613.2" y="188" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="237.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">package.json</text><rect x="546.8" y="222" width="19.2" height="20" fill="#E9C766" stroke="#1C1B17" stroke-width="2"/><text x="14" y="271.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">scripts/fixtures/tokens/**</text><rect x="546.8" y="256" width="19.2" height="20" fill="#E9C766" stroke="#1C1B17" stroke-width="2"/><text x="14" y="305.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">scripts/gen-motion-css.ts</text><rect x="580.0" y="290" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="339.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">scripts/lib/tokens/**</text><rect x="546.8" y="324" width="19.2" height="20" fill="#E9C766" stroke="#1C1B17" stroke-width="2"/><text x="14" y="373.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">scripts/render-viz.ts</text><rect x="580.0" y="358" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="407.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">scripts/verify-tokens.ts</text><rect x="546.8" y="392" width="19.2" height="20" fill="#E9C766" stroke="#1C1B17" stroke-width="2"/><text x="14" y="441.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/components/**</text><rect x="613.2" y="426" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="475.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/layouts/**</text><rect x="613.2" y="460" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="509.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/lib/categories.ts</text><rect x="613.2" y="494" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="543.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/lib/doodleMarks.ts</text><rect x="613.2" y="528" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="577.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/lib/motion/**</text><rect x="580.0" y="562" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="611.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/lib/viz/Comparison.tsx</text><rect x="613.2" y="596" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="645.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/lib/viz/PosterHero.tsx</text><rect x="613.2" y="630" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="679.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/lib/viz/ProcessSteps.tsx</text><rect x="613.2" y="664" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="713.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/lib/viz/blogVizStyleGuide.ts</text><rect x="580.0" y="698" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="747.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/lib/viz/layout.ts</text><rect x="613.2" y="732" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="781.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/pages/**</text><rect x="613.2" y="766" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="815.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/styles/deco.css</text><rect x="613.2" y="800" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="849.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/styles/global.css</text><rect x="613.2" y="834" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="883.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/styles/tokens.css</text><rect x="613.2" y="868" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="917.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/styles/viz-frame.css</text><rect x="613.2" y="902" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="951.0" font-size="11.5" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">src/styles/viz.css</text><rect x="613.2" y="936" width="19.2" height="20" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="14" y="980" font-size="11.5" font-style="italic" fill="#6E6A5E">scope 미기재로 판정에서 빠진 루트: KAN-024, KAN-030, KAN-032…</text><text x="14" y="1004" font-size="12" fill="#C0392B">위반 레인 1개 — 한 경로를 두 루트가 차지합니다. 병렬로 돌리면 그 파일에서 충돌합니다</text></svg></div>
+<table><tr><th>상대 루트</th><th>겹치는 경로</th><th>승인</th></tr><tr><td>토큰 정합화 <code>KAN-072-CPJCT1</code></td><td><code>scripts/tokens-baseline.json</code></td><td><span class="tag tag-done">용인됨</span></td></tr></table>
+<p class="note">경로 겹침은 신호이지 판정이 아닙니다. DB 스키마·환경변수·패키지
+매니페스트·공유 API 계약처럼 경로에 드러나지 않는 의존은 여기 잡히지 않습니다.</p>
+
+<h2>검증 기준</h2>
+<section class="card"><ol>
+<li><strong>게이트가 감사를 재현한다</strong> — <code>bun run tokens:verify</code> 가 드리프트 <strong>71</strong> · 토큰 밖 <strong>580</strong> · fallback 불일치 <strong>23</strong> 을 보고하고, <code>scripts/fixtures/tokens/reference/s4-classify.json</code> 의 <code>rows</code> 와 히트 단위 차집합이 0 이다.</li>
+<li><strong>게이트가 죽지 않았다</strong> — 자가검사에서 고장 픽스처 여섯이 각자 다른 사유로 실패한다.</li>
+<li><strong>래칫이 실제로 문다</strong> — 리터럴 한 줄을 더하면 비0 + 파일:줄 지목, 지우면 0, <code>--update-baseline</code> 두 번이 바이트 동일.</li>
+<li><strong>CI 가 초록이다</strong> — <code>main.yml</code> 에 스텝이 꽂힌 채로 통과하고, 위반 브랜치에서는 그 스텝만 빨갛다.</li>
+<li><strong>회귀 없음</strong> — <code>bun run build</code>(46 page) · <code>bun scripts/check-post-markers.ts</code> · <code>bun scripts/check-emphasis.ts</code>(+<code>--dist</code>) · <code>bun scripts/check-quote-blocks.ts</code> 전부 통과. <code>bun run gen:motion</code> 후 <code>git diff --exit-code -- src/styles/motion.css</code> 통과.</li>
+<li><strong>규칙에 판정 불가능한 낱말이 없다</strong> — <code>REACT_SIM_GUIDE.md</code>·<code>CLAUDE.md</code> 에서 &quot;조화&quot;·&quot;어울리게&quot; 류가 0건이다.</li>
+</ol></section>
+
+<p class="meta">생성 근거: KANBAN.md
+KANBAN.cards/KAN-070-DRF0QF.md · 갱신 2026-08-25</p>
+</div>
