@@ -1,6 +1,6 @@
 {
   "next_id": 70,
-  "next_seq": 275,
+  "next_seq": 276,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -768,7 +768,7 @@
       ]
     },
     "KAN-068-5KMRV8": {
-      "col": "review",
+      "col": "done",
       "title": "UI QA",
       "verbatim": "UI QA\n- 메인 컨텐츠 섹션의 폭이 main 화면과 블로그 탭이 서로 다르다. 일관성을 지킬 필요가 있다.\n- main 화면에서 GnB 컨텐츠 폭과 메인 컨텐츠 섹션의 폭이 서로 다르다. 일관성을 지킬 필요가 있다.",
       "생성": "유저",
@@ -873,6 +873,16 @@
     "KAN-068-5KMRV8"
   ],
   "recent": [
+    {
+      "seq": 275,
+      "t": "2026-08-24T16:58",
+      "a": "ai",
+      "id": "KAN-068-5KMRV8",
+      "op": "move",
+      "w": "HXHMY8",
+      "from": "review",
+      "to": "done"
+    },
     {
       "seq": 274,
       "t": "2026-08-24T16:38",
@@ -1387,16 +1397,6 @@
       "field": "verbatim",
       "before": "",
       "after": "글지도에 데코를 반영하기 위한 계획을 수립해라."
-    },
-    {
-      "seq": 225,
-      "t": "2026-07-30T15:28",
-      "a": "유저",
-      "id": "KAN-053",
-      "op": "archive",
-      "col": "backlog",
-      "title": "백엔드 없이도 회원가입 기능을 추가할 수 있는지 알려주고, 가능 하다면 계획하고 수행해라.",
-      "memo": "유저 결정(2026-07-30): 댓글·회원가입 포기. 근거 — 승인제 가입 자체는 Supabase 로 가능하나(Before User Created 훅이 Free 플랜, Postgres 함수로 구현) 내장 메일러 2통/시간 제약과 UGC 렌더가 새로 여는 XSS 표면(정적 호스팅이라 BFF 불가, 세션이 localStorage)이 개인 블로그의 이득 대비 큼. 좋아요·공유 카운트만 KAN-048 로 진행."
     }
   ],
   "layout": 2
