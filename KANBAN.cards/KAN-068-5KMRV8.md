@@ -70,7 +70,7 @@ scope: src/styles/tokens.css, src/layouts/BaseLayout.astro, src/components/Heade
       완료 기준: `/`에서 `.header-inner`·`.hero-inner`·`.recent`·`.footer-inner` 렌더 폭이
       모두 1100px로 같다(브라우저 실측). 히어로 폴라로이드 우측 여백과 900px 접힘
       브레이크포인트가 변경 전과 동일. `bun run deco:verify` 통과.
-- [ ] `S3` 글 지도 전환 — 960px 흡수
+- [x] `S3` 글 지도 전환 — 960px 흡수
       `graph.astro:410`(`.graph-page`)의 `960px` → `var(--wide-max)`, `width="wide"`.
       완료 기준: `/graph`에서 셸·콘텐츠 폭이 1100px로 같다. 그래프 캔버스가 1100px에서
       노드 겹침·클리핑 없이 그려진다(실측). `deco:verify` 통과.
@@ -135,3 +135,5 @@ grep -rnE 'max-width: *[0-9]{3,}px' src/ | grep -v 'src/pages/design/'
 - 2026-08-24T16:14 · s:a25c9233 · S1 done — --wide-max 1100px 신설 · Header/Footer 를 var(--shell-max, var(--content-max)) 로 · BaseLayout width prop + body.shell-wide. 빌드 통과, shell-wide 단 지면 0건이라 읽는 판 8곳 무변화 확인
 - 2026-08-24T16:16 · s:a25c9233 · S2 doing — 착수
 - 2026-08-24T16:18 · s:a25c9233 · S2 done — index.astro 의 1100px 2곳을 var(--wide-max) 로, BaseLayout 에 width=wide. 실측: / 의 header-inner·hero-inner·recent·footer-inner 가 모두 1100px 로 일치(지적 2 해결). deco:verify 50회 통과, 읽는 판 4지면 720px 무변화
+- 2026-08-24T16:19 · s:a25c9233 · S3 doing — 착수
+- 2026-08-24T16:22 · s:a25c9233 · S3 done — graph.astro 의 960px 을 var(--wide-max) 로, BaseLayout width=wide. 실측: /graph 의 header-inner·graph-page·footer-inner 모두 1100px. 지도는 viewBox 좌표계라 그림째 확대 — 겹침·클리핑·가로 넘침 0(스크린샷 확인). deco:verify 50회 통과. 폭 종류가 720·960·1100 셋에서 둘로 줄었다

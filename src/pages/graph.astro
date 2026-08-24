@@ -214,6 +214,7 @@ const viewData: GraphViewData = {
 <BaseLayout
   title="글 지도"
   description="블로그의 모든 글과 글 사이의 연관을 하나의 지도로 탐색합니다."
+  width="wide"
 >
   {/* 조작하러 온 화면이라 목록·글 상세와 같은 강도 3. 데코는 **액자에만** 얹고
       지도 내용에는 손대지 않는다 — 지도는 팬·줌하므로 무언가를 가리키는 데코(시안
@@ -407,7 +408,10 @@ const viewData: GraphViewData = {
 
 <style>
   .graph-page {
-    max-width: 960px;
+    /* 넓은 판 (KAN-068). 원래 960px 하드코딩이었고 셸(720px)과 어긋나 있었다.
+       지도는 viewBox 좌표계 위에 그려지고 SVG 가 width:100% 라 폭이 넓어지면 그림째
+       확대된다 — 노드 좌표가 픽셀이 아니므로 겹침·잘림이 생기지 않는다. */
+    max-width: var(--wide-max);
     margin: 0 auto;
     padding: 56px var(--page-pad) 64px;
   }

@@ -3,7 +3,7 @@ card: KAN-068-5KMRV8
 batch: 1
 created: 2026-08-24
 branch: KAN-068-5KMRV8
-status: 진행
+status: 완료
 steps: S1, S2, S3
 ---
 
