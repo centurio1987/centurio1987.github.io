@@ -108,6 +108,23 @@ variables in `src/styles/tokens.css`. Keep the reading surface calm; wit lives a
 (hero, footer, 404, hover, the Tony mascot). Hand-drawn motifs are SVG components under
 `src/components/motifs/`.
 
+**시각 값은 토큰을 쓴다 — 게이트가 문다(KAN-070).** 토큰 밖 색·간격·radius·선 굵기는
+**빌드도 타입도 초록이라 눈 말고는 안 잡힌다.** 실제로 전수 진단에서 `src/**` 152파일
+3,539 히트 중 위반이 1,567건 나왔고(준수율 44.3%), 무너진 구획 둘이 발행 글의 부품이었다 —
+글 안 React 시뮬 3.6% · 손그림 모티프 8.1%. 진단 정본은
+`design-concept/UI_CONSISTENCY_AUDIT.md` 이고, 게이트는 `bun run tokens:verify`
+(`scripts/verify-tokens.ts` + 축 모듈 `scripts/lib/tokens/`)다. 셋만 기억하면 된다.
+
+- **게이트는 하드월이 아니라 래칫이다** — 커밋된 기준선 대비 **늘면 실패**한다. 위반이
+  1,567건인 상태에서 "0건이면 통과"로 올리면 `main.yml` 이 build→deploy 한 잡이라
+  **사이트 배포까지 멈춘다.** 0 으로 수렴하면 그때 하드월로 승격한다.
+- **"조화"·"어울리게" 같은 말은 규칙이 아니다.** 판정할 수 없는 낱말 아래에서 만들어진 것이
+  준수율 3.6% 구획이다. 토큰 밖 색이 필요하면 **근거 문서의 위치**를 예외 목록에 함께 등록한다 —
+  위치 없는 예외는 게이트가 안 받는다.
+- **생성물은 대상이 아니다** — `src/styles/motion.css`(`gen:motion` 이 굽는다) ·
+  `src/styles/viz.css`(패키지 복제물) · `AUTO-GENERATED` 헤더가 붙은 `apply-viz` 산출물.
+  손으로 고치면 CI 가 막거나 다음 재생성에서 조용히 되돌아간다.
+
 **데코 키트** — 마스킹테이프·스티커·두들·포스트잇을 부품(`src/components/deco/`)과 적용 패턴으로
 굳힌 **선택 레이어**. 부품 목록·지면별 강도·굳힌 판단·실측 좌표는 **`deco-kit` 스킬**에 있다 —
 데코를 얹거나 떼거나 고치기 전에 반드시 그 스킬을 읽어라. 살아 있는 카탈로그는 `/design/deco`

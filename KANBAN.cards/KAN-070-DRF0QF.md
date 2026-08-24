@@ -96,7 +96,7 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 - [ ] `S6` 자가검사 — 축마다 고장 픽스처
 - [ ] `S7` 래칫 + 베이스라인 — `--update-baseline`
 - [ ] `S8` 배선 — `package.json` 의 `tokens:verify` 와 CI 스텝
-- [ ] `S9` 규칙 개정 — REACT_SIM_GUIDE 의 "조화"를 판정 가능한 말로
+- [x] `S9` 규칙 개정 — REACT_SIM_GUIDE 의 "조화"를 판정 가능한 말로
 - [ ] `S10` 예외 표 — 근거 문서 위치를 필수 필드로
 
 **단계별 완료 기준**
@@ -160,3 +160,5 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 - 2026-08-25T01:32 · s:9eba7c52 · S2 doing — 착수
 - 2026-08-25T01:37 · s:9eba7c52 — S2 측정: AUTO-GENERATED 41파일의 히트가 0건이다 — 게이트 정규식이 그 파일들에서 시각 값을 하나도 안 읽는다(패키지 컴포넌트 래퍼라 값이 패키지 쪽에 있다). 제외 규칙은 유지하되 실효는 motion.css 3 + viz.css 12 뿐이다. 좌표 228개 위험은 게이트가 아니라 KAN-072.5 의 간격 코드모드 쪽 이야기다
 - 2026-08-25T01:37 · s:9eba7c52 · S2 done — 진입점 verify-tokens.ts + 축 모듈 셋 골격 + 공통 추출층(extract.ts) + 타입 계약(types.ts). s3-scan.py 를 그대로 이식해 **감사와 히트 단위 차집합 0**(3,539건, axis·kind·prop·value·file:line·src 여섯 쪽 일치, kind 분포도 literal_new 2634 / token 858 / literal_dup 47 동일). 축 모듈은 판정만 하고 규약은 진입점이 진다. tsc 통과
+- 2026-08-25T01:39 · s:9eba7c52 · S9 doing — 착수
+- 2026-08-25T01:40 · s:9eba7c52 · S9 done — REACT_SIM_GUIDE.md 의 '팔레트와 조화'를 판정 가능한 규칙으로 교체(규칙 6 신설: var(--x) 문자열로 쓴다 · 토큰 밖이면 근거 문서 위치를 남긴다 · 공용 팔레트 모듈 금지). PermissionGate.tsx:57 을 좋은 예로, 옛 규칙 아래 준수율 3.6% 였다는 사실을 인용 블록으로 박음. CLAUDE.md Design 절에 토큰 게이트 셋(래칫인 이유 · 판정 불가 낱말 금지 · 생성물 제외) 추가. 판정 불가 낱말 잔존 0건, check-emphasis 두 파일 통과
