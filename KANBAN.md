@@ -44,16 +44,6 @@
     - 함정이라는 은유는 쓰지 마라. 
     - 새로 개정한 공통 원칙으로 다시 한 번 ai가 작성한 글들을 검토해라. 컨테이너의 해부 4편은 제목부터 원칙을 어기고 있다.
     ```
-- `KAN-069-M724GH` UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라. — 생성:유저 · 최종:유저 · 갱신:2026-08-24
-  - 실행 문서: KANBAN.cards/KAN-069-M724GH.md (0/6 · 최근 08-24)
-  - 원문:
-    ```text
-    UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라.
-    - style guide가 https://github.com/centurio1987/bbangto-ui에서 제공하는 style guide interface를 준수해서 정의 되어 있는지 파악해라.
-      - foundations, component, visual motif, wrapper, guideline을 전부 구현한 상태여야 한다.
-    - 정의한 style guide를 준수하여 블로그가 구현 됐는지 검토 해라.
-      - 정의한 구성요소와 다른 예외 요소를 파악해라.
-    ```
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26
@@ -66,6 +56,16 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+- `KAN-069-M724GH` UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라. — 생성:유저 · 최종:ai · 갱신:2026-08-24
+  - 실행 문서: KANBAN.cards/KAN-069-M724GH.md (0/6 · 최근 08-24)
+  - 원문:
+    ```text
+    UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라.
+    - style guide가 https://github.com/centurio1987/bbangto-ui에서 제공하는 style guide interface를 준수해서 정의 되어 있는지 파악해라.
+      - foundations, component, visual motif, wrapper, guideline을 전부 구현한 상태여야 한다.
+    - 정의한 style guide를 준수하여 블로그가 구현 됐는지 검토 해라.
+      - 정의한 구성요소와 다른 예외 요소를 파악해라.
+    ```
 
 ## 검토
 - `KAN-064` 집필 엔진 교체(authoring-kit)에 따른 기존 글 재집필 계획 수립 — 생성:유저 · 최종:ai · 갱신:2026-08-04
