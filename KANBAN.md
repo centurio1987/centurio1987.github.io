@@ -32,6 +32,13 @@
   - 메모: KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×).
 - `KAN-061` 홈 배경 모션 아일랜드(AmbientAurora/Waves)가 끌고 오는 JS ~130KB 재검토 — 생성:ai · 최종:ai · 갱신:2026-07-31
   - 메모: KAN-059 실측에서 드러난 별건. 홈(/)이 client.js 56KB + dist.js 67KB(= bbangto-ui-core 배럴) + react 등 ~130KB 를 High 로 받아 4.5초까지 회선·메인스레드를 문다. 받아오는 값은 "아주 옅은 배경 오로라 + 푸터 파도" 하나뿐이다. 이미 client:media 로 reduced-motion 사용자는 청크 로드 0 이고(코어 배럴은 tree-shake 가 안 돼 컴포넌트 1개=67KB gzip — 그래서 전역 Footer 에 안 올린 선례가 있다), 그 판단 자체는 유효하다. 재검토할 것: ① 같은 그림을 CSS 그라디언트/SVG 애니로 대체 가능한지(그러면 JS 0) ② 못 대체하면 client:visible 이나 로드 지연으로 첫 화면 회선 다툼에서 빼기 ③ 그대로 둘 근거를 남기기. 판단 근거는 KAN-059 처럼 실측으로 — 특히 이 JS 가 푸터 저자 라인업 이미지(Low)를 얼마나 뒤로 미는지.
+- `KAN-072.2-BF75X5` 토큰 체계 보강 — 종이 흰색 · 선 굵기 2단 · radius · 상태색 · 간격/글자 스케일 토큰 — 생성:ai · 최종:ai · 갱신:2026-08-25
+  - 상위: `KAN-072-CPJCT1` (할 일)
+  - 짧은 제목: 토큰 체계 보강
+  - 목적: 다음 치환이 딛고 설 토큰을 먼저 세운다
+  - 이유: 옮길 자리가 없어서 못 옮기는 것이 위반의 다수다 — 종이 흰색 100건은 맡을 토큰이 아예 없고 상태색도 없다
+  - 목표: tokens.css 만 보고도 게이트가 전 축을 판정할 수 있다 — 문서를 파싱하지 않는다
+  - 메모: 신설: 종이흰색 · --stroke-hair 1px(2단) · --state-bad/ok/warn/info(초기값=현 카테고리 색, 화면 변화 0) · --space-* · --text-*. DESIGN_CONCEPT 8절에 선굵기와 50% 허용값을 적는다
 
 ## 할 일
 - `KAN-048` 포스트에 좋아요를 누르는 기능을 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30

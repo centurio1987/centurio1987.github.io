@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 283,
+  "next_seq": 284,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -887,6 +887,27 @@
       "memo": "감사 P0-1~P0-4. rgba 전개 3건은 color-mix 로(DECO_KIT.md:32). motifs/** 는 제외한다 — SVG presentation attribute 라 var() 가 무효값이 되고 값 동일이 뜻 동일이 아니라 C4 로 넘긴다",
       "memo_hash": "9dc3783511fde213dc6de704f6ef00f9ef354f3e",
       "parent": "KAN-072-CPJCT1"
+    },
+    "KAN-072.2-BF75X5": {
+      "col": "backlog",
+      "title": "토큰 체계 보강 — 종이 흰색 · 선 굵기 2단 · radius · 상태색 · 간격/글자 스케일 토큰",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-08-25",
+      "title_hash": "f65569861ec0cda26ac2e7142f43a67182214b5f",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "short": "토큰 체계 보강",
+      "short_hash": "58e27eb619ac9a2fb4284aafc401c8a08df498d3",
+      "purpose": "다음 치환이 딛고 설 토큰을 먼저 세운다",
+      "purpose_hash": "19afdb187d8abe42260d28cd4fef47da890ef274",
+      "reason": "옮길 자리가 없어서 못 옮기는 것이 위반의 다수다 — 종이 흰색 100건은 맡을 토큰이 아예 없고 상태색도 없다",
+      "reason_hash": "68bfb74d88724128d0b053deffee0245c30370e6",
+      "goal": "tokens.css 만 보고도 게이트가 전 축을 판정할 수 있다 — 문서를 파싱하지 않는다",
+      "goal_hash": "fd1c44498c839b2a35795bf2accf1c748a9830de",
+      "memo": "신설: 종이흰색 · --stroke-hair 1px(2단) · --state-bad/ok/warn/info(초기값=현 카테고리 색, 화면 변화 0) · --space-* · --text-*. DESIGN_CONCEPT 8절에 선굵기와 50% 허용값을 적는다",
+      "memo_hash": "cb938dfe2b58e50668b78802dc4c9959aa402dba",
+      "parent": "KAN-072-CPJCT1"
     }
   },
   "order": [
@@ -958,9 +979,27 @@
     "KAN-070-DRF0QF",
     "KAN-071-6361MY",
     "KAN-072-CPJCT1",
-    "KAN-072.1-5XC1AT"
+    "KAN-072.1-5XC1AT",
+    "KAN-072.2-BF75X5"
   ],
   "recent": [
+    {
+      "seq": 283,
+      "t": "2026-08-25T00:11",
+      "a": "ai",
+      "id": "KAN-072.2-BF75X5",
+      "op": "create",
+      "w": "WTCH92",
+      "col": "backlog",
+      "title": "토큰 체계 보강 — 종이 흰색 · 선 굵기 2단 · radius · 상태색 · 간격/글자 스케일 토큰",
+      "verbatim": "",
+      "parent": "KAN-072-CPJCT1",
+      "short": "토큰 체계 보강",
+      "purpose": "다음 치환이 딛고 설 토큰을 먼저 세운다",
+      "reason": "옮길 자리가 없어서 못 옮기는 것이 위반의 다수다 — 종이 흰색 100건은 맡을 토큰이 아예 없고 상태색도 없다",
+      "goal": "tokens.css 만 보고도 게이트가 전 축을 판정할 수 있다 — 문서를 파싱하지 않는다",
+      "memo": "신설: 종이흰색 · --stroke-hair 1px(2단) · --state-bad/ok/warn/info(초기값=현 카테고리 색, 화면 변화 0) · --space-* · --text-*. DESIGN_CONCEPT 8절에 선굵기와 50% 허용값을 적는다"
+    },
     {
       "seq": 282,
       "t": "2026-08-25T00:11",
@@ -1504,16 +1543,6 @@
       "field": "title",
       "before": "메인 화면의 이미지가 다른 요소들보다 늦게 뜨는 경우, 사용자 경험이 불쾌해진다. 배포 환경에선 늦게 뜨는 현상이 잘 나타난다. 이를 해소하기 위해 성능 측면에서의 전략과 ux 측면 전략(fallback loading 이라던가)을 구상하라.",
       "after": "메인 화면 이미지가 늦게 뜨는 문제 — 성능·UX 전략 구상"
-    },
-    {
-      "seq": 233,
-      "t": "2026-07-31T14:07",
-      "a": "유저",
-      "id": "KAN-058",
-      "op": "edit",
-      "field": "memo",
-      "before": "완료(2026-07-30). **2차에서 지면 전체로 다시 설계했다** — 1차는 카드에 적힌 계획대로 지도 상자 하나만 얹고 끝냈고, 그 결과 머리·커맨드 바·도움말·후보 패널·빈 상태·줌 컨트롤이 검토조차 안 된 채 남았다(유저 지적: 성실의 의무 위반). 총 8커밋. ■ 1차(3): 아일랜드 데코 슬롯 구멍 · 지도 판 P-01 + MAP 탭 · 카탈로그 탭 위치 교정. ■ 2차(5): 겹침·가로챔 판정 스크립트(deco:verify) · /posts 클립×RSS 기존 결함 교정 · 지면 전체 데코 · 문서 · 칸반. ■ 얹은 곳 3+1: 머리 P-06 레터링 테이프(YOU ARE HERE, 배지 없음) · 후보 패널 P-03 ClippedCard + 크림(=/posts PostFilter 와 한 쌍, 최대 누락이었다) · 도움말 크림 + T5 도트 테이프 · 지도 판 P-01 + M2. 안 얹은 곳 열둘은 요소별 근거를 DECO_KIT §7 규칙 7 에 남겼다. ■ 구조적 판단 셋: (a) ClippedCard 를 값만 베끼지 않고 **빈 판으로 펴서** 쓴다 — 클립 값이 ClippedCard.astro 한 곳에만 남아 드리프트가 구조적으로 불가능(ChatGPT 외부검토의 유효 지적). (b) 도움말은 helpOpen && … 가 아니라 **hidden** 으로 여닫는다 — 조건부로 감싸면 SSR 에 astro-slot 이 안 나오고 하이드레이션이 거기서 슬롯을 되찾으므로 데코가 클라이언트에 영영 도착 못 한다(열어도 끝까지 빈다). (c) ClippedCard 에도 hover prop — TapedBoard 와 똑같은 구멍. ■ 실측값: 클립 offset 140px(첫 행 양 끝이 다 차 있어 모서리에 못 문다) · 도움말 padding-top 32px(769px 이하에서 글이 폭을 채워 테이프가 꼬리를 덮었다 — 1280px 만 봤으면 못 잡는다) · 여백 26/24/30px(인접 형제 마진 상쇄) · 768px 이하 클립도 접음(빈 구간 546→32px < 클립 37px). ■ 재발 방지가 핵심 산출물이다: verify-deco: dist/ 를 http://localhost:54213 로 띄운다 (astro preview)…\nverify-deco: http://localhost:54213 검사\n\n  ok   /graph @1280  (데코 5 × 글자런 58)\n  ok   /graph @1280 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @769  (데코 5 × 글자런 58)\n  ok   /graph @769 도움말 열림  (데코 6 × 글자런 62)\n  ok   /graph @768  (데코 1 × 글자런 58)\n  ok   /graph @768 도움말 열림  (데코 2 × 글자런 62)\n  ok   /graph @480  (데코 1 × 글자런 60)\n  ok   /graph @480 도움말 열림  (데코 2 × 글자런 67)\n  ok   /graph @390  (데코 1 × 글자런 61)\n  ok   /graph @390 도움말 열림  (데코 2 × 글자런 69)\n  ok   /posts @1280  (데코 2 × 글자런 503)\n  ok   /posts @769  (데코 2 × 글자런 499)\n  ok   /posts @768  (데코 1 × 글자런 476)\n  ok   /posts @480  (데코 1 × 글자런 524)\n  ok   /posts @390  (데코 1 × 글자런 549)\n  ok   / @1280  (데코 11 × 글자런 7)\n  ok   / @769  (데코 10 × 글자런 7)\n  ok   / @768  (데코 2 × 글자런 7)\n  ok   / @480  (데코 2 × 글자런 7)\n  ok   / @390  (데코 2 × 글자런 7)\n\n지면 3개 × 폭 5개, 검사 20회.\n✓ 겹침·가로챔·오버플로 없음 가 지면 3 × 폭 5 × 상태별로 **데코 상자 × 실제 글자 런**(Range.getClientRects — 요소 상자로 재면 폭 100% <p> 때문에 거짓 양성)과 도달 가능성·오버플로를 판정한다. 클립이 라벨을 덮은 것도, 도움말 테이프 거짓 양성도, /posts 기존 결함도 전부 이걸로 갈렸다. ■ 미해결: tone=cream(svg 안 --surface 3곳) · 빈 상태/게이지 소제목은 근거를 남기고 비움 · 이 레포엔 typescript 가 없어 타입 체크는 못 돌림. push 는 안 했다.",
-      "after": "완료(2026-07-30). **2차에서 지면 전체로 다시 설계했다** — 1차는 카드에 적힌 계획대로 지도 상자 하나만 얹고 끝냈고, 그 결과 머리·커맨드 바·도움말·후보 패널·빈 상태·줌 컨트롤이 검토조차 안 된 채 남았다(유저 지적: 성실의 의무 위반). 총 8커밋. ■ 1차(3): 아일랜드 데코 슬롯 구멍 · 지도 판 P-01 + MAP 탭 · 카탈로그 탭 위치 교정. ■ 2차(5): 겹침·가로챔 판정 스크립트(deco:verify) · /posts 클립×RSS 기존 결함 교정 · 지면 전체 데코 · 문서 · 칸반. ■ 얹은 곳 3+1: 머리 P-06 레터링 테이프(YOU ARE HERE, 배지 없음) · 후보 패널 P-03 ClippedCard + 크림(=/posts PostFilter 와 한 쌍, 최대 누락이었다) · 도움말 크림 + T5 도트 테이프 · 지도 판 P-01 + M2. 안 얹은 곳 열둘은 요소별 근거를 DECO_KIT §7 규칙 7 에 남겼다. ■ 구조적 판단 셋: (a) ClippedCard 를 값만 베끼지 않고 **빈 판으로 펴서** 쓴다 — 클립 값이 ClippedCard.astro 한 곳에만 남아 드리프트가 구조적으로 불가능(ChatGPT 외부검토의 유효 지적). (b) 도움말은 helpOpen && … 가 아니라 **hidden** 으로 여닫는다 — 조건부로 감싸면 SSR 에 astro-slot 이 안 나오고 하이드레이션이 거기서 슬롯을 되찾으므로 데코가 클라이언트에 영영 도착 못 한다(열어도 끝까지 빈다). (c) ClippedCard 에도 hover prop — TapedBoard 와 똑같은 구멍. ■ 실측값: 클립 offset 140px(첫 행 양 끝이 다 차 있어 모서리에 못 문다) · 도움말 padding-top 32px(769px 이하에서 글이 폭을 채워 테이프가 꼬리를 덮었다 — 1280px 만 봤으면 못 잡는다) · 여백 26/24/30px(인접 형제 마진 상쇄) · 768px 이하 클립도 접음(빈 구간 546→32px < 클립 37px). ■ 재발 방지가 핵심 산출물이다: verify-deco: dist/ 를 http://localhost:54213 로 띄운다 (astro preview)…"
     }
   ],
   "layout": 2
