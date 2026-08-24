@@ -1,0 +1,170 @@
+{
+ "hex_literals_total": 36,
+ "match_a_css_token": 33,
+ "silent_duplicates(주석 없이 CSS 값과 동일)": 8,
+ "no_css_counterpart(파생색·TS 고유값)": 3,
+ "case_differs(같은 값, 대소문자만 다름)": 8,
+ "silent_rows": [
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:27",
+   "value": "#4E6CA8",
+   "annotated_token": null,
+   "matches_css_token": [
+    "--cat-architecture"
+   ],
+   "css_literal": "#4e6ca8"
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:28",
+   "value": "#D8A33F",
+   "annotated_token": null,
+   "matches_css_token": [
+    "--pop"
+   ],
+   "css_literal": "#d8a33f"
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:29",
+   "value": "#A84B4B",
+   "annotated_token": null,
+   "matches_css_token": [
+    "--cat-strategy"
+   ],
+   "css_literal": "#a84b4b"
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:30",
+   "value": "#3E6B4F",
+   "annotated_token": null,
+   "matches_css_token": [
+    "--cat-planning"
+   ],
+   "css_literal": "#3e6b4f"
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:31",
+   "value": "#3E6B6B",
+   "annotated_token": null,
+   "matches_css_token": [
+    "--cat-skills"
+   ],
+   "css_literal": "#3e6b6b"
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:32",
+   "value": "#7A5C7E",
+   "annotated_token": null,
+   "matches_css_token": [
+    "--cat-design"
+   ],
+   "css_literal": "#7a5c7e"
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:33",
+   "value": "#6B6B3E",
+   "annotated_token": null,
+   "matches_css_token": [
+    "--cat-quality"
+   ],
+   "css_literal": "#6b6b3e"
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:34",
+   "value": "#B07A2E",
+   "annotated_token": null,
+   "matches_css_token": [
+    "--cat-research"
+   ],
+   "css_literal": "#b07a2e"
+  }
+ ],
+ "orphan_rows": [
+  {
+   "at": "src/lib/motion/bbangtoTonyStyleGuide.ts:50",
+   "value": "#2434b5",
+   "annotated_token": null,
+   "matches_css_token": null,
+   "css_literal": null
+  },
+  {
+   "at": "src/lib/motion/bbangtoTonyStyleGuide.ts:51",
+   "value": "#1d2a92",
+   "annotated_token": null,
+   "matches_css_token": null,
+   "css_literal": null
+  },
+  {
+   "at": "src/lib/motion/bbangtoTonyStyleGuide.ts:83",
+   "value": "#ffffff",
+   "annotated_token": null,
+   "matches_css_token": null,
+   "css_literal": null
+  }
+ ],
+ "case_rows": [
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:27",
+   "ts": "#4E6CA8",
+   "css": "#4e6ca8",
+   "token": [
+    "--cat-architecture"
+   ]
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:28",
+   "ts": "#D8A33F",
+   "css": "#d8a33f",
+   "token": [
+    "--pop"
+   ]
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:29",
+   "ts": "#A84B4B",
+   "css": "#a84b4b",
+   "token": [
+    "--cat-strategy"
+   ]
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:30",
+   "ts": "#3E6B4F",
+   "css": "#3e6b4f",
+   "token": [
+    "--cat-planning"
+   ]
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:31",
+   "ts": "#3E6B6B",
+   "css": "#3e6b6b",
+   "token": [
+    "--cat-skills"
+   ]
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:32",
+   "ts": "#7A5C7E",
+   "css": "#7a5c7e",
+   "token": [
+    "--cat-design"
+   ]
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:33",
+   "ts": "#6B6B3E",
+   "css": "#6b6b3e",
+   "token": [
+    "--cat-quality"
+   ]
+  },
+  {
+   "at": "src/lib/viz/blogVizStyleGuide.ts:34",
+   "ts": "#B07A2E",
+   "css": "#b07a2e",
+   "token": [
+    "--cat-research"
+   ]
+  }
+ ]
+}

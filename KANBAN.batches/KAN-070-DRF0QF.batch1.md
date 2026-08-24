@@ -3,7 +3,7 @@ card: KAN-070-DRF0QF
 batch: 1
 created: 2026-08-25
 branch: KAN-070-DRF0QF
-status: 계획
+status: 완료
 steps: S1
 ---
 
@@ -50,4 +50,52 @@ steps: S1
 
 ## 4. 착수 시점 판단
 
-<!-- 착수할 때 채운다 — 마지막 work 를 다음 배치로 미룰지 여기서 정한다. -->
+**착수 2026-08-25 · 단독 work 라 미룰 것이 없다.**
+
+이 배치는 work 가 `S1` 하나뿐이라 "마지막 work 를 다음 배치로 미룰지"를 물을 자리가 없다.
+쪼갤 수 없는 이유가 있어서 하나인 것이지 작아서 하나인 것이 아니다 — 회수는 **전부 오거나
+안 오거나**이고, 절반만 온 참조 JSON 은 배치3 의 대조 기준으로 쓸 수 없다.
+
+착수 시점의 사실 셋:
+
+- **회수는 계획 단계에서 이미 끝났다.** `/private/tmp` 가 재부팅에 지워지는 위험이 계획을
+  세우는 동안에도 계속 붙어 있어서, 카드를 만들기 전에 먼저 옮겼다. 그래서 이 배치가
+  실제로 하는 일은 **옮기기가 아니라 검증과 커밋**이다.
+- **워크트리로 한 번 더 옮겼다.** orca 워크트리는 메인 체크아웃의 미커밋 변경을 못 보므로,
+  메인 작업 트리에 있던 회수본을 이 워크트리로 복사해 20/20 바이트 동일을 확인한 뒤
+  메인 쪽을 지웠다. 원본은 `/private/tmp` 에 아직 있어 어느 단계에서도 유일본이 아니었다.
+- **회수한 것이 판정기 넷이 아니라 열아홉 개다.** 감사 부록 A 가 적은 넷 말고도 단계별 중간
+  판정 기록(`s1-contract.md`·`s2-declaration.md`·`s3-implementation.md`·`s4-verdict.md`·
+  `s5-plan.md`)과 선언 층 대조기(`s2-drift.py`·`s2-drift2.py`)가 같은 자리에 있었다.
+  고르지 않고 통째로 옮겼다 — 무엇이 나중에 필요할지는 지금 판정할 수 없다.
+
+---
+
+## 5. 배치 종료 — 산출물과 인계
+
+**work 1/1.** `scripts/fixtures/tokens/reference/` 에 20개 파일이 섰다.
+
+| 산출물 | 무엇 | 출력 sha256 |
+| --- | --- | --- |
+| `s3-scan.py` · `s3-scan.json` | `src/**` 152파일 전수 추출(3,539 히트) | `e5e69a55331207dc` |
+| `s4-classify.py` · `s4-classify.json` | 다섯 갈래 판정 + 보정 셋. **`rows` 3,539건이 히트 단위 대조용이다** | `f278448e106d83eb` |
+| `s4-fallback.py` · `s4-fallback.json` | `var(--x, fallback)` 108자리 대조 | `568ff12229198f08` |
+| `s4-docrules.py` · `s4-docrules.json` | `DESIGN_CONCEPT.md` §9·§5 스케일 대조 | `2d588fc5edd10f4c` |
+| `s2-drift.py` · `s2-drift2.py` · `.json` | `tokens.css` ↔ TS 상수 값 대조 | — |
+| `s1-catalog-layers.json` | 카탈로그 51종 층별 구현 카운트(생성기 `.mjs` 는 유실) | — |
+| `s2-declared-layers.ts` | 두 선언의 필드 유무를 런타임으로 찍는다 | — |
+| `s1-contract.md` · `s2-declaration.md` · `s3-implementation.md` · `s4-verdict.md` · `s5-plan.md` | 단계별 중간 판정 기록 | — |
+| `README.md` | 왜 레포에 있는지 · 무엇이 있는지 · 알려진 어긋남 하나 | — |
+
+**다음 배치에 넘기는 것 셋.**
+
+1. **감사 부록 A 의 `s3-scan` 해시가 낡았다.** 부록은 `76ec13fd…` 를 적었는데 그것은
+   `S3` 종료 시점 값이고(`KANBAN.cards/KAN-069-M724GH.md:112`), 그 뒤 `S4` 보강에서 스캔이
+   다시 돌아 `e5e69a55331207dc` 가 됐다. 검토서 verify 절이 새 값을 적었고 회수본이 그것과 맞는다.
+   **모르면 다음 사람이 회수가 틀렸다고 판단한다.** 정정은 `S5` 의 감사 문서 정정 목록에 넣는다.
+2. **`s1-catalog-layers.mjs` 는 유실됐다** — 출력 `.json` 만 남았다. 축 A 재측정이 필요해지면
+   추출기를 다시 써야 한다. 이 카드 범위 밖이라 사실만 남긴다.
+3. **`s4-classify.json` 의 `rows` 스키마가 배치3 의 대조 계약이다.** 키 열여섯 중
+   `axis · prop · value · file · line · verdict` 여섯이 히트 단위 대조에 쓰인다.
+   `S2` 가 `Hit` 타입을 정할 때 이 여섯을 그대로 담아야 차집합이 성립한다.
+

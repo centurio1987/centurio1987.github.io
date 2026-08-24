@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 290,
+  "next_seq": 291,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -808,7 +808,7 @@
       ]
     },
     "KAN-070-DRF0QF": {
-      "col": "todo",
+      "col": "doing",
       "title": "UI 토큰 게이트를 세운다 — verify-tokens 래칫 신설과 집필 규칙 개정",
       "verbatim": "위 artifact를 보고 전략과 실행 계획을 수립해라",
       "생성": "ai",
@@ -1041,7 +1041,6 @@
     "KAN-072.6-2YYK6V",
     "KAN-048",
     "KAN-065",
-    "KAN-070-DRF0QF",
     "KAN-071-6361MY",
     "KAN-072-CPJCT1",
     "KAN-072.1-5XC1AT",
@@ -1102,9 +1101,20 @@
     "KAN-066-KK9Q50",
     "KAN-067-NH9SDQ",
     "KAN-068-5KMRV8",
-    "KAN-069-M724GH"
+    "KAN-069-M724GH",
+    "KAN-070-DRF0QF"
   ],
   "recent": [
+    {
+      "seq": 290,
+      "t": "2026-08-25T00:31",
+      "a": "ai",
+      "id": "KAN-070-DRF0QF",
+      "op": "move",
+      "w": "9X26DD",
+      "from": "todo",
+      "to": "doing"
+    },
     {
       "seq": 289,
       "t": "2026-08-25T00:24",
@@ -1681,17 +1691,6 @@
       "col": "done",
       "title": "발행된 글 14편의 본문 이모지 83건을 두들 마크로 갈아 끼운다",
       "memo": "13편 77줄을 `<Mark>` 로 치환했다(`❌`→`no`, `✅`→`check`, `⚠️`→`warn`). 남은 한 편(container-anatomy-4)은 제목 하나뿐이라 마크가 아니라 말로 풀었다. **굳힌 판단 셋.** ① **제목에는 마크를 넣지 못한다** — 목차(`PostToc`)가 `render()` 의 `headings` 에서 텍스트만 뽑는데 JSX 는 텍스트를 안 남겨 `자주 틀리는 포인트 ( → 교정)` 처럼 뚫리고 앵커 slug 도 흔들린다. 그래서 `(❌ → 교정)` → `(오해 → 교정)`, `Kaniko — ⚠ 이제 고르면 안 됩니다` → `⚠` 삭제(문장이 이미 경고를 말한다). ② **볼드 앞머리는 마크를 볼드 밖으로 뺀다**(`**❌ 안티패턴**` → `<Mark name=\"no\" /> **안티패턴**`) — 글리프 마크는 이미 굵게 그려져 보이는 건 같고, 강조 안에 JSX 를 넣지 않는다. ③ **코드블록 안의 `# ❌ …` 주석은 그대로 뒀다** — 인용한 화면이고 펜스 안에서는 JSX 가 안 산다. 표 셀·인용문·번호 목록 모두 렌더 확인(Playwright). 이어서 `check-post-markers` 의 이모지 검사를 **경고 → 하드 실패**로 올렸다(인질 게이트가 될 이유가 사라졌다). 검증: `build` 43쪽 · `deco:verify` 20회 · `viz:verify` 41개 · `tsc` 0.",
-      "verbatim": ""
-    },
-    {
-      "seq": 240,
-      "t": "2026-07-31T15:47",
-      "a": "ai",
-      "id": "KAN-061",
-      "op": "create",
-      "col": "backlog",
-      "title": "홈 배경 모션 아일랜드(AmbientAurora/Waves)가 끌고 오는 JS ~130KB 재검토",
-      "memo": "KAN-059 실측에서 드러난 별건. 홈(/)이 client.js 56KB + dist.js 67KB(= bbangto-ui-core 배럴) + react 등 ~130KB 를 High 로 받아 4.5초까지 회선·메인스레드를 문다. 받아오는 값은 \"아주 옅은 배경 오로라 + 푸터 파도\" 하나뿐이다. 이미 client:media 로 reduced-motion 사용자는 청크 로드 0 이고(코어 배럴은 tree-shake 가 안 돼 컴포넌트 1개=67KB gzip — 그래서 전역 Footer 에 안 올린 선례가 있다), 그 판단 자체는 유효하다. 재검토할 것: ① 같은 그림을 CSS 그라디언트/SVG 애니로 대체 가능한지(그러면 JS 0) ② 못 대체하면 client:visible 이나 로드 지연으로 첫 화면 회선 다툼에서 빼기 ③ 그대로 둘 근거를 남기기. 판단 근거는 KAN-059 처럼 실측으로 — 특히 이 JS 가 푸터 저자 라인업 이미지(Low)를 얼마나 뒤로 미는지.",
       "verbatim": ""
     }
   ],

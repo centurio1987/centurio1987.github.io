@@ -1,0 +1,190 @@
+{
+ "css_tokens_total": 44,
+ "ts_annotated_literals": 34,
+ "exact": 31,
+ "case_only": 0,
+ "mismatch": 3,
+ "token_not_found": 0,
+ "mismatch_rows": [
+  {
+   "token": "--font-body",
+   "css": "'Gowun Dodum', sans-serif",
+   "ts": "'Gowun Dodum', system-ui, sans-serif",
+   "css_at": "src/styles/tokens.css:62",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:93"
+  },
+  {
+   "token": "--font-mono",
+   "css": "'Space Mono', monospace",
+   "ts": "'Space Mono', 'JetBrains Mono', monospace",
+   "css_at": "src/styles/tokens.css:63",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:94"
+  },
+  {
+   "token": "--btn-radius",
+   "css": "999px",
+   "ts": "9999px",
+   "css_at": "src/styles/tokens.css:38",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:101"
+  }
+ ],
+ "case_only_rows": [],
+ "token_not_found_rows": [],
+ "exact_rows": [
+  {
+   "token": "--paper",
+   "v": "#F3EEE4",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:37"
+  },
+  {
+   "token": "--surface",
+   "v": "#F8F3E8",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:38"
+  },
+  {
+   "token": "--cream",
+   "v": "#EDE6D8",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:39"
+  },
+  {
+   "token": "--subtle",
+   "v": "#e8e2d6",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:40"
+  },
+  {
+   "token": "--border",
+   "v": "#d8d0be",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:41"
+  },
+  {
+   "token": "--ink",
+   "v": "#20264A",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:42"
+  },
+  {
+   "token": "--ink-2",
+   "v": "#4a4f6a",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:43"
+  },
+  {
+   "token": "--ink-3",
+   "v": "#6f7390",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:44"
+  },
+  {
+   "token": "--accent",
+   "v": "#2B3FD4",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:45"
+  },
+  {
+   "token": "--accent-tint2",
+   "v": "#dfe3ff",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:46"
+  },
+  {
+   "token": "--pop",
+   "v": "#d8a33f",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:47"
+  },
+  {
+   "token": "--cat-planning",
+   "v": "#3e6b4f",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:55"
+  },
+  {
+   "token": "--cat-architecture",
+   "v": "#4e6ca8",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:56"
+  },
+  {
+   "token": "--cat-strategy",
+   "v": "#a84b4b",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:57"
+  },
+  {
+   "token": "--cat-skills",
+   "v": "#3e6b6b",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:58"
+  },
+  {
+   "token": "--cat-design",
+   "v": "#7a5c7e",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:59"
+  },
+  {
+   "token": "--cat-research",
+   "v": "#b07a2e",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:60"
+  },
+  {
+   "token": "--cat-quality",
+   "v": "#6b6b3e",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:61"
+  },
+  {
+   "token": "--cat-leadership",
+   "v": "#b5602e",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:62"
+  },
+  {
+   "token": "--radius-sm",
+   "v": "8px",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:97"
+  },
+  {
+   "token": "--radius-md",
+   "v": "12px",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:98"
+  },
+  {
+   "token": "--radius-lg",
+   "v": "16px",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:99"
+  },
+  {
+   "token": "--dur",
+   "v": "180ms",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:126"
+  },
+  {
+   "token": "--ease",
+   "v": "cubic-bezier(0.2, 0.7, 0.2, 1)",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:130"
+  },
+  {
+   "token": "--ease",
+   "v": "cubic-bezier(0.2, 0.7, 0.2, 1)",
+   "ts_at": "src/lib/motion/bbangtoTonyStyleGuide.ts:131"
+  },
+  {
+   "token": "--ink",
+   "v": "#20264A",
+   "ts_at": "src/lib/viz/blogVizStyleGuide.ts:19"
+  },
+  {
+   "token": "--ink-2",
+   "v": "#4a4f6a",
+   "ts_at": "src/lib/viz/blogVizStyleGuide.ts:20"
+  },
+  {
+   "token": "--paper",
+   "v": "#F3EEE4",
+   "ts_at": "src/lib/viz/blogVizStyleGuide.ts:21"
+  },
+  {
+   "token": "--surface",
+   "v": "#F8F3E8",
+   "ts_at": "src/lib/viz/blogVizStyleGuide.ts:22"
+  },
+  {
+   "token": "--cream",
+   "v": "#EDE6D8",
+   "ts_at": "src/lib/viz/blogVizStyleGuide.ts:23"
+  },
+  {
+   "token": "--border",
+   "v": "#d8d0be",
+   "ts_at": "src/lib/viz/blogVizStyleGuide.ts:24"
+  }
+ ]
+}
