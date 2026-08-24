@@ -171,6 +171,14 @@ const hung = lineup.map((author, i) => ({
        액자가 서로 맞닿고, 실은 사진 뒤에 가려 한 줄로 걸린 것으로 안 읽힌다
        (실측: 964px 에서 판이 624px 이 아니라 408px 이었다). */
     width: 100%;
+    /* 판 폭은 **읽는 판에 묶는다** (KAN-068). 셸이 넓은 판(1100px)을 따라가면서 이 판도
+       624px → 1004px 으로 늘었는데, 늘어나는 것은 간격뿐이다 — 액자는 위 clamp 의 14vw
+       상한에 걸려 102×117 로 그대로이고, 액자 사이만 54px → 149px 이 된다(실측, 뷰포트
+       1440). 게다가 `--sag` 는 px 고정인데 실은 `preserveAspectRatio="none"` 이라 폭만
+       늘면 처짐 곡선이 밋밋해진다. 즉 이 짜임의 좌표는 624px 폭에서 맞춰진 값이다.
+       px 를 다시 박지 않고 토큰에서 뽑는 이유는, 이 카드가 없애려던 하드코딩을 푸터에
+       되살리지 않기 위해서다. 가운데 정렬은 푸터 안쪽의 `align-items:center` 가 한다. */
+    max-width: calc(var(--content-max) - var(--page-pad) * 2);
     display: grid;
     /* auto 최소값을 0 으로 눌러야 액자가 칸보다 넓어져도 열 중심이 격자에 남는다 */
     grid-template-columns: repeat(var(--n), minmax(0, 1fr));
