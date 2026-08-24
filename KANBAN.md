@@ -54,6 +54,16 @@
     ```text
     위 artifact를 보고 전략과 실행 계획을 수립해라
     ```
+- `KAN-071-6361MY` 선언 층을 줄인다 — bbangtoTonyStyleGuide export 를 걷고 foundation 만 남긴다 — 생성:ai · 최종:ai · 갱신:2026-08-25
+  - 짧은 제목: 선언 층 처분
+  - 목적: 소비처가 0건인 StyleGuide 선언을 걷어 tokens.css 값의 두 번째 사본을 없앤다
+  - 이유: 안 쓰이는 선언이 tokens.css 와 어긋난 값 셋을 들고 있어, 주입되는 순간 화면이 갈라진다
+  - 목표: bbangtoTonyFoundation 만 남고 어긋난 값 셋이 맞춰지거나 왜 다른지 주석으로 걸린다
+  - 메모: 감사 P4 의 B안 — 검토 판단 항목 2번이 승인으로 확정. 파일명은 안 바꾼다: gen-motion-css.ts:23 과 main.yml:60 이 문자열로 들고 있다
+  - 원문:
+    ```text
+    위 artifact를 보고 전략과 실행 계획을 수립해라
+    ```
 
 ## 진행 중
 - `KAN-001` GraphQL을 썼을 때 유리한 상황과 아닌 상황 — 생성:ai · 최종:ai · 갱신:2026-07-26
