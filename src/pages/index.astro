@@ -26,7 +26,7 @@ const hasMore = posts.length > recent.length;
 
 {/* preloadImages — 히어로 마스코트가 이 페이지의 LCP 다(실측). 폰트가 회선을 물기 전에
     줄을 세운다. 하나만 넣는 이유는 BaseLayout 의 prop 주석에 있다. */}
-<BaseLayout title="빵관 토니" ambientFooter preloadImages={[TONY_DIECUT]}>
+<BaseLayout title="빵관 토니" width="wide" ambientFooter preloadImages={[TONY_DIECUT]}>
 
 
   {/* 홈은 읽는 화면이 아니라 맞이하는 화면이라 데코가 가장 넉넉하다 — 강도 4. */}
@@ -159,7 +159,9 @@ const hasMore = posts.length > recent.length;
     overflow: hidden;
   }
   .hero-inner {
-    max-width: 1100px;
+    /* 넓은 판 (KAN-068). 셸도 같은 토큰을 읽는다 — BaseLayout 의 width="wide" 가 그것을
+       깔아 준다. 여기만 바꾸고 그쪽을 안 바꾸면 GNB 와 본문이 다시 어긋난다. */
+    max-width: var(--wide-max);
     margin: 0 auto;
     padding: 48px var(--page-pad) 56px;
     display: grid;
@@ -271,7 +273,7 @@ const hasMore = posts.length > recent.length;
 
   /* ── RECENT POSTS ── */
   .recent {
-    max-width: 1100px;
+    max-width: var(--wide-max); /* 넓은 판 — .hero-inner 와 같은 선 (KAN-068) */
     margin: 0 auto;
     /* DecoHeading 의 레터링 테이프가 윗선 위로 16px 걸치므로 그만큼 숨통을 준다
        (8px 이면 히어로 아래 테두리를 타고 넘는다). */

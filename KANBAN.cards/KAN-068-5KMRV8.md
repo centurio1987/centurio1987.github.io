@@ -64,7 +64,7 @@ scope: src/styles/tokens.css, src/layouts/BaseLayout.astro, src/components/Heade
       `BaseLayout`에 `width?: "read" | "wide"` prop(기본 `"read"`)을 추가하고 `<body>`에
       클래스로 `--shell-max: var(--wide-max)`를 깐다.
       완료 기준: `bun run build` 통과. prop을 안 넘긴 지면 8곳의 셸 렌더 폭이 720px 그대로다.
-- [ ] `S2` 홈 전환 — 하드코딩 2곳 제거
+- [x] `S2` 홈 전환 — 하드코딩 2곳 제거
       `index.astro:162`(`.hero-inner`)·`:274`(`.recent`)의 `1100px` → `var(--wide-max)`,
       `BaseLayout`에 `width="wide"`.
       완료 기준: `/`에서 `.header-inner`·`.hero-inner`·`.recent`·`.footer-inner` 렌더 폭이
@@ -133,3 +133,5 @@ grep -rnE 'max-width: *[0-9]{3,}px' src/ | grep -v 'src/pages/design/'
 - 2026-08-24T15:34 · s:a25c9233 — `검증` 섹션 교체
 - 2026-08-24T16:13 · s:a25c9233 · S1 doing — 착수
 - 2026-08-24T16:14 · s:a25c9233 · S1 done — --wide-max 1100px 신설 · Header/Footer 를 var(--shell-max, var(--content-max)) 로 · BaseLayout width prop + body.shell-wide. 빌드 통과, shell-wide 단 지면 0건이라 읽는 판 8곳 무변화 확인
+- 2026-08-24T16:16 · s:a25c9233 · S2 doing — 착수
+- 2026-08-24T16:18 · s:a25c9233 · S2 done — index.astro 의 1100px 2곳을 var(--wide-max) 로, BaseLayout 에 width=wide. 실측: / 의 header-inner·hero-inner·recent·footer-inner 가 모두 1100px 로 일치(지적 2 해결). deco:verify 50회 통과, 읽는 판 4지면 720px 무변화
