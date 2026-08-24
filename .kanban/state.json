@@ -825,7 +825,16 @@
       "goal": "bun run tokens:verify 가 감사 수치를 히트 단위로 재현하고, 위반이 늘면 CI 가 막는다",
       "goal_hash": "d4d2b5ab802f0735a99795b8d2e04a0a4cd98388",
       "memo": "감사 P3-1(게이트) + P3-2(react-sim 규칙 개정). 래칫으로 세운다 — 위반 1,567건이라 하드월은 첫 푸시부터 main 을 막는다",
-      "memo_hash": "3a80095d4b6c82d1003ced6d1ea95f2a71b170de"
+      "memo_hash": "3a80095d4b6c82d1003ced6d1ea95f2a71b170de",
+      "scope": [
+        "scripts/verify-tokens.ts",
+        "scripts/fixtures/tokens/**",
+        "scripts/tokens-baseline.json",
+        "package.json",
+        ".github/workflows/main.yml",
+        ".claude/skills/react-sim/**",
+        "CLAUDE.md"
+      ]
     },
     "KAN-071-6361MY": {
       "col": "todo",
