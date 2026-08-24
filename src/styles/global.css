@@ -23,6 +23,14 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 셸(헤더·푸터)이 지면 폭을 따라간다 (KAN-068). BaseLayout 의 width="wide" 가 이 클래스를
+   달고, Header/Footer 는 `var(--shell-max, var(--content-max))` 로 읽는다. 클래스가 없는
+   지면에서는 --shell-max 자체가 없어 폴백(720px)이 그대로 쓰인다 — 그래서 읽는 판 여덟 곳은
+   한 픽셀도 안 움직인다. 커스텀 프로퍼티는 상속되므로 body 에 깔면 셸 자식까지 닿는다. */
+body.shell-wide {
+  --shell-max: var(--wide-max);
+}
+
 body {
   margin: 0;
   background: var(--paper);

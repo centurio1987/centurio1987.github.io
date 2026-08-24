@@ -39,7 +39,17 @@
 
   /* 레이아웃 */
   --measure: 72ch;
+  /* 페이지 컨테이너 폭은 **두 종류뿐이다** (KAN-068). 지면이 자기 역할을 고르고,
+     셸(헤더·푸터)은 그 지면의 폭을 따라간다 — BaseLayout 의 `width` prop 이 --shell-max 를
+     깔고, Header/Footer 가 `var(--shell-max, var(--content-max))` 로 읽는다.
+     **페이지 컨테이너에 px 를 직접 적지 마라** — 그러면 셸과 어긋난다(지적의 원인이었다).
+       읽는 판  --content-max  글 목록 · 카테고리 · 글 상세 · 폭신 대담 · 404
+       넓은 판  --wide-max     홈 · 글 지도
+     720px 은 디자인 정본이 "포스트 본문"에 붙인 값이고(DESIGN_CONCEPT.md:106),
+     홈 히어로는 같은 문서 90~96 행이 1fr 1fr 2열 + 마스코트로 따로 규정한다 —
+     즉 정본은 이미 지면마다 폭이 다르다를 전제한다. 없던 것은 값이 아니라 이 규칙이다. */
   --content-max: 720px;
+  --wide-max: 1100px;
   --page-pad: clamp(20px, 5vw, 48px);
   /* sticky 헤더 높이 (실측): 패딩 14px×2 + 로고 아바타 32px(size 24 × 1.35) + 보더 1px.
      Header 의 높이를 '강제'하는 값이 아니라 앵커 오프셋(.prose 헤딩 scroll-margin-top)과

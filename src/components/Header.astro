@@ -32,7 +32,8 @@ const isPosts = path.startsWith("/posts") || path.startsWith("/categories");
     z-index: 10;
   }
   .header-inner {
-    max-width: var(--content-max);
+    /* 셸은 지면 폭을 따라간다 (KAN-068). 폴백이 읽는 판 720px 이다. */
+    max-width: var(--shell-max, var(--content-max));
     margin: 0 auto;
     padding: 14px var(--page-pad);
     display: flex;

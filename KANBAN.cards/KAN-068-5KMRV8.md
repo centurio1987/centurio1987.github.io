@@ -58,7 +58,7 @@ scope: src/styles/tokens.css, src/layouts/BaseLayout.astro, src/components/Heade
 
 ## 실행 계획
 <!-- `S<n>`은 고정 id — 이름을 바꾸지 않는다. 체크 상태는 doc-step 이 갱신한다. -->
-- [ ] `S1` 토큰·셸 배선 — `--wide-max` 신설 + `--shell-max` 규약
+- [x] `S1` 토큰·셸 배선 — `--wide-max` 신설 + `--shell-max` 규약
       `tokens.css`에 `--wide-max: 1100px` 추가(주석에 "읽는 판/넓은 판" 규칙과 근거를 단다).
       `Header.astro:35`·`Footer.astro:54`의 `max-width`를 `var(--shell-max, var(--content-max))`로.
       `BaseLayout`에 `width?: "read" | "wide"` prop(기본 `"read"`)을 추가하고 `<body>`에
@@ -131,3 +131,5 @@ grep -rnE 'max-width: *[0-9]{3,}px' src/ | grep -v 'src/pages/design/'
 - 2026-08-24T15:34 · s:a25c9233 — `전략` 섹션 교체
 - 2026-08-24T15:34 · s:a25c9233 — `실행 계획` 섹션 교체
 - 2026-08-24T15:34 · s:a25c9233 — `검증` 섹션 교체
+- 2026-08-24T16:13 · s:a25c9233 · S1 doing — 착수
+- 2026-08-24T16:14 · s:a25c9233 · S1 done — --wide-max 1100px 신설 · Header/Footer 를 var(--shell-max, var(--content-max)) 로 · BaseLayout width prop + body.shell-wide. 빌드 통과, shell-wide 단 지면 0건이라 읽는 판 8곳 무변화 확인

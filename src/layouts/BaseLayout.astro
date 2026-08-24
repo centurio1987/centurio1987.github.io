@@ -35,6 +35,18 @@ interface Props {
    * 나가고 그 뒤로 폰트 파일이 줄줄이 붙는다.
    */
   preloadImages?: string[];
+  /**
+   * 이 지면의 페이지 컨테이너 폭 종류 (KAN-068).
+   *
+   * `"read"`(기본) = 읽는 판 `--content-max` 720px — 글 목록 · 카테고리 · 글 상세 ·
+   * 폭신 대담 · 404. `"wide"` = 넓은 판 `--wide-max` 1100px — 홈 · 글 지도.
+   *
+   * **이 값은 셸(헤더·푸터)에만 작용한다.** 페이지 본문 컨테이너는 자기 CSS 에서 같은
+   * 토큰을 직접 읽는다 — 한 화면 안에서 셸과 본문이 같은 선에 서야 하므로 **둘이 같은
+   * 토큰을 가리키는지 확인하고 바꿔라.** 여기만 `"wide"` 로 두고 본문이 720px 이면
+   * 고치려던 어긋남이 방향만 바뀌어 그대로 남는다.
+   */
+  width?: "read" | "wide";
 }
 const {
   title,
@@ -46,6 +58,7 @@ const {
   noindex = false,
   feeds = [],
   preloadImages = [],
+  width = "read",
 } = Astro.props;
 const siteName = "빵관 토니";
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
@@ -129,7 +142,7 @@ const imageUrl = new URL(image, Astro.site).href;
       })();
     </script>
   </head>
-  <body>
+  <body class={width === "wide" ? "shell-wide" : undefined}>
     <NavProgress transition:persist />
     <Header />
     <main>
