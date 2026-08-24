@@ -777,7 +777,16 @@
       "title_hash": "0a8358869917886fed220d3ffd7940dfa915a8f1",
       "verbatim_hash": "be0392ed6515c7740a99804328597badd7336060",
       "memo": "",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "scope": [
+        "src/styles/tokens.css",
+        "src/layouts/BaseLayout.astro",
+        "src/components/Header.astro",
+        "src/components/Footer.astro",
+        "src/pages/index.astro",
+        "src/pages/graph.astro",
+        "design-concept/DESIGN_CONCEPT.md"
+      ]
     },
     "KAN-069-M724GH": {
       "col": "todo",
