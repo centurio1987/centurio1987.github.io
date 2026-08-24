@@ -802,7 +802,10 @@
       "title_hash": "7598d3a108faaa85bf40aaa8dce131fc613e54d6",
       "verbatim_hash": "1f3fdb43c8503d51d88d425524d4f2bd73e2fefb",
       "memo": "",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "scope": [
+        "design-concept/**"
+      ]
     }
   },
   "order": [
