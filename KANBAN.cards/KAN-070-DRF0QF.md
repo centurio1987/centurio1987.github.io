@@ -90,8 +90,8 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 <!-- `S<n>`은 고정 id — 이름을 바꾸지 않는다. 체크 상태는 doc-step 이 갱신한다. -->
 - [x] `S1` 판정기 회수 — 스크래치패드의 판정기와 출력 JSON 을 레포로 옮긴다
 - [x] `S2` 스켈레톤 — 레포 게이트 규약대로 `scripts/verify-tokens.ts` 를 세운다
-- [ ] `S3` 색·radius·선굵기 축 포팅 — 대조 상대는 `tokens.css` 하나
-- [ ] `S4` fallback 축 포팅 — `var(--x, fb)` 108자리
+- [x] `S3` 색·radius·선굵기 축 포팅 — 대조 상대는 `tokens.css` 하나
+- [x] `S4` fallback 축 포팅 — `var(--x, fb)` 108자리
 - [ ] `S5` 문서 축 포팅 + 축 재분류 — 간격을 spacing/dimension/position 셋으로
 - [ ] `S6` 자가검사 — 축마다 고장 픽스처
 - [ ] `S7` 래칫 + 베이스라인 — `--update-baseline`
@@ -162,3 +162,8 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 - 2026-08-25T01:37 · s:9eba7c52 · S2 done — 진입점 verify-tokens.ts + 축 모듈 셋 골격 + 공통 추출층(extract.ts) + 타입 계약(types.ts). s3-scan.py 를 그대로 이식해 **감사와 히트 단위 차집합 0**(3,539건, axis·kind·prop·value·file:line·src 여섯 쪽 일치, kind 분포도 literal_new 2634 / token 858 / literal_dup 47 동일). 축 모듈은 판정만 하고 규약은 진입점이 진다. tsc 통과
 - 2026-08-25T01:39 · s:9eba7c52 · S9 doing — 착수
 - 2026-08-25T01:40 · s:9eba7c52 · S9 done — REACT_SIM_GUIDE.md 의 '팔레트와 조화'를 판정 가능한 규칙으로 교체(규칙 6 신설: var(--x) 문자열로 쓴다 · 토큰 밖이면 근거 문서 위치를 남긴다 · 공용 팔레트 모듈 금지). PermissionGate.tsx:57 을 좋은 예로, 옛 규칙 아래 준수율 3.6% 였다는 사실을 인용 블록으로 박음. CLAUDE.md Design 절에 토큰 게이트 셋(래칫인 이유 · 판정 불가 낱말 금지 · 생성물 제외) 추가. 판정 불가 낱말 잔존 0건, check-emphasis 두 파일 통과
+- 2026-08-25T01:52 · s:9eba7c52 · S3 doing — 착수
+- 2026-08-25T01:52 · s:9eba7c52 · S3 done — 색·radius·선굵기 판정 이식. 감사 rows(axis2 color/radius/stroke/잡음) 1,306건과 여섯 키 무정규화 차집합 0 — color 준수579/위반368/드리프트26 · radius 26/67/24 · stroke -/145/21 · 잡음 측정제외 50. D1 54·D2 14·D3 3 도 재현. 판정용 토큰 표를 따로 둔다(--stroke 는 추출축이 spacing 이라 판정에서 자기 축으로 다시 매김, deco.css 53개는 중복 선언을 접어 감사와 맞춤)
+- 2026-08-25T01:52 · s:9eba7c52 · S4 doing — 착수
+- 2026-08-25T01:52 · s:9eba7c52 · S4 done — var(--x, fallback) 108자리 이식. s4-fallback.json 과 히트 단위 차집합 0 — 일치 42 · 불일치 23(살아있는 4 · 죽은 19) · 제외 43(스위치 15 + 지역변수 28). 살아있는 넷은 Doodle.astro:319,325,390 과 frame-picks.astro:330. 적재 사슬(BaseLayout→global.css→@import)을 실제로 따라가 살아있음/죽음을 판정하므로 deco.css 를 전역으로 올리면 판정이 저절로 따라온다
+- 2026-08-25T01:52 · s:9eba7c52 — S3·S4 가 같은 곳에 걸렸다 — types.ts 의 판정 union 이 감사 taxonomy 를 못 담았다. 감사는 이름을 두 층으로 쓴다(1차 s4-classify 여섯 · 롤업 다섯). 토큰 미존재 1977 이 중간 판정이고 docrule 이 문서 규칙으로 셋으로 가른다(문서 안 445 준수 · 문서 밖 987 위반 · 규칙 없음 545 판정 불가). union 을 1차 이름으로 확장하고 근거를 타입 주석에 박았다
