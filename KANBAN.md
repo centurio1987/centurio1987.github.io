@@ -64,17 +64,6 @@
     ```text
     집필 엔진이 바뀌었다. 기존의 글을 재집필 할 계획을 세워라.
     ```
-- `KAN-069-M724GH` UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라. — 생성:유저 · 최종:ai · 갱신:2026-08-24
-  - 실행 문서: KANBAN.cards/KAN-069-M724GH.md (6/6 · 최근 08-24)
-  - 검토 문서: KANBAN.reviews/KAN-069-M724GH.review.md (승인 6/6 · 승인)
-  - 원문:
-    ```text
-    UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라.
-    - style guide가 https://github.com/centurio1987/bbangto-ui에서 제공하는 style guide interface를 준수해서 정의 되어 있는지 파악해라.
-      - foundations, component, visual motif, wrapper, guideline을 전부 구현한 상태여야 한다.
-    - 정의한 style guide를 준수하여 블로그가 구현 됐는지 검토 해라.
-      - 정의한 구성요소와 다른 예외 요소를 파악해라.
-    ```
 
 ## 완료
 - `KAN-062` 발행된 글 14편의 본문 이모지 83건을 두들 마크로 갈아 끼운다 — 생성:ai · 최종:ai · 갱신:2026-08-04
@@ -317,4 +306,15 @@
     UI QA
     - 메인 컨텐츠 섹션의 폭이 main 화면과 블로그 탭이 서로 다르다. 일관성을 지킬 필요가 있다.
     - main 화면에서 GnB 컨텐츠 폭과 메인 컨텐츠 섹션의 폭이 서로 다르다. 일관성을 지킬 필요가 있다.
+    ```
+- `KAN-069-M724GH` UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라. — 생성:유저 · 최종:ai · 갱신:2026-08-24
+  - 실행 문서: KANBAN.cards/KAN-069-M724GH.md (6/6 · 최근 08-24)
+  - 검토 문서: KANBAN.reviews/KAN-069-M724GH.review.md (승인 6/6 · 승인)
+  - 원문:
+    ```text
+    UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라.
+    - style guide가 https://github.com/centurio1987/bbangto-ui에서 제공하는 style guide interface를 준수해서 정의 되어 있는지 파악해라.
+      - foundations, component, visual motif, wrapper, guideline을 전부 구현한 상태여야 한다.
+    - 정의한 style guide를 준수하여 블로그가 구현 됐는지 검토 해라.
+      - 정의한 구성요소와 다른 예외 요소를 파악해라.
     ```
