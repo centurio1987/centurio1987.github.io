@@ -65,14 +65,6 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
-- `KAN-068-5KMRV8` UI QA — 생성:유저 · 최종:ai · 갱신:2026-08-24
-  - 실행 문서: KANBAN.cards/KAN-068-5KMRV8.md (5/5 · 최근 08-24)
-  - 원문:
-    ```text
-    UI QA
-    - 메인 컨텐츠 섹션의 폭이 main 화면과 블로그 탭이 서로 다르다. 일관성을 지킬 필요가 있다.
-    - main 화면에서 GnB 컨텐츠 폭과 메인 컨텐츠 섹션의 폭이 서로 다르다. 일관성을 지킬 필요가 있다.
-    ```
 
 ## 검토
 - `KAN-064` 집필 엔진 교체(authoring-kit)에 따른 기존 글 재집필 계획 수립 — 생성:유저 · 최종:ai · 갱신:2026-08-04
@@ -80,6 +72,15 @@
   - 원문:
     ```text
     집필 엔진이 바뀌었다. 기존의 글을 재집필 할 계획을 세워라.
+    ```
+- `KAN-068-5KMRV8` UI QA — 생성:유저 · 최종:ai · 갱신:2026-08-24
+  - 실행 문서: KANBAN.cards/KAN-068-5KMRV8.md (5/5 · 최근 08-24)
+  - 검토 문서: KANBAN.reviews/KAN-068-5KMRV8.review.md (승인 0/4 · 검토 대기)
+  - 원문:
+    ```text
+    UI QA
+    - 메인 컨텐츠 섹션의 폭이 main 화면과 블로그 탭이 서로 다르다. 일관성을 지킬 필요가 있다.
+    - main 화면에서 GnB 컨텐츠 폭과 메인 컨텐츠 섹션의 폭이 서로 다르다. 일관성을 지킬 필요가 있다.
     ```
 
 ## 완료

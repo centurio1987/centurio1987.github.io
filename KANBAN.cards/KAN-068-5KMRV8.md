@@ -2,7 +2,7 @@
 card: KAN-068-5KMRV8
 title: UI QA
 created: 2026-08-24
-scope: src/styles/tokens.css, src/layouts/BaseLayout.astro, src/components/Header.astro, src/components/Footer.astro, src/pages/index.astro, src/pages/graph.astro, design-concept/DESIGN_CONCEPT.md
+scope: src/styles/tokens.css, src/styles/global.css, src/layouts/BaseLayout.astro, src/components/Header.astro, src/components/Footer.astro, src/components/AuthorLineup.astro, src/pages/index.astro, src/pages/graph.astro, scripts/verify-widths.ts, package.json, design-concept/DESIGN_CONCEPT.md
 ---
 
 # KAN-068-5KMRV8 — UI QA
