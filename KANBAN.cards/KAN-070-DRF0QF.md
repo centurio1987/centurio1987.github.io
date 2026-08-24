@@ -2,7 +2,7 @@
 card: KAN-070-DRF0QF
 title: UI 토큰 게이트를 세운다 — verify-tokens 래칫 신설과 집필 규칙 개정
 created: 2026-08-25
-scope: scripts/verify-tokens.ts, scripts/fixtures/tokens/**, scripts/tokens-baseline.json, package.json, .github/workflows/main.yml, .claude/skills/react-sim/**, CLAUDE.md
+scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/fixtures/tokens/**, scripts/tokens-baseline.json, package.json, .github/workflows/main.yml, .claude/skills/react-sim/**, CLAUDE.md
 ---
 
 # KAN-070-DRF0QF — UI 토큰 게이트를 세운다 — verify-tokens 래칫 신설과 집필 규칙 개정
@@ -52,6 +52,39 @@ scope: scripts/verify-tokens.ts, scripts/fixtures/tokens/**, scripts/tokens-base
    뒤는 생성물·패키지 복제물이다.
 3. **자가검사가 없으면 안 된다.** 1,567 → 0 으로 수렴하는 동안 게이트가 죽어도 카운트는
    계속 줄어든 것처럼 보인다. `verify-talk.ts:selfTestFaults()` 형식을 그대로 쓴다.
+
+---
+
+**수행 방식은 오케스트레이션이다 (유저 선택, 2026-08-25).** 배치 4개 · 병렬 폭 3.
+단일 에이전트 3배치와 나란히 놓고 고른 결과다. 이 선택이 **전제 하나를 강제**하고,
+그 전제가 다시 리스크 셋을 만든다. 셋 다 대책이 있어야 선택이 성립한다.
+
+**전제 — 축을 파일로 분리한다.** `S3`·`S4`·`S5` 가 병렬로 돌려면 같은
+`scripts/verify-tokens.ts` 를 세 세션이 동시에 못 고치므로 축마다 모듈을 갖는다.
+
+```
+scripts/verify-tokens.ts            진입점 — 규약을 지고, 축 모듈을 불러 모은다
+scripts/lib/tokens/color.ts         S3 — 색·radius·선 굵기      ↔ s4-classify.json
+scripts/lib/tokens/fallback.ts      S4 — var(--x, fb) 108자리   ↔ s4-fallback.json
+scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-docrules.json
+```
+
+**대책 셋.**
+
+1. **게이트가 파일 넷이 되는 것** — 기존 `verify-*.ts` 다섯은 전부 단일 파일이고
+   `scripts/lib/` 라는 자리는 이 레포에 아직 없다. 새 관례를 만드는 것이므로 그 사실을
+   적어 둔다. 지키는 것은 파일 수가 아니라 **진입점 하나**다 — 셰뱅 · "왜 필요한가" 머리주석 ·
+   `failures[]`/`notes[]` 분리 · `console.error("고치는 법: …")` · `process.exit(1)` 은
+   전부 `verify-tokens.ts` 가 진다. 축 모듈은 규약을 지지 않고 판정만 돌려준다.
+2. **축마다 다른 세션이 짜면 판정 규칙이 갈리는 것** — `S2` 가 **공통 계약을 먼저 박는다.**
+   축 모듈은 같은 시그니처(`scan(files: string[]): Hit[]`)와 같은 `Verdict` 타입을 쓰고,
+   토큰 사전(`tokens.css` 파싱)·파일 목록·제외 규칙(`AUTO-GENERATED`·생성물)은
+   진입점이 한 번 만들어 넘긴다. 축 모듈이 각자 파일을 훑으면 제외 규칙이 세 벌이 된다.
+   그래서 `S2` 가 배치3 전체의 선행이고, 배치2에 혼자 있지 않고 `S9` 와 함께 있다.
+3. **히트 단위 대조를 세 번 해야 하는 것** — 이건 비용이 아니라 오히려 이 안의 이점이다.
+   회수한 참조 JSON 이 이미 축마다 하나씩이라(`s4-classify` ↔ 색 · `s4-fallback` ↔ fallback ·
+   `s4-docrules` ↔ 문서 축) 모듈과 **1:1로 맞는다.** 축 모듈의 완료 기준을 자기 참조 JSON 과의
+   차집합 0 으로 두면 세 세션이 서로를 안 기다린다.
 
 ## 실행 계획
 <!-- `S<n>`은 고정 id — 이름을 바꾸지 않는다. 체크 상태는 doc-step 이 갱신한다. -->
@@ -121,3 +154,4 @@ scope: scripts/verify-tokens.ts, scripts/fixtures/tokens/**, scripts/tokens-base
 - 2026-08-25T00:16 · s:9eba7c52 — `전략` 섹션 교체
 - 2026-08-25T00:16 · s:9eba7c52 — `실행 계획` 섹션 교체
 - 2026-08-25T00:16 · s:9eba7c52 — `검증` 섹션 교체
+- 2026-08-25T00:23 · s:9eba7c52 — `전략` 섹션 교체
