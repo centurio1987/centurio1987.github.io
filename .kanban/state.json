@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 288,
+  "next_seq": 289,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -854,7 +854,13 @@
       "goal": "bbangtoTonyFoundation 만 남고 어긋난 값 셋이 맞춰지거나 왜 다른지 주석으로 걸린다",
       "goal_hash": "4fcad0e60cba270466571bed4ef8cb6eafad6b66",
       "memo": "감사 P4 의 B안 — 검토 판단 항목 2번이 승인으로 확정. 파일명은 안 바꾼다: gen-motion-css.ts:23 과 main.yml:60 이 문자열로 들고 있다",
-      "memo_hash": "0630180a22f1a7f1f3940eba99e263437178f49c"
+      "memo_hash": "0630180a22f1a7f1f3940eba99e263437178f49c",
+      "scope": [
+        "src/lib/motion/**",
+        "src/lib/viz/blogVizStyleGuide.ts",
+        "scripts/gen-motion-css.ts",
+        "scripts/render-viz.ts"
+      ]
     },
     "KAN-072-CPJCT1": {
       "col": "todo",
@@ -874,7 +880,25 @@
       "goal": "게이트 베이스라인이 0 으로 수렴해 tokens:verify 를 순수 하드월로 승격할 수 있다",
       "goal_hash": "d543e1b104330baadaae05aa4037ae35a5b17ee5",
       "memo": "하위 6장으로 순서를 강제한다. 루트 넷으로 두면 scope 가 src/** 로 전부 겹쳐 루트 독립성이 그 자리에서 깨진다 — 칸반 3.6 의 상위 신설",
-      "memo_hash": "6f447f56fb32b2dc62470bad2e854bf298aeea97"
+      "memo_hash": "6f447f56fb32b2dc62470bad2e854bf298aeea97",
+      "scope": [
+        "scripts/tokens-baseline.json",
+        "src/components/**",
+        "src/pages/**",
+        "src/layouts/**",
+        "src/styles/tokens.css",
+        "src/styles/global.css",
+        "src/styles/deco.css",
+        "src/styles/viz-frame.css",
+        "src/styles/viz.css",
+        "src/lib/categories.ts",
+        "src/lib/doodleMarks.ts",
+        "src/lib/viz/Comparison.tsx",
+        "src/lib/viz/PosterHero.tsx",
+        "src/lib/viz/ProcessSteps.tsx",
+        "src/lib/viz/layout.ts",
+        "design-concept/**"
+      ]
     },
     "KAN-072.1-5XC1AT": {
       "col": "todo",
@@ -1009,8 +1033,17 @@
     "KAN-032",
     "KAN-060",
     "KAN-061",
+    "KAN-072.2-BF75X5",
+    "KAN-072.3-SC3ADV",
+    "KAN-072.4-GJ9M4N",
+    "KAN-072.5-WQV1KT",
+    "KAN-072.6-2YYK6V",
     "KAN-048",
     "KAN-065",
+    "KAN-070-DRF0QF",
+    "KAN-071-6361MY",
+    "KAN-072-CPJCT1",
+    "KAN-072.1-5XC1AT",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -1068,18 +1101,19 @@
     "KAN-066-KK9Q50",
     "KAN-067-NH9SDQ",
     "KAN-068-5KMRV8",
-    "KAN-069-M724GH",
-    "KAN-070-DRF0QF",
-    "KAN-071-6361MY",
-    "KAN-072-CPJCT1",
-    "KAN-072.1-5XC1AT",
-    "KAN-072.2-BF75X5",
-    "KAN-072.3-SC3ADV",
-    "KAN-072.4-GJ9M4N",
-    "KAN-072.5-WQV1KT",
-    "KAN-072.6-2YYK6V"
+    "KAN-069-M724GH"
   ],
   "recent": [
+    {
+      "seq": 288,
+      "t": "2026-08-25T00:18",
+      "a": "유저",
+      "id": "KAN-070-DRF0QF",
+      "op": "waive",
+      "w": "WTCH92",
+      "with_": "KAN-072-CPJCT1",
+      "reason": "scripts/tokens-baseline.json 은 커밋된 결정론적 생성물이고 갱신은 tokens:verify --update-baseline 하나가 한다 — src/styles/motion.css 와 같은 모양이다. KAN-070 이 파일을 만들고 KAN-072 가 부채를 갚으며 카운트를 줄인다. 스코프를 비틀어 겹침을 없애면 KAN-070 의 CI 활성화가 KAN-072.1 완료에 묶여 병렬이 그 자리에서 깨진다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹친다"
+    },
     {
       "seq": 287,
       "t": "2026-08-25T00:14",
@@ -1659,16 +1693,16 @@
       "title": "한국어 웹폰트 3종의 첫 화면 회선 점유(~530KB) 완화 방안 검토",
       "memo": "KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×).",
       "verbatim": ""
-    },
-    {
-      "seq": 238,
-      "t": "2026-07-31T15:42",
-      "a": "ai",
-      "id": "KAN-059",
-      "op": "move",
-      "from": "backlog",
-      "to": "done"
     }
   ],
-  "layout": 2
+  "layout": 2,
+  "waivers": [
+    {
+      "pair": "KAN-070-DRF0QF|KAN-072-CPJCT1",
+      "scope_hash": "13735cc866f776bd",
+      "reason": "scripts/tokens-baseline.json 은 커밋된 결정론적 생성물이고 갱신은 tokens:verify --update-baseline 하나가 한다 — src/styles/motion.css 와 같은 모양이다. KAN-070 이 파일을 만들고 KAN-072 가 부채를 갚으며 카운트를 줄인다. 스코프를 비틀어 겹침을 없애면 KAN-070 의 CI 활성화가 KAN-072.1 완료에 묶여 병렬이 그 자리에서 깨진다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹친다",
+      "created": "2026-08-25T00:18",
+      "by": "유저"
+    }
+  ]
 }
