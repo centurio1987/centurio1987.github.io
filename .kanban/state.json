@@ -1,6 +1,6 @@
 {
-  "next_id": 68,
-  "next_seq": 271,
+  "next_id": 70,
+  "next_seq": 273,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -766,6 +766,30 @@
         "raws/talks/_prep/**",
         "raws/talks/README.md"
       ]
+    },
+    "KAN-068-5KMRV8": {
+      "col": "todo",
+      "title": "UI QA",
+      "verbatim": "UI QA\n- 메인 컨텐츠 섹션의 폭이 main 화면과 블로그 탭이 서로 다르다. 일관성을 지킬 필요가 있다.\n- main 화면에서 GnB 컨텐츠 폭과 메인 컨텐츠 섹션의 폭이 서로 다르다. 일관성을 지킬 필요가 있다.",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-08-24",
+      "title_hash": "0a8358869917886fed220d3ffd7940dfa915a8f1",
+      "verbatim_hash": "be0392ed6515c7740a99804328597badd7336060",
+      "memo": "",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "KAN-069-M724GH": {
+      "col": "todo",
+      "title": "UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라.",
+      "verbatim": "UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라.\n- style guide가 https://github.com/centurio1987/bbangto-ui에서 제공하는 style guide interface를 준수해서 정의 되어 있는지 파악해라.\n  - foundations, component, visual motif, wrapper, guideline을 전부 구현한 상태여야 한다.\n- 정의한 style guide를 준수하여 블로그가 구현 됐는지 검토 해라.\n  - 정의한 구성요소와 다른 예외 요소를 파악해라.",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-08-24",
+      "title_hash": "7598d3a108faaa85bf40aaa8dce131fc613e54d6",
+      "verbatim_hash": "1f3fdb43c8503d51d88d425524d4f2bd73e2fefb",
+      "memo": "",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
@@ -776,6 +800,8 @@
     "KAN-061",
     "KAN-048",
     "KAN-065",
+    "KAN-068-5KMRV8",
+    "KAN-069-M724GH",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -834,6 +860,38 @@
     "KAN-067-NH9SDQ"
   ],
   "recent": [
+    {
+      "seq": 272,
+      "t": "2026-08-24T15:09",
+      "a": "유저",
+      "id": "KAN-069-M724GH",
+      "op": "create",
+      "w": "WTCH92",
+      "col": "todo",
+      "title": "UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라.",
+      "verbatim": "UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라.\n- style guide가 https://github.com/centurio1987/bbangto-ui에서 제공하는 style guide interface를 준수해서 정의 되어 있는지 파악해라.\n  - foundations, component, visual motif, wrapper, guideline을 전부 구현한 상태여야 한다.\n- 정의한 style guide를 준수하여 블로그가 구현 됐는지 검토 해라.\n  - 정의한 구성요소와 다른 예외 요소를 파악해라.",
+      "short": "",
+      "purpose": "",
+      "reason": "",
+      "goal": "",
+      "memo": ""
+    },
+    {
+      "seq": 271,
+      "t": "2026-08-24T15:09",
+      "a": "유저",
+      "id": "KAN-068-5KMRV8",
+      "op": "create",
+      "w": "WTCH92",
+      "col": "todo",
+      "title": "UI QA",
+      "verbatim": "UI QA\n- 메인 컨텐츠 섹션의 폭이 main 화면과 블로그 탭이 서로 다르다. 일관성을 지킬 필요가 있다.\n- main 화면에서 GnB 컨텐츠 폭과 메인 컨텐츠 섹션의 폭이 서로 다르다. 일관성을 지킬 필요가 있다.",
+      "short": "",
+      "purpose": "",
+      "reason": "",
+      "goal": "",
+      "memo": ""
+    },
     {
       "seq": 270,
       "t": "2026-08-19T09:09",
@@ -1327,25 +1385,6 @@
       "title": "글지도에 데코를 반영하기 위한 계획을 수립해라.",
       "memo": "",
       "verbatim": ""
-    },
-    {
-      "seq": 222,
-      "t": "2026-07-30T01:41",
-      "a": "ai",
-      "id": "KAN-057",
-      "op": "edit",
-      "field": "memo",
-      "before": "부품·패턴·쇼케이스(/design/deco)는 자산화 완료 — 남은 건 실제 페이지에 얹는 일. 페이지별 강도(data-deco 1~5)를 정하고 해당 페이지에서만 src/styles/deco.css 를 import 한다(전역 금지 — opt-in 계약). 적용 후보: ① 홈 히어로를 P-02 HeroCollage 로 교체(지금 구워진 public/tony-deco.webp 를 대체해 말풍선이 텍스트가 됨 = 효과 최대) ② 홈·목록 섹션 머리에 P-06 DecoHeading + 최신 글 1건에만 P-07 도장 ③ 목록 필터 카드에 P-03 ClippedCard ④ 글 상세 인용 P-04 / 코드블록 P-05 / 시리즈 하단 P-08 ⑤ 글 지도 판에 P-01 TapedBoard. 주의: PostList 에 이미 시리즈 테이프(.series-tape)가 있어 목록에 테이프를 더 얹으면 중복이므로 그 자리는 피한다. 배치·접근성 규칙은 design-concept/DECO_KIT.md 5·6절.",
-      "after": "완료 — 네 지면에 얹음(강도: 홈 4, 나머지 3). 홈: P-02 HeroCollage 로 구운 tony-deco.webp 대체 + P-06 탭 배지·BAKED FRESH 테이프 + P-07 NEW 도장. 목록: P-06 리본(전부 N편) + P-03 필터 클립 카드 + P-07 도장(시리즈 테이프를 피해 top:34px, 768px 이하 접음). 글 상세: MDX components 매핑으로 blockquote→P-04 / pre→P-05 자동 치환(src/components/deco/mdx/), 시리즈 글 하단 P-08 티켓+손글씨(+마지막 편이면 완결 도장). 지도: P-01 TapedBoard + MAP·N편 인덱스 탭을 얹었다가 **되돌림** — 지도 개편이 다른 브랜치에서 진행 중이라 graph.astro 를 양쪽에서 고치면 충돌한다(개편 착지 후 재적용, 근거는 7절). 새로 얻은 규칙 3개를 DECO_KIT 5절에 추가(부품끼리 자리 다툼 / 겹치는 자리엔 hover=false / 되풀이 요소엔 첫 하나에만) + 7절에 적용 현황표. /categories·폭신 대담은 의도적으로 제외(이유는 7절). 시안 카탈로그 갱신분(D7~D9 낙서 두들 · W1~W2 걸이줄·집게)을 부품·토큰·쇼케이스에 반영하고, 히어로 콜라주의 두들 층을 그 부품으로 다시 설계했다(임시 &hearts; 글리프 둘 + 반쪽 D5 속도선 → D7 하트·D8 번개·D9 보리, 티어 4/4/3). **두들이 시안과 딴 그림이던 것을 고쳤다** — 시안의 두들은 하나도 예외 없이 feTurbulence 를 지고 있는데(칠 om-crayon/-dense, 두른 선 om-ink, 가는 펜은 .rgh → om-ink-fine) \"래스터를 다시 굽는 비용\"이라며 넷을 다 빼고 색까지 color-mix 로 코어에 환산해 들여왔던 탓에, path 는 같은데 크레용이 매끈한 벡터 아이콘이 되어 있었다. 필터를 CrayonFilters.astro 로 그대로 들이고(id 는 인스턴스마다 유일 + 정의를 부품 안에 동봉 — 없는 id 를 가리킨 SVG 는 아예 안 그려지므로), 크레용 색을 시안 hex 그대로 --deco-crayon-* 로 되돌렸다. D1·D2 는 시안대로 HTML+CSS filter 유지(SVG 로 옮기면 scale 이 viewBox 단위가 되어 결이 3배 잘게 갈린다), D4 물결은 viewBox 를 시안의 140×12 로 맞춰 산 간격을 되찾았다. 시안 카탈로그의 이름 스티커 S7~S9 도 부품으로 들였다(name-plate 명찰 · name-pill 배지 · name-blank 빈 서식 — 셋이 담는 말은 같고 \"인쇄된 것 / 붙인 것 / 아직 안 적은 것\"으로 격이 갈린다). 손글씨는 D10~D12 와 같은 ×0.88 환산, 활자(Space Mono)는 같은 폰트라 시안 값 그대로, 기울기는 쓰는 쪽에서. 지면에는 안 얹었다 — W1~W2·D10~D12 와 같은 재고 취급(7절)."
-    },
-    {
-      "seq": 221,
-      "t": "2026-07-30T01:41",
-      "a": "ai",
-      "id": "KAN-057",
-      "op": "move",
-      "from": "todo",
-      "to": "done"
     }
   ],
   "layout": 2
