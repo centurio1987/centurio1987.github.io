@@ -89,7 +89,7 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 ## 실행 계획
 <!-- `S<n>`은 고정 id — 이름을 바꾸지 않는다. 체크 상태는 doc-step 이 갱신한다. -->
 - [x] `S1` 판정기 회수 — 스크래치패드의 판정기와 출력 JSON 을 레포로 옮긴다
-- [ ] `S2` 스켈레톤 — 레포 게이트 규약대로 `scripts/verify-tokens.ts` 를 세운다
+- [x] `S2` 스켈레톤 — 레포 게이트 규약대로 `scripts/verify-tokens.ts` 를 세운다
 - [ ] `S3` 색·radius·선굵기 축 포팅 — 대조 상대는 `tokens.css` 하나
 - [ ] `S4` fallback 축 포팅 — `var(--x, fb)` 108자리
 - [ ] `S5` 문서 축 포팅 + 축 재분류 — 간격을 spacing/dimension/position 셋으로
@@ -157,3 +157,6 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 - 2026-08-25T00:23 · s:9eba7c52 — `전략` 섹션 교체
 - 2026-08-25T00:32 · s:9eba7c52 · S1 doing — 착수
 - 2026-08-25T00:32 · s:9eba7c52 · S1 done — 판정기·출력 JSON·중간 판정 기록 19개 + README 를 scripts/fixtures/tokens/reference/ 로 회수. 원본과 바이트 동일, 출력 sha256 4/4 검토서 값과 일치. 감사 부록 A 의 s3-scan 해시 76ec13fd 는 S3 시점 값이라 낡음 — 실제는 e5e69a55331207dc, 정정은 S5 로 넘긴다
+- 2026-08-25T01:32 · s:9eba7c52 · S2 doing — 착수
+- 2026-08-25T01:37 · s:9eba7c52 — S2 측정: AUTO-GENERATED 41파일의 히트가 0건이다 — 게이트 정규식이 그 파일들에서 시각 값을 하나도 안 읽는다(패키지 컴포넌트 래퍼라 값이 패키지 쪽에 있다). 제외 규칙은 유지하되 실효는 motion.css 3 + viz.css 12 뿐이다. 좌표 228개 위험은 게이트가 아니라 KAN-072.5 의 간격 코드모드 쪽 이야기다
+- 2026-08-25T01:37 · s:9eba7c52 · S2 done — 진입점 verify-tokens.ts + 축 모듈 셋 골격 + 공통 추출층(extract.ts) + 타입 계약(types.ts). s3-scan.py 를 그대로 이식해 **감사와 히트 단위 차집합 0**(3,539건, axis·kind·prop·value·file:line·src 여섯 쪽 일치, kind 분포도 literal_new 2634 / token 858 / literal_dup 47 동일). 축 모듈은 판정만 하고 규약은 진입점이 진다. tsc 통과
