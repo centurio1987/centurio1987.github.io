@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 284,
+  "next_seq": 285,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -908,6 +908,27 @@
       "memo": "신설: 종이흰색 · --stroke-hair 1px(2단) · --state-bad/ok/warn/info(초기값=현 카테고리 색, 화면 변화 0) · --space-* · --text-*. DESIGN_CONCEPT 8절에 선굵기와 50% 허용값을 적는다",
       "memo_hash": "cb938dfe2b58e50668b78802dc4c9959aa402dba",
       "parent": "KAN-072-CPJCT1"
+    },
+    "KAN-072.3-SC3ADV": {
+      "col": "backlog",
+      "title": "축 재분류 — 간격 위반 821건을 간격·치수·위치 셋으로 가른다 (판정만)",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-08-25",
+      "title_hash": "f87ca7388f3ee4b482abef09b9ab4bdd14f83cd5",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "short": "축 재분류",
+      "short_hash": "630096eb093f301ef73e3e3ab73d9ba25c955ec3",
+      "purpose": "DESIGN_CONCEPT 9절이 실제로 다스리는 범위만 남기고 나머지를 관할 밖으로 내린다",
+      "purpose_hash": "264fd499ea971c9327d23943d52dd86438c1c100",
+      "reason": "감사의 간격 축 정의에 width·height·top·left 가 섞여 있는데 9절은 여백 규칙이지 치수나 좌표 규칙이 아니다",
+      "reason_hash": "43c417eb85046652b837f011cbb79dc769d6537e",
+      "goal": "치수·위치가 위반 목록에서 빠지고 감사 문서 3-5절 수치가 새 축 정의로 고쳐진다",
+      "goal_hash": "423e6343e9cf689bf05a6363fdbfe767418b86bc",
+      "memo": "코드 변경 0 — 판정 규칙만 바꾼다. 위치 축 상위 파일이 전부 데코 실측 좌표(deco.astro 26 · PhotoFrame 23)라 스냅을 돌리면 조용히 깨진다. 정확한 수는 판정기 이식 뒤 확정(검토자 572·내 재계산 574로 갈린다)",
+      "memo_hash": "a555cafd4721eb9cc9eaf80f4dbd652810644d73",
+      "parent": "KAN-072-CPJCT1"
     }
   },
   "order": [
@@ -980,9 +1001,27 @@
     "KAN-071-6361MY",
     "KAN-072-CPJCT1",
     "KAN-072.1-5XC1AT",
-    "KAN-072.2-BF75X5"
+    "KAN-072.2-BF75X5",
+    "KAN-072.3-SC3ADV"
   ],
   "recent": [
+    {
+      "seq": 284,
+      "t": "2026-08-25T00:12",
+      "a": "ai",
+      "id": "KAN-072.3-SC3ADV",
+      "op": "create",
+      "w": "WTCH92",
+      "col": "backlog",
+      "title": "축 재분류 — 간격 위반 821건을 간격·치수·위치 셋으로 가른다 (판정만)",
+      "verbatim": "",
+      "parent": "KAN-072-CPJCT1",
+      "short": "축 재분류",
+      "purpose": "DESIGN_CONCEPT 9절이 실제로 다스리는 범위만 남기고 나머지를 관할 밖으로 내린다",
+      "reason": "감사의 간격 축 정의에 width·height·top·left 가 섞여 있는데 9절은 여백 규칙이지 치수나 좌표 규칙이 아니다",
+      "goal": "치수·위치가 위반 목록에서 빠지고 감사 문서 3-5절 수치가 새 축 정의로 고쳐진다",
+      "memo": "코드 변경 0 — 판정 규칙만 바꾼다. 위치 축 상위 파일이 전부 데코 실측 좌표(deco.astro 26 · PhotoFrame 23)라 스냅을 돌리면 조용히 깨진다. 정확한 수는 판정기 이식 뒤 확정(검토자 572·내 재계산 574로 갈린다)"
+    },
     {
       "seq": 283,
       "t": "2026-08-25T00:11",
@@ -1533,16 +1572,6 @@
       "field": "memo",
       "before": "",
       "after": "배포 환경(GitHub Pages)에서 더 두드러진다는 유저 관찰. 두 갈래로 구상한다 — ① 성능: 로딩 우선순위(fetchpriority·preload)·lazy 경계·포맷/용량·치수 예약 ② UX: fallback loading·플레이스홀더 등 늦게 떠도 덜 불쾌하게 만드는 장치. 착수 시 현행부터 잴 것 — 홈(/)이 지금 이미지 7장(히어로 다이컷 ×2 · /tony-face.webp · 푸터 저자 라인업 4장)을 싣고 그중 5장이 loading=lazy 다. 푸터 라인업은 모든 페이지에 있으므로 홈만의 문제가 아닐 수 있다."
-    },
-    {
-      "seq": 234,
-      "t": "2026-07-31T14:09",
-      "a": "ai",
-      "id": "KAN-059",
-      "op": "edit",
-      "field": "title",
-      "before": "메인 화면의 이미지가 다른 요소들보다 늦게 뜨는 경우, 사용자 경험이 불쾌해진다. 배포 환경에선 늦게 뜨는 현상이 잘 나타난다. 이를 해소하기 위해 성능 측면에서의 전략과 ux 측면 전략(fallback loading 이라던가)을 구상하라.",
-      "after": "메인 화면 이미지가 늦게 뜨는 문제 — 성능·UX 전략 구상"
     }
   ],
   "layout": 2
