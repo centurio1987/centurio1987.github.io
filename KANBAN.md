@@ -66,7 +66,7 @@
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
 - `KAN-068-5KMRV8` UI QA — 생성:유저 · 최종:ai · 갱신:2026-08-24
-  - 실행 문서: KANBAN.cards/KAN-068-5KMRV8.md (3/5 · 최근 08-24)
+  - 실행 문서: KANBAN.cards/KAN-068-5KMRV8.md (5/5 · 최근 08-24)
   - 원문:
     ```text
     UI QA

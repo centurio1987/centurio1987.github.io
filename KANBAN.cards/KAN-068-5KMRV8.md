@@ -74,11 +74,11 @@ scope: src/styles/tokens.css, src/layouts/BaseLayout.astro, src/components/Heade
       `graph.astro:410`(`.graph-page`)의 `960px` → `var(--wide-max)`, `width="wide"`.
       완료 기준: `/graph`에서 셸·콘텐츠 폭이 1100px로 같다. 그래프 캔버스가 1100px에서
       노드 겹침·클리핑 없이 그려진다(실측). `deco:verify` 통과.
-- [ ] `S4` 푸터 저자 라인업 1100px 회귀 확인
+- [x] `S4` 푸터 저자 라인업 1100px 회귀 확인
       넓은 판 두 지면(`/`·`/graph`)에서 푸터 라인업 칸이 벌어지는지 잰다. 벌어지면
       `AuthorLineup`에만 현행 렌더 폭 상한을 주고 중앙 정렬한다(셸 폭은 안 되돌린다).
       완료 기준: 넓은 판과 읽는 판에서 저자 컷아웃의 렌더 크기가 같다. `deco:verify` 통과.
-- [ ] `S5` 정본 반영 + 재발 그물
+- [x] `S5` 정본 반영 + 재발 그물
       `DESIGN_CONCEPT.md`에 「폭 체계」 절 추가 — 읽는 판 720 / 넓은 판 1100 / 셸은 지면을
       따른다 / **페이지 컨테이너에 px 하드코딩 금지**. 지면별 표를 함께 싣는다.
       완료 기준: 절이 문서에 있고, `grep -rnE 'max-width: *[0-9]{3,}px' src/ | grep -v
@@ -88,43 +88,56 @@ scope: src/styles/tokens.css, src/layouts/BaseLayout.astro, src/components/Heade
 <!-- 무엇을 실행해 무엇이 나오면 이 카드가 끝난 것인가. -->
 아래 넷이 전부 초록이면 끝난 것이다.
 
-**1. 빌드·게이트 회귀 없음**
+**1. 지면 안에서 셸과 본문 폭이 같다 (지적 2) — 이것이 정본 판정이다**
+
+```bash
+bun run width:verify
+```
+
+`scripts/verify-widths.ts` 가 지면마다 `.header-inner` · 페이지 컨테이너 · `.footer-inner` 의
+렌더 폭을 재서 셋이 한 값인지 본다. **어느 값이어야 하는지는 안 본다** — 홈 1100 과 글 목록 720 은
+설계대로 다르고, 판정하는 것은 지면 안의 일치다. 비0 이면 그 화면은 못 나간다.
+
+기대:
+
+| 지면 | 기대 |
+| --- | --- |
+| `/` · `/graph` | 셋 다 **1100** |
+| `/posts` · `/404` · 글 상세 | 셋 다 **720** |
+
+**눈으로 하지 않는 이유**는 역검증으로 확인했다 — `graph.astro` 에서 `width="wide"` 만 떼면
+CSS 에 숫자가 없어 grep 은 0건인데 `width:verify` 는 `header-inner=720 · graph-page=1100` 으로
+잡는다. 홈과 글 지도가 어긋난 채 오래 남아 있던 것이 정확히 이 방향이다.
+
+**2. 빌드·기존 게이트 회귀 없음**
 
 ```bash
 bun run build
 bun run deco:verify
 bun run viz:verify
+bun scripts/check-emphasis.ts && bun scripts/check-emphasis.ts --dist
+bun scripts/check-post-markers.ts
 ```
 
-**2. 페이지 컨테이너 하드코딩 0건**
+**3. 페이지 컨테이너 하드코딩 0건 (보조 검색)**
 
 ```bash
-grep -rnE 'max-width: *[0-9]{3,}px' src/ | grep -v 'src/pages/design/'
+grep -rnE 'max-width: *[0-9]{3,}px' src/ | grep -v 'src/pages/design/' | grep -v '@media'
 ```
 
-`.hero-inner`·`.recent`·`.graph-page`·`.header-inner`·`.footer-inner`가 한 건도 안 나와야 한다.
-컴포넌트 내부 상한(`AuthorProfile` 440px · `TalkLayout` 화자 카드 520px · 히어로 이미지 380/500px)은
-페이지 컨테이너가 아니므로 대상이 아니다.
+`.hero-inner` · `.recent` · `.graph-page` · `.header-inner` · `.footer-inner` 가 한 건도
+안 나와야 한다. 남는 것은 컴포넌트 내부 상한뿐이며 대상이 아니다 — `AuthorProfile` 440px ·
+글 삽화 `Shot` 562px · `TalkLayout` 화자 카드 520px · 홈 히어로 이미지 380/500px.
 
-**3. 지면 안에서 셸과 콘텐츠 폭이 같다 (지적 2)**
+**4. 푸터 저자 라인업이 판 폭에 안 끌려간다**
 
-`bun run preview`로 띄우고 지면마다 콘솔에서 잰다.
+넓은 판(`/` · `/graph`)과 읽는 판(`/posts` · `/404`)에서 라인업 판 폭과 액자 사이 간격이 같아야
+한다. 실측 기대값은 판 624px · 액자 102×117 · 액자 사이 54px 이다(뷰포트 1440·1024 둘 다).
 
-```js
-[...document.querySelectorAll('.header-inner, .hero-inner, .recent, .graph-page, .post-page, .footer-inner')]
-  .map(el => [el.className, Math.round(el.getBoundingClientRect().width)])
-```
+**5. 정본에 규칙이 있다**
 
-| 지면 | 기대 |
-| --- | --- |
-| `/` · `/graph` | 셋 다 **1100** |
-| `/posts` · `/categories/<slug>` · 글 상세 · 대담 · `/404` | 셋 다 **720** |
-
-홈이 1100이고 `/posts`가 720인 것은 설계대로다 — 지적 1은 값이 아니라 규칙으로 해결한다(전략 절).
-
-**4. 기본값이 무해하다**
-
-`width` prop을 안 넘긴 지면 8곳의 렌더 폭이 변경 전과 같다(720px). `--shell-max` 폴백이 그 보증이다.
+`design-concept/DESIGN_CONCEPT.md` 「6. 레이아웃 → 폭 체계」 절에 읽는 판/넓은 판 표, 배선 셋,
+푸터 라인업 예외, 그리고 `width:verify` 가 판정한다는 사실이 적혀 있다.
 
 ## 수행 내역
 <!-- KANBAN:LOG append-only — 아래로만 덧붙인다. 위를 고치지 않는다. -->
@@ -137,3 +150,8 @@ grep -rnE 'max-width: *[0-9]{3,}px' src/ | grep -v 'src/pages/design/'
 - 2026-08-24T16:18 · s:a25c9233 · S2 done — index.astro 의 1100px 2곳을 var(--wide-max) 로, BaseLayout 에 width=wide. 실측: / 의 header-inner·hero-inner·recent·footer-inner 가 모두 1100px 로 일치(지적 2 해결). deco:verify 50회 통과, 읽는 판 4지면 720px 무변화
 - 2026-08-24T16:19 · s:a25c9233 · S3 doing — 착수
 - 2026-08-24T16:22 · s:a25c9233 · S3 done — graph.astro 의 960px 을 var(--wide-max) 로, BaseLayout width=wide. 실측: /graph 의 header-inner·graph-page·footer-inner 모두 1100px. 지도는 viewBox 좌표계라 그림째 확대 — 겹침·클리핑·가로 넘침 0(스크린샷 확인). deco:verify 50회 통과. 폭 종류가 720·960·1100 셋에서 둘로 줄었다
+- 2026-08-24T16:25 · s:a25c9233 · S4 doing — 착수
+- 2026-08-24T16:27 · s:a25c9233 · S4 done — 회귀 확인됨 — 액자는 14vw clamp 라 102x117 로 같았지만 판이 624->1004 로 늘어 액자 사이가 54->149px, --sag 가 px 고정이라 처짐이 밋밋해졌다. 셸은 그대로 두고 .author-lineup 에만 max-width: calc(var(--content-max) - var(--page-pad)*2) 를 줬다(px 하드코딩 대신 토큰). 결과: 넓은 판/읽는 판 네 지면 모두 판=624 액자사이=54 로 동일, deco:verify 통과
+- 2026-08-24T16:27 · s:a25c9233 · S5 doing — 착수
+- 2026-08-24T16:33 · s:a25c9233 — `검증` 섹션 교체
+- 2026-08-24T16:33 · s:a25c9233 · S5 done — DESIGN_CONCEPT.md 6절 맨 앞에 「폭 체계」 신설(읽는 판/넓은 판 표 · 배선 셋 · 라인업 예외 · 통일안을 버린 근거). 재발 그물은 문서가 아니라 게이트로 — scripts/verify-widths.ts + bun run width:verify 신설, 역검증(width=wide 제거)에서 grep 0건인데 게이트는 FAIL 로 잡는 것 확인. 카드 검증 절도 갱신
