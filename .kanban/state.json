@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 287,
+  "next_seq": 288,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -971,6 +971,27 @@
       "memo": "9절에 16px 아래 2px 반 단을 넣어 330건(57%)을 화면 변화 0 으로 흡수한다. 동률이 56%라 최근접만으로는 273자리를 일제히 조인다. 구획 순서는 카탈로그·공용 → 데코·레이아웃 → posts(176건, C4 와 한 배치)",
       "memo_hash": "2844080db22a3cf118651049412521e737c700d1",
       "parent": "KAN-072-CPJCT1"
+    },
+    "KAN-072.6-2YYK6V": {
+      "col": "backlog",
+      "title": "제2 팔레트 정리 — 글 안 시뮬 389 · 마스코트 28 · 카탈로그/데코/viz 103",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-08-25",
+      "title_hash": "b61c5949d26caf81150dae69edfde72434749205",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "short": "제2 팔레트 정리",
+      "short_hash": "b21f73d5847b84c3a8201c8fdd764215d6ac83aa",
+      "purpose": "사이트 잉크와 계열이 다른 두 번째 팔레트를 걷어 한 벌로 만든다",
+      "purpose_hash": "af47410b23caef45c3582bb852fe7a08cf47899e",
+      "reason": "준수율 3.6% 구획이 본문 잉크를 코발트 남색이 아닌 따뜻한 먹색으로 쓰고 있어 같은 화면에 두 잉크가 선다",
+      "reason_hash": "368d6f5db53c09d3fabf7e744c68e1adf4396bfe",
+      "goal": "구획 준수율이 회복되고, 해당 글을 preview 로 열어 시뮬이 정상 동작하는 것이 확인된다",
+      "goal_hash": "f71045ff64d394f542324eb4129dfff574ade8a9",
+      "memo": "따뜻한 회색 4종은 흡수하고 상태 역할 5종은 C2 의 --state-* 로 간다. --sim-* 전용 층은 안 만든다(deco.css 1-33행의 조건 2를 못 넘는다). 매핑표는 코드모드 변환표이지 레포 파일이 아니다 — posts 자급식 원칙(REACT_SIM_GUIDE.md:10). 마스코트 28은 치환이 아니라 팔레트를 DESIGN_CONCEPT 7절에 적는 일이다",
+      "memo_hash": "88b7f080621300e41919d08238b01b2105943034",
+      "parent": "KAN-072-CPJCT1"
     }
   },
   "order": [
@@ -1046,9 +1067,27 @@
     "KAN-072.2-BF75X5",
     "KAN-072.3-SC3ADV",
     "KAN-072.4-GJ9M4N",
-    "KAN-072.5-WQV1KT"
+    "KAN-072.5-WQV1KT",
+    "KAN-072.6-2YYK6V"
   ],
   "recent": [
+    {
+      "seq": 287,
+      "t": "2026-08-25T00:14",
+      "a": "ai",
+      "id": "KAN-072.6-2YYK6V",
+      "op": "create",
+      "w": "WTCH92",
+      "col": "backlog",
+      "title": "제2 팔레트 정리 — 글 안 시뮬 389 · 마스코트 28 · 카탈로그/데코/viz 103",
+      "verbatim": "",
+      "parent": "KAN-072-CPJCT1",
+      "short": "제2 팔레트 정리",
+      "purpose": "사이트 잉크와 계열이 다른 두 번째 팔레트를 걷어 한 벌로 만든다",
+      "reason": "준수율 3.6% 구획이 본문 잉크를 코발트 남색이 아닌 따뜻한 먹색으로 쓰고 있어 같은 화면에 두 잉크가 선다",
+      "goal": "구획 준수율이 회복되고, 해당 글을 preview 로 열어 시뮬이 정상 동작하는 것이 확인된다",
+      "memo": "따뜻한 회색 4종은 흡수하고 상태 역할 5종은 C2 의 --state-* 로 간다. --sim-* 전용 층은 안 만든다(deco.css 1-33행의 조건 2를 못 넘는다). 매핑표는 코드모드 변환표이지 레포 파일이 아니다 — posts 자급식 원칙(REACT_SIM_GUIDE.md:10). 마스코트 28은 치환이 아니라 팔레트를 DESIGN_CONCEPT 7절에 적는 일이다"
+    },
     {
       "seq": 286,
       "t": "2026-08-25T00:14",
@@ -1620,16 +1659,6 @@
       "op": "move",
       "from": "backlog",
       "to": "done"
-    },
-    {
-      "seq": 237,
-      "t": "2026-07-31T15:42",
-      "a": "ai",
-      "id": "KAN-059",
-      "op": "edit",
-      "field": "memo",
-      "before": "배포 환경(GitHub Pages)에서 더 두드러진다는 유저 관찰. 두 갈래로 구상한다 — ① 성능: 로딩 우선순위(fetchpriority·preload)·lazy 경계·포맷/용량·치수 예약 ② UX: fallback loading·플레이스홀더 등 늦게 떠도 덜 불쾌하게 만드는 장치. 착수 시 현행부터 잴 것 — 홈(/)이 지금 이미지 7장(히어로 다이컷 ×2 · /tony-face.webp · 푸터 저자 라인업 4장)을 싣고 그중 5장이 loading=lazy 다. 푸터 라인업은 모든 페이지에 있으므로 홈만의 문제가 아닐 수 있다.",
-      "after": "수행 완료. 원인=폰트와의 회선 다툼(한국어 웹폰트 3종 서브셋 30여 개 ~530KB가 VeryHigh로 회선 독점) → 이미지가 그 뒤에 줄 섬. ① 성능: 히어로 다이컷 preload를 폰트 스타일시트 **앞**에(BaseLayout preloadImages prop) · 다이컷 재인코딩 q86→75로 78→45KB(-42%, 알파 무손실 동일) · 헤더 로고 fetchpriority=high(Low→High) · 첫 화면 폴라로이드 loading=lazy 제거. ② UX: [data-imgwait] 도착 대기 계약(motion.css + BaseLayout 인라인 스크립트) — 화면 밖 푸터 저자 라인업에만 적용, 무JS·reduced-motion·404·무한지연 5케이스 검증. 실측(Playwright, CPU 4×): Slow 3G LCP 7260→3356ms(-54%)로 마스코트가 첫 페인트에 포함 → \"데코만 그려지고 주인공만 없는\" 약 4초 구간 소멸. Fast 3G LCP 1080→1008ms. 총 전송 830→798KB, 이미지 128→95KB, CLS 0.0005 유지. 굳힌 판단: data-imgwait를 LCP 요소에 걸지 마라 — 히어로에 걸었더니 같은 빌드에서 LCP가 1032·1748·2760ms로 흔들려 되돌렸다. 남은 별건(별도 카드감): 웹폰트 ~530KB와 홈 React 아일랜드 JS ~130KB의 회선 점유."
     }
   ],
   "layout": 2
