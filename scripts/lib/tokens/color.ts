@@ -196,9 +196,12 @@ export const color: AxisModule = {
       const k = `${axis} / ${v}`;
       tally.set(k, (tally.get(k) ?? 0) + 1);
     };
-    const emit = (hit: Hit, axis: string, verdict: Verdict["verdict"], reason: string) => {
-      verdicts.push({ hit, verdict, reason });
-      count(axis, verdict);
+    // 1차 이름을 받아 최종 판정을 접는다 — `측정 제외` 는 물을 수가 없어 `판정 불가` 다.
+    // 집계는 1차 이름으로 센다(`s4-classify.json` 의 by_axis_verdict 와 그것으로 대조한다).
+    const emit = (hit: Hit, axis: string, auditLabel: Verdict["auditLabel"], reason: string) => {
+      const verdict: Verdict["verdict"] = auditLabel === "측정 제외" ? "판정 불가" : auditLabel;
+      verdicts.push({ hit, verdict, auditLabel, reason });
+      count(axis, auditLabel);
     };
 
     for (const hit of ctx.hits) {
@@ -246,7 +249,7 @@ export const color: AxisModule = {
     const noise = tally.get("잡음 / 측정 제외") ?? 0;
     if (noise) {
       notes.push(`잡음 ${noise}건은 위반이 아니라 측정 제외다 — 색 축 shorthand 에 섞인 비색 값이라` +
-                 ` 대조할 토큰이 없다(Verdict 갈래에 그 이름이 없어 「판정 불가」로 적는다)`);
+                 ` 대조할 토큰이 없다(1차 이름은 「측정 제외」이고 최종 판정은 물을 수가 없어 「판정 불가」다)`);
     }
 
     return {

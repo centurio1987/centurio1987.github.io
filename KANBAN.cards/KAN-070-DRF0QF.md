@@ -92,7 +92,7 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 - [x] `S2` 스켈레톤 — 레포 게이트 규약대로 `scripts/verify-tokens.ts` 를 세운다
 - [x] `S3` 색·radius·선굵기 축 포팅 — 대조 상대는 `tokens.css` 하나
 - [x] `S4` fallback 축 포팅 — `var(--x, fb)` 108자리
-- [ ] `S5` 문서 축 포팅 + 축 재분류 — 간격을 spacing/dimension/position 셋으로
+- [x] `S5` 문서 축 포팅 + 축 재분류 — 간격을 spacing/dimension/position 셋으로
 - [ ] `S6` 자가검사 — 축마다 고장 픽스처
 - [ ] `S7` 래칫 + 베이스라인 — `--update-baseline`
 - [ ] `S8` 배선 — `package.json` 의 `tokens:verify` 와 CI 스텝
@@ -167,3 +167,6 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 - 2026-08-25T01:52 · s:9eba7c52 · S4 doing — 착수
 - 2026-08-25T01:52 · s:9eba7c52 · S4 done — var(--x, fallback) 108자리 이식. s4-fallback.json 과 히트 단위 차집합 0 — 일치 42 · 불일치 23(살아있는 4 · 죽은 19) · 제외 43(스위치 15 + 지역변수 28). 살아있는 넷은 Doodle.astro:319,325,390 과 frame-picks.astro:330. 적재 사슬(BaseLayout→global.css→@import)을 실제로 따라가 살아있음/죽음을 판정하므로 deco.css 를 전역으로 올리면 판정이 저절로 따라온다
 - 2026-08-25T01:52 · s:9eba7c52 — S3·S4 가 같은 곳에 걸렸다 — types.ts 의 판정 union 이 감사 taxonomy 를 못 담았다. 감사는 이름을 두 층으로 쓴다(1차 s4-classify 여섯 · 롤업 다섯). 토큰 미존재 1977 이 중간 판정이고 docrule 이 문서 규칙으로 셋으로 가른다(문서 안 445 준수 · 문서 밖 987 위반 · 규칙 없음 545 판정 불가). union 을 1차 이름으로 확장하고 근거를 타입 주석에 박았다
+- 2026-08-25T01:59 · s:9eba7c52 · S5 doing — 착수
+- 2026-08-25T01:59 · s:9eba7c52 · S5 done — 문서 축 이식 + 축 재분류. 옛 정의로 간격 821·글자 166 을 히트 단위까지 재현하고, 새 정의로 여백 572 · 치수 235 · 위치 172 로 갈랐다. 위치 상위 파일이 deco.astro(26)·PhotoFrame(23)·viz-frame(12) 로 deco-kit 이 못박은 실측 좌표 파일 셋과 그대로 겹친다. 감사 문서 정정 9곳을 목록으로 냈고(문서는 안 고쳤다), clamp 끝값 14건이 글자 위반으로 세어지는 원본 결함은 재현을 위해 그대로 두고 판단 항목으로 올린다
+- 2026-08-25T01:59 · s:9eba7c52 — 배치3 종료 검증: color 1,306 + docrule 2,233 = 3,539 로 감사 rows 전량과 auditLabel 기준 차집합 0. fallback 은 별도 참조(s4-fallback.json) 108자리 차집합 0. 판정을 두 층으로 갈랐다 — verdict(최종, 게이트가 무는 값) / auditLabel(1차, 감사 대조용). 한 필드로 뭉치면 docrule 의 롤업과 color 의 1차 이름이 같은 자리에 섞여 S7 베이스라인이 조용히 틀린 수를 낸다

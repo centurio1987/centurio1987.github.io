@@ -244,26 +244,28 @@ export const fallback: AxisModule = {
     }
     sites.sort((a, b) => (a.file === b.file ? a.line - b.line : a.file < b.file ? -1 : 1));
 
+    // 이 축은 `s4-classify.json` 에 안 들어간다(자체 참조는 `s4-fallback.json`).
+    // 감사가 이 자리에 1차/롤업을 따로 두지 않았으므로 두 층이 같다.
     const verdicts: Verdict[] = sites.map((s) => {
       const axis = ctx.dict.byName.get(s.name)?.axis ?? "other";
       const hit = toHit(s, axis);
       if (s.klass === OFF_SWITCH) {
-        return { hit, verdict: "판정 불가",
+        return { hit, verdict: "판정 불가", auditLabel: "판정 불가",
                  reason: `${OFF_SWITCH} — 선택자마다 다시 정의되는 스위치라 fallback 이 값이 아니라 기본 상태다.` };
       }
       if (s.klass === OFF_LOCAL) {
-        return { hit, verdict: "판정 불가",
+        return { hit, verdict: "판정 불가", auditLabel: "판정 불가",
                  reason: `${OFF_LOCAL} — src/styles/*.css 의 :root 에 없는 이름이라 대조할 정본 값이 없다.` };
       }
       const where = `${s.name} = ${s.tokenValue} (${s.tokenAt})`;
       if (s.klass === "일치") {
-        return { hit, verdict: "준수", reason: `fallback 이 토큰 값과 같다 — ${where}.` };
+        return { hit, verdict: "준수", auditLabel: "준수", reason: `fallback 이 토큰 값과 같다 — ${where}.` };
       }
       const gap = `fallback ${s.fallback} ≠ ${where}`;
       return s.live
-        ? { hit, verdict: "위반",
+        ? { hit, verdict: "위반", auditLabel: "위반",
             reason: `${gap}. 정의가 항상 적재되는 스타일시트에 없어 그 파일을 안 들여온 지면에서 이 fallback 이 실제로 뜬다 — 살아있는 드리프트다.` }
-        : { hit, verdict: "드리프트",
+        : { hit, verdict: "드리프트", auditLabel: "드리프트",
             reason: `${gap}. 정의가 ${def0(s)} 에 있어 전 페이지에 항상 적재된다 — 이 fallback 은 안 뜬다(죽은 값).` };
     });
 
