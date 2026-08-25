@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- kanban-fp:126479bef936259cf83b47b5e92767cfab5919b6 -->
+<!-- kanban-fp:1f738d31cd597b24ced4e5512ea02f81e7bdcaf8 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KAN-070-DRF0QF 검토 요청</title>
 <style>
@@ -495,7 +495,7 @@ textarea { line-height: 1.6; resize: vertical; }
 .tray li.rs-no span.rs-i { color: var(--danger); }
 
 /* ─── 모드 질감 — 문구가 아니라 손끝으로 갈린다 ──────────────────────────────
- * 정적으로 연 화면과 `--serve` 로 연 화면이 문구 한 줄로만 구별됐다(의뢰서 §6-5).
+ * 정적으로 연 화면과 서버가 내준 화면이 문구 한 줄로만 구별됐다(의뢰서 §6-5).
  * 「새 색을 만들지 않는다」(§4.4·§7)를 지키면서 가를 방법은 **같은 토큰의 질감**이다 —
  * 조작 자리(그린)가 serve 면 단색, 정적이면 45° 사선 해칭이다. 해칭은 CSS 그라디언트라
  * 외부 자산이 0건이고(§5-1), `var()` 두 개로만 쓰므로 다크에서 같이 뒤집힌다
@@ -587,26 +587,27 @@ textarea { line-height: 1.6; resize: vertical; }
 
 
 
+
 <div class="dh">
   <div class="dh-cv"><span class="meta">수렴</span>
-    <b>4<i> / </i>6</b>
-    <span class="dh-sub">남은 2</span></div>
+    <b>7<i> / </i>7</b>
+    <span class="dh-sub">살아있는 항목 전부 승인</span></div>
   <div class="dh-sep"></div>
   <div class="dh-rail">
     <div class="dh-rail-head"><span class="meta">항목 레일 — 누르면 그 항목으로</span>
-      <span class="meta">6칸</span></div>
-    <div class="rail"><a class="rail-c st-approved" href="#item-1" title="§3-1 승인 — 게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검토를 받는가">1</a><a class="rail-c st-rejected rail-cur" href="#item-2" title="§3-2 반려 — 게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 아니라 기준">2</a><a class="rail-c st-approved" href="#item-3" title="§3-3 승인 — 발행된 아티팩트가 낡았다 — 재발행할 것인가">3</a><a class="rail-c st-noted" href="#item-4" title="§3-4 추가 의견 — 게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 파일 관례에">4</a><a class="rail-c st-approved" href="#item-5" title="§3-5 승인 — 감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가">5</a><a class="rail-c st-approved" href="#item-6" title="§3-6 승인 — CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가">6</a></div>
+      <span class="meta">7칸</span></div>
+    <div class="rail"><a class="rail-c st-approved" href="#item-1" title="§3-1 승인 — 게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검토를 받는가">1</a><a class="rail-c st-approved" href="#item-2" title="§3-2 승인 — 게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 아니라 기준">2</a><a class="rail-c st-approved" href="#item-3" title="§3-3 승인 — 발행된 아티팩트가 낡았다 — 재발행할 것인가">3</a><a class="rail-c st-approved" href="#item-4" title="§3-4 승인 — 게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 파일 관례에">4</a><a class="rail-c st-approved" href="#item-5" title="§3-5 승인 — 감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가">5</a><a class="rail-c st-approved" href="#item-6" title="§3-6 승인 — CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가">6</a><a class="rail-c st-approved" href="#item-7" title="§3-7 승인 — 이 카드가 KAN-072 의 카드 문서를 고쳤다 — scope 이탈을 인">7</a></div>
   </div>
   <div class="dh-sep"></div>
   <div class="dh-act">
     <span class="tag tag-doing">검토 대기</span>
-    <a class="dh-next" href="#item-2">다음 미해결 &#9656; 2번</a></div>
+    </div>
 </div>
-<div class="dh-meta">변경 61파일 · +6943 −106 · 커밋 11 · 롤백 태그 14 · 추가 의견 6</div>
+<div class="dh-meta">변경 61파일 · +6943 −106 · 커밋 11 · 롤백 태그 14 · 추가 의견 9</div>
 
 
 
-<h2 class="h2-row">판단 항목 6<span class="meta">열린 것 2 · 닫힌 것 4</span></h2>
+<h2 class="h2-row">판단 항목 7<span class="meta">열린 것 0 · 닫힌 것 7</span></h2>
 <p class="note">번호는 의견 순서입니다. <b>의견마다 판정과 추가 의견이 따로 붙습니다</b> — 판정은 상태이고
 추가 의견은 말입니다. 승인/반려를 아직 안 정했어도 추가 의견만 달 수 있고, 반대로 의견 하나만 먼저 닫을 수도
 있습니다. <b>판정과 추가 의견, 의견 추가는 이 화면에서 바로 합니다</b> — 누른 것은 왼쪽 아래
@@ -628,7 +629,7 @@ python3 scripts/kanban.py review-item  &lt;project-root&gt; --card KAN-070-DRF0Q
   <select id="rv-by" style="width:auto"><option>유저</option><option>ai</option></select>
   <span class="meta">이 화면에서 내는 판정·추가 의견에 붙습니다 — 기본은 유저입니다</span>
 </div>
-<ol id="rv-list"><li id="item-1" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">1</span><span class="jd-title">게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검토를 받는가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 1</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>워크플로 트리거가 push: main 이라(.github/workflows/main.yml:3) 카드 브랜치를 밀어도 그 스텝이 안 돈다. 이 카드에서 확인한 것은 셋뿐이다 — 게이트 명령이 로컬에서 exit 0, YAML 들여쓰기가 형제 스텝 14개와 동일, 그리고 main 자체는 지금 초록(핫픽스 뒤 성공). 「CI 초록」이라는 완료 기준을 이 범위에서 만족한 것으로 볼지, 병합 후 첫 실행까지 카드를 열어 둘지가 갈림길이다</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-25</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-ns"><li><span class="meta">유저 · 2026-08-25</span> 그대로 검토</li></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="1"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="1" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li><li id="item-2" class="jd"><div class="jd-head"><span class="jd-num st-rejected">2</span><span class="jd-title">게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 아니라 기준이 둘이라는 설명으로 충분한가</span><span class="tag tag-danger">반려</span><span class="meta">판정 1 · 의견 2</span></div><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>기준선(scripts/tokens-baseline.json)은 위반 1305 · 드리프트 90 인데 감사 정본은 1304 · 71 이다. 이유는 둘 — 게이트는 제외분(생성물·복제물 15건)을 빼고 세고, fallback 축(위반 4 · 드리프트 19)을 함께 센다. fallback 은 감사에서 별도 파일(s4-fallback.json)로 갔던 축이라 §0 표에 안 들어가 있다. 근거는 scripts/lib/tokens/baseline.ts:12-24 주석이다. 같은 것을 두 기준으로 센 값이라 어느 쪽도 틀리지 않았지만, 숫자가 다르면 다음 사람이 먼저 의심하는 것은 게이트다</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-danger">반려</span><span><span class="meta">유저 · 2026-08-25</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 2</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-ns"><li><span class="meta">유저 · 2026-08-25</span> 이점이 있는게 아니면 굳이 기준이 둘 이면 관리가 어려울 것으로 보인다.</li><li><span class="meta">ai · 2026-08-25</span> 지적이 맞습니다. 기준을 하나로 접지는 못했지만 사람이 손으로 맞출 일은 없앴습니다. 접지 못하는 이유는 둘이 같은 것을 다르게 센 값이 아니라 서로 다른 것을 세기 때문입니다 — 감사는 그때 전수 스캔이 무엇을 봤나(고칠 수 없는 생성물의 리터럴까지 3,539건)이고, 래칫은 지금 고쳐야 할 것이 몇 개 남았나입니다. 게이트가 감사처럼 세면 아무도 못 고치는 값을 부채로 세게 되고, 감사가 게이트처럼 세면 그때 무엇을 봤는지가 기록에서 사라집니다. 대신 셋을 했습니다. ① 게이트가 두 수를 한 자리에서 함께 출력합니다 — &#x27;감사 기준 … 드리프트 71 · 위반 1304 · 정당한 예외 3 · 준수 1266 · 판정 불가 895&#x27; 가 감사 §0 표와 정확히 같고, 그 아래 줄이 래칫 기준입니다(scripts/verify-tokens.ts 의 두 notes). ② 감사 §0 에 &#x27;이 표는 기록이지 장부가 아니다 — 다시 고치지 않는다. 지금 남은 수는 bun run tokens:verify 가 낸다&#x27; 를 박았습니다. 이 카드에서 14곳을 고쳐야 했던 것이 바로 그 동결 선언이 없어서였습니다. ③ 왜 구성이 다른지를 scripts/lib/tokens/baseline.ts 의 auditBasis 주석에 남겼습니다. 관리 대상은 이제 하나입니다 — 게이트.</li></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="2"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="2" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></li><li id="item-3" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">3</span><span class="jd-title">발행된 아티팩트가 낡았다 — 재발행할 것인가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 1</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>「UI 일관성 전수 진단」(https://claude.ai/code/artifact/85f8a1f2-49f6-4692-aaa7-8dec32fe0940)은 정본의 렌더인데 정정 전 수치를 보여 준다(준수율 44.3% · 위반 1,567 · 간격 821). 정본은 이 카드에서 47.9% · 1,304 · 572 로 고쳤다. 손으로 저작한 HTML 이라 자동 재생성이 안 되고, 파생물의 실패 모드가 「없다」가 아니라 「있는데 낡았다」라는 것이 이 레포의 규약이다(manage-kanban SKILL.md 핵심 규칙). 지금 고칠지, 후속 카드로 넘길지, 안 고치고 아티팩트를 폐기할지가 갈림길이다</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-25</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-ns"><li><span class="meta">유저 · 2026-08-25</span> 지금 고쳐라</li></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="3"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="3" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li><li id="item-4" class="jd"><div class="jd-head"><span class="jd-num st-noted">4</span><span class="jd-title">게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 파일 관례에서 벗어난 것을 인정하는가</span><span class="tag tag-hold">추가 의견</span><span class="meta">판정 0 · 의견 2</span></div><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>이 레포의 다른 게이트 다섯(verify-viz·verify-deco·verify-widths·verify-talk·verify-graph)은 전부 단일 파일이고 scripts/lib/ 라는 자리가 없었다. 이 카드는 진입점 하나 + 축 모듈 여섯(types·extract·color·fallback·docrule·exceptions·selftest·baseline)으로 갈랐다. 이유는 오케스트레이션 배치안(유저 선택)이다 — 축 셋을 세 세션이 병렬로 채우려면 같은 파일을 동시에 못 고친다. 규약(셰뱅·왜 필요한가 주석·failures/notes 분리·고치는 법 한 문단·exit 1)은 전부 진입점이 지고 축 모듈은 판정만 돌려준다. 근거는 scripts/verify-tokens.ts:24-31 주석</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 0</span><span class="jd-rule"></span><div class="jd-body"><p class="jd-empty">판정 없음 — <code>review-judge --card KAN-070-DRF0QF --item 4 --verdict 승인</code></p><ul class="jd-vs"></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 2</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-ns"><li><span class="meta">유저 · 2026-08-25</span> 문제가 뭐고, 니가 제안하는 해결책이 뭔데</li><li><span class="meta">ai · 2026-08-25</span> 물으신 것을 제가 항목에 안 적었습니다. 문제와 제안을 적습니다. 문제: 이 레포의 게이트 다섯(verify-viz·verify-deco·verify-widths·verify-talk·verify-graph)은 전부 단일 파일이고 scripts/lib/ 라는 자리가 없었는데, 이 카드가 진입점 하나 + 모듈 일곱짜리 구조를 새로 만들었습니다. 관례가 둘로 갈리면 다음 게이트를 만드는 사람이 어느 쪽을 따를지 모릅니다. 그게 이 항목의 실질입니다. 제안: 합치지 말고 관례를 글로 굳힙니다. 합치면 900줄 한 파일이 되어 지금 가장 큰 게이트(verify-deco 450줄)의 두 배가 되고, 자가검사·베이스라인·예외 표는 판정 축과 독립된 관심사라 한 파일에 섞이면 읽는 사람이 매번 축과 인프라를 갈라내야 합니다. 대신 CLAUDE.md 에 한 줄을 박겠습니다 — &#x27;게이트는 진입점 하나가 규약(셰뱅·왜 필요한가·failures/notes·고치는 법·exit 1)을 지고, 판정 축이 여럿이면 scripts/lib/&lt;게이트명&gt;/ 에 축 모듈을 둔다. 축 모듈은 규약을 안 진다.&#x27; 그러면 관례가 갈린 게 아니라 늘어난 것이 됩니다. 반대로 합치는 쪽을 고르시면 병렬 저작이 끝났으니 지금 합쳐도 기능 손실은 없습니다 — 다만 그 판단은 사용자 것이라 제가 안 정했습니다.</li></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="4"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="4" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></li><li id="item-5" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">5</span><span class="jd-title">감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 0</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>design-concept/UI_CONSISTENCY_AUDIT.md 는 승인된 정본인데 이 카드에서 14곳을 고쳤다(승인 2026-08-25). 고친 이유는 판정 규칙 둘이다 — 간격 축이 여백·치수·좌표를 한 통에 담고 있었고(§9 는 여백 규칙이다), 글자 역할값 집합에 §5 의 clamp 끝값이 빠져 있었다. 숫자만 바꾸지 않고 §0 과 §3-5 에 「왜 바뀌었는지」를 인용 블록 각주로 남겼다. 옛 정의는 legacySpacingAxis·legacyFontRoles 로 그대로 재현되고 게이트가 두 수를 다 출력한다. 각주를 정본에 남기는 방식이 맞는지, 아니면 변경 이력을 카드 문서에만 두는 편이 나은지가 갈림길이다</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-25</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 0</span><span class="jd-rule"></span><div class="jd-body"><p class="jd-empty">추가 의견 없음 — <code>review-note --card KAN-070-DRF0QF --item 5 --text "&lt;추가 의견&gt;"</code></p><ul class="jd-ns"></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="5"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="5" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li><li id="item-6" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">6</span><span class="jd-title">CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 0</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>S8 에서 「CI 초록」 기준에 막혀 파 보니 2026-07-31 부터 33회 연속 실패 중이었다. 원인은 794c6b4(KAN-059)가 [data-imgwait] 계약 29줄을 생성물 src/styles/motion.css 에 손으로 붙인 것이고, 고치는 자리 scripts/gen-motion-css.ts 는 KAN-071 scope 였다. 유저 승인을 받아 main 에 별도 핫픽스(196cfb6)로 냈고 CI 가 초록으로 돌아왔다. 카드 경계를 넘지 않으려면 KAN-071 을 먼저 돌려야 했지만 그만큼 배포 정지가 길어진다 — 그 판단을 사후 인정하는지</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-25</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 0</span><span class="jd-rule"></span><div class="jd-body"><p class="jd-empty">추가 의견 없음 — <code>review-note --card KAN-070-DRF0QF --item 6 --text "&lt;추가 의견&gt;"</code></p><ul class="jd-ns"></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="6"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="6" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li></ol>
+<ol id="rv-list"><li id="item-1" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">1</span><span class="jd-title">게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검토를 받는가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 1</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>워크플로 트리거가 push: main 이라(.github/workflows/main.yml:3) 카드 브랜치를 밀어도 그 스텝이 안 돈다. 이 카드에서 확인한 것은 셋뿐이다 — 게이트 명령이 로컬에서 exit 0, YAML 들여쓰기가 형제 스텝 14개와 동일, 그리고 main 자체는 지금 초록(핫픽스 뒤 성공). 「CI 초록」이라는 완료 기준을 이 범위에서 만족한 것으로 볼지, 병합 후 첫 실행까지 카드를 열어 둘지가 갈림길이다</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-25</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-ns"><li><span class="meta">유저 · 2026-08-25</span> 그대로 검토</li></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="1"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="1" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li><li id="item-2" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">2</span><span class="jd-title">게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 아니라 기준이 둘이라는 설명으로 충분한가</span><span class="tag tag-done">승인</span><span class="meta">판정 2 · 의견 2</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>기준선(scripts/tokens-baseline.json)은 위반 1305 · 드리프트 90 인데 감사 정본은 1304 · 71 이다. 이유는 둘 — 게이트는 제외분(생성물·복제물 15건)을 빼고 세고, fallback 축(위반 4 · 드리프트 19)을 함께 센다. fallback 은 감사에서 별도 파일(s4-fallback.json)로 갔던 축이라 §0 표에 안 들어가 있다. 근거는 scripts/lib/tokens/baseline.ts:12-24 주석이다. 같은 것을 두 기준으로 센 값이라 어느 쪽도 틀리지 않았지만, 숫자가 다르면 다음 사람이 먼저 의심하는 것은 게이트다</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 2</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-danger">반려</span><span><span class="meta">유저 · 2026-08-25</span> </span></li><li><span class="meta">2회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-26</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 2</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-ns"><li><span class="meta">유저 · 2026-08-25</span> 이점이 있는게 아니면 굳이 기준이 둘 이면 관리가 어려울 것으로 보인다.</li><li><span class="meta">ai · 2026-08-25</span> 지적이 맞습니다. 기준을 하나로 접지는 못했지만 사람이 손으로 맞출 일은 없앴습니다. 접지 못하는 이유는 둘이 같은 것을 다르게 센 값이 아니라 서로 다른 것을 세기 때문입니다 — 감사는 그때 전수 스캔이 무엇을 봤나(고칠 수 없는 생성물의 리터럴까지 3,539건)이고, 래칫은 지금 고쳐야 할 것이 몇 개 남았나입니다. 게이트가 감사처럼 세면 아무도 못 고치는 값을 부채로 세게 되고, 감사가 게이트처럼 세면 그때 무엇을 봤는지가 기록에서 사라집니다. 대신 셋을 했습니다. ① 게이트가 두 수를 한 자리에서 함께 출력합니다 — &#x27;감사 기준 … 드리프트 71 · 위반 1304 · 정당한 예외 3 · 준수 1266 · 판정 불가 895&#x27; 가 감사 §0 표와 정확히 같고, 그 아래 줄이 래칫 기준입니다(scripts/verify-tokens.ts 의 두 notes). ② 감사 §0 에 &#x27;이 표는 기록이지 장부가 아니다 — 다시 고치지 않는다. 지금 남은 수는 bun run tokens:verify 가 낸다&#x27; 를 박았습니다. 이 카드에서 14곳을 고쳐야 했던 것이 바로 그 동결 선언이 없어서였습니다. ③ 왜 구성이 다른지를 scripts/lib/tokens/baseline.ts 의 auditBasis 주석에 남겼습니다. 관리 대상은 이제 하나입니다 — 게이트.</li></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="2"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="2" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li><li id="item-3" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">3</span><span class="jd-title">발행된 아티팩트가 낡았다 — 재발행할 것인가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 1</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>「UI 일관성 전수 진단」(https://claude.ai/code/artifact/85f8a1f2-49f6-4692-aaa7-8dec32fe0940)은 정본의 렌더인데 정정 전 수치를 보여 준다(준수율 44.3% · 위반 1,567 · 간격 821). 정본은 이 카드에서 47.9% · 1,304 · 572 로 고쳤다. 손으로 저작한 HTML 이라 자동 재생성이 안 되고, 파생물의 실패 모드가 「없다」가 아니라 「있는데 낡았다」라는 것이 이 레포의 규약이다(manage-kanban SKILL.md 핵심 규칙). 지금 고칠지, 후속 카드로 넘길지, 안 고치고 아티팩트를 폐기할지가 갈림길이다</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-25</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-ns"><li><span class="meta">유저 · 2026-08-25</span> 지금 고쳐라</li></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="3"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="3" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li><li id="item-4" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">4</span><span class="jd-title">게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 파일 관례에서 벗어난 것을 인정하는가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 4</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>이 레포의 다른 게이트 다섯(verify-viz·verify-deco·verify-widths·verify-talk·verify-graph)은 전부 단일 파일이고 scripts/lib/ 라는 자리가 없었다. 이 카드는 진입점 하나 + 축 모듈 여섯(types·extract·color·fallback·docrule·exceptions·selftest·baseline)으로 갈랐다. 이유는 오케스트레이션 배치안(유저 선택)이다 — 축 셋을 세 세션이 병렬로 채우려면 같은 파일을 동시에 못 고친다. 규약(셰뱅·왜 필요한가 주석·failures/notes 분리·고치는 법 한 문단·exit 1)은 전부 진입점이 지고 축 모듈은 판정만 돌려준다. 근거는 scripts/verify-tokens.ts:24-31 주석</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-26</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 4</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-ns"><li><span class="meta">유저 · 2026-08-25</span> 문제가 뭐고, 니가 제안하는 해결책이 뭔데</li><li><span class="meta">ai · 2026-08-25</span> 물으신 것을 제가 항목에 안 적었습니다. 문제와 제안을 적습니다. 문제: 이 레포의 게이트 다섯(verify-viz·verify-deco·verify-widths·verify-talk·verify-graph)은 전부 단일 파일이고 scripts/lib/ 라는 자리가 없었는데, 이 카드가 진입점 하나 + 모듈 일곱짜리 구조를 새로 만들었습니다. 관례가 둘로 갈리면 다음 게이트를 만드는 사람이 어느 쪽을 따를지 모릅니다. 그게 이 항목의 실질입니다. 제안: 합치지 말고 관례를 글로 굳힙니다. 합치면 900줄 한 파일이 되어 지금 가장 큰 게이트(verify-deco 450줄)의 두 배가 되고, 자가검사·베이스라인·예외 표는 판정 축과 독립된 관심사라 한 파일에 섞이면 읽는 사람이 매번 축과 인프라를 갈라내야 합니다. 대신 CLAUDE.md 에 한 줄을 박겠습니다 — &#x27;게이트는 진입점 하나가 규약(셰뱅·왜 필요한가·failures/notes·고치는 법·exit 1)을 지고, 판정 축이 여럿이면 scripts/lib/&lt;게이트명&gt;/ 에 축 모듈을 둔다. 축 모듈은 규약을 안 진다.&#x27; 그러면 관례가 갈린 게 아니라 늘어난 것이 됩니다. 반대로 합치는 쪽을 고르시면 병렬 저작이 끝났으니 지금 합쳐도 기능 손실은 없습니다 — 다만 그 판단은 사용자 것이라 제가 안 정했습니다.</li><li><span class="meta">유저 · 2026-08-26</span> 제안대로 해라</li><li><span class="meta">ai · 2026-08-26</span> 제안대로 CLAUDE.md 「Commands」 절에 「게이트를 새로 만들 때의 모양 (KAN-070)」 을 박았습니다. 셋을 적었습니다 — ① 규약(셰뱅·왜 필요한가·failures/notes·고치는 법·exit 1)은 파일 수와 무관하고 전부 진입점이 진다 ② 판정 축이 하나면 단일 파일, 여럿이면 진입점 + scripts/lib/&lt;게이트명&gt;/ 의 축 모듈이고 verify-tokens 가 그 첫 사례다 ③ 게이트는 자기를 검사한다(자가검사), 래칫형에서는 필수다 — 조용히 죽으면 &#x27;줄었다&#x27;로 읽혀 통과하기 때문. tokens:verify 를 같은 절의 스크립트 목록에도 넣었습니다. 이제 관례가 갈린 게 아니라 늘어난 것이고, 다음 게이트를 만드는 사람이 어느 쪽인지 그 자리에서 판정할 수 있습니다.</li></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="4"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="4" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li><li id="item-5" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">5</span><span class="jd-title">감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 0</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>design-concept/UI_CONSISTENCY_AUDIT.md 는 승인된 정본인데 이 카드에서 14곳을 고쳤다(승인 2026-08-25). 고친 이유는 판정 규칙 둘이다 — 간격 축이 여백·치수·좌표를 한 통에 담고 있었고(§9 는 여백 규칙이다), 글자 역할값 집합에 §5 의 clamp 끝값이 빠져 있었다. 숫자만 바꾸지 않고 §0 과 §3-5 에 「왜 바뀌었는지」를 인용 블록 각주로 남겼다. 옛 정의는 legacySpacingAxis·legacyFontRoles 로 그대로 재현되고 게이트가 두 수를 다 출력한다. 각주를 정본에 남기는 방식이 맞는지, 아니면 변경 이력을 카드 문서에만 두는 편이 나은지가 갈림길이다</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-25</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 0</span><span class="jd-rule"></span><div class="jd-body"><p class="jd-empty">추가 의견 없음 — <code>review-note --card KAN-070-DRF0QF --item 5 --text "&lt;추가 의견&gt;"</code></p><ul class="jd-ns"></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="5"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="5" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li><li id="item-6" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">6</span><span class="jd-title">CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 0</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>S8 에서 「CI 초록」 기준에 막혀 파 보니 2026-07-31 부터 33회 연속 실패 중이었다. 원인은 794c6b4(KAN-059)가 [data-imgwait] 계약 29줄을 생성물 src/styles/motion.css 에 손으로 붙인 것이고, 고치는 자리 scripts/gen-motion-css.ts 는 KAN-071 scope 였다. 유저 승인을 받아 main 에 별도 핫픽스(196cfb6)로 냈고 CI 가 초록으로 돌아왔다. 카드 경계를 넘지 않으려면 KAN-071 을 먼저 돌려야 했지만 그만큼 배포 정지가 길어진다 — 그 판단을 사후 인정하는지</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-25</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 0</span><span class="jd-rule"></span><div class="jd-body"><p class="jd-empty">추가 의견 없음 — <code>review-note --card KAN-070-DRF0QF --item 6 --text "&lt;추가 의견&gt;"</code></p><ul class="jd-ns"></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="6"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="6" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li><li id="item-7" class="jd jd-closed"><details class="jd-fold"><summary><span class="jd-num st-approved">7</span><span class="jd-title">이 카드가 KAN-072 의 카드 문서를 고쳤다 — scope 이탈을 인정하는가</span><span class="tag tag-done">승인</span><span class="meta">판정 1 · 의견 1</span><span class="meta jd-tog"></span></summary><div class="jd-band jd-band-ctx"><span class="jd-g">근거</span><span class="jd-rule"></span><div class="jd-body"><details><summary>상세 — 무엇을 근거로 정하는가</summary><p>검토서 갱신이 낸 경고에서 나왔다 — 변경 파일 61개 중 3개가 이 카드 scope 밖이다. 둘(scripts/gen-motion-css.ts · scripts/git-commit-push.sh)은 main 을 브랜치로 병합해 딸려온 것이라 이 브랜치에서 저작한 것이 아니다. 남은 하나 KANBAN.cards/KAN-072-CPJCT1.md 는 진짜 이탈이다 — 감사 문서(design-concept/UI_CONSISTENCY_AUDIT.md)를 고쳐야 하는데 그것이 KAN-072 의 design-concept/** scope 안이라, 소유를 KAN-070 으로 옮기고 KAN-072 는 실제로 고치는 규칙 문서 셋(DESIGN_CONCEPT·DECO_KIT·DIAGRAM_STYLE_GUIDE)만 갖도록 두 카드의 scope 를 조정했다(커밋 89eb7cd). 근거는 감사 문서가 게이트가 재현해야 하는 측정 기록이지 디자인 규칙이 아니라는 것이다. dep-check 는 그 뒤에도 위반 0 이고 겹침은 scripts/tokens-baseline.json 하나뿐이다. 다만 남의 카드 문서를 이 브랜치에서 고친 것은 사실이라 판정받을 자리다</p></details></div></div><div class="jd-band jd-band-v"><span class="jd-g">판정 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-vs"><li><span class="meta">1회차</span><span class="tag tag-done">승인</span><span><span class="meta">유저 · 2026-08-26</span> </span></li></ul></div></div><div class="jd-band jd-band-n"><span class="jd-g">의견 1</span><span class="jd-rule"></span><div class="jd-body"><ul class="jd-ns"><li><span class="meta">ai · 2026-08-26</span> 출처를 짚습니다(경고 반영). 두 카드의 scope 선언은 KANBAN.cards/KAN-070-DRF0QF.md:5 와 KANBAN.cards/KAN-072-CPJCT1.md:5 이고, 옮긴 커밋은 89eb7cd 입니다. 겹침 용인 기록은 .kanban/state.json 의 waivers(쌍 KAN-070-DRF0QF|KAN-072-CPJCT1, scripts/tokens-baseline.json) 이고 dep-check 로 위반 0 을 확인했습니다. 판단 근거가 된 원칙은 manage-kanban SKILL.md 3.6 의 「스코프 조정 — 겹치는 경로를 한쪽으로 몰아 의존을 없앤다」입니다.</li></ul></div></div><div class="jd-band jd-band-ops is-static"><span class="jd-g">조작</span><span class="jd-rule"></span><div class="jd-body"><div class="rv-ops" data-item="7"><div class="row"><label>판정</label><button data-judge="승인">승인</button><button data-judge="반려">반려</button><button data-judge="철회">철회</button><span class="tag tag-wait" data-pending="7" hidden></span></div><div class="row"><label>추가 의견</label><input data-note placeholder="추가 의견 — 판정을 안 바꾸고 말만 남깁니다"><button data-note-add>추가 의견 달기</button></div></div></div></div></details></li></ol>
 
 <h3>의견 추가</h3>
 <section class="card rv-panel" id="rv-add">
@@ -639,7 +640,7 @@ python3 scripts/kanban.py review-item  &lt;project-root&gt; --card KAN-070-DRF0Q
 <div class="row"><label>상세</label>
   <textarea id="rv-ctx" rows="3" placeholder="무엇을 근거로 정하는가. 원문을 `파일:줄` 로 짚으세요 — 비면 큐에 안 들어갑니다"></textarea></div>
 <div class="row"><label>갈래</label>
-  <select id="rv-from" style="width:auto"><option value="">원 의견 없음</option><option value="1">§3-1 게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검</option><option value="2">§3-2 게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 </option><option value="3">§3-3 발행된 아티팩트가 낡았다 — 재발행할 것인가</option><option value="4">§3-4 게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 </option><option value="5">§3-5 감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가</option><option value="6">§3-6 CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가</option></select>
+  <select id="rv-from" style="width:auto"><option value="">원 의견 없음</option><option value="1">§3-1 게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검</option><option value="2">§3-2 게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 </option><option value="3">§3-3 발행된 아티팩트가 낡았다 — 재발행할 것인가</option><option value="4">§3-4 게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 </option><option value="5">§3-5 감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가</option><option value="6">§3-6 CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가</option><option value="7">§3-7 이 카드가 KAN-072 의 카드 문서를 고쳤다 — scope</option></select>
   <button id="rv-add-go">의견 추가</button>
   <span class="tag tag-wait" data-pending="+" hidden></span></div>
 </section>
@@ -647,7 +648,7 @@ python3 scripts/kanban.py review-item  &lt;project-root&gt; --card KAN-070-DRF0Q
 <h2>전체 판정</h2>
 
 <section class="card rv-panel" id="rv-all">
-<p class="note"><span class="tag tag-warn">경고</span> 살아있는 항목 2개(2번 · 4번)가 안 닫혀 전체 승인은 아직 안 섭니다.</p>
+
 <p class="note">문서 전체에 대한 판정입니다 — <b>항목 판정과 다른 자리</b>입니다. 전체
 승인은 살아있는 항목이 전부 승인일 때만 섭니다(철회는 분모에서 빠집니다). <b>철회는
 항목에만</b> 있습니다 — 문서 전체를 철회하는 일은 검토를 닫는 것이 아니라 카드를 닫는
@@ -773,12 +774,13 @@ kan/KAN-070-DRF0QF/batch4</pre></details>
   <ol id="tray-list"></ol>
   <div class="tray-foot">
     <button id="tray-save"></button>
+    
     <button id="tray-export">패치·명령 보기</button>
   </div>
 </div>
 <div class="modal" id="modal"><div class="box" id="modal-box"></div></div>
 <div class="toast" id="toast"></div>
-<script type="application/json" id="review-ops">{"card": "KAN-070-DRF0QF", "serve": false, "cli": {"py": "python3", "kanban": "/Users/centurio/.claude/skills/manage-kanban/scripts/kanban.py", "report": "/Users/centurio/.claude/skills/manage-kanban/scripts/report.py", "root": "/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-070-DRF0QF", "card": "KAN-070-DRF0QF"}, "items": [{"idx": 1, "text": "게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검토를 받는가"}, {"idx": 2, "text": "게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 아니라 기준이 둘이라는 설명으로 충분한가"}, {"idx": 3, "text": "발행된 아티팩트가 낡았다 — 재발행할 것인가"}, {"idx": 4, "text": "게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 파일 관례에서 벗어난 것을 인정하는가"}, {"idx": 5, "text": "감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가"}, {"idx": 6, "text": "CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가"}]}</script>
+<script type="application/json" id="review-ops">{"card": "KAN-070-DRF0QF", "serve": false, "cli": {"py": "python3", "kanban": "/Users/centurio/.claude/skills/manage-kanban/scripts/kanban.py", "report": "/Users/centurio/.claude/skills/manage-kanban/scripts/report.py", "root": "/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-070-DRF0QF", "card": "KAN-070-DRF0QF"}, "items": [{"idx": 1, "text": "게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검토를 받는가"}, {"idx": 2, "text": "게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 아니라 기준이 둘이라는 설명으로 충분한가"}, {"idx": 3, "text": "발행된 아티팩트가 낡았다 — 재발행할 것인가"}, {"idx": 4, "text": "게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 파일 관례에서 벗어난 것을 인정하는가"}, {"idx": 5, "text": "감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가"}, {"idx": 6, "text": "CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가"}, {"idx": 7, "text": "이 카드가 KAN-072 의 카드 문서를 고쳤다 — scope 이탈을 인정하는가"}]}</script>
 <script>
 
 'use strict';
@@ -800,6 +802,10 @@ let stale = false;
 let applied = [];
 /* 첫 실패에서 멈췄는가. 그러면 `queue[0]` 이 멈춘 자리이고 그 뒤는 「안 보냄」이다. */
 let stopped = false;
+/* 저장 요청이 도는 중인가. **그동안 큐를 얼린다** — 안 얼리면 방금 보낸 묶음의 응답이
+   오면서 그 사이 들어온 op 까지 함께 지워지고, 화면은 성공이라고 말한다. 유저가 누른
+   판정이 아무 데도 안 남는 종류의 실패라 눌러 본 사람도 모른다. */
+let sending = false;
 
 /* ─── op 큐 ────────────────────────────────────────────────────────────────
    **판정만 마지막 것을 남긴다.** 판정은 상태라, 승인을 눌렀다 반려로 고친 사람이 한
@@ -808,6 +814,9 @@ let stopped = false;
    의견에 두 마디를 남기려던 검토자의 첫 마디가 소리 없이 사라진다(잘못 넣은 것은
    트레이가 낱개로 취소해 준다 — 무음 유실보다 한 번 더 누르는 쪽이 낫다). */
 function enqueue(op) {
+  // **조용히 막지 않고 말한다.** 누른 것이 아무 데도 안 남고 화면도 가만히 있으면
+  // 유저는 버튼이 고장 난 줄 안다. 저장은 보통 1초 안에 끝난다.
+  if (sending) return toast('저장 중입니다 — 끝나면 다시 누르세요.');
   if (op.op === 'judge') {
     const key = q => (q.op === 'judge' && (q.item || null) === (op.item || null));
     const at = queue.findIndex(key);
@@ -913,9 +922,9 @@ function drawTray() {
     + (stale ? ' · 검토서가 여기서 갱신됨 — 새로고침해야 태그가 맞습니다' : '');
   // 정적으로 연 화면(파일·Artifact)에서는 쓸 길이 없어 꺼진다. 숨기지 않는 것은, 저장이
   // 어디서 일어나는 일인지(터미널이 아니라 화면) 를 자리로 말해 두기 위해서다 —
-  // `report.py … --kind review --serve` 로 열면 같은 버튼이 그대로 켜진다.
+  // `report.py … --kind review` 로 열면(서버가 기본이다) 같은 버튼이 그대로 켜진다.
   $('#tray-save').textContent = DATA.serve ? '저장 (검토서에 반영)' : '저장 (서버 모드에서만)';
-  $('#tray-save').disabled = !DATA.serve;
+  busy(sending);
   $('#tray-list').innerHTML = resultRows().map(r =>
     `<li class="rs-${r.k}"><span class="rs-i">${ICON[r.k]}</span>`
     + `<span>${esc(r.t)}</span>`
@@ -923,6 +932,7 @@ function drawTray() {
     + '</li>').join('');
   $('#tray-list').querySelectorAll('[data-drop]').forEach(b =>
     b.addEventListener('click', () => {
+      if (sending) return toast('저장 중입니다 — 끝나면 다시 누르세요.');
       const i = +b.dataset.drop;
       queue.splice(i, 1);
       // 멈춘 자리를 지웠으면 그 표시도 함께 걷는다 — 없는 줄을 계속 가리키면
@@ -958,9 +968,12 @@ function showExport() {
   const {py, kanban, report, root, card} = DATA.cli;
   const js = JSON.stringify(queue, null, 2);
   const one = `cat <<'PATCH' | ${py} '${kanban}' review-apply '${root}' --card ${card} --patch -\n${js}\nPATCH`;
-  const rerender = `${py} '${report}' '${root}' --card ${card} --kind review`;
+  const rerender = `${py} '${report}' '${root}' --card ${card} --kind review --no-serve`;
   // 재렌더 명령을 같이 내는 이유: 반영은 **검토서(.md)** 에 되고 이 화면은 그때 낡는다.
   // 이 줄이 없으면 판정을 넣고도 화면은 그대로라, 반영이 안 된 줄 알고 다시 누른다.
+  // **`--no-serve` 를 붙인다.** `--kind review` 는 기본이 편집 서버라, 안 붙이면 이 줄이
+  // 낡은 정적 파일을 다시 그리는 대신 서버를 띄우고 터미널을 물고 있는다 — 여기서 원하는
+  // 것은 방금 붙여 넣은 반영을 **이 파일에** 반영해 두는 것이다.
   $('#modal-box').innerHTML = `
     <h2>모은 판정을 검토서에 반영하기</h2>
     <p class="note">브라우저는 파일을 못 씁니다. 아래 ①이나 ②를 터미널에 붙여 넣으면
@@ -1017,30 +1030,53 @@ function partialReport(out, done, stopped) {
 
 /* 이 파일에서 바깥으로 나가는 요청은 **이 함수 하나뿐**이고, 그것도 DATA.serve 가드
    안이다. Artifact 의 CSP 와 file:// 이 요청을 전부 막으므로, 가드가 없으면 정적으로
-   연 화면에서 콘솔이 빨개지고 저장이 조용히 실패한 것처럼 보인다. `--serve` 로 연
-   화면에서만 DATA.serve 가 켜지고, 그때만 이 fetch 가 뜬다. */
-async function save() {
+   연 화면에서 콘솔이 빨개지고 저장이 조용히 실패한 것처럼 보인다. **서버가 내준 화면에서만**
+   DATA.serve 가 켜지고, 그때만 이 fetch 가 뜬다 — serve 모드가 먼저 쓰는 정적 파일까지
+   꺼진 채로 그리는 것이 그래서다(같은 명령이 낸 파일이라고 켜 두면 그 파일이 깨진다). */
+async function save(andClose) {
   if (!DATA.serve || !queue.length) return;
-  $('#tray-save').disabled = true;
+  /* **보낸 것을 집어 둔다.** 성공했다고 큐를 통째로 비우면 요청이 도는 동안 들어온 것까지
+     함께 지워진다. 위 `busy(true)` 와 `enqueue`·취소 가드가 그 사이의 입력을 막지만,
+     잠금이 한 자리에만 있으면 언젠가 새어 나온다 — 이 파일에서 `drawTray` 가 `busy` 를
+     도로 풀어 실제로 한 번 그랬다. 그래서 두 겹이다: 얼리고, 얼음이 새도 안 잃는다. */
+  const sent = queue.slice();
+  busy(true);
   try {
     const r = await fetch('/apply', {method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({card: DATA.card, patch: queue})});
+      body: JSON.stringify({card: DATA.card, patch: sent, close: !!andClose})});
     const out = await r.json();
     const done = (out.applied || []).length;
     if (out.ok) {
-      queue = []; applied = []; stopped = false; sync();
+      // **길이가 아니라 동일성으로 뺀다.** 큐가 그 사이 흔들렸으면 앞에서 n 개를 자르는
+      // 것은 엉뚱한 것을 지운다.
+      queue = queue.filter(q => !sent.includes(q));
+      applied = []; stopped = false; sync();
+      if (queue.length) {
+        /* 얼음이 샜다는 뜻이다. 여기서 새로고침하면 이 큐가 메모리째 사라지므로 **하지
+           않는다** — 화면이 잠깐 낡는 것보다 유저가 누른 판정을 잃는 것이 나쁘다.
+           트레이의 「검토서가 여기서 갱신됨」이 그 낡음을 말해 준다. */
+        stale = true; sync(); busy(false);
+        return alert(`반영 ${sent.length}건이 검토서에 들어갔습니다.\n\n`
+          + `저장하는 동안 ${queue.length}건이 더 쌓였고 그것은 아직 안 보냈습니다 — `
+          + `「저장」을 한 번 더 누르세요.`);
+      }
       /* **서버가 준 out.data 로 다시 그리지 않고 통째로 새로 받는다.** 이 화면의 본문
          (상태 태그·판정 이력·수렴 KPI)은 파이썬이 그린 HTML 이라, JS 로 갱신하려면
          item_state·review_converge 의 도출 규칙을 브라우저에 복제해야 한다 — 그 순간
          리포트가 보드·validate 와 다른 말을 한다. reload 는 같은 서버가 요청마다 다시
-         그리므로, 그 사이 다른 세션이 CLI 로 낸 판정까지 함께 따라온다. */
+         그리므로, 그 사이 다른 세션이 CLI 로 낸 판정까지 함께 따라온다.
+
+         **`out.closing` 이어도 하는 일은 같다.** 그 GET 이 서버가 내는 마지막 응답이고,
+         서버는 그것을 다 보낸 뒤에 닫는다 — 먼저 닫으면 이 새로고침이 연결 거부로 깨져서
+         유저는 반영이 됐는지 못 본 채 빈 오류 화면을 받는다. */
       location.reload();
     } else {
-      const at = queue[done];        // 덜어내기 전에 집는다
+      const at = sent[done];         // 덜어내기 전에 집는다 — 보낸 묶음 기준이다
       if (done) {
-        applied = applied.concat(queue.slice(0, done).map(opText));
-        queue.splice(0, done);
+        const gone = sent.slice(0, done);
+        applied = applied.concat(gone.map(opText));
+        queue = queue.filter(q => !gone.includes(q));
         stale = true;
       }
       stopped = true;
@@ -1048,7 +1084,25 @@ async function save() {
       alert(partialReport(out, done, at));
     }
   } catch (e) { alert('저장 실패: ' + e); }
-  $('#tray-save').disabled = false;
+  busy(false);
+}
+
+/* 「저장」과 「저장하고 종료」는 **같은 요청**을 낸다. 하나가 도는 동안 다른 하나가 또
+   눌리면 같은 큐가 두 번 가므로, 잠그는 자리를 한 함수로 둔다. 종료 버튼은 정적 화면에
+   아예 없으므로 있을 때만 만진다. */
+function busy(on) {
+  // **진행 여부를 값으로 들고 있는다.** 잠근 직후 유저가 판정 버튼을 누르면 `sync()` →
+  // `drawTray()` 가 도는데, 거기서 무조건 풀어 주면 요청이 도는 중에 두 버튼이 다시
+  // 켜진다 — 그때 「저장하고 종료」를 누르면 첫 요청의 응답이 오기 전에 서버가 닫힌다.
+  // 그래서 `drawTray` 는 `busy(false)` 가 아니라 `busy(sending)` 을 부른다.
+  sending = on;
+  $('#tray-save').disabled = on || !DATA.serve;
+  const c = $('#tray-close');
+  if (c) c.disabled = on || !DATA.serve;
+  // 「전부 취소」는 정적 화면에서도 쓸 수 있어야 하므로 **진행 중일 때만** 잠근다.
+  // 보낸 것을 큐에서 지우면 응답이 무엇을 덜어낼지 못 정한다.
+  const cl = $('#tray-clear');
+  if (cl) cl.disabled = on;
 }
 
 let toastT = null;
@@ -1113,7 +1167,11 @@ $('#tray-toggle').addEventListener('click', () => {
 $('#tray-clear').addEventListener('click', () => {
   queue = []; applied = []; stopped = false; stale = false; sync();
 });
-$('#tray-save').addEventListener('click', save);
+/* **화살표로 감싼다.** `save` 를 그대로 걸면 이벤트 객체가 첫 인자로 들어가 `andClose`
+   가 참이 되고, 평범한 저장이 서버를 닫는다. */
+$('#tray-save').addEventListener('click', () => save(false));
+const closeEl = $('#tray-close');
+if (closeEl) closeEl.addEventListener('click', () => save(true));
 $('#tray-export').addEventListener('click', showExport);
 $('#modal').addEventListener('click', e => {
   if (e.target.id === 'modal') $('#modal').classList.remove('on');

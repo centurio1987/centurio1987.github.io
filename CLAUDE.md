@@ -9,9 +9,24 @@ A writing-focused personal blog (빵관 토니 — "Serious Work, Joyful Wit"), 
 ## Commands
 
 CI uses **Bun**; locally either works. Standard Astro scripts (`dev`/`build`/`preview`) plus
-repo-specific ones (`viz:verify`·`deco:verify`·`graph:*`·`gen:motion`) — see `package.json`.
+repo-specific ones (`viz:verify`·`deco:verify`·`tokens:verify`·`graph:*`·`gen:motion`) — see `package.json`.
 
 No test suite. Verify by building (`build`) and previewing.
+
+**게이트를 새로 만들 때의 모양 (KAN-070).** 이 레포의 게이트는 전부 같은 규약을 진다 —
+`#!/usr/bin/env bun` 셰뱅 · 머리주석이 **"왜 필요한가"부터**(빌드도 타입도 초록이라 눈 말고는
+안 잡힌다는 그 이유) · `failures[]`/`notes[]` 분리 · `console.error("고치는 법: …")` ·
+`process.exit(1)`. 파일 수는 규약이 아니다:
+
+- **판정 축이 하나면 단일 파일**이다 — `verify-viz`·`verify-deco`·`verify-widths`·
+  `verify-talk`·`verify-graph` 다섯이 그렇다.
+- **축이 여럿이면 진입점 하나 + `scripts/lib/<게이트명>/` 의 축 모듈**이다.
+  **규약은 전부 진입점이 지고 축 모듈은 판정만 돌려준다.** `verify-tokens` 가 그 첫 사례다
+  (색·fallback·문서 규칙 셋을 병렬로 저작했고, 자가검사·베이스라인·예외 표가 축과 독립된
+  관심사라 한 파일에 섞으면 읽는 사람이 매번 축과 인프라를 갈라내야 한다).
+- **게이트는 자기를 검사한다.** 고장을 일부러 주입해 잡히는지 보는 자가검사를 함께 둔다
+  (`verify-talk` 의 `selfTestFaults()`, `verify-tokens` 의 `scripts/lib/tokens/selftest.ts`).
+  래칫형 게이트에서는 필수다 — 게이트가 조용히 죽으면 "줄었다"로 읽혀 통과한다.
 
 ## Architecture
 
