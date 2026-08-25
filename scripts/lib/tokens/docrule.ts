@@ -44,6 +44,7 @@
  * 모듈은 규약을 안 진다 — 셰뱅·`process.exit`·"고치는 법" 은 진입점이 진다.
  */
 import type { Axis, AxisModule, AxisResult, Hit, ScanContext, TokenDict, Verdict } from "./types.ts";
+import { verdictExceptionFor } from "./exceptions.ts";
 
 // ── 이 모듈이 보는 축. 나머지(color·radius, 그리고 S4 가 color 에서 갈라낸 stroke)는 color.ts 가 본다.
 const OWNED: ReadonlySet<Axis> = new Set<Axis>(["spacing", "font", "shadow", "zindex"]);
@@ -128,10 +129,7 @@ function driftToken(dict: TokenDict, hit: Hit): string | null {
   return `${same[0]} (tokens.css = ${dict.byName.get(same[0])!.value})`;
 }
 
-// 근거 문서를 걸 수 있는 유일한 예외. `s4-classify.py:98-102` 그대로.
-const MOTION_CSS = "src/styles/motion.css";
-const MOTION_WHY =
-  "생성물 — `scripts/gen-motion-css.ts` 가 `bbangtoTonyFoundation` 에서 굽는다. 정본이 TS 라 방향이 반대다(S2 §4-4)";
+// 정당한 예외는 `exceptions.ts` 한 곳에서만 정의된다(S10). 여기서 다시 적지 않는다.
 
 /** 이 (축, 속성)에 대조할 토큰 체계가 `tokens.css` 에 있는가. `s4-classify.py:110-118`. */
 const FAMILY_PROPS: ReadonlySet<string> = new Set(["font-family", "fontfamily", "font"]);
@@ -145,7 +143,8 @@ function auditLabelOf(dict: TokenDict, hit: Hit): { label: AuditLabel; reason: s
   if (hit.kind === "token") return { label: "준수", reason: "var(--토큰) 을 썼다" };
   const drift = driftToken(dict, hit);
   if (drift) return { label: "드리프트", reason: `D1 같은 표기 — ${drift}` };
-  if (hit.file === MOTION_CSS) return { label: "정당한 예외", reason: MOTION_WHY };
+  const exc = verdictExceptionFor(hit.file);
+  if (exc) return { label: "정당한 예외", reason: `${exc.why} (근거 ${exc.evidence.join(" · ")})` };
   if (comparable(hit.axis, hit.prop)) {
     return { label: "위반", reason: `${hit.axis} 축에 토큰 체계가 있는데 토큰 밖 값이고 근거 문서를 못 걸었다` };
   }

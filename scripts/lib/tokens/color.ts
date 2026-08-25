@@ -42,6 +42,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { AxisModule, AxisResult, Hit, ScanContext, Verdict } from "./types.ts";
+import { verdictExceptionFor } from "./exceptions.ts";
 
 /**
  * 판정 쪽 축. `Axis`(추출 쪽)와 이름이 겹치지만 **다른 표다** — `stroke`·`layout` 이 있고
@@ -147,22 +148,14 @@ function buildIndex(ctx: ScanContext): TokenIndex {
 }
 
 /**
- * 정당한 예외 — **근거 문서의 위치를 걸 수 있는 것만.** 근거가 비면 예외가 아니다.
- * `s4-classify.py:98-107` 그대로. 공통 추출의 `Hit.excluded` 와 섞지 않는다:
- * 저쪽은 셋(생성물 둘 · 패키지 복제물 하나)을 게이트 대상에서 표시만 하는 것이고,
- * 감사가 **근거를 걸어 예외로 인정한** 자리는 여기 이 하나뿐이다.
- * `viz.css` 의 색 리터럴이 감사에서 위반으로 남아 있는 것이 그 차이다.
+ * 정당한 예외는 `exceptions.ts` 한 곳에서만 정의된다(S10) — 여기서 다시 적지 않는다.
+ * 근거 문서 위치가 필수 필드이고, 비면 게이트가 자기 자신을 비0 으로 끝낸다.
+ * 공통 추출의 `Hit.excluded`(스캔 제외)와 섞지 않는다 — `viz.css` 의 색 리터럴이
+ * 감사에서 위반으로 남아 있는 것이 그 차이다.
  */
-const EXCEPTIONS: { prefix: string; axis: JudgeAxis | null; why: string }[] = [
-  { prefix: "src/styles/motion.css", axis: null,
-    why: "생성물 — `scripts/gen-motion-css.ts` 가 `bbangtoTonyFoundation` 에서 굽는다. " +
-         "정본이 TS 라 방향이 반대다(S2 §4-4)" },
-];
-function exceptionFor(path: string, axis: JudgeAxis): string | null {
-  for (const e of EXCEPTIONS) {
-    if (path.startsWith(e.prefix) && (e.axis === null || e.axis === axis) && e.why) return e.why;
-  }
-  return null;
+function exceptionFor(path: string, _axis: JudgeAxis): string | null {
+  const e = verdictExceptionFor(path);
+  return e ? `${e.why} (근거 ${e.evidence.join(" · ")})` : null;
 }
 
 /** 드리프트 판정 — D1 → D2 → D3 순으로 보고 먼저 걸리는 것을 쓴다. */

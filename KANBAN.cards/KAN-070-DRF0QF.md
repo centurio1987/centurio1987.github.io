@@ -93,11 +93,11 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 - [x] `S3` 색·radius·선굵기 축 포팅 — 대조 상대는 `tokens.css` 하나
 - [x] `S4` fallback 축 포팅 — `var(--x, fb)` 108자리
 - [x] `S5` 문서 축 포팅 + 축 재분류 — 간격을 spacing/dimension/position 셋으로
-- [ ] `S6` 자가검사 — 축마다 고장 픽스처
-- [ ] `S7` 래칫 + 베이스라인 — `--update-baseline`
-- [ ] `S8` 배선 — `package.json` 의 `tokens:verify` 와 CI 스텝
+- [x] `S6` 자가검사 — 축마다 고장 픽스처
+- [x] `S7` 래칫 + 베이스라인 — `--update-baseline`
+- [x] `S8` 배선 — `package.json` 의 `tokens:verify` 와 CI 스텝
 - [x] `S9` 규칙 개정 — REACT_SIM_GUIDE 의 "조화"를 판정 가능한 말로
-- [ ] `S10` 예외 표 — 근거 문서 위치를 필수 필드로
+- [x] `S10` 예외 표 — 근거 문서 위치를 필수 필드로
 
 **단계별 완료 기준**
 
@@ -171,3 +171,12 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 - 2026-08-25T01:59 · s:9eba7c52 · S5 done — 문서 축 이식 + 축 재분류. 옛 정의로 간격 821·글자 166 을 히트 단위까지 재현하고, 새 정의로 여백 572 · 치수 235 · 위치 172 로 갈랐다. 위치 상위 파일이 deco.astro(26)·PhotoFrame(23)·viz-frame(12) 로 deco-kit 이 못박은 실측 좌표 파일 셋과 그대로 겹친다. 감사 문서 정정 9곳을 목록으로 냈고(문서는 안 고쳤다), clamp 끝값 14건이 글자 위반으로 세어지는 원본 결함은 재현을 위해 그대로 두고 판단 항목으로 올린다
 - 2026-08-25T01:59 · s:9eba7c52 — 배치3 종료 검증: color 1,306 + docrule 2,233 = 3,539 로 감사 rows 전량과 auditLabel 기준 차집합 0. fallback 은 별도 참조(s4-fallback.json) 108자리 차집합 0. 판정을 두 층으로 갈랐다 — verdict(최종, 게이트가 무는 값) / auditLabel(1차, 감사 대조용). 한 필드로 뭉치면 docrule 의 롤업과 color 의 1차 이름이 같은 자리에 섞여 S7 베이스라인이 조용히 틀린 수를 낸다
 - 2026-08-25T12:28 · s:9eba7c52 — 감사 문서 정정 14곳 반영(유저 승인 2026-08-25) — §0 표·준수율(1,303/44.3% → 1,266/47.9%) · §3-1 넷 · §3-5 간격표+글자표+정정 각주 둘 · P1-4 · 로드맵④ · 부록A 해시. clamp 끝값을 역할값에 넣어 글자 위반 166→152, 문서 규칙 밖 738→724, 최종 위반 1,304. 옛 정의는 legacySpacingAxis·legacyFontRoles 로 그대로 재현된다. 감사 문서 소유를 KAN-072 에서 KAN-070 으로 옮겼다 — 게이트가 재현해야 하는 측정 기록이지 디자인 규칙이 아니다
+- 2026-08-25T13:17 · s:9eba7c52 · S10 doing — 착수
+- 2026-08-25T13:20 · s:9eba7c52 · S10 done — 예외 표를 scripts/lib/tokens/exceptions.ts 하나로 모으고 근거 문서 위치를 필수 필드로 만들었다(전에는 extract·color·docrule 셋이 각자 적었다). 게이트가 다른 무엇보다 먼저 자기 예외 표를 검사한다 — 근거가 비거나 그 줄이 없으면 비0 으로 자기가 죽는다(둘 다 실측 확인). 초기 등록 셋: motion-css-generated(scan+verdict, 근거 2) · viz-css-vendored(scan, 근거 1) · apply-viz-generated(scan, 근거 1). 단일화 후 판정 불변
+- 2026-08-25T13:20 · s:9eba7c52 · S6 doing — 착수
+- 2026-08-25T13:23 · s:9eba7c52 · S6 done — 자가검사 신설(verify-talk.ts:selfTestFaults 형식). scripts/fixtures/tokens/faults/ 에 최소 정본 트리 + 고장 6종을 두고 매 실행마다 임시 디렉터리에 복사해 하나씩 주입한다. 정상 픽스처 0건 + 고장 6종이 각자 다른 사유로 걸린다(사유 6가지). 실측: color.run 을 no-op 으로 만들면 자가검사가 먼저 exit 1 로 죽는다 — 래칫이 '줄었다'를 통과로 읽어 죽은 게이트를 못 알아채는 것을 막는 장치다
+- 2026-08-25T13:23 · s:9eba7c52 · S7 doing — 착수
+- 2026-08-25T13:24 · s:9eba7c52 · S7 done — 래칫 + 기준선(scripts/tokens-baseline.json). 늘면 실패 / 같으면 통과 / 줄면 통과 + 갱신 안내. 축×판정 카운트에 더해 파일별 카운트를 담아, 실패할 때 어느 파일이 늘었는지와 그 파일의 무는 자리를 파일:줄 로 지목한다(축만 세면 368건 중 새것을 사람이 찾아야 해서 게이트가 일을 넘기는 도구가 된다). 무는 것은 위반·드리프트 둘이고 최종 판정(verdict)으로 센다. 실측: 리터럴 한 줄 넣으면 exit 1 + 자리 지목, 지우면 0, --update-baseline 두 번 바이트 동일
+- 2026-08-25T13:24 · s:9eba7c52 · S8 doing — 착수
+- 2026-08-25T13:33 · s:9eba7c52 — S8 도중 카드 밖 고장 발견 — CI 가 2026-07-31 부터 33회 연속 실패 중이었고 그동안 사이트가 한 번도 배포되지 않았다. 실패 스텝은 motion.css 드리프트 가드이고 원인은 794c6b4(KAN-059)가 [data-imgwait] 계약 29줄을 생성물에 손으로 붙인 것이다. gen-motion-css.ts 에 IMGWAIT_CONTRACT 로 옮겨 main 에 핫픽스(유저 승인). 이 카드의 S8 완료 기준이 'CI 초록'이라 그 전에는 닫을 수 없었다
+- 2026-08-25T13:34 · s:9eba7c52 · S8 done — package.json 에 tokens:verify, main.yml 에 게이트 스텝(gen:motion 가드 뒤 · astro build 앞, 정적 스캔끼리 모아 둔 자리). --warn-only 는 만들되 CI 에는 안 넣었고 그 이유를 스텝 주석에 박았다. 로컬 exit 0, YAML 들여쓰기가 형제 스텝 14개와 동일. **CI 에서 이 스텝이 실제로 도는 것은 병합 뒤다** — 워크플로가 push:main 트리거라 브랜치에서는 안 돈다. 그 전에 main 이 3주간 빨간불이던 것(motion.css 드리프트)을 별도 핫픽스로 먼저 고쳤다

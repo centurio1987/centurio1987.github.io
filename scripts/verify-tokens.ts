@@ -30,7 +30,11 @@
  *   bun scripts/verify-tokens.ts                    # 기준선 대비 판정
  *   bun scripts/verify-tokens.ts --update-baseline  # 줄어든 수를 기준선에 반영
  *   bun scripts/verify-tokens.ts --warn-only        # 비0 으로 안 끝낸다(CI 에서는 안 쓴다)
+ *   bun scripts/verify-tokens.ts --no-self-test     # 자가검사를 건너뛴다(디버깅용)
  *   bun scripts/verify-tokens.ts --json             # 판정 전건을 JSON 으로(대조용)
+ *
+ * 기준선은 `scripts/tokens-baseline.json` 이고 손으로 고치지 않는다 —
+ * `--update-baseline` 이 결정론적으로 다시 쓴다.
  *
  * 문제가 있으면 종료코드 1.
  */
@@ -38,20 +42,42 @@ import { extract } from "./lib/tokens/extract.ts";
 import { color } from "./lib/tokens/color.ts";
 import { fallback } from "./lib/tokens/fallback.ts";
 import { docrule } from "./lib/tokens/docrule.ts";
+import { EXCEPTIONS, validateExceptions } from "./lib/tokens/exceptions.ts";
+import { selfTest } from "./lib/tokens/selftest.ts";
+import { BASELINE_PATH, ratchet, readBaseline, tally, writeBaseline } from "./lib/tokens/baseline.ts";
 import type { AxisModule, ScanContext } from "./lib/tokens/types.ts";
 
 const ROOT = process.cwd();
 const args = new Set(process.argv.slice(2));
 const WARN_ONLY = args.has("--warn-only");
 const AS_JSON = args.has("--json");
+const NO_SELF_TEST = args.has("--no-self-test");
+const UPDATE_BASELINE = args.has("--update-baseline");
 
 const MODULES: AxisModule[] = [color, fallback, docrule];
 
-const { files, dict, hits } = extract(ROOT);
-const ctx: ScanContext = { root: ROOT, files, dict, hits };
-
 const failures: string[] = [];
 const notes: string[] = [];
+
+// ── 다른 무엇보다 먼저 — 게이트가 자기 예외 표부터 검사한다.
+//    근거 문서 위치가 비었거나 그 줄이 없으면 여기서 끝난다. 예외를 늘리는 값이
+//    게이트를 무력화하는 값과 같아지면 안 된다(S10).
+for (const bad of validateExceptions(ROOT)) failures.push(`예외 표: ${bad}`);
+notes.push(
+  `예외 ${EXCEPTIONS.length}건 — ` +
+  EXCEPTIONS.map((e) => `${e.id}(${e.kind.join("+")}, 근거 ${e.evidence.length})`).join(" · "),
+);
+
+// ── 그다음 — 고장을 일부러 주입해 게이트가 아직 무는지 본다(S6).
+//    래칫은 "줄었다"를 통과로 읽으므로, 죽은 게이트와 다 갚은 게이트가 같은 모양이 된다.
+if (!NO_SELF_TEST) {
+  const st = selfTest(ROOT);
+  failures.push(...st.failures);
+  notes.push(...st.notes);
+}
+
+const { files, dict, hits } = extract(ROOT);
+const ctx: ScanContext = { root: ROOT, files, dict, hits };
 const verdicts = [];
 
 for (const m of MODULES) {
@@ -63,6 +89,19 @@ for (const m of MODULES) {
 
 const excluded = hits.filter((h) => h.excluded).length;
 const inScope = hits.length - excluded;
+
+// ── 래칫 — 제외분을 뺀 것만 센다. 생성물의 리터럴을 사람이 고칠 수는 없다.
+const scored = verdicts.filter((v) => !v.hit.excluded);
+const now = tally(scored, files.length);
+if (UPDATE_BASELINE) {
+  writeBaseline(ROOT, now);
+  console.log(`기준선을 갱신했다 — ${BASELINE_PATH}`);
+  for (const [k, n] of Object.entries(now.totals)) console.log(`  ${k} ${n}`);
+  process.exit(0);
+}
+const rat = ratchet(now, readBaseline(ROOT), scored);
+failures.push(...rat.failures);
+notes.push(...rat.notes);
 
 if (AS_JSON) {
   console.log(JSON.stringify({ root: ROOT, files: files.length, tokens: dict.byName.size,

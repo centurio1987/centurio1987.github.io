@@ -1,0 +1,13 @@
+/* 자가검사용 최소 정본. 실제 tokens.css 의 부분집합이고 값도 같다. */
+:root {
+  --paper: #F3EEE4;
+  --ink: #20264A;
+  --border: #d8d0be;
+  --accent: #2B3FD4;
+  --stroke: 1.5px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --card-radius: 14px;
+  --btn-radius: 999px;
+  --font-body: 'Gowun Dodum', sans-serif;
+}

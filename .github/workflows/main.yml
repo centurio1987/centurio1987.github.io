@@ -64,6 +64,16 @@ jobs:
           bun run gen:motion
           git diff --exit-code -- src/styles/motion.css \
             || { echo "::error::src/styles/motion.css is stale — run 'bun run gen:motion' and commit the result."; exit 1; }
+      - name: Token gate — ratchet on values that ignore the design tokens (KAN-070)
+        # Colors, spacing and radii that skip src/styles/tokens.css ship with build and
+        # types fully green — nothing but the eye catches them, which is how 1,300+ of
+        # them accumulated (design-concept/UI_CONSISTENCY_AUDIT.md). This is a RATCHET,
+        # not a wall: it fails when the count RISES above scripts/tokens-baseline.json.
+        # A wall would go red on the first push and, since deploy needs build, would stop
+        # the site from shipping until the whole debt is paid. Once the baseline reaches
+        # zero this becomes a plain hard fail. Static scan, no Playwright → CI-safe.
+        # Do NOT add --warn-only here: the escape hatch exists for local debugging only.
+        run: bun run tokens:verify
       - name: Build with Astro
         run: bunx --bun astro build
       - name: Verify rendered output has no stray emphasis markers
