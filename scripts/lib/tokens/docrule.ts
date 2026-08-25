@@ -64,12 +64,20 @@ grp("position", "top", "right", "bottom", "left", "inset");
 /** `DESIGN_CONCEPT.md` §9 — 기준 4px, 4·8·12·16·24·32·48·64·96px. 0 은 여백 없음이라 규칙 안이다. */
 const SPACING_SCALE: ReadonlySet<number> = new Set([0, 4, 8, 12, 16, 24, 32, 48, 64, 96]);
 /**
- * `DESIGN_CONCEPT.md` §5 — px 로 적힌 역할값만 넣는다.
- * Display·H1 은 `clamp(36px,5vw,60px)` · `clamp(28px,5vw,38px)` 이라 **범위**이지 고정
- * 역할값이 아니다. 감사 원본(`s4-docrules.py:23`)도 같은 다섯만 썼다 — 그래서 `38px`
- * 같은 clamp 상한이 "역할값 밖"으로 세어진다(감사 문서 정정 후보로 보고했다).
+ * `DESIGN_CONCEPT.md` §5 의 역할값.
+ *
+ * **감사 원본은 px 로 적힌 다섯만 썼고, 그것이 결함이었다.** §5 는 Display 를
+ * `clamp(36px, 5vw, 60px)`, H1 을 `clamp(28px, 5vw, 38px)` 로 정한다 — 그러니
+ * `36`·`60`·`28`·`38` 도 **문서가 정한 값**이다. 그 넷을 리터럴로 쓴 자리 14건
+ * (`28px` 6 · `38px` 5 · `36px` 2 · `60px` 1)이 원본에서는 "역할값 밖"으로 세어졌다.
+ * 문서를 지킨 자리를 위반으로 부른 것이라 고친다(유저 승인 2026-08-25).
+ *
+ * 옛 집합은 **재현용으로 남긴다** — `legacyFontRoles: true` 로 돌리면 감사 원본과
+ * 같은 글자 위반 166 이 나온다. 지우면 이식이 맞는지 확인할 길이 사라진다.
  */
-const FONT_ROLES: ReadonlySet<number> = new Set([26, 20, 18, 13, 12]);
+const FONT_ROLES: ReadonlySet<number> = new Set([60, 38, 36, 28, 26, 20, 18, 13, 12]);
+/** 감사 원본 `s4-docrules.py:23` 의 집합. 재현 검증에서만 쓴다. */
+const FONT_ROLES_LEGACY: ReadonlySet<number> = new Set([26, 20, 18, 13, 12]);
 /** Meta/Label 12–13px 이 문서상 최소치다. */
 const FONT_MIN = 12;
 
@@ -174,6 +182,8 @@ export interface DocruleOptions {
    * 켜면 `s4-docrules.json` 과 같은 수(간격 821 · 글자 166)가 나와야 한다.
    */
   legacySpacingAxis?: boolean;
+  /** 글자 역할값을 감사 원본의 다섯으로 되돌린다(재현 검증용). */
+  legacyFontRoles?: boolean;
 }
 
 export interface DocruleReport {
@@ -248,8 +258,11 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
       const [docLabel, verdict, why]: [string, Verdict["verdict"], string] =
         v === null
           ? [DOC_LABELS.fontNa, "판정 불가", "px 가 아니라 역할값과 못 잰다(clamp·vw·rem·em 등)"]
-          : FONT_ROLES.has(v)
-            ? [DOC_LABELS.fontIn, "준수", "DESIGN_CONCEPT.md §5 의 역할값(26·20·18·13·12px)"]
+          : (opts.legacyFontRoles ? FONT_ROLES_LEGACY : FONT_ROLES).has(v)
+            ? [DOC_LABELS.fontIn, "준수",
+               opts.legacyFontRoles
+                 ? "DESIGN_CONCEPT.md §5 의 역할값(감사 원본 집합 26·20·18·13·12px)"
+                 : "DESIGN_CONCEPT.md §5 의 역할값(clamp 끝값 60·38·36·28 포함)"]
             : v < FONT_MIN
               ? [DOC_LABELS.fontOffLow, "위반", `문서 최소치 12px 미만 (${hit.value})`]
               : [DOC_LABELS.fontOffHigh, "위반", `DESIGN_CONCEPT.md §5 역할값 밖 (${hit.value})`];
@@ -277,7 +290,7 @@ export const docrule: AxisModule = {
   run(ctx: ScanContext): AxisResult {
     const now = evaluateDocrule(ctx, {});
     // 옛 정의도 같이 낸다 — 재분류가 무엇을 옮겼는지 수로 보여야 사람이 판단할 수 있다.
-    const old = evaluateDocrule(ctx, { legacySpacingAxis: true });
+    const old = evaluateDocrule(ctx, { legacySpacingAxis: true, legacyFontRoles: true });
 
     const sViol = at(now.spacing, DOC_LABELS.spacingOff);
     const fViol = at(now.fontSize, DOC_LABELS.fontOffLow) + at(now.fontSize, DOC_LABELS.fontOffHigh);

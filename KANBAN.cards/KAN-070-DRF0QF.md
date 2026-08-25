@@ -2,7 +2,7 @@
 card: KAN-070-DRF0QF
 title: UI 토큰 게이트를 세운다 — verify-tokens 래칫 신설과 집필 규칙 개정
 created: 2026-08-25
-scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/fixtures/tokens/**, scripts/tokens-baseline.json, package.json, .github/workflows/main.yml, .claude/skills/react-sim/**, CLAUDE.md
+scope: design-concept/UI_CONSISTENCY_AUDIT.md, scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/fixtures/tokens/**, scripts/tokens-baseline.json, package.json, .github/workflows/main.yml, .claude/skills/react-sim/**, CLAUDE.md
 ---
 
 # KAN-070-DRF0QF — UI 토큰 게이트를 세운다 — verify-tokens 래칫 신설과 집필 규칙 개정
@@ -170,3 +170,4 @@ scripts/lib/tokens/docrule.ts       S5 — 문서 축 + 축 재분류    ↔ s4-
 - 2026-08-25T01:59 · s:9eba7c52 · S5 doing — 착수
 - 2026-08-25T01:59 · s:9eba7c52 · S5 done — 문서 축 이식 + 축 재분류. 옛 정의로 간격 821·글자 166 을 히트 단위까지 재현하고, 새 정의로 여백 572 · 치수 235 · 위치 172 로 갈랐다. 위치 상위 파일이 deco.astro(26)·PhotoFrame(23)·viz-frame(12) 로 deco-kit 이 못박은 실측 좌표 파일 셋과 그대로 겹친다. 감사 문서 정정 9곳을 목록으로 냈고(문서는 안 고쳤다), clamp 끝값 14건이 글자 위반으로 세어지는 원본 결함은 재현을 위해 그대로 두고 판단 항목으로 올린다
 - 2026-08-25T01:59 · s:9eba7c52 — 배치3 종료 검증: color 1,306 + docrule 2,233 = 3,539 로 감사 rows 전량과 auditLabel 기준 차집합 0. fallback 은 별도 참조(s4-fallback.json) 108자리 차집합 0. 판정을 두 층으로 갈랐다 — verdict(최종, 게이트가 무는 값) / auditLabel(1차, 감사 대조용). 한 필드로 뭉치면 docrule 의 롤업과 color 의 1차 이름이 같은 자리에 섞여 S7 베이스라인이 조용히 틀린 수를 낸다
+- 2026-08-25T12:28 · s:9eba7c52 — 감사 문서 정정 14곳 반영(유저 승인 2026-08-25) — §0 표·준수율(1,303/44.3% → 1,266/47.9%) · §3-1 넷 · §3-5 간격표+글자표+정정 각주 둘 · P1-4 · 로드맵④ · 부록A 해시. clamp 끝값을 역할값에 넣어 글자 위반 166→152, 문서 규칙 밖 738→724, 최종 위반 1,304. 옛 정의는 legacySpacingAxis·legacyFontRoles 로 그대로 재현된다. 감사 문서 소유를 KAN-072 에서 KAN-070 으로 옮겼다 — 게이트가 재현해야 하는 측정 기록이지 디자인 규칙이 아니다
