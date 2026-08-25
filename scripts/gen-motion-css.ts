@@ -115,6 +115,48 @@ const header = `/*
  *   bun run gen:motion && git diff --exit-code src/styles/motion.css
  */`;
 
+/**
+ * KAN-059 — 첫 화면 그림이 폰트보다 먼저 도착하게 만들면서 들어온 계약.
+ *
+ * **이 블록이 처음엔 생성물(`src/styles/motion.css`)에 손으로 붙어 있었다.** 생성기가
+ * 그것을 모르니 `gen:motion` 이 매번 지웠고, CI 의 드리프트 가드가 그것을 잡아
+ * **2026-07-31 부터 빌드가 33회 연속 실패했다** — build → deploy 가 한 잡이라 그동안
+ * 사이트가 한 번도 배포되지 않았다. 생성물에 손을 대면 조용히 되돌아간다는 규칙이
+ * 실제로 어떻게 무는지를 보여 준 자리다. 그래서 여기로 옮겼다(2026-08-25).
+ *
+ * 내용은 옮기기 전과 한 글자도 다르지 않다 — 템플릿 리터럴이라 백틱만 이스케이프했다.
+ */
+const IMGWAIT_CONTRACT = `
+/* --- 이미지 도착 대기 계약 (blog-owned, KAN-059) ---------------------------
+ * \`[data-imgwait]\` 는 **그림이 도착할 때까지 자리를 비워 두는** 표식이다.
+ * BaseLayout.astro 의 \`is:inline\` 스크립트(arm)가 준비되면 data-imgready 를 세팅한다.
+ *
+ * 왜 개별 이미지 페이드가 아니라 "판 단위 대기"인가 —
+ * 홈 히어로에서 늦게 뜨는 건 그림 한 장이 아니라 **구도**였다. 말풍선·테이프·반짝·
+ * 이름표는 CSS/SVG 라 즉시 그려지는데 주인공(마스코트 래스터)만 늦어서, 데코가 빈
+ * 모눈종이를 가리키며 말을 거는 화면이 몇 백 ms 씩 떴다(실측 스크린샷). 그래서
+ * 마스코트가 준비될 때까지 **판 전체**를 비워 두고 한 번에 들여보낸다.
+ *
+ * 안전 원칙은 리빌 계약과 같다(콘텐츠는 절대 못 숨긴다):
+ *  - 숨김은 <html class="reveal-ready"> 뒤에서만 산다. 무JS·reduced-motion·IO 미지원이면
+ *    클래스가 없어 **지금과 똑같이** 즉시 보인다.
+ *  - arm 에 상한 타임아웃(3s)이 있어 그림이 영영 안 와도(404·오프라인) 반드시 보인다.
+ *  - 대기 대상은 판이지 텍스트가 아니다 — 히어로 제목·CTA 는 그대로 먼저 뜬다.
+ *  - ⚠ **표시하는 쪽은 reveal-ready 를 조건으로 삼지 않는다.** 숨기는 건 이 클래스지만,
+ *    표시까지 여기 걸면 View Transitions 와 경합한다: 스왑이 <html> 의 class 를 새 문서
+ *    것으로 갈아치워 page-load 시점엔 클래스가 없고 그 직후에 다시 붙는데, 그 틈에
+ *    "숨기는 게 없으니 할 일도 없다"며 빠져나가면 표시할 사람이 사라져 사진이 영영
+ *    opacity 0 으로 굳는다(상한 타임아웃도 등록 전이라 안 걸린다). 한 번 겪은 회귀이고
+ *    실측 트레이스는 BaseLayout 의 arm 주석에 있다. reveal.ts 가 같은 자리에서
+ *    reveal-ready 를 **스스로 붙이고 진행**하는 것이 이 계약의 올바른 모양이다.        */
+html.reveal-ready [data-imgwait] { opacity: 0; }
+html.reveal-ready [data-imgwait][data-imgready] {
+  opacity: 1;
+  transition: opacity var(--bbangto-motion-duration-slow)
+    var(--bbangto-motion-easing-out);
+}
+`;
+
 const out = [
   header,
   "",
@@ -127,6 +169,8 @@ const out = [
   MOTION_CSS.trim(),
   "",
   REVEAL_CONTRACT.trim(),
+  "",
+  IMGWAIT_CONTRACT.trim(),
   "",
 ].join("\n");
 

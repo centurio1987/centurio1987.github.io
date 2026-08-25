@@ -72,8 +72,13 @@ while IFS= read -r f; do
 done <<< "$STAGED"
 
 # secret 패턴 검사 (staged 추가분만)
+#   값의 **첫 글자에서만** `-` 를 뺀다. CSS 커스텀 프로퍼티는 항상 `--` 로 시작해서
+#   `"token": "--cat-architecture"` 같은 줄이 값 자리에 걸렸다(KAN-070 에서 감사 원자료
+#   회수가 이것으로 막혔다 — 히트 5건 전부 `--cat-*` 였고 `-` 로 안 시작하는 히트는 0건).
+#   `-` 로 시작하는 진짜 크리덴셜은 사실상 없고, `-----BEGIN … PRIVATE KEY` 는 앞의
+#   별도 패턴이 따로 잡는다. 첫 글자만 빼므로 값 안쪽의 `-` 는 그대로 매칭한다.
 if git diff --cached -U0 | grep -nE \
-  'BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY|AKIA[0-9A-Z]{16}|(api[_-]?key|secret|token|password)["'"'"' ]*[:=]["'"'"' ]*[A-Za-z0-9/+_-]{16,}|sk-[A-Za-z0-9]{20,}' \
+  'BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY|AKIA[0-9A-Z]{16}|(api[_-]?key|secret|token|password)["'"'"' ]*[:=]["'"'"' ]*[A-Za-z0-9/+_][A-Za-z0-9/+_-]{15,}|sk-[A-Za-z0-9]{20,}' \
   >/tmp/_secret_hits 2>/dev/null; then
   echo "잠재적 secret이 staged diff에 감지됨. 중단(수동 확인 필요):" >&2
   cat /tmp/_secret_hits >&2
