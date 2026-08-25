@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 292,
+  "next_seq": 293,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -808,7 +808,7 @@
       ]
     },
     "KAN-070-DRF0QF": {
-      "col": "doing",
+      "col": "review",
       "title": "UI 토큰 게이트를 세운다 — verify-tokens 래칫 신설과 집필 규칙 개정",
       "verbatim": "위 artifact를 보고 전략과 실행 계획을 수립해라",
       "생성": "ai",
@@ -1052,7 +1052,6 @@
     "KAN-003",
     "KAN-004",
     "KAN-005",
-    "KAN-070-DRF0QF",
     "KAN-064",
     "KAN-062",
     "KAN-009",
@@ -1105,9 +1104,20 @@
     "KAN-066-KK9Q50",
     "KAN-067-NH9SDQ",
     "KAN-068-5KMRV8",
-    "KAN-069-M724GH"
+    "KAN-069-M724GH",
+    "KAN-070-DRF0QF"
   ],
   "recent": [
+    {
+      "seq": 292,
+      "t": "2026-08-25T13:38",
+      "a": "ai",
+      "id": "KAN-070-DRF0QF",
+      "op": "move",
+      "w": "9X26DD",
+      "from": "doing",
+      "to": "review"
+    },
     {
       "seq": 291,
       "t": "2026-08-25T12:25",
@@ -1681,17 +1691,6 @@
       "op": "create",
       "col": "backlog",
       "title": "집필 엔진이 바뀌었다. 기존의 글을 재집필 할 계획을 세워라.",
-      "memo": "",
-      "verbatim": ""
-    },
-    {
-      "seq": 242,
-      "t": "2026-08-04T11:14",
-      "a": "유저",
-      "id": "KAN-063",
-      "op": "create",
-      "col": "backlog",
-      "title": "액자 프레임을 디자인 해라. 액자 프레임은 vis 를 데코레이트 하는 목적으로 사용할 거다. 패턴 별로 몇 가지 스크래치로 작성해서, 예시와 함께 별도의 예시 페이지를 랜더링 해서 제공해라. 보고 검토하고 피드백 해서 최종 결정 하겠다.",
       "memo": "",
       "verbatim": ""
     }
