@@ -44,7 +44,7 @@ import { fallback } from "./lib/tokens/fallback.ts";
 import { docrule } from "./lib/tokens/docrule.ts";
 import { EXCEPTIONS, validateExceptions } from "./lib/tokens/exceptions.ts";
 import { selfTest } from "./lib/tokens/selftest.ts";
-import { BASELINE_PATH, ratchet, readBaseline, tally, writeBaseline } from "./lib/tokens/baseline.ts";
+import { BASELINE_PATH, auditBasis, ratchet, readBaseline, tally, writeBaseline } from "./lib/tokens/baseline.ts";
 import type { AxisModule, ScanContext } from "./lib/tokens/types.ts";
 
 const ROOT = process.cwd();
@@ -79,12 +79,14 @@ if (!NO_SELF_TEST) {
 const { files, dict, hits } = extract(ROOT);
 const ctx: ScanContext = { root: ROOT, files, dict, hits };
 const verdicts = [];
+const classify = [];   // color · docrule — 감사 §0 표와 같은 구성(fallback 은 그 표 밖이다)
 
 for (const m of MODULES) {
   const r = m.run(ctx);
   failures.push(...r.failures);
   notes.push(...r.notes);
   verdicts.push(...r.verdicts);
+  if (m.id !== "fallback") classify.push(...r.verdicts);
 }
 
 const excluded = hits.filter((h) => h.excluded).length;
@@ -102,6 +104,16 @@ if (UPDATE_BASELINE) {
 const rat = ratchet(now, readBaseline(ROOT), scored);
 failures.push(...rat.failures);
 notes.push(...rat.notes);
+
+// 두 수를 한 자리에서 함께 낸다 — 감사 문서와 손으로 대조하지 않게(검토 항목 2).
+notes.push(
+  "감사 기준(제외분 포함 · fallback 제외 — UI_CONSISTENCY_AUDIT.md §0 과 같은 구성): " +
+  Object.entries(auditBasis(classify)).map(([k, n]) => `${k} ${n}`).join(" · "),
+);
+notes.push(
+  "래칫 기준(제외분 빼고 · fallback 포함 — 지금 고쳐야 할 것): " +
+  Object.entries(now.totals).map(([k, n]) => `${k} ${n}`).join(" · "),
+);
 
 if (AS_JSON) {
   console.log(JSON.stringify({ root: ROOT, files: files.length, tokens: dict.byName.size,

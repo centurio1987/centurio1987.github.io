@@ -60,6 +60,27 @@ function judgeAxis(v: Verdict): string {
 
 export const isRatcheted = (v: Verdict) => (RATCHETED as readonly string[]).includes(v.verdict);
 
+/**
+ * **감사 기준 집계** — `design-concept/UI_CONSISTENCY_AUDIT.md` §0 표와 같은 구성으로 센다.
+ *
+ * 왜 두 벌을 내나. 게이트가 세는 것과 감사가 센 것은 **구성이 다르다** —
+ * 게이트는 제외분(생성물·복제물)을 빼고 세고 `fallback` 축을 함께 세는데, 감사 §0 은
+ * 제외분까지 포함하고 `fallback` 은 별도 파일(`s4-fallback.json`)로 뺐다. 둘 다 맞지만
+ * **숫자가 다르면 다음 사람이 먼저 의심하는 것은 게이트다.**
+ *
+ * 그렇다고 기준을 하나로 접을 수는 없다. 게이트가 감사처럼 세면 아무도 고칠 수 없는
+ * 생성물의 리터럴을 부채로 세게 되고, 감사가 게이트처럼 세면 그때 실제로 무엇을 봤는지가
+ * 기록에서 사라진다. **대신 사람이 손으로 맞추지 않게 한다** — 게이트가 두 수를 한 자리에서
+ * 함께 내고, 감사 문서는 「현재 수는 게이트가 낸다」고 적은 뒤 다시 안 고친다.
+ */
+export function auditBasis(classifyVerdicts: Verdict[]): Record<string, number> {
+  // 인자는 `color`·`docrule` 판정만이다 — `fallback` 은 감사 §0 표 밖이라 진입점이 빼고 넘긴다.
+  // 제외분은 **빼지 않는다**: 감사는 생성물의 리터럴까지 세어 3,539 를 만들었다.
+  const t: Record<string, number> = {};
+  for (const v of classifyVerdicts) t[v.verdict] = (t[v.verdict] ?? 0) + 1;
+  return Object.fromEntries(Object.entries(t).sort(([a], [b]) => (a < b ? -1 : 1)));
+}
+
 export function tally(verdicts: Verdict[], srcFiles: number): Baseline {
   const counts: Record<string, number> = {};
   const totals: Record<string, number> = {};

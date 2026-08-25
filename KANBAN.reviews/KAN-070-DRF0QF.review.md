@@ -24,9 +24,10 @@ status: 검토 대기
 | 베이스 | `1512ded` |
 | 변경 훑기 | `git diff 1512ded...HEAD` |
 
-**커밋 10건**
+**커밋 11건**
 
 ```text
+0adeb7b kanban: KAN-070-DRF0QF 검토 요청 — work 10/10, 검증 6항 통과, 판단 항목 6건
 f9ed3bd Merge branch 'main' into KAN-070-DRF0QF
 2e063ac KAN-070-DRF0QF S10·S6·S7·S8: 예외 표를 자기검증으로, 자가검사로 게이트의 죽음을 잡고, 래칫을 CI 에 건다
 196cfb6 hotfix(ci): 손으로 붙인 imgwait 계약을 생성기로 옮긴다 — motion.css 드리프트로 2026-07-31 부터 배포가 33회 멈춰 있었다
@@ -39,15 +40,17 @@ e922b29 KAN-070-DRF0QF S1: 감사 판정기와 출력 JSON 을 레포로 회수�
 8dd9baa git guard: secret 패턴이 CSS 커스텀 프로퍼티를 오탐하던 것을 고친다 — 값 첫 글자에서만 하이픈을 뺀다
 ```
 
-**변경 파일 57개 (+5505 −93)**
+**변경 파일 61개 (+6943 −106)**
 
 | 파일 | 상태 | 추가 | 삭제 |
 |---|:--:|---:|---:|
 | `.claude/skills/react-sim/assets/REACT_SIM_GUIDE.md` | M | 17 | 2 |
 | `.github/workflows/main.yml` | M | 10 | 0 |
-| `.kanban/archive.jsonl` | M | 2 | 0 |
-| `.kanban/log.md` | M | 2 | 2 |
-| `.kanban/state.json` | M | 30 | 29 |
+| `.kanban/archive.jsonl` | M | 3 | 0 |
+| `.kanban/log.md` | M | 3 | 3 |
+| `.kanban/reviews/KAN-070-DRF0QF.events.jsonl` | M | 6 | 0 |
+| `.kanban/reviews/KAN-070-DRF0QF.review.json` | M | 21 | 0 |
+| `.kanban/state.json` | M | 41 | 41 |
 | `CLAUDE.md` | M | 17 | 0 |
 | `KANBAN.batches/KAN-070-DRF0QF.batch1.md` | M | 50 | 2 |
 | `KANBAN.batches/KAN-070-DRF0QF.batch2.md` | M | 35 | 1 |
@@ -56,7 +59,9 @@ e922b29 KAN-070-DRF0QF S1: 감사 판정기와 출력 JSON 을 레포로 회수�
 | `KANBAN.board.html` | M | 235 | 5 |
 | `KANBAN.cards/KAN-070-DRF0QF.md` | M | 36 | 11 |
 | `KANBAN.cards/KAN-072-CPJCT1.md` | M | 1 | 1 |
-| `KANBAN.md` | M | 11 | 11 |
+| `KANBAN.md` | M | 12 | 11 |
+| `KANBAN.reviews/KAN-070-DRF0QF.review.html` | M | 1117 | 0 |
+| `KANBAN.reviews/KAN-070-DRF0QF.review.md` | M | 280 | 0 |
 | `design-concept/UI_CONSISTENCY_AUDIT.md` | M | 51 | 24 |
 | `package.json` | M | 1 | 0 |
 | `scripts/fixtures/tokens/faults/base/src/components/Ok.astro` | M | 15 | 0 |
@@ -182,6 +187,16 @@ kan/KAN-070-DRF0QF/batch4
 
 6) 판정 불가능한 낱말이 규칙 문서에 없다
    PASS  REACT_SIM_GUIDE.md · CLAUDE.md 에 남은 '조화' 2건은 전부 '옛 규칙은 …이었다'·'…는 규칙이 아니다' 문맥
+
+--- 검토 반영 (2026-08-25) ---
+항목 2 반려 반영 — 게이트가 두 기준을 한 자리에서 함께 출력한다:
+   감사 기준(제외분 포함 · fallback 제외): 드리프트 71 · 위반 1304 · 정당한 예외 3 · 준수 1266 · 판정 불가 895
+     → UI_CONSISTENCY_AUDIT.md §0 표와 정확히 일치(합계 3,539)
+   래칫 기준(제외분 빼고 · fallback 포함): 드리프트 90 · 위반 1305 · 준수 1304 · 판정 불가 890
+   감사 §0 에 「이 표는 기록이지 장부가 아니다 — 다시 고치지 않는다」 동결 선언을 박았다
+항목 3 승인 반영 — 아티팩트를 정정 수치로 재발행(같은 URL, 정정 배너 포함)
+   https://claude.ai/code/artifact/85f8a1f2-49f6-4692-aaa7-8dec32fe0940
+회귀 재확인 — 게이트 exit 0 · check-emphasis 통과
 ```
 
 ## 3. 판단 항목 — 스크립트가 판정할 수 없는 것
