@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 294,
+  "next_seq": 295,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -1029,6 +1029,27 @@
       "memo": "따뜻한 회색 4종은 흡수하고 상태 역할 5종은 C2 의 --state-* 로 간다. --sim-* 전용 층은 안 만든다(deco.css 1-33행의 조건 2를 못 넘는다). 매핑표는 코드모드 변환표이지 레포 파일이 아니다 — posts 자급식 원칙(REACT_SIM_GUIDE.md:10). 마스코트 28은 치환이 아니라 팔레트를 DESIGN_CONCEPT 7절에 적는 일이다",
       "memo_hash": "88b7f080621300e41919d08238b01b2105943034",
       "parent": "KAN-072-CPJCT1"
+    },
+    "KAN-072.7-D6DCXJ": {
+      "col": "todo",
+      "title": "게이트 인식층 — 토큰 이름 규칙을 하드코딩에서 데이터로 뺀다",
+      "verbatim": "",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-08-27",
+      "title_hash": "c514badb1440d598a401a34d83e5b5afcc18203f",
+      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "short": "게이트 인식층",
+      "short_hash": "f9c4f9930bb537bd2009ac04a385b063a227ba90",
+      "purpose": "신설 토큰을 게이트가 자기 축으로 읽게 한다",
+      "purpose_hash": "ee14aa15bde01f5b99cfe0ad955c8ad4efb4093f",
+      "reason": "지금은 토큰 이름이 코드에 박혀 있어 새 토큰 5종이 게이트에 안 잡히고, 그러면 토큰을 세워도 위반 수가 안 준다",
+      "reason_hash": "98fa3da92af8d1d1de317aeb26c3206951b75eb1",
+      "goal": "tokens.css 에 토큰을 더하면 게이트가 그 축으로 자동 판정한다 — 코드를 다시 안 고친다",
+      "goal_hash": "18da1bc70614c97647400af6ac8a1eec621bd10f",
+      "memo": "KAN-070 전략이 전제했으나 구현 안 된 전환. color.ts:54 COLOR_TOKENS 18개 고정 · :66 --stroke 정확 일치 · docrule.ts:66,79 SPACING_SCALE/FONT_ROLES 상수. radius 만 color.ts:64 includes 라 이미 자동이다. 자가검사가 reason 문자열을 매칭하므로(selftest.ts:69) 판정 문구를 바꾸면 픽스처도 함께 간다. 이 카드만 scripts/lib/tokens/** scope 를 진다 — 유저 선택 2026-08-27",
+      "memo_hash": "5d4faf775f7a38eb4a8d74bd985fea14ab3bdc3a",
+      "parent": "KAN-072-CPJCT1"
     }
   },
   "order": [
@@ -1047,6 +1068,7 @@
     "KAN-071-6361MY",
     "KAN-072-CPJCT1",
     "KAN-072.1-5XC1AT",
+    "KAN-072.7-D6DCXJ",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -1108,6 +1130,23 @@
     "KAN-070-DRF0QF"
   ],
   "recent": [
+    {
+      "seq": 294,
+      "t": "2026-08-27T01:05",
+      "a": "ai",
+      "id": "KAN-072.7-D6DCXJ",
+      "op": "create",
+      "w": "WTCH92",
+      "col": "todo",
+      "title": "게이트 인식층 — 토큰 이름 규칙을 하드코딩에서 데이터로 뺀다",
+      "verbatim": "",
+      "parent": "KAN-072-CPJCT1",
+      "short": "게이트 인식층",
+      "purpose": "신설 토큰을 게이트가 자기 축으로 읽게 한다",
+      "reason": "지금은 토큰 이름이 코드에 박혀 있어 새 토큰 5종이 게이트에 안 잡히고, 그러면 토큰을 세워도 위반 수가 안 준다",
+      "goal": "tokens.css 에 토큰을 더하면 게이트가 그 축으로 자동 판정한다 — 코드를 다시 안 고친다",
+      "memo": "KAN-070 전략이 전제했으나 구현 안 된 전환. color.ts:54 COLOR_TOKENS 18개 고정 · :66 --stroke 정확 일치 · docrule.ts:66,79 SPACING_SCALE/FONT_ROLES 상수. radius 만 color.ts:64 includes 라 이미 자동이다. 자가검사가 reason 문자열을 매칭하므로(selftest.ts:69) 판정 문구를 바꾸면 픽스처도 함께 간다. 이 카드만 scripts/lib/tokens/** scope 를 진다 — 유저 선택 2026-08-27"
+    },
     {
       "seq": 293,
       "t": "2026-08-26T17:42",
@@ -1682,16 +1721,6 @@
       "field": "title",
       "before": "액자 프레임을 디자인 해라. 액자 프레임은 vis 를 데코레이트 하는 목적으로 사용할 거다. 패턴 별로 몇 가지 스크래치로 작성해서, 예시와 함께 별도의 예시 페이지를 랜더링 해서 제공해라. 보고 검토하고 피드백 해서 최종 결정 하겠다.",
       "after": "viz 도식을 감싸는 액자 프레임 디자인 — 패턴 스크래치 + 예시 페이지"
-    },
-    {
-      "seq": 244,
-      "t": "2026-08-04T11:15",
-      "a": "ai",
-      "id": "KAN-063",
-      "op": "edit",
-      "field": "verbatim",
-      "before": "",
-      "after": "액자 프레임을 디자인 해라. 액자 프레임은 vis 를 데코레이트 하는 목적으로 사용할 거다. 패턴 별로 몇 가지 스크래치로 작성해서, 예시와 함께 별도의 예시 페이지를 랜더링 해서 제공해라. 보고 검토하고 피드백 해서 최종 결정 하겠다."
     }
   ],
   "layout": 2,
