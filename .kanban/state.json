@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 293,
+  "next_seq": 294,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -808,12 +808,12 @@
       ]
     },
     "KAN-070-DRF0QF": {
-      "col": "review",
+      "col": "done",
       "title": "UI 토큰 게이트를 세운다 — verify-tokens 래칫 신설과 집필 규칙 개정",
       "verbatim": "위 artifact를 보고 전략과 실행 계획을 수립해라",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-25",
+      "갱신": "2026-08-26",
       "title_hash": "c1db619f8dee01f9f79da3712ed00166ce39bd01",
       "verbatim_hash": "d974799dd590aa8904c89759a571462d678add6c",
       "short": "토큰 게이트 신설",
@@ -1108,6 +1108,16 @@
     "KAN-070-DRF0QF"
   ],
   "recent": [
+    {
+      "seq": 293,
+      "t": "2026-08-26T17:42",
+      "a": "ai",
+      "id": "KAN-070-DRF0QF",
+      "op": "move",
+      "w": "9X26DD",
+      "from": "review",
+      "to": "done"
+    },
     {
       "seq": 292,
       "t": "2026-08-25T13:38",
@@ -1682,17 +1692,6 @@
       "field": "verbatim",
       "before": "",
       "after": "액자 프레임을 디자인 해라. 액자 프레임은 vis 를 데코레이트 하는 목적으로 사용할 거다. 패턴 별로 몇 가지 스크래치로 작성해서, 예시와 함께 별도의 예시 페이지를 랜더링 해서 제공해라. 보고 검토하고 피드백 해서 최종 결정 하겠다."
-    },
-    {
-      "seq": 243,
-      "t": "2026-08-04T11:14",
-      "a": "유저",
-      "id": "KAN-064",
-      "op": "create",
-      "col": "backlog",
-      "title": "집필 엔진이 바뀌었다. 기존의 글을 재집필 할 계획을 세워라.",
-      "memo": "",
-      "verbatim": ""
     }
   ],
   "layout": 2,
