@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- kanban-fp:1f738d31cd597b24ced4e5512ea02f81e7bdcaf8 -->
+<!-- kanban-fp:c46159e92bb2d8efd7ed3d848c6a97e83807851c -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KAN-070-DRF0QF 검토 요청</title>
 <style>
@@ -600,7 +600,7 @@ textarea { line-height: 1.6; resize: vertical; }
   </div>
   <div class="dh-sep"></div>
   <div class="dh-act">
-    <span class="tag tag-doing">검토 대기</span>
+    <span class="tag tag-done">승인</span>
     </div>
 </div>
 <div class="dh-meta">변경 61파일 · +6943 −106 · 커밋 11 · 롤백 태그 14 · 추가 의견 9</div>
@@ -759,7 +759,11 @@ kan/KAN-070-DRF0QF/batch1
 kan/KAN-070-DRF0QF/batch2
 kan/KAN-070-DRF0QF/batch3
 kan/KAN-070-DRF0QF/batch4</pre></details>
-
+<details><summary>판정 — 문서 전체 이력<span class="fold-n">1건</span></summary><section class="card"><p><strong>판정</strong>: 승인</p>
+<p><strong>판정 이력</strong>:</p>
+<ul>
+<li>승인 · 유저 · 2026-08-26</li>
+</ul></section></details>
 
 <p class="meta">생성 근거: .kanban/reviews/KAN-070-DRF0QF.review.json
 · KANBAN.md · 갱신 2026-08-25</p>
@@ -780,7 +784,7 @@ kan/KAN-070-DRF0QF/batch4</pre></details>
 </div>
 <div class="modal" id="modal"><div class="box" id="modal-box"></div></div>
 <div class="toast" id="toast"></div>
-<script type="application/json" id="review-ops">{"card": "KAN-070-DRF0QF", "serve": false, "cli": {"py": "python3", "kanban": "/Users/centurio/.claude/skills/manage-kanban/scripts/kanban.py", "report": "/Users/centurio/.claude/skills/manage-kanban/scripts/report.py", "root": "/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-070-DRF0QF", "card": "KAN-070-DRF0QF"}, "items": [{"idx": 1, "text": "게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검토를 받는가"}, {"idx": 2, "text": "게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 아니라 기준이 둘이라는 설명으로 충분한가"}, {"idx": 3, "text": "발행된 아티팩트가 낡았다 — 재발행할 것인가"}, {"idx": 4, "text": "게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 파일 관례에서 벗어난 것을 인정하는가"}, {"idx": 5, "text": "감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가"}, {"idx": 6, "text": "CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가"}, {"idx": 7, "text": "이 카드가 KAN-072 의 카드 문서를 고쳤다 — scope 이탈을 인정하는가"}]}</script>
+<script type="application/json" id="review-ops">{"card": "KAN-070-DRF0QF", "serve": false, "token": null, "cli": {"py": "python3", "kanban": "/Users/centurio/.claude/skills/manage-kanban/scripts/kanban.py", "report": "/Users/centurio/.claude/skills/manage-kanban/scripts/report.py", "root": "/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-070-DRF0QF", "card": "KAN-070-DRF0QF"}, "items": [{"idx": 1, "text": "게이트가 CI 에서 실제로 도는 것은 병합 뒤다 — 그대로 검토를 받는가"}, {"idx": 2, "text": "게이트가 세는 수가 감사 문서의 수와 다르다 — 어긋난 것이 아니라 기준이 둘이라는 설명으로 충분한가"}, {"idx": 3, "text": "발행된 아티팩트가 낡았다 — 재발행할 것인가"}, {"idx": 4, "text": "게이트가 파일 넷이 됐다 — 기존 verify-*.ts 단일 파일 관례에서 벗어난 것을 인정하는가"}, {"idx": 5, "text": "감사 정본을 두 번 고쳤다 — 정정 각주 방식에 동의하는가"}, {"idx": 6, "text": "CI 를 이 카드 밖 별도 커밋으로 고친 것을 인정하는가"}, {"idx": 7, "text": "이 카드가 KAN-072 의 카드 문서를 고쳤다 — scope 이탈을 인정하는가"}]}</script>
 <script>
 
 'use strict';
@@ -1044,7 +1048,11 @@ async function save(andClose) {
   try {
     const r = await fetch('/apply', {method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({card: DATA.card, patch: sent, close: !!andClose})});
+      /* 토큰은 **서버가 그린 화면에만** 실린다. 정적 파일에서는 null 이지만 그쪽은
+         애초에 이 fetch 가 안 뜬다(DATA.serve 가드). 옛 탭은 옛 토큰을 그대로 들고
+         있어 서버가 그것으로 걸러낸다. */
+      body: JSON.stringify({card: DATA.card, token: DATA.token, patch: sent,
+                            close: !!andClose})});
     const out = await r.json();
     const done = (out.applied || []).length;
     if (out.ok) {
@@ -1071,6 +1079,16 @@ async function save(andClose) {
          서버는 그것을 다 보낸 뒤에 닫는다 — 먼저 닫으면 이 새로고침이 연결 거부로 깨져서
          유저는 반영이 됐는지 못 본 채 빈 오류 화면을 받는다. */
       location.reload();
+    } else if (out.ghost) {
+      /* **유령 탭이다.** 서버가 한 줄도 안 썼고 큐도 그대로다 — 그러니 여기서 할 말은
+         「어디까지 갔는가」(partialReport)가 아니라 **큐를 어떻게 빼내는가**다.
+         새로고침이 곧 큐 소멸이라, 새로고침을 권하는 대신 명령을 눈앞에 띄운다. */
+      stopped = true;
+      sync();
+      alert(failDetail(out) + '\n\n'
+        + `대기에 남은 것 ${queue.length}건 — 한 건도 검토서에 안 들어갔습니다.\n`
+        + '이어서 뜨는 창의 명령을 터미널에 옮긴 뒤 새로고침하세요.');
+      showExport();
     } else {
       const at = sent[done];         // 덜어내기 전에 집는다 — 보낸 묶음 기준이다
       if (done) {
