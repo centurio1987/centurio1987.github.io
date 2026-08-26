@@ -16,6 +16,8 @@
  * 순간부터 정본은 토큰이고, 두 스케일은 문서 상수가 아니라 **토큰 값에서 만들어진다**
  * (`spacingScale`·`fontRoles`). 토큰이 하나도 없을 때만 지금까지의 상수로 돌아간다 —
  * 폴백이 있어야 인식층을 여는 변경이 판정을 한 건도 안 옮긴다.
+ * **글자 하한도 같이 파생된다**(`fontMinOf`) — 집합만 토큰에서 오고 하한이 문서 상수로 남으면
+ * 게이트가 방금 세운 역할값(`--text-nano: 10px`)을 다시 위반으로 부른다.
  *
  * ── 왜 축을 셋으로 가르는가 (이 모듈의 핵심)
  * 감사의 `spacing` 축 정의(`s3-scan.py:34-38`)는 CSS 속성 26개를 한 통에 넣었다.
@@ -85,8 +87,19 @@ const SPACING_SCALE_DOC: ReadonlySet<number> = new Set([0, 4, 8, 12, 16, 24, 32,
 const FONT_ROLES_DOC: ReadonlySet<number> = new Set([60, 38, 36, 28, 26, 20, 18, 13, 12]);
 /** 감사 원본 `s4-docrules.py:23` 의 집합. 재현 검증에서만 쓴다. */
 const FONT_ROLES_LEGACY: ReadonlySet<number> = new Set([26, 20, 18, 13, 12]);
-/** Meta/Label 12–13px 이 문서상 최소치다. */
-const FONT_MIN = 12;
+/**
+ * 글자 크기 하한 — **역할값 집합의 최소값**이지 상수가 아니다 (KAN-072).
+ *
+ * 문서 §5 의 「Meta/Label 12–13px」을 12 로 박아 뒀었는데, 그러면 스케일 집합만 토큰에서
+ * 파생시켜도(`fontRoles`) 하한은 문서에 묶인 채로 남는다. `--text-micro: 11px` ·
+ * `--text-nano: 10px` 을 세운 순간 게이트가 **자기가 방금 역할값으로 인정한 크기를 다시
+ * "최소치 미만 — 위반" 으로 부르는** 상태가 되고, 그 모순은 빌드도 타입도 안 잡는다.
+ *
+ * 집합의 최소값을 쓰면 폴백일 때 자동으로 12 다 — `FONT_ROLES_DOC` 도 `FONT_ROLES_LEGACY`
+ * 도 최소가 12 라, 토큰이 없어 문서 상수로 돌아갈 때의 판정은 한 건도 안 움직인다.
+ */
+const FONT_MIN_FALLBACK = 12;
+const fontMinOf = (s: ReadonlySet<number>): number => (s.size ? Math.min(...s) : FONT_MIN_FALLBACK);
 
 const PX = /^(-?\d*\.?\d+)px$/;
 /** px 값의 크기. 음수 여백도 스케일로 재므로 절댓값을 쓴다(`-14px` → 14). */
@@ -165,16 +178,20 @@ type AuditLabel = "준수" | "드리프트" | "위반" | "정당한 예외" | "�
  * 그것을 `stroke`·`layout` 으로 갈랐다(`s4-classify.py:44-55`). 이 차이를 무시하면
  * `--content-max: 720px` 때문에 `max-width: 720px` 이 드리프트로 잡혀 감사와 어긋난다.
  *
- * 지금 `tokens.css` 로는 한 건도 안 잡힌다(감사도 0 이다). 간격·글자 크기 토큰이 아직
- * 없고 `--font-*` 는 값이 서체 이름이라 px 리터럴과 같아질 수 없기 때문이다. 그래도
- * 하드코딩하지 않고 실제로 훑는다 — `--space-*`·`--text-*` 가 서는 날 이 검사가
- * **조용히** 빠지면 안 된다(그날 잡히게 하는 것이 KAN-072 의 일이었다).
+ * 감사 당시에는 한 건도 안 잡혔다 — 간격·글자 크기 토큰이 없었고 `--font-*` 는 값이 서체
+ * 이름이라 px 리터럴과 같아질 수 없기 때문이다. 그래도 하드코딩하지 않고 실제로 훑도록
+ * 둔 자리이고, `--space-*`·`--text-*` 가 서면서 실제로 물기 시작했다(KAN-072).
  * (색은 대소문자·축약형·rgba 전개까지 봐야 하지만 여기는 값이 전부 길이·숫자라
  *  소문자 문자열 비교 하나로 D1·D2 가 같이 덮인다.)
+ *
+ * `ignore` 는 **재현 검증 전용**이다 — 아래 `evaluateDocrule` 의 「재현은 감사가 쓴 자로」 절.
  */
-function driftToken(dict: TokenDict, hit: Hit): string | null {
+function driftToken(dict: TokenDict, hit: Hit, ignore: ReadonlySet<string>): string | null {
   const names = dict.byValue.get(hit.value.trim().toLowerCase()) ?? [];
-  const same = names.filter((nm) => judgeTokenAxis(nm, dict.byName.get(nm)!.value) === hit.axis);
+  const same = names.filter((nm) => {
+    const ax = judgeTokenAxis(nm, dict.byName.get(nm)!.value);
+    return ax === hit.axis && !ignore.has(ax);
+  });
   if (!same.length) return null;
   return `${same[0]} (tokens.css = ${dict.byName.get(same[0])!.value})`;
 }
@@ -189,9 +206,9 @@ function comparable(axis: Axis, prop: string): boolean {
 }
 
 /** 감사가 이 히트에 매겼을 라벨을 그대로 다시 낸다(`s4-classify.py` 의 판정 순서까지 같다). */
-function auditLabelOf(dict: TokenDict, hit: Hit): { label: AuditLabel; reason: string } {
+function auditLabelOf(dict: TokenDict, hit: Hit, ignore: ReadonlySet<string>): { label: AuditLabel; reason: string } {
   if (hit.kind === "token") return { label: "준수", reason: "var(--토큰) 을 썼다" };
-  const drift = driftToken(dict, hit);
+  const drift = driftToken(dict, hit, ignore);
   if (drift) return { label: "드리프트", reason: `D1 같은 표기 — ${drift}` };
   const exc = verdictExceptionFor(hit.file);
   if (exc) return { label: "정당한 예외", reason: `${exc.why} (근거 ${exc.evidence.join(" · ")})` };
@@ -206,6 +223,9 @@ export const DOC_LABELS = {
   spacingOff: "문서 스케일 밖 — 위반",
   spacingIn: "문서 스케일 안",
   spacingNa: "px 아님 — 판정 대상 아님",
+  // 아래 둘의 `12px` 는 **감사 원본(`s4-docrules.json`)의 카운터 이름 그대로**라 안 움직인다.
+  // 실제 하한은 역할값 집합에서 나오고(`fontMinOf`), 그 수는 판정 사유 쪽에 적힌다 —
+  // 키까지 값에 따라 바뀌면 감사 JSON 과 손으로 대조할 상대가 사라진다.
   fontOffLow: "문서 최소치(12px) 미만 — 위반",
   fontOffHigh: "역할값 밖(12px 이상)",
   fontIn: "문서 역할값과 같음",
@@ -230,11 +250,12 @@ export interface DocruleOptions {
    * 감사 원본의 `spacing` 축 정의(치수·좌표까지 한 통)로 판정한다. **이식 검증 전용.**
    * 켜면 `s4-docrules.json` 과 같은 수(간격 821 · 글자 166)가 나와야 한다.
    *
-   * 스케일도 문서 상수로 고정한다 — 재현의 상대는 감사가 쓴 자이지 지금 `tokens.css` 가
-   * 아니다. `--space-*` 가 서는 날 이 옵션이 다른 수를 내면 821 이라는 대조점이 사라진다.
+   * 스케일도 문서 상수로 고정하고, **드리프트 대조에서도 `--space-*` 를 뺀다** — 재현의
+   * 상대는 감사가 쓴 자이지 지금 `tokens.css` 가 아니다. 스케일만 고정하면 부족한 이유는
+   * `evaluateDocrule` 의 「재현은 감사가 쓴 자로」 절에 있다.
    */
   legacySpacingAxis?: boolean;
-  /** 글자 역할값을 감사 원본의 다섯으로 되돌린다(재현 검증용). 같은 이유로 토큰을 안 본다. */
+  /** 글자 역할값을 감사 원본의 다섯으로 되돌린다(재현 검증용). 같은 이유로 `--text-*` 를 안 본다. */
   legacyFontRoles?: boolean;
 }
 
@@ -270,6 +291,27 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
       ? { set: FONT_ROLES_LEGACY, source: "감사 원본 집합(26·20·18·13·12px)", fromTokens: false }
       : fontRoles(ctx.dict),
   };
+  // 하한도 같은 자에서 뽑는다 — 스케일만 토큰에서 오고 하한이 문서에 묶이면 둘이 어긋난다.
+  const fontMin = fontMinOf(scales.font.set);
+
+  // ── 재현은 감사가 쓴 자로 — 드리프트 쪽도 같이 고정한다 (KAN-072).
+  //   옛 정의로 돌 때 스케일만 문서 상수로 고정하면 부족하다. 드리프트는 스케일보다 **먼저**
+  //   판정되므로(`auditLabelOf` 가 「토큰 미존재」 를 가려내고 그 뒤에야 문서 규칙이 얹힌다),
+  //   `--space-10` 이 서는 순간 `padding: 10px` 은 문서 스케일을 보기도 전에 드리프트로 빠진다.
+  //   그러면 옛 정의가 내는 수가 감사와 어긋난다 — 실측으로 간격 821 → 493 · 글자 166 → 118.
+  //   재현의 상대는 **감사가 돌던 시점의 tokens.css** 이고 그때는 두 이름공간이 없었다.
+  const ignoreDrift = new Set<string>();
+  if (opts.legacySpacingAxis) ignoreDrift.add("spacing");
+  if (opts.legacyFontRoles) ignoreDrift.add("font");
+
+  // ── §9 관할 밖(치수·좌표)에서는 `--space-*` 를 드리프트 대조 상대로 쓰지 않는다 (KAN-072).
+  //   축을 셋으로 가른 이유가 "§9 는 여백 규칙이지 치수·좌표 규칙이 아니다" 인데(KAN-070 S5,
+  //   검토 승인), 드리프트가 그 관할을 안 보면 같은 사고가 뒷문으로 들어온다 — `--space-14`
+  //   가 서는 순간 `width: 14px` 이 「토큰이 있는데 다시 적었다」 로 잡히고, 그것을
+  //   `var(--space-14)` 로 고치라는 압력이 곧 **여백 자를 데코 실측 좌표에 대는 일**이다.
+  //   실측: 이 가드가 없으면 치수·좌표 63건이 래칫에 물린다(height 19 · width 16 · top 8 …
+  //   상위 파일이 PhotoFrame 9 · Sticker 6 · viz-frame 6 으로, 이 파일 머리주석이 지목한 그 셋이다).
+  const ignoreDriftUngoverned = new Set<string>([...ignoreDrift, "spacing"]);
 
   for (const hit of ctx.hits) {
     if (!OWNED.has(hit.axis)) continue;
@@ -278,7 +320,9 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
     // 표에 없는 spacing 속성은 여백으로 본다 — 축 정의가 닫혀 있어 지금은 안 생기지만,
     // 새 속성이 `extract.ts` 에 늘 때 조용히 관할 밖으로 새는 쪽이 더 나쁘다.
     const group = hit.axis === "spacing" ? (SPACING_GROUP.get(prop) ?? "spacing") : null;
-    const { label, reason } = auditLabelOf(ctx.dict, hit);
+    // 여백이면 평소대로, 치수·좌표면 `--space-*` 를 뺀 자로 드리프트를 본다(바로 위 주석).
+    const governed = hit.axis !== "spacing" || opts.legacySpacingAxis || group === "spacing";
+    const { label, reason } = auditLabelOf(ctx.dict, hit, governed ? ignoreDrift : ignoreDriftUngoverned);
     bump(auditByAxis, `${hit.axis} / ${label}`);
 
     // 문서 규칙은 「토큰이 없는 자리」에만 얹는다. 이미 토큰을 썼거나(준수) 근거 문서를
@@ -333,8 +377,11 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
                  : opts.legacyFontRoles
                    ? "DESIGN_CONCEPT.md §5 의 역할값(감사 원본 집합 26·20·18·13·12px)"
                    : "DESIGN_CONCEPT.md §5 의 역할값(clamp 끝값 60·38·36·28 포함)"]
-            : v < FONT_MIN
-              ? [DOC_LABELS.fontOffLow, "위반", `문서 최소치 12px 미만 (${hit.value})`]
+            : v < fontMin
+              ? [DOC_LABELS.fontOffLow, "위반",
+                 scales.font.fromTokens
+                   ? `역할값 최소치 ${fontMin}px 미만 (${hit.value}) — 잰 자: ${scales.font.source}`
+                   : `문서 최소치 ${fontMin}px 미만 (${hit.value})`]
               : [DOC_LABELS.fontOffHigh, "위반",
                  scales.font.fromTokens
                    ? `DESIGN_CONCEPT.md §5 역할값 밖 (${hit.value}) — 잰 자: ${scales.font.source}`
@@ -389,7 +436,8 @@ export const docrule: AxisModule = {
       `문서 축 — 잰 자: 간격 ${now.scales.spacing.source}` +
         `${now.scales.spacing.fromTokens ? "" : "(토큰 없음 — 문서 상수 폴백)"}` +
         ` · 글자 ${now.scales.font.source}` +
-        `${now.scales.font.fromTokens ? "" : "(토큰 없음 — 문서 상수 폴백)"}`,
+        `${now.scales.font.fromTokens ? "" : "(토큰 없음 — 문서 상수 폴백)"}` +
+        ` · 글자 하한 ${fontMinOf(now.scales.font.set)}px(역할값 집합의 최소값)`,
       // 축 모듈은 판정만 돌려준다 — 래칫도 비0 종료도 진입점이 진다
       // (`verify-tokens.ts` 머리주석 「왜 파일이 여럿인가」). 임시로 비운 것이 아니다.
       `문서 축 — failures 는 진입점이 진다(축 모듈은 판정만 낸다)`,

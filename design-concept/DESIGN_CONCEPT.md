@@ -39,6 +39,7 @@ v0.2(Pretendard 단일 폰트 + earthy palette)에서 v0.3는 한국어 전용 �
 |---|---|---|
 | `--paper` | `#F3EEE4` | 기본 배경 |
 | `--surface` | `#F8F3E8` | 보조 배경 (코드 블록 등) |
+| `--surface-hi` | `#fffdf8` | 종이 계열의 가장 밝은 단 — 종이 위에 한 겹 띄우는 패널·카드 |
 | `--cream` | `#EDE6D8` | 카드 배경 |
 | `--canvas` | `#d8d4ca` | 외부 캔버스 |
 | `--subtle` | `#e8e2d6` | 연한 배경 강조 |
@@ -78,12 +79,29 @@ v0.2(Pretendard 단일 폰트 + earthy palette)에서 v0.3는 한국어 전용 �
 
 ### 스케일
 
-Display(홈 h1): `clamp(36px, 5vw, 60px)` / Jua
-H1(포스트): `clamp(28px, 5vw, 38px)` / Jua
-H2(본문): `26px` / Gowun Dodum 700
-H3(본문): `20px` / Gowun Dodum 700
-Body: `18px` / Gowun Dodum / 행간 1.7–1.8
-Meta/Label: `12–13px` / Space Mono / letter-spacing 0.5px
+역할마다 토큰이 하나씩 있다. 크기가 아니라 **역할**로 부르는 이유는, 같은 18px 이라도 본문과
+캡션은 나중에 한쪽만 움직이기 때문이다.
+
+| 역할 | 토큰 | 값 | 서체·비고 |
+|---|---|---|---|
+| Display (홈 h1) | `--text-display` | `clamp(36px, 5vw, 60px)` | Jua |
+| H1 (포스트) | `--text-h1` | `clamp(28px, 5vw, 38px)` | Jua |
+| H2 (본문) | `--text-h2` | `26px` | Gowun Dodum 700 |
+| H3 (본문) | `--text-h3` | `20px` | Gowun Dodum 700 |
+| Body | `--text-body` | `18px` | Gowun Dodum / 행간 1.7–1.8 |
+| Meta | `--text-meta` | `13px` | Space Mono / letter-spacing 0.5px |
+| Label | `--text-label` | `12px` | Space Mono / letter-spacing 0.5px |
+| Micro | `--text-micro` | `11px` | 좁은 자리의 레이블 |
+| Nano | `--text-nano` | `10px` | 배지·범례처럼 더는 못 줄이는 자리 |
+
+**Micro·Nano 는 하한을 12px 로 적어 둔 탓에 이름만 없던 단이다.** 화면에서는 그 아래가 오히려
+지배값이었다 — 역할값 밖으로 잡힌 글자 크기의 상위가 `11px` 30건 · `10px` 18건이고, 반픽셀
+(`10.5px`·`11.5px` 류)이 17건이다. 스티커·티켓 스텁·범례처럼 작게 앉아야 하는 자리가 실제로
+있는데 이름이 없으니 저마다 다른 값으로 흩어진 것이다. 둘을 정식 역할로 올리고 **반픽셀만
+정수로 접는다** — 반픽셀은 기기마다 다르게 반올림돼 같은 글자가 자리마다 다른 굵기로 뜬다.
+
+하한은 이제 상수가 아니라 **이 표의 최소값(10px)** 이다. `bun run tokens:verify` 가 표를 읽어
+그 아래를 위반으로 문다.
 
 ## 6. 레이아웃 — Editorial Split
 
@@ -191,14 +209,38 @@ import 한다.
 | `--btn-radius` | `999px` (pill) |
 | `--card-radius` | `14px` |
 | `--radius-sm/md/lg` | `8/12/16px` |
+| `--radius-round` | `50%` (원형 마스크) |
+
+**`50%` 는 스케일 밖이 아니라 정식 값이다.** 아바타·점·원형 배지처럼 완전한 원을 만드는 CSS
+관용 표현이고, 요소 크기를 따라가야 하므로 px 스케일로는 대신할 수가 없다. 이 문장이 없어서
+전수 진단에서 `border-radius: 50%` 25건이 통째로 위반으로 세어졌다.
+
+### 선 굵기 — 2단
+
+| 토큰 | 값 | 용도 |
+|---|---|---|
+| `--stroke` | `1.5px` | 기본 — Outlined 버튼, 강조 테두리 |
+| `--stroke-hair` | `1px` | 가는 선 — 구분선, 미세 테두리, 카드 외곽 |
+
+**지배값은 오히려 가는 쪽이다.** `--stroke` 를 실제로 쓴 자리가 8건인데 `1px` 을 손으로 적은
+자리는 129건이다. 1.5px 하나만 이름을 갖고 있어서 「가는 선」을 고르는 일이 매번 리터럴을
+적는 일이 됐다. 두 단 다 이름을 갖게 해 고를 자리를 만든다.
 
 버튼 2종:
 - **Filled**: `background: var(--accent)`, `color: var(--paper)`, Space Mono 13px
-- **Outlined**: `border: 1.5px solid var(--ink)`, `color: var(--ink)`, 호버 시 `--cream` 배경
+- **Outlined**: `border: var(--stroke) solid var(--ink)`, `color: var(--ink)`, 호버 시 `--cream` 배경
 
 ## 9. 간격
 
-기준 4px. 사용 단위: 4·8·12·16·24·32·48·64·96px. `--page-pad: clamp(20px, 5vw, 48px)` (반응형 측면 여백).
+기준 4px. **16px 아래에만 2px 반 단을 둔다.** 최종 눈금은 2·4·6·8·10·12·14·16·24·32·48·64·96px
+이고, 토큰은 값을 그대로 이름에 쓴 `--space-2` … `--space-96` 13종이다.
+`--page-pad: clamp(20px, 5vw, 48px)` 는 반응형 측면 여백이라 이 눈금 밖이다.
+
+**반 단은 취향이 아니라 실측에서 나왔다.** 간격 위반 570건 중 301건(52%)이 16px 아래 반 단
+자리에 몰려 있었고, 지배값은 `10px` 92건 · `6px` 92건 · `14px` 88건이다. 작은 부품의 여백은
+4px 단으로 못 맞추는 자리가 실제로 많은데, 그것을 8px 이나 16px 로 밀면 화면이 움직인다.
+16px 위는 그대로 4의 배수만 쓴다 — 큰 여백은 반 단이 없어도 맞출 수 있고, 눈금이 촘촘할수록
+고르는 일이 어려워진다.
 
 ## 10. 모션
 

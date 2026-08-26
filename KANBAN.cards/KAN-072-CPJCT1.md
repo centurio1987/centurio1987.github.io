@@ -1,11 +1,11 @@
 ---
 card: KAN-072-CPJCT1
-title: UI 토큰 정합화 — 게이트가 무는 1,395건을 구획 단위로 0 으로 줄인다
+title: UI 토큰 정합화 — 게이트가 무는 1,786건을 구획 단위로 0 으로 줄인다
 created: 2026-08-25
 scope: scripts/tokens-baseline.json, scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/fixtures/tokens/**, src/components/**, src/pages/**, src/layouts/**, src/styles/tokens.css, src/styles/global.css, src/styles/deco.css, src/styles/viz-frame.css, src/styles/viz.css, src/lib/categories.ts, src/lib/doodleMarks.ts, src/lib/viz/Comparison.tsx, src/lib/viz/PosterHero.tsx, src/lib/viz/ProcessSteps.tsx, src/lib/viz/layout.ts, design-concept/DESIGN_CONCEPT.md, design-concept/DECO_KIT.md, design-concept/DIAGRAM_STYLE_GUIDE.md
 ---
 
-# KAN-072-CPJCT1 — UI 토큰 정합화 — 게이트가 무는 1,395건을 구획 단위로 0 으로 줄인다
+# KAN-072-CPJCT1 — UI 토큰 정합화 — 게이트가 무는 1,786건을 구획 단위로 0 으로 줄인다
 
 ## 전략
 감사(`design-concept/UI_CONSISTENCY_AUDIT.md`) §5 가 자른 단위를 그대로 받되,
@@ -78,6 +78,13 @@ scope: scripts/tokens-baseline.json, scripts/verify-tokens.ts, scripts/lib/token
 
 ---
 
+**부채는 배치2에서 1,395 → 1,786 으로 드러났다 (2026-08-27).** 늘어난 것이 아니라 **보이게 된
+것**이다 — 토큰이 없어서 「문서 스케일 안이니 준수」로 세어지던 392건이, 토큰이 서자
+「토큰이 있는데 리터럴로 적었다」로 정확히 재분류됐다. 히트 단위 전이는 위반→드리프트 542 ·
+준수→드리프트 392 · 판정불가→드리프트 63 이고 **느슨해진 방향은 1건**뿐이다
+(`PostList.astro:321` 의 `margin-left: -2px` — 2px 이 정식 눈금이 되어 닫혔다).
+아래 구획 무게는 그 뒤 기준선이다.
+
 **수행 방식은 오케스트레이션이다 (유저 선택, 2026-08-27).** 배치 7개 · 병렬 폭 최대 3.
 work 하나 = 파일 구획 하나이고, 구획마다 **그 파일의 모든 축**을 한 세션이 처리한다.
 구획 경계가 곧 세션 경계라 두 세션이 같은 파일을 여는 일이 없다.
@@ -86,23 +93,25 @@ work 하나 = 파일 구획 하나이고, 구획마다 **그 파일의 모든 �
 
 | 구획 | 파일 | 건수 |
 |---|--:|--:|
-| 카탈로그 `pages/design/**` | 3 | 216 |
-| 그래프 `components/graph/**` | 1 | 81 |
-| 데코 `components/deco/**` | 18 | 157 |
-| 글 컴포넌트·레이아웃 | 13 | 209 |
-| 페이지·셸 | 9 | 53 |
-| viz·전역 스타일 | 2 | 53 |
-| `posts/**` osi-7-layers | 12 | 255 |
-| `posts/**` vpn-anatomy | 9 | 102 |
-| `posts/**` webrtc | 5 | 110 |
-| `posts/**` auth-authz | 4 | 69 |
-| `posts/**` container·tauri | 4 | 56 |
+| 카탈로그 `pages/design/**` | 3 | 285 |
+| 그래프 `components/graph/**` | 1 | 94 |
+| 데코 `components/deco/**` | 18 | 173 |
+| 글 컴포넌트·레이아웃·페이지·셸 | 23 | 375 |
+| viz·전역 스타일 | 2 | 68 |
+| `posts/**` osi-7-layers | 12 | 329 |
+| `posts/**` vpn-anatomy | 9 | 149 |
+| `posts/**` webrtc | 5 | 131 |
+| `posts/**` auth-authz | 4 | 80 |
+| `posts/**` container·tauri·orca | 5 | 68 |
 | 마스코트 `motifs/**` | 1 | 34 |
-| **합계** | **81** | **1,395** |
+| **합계** | **83** | **1,786** |
+
+**구획 무게는 배치가 끝날 때마다 다시 잰다.** 토큰이 서면 판정이 재분류되므로 착수 시점의
+수와 계획 시점의 수가 다르다 — 각 배치의 「착수 시점 판단」이 그때의 수를 적는다.
 
 ## 실행 계획
 - [x] `S1` 게이트 인식층 — 토큰 이름 규칙을 데이터로 (`KAN-072.7`)
-- [ ] `S2` 토큰 신설 — `tokens.css` + `DESIGN_CONCEPT` §5·§8·§9 (`KAN-072.2`)
+- [x] `S2` 토큰 신설 — `tokens.css` + `DESIGN_CONCEPT` §5·§8·§9 (`KAN-072.2`)
 - [ ] `S3` 카탈로그 구획 — `pages/design/**` 3파일 216
 - [ ] `S4` 그래프 구획 — `components/graph/**` 1파일 81
 - [ ] `S5` 데코 구획 — `components/deco/**` 18파일 157
@@ -175,3 +184,6 @@ work 하나 = 파일 구획 하나이고, 구획마다 **그 파일의 모든 �
 - 2026-08-27T01:49 · s:29c42810 — 착수 — orca 워크트리 /Users/centurio/orca/workspaces/centurio1987.github.io/KAN-072-CPJCT1 · 브랜치 KAN-072-CPJCT1 (base main @997edf6). 계획 리포트 발행: https://claude.ai/code/artifact/89712866-9024-4c9e-ae18-b8df83c2ba58
 - 2026-08-27T01:50 · s:29c42810 · S1 doing — 착수
 - 2026-08-27T02:10 · s:29c42810 · S1 done — 게이트 인식층 개통. 축 판별을 scripts/lib/tokens/axis.ts 단일 소스로 빼고 하드코딩 넷을 규칙으로 바꿨다 — 색은 이름 18개 Set 대신 값이 색인지로(--cat- 접두는 유지), stroke 는 정확일치 대신 --stroke 접두, 간격·글자 스케일은 tokens.css 의 --space-*/--text-* 에서 파생(토큰 0개면 문서 상수 폴백). 판정 전건 3,647행을 9쪽으로 뽑아 변경 전후 diff 0, 기준선 11칸 불변. 임시 토큰 5종 투입 시 각자 축으로 인식되는 것을 실측 확인 후 되돌렸다. 자가검사 6종 생존, 색 규칙을 일부러 죽이면 사유 5가지로 걸린다. --hatch 는 그라디언트라 color→other 로 내려가나 대조 상대가 된 적이 없어 영향 0건, deco.css 색 44개는 other→color 로 올라가나 새 드리프트 0건
+- 2026-08-27T03:01 · s:29c42810 · S2 doing — 착수
+- 2026-08-27T03:03 · s:29c42810 — S2 착수 중 S1 누락 발견 — docrule.ts:89 의 FONT_MIN=12 가 상수라 --text-* 에 10·11 을 세워도 게이트가 여전히 '문서 최소치 미만 위반' 으로 판정한다. 스케일 집합만 토큰 파생으로 바꾸고 하한은 안 바꾼 것이 원인이다(S1 지시에 안 넣었다). 게이트 코드라 KAN-072.7 범위이고, work 를 다시 열지 않고 S2 에서 함께 처리한다
+- 2026-08-27T03:24 · s:29c42810 · S2 done — 토큰 25종 신설(44→69) + DESIGN_CONCEPT §5·§8·§9 개정. 종이흰색 --surface-hi #fffdf8 · --stroke-hair 1px · --radius-round 50% · --space-* 13종(2px 반 단 포함) · --text-* 9종(Micro 11 · Nano 10 신설). --state-* 는 배치5로 미룸. 게이트 보강 둘을 함께 처리했다 — FONT_MIN 을 역할값 최소로 파생(S1 누락분, 하한이 10px 로 따라온다) · 드리프트가 §9 축 관할을 보게 가드(치수·좌표 63건이 --space-* 와 값이 같다는 이유로 다시 물리던 것을 막는다. KAN-070 S5 의 축 재분류를 드리프트 쪽에도 일관 적용). 재현 검증 821·166 이 깨진 것도 함께 고쳤다(드리프트가 스케일보다 먼저 판정되는 탓). 결과: 위반 1305→762 · 드리프트 90→1024 · 래칫 대상 1395→1786. 전이는 위반→드리프트 542 · 준수→드리프트 392 · 판정불가→드리프트 63 이고 느슨해진 방향은 1건(PostList.astro:321 margin-left -2px). build 46쪽 · deco:verify 50회 · viz:verify 43개 통과. 기준선 갱신 후 게이트 통과
