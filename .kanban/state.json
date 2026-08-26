@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 297,
+  "next_seq": 298,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -866,12 +866,12 @@
     },
     "KAN-072-CPJCT1": {
       "col": "todo",
-      "title": "UI 토큰 정합화 — 위반 1,567건을 카드 단위로 0 으로 줄인다",
+      "title": "UI 토큰 정합화 — 게이트가 무는 1,395건을 구획 단위로 0 으로 줄인다",
       "verbatim": "위 artifact를 보고 전략과 실행 계획을 수립해라",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-25",
-      "title_hash": "96f9de66ea766301a03eea62fa4a0056b42cf64d",
+      "갱신": "2026-08-27",
+      "title_hash": "316ba6717e25dcf6f5b198a8398a887522a61855",
       "verbatim_hash": "d974799dd590aa8904c89759a571462d678add6c",
       "short": "토큰 정합화",
       "short_hash": "577ef8f65218b405f8b7b32916860cc80d44d580",
@@ -885,6 +885,9 @@
       "memo_hash": "6f447f56fb32b2dc62470bad2e854bf298aeea97",
       "scope": [
         "scripts/tokens-baseline.json",
+        "scripts/verify-tokens.ts",
+        "scripts/lib/tokens/**",
+        "scripts/fixtures/tokens/**",
         "src/components/**",
         "src/pages/**",
         "src/layouts/**",
@@ -1130,6 +1133,17 @@
     "KAN-070-DRF0QF"
   ],
   "recent": [
+    {
+      "seq": 297,
+      "t": "2026-08-27T01:10",
+      "a": "ai",
+      "id": "KAN-072-CPJCT1",
+      "op": "edit",
+      "w": "WTCH92",
+      "field": "title",
+      "before": "UI 토큰 정합화 — 위반 1,567건을 카드 단위로 0 으로 줄인다",
+      "after": "UI 토큰 정합화 — 게이트가 무는 1,395건을 구획 단위로 0 으로 줄인다"
+    },
     {
       "seq": 296,
       "t": "2026-08-27T01:08",
@@ -1713,16 +1727,6 @@
       "field": "memo",
       "before": "",
       "after": "실측 기준선은 \\`.claude/authoring/rewrite-baseline.md\\` (2026-08-04, 29편 전수 \\`scan_ai_style.py\\`). **전면 재집필은 근거가 없다** — 기계 리듬 축 미달이 17편이지만 치명(S1) 위반의 실제 분량은 **문장 35개**이고 그중 32개가 쉼표 과다(P1) 하나다. 발행 29편의 최신 pubDate 가 2026-07-28 이라 전부 구엔진 산물인 건 맞지만, 어긋난 양은 그만큼이 아니다. **실행전략 4단계.** ① **Phase 0 — 글을 건드리기 전에 엔진부터 맞춘다.** (a) \\`ppangtolab-researcher\\` 가 \\`status:draft\\` 라 \\`resolve\\` 가 \"사람 승인 전까지 발행 금지\"를 띄우는데 이미 22편이 그 voice 로 나가 있다 — **유저 결정 사항**(확정할지 고칠지). (b) \\`ppangtolab-*\\` 세 voice 의 \\`waivers\\` 가 비어 있어 21편이 R1b 로 감점됐다 — L0 는 \"격식체를 자기 톤으로 선언한 voice 에서 R1b waiver 는 정상\"이라 적었고 사람 voice 에는 이미 있다. 등급을 올리려고가 아니라 **안 넣으면 그 글들을 잘못 고치게 되므로** 먼저 한다. (c) 스캐너 오탐 — \\`♭\\`(U+266D, WireGuard 백서 표기 인용)가 이모지로 잡혀 vpn-5 가 D 로 떨어졌다(저장소 게이트는 통과). L0 오탐 예외 5종과 같은 방식으로 예외+단위테스트. Phase 0 만으로 17→15편, D 0편. ② **윤문(재집필 아님)** — 남은 15편은 P1 32문장 + R1a 2 + H4 1 이 전부다. \\`humanize-post\\` 1회(의미보존 6점·수정률 상한 50% 가 스킬에 내장). 시리즈 단위로 묶고 그래프 재생성은 전량 머지 후 1회(KAN-044). ③ **미측정 축 표본 정독** — 스캐너는 machine-rhythm 한 축만 본다. 영어투(L0_NATURAL_KOREAN)·근거/이해(QUALITY_RUBRIC)·voice 일치(L1)는 자동 판정이 없고 **진짜 재집필 대상은 여기서 나온다**. 특히 글들이 voice 문서보다 먼저 쓰였다. L2 골격은 명세가 이 글들에서 뽑혀 대체로 맞으나 \\`tauri-1\\` 은 필수 항목 \\`들어가며\\` 가 없다. ④ **재측정·발행** — Phase 0 후 재스캔해 3분류 확정 → review-post → (재집필분만) review-writing+quality-gate → build·게이트 → ship. **하지 않을 것:** \\`ppangto\\`(사람) 글 3편은 \\`usage:preserve\\` 라 AI 가 다시 쓰지 않는다(쉼표·맞춤법만). 등급 올리려고 문장을 잘게 썰지 않는다(L0 R2 함정 — \"표현이 처참하다\" 전례). A 등급 5편(전부 OSI, 08-02 재집필분)은 손대지 않는다. **오측 기록:** 개인경험 사칭 18편→실제 0건, 가르치는 말투 18편→11건(대부분 정상). 둘 다 한글에 단어 경계가 없어서 생긴 오측이다."
-    },
-    {
-      "seq": 247,
-      "t": "2026-08-04T11:15",
-      "a": "ai",
-      "id": "KAN-064",
-      "op": "edit",
-      "field": "title",
-      "before": "집필 엔진이 바뀌었다. 기존의 글을 재집필 할 계획을 세워라.",
-      "after": "집필 엔진 교체(authoring-kit)에 따른 기존 글 재집필 계획 수립"
     }
   ],
   "layout": 2,
