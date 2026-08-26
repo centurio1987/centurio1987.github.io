@@ -52,7 +52,10 @@
  * 그래서 안에서는 `FallbackSite` 로 다루고 `Verdict.hit` 에 넣을 때만 `Hit` 로 맞춘다.
  * `types.ts` 는 축 셋이 함께 쓰므로 고치지 않는다.
  *
- * `failures` 는 비워 둔다 — 래칫이 아직 없다(S7 이 채운다). 지금은 `notes` 로만 낸다.
+ * `failures` 는 비워 둔다 — **축 모듈은 판정만 돌려준다.** 기준선 대비 래칫도 비0 종료도
+ * 진입점(`verify-tokens.ts` 머리주석 「왜 파일이 여럿인가」)이 진다. 이 축이 무는 것은
+ * `verdicts` 를 통해 래칫으로 들어가고, 사람이 알아야 하는 것(살아있는 자리 목록 ·
+ * 적재 사슬이 끊겼다는 경고)만 `notes` 로 낸다.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -287,7 +290,7 @@ export const fallback: AxisModule = {
                  "발동 여부를 보수적으로 전부 살아있음으로 봤다. 사슬이 바뀌었는지 확인해라.");
     }
 
-    // failures 는 래칫(S7)이 붙기 전까지 비워 둔다.
+    // failures 는 진입점이 진다 — 축 모듈은 판정만 낸다(위 머리주석). 임시가 아니다.
     return { id: "fallback", verdicts, failures: [], notes };
   },
 };

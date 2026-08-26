@@ -29,9 +29,10 @@
  *   `ctx.dict` 는 **추출용** 표다. 추출 쪽 축 정의는 `--stroke` 를 spacing 으로 넣는데
  *   (`extract.ts:50`, 감사 S3 원본 그대로다), 판정 쪽은 `--stroke` 를 자기 축으로 본다.
  *   같은 이름을 두 축에 두면 위 stroke 보정이 대조할 토큰을 못 찾는다. 게다가 판정은
- *   `deco.css` 토큰까지 본다(감사 원본이 그렇다 — 지금은 전부 other 축이라 이 세 축에
- *   걸리지 않지만, 나중에 `--deco-*-radius` 같은 것이 생기면 걸려야 한다).
+ *   `deco.css` 토큰까지 본다(감사 원본이 그렇다).
  *   그래서 **값은 `ctx.dict` 에서 그대로 받고, 축만 판정 기준으로 다시 매긴다.**
+ *   판정 기준은 `axis.ts` 하나이고 `docrule` 도 같은 것을 쓴다 — 두 모듈이 각자 표를
+ *   들고 있다가 갈리면 같은 토큰이 축 모듈마다 다른 축에 산다(KAN-072).
  *
  * ── 알아 둘 것: 축 누수 50건은 `측정 제외` 다
  *   색 축 shorthand(`border: 1px solid #ccc`·그라디언트)에 색이 아닌 값이 섞여 들어온다.
@@ -43,37 +44,11 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { AxisModule, AxisResult, Hit, ScanContext, Verdict } from "./types.ts";
 import { verdictExceptionFor } from "./exceptions.ts";
-
-/**
- * 판정 쪽 축. `Axis`(추출 쪽)와 이름이 겹치지만 **다른 표다** — `stroke`·`layout` 이 있고
- * `spacing` 이 없다. 위 "왜 토큰 표를 다시 만드나" 참고.
- */
-type JudgeAxis = "color" | "radius" | "stroke" | "font" | "layout" | "motion" | "other";
-
-/** 색 토큰. `s4-classify.py:45-48` 그대로. */
-const COLOR_TOKENS = new Set([
-  "--paper","--surface","--cream","--canvas","--subtle","--border",
-  "--ink","--ink-2","--ink-3","--accent","--accent-tint","--accent-tint2",
-  "--pop","--pop-tint","--pop-ink","--grid-line","--hatch-border","--hatch",
-]);
-const LAYOUT_TOKENS = new Set(["--measure","--content-max","--wide-max","--page-pad","--header-h"]);
-
-/** 토큰이 사는 축 — 판정 기준. `s4-classify.py:44-55` 그대로. */
-function judgeTokenAxis(name: string): JudgeAxis {
-  if (name.startsWith("--cat-") || COLOR_TOKENS.has(name)) return "color";
-  if (name.includes("radius")) return "radius";
-  if (name.startsWith("--font-")) return "font";
-  if (name === "--stroke") return "stroke";
-  if (LAYOUT_TOKENS.has(name)) return "layout";
-  if (name === "--ease" || name === "--dur") return "motion";
-  return "other";
-}
+import { COLORVAL, judgeTokenAxis, type JudgeAxis } from "./axis.ts";
 
 const TOKEN_LINE = /^\s*(--[\w-]+)\s*:\s*(.+?);\s*(?:\/\*.*)?$/;
 const HEX  = /^#([0-9a-fA-F]{3,8})$/;
 const RGBA = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*([\d.]+)\s*)?\)$/;
-/** 색 값인가 — 헥스는 전체 일치, `rgb(`·`hsl(` 은 접두만 본다. `s4-classify.py:120`. */
-const COLORVAL = /^(#[0-9a-fA-F]{3,8}$|rgba?\(|hsla?\()/;
 const BORDERISH = /^(border|outline)/;
 const LEN = /^-?\d*\.?\d+(px|rem|em)$/;
 
@@ -115,7 +90,7 @@ function push(map: Map<string, TokenRec[]>, key: string, rec: TokenRec): void {
 function buildIndex(ctx: ScanContext): TokenIndex {
   // tokens.css 는 공통 추출이 이미 읽었다 — 값은 그대로 쓰고 축만 다시 매긴다.
   const recs: TokenRec[] = [...ctx.dict.byName.values()].map((t) => ({
-    name: t.name, axis: judgeTokenAxis(t.name), origin: "tokens.css", value: t.value,
+    name: t.name, axis: judgeTokenAxis(t.name, t.value), origin: "tokens.css", value: t.value,
   }));
   const tokensCount = recs.length;
 
@@ -131,7 +106,7 @@ function buildIndex(ctx: ScanContext): TokenIndex {
     }
   }
   for (const [name, value] of deco) {
-    recs.push({ name, axis: judgeTokenAxis(name), origin: "deco.css", value });
+    recs.push({ name, axis: judgeTokenAxis(name, value), origin: "deco.css", value });
   }
 
   const idx: TokenIndex = {
@@ -229,10 +204,11 @@ export const color: AxisModule = {
       const why = exceptionFor(hit.file, axis);
       if (why) { emit(hit, axis, "정당한 예외", why); continue; }
 
-      // 남은 것은 전부 위반이다. 이 세 축은 셋 다 대조할 토큰 체계가 있어서다 —
-      // 색 18종 · radius 5종 · `--stroke` 1종. 감사가 쓴 「토큰 미존재」 갈래
-      // (`s4-classify.py:112-118` 의 `comparable()`)는 여기 없고, 토큰 자체가 없는 축
-      // (간격 · 그림자 · z-index · 글자 크기)을 지는 다른 축 모듈의 몫이다.
+      // 남은 것은 전부 위반이다. 이 세 축은 셋 다 대조할 토큰 체계가 있어서다
+      // (`axis.ts` 가 색·radius·stroke 로 가른 것 전부 — 종수를 여기 적지 않는다.
+      //  적어 두면 `tokens.css` 에 토큰이 설 때마다 주석이 조용히 낡는다).
+      // 감사가 쓴 「토큰 미존재」 갈래(`s4-classify.py:112-118` 의 `comparable()`)는
+      // 여기 없고, 토큰 자체가 없는 축을 지는 다른 축 모듈의 몫이다.
       emit(hit, axis, "위반",
            `${axis} 축에 토큰 체계가 있는데 토큰 밖 값이고 근거 문서를 못 걸었다`);
     }
@@ -248,7 +224,8 @@ export const color: AxisModule = {
     return {
       id: "color",
       verdicts,
-      // 래칫이 붙기 전이라 비워 둔다 — 기준선 대비 판정은 S7 이 진다.
+      // 축 모듈은 판정만 돌려준다 — 기준선 대비 래칫도, 비0 종료도 진입점이 진다
+      // (`verify-tokens.ts` 머리주석 「왜 파일이 여럿인가」). 임시로 비운 것이 아니다.
       failures: [],
       notes: [
         `색 축 판정 ${verdicts.length}건 (토큰 ${idx.counts["tokens.css"]} + 데코 ${idx.counts["deco.css"]})`,
