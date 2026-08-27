@@ -14,9 +14,11 @@ const PANEL = "var(--surface-hi, #fffdf8)";
 const ON_TEAL = "var(--surface-hi, #fffdf8)";
 const HAIR = "var(--stroke-hair, 1px)";
 const BOLD = "var(--stroke-bold, 2px)";
-// #9a5b2c(경고·질문 강조)는 **상수로 올리지 않는다** — 아직 판정 대기라 게이트 시야에
-// 남아 있어야 한다. 상수로 빼면 추출층이 못 본다(인라인 속성 꼴만 본다). 그러면 잔여 0 이
-// 「닫힌 것」과 「시야 밖으로 나간 것」을 섞어 버리고, 판정이 내려져도 자리를 못 찾는다.
+// 본문 강조 잉크. 유저 판정으로 --ink-accent 를 세웠다(2026-08-27, DESIGN_CONCEPT §4).
+// 역할은 일관된데 이름이 없던 자리라 --stroke-bold·--text-small 과 같은 「구멍」이었다.
+// 최근접 --pop-ink(Δ31)·--cat-leadership(Δ28)로 밀지 않은 이유는 앞은 서브 CTA 의 진한 단이고
+// 뒤는 배지 전용이라서다 — 최근접이 곧 정답이 아니다(§5 역할 우선). 값이 같아 화면 변화 0.
+const ACCENT_INK = "var(--ink-accent, #9a5b2c)";
 // 토큰 밖 — 최근접 토큰과 ΔRGB 가 15 이상이라 옮기지 않았다(배치5 규약: 15 이상은 임의로 고르지 않는다).
 const SAND = "#e8c97a"; // 최근접 --pop-tint ΔRGB 50
 const TEAL_TINT = "#e5f0ed"; // 최근접 --paper ΔRGB 17
@@ -155,7 +157,7 @@ export default function DnsResolveLab() {
       >
         <p style={{ margin: "0 0 var(--space-8, 8px)", fontWeight: 700, color: INK }}>{step.title}</p>
         <p style={{ margin: "0 0 var(--space-6, 6px)", fontSize: 13.5 }}>
-          <strong style={{ color: "#9a5b2c" }}>질문:</strong>{" "}
+          <strong style={{ color: ACCENT_INK }}>질문:</strong>{" "}
           <code style={{ fontFamily: "monospace" }}>{step.ask}</code>
         </p>
         <p style={{ margin: 0, fontSize: 13.5 }}>

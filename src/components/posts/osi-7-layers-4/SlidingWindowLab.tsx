@@ -20,9 +20,11 @@ const CREAM = "var(--cream, #EDE6D8)";
 // 역할이고 이동 크기도 같다(ΔRGB 39 vs 43). 최근접은 --cat-quality(Δ28)로 잡히지만
 // 그건 카테고리 배지 전용 색이라 글자 잉크 자리가 아니다(§5 역할 우선).
 const CELL_INK = "var(--ink-2, #4a4f6a)";
-// #9a5b2c(경고·질문 강조)는 **상수로 올리지 않는다** — 아직 판정 대기라 게이트 시야에
-// 남아 있어야 한다. 상수로 빼면 추출층이 못 본다(인라인 속성 꼴만 본다). 그러면 잔여 0 이
-// 「닫힌 것」과 「시야 밖으로 나간 것」을 섞어 버리고, 판정이 내려져도 자리를 못 찾는다.
+// 본문 강조 잉크. 유저 판정으로 --ink-accent 를 세웠다(2026-08-27, DESIGN_CONCEPT §4).
+// 역할은 일관된데 이름이 없던 자리라 --stroke-bold·--text-small 과 같은 「구멍」이었다.
+// 최근접 --pop-ink(Δ31)·--cat-leadership(Δ28)로 밀지 않은 이유는 앞은 서브 CTA 의 진한 단이고
+// 뒤는 배지 전용이라서다 — 최근접이 곧 정답이 아니다(§5 역할 우선). 값이 같아 화면 변화 0.
+const ACCENT_INK = "var(--ink-accent, #9a5b2c)";
 // 토큰 밖 — 최근접 토큰과 ΔRGB 가 15 이상이라 옮기지 않았다(배치5 규약: 15 이상은 임의로 고르지 않는다).
 const MUTED = "#b8b0a0"; // 최근접 --border ΔRGB 54
 
@@ -74,7 +76,7 @@ export default function SlidingWindowLab() {
 
       <label style={{ display: "block", fontSize: 13, color: INK, marginBottom: 12 }}>
         수신 윈도우: <strong>{win}</strong> 세그먼트{" "}
-        {win === 0 && <span style={{ color: "#9a5b2c" }}>(zero window — 전송 정지!)</span>}
+        {win === 0 && <span style={{ color: ACCENT_INK }}>(zero window — 전송 정지!)</span>}
         <input
           type="range"
           min={0}

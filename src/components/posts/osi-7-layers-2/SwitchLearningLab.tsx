@@ -21,6 +21,11 @@ const INK_SOFT = "var(--ink-2, #4a4f6a)";
 const BORDER = "var(--border, #d8d0be)";
 const PANEL = "var(--surface-hi, #fffdf8)";
 const TEAL = "var(--cat-skills, #3e6b6b)";
+// 본문 강조 잉크. 유저 판정으로 --ink-accent 를 세웠다(2026-08-27, DESIGN_CONCEPT §4).
+// 역할은 일관된데 이름이 없던 자리라 --stroke-bold·--text-small 과 같은 「구멍」이었다.
+// 최근접 --pop-ink(Δ31)·--cat-leadership(Δ28)로 밀지 않은 이유는 앞은 서브 CTA 의 진한 단이고
+// 뒤는 배지 전용이라서다 — 최근접이 곧 정답이 아니다(§5 역할 우선). 값이 같아 화면 변화 0.
+const ACCENT_INK = "var(--ink-accent, #9a5b2c)";
 
 export default function SwitchLearningLab() {
   // 학습된 forwarding table: MAC -> port
@@ -273,7 +278,7 @@ export default function SwitchLearningLab() {
                     marginBottom: 4,
                     color:
                       l.kind === "flood"
-                        ? "#9a5b2c"
+                        ? ACCENT_INK
                         : l.kind === "forward"
                         ? TEAL
                         : INK_SOFT,
@@ -290,7 +295,7 @@ export default function SwitchLearningLab() {
 
       <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
         같은 destination으로 두 번 보내 보세요. 첫 번째는{" "}
-        <span style={{ color: "#9a5b2c" }}>FLOOD</span>, 그러나 그 host가 한 번이라도
+        <span style={{ color: ACCENT_INK }}>FLOOD</span>, 그러나 그 host가 한 번이라도
         프레임을 <em>보낸 뒤</em>엔 테이블에 학습돼{" "}
         <span style={{ color: TEAL }}>FORWARD</span>로 바뀝니다. (위 데모의 MAC은 표기를
         줄인 예시값입니다.)

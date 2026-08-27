@@ -15,6 +15,9 @@ const INK_SOFT = "var(--ink-2, #4a4f6a)";
 const BORDER = "var(--border, #d8d0be)";
 const PANEL = "var(--surface-hi, #fffdf8)";
 const TEAL = "var(--cat-skills, #3e6b6b)";
+// 오류·경고. 유저 판정으로 --danger 를 세웠다(2026-08-27, DESIGN_CONCEPT §4).
+// 최근접 --cat-strategy 는 Δ44 로 멀고 §4 가 PostList·CategoryBadge 전용이라고 못박은 배지 색이다.
+const DANGER = "var(--danger, #c0392b)";
 const SAND = "#e8c97a";
 
 const TABLE: Route[] = [
@@ -101,14 +104,14 @@ export default function RoutingTableLab() {
             style={{
               padding: "var(--space-4) var(--space-8)",
               fontFamily: "monospace",
-              border: `var(--stroke-hair) solid ${valid ? BORDER : "#c0392b"}`,
+              border: `var(--stroke-hair) solid ${valid ? BORDER : DANGER}`,
               borderRadius: 6,
               width: 150,
             }}
           />
         </label>
         {!valid && (
-          <span style={{ color: "#c0392b", fontSize: 12 }}>
+          <span style={{ color: DANGER, fontSize: 12 }}>
             올바른 IPv4 주소를 입력하세요 (예: 10.20.30.5)
           </span>
         )}

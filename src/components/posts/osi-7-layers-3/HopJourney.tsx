@@ -9,6 +9,11 @@ const INK_SOFT = "var(--ink-2, #4a4f6a)";
 const BORDER = "var(--border, #d8d0be)";
 const PANEL = "var(--surface-hi, #fffdf8)";
 const TEAL = "var(--cat-skills, #3e6b6b)";
+// 본문 강조 잉크. 유저 판정으로 --ink-accent 를 세웠다(2026-08-27, DESIGN_CONCEPT §4).
+// 역할은 일관된데 이름이 없던 자리라 --stroke-bold·--text-small 과 같은 「구멍」이었다.
+// 최근접 --pop-ink(Δ31)·--cat-leadership(Δ28)로 밀지 않은 이유는 앞은 서브 CTA 의 진한 단이고
+// 뒤는 배지 전용이라서다 — 최근접이 곧 정답이 아니다(§5 역할 우선). 값이 같아 화면 변화 0.
+const ACCENT_INK = "var(--ink-accent, #9a5b2c)";
 const SAND = "#e8c97a";
 
 const SRC_IP = "198.51.100.10"; // Host A
@@ -147,7 +152,7 @@ export default function HopJourney() {
           </p>
           <p style={{ margin: 0, fontSize: 13 }}>
             TTL:{" "}
-            <strong style={{ color: "#9a5b2c", fontFamily: "monospace", fontSize: 15 }}>
+            <strong style={{ color: ACCENT_INK, fontFamily: "monospace", fontSize: 15 }}>
               {seg.ttl}
             </strong>{" "}
             <span style={{ color: INK_SOFT, fontSize: 12 }}>(홉마다 −1)</span>
@@ -162,7 +167,7 @@ export default function HopJourney() {
             padding: 12,
           }}
         >
-          <p style={{ margin: "0 0 var(--space-8)", fontWeight: 700, color: "#9a5b2c" }}>
+          <p style={{ margin: "0 0 var(--space-8)", fontWeight: 700, color: ACCENT_INK }}>
             L2 Ethernet 헤더 <span style={{ fontWeight: 400, fontSize: 12 }}>(구간마다 새로)</span>
           </p>
           <p style={{ margin: "0 0 var(--space-4)", fontFamily: "monospace", fontSize: 13 }}>
