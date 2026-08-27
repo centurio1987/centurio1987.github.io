@@ -26,20 +26,34 @@ const INITIAL: FileModel[] = [
   { name: "new.txt", bytes: 8 * 1024, inLower: false, upper: "own", note: "컨테이너가 직접 만든 파일" },
 ];
 
+/**
+ * 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+ *
+ * `surface` 는 원래 #FBF8F1 이었다 — 같은 뜻(종이 흰색)에 값이 넷으로 갈려 있던 자리를
+ * `--surface-hi` 한 단으로 모은다(tokens.css:6-11 의 실측 근거). ΔRGB 9.5.
+ */
 const C = {
-  paper: "#F3EEE4",
-  surface: "#FBF8F1",
-  cream: "#EDE6D8",
-  border: "#d8d0be",
-  ink: "#20264A",
-  ink3: "#6f7390",
-  accent: "#2B3FD4",
-  accentTint: "#dfe3ff",
-  pop: "#d8a33f",
-  popTint: "#f0dca8",
-  popInk: "#8a6313",
-  teal: "#3e6b6b",
+  paper: "var(--paper, #F3EEE4)",
+  surface: "var(--surface-hi, #fffdf8)",
+  cream: "var(--cream, #EDE6D8)",
+  border: "var(--border, #d8d0be)",
+  ink: "var(--ink, #20264A)",
+  ink3: "var(--ink-3, #6f7390)",
+  accent: "var(--accent, #2B3FD4)",
+  accentTint: "var(--accent-tint2, #dfe3ff)",
+  pop: "var(--pop, #d8a33f)",
+  popTint: "var(--pop-tint, #f0dca8)",
+  popInk: "var(--pop-ink, #8a6313)",
+  teal: "var(--cat-skills, #3e6b6b)",
 };
+
+const HAIR = "var(--stroke-hair, 1px)";
+const BOLD = "var(--stroke-bold, 2px)";
+/**
+ * 코드 글꼴만 fallback 을 안 적는다 — `tokens.css` 는 전 페이지에 있어 fallback 이 뜰 일이
+ * 없고, 스택을 베껴 두면 폰트가 바뀔 때 조용히 어긋난다(`global.css:88` 과 같은 표기).
+ */
+const MONO = "var(--font-code)";
 
 function formatSize(bytes: number): string {
   if (bytes >= 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)}GB`;
@@ -121,26 +135,26 @@ export default function OverlayLab() {
   }
 
   const colStyle: React.CSSProperties = {
-    border: `1px solid ${C.border}`,
+    border: `${HAIR} solid ${C.border}`,
     borderRadius: 10,
     background: C.surface,
     padding: 12,
     minWidth: 0,
   };
   const colTitle: React.CSSProperties = {
-    margin: "0 0 2px", fontSize: 13, fontWeight: 700, color: C.ink,
+    margin: "0 0 var(--space-2)", fontSize: 13, fontWeight: 700, color: C.ink,
   };
   const colHint: React.CSSProperties = {
-    margin: "0 0 10px", fontSize: 11.5, color: C.ink3, lineHeight: 1.45,
+    margin: "0 0 var(--space-10)", fontSize: 11.5, color: C.ink3, lineHeight: 1.45,
   };
   const rowBase: React.CSSProperties = {
-    fontFamily: "var(--font-code, monospace)", fontSize: 12.5,
-    padding: "6px 8px", borderRadius: 6, marginBottom: 5,
-    border: "1px solid transparent", lineHeight: 1.4,
+    fontFamily: MONO, fontSize: 12.5,
+    padding: "var(--space-6) var(--space-8)", borderRadius: 6, marginBottom: 5,
+    border: `${HAIR} solid transparent`, lineHeight: 1.4,
   };
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `1px solid ${C.border}`, borderRadius: 12, background: C.paper }}>
+    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${C.border}`, borderRadius: 12, background: C.paper }}>
       {/* 파일 선택 */}
       <div style={{ marginBottom: 12 }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginRight: 8 }}>파일</span>
@@ -152,10 +166,10 @@ export default function OverlayLab() {
               onClick={() => setSelected(f.name)}
               aria-pressed={selected === f.name}
               style={{
-                fontFamily: "var(--font-code, monospace)", fontSize: 12.5,
-                padding: "5px 10px", borderRadius: 999, cursor: "pointer",
-                border: selected === f.name ? `2px solid ${C.accent}` : `1px solid ${C.border}`,
-                background: selected === f.name ? C.accentTint : "#fffdf8",
+                fontFamily: MONO, fontSize: 12.5,
+                padding: "var(--space-4) var(--space-10)", borderRadius: 999, cursor: "pointer",
+                border: selected === f.name ? `${BOLD} solid ${C.accent}` : `${HAIR} solid ${C.border}`,
+                background: selected === f.name ? C.accentTint : C.surface,
                 color: C.ink,
               }}
             >
@@ -163,7 +177,7 @@ export default function OverlayLab() {
             </button>
           ))}
         </span>
-        <p style={{ margin: "6px 0 0", fontSize: 12, color: C.ink3 }}>{current.note}</p>
+        <p style={{ margin: "var(--space-6) 0 0", fontSize: 12, color: C.ink3 }}>{current.note}</p>
       </div>
 
       {/* 연산 버튼 */}
@@ -171,7 +185,7 @@ export default function OverlayLab() {
         <button type="button" onClick={handleRead} style={btn(C.cream)}>읽기</button>
         <button type="button" onClick={handleWrite} style={btn(C.popTint)}>쓰기(append)</button>
         <button type="button" onClick={handleDelete} style={btn(C.cream)}>삭제</button>
-        <button type="button" onClick={handleReset} style={btn("#fffdf8")}>초기화</button>
+        <button type="button" onClick={handleReset} style={btn(C.surface)}>초기화</button>
       </div>
 
       {/* 3열 */}
@@ -200,8 +214,8 @@ export default function OverlayLab() {
               key={f.name}
               style={{
                 ...rowBase,
-                background: f.upper === "whiteout" ? "#fff" : C.popTint,
-                border: `1px solid ${f.upper === "whiteout" ? C.border : C.pop}`,
+                background: f.upper === "whiteout" ? C.surface : C.popTint,
+                border: `${HAIR} solid ${f.upper === "whiteout" ? C.border : C.pop}`,
                 color: C.ink,
               }}
             >
@@ -221,7 +235,7 @@ export default function OverlayLab() {
             <div style={{ ...rowBase, color: C.ink3 }}>(비어 있음)</div>
           )}
           {files.filter(isVisible).map((f) => (
-            <div key={f.name} style={{ ...rowBase, background: "#fff", border: `1px solid ${C.border}`, color: C.ink }}>
+            <div key={f.name} style={{ ...rowBase, background: C.surface, border: `${HAIR} solid ${C.border}`, color: C.ink }}>
               {f.name}
             </div>
           ))}
@@ -229,15 +243,15 @@ export default function OverlayLab() {
       </div>
 
       {/* 사용량 */}
-      <p role="status" style={{ margin: "14px 0 0", fontSize: 13.5, color: C.ink }}>
+      <p role="status" style={{ margin: "var(--space-14) 0 0", fontSize: 13.5, color: C.ink }}>
         컨테이너 레이어 사용량:{" "}
-        <strong style={{ fontFamily: "var(--font-code, monospace)", color: usedBytes > 0 ? C.popInk : C.teal }}>
+        <strong style={{ fontFamily: MONO, color: usedBytes > 0 ? C.popInk : C.teal }}>
           {formatSize(usedBytes)}
         </strong>
       </p>
 
       {/* 로그 */}
-      <div style={{ marginTop: 10, padding: 10, borderRadius: 8, background: "#fffdf8", border: `1px solid ${C.border}`, minHeight: 52 }}>
+      <div style={{ marginTop: 10, padding: 10, borderRadius: 8, background: C.surface, border: `${HAIR} solid ${C.border}`, minHeight: 52 }}>
         {log.length === 0 ? (
           <p style={{ margin: 0, fontSize: 12.5, color: C.ink3 }}>
             파일을 고르고 <strong>읽기 → 쓰기 → 삭제</strong> 순으로 눌러 보세요.
@@ -245,7 +259,7 @@ export default function OverlayLab() {
         ) : (
           <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.6, color: C.ink }}>
             {log.map((line, i) => (
-              <li key={`${i}-${line}`} style={{ fontFamily: "var(--font-code, monospace)" }}>{line}</li>
+              <li key={`${i}-${line}`} style={{ fontFamily: MONO }}>{line}</li>
             ))}
           </ul>
         )}
@@ -262,7 +276,7 @@ export default function OverlayLab() {
 
 function btn(bg: string): React.CSSProperties {
   return {
-    fontSize: 13, padding: "6px 14px", borderRadius: 999, cursor: "pointer",
-    border: `1px solid ${C.border}`, background: bg, color: C.ink, fontWeight: 600,
+    fontSize: 13, padding: "var(--space-6) var(--space-14)", borderRadius: 999, cursor: "pointer",
+    border: `${HAIR} solid ${C.border}`, background: bg, color: C.ink, fontWeight: 600,
   };
 }

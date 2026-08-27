@@ -44,19 +44,33 @@ const LAYERS = [
   { digest: "sha256:ec4b8955958665577945c89419d1af06b5f7636b4ac3da7f12184802ad867736", size: 73109 },
 ];
 
+/**
+ * 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+ *
+ * `surface` 는 원래 #FBF8F1 이었다 — 같은 뜻(종이 흰색)에 값이 넷으로 갈려 있던 자리를
+ * `--surface-hi` 한 단으로 모은다(tokens.css:6-11 의 실측 근거). ΔRGB 9.5.
+ */
 const C = {
-  paper: "#F3EEE4",
-  surface: "#FBF8F1",
-  cream: "#EDE6D8",
-  border: "#d8d0be",
-  ink: "#20264A",
-  ink3: "#6f7390",
-  accent: "#2B3FD4",
-  accentTint: "#dfe3ff",
-  pop: "#d8a33f",
-  popTint: "#f0dca8",
-  popInk: "#8a6313",
+  paper: "var(--paper, #F3EEE4)",
+  surface: "var(--surface-hi, #fffdf8)",
+  cream: "var(--cream, #EDE6D8)",
+  border: "var(--border, #d8d0be)",
+  ink: "var(--ink, #20264A)",
+  ink3: "var(--ink-3, #6f7390)",
+  accent: "var(--accent, #2B3FD4)",
+  accentTint: "var(--accent-tint2, #dfe3ff)",
+  pop: "var(--pop, #d8a33f)",
+  popTint: "var(--pop-tint, #f0dca8)",
+  popInk: "var(--pop-ink, #8a6313)",
 };
+
+const HAIR = "var(--stroke-hair, 1px)";
+const BOLD = "var(--stroke-bold, 2px)";
+/**
+ * 코드 글꼴만 fallback 을 안 적는다 — `tokens.css` 는 전 페이지에 있어 fallback 이 뜰 일이
+ * 없고, 스택을 베껴 두면 폰트가 바뀔 때 조용히 어긋난다(`global.css:88` 과 같은 표기).
+ */
+const MONO = "var(--font-code)";
 
 function short(d: string): string {
   return d.replace("sha256:", "").slice(0, 12);
@@ -97,10 +111,10 @@ export default function DigestChain() {
           : "레이어입니다. 실제로는 압축된 tar 이고, 이 다이제스트는 압축된 파일의 해시(DiffID 와 다름)입니다.";
 
   const panel: React.CSSProperties = {
-    border: `1px solid ${C.border}`, borderRadius: 10, background: C.surface,
+    border: `${HAIR} solid ${C.border}`, borderRadius: 10, background: C.surface,
     padding: 12, minWidth: 0,
   };
-  const mono: React.CSSProperties = { fontFamily: "var(--font-code, monospace)" };
+  const mono: React.CSSProperties = { fontFamily: MONO };
 
   function navBtn(label: string, to: View, sub: string) {
     return (
@@ -110,8 +124,8 @@ export default function DigestChain() {
         onClick={() => setView(to)}
         style={{
           ...mono, display: "block", width: "100%", textAlign: "left",
-          fontSize: 12.5, padding: "7px 9px", marginBottom: 6, borderRadius: 6,
-          border: `1px solid ${C.border}`, background: "#fffdf8", color: C.ink, cursor: "pointer",
+          fontSize: 12.5, padding: "var(--space-6) var(--space-8)", marginBottom: 6, borderRadius: 6,
+          border: `${HAIR} solid ${C.border}`, background: C.surface, color: C.ink, cursor: "pointer",
         }}
       >
         {label} <span style={{ color: C.ink3 }}>{sub}</span>
@@ -120,7 +134,7 @@ export default function DigestChain() {
   }
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `1px solid ${C.border}`, borderRadius: 12, background: C.paper }}>
+    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${C.border}`, borderRadius: 12, background: C.paper }}>
       {/* 플랫폼 탭 */}
       <div style={{ marginBottom: 12 }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginRight: 8 }}>플랫폼</span>
@@ -131,9 +145,9 @@ export default function DigestChain() {
             onClick={() => { setPlatform(p); setView("index"); }}
             aria-pressed={platform === p}
             style={{
-              ...mono, fontSize: 12.5, padding: "5px 10px", marginRight: 6, borderRadius: 999,
-              border: platform === p ? `2px solid ${C.accent}` : `1px solid ${C.border}`,
-              background: platform === p ? C.accentTint : "#fffdf8", color: C.ink, cursor: "pointer",
+              ...mono, fontSize: 12.5, padding: "var(--space-4) var(--space-10)", marginRight: 6, borderRadius: 999,
+              border: platform === p ? `${BOLD} solid ${C.accent}` : `${HAIR} solid ${C.border}`,
+              background: platform === p ? C.accentTint : C.surface, color: C.ink, cursor: "pointer",
             }}
           >
             {PLATFORM_MANIFEST[p].label}
@@ -144,7 +158,7 @@ export default function DigestChain() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 10 }}>
         {/* 좌: 현재 위치 */}
         <div style={panel}>
-          <p style={{ ...mono, margin: "0 0 10px", fontSize: 12, color: C.ink3 }}>
+          <p style={{ ...mono, margin: "0 0 var(--space-10)", fontSize: 12, color: C.ink3 }}>
             {crumbs.map((c, i) => (
               <span key={c}>
                 {i > 0 && <span style={{ color: C.border }}> › </span>}
@@ -173,7 +187,7 @@ export default function DigestChain() {
             )}
           </div>
 
-          <p style={{ margin: "12px 0 6px", fontSize: 12, fontWeight: 700, color: C.ink }}>가리키는 곳</p>
+          <p style={{ margin: "var(--space-12) 0 var(--space-6)", fontSize: 12, fontWeight: 700, color: C.ink }}>가리키는 곳</p>
           {view === "index" && navBtn(`→ manifest`, "manifest", `${pm.label}`)}
           {view === "manifest" && (
             <>
@@ -190,7 +204,7 @@ export default function DigestChain() {
             <button
               type="button"
               onClick={() => setView("index")}
-              style={{ marginTop: 10, fontSize: 12.5, padding: "5px 12px", borderRadius: 999, border: `1px solid ${C.border}`, background: C.cream, color: C.ink, cursor: "pointer" }}
+              style={{ marginTop: 10, fontSize: 12.5, padding: "var(--space-4) var(--space-12)", borderRadius: 999, border: `${HAIR} solid ${C.border}`, background: C.cream, color: C.ink, cursor: "pointer" }}
             >
               처음으로
             </button>
@@ -199,8 +213,8 @@ export default function DigestChain() {
 
         {/* 우: blobs 디렉터리 */}
         <div style={panel}>
-          <p style={{ margin: "0 0 2px", fontSize: 13, fontWeight: 700, color: C.ink }}>blobs/sha256/</p>
-          <p style={{ margin: "0 0 10px", fontSize: 11.5, color: C.ink3, lineHeight: 1.45 }}>
+          <p style={{ margin: "0 0 var(--space-2)", fontSize: 13, fontWeight: 700, color: C.ink }}>blobs/sha256/</p>
+          <p style={{ margin: "0 0 var(--space-10)", fontSize: 11.5, color: C.ink3, lineHeight: 1.45 }}>
             디스크에는 해시 이름만 있습니다
           </p>
           {blobs.map((b) => {
@@ -209,9 +223,9 @@ export default function DigestChain() {
               <div
                 key={b.digest}
                 style={{
-                  ...mono, fontSize: 12, padding: "6px 8px", marginBottom: 5, borderRadius: 6,
-                  background: on ? C.popTint : "#fff",
-                  border: `1px solid ${on ? C.pop : C.border}`,
+                  ...mono, fontSize: 12, padding: "var(--space-6) var(--space-8)", marginBottom: 5, borderRadius: 6,
+                  background: on ? C.popTint : C.surface,
+                  border: `${HAIR} solid ${on ? C.pop : C.border}`,
                   color: on ? C.ink : C.ink3,
                 }}
               >
@@ -228,7 +242,7 @@ export default function DigestChain() {
         </div>
       </div>
 
-      <p role="status" style={{ margin: "12px 0 0", fontSize: 13, color: C.ink, lineHeight: 1.6 }}>
+      <p role="status" style={{ margin: "var(--space-12) 0 0", fontSize: 13, color: C.ink, lineHeight: 1.6 }}>
         {note}
       </p>
 

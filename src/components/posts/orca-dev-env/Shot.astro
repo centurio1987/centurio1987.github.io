@@ -57,7 +57,7 @@ const { src, alt, caption, ratio } = Astro.props;
     justify-content: center;
     /* 문단 간격(16px)의 두 배. 액자는 문단이 아니라 **끼워 넣은 물건**이라
        앞뒤 글과 같은 간격이면 문단 하나로 딸려 읽힌다. */
-    margin: 32px 0;
+    margin: var(--space-32) 0;
   }
   /* 위 ② — 부모 scoped CSS 로는 자식 컴포넌트 루트를 못 고치므로(자식엔 자식의
      `data-astro-cid` 만 붙는다) 내 요소인 `.shot` 아래에서 `:global()` 로 연다.

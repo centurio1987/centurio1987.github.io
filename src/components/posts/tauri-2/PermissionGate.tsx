@@ -56,6 +56,14 @@ const SURFACE = "var(--surface, #F8F3E8)";
 const PAPER = "var(--paper, #F3EEE4)";
 const PASS = "var(--cat-planning, #3E6B4F)";
 const REJECT = "var(--cat-strategy, #A84B4B)";
+/**
+ * 코드 글꼴만 fallback 을 안 적는다 — `tokens.css` 는 전 페이지에 있어(global.css:1 ←
+ * BaseLayout.astro:2) fallback 이 뜰 일이 없고, 스택을 베껴 두면 폰트가 바뀔 때 조용히
+ * 어긋난다. `global.css:88` 이 쓰는 표기와 같다.
+ */
+const MONO = "var(--font-code)";
+/** 알파 접미 색은 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
 
 function shellPermissionJson(): string {
   return '{ "identifier": "shell:allow-execute", "allow": [{ "name": "binaries/checksum", "sidecar": true }] }';
@@ -136,7 +144,7 @@ export default function PermissionGate() {
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: "8px 16px",
+            gap: "var(--space-8) var(--space-16)",
           }}
         >
           {PERMISSION_OPTIONS.map(({ key, label }) => {
@@ -152,7 +160,7 @@ export default function PermissionGate() {
                   fontSize: 13.5,
                   color: INK,
                   cursor: "pointer",
-                  fontFamily: "var(--font-code, ui-monospace, monospace)",
+                  fontFamily: MONO,
                 }}
               >
                 <input
@@ -184,9 +192,9 @@ export default function PermissionGate() {
                 aria-checked={isActive}
                 onClick={() => setCommandKey(c.key)}
                 style={{
-                  fontFamily: "var(--font-code, ui-monospace, monospace)",
+                  fontFamily: MONO,
                   fontSize: 13,
-                  padding: "6px 12px",
+                  padding: "var(--space-6) var(--space-12)",
                   borderRadius: "var(--btn-radius, 999px)",
                   border: `var(--stroke, 1.5px) solid ${isActive ? INK : BORDER}`,
                   background: isActive ? INK : SURFACE,
@@ -208,12 +216,12 @@ export default function PermissionGate() {
         <pre
           style={{
             margin: 0,
-            padding: "12px 14px",
+            padding: "var(--space-12) var(--space-14)",
             borderRadius: "var(--radius-sm, 8px)",
             border: `var(--stroke, 1.5px) solid ${BORDER}`,
             background: SURFACE,
             color: INK,
-            fontFamily: "var(--font-code, ui-monospace, monospace)",
+            fontFamily: MONO,
             fontSize: 12.5,
             lineHeight: 1.6,
             overflowX: "auto",
@@ -230,12 +238,12 @@ export default function PermissionGate() {
         </div>
         <div
           style={{
-            padding: "10px 14px",
+            padding: "var(--space-10) var(--space-14)",
             borderRadius: "var(--radius-sm, 8px)",
             border: `var(--stroke, 1.5px) solid ${passed ? PASS : REJECT}`,
-            background: passed ? "rgba(62, 107, 79, 0.10)" : "rgba(168, 75, 75, 0.10)",
+            background: passed ? tint(PASS, 10) : tint(REJECT, 10),
             color: passed ? PASS : REJECT,
-            fontFamily: "var(--font-code, ui-monospace, monospace)",
+            fontFamily: MONO,
             fontSize: 13,
             fontWeight: 600,
           }}
