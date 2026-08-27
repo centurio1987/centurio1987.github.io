@@ -3,7 +3,7 @@ card: KAN-072-CPJCT1
 batch: 3
 created: 2026-08-27
 branch: KAN-072-CPJCT1
-status: 진행
+status: 완료
 steps: S3, S4, S5
 ---
 
