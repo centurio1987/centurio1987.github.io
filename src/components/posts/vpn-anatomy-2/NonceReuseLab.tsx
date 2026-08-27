@@ -7,12 +7,21 @@ import { useState, type CSSProperties } from "react";
 //   결정론적 의사난수(mulberry32)로 키스트림을 흉내 낸다. XOR 성질은 키스트림의
 //   종류와 무관하게 성립하므로, 이 모형만으로도 nonce 재사용의 위험은 그대로 체감된다.
 
-const INK = "#20264A";
-const ACCENT = "#4E6CA8";
-const DANGER = "#A84B4B";
-const POP = "#D8A33F";
-const SURFACE = "#F8F3E8";
-const PAPER = "#F3EEE4";
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const ACCENT = "var(--cat-architecture, #4E6CA8)";
+const DANGER = "var(--cat-strategy, #A84B4B)";
+const POP = "var(--pop, #D8A33F)";
+const POP_INK = "var(--pop-ink, #8a6313)";
+const SURFACE = "var(--surface, #F8F3E8)";
+const PAPER = "var(--paper, #F3EEE4)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const MUTED = "var(--ink-2, #4a4f6a)";
+const HAIR = "var(--stroke-hair, 1px)";
+const BOLD = "var(--stroke-bold, 2px)";
+
+/** 알파 접미 hex(`${INK}33`)는 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
 
 const MAX_LEN = 32;
 const DEFAULT_KEY = "6f1c9ab3";
@@ -62,22 +71,22 @@ function toAscii(bytes: number[]): string {
 const labelBlock: CSSProperties = { display: "grid", gap: 6, fontSize: 12, fontWeight: 600, color: INK };
 
 const inputStyle: CSSProperties = {
-  padding: "8px 10px",
-  border: `1px solid ${INK}33`,
+  padding: "var(--space-8) var(--space-10)",
+  border: `${HAIR} solid ${tint(INK, 20)}`,
   borderRadius: 8,
   fontSize: 14,
   fontFamily: "'JetBrains Mono', monospace",
-  background: "#fffdf8",
+  background: PANEL,
   color: INK,
   width: "100%",
   boxSizing: "border-box",
 };
 
 const ghostBtn: CSSProperties = {
-  padding: "6px 12px",
+  padding: "var(--space-6) var(--space-12)",
   borderRadius: 999,
-  border: `1px solid ${INK}33`,
-  background: "#fffdf8",
+  border: `${HAIR} solid ${tint(INK, 20)}`,
+  background: PANEL,
   color: INK,
   fontSize: 12,
   cursor: "pointer",
@@ -86,10 +95,10 @@ const ghostBtn: CSSProperties = {
 
 function toggleStyle(active: boolean): CSSProperties {
   return {
-    padding: "8px 14px",
+    padding: "var(--space-8) var(--space-14)",
     borderRadius: 999,
-    border: `2px solid ${active ? DANGER : ACCENT}`,
-    background: active ? "#A84B4B1f" : "#4E6CA81f",
+    border: `${BOLD} solid ${active ? DANGER : ACCENT}`,
+    background: active ? tint(DANGER, 12.2) : tint(ACCENT, 12.2),
     color: active ? DANGER : ACCENT,
     fontWeight: 700,
     fontSize: 13,
@@ -101,18 +110,18 @@ const panelStyle: CSSProperties = {
   marginTop: 14,
   padding: 14,
   borderRadius: 10,
-  border: `1px solid ${INK}22`,
+  border: `${HAIR} solid ${tint(INK, 13.3)}`,
   background: PAPER,
 };
 
-const panelTitle: CSSProperties = { margin: "0 0 8px", fontSize: 13, fontWeight: 700, color: INK };
+const panelTitle: CSSProperties = { margin: "0 0 var(--space-8)", fontSize: 13, fontWeight: 700, color: INK };
 
 const rowLabel: CSSProperties = {
   display: "inline-block",
   minWidth: 42,
   fontSize: 12,
   fontWeight: 700,
-  color: "#5b5748",
+  color: MUTED,
   marginRight: 6,
 };
 
@@ -125,11 +134,11 @@ function HexBytes({ bytes, compareWith }: { bytes: number[]; compareWith?: numbe
           <span
             key={i}
             style={{
-              padding: "2px 4px",
+              padding: "var(--space-2) var(--space-4)",
               borderRadius: 4,
               color: INK,
-              background: same ? "#D8A33F3d" : "transparent",
-              border: same ? `1px solid ${POP}` : "1px solid transparent",
+              background: same ? tint(POP, 23.9) : "transparent",
+              border: same ? `${HAIR} solid ${POP}` : `${HAIR} solid transparent`,
             }}
           >
             {b.toString(16).padStart(2, "0")}
@@ -180,8 +189,8 @@ export default function NonceReuseLab() {
   const sameKsCount = ks1.filter((v, i) => v === ks2[i]).length;
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `1px solid ${INK}22`, borderRadius: 12, background: SURFACE }}>
-      <p style={{ margin: "0 0 12px", fontWeight: 600, color: INK, lineHeight: 1.5 }}>
+    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 12, background: SURFACE }}>
+      <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK, lineHeight: 1.5 }}>
         P1·P2와 nonce 토글을 바꿔 가며, <strong>같은 nonce가 왜 위험한지</strong> 눈으로 확인하세요. 아래로 갈수록
         키스트림 → 암호문 → XOR 증명 → 실제 공격 순서로 이어집니다.
       </p>
@@ -216,7 +225,7 @@ export default function NonceReuseLab() {
         >
           {reuseNonce ? "⚠ 같은 nonce 사용 (취약)" : "✔ 다른 nonce 사용 (안전)"}
         </button>
-        <span style={{ fontSize: 12, color: "#5b5748" }}>
+        <span style={{ fontSize: 12, color: MUTED }}>
           nonce1 = <code>{nonce1}</code> · nonce2 = <code>{nonce2}</code>
         </span>
         <button type="button" onClick={regenerateKey} style={ghostBtn}>
@@ -236,7 +245,7 @@ export default function NonceReuseLab() {
             <HexBytes bytes={ks2} compareWith={ks1} />
           </div>
         </div>
-        <p style={{ fontSize: 12, color: "#5b5748", margin: "8px 0 0" }}>
+        <p style={{ fontSize: 12, color: MUTED, margin: "var(--space-8) 0 0" }}>
           {sameKsCount}/{len} 바이트 동일
           {sameKsCount === len ? " — 키스트림이 완전히 겹칩니다." : " — 서로 다른 키스트림입니다."}
         </p>
@@ -272,20 +281,20 @@ export default function NonceReuseLab() {
           role="status"
           style={{
             marginTop: 10,
-            padding: "8px 12px",
+            padding: "var(--space-8) var(--space-12)",
             borderRadius: 8,
             display: "inline-block",
-            border: `1px solid ${proofMatches ? POP : ACCENT}`,
-            background: proofMatches ? "#D8A33F1a" : "#4E6CA81a",
+            border: `${HAIR} solid ${proofMatches ? POP : ACCENT}`,
+            background: proofMatches ? tint(POP, 10.2) : tint(ACCENT, 10.2),
           }}
         >
-          <strong style={{ color: proofMatches ? "#8a6313" : ACCENT }}>
+          <strong style={{ color: proofMatches ? POP_INK : ACCENT }}>
             {proofMatches ? "✔ 두 값이 정확히 일치합니다" : "✘ 두 값이 다릅니다"}
           </strong>
         </div>
       </div>
 
-      <div style={{ ...panelStyle, border: `1px solid ${DANGER}55` }}>
+      <div style={{ ...panelStyle, border: `${HAIR} solid ${tint(DANGER, 33.3)}` }}>
         <p style={panelTitle}>공격 시뮬레이션 — 공격자가 P1을 이렇게 추측했다면?</p>
         <label style={labelBlock}>
           추측한 P1
@@ -301,18 +310,18 @@ export default function NonceReuseLab() {
             </button>
           </div>
         </label>
-        <p style={{ fontSize: 12, color: "#5b5748", margin: "10px 0 4px" }}>
+        <p style={{ fontSize: 12, color: MUTED, margin: "var(--space-10) 0 var(--space-4)" }}>
           (C1 XOR C2) XOR 추측한 P1 → ASCII로 복원
         </p>
         <p
           style={{
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 15,
-            padding: "8px 10px",
-            background: "#fffdf8",
+            padding: "var(--space-8) var(--space-10)",
+            background: PANEL,
             borderRadius: 6,
             wordBreak: "break-all",
-            border: `1px solid ${INK}22`,
+            border: `${HAIR} solid ${tint(INK, 13.3)}`,
           }}
         >
           {recoveredAscii}
@@ -320,11 +329,11 @@ export default function NonceReuseLab() {
         <div
           role="status"
           style={{
-            padding: "8px 12px",
+            padding: "var(--space-8) var(--space-12)",
             borderRadius: 8,
             display: "inline-block",
-            border: `1px solid ${attackSucceeds ? DANGER : ACCENT}`,
-            background: attackSucceeds ? "#A84B4B1a" : "#4E6CA81a",
+            border: `${HAIR} solid ${attackSucceeds ? DANGER : ACCENT}`,
+            background: attackSucceeds ? tint(DANGER, 10.2) : tint(ACCENT, 10.2),
           }}
         >
           <strong style={{ color: attackSucceeds ? DANGER : ACCENT }}>
@@ -333,7 +342,7 @@ export default function NonceReuseLab() {
         </div>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#5b5748", marginTop: 12, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: 13, color: MUTED, marginTop: 12, lineHeight: 1.55 }}>
         ⚠ 교육용 모형입니다. 실제 ChaCha20이 아니라 (키, nonce)를 해시해 시드로 쓰는 결정론적 의사난수로
         키스트림을 대신합니다. C1 XOR C2 = P1 XOR P2 라는 XOR 성질은 어떤 키스트림을 쓰든 동일하게
         성립하므로, 이 모형만으로도 nonce 재사용의 위험은 그대로 체감됩니다.

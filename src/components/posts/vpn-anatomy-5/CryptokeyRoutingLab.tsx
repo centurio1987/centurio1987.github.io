@@ -7,12 +7,18 @@ import { useMemo, useState, type CSSProperties } from "react";
  * 을 어떻게 함께 처리하는지 보여준다. 값은 WireGuard 백서 Configuration 1a 재구성.
  */
 
-const INK = "#20264A";
-const PAPER = "#F3EEE4";
-const CORE = "#4E6CA8";
-const OK = "#3E6B4F";
-const DANGER = "#A84B4B";
-const MUTED = "#6b6357";
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const PAPER = "var(--paper, #F3EEE4)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const CORE = "var(--cat-architecture, #4E6CA8)";
+const OK = "var(--cat-planning, #3E6B4F)";
+const DANGER = "var(--cat-strategy, #A84B4B)";
+const MUTED = "var(--ink-2, #4a4f6a)";
+const HAIR = "var(--stroke-hair, 1px)";
+
+/** 알파 접미 hex(`${INK}33`)는 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
 
 type Peer = { id: string; name: string; key: string; allowed: string[] };
 
@@ -79,20 +85,20 @@ function acceptedBy(peer: Peer, ip: string): string | null {
 const btn = (active: boolean): CSSProperties => ({
   fontSize: 13,
   fontWeight: 600,
-  padding: "6px 12px",
+  padding: "var(--space-6) var(--space-12)",
   borderRadius: 8,
-  border: `1px solid ${active ? INK : INK + "33"}`,
-  background: active ? INK : "#fff",
+  border: `${HAIR} solid ${active ? INK : tint(INK, 20)}`,
+  background: active ? INK : PANEL,
   color: active ? PAPER : INK,
   cursor: "pointer",
 });
 
 const sel: CSSProperties = {
   fontSize: 13,
-  padding: "5px 8px",
+  padding: "var(--space-4) var(--space-8)",
   borderRadius: 6,
-  border: `1px solid ${INK}33`,
-  background: "#fff",
+  border: `${HAIR} solid ${tint(INK, 20)}`,
+  background: PANEL,
   color: INK,
 };
 
@@ -108,15 +114,15 @@ export default function CryptokeyRoutingLab() {
   const accepted = inCidr !== null;
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `1px solid ${INK}22`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
       {/* 표 */}
       <div style={{ fontSize: 12, color: MUTED, marginBottom: 6 }}>Cryptokey Routing 표 (백서 Configuration 1a 재구성)</div>
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 16 }}>
         <thead>
           <tr style={{ color: MUTED, textAlign: "left" }}>
-            <th style={{ padding: "3px 6px", fontWeight: 600 }}>피어</th>
-            <th style={{ padding: "3px 6px", fontWeight: 600 }}>공개키</th>
-            <th style={{ padding: "3px 6px", fontWeight: 600 }}>Allowed IPs</th>
+            <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: 600 }}>피어</th>
+            <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: 600 }}>공개키</th>
+            <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: 600 }}>Allowed IPs</th>
           </tr>
         </thead>
         <tbody>
@@ -124,10 +130,10 @@ export default function CryptokeyRoutingLab() {
             const lit =
               (mode === "out" && outResult?.peer.id === p.id) || (mode === "in" && p.id === peerId);
             return (
-              <tr key={p.id} style={{ background: lit ? "#fff" : "transparent" }}>
-                <td style={{ padding: "4px 6px", color: INK, fontWeight: 600, borderLeft: `3px solid ${lit ? CORE : "transparent"}` }}>{p.name}</td>
-                <td style={{ padding: "4px 6px", color: INK, fontFamily: "monospace" }}>{p.key}</td>
-                <td style={{ padding: "4px 6px", color: INK, fontFamily: "monospace" }}>
+              <tr key={p.id} style={{ background: lit ? PANEL : "transparent" }}>
+                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontWeight: 600, borderLeft: `3px solid ${lit ? CORE : "transparent"}` }}>{p.name}</td>
+                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontFamily: "monospace" }}>{p.key}</td>
+                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontFamily: "monospace" }}>
                   {p.allowed.map((c) => {
                     const hit =
                       (mode === "out" && outResult?.peer.id === p.id && outResult?.cidr === c) ||
@@ -138,10 +144,10 @@ export default function CryptokeyRoutingLab() {
                         style={{
                           display: "inline-block",
                           marginRight: 6,
-                          padding: "1px 5px",
+                          padding: "var(--space-2) var(--space-4)",
                           borderRadius: 4,
                           background: hit ? (mode === "in" ? OK : CORE) : "transparent",
-                          color: hit ? "#fff" : INK,
+                          color: hit ? PANEL : INK,
                         }}
                       >
                         {c}
@@ -180,10 +186,10 @@ export default function CryptokeyRoutingLab() {
           <div
             style={{
               marginTop: 12,
-              padding: "10px 12px",
+              padding: "var(--space-10) var(--space-12)",
               borderRadius: 8,
-              background: "#fff",
-              border: `1px solid ${(outResult ? CORE : DANGER)}55`,
+              background: PANEL,
+              border: `${HAIR} solid ${tint(outResult ? CORE : DANGER, 33.3)}`,
               color: INK,
               fontSize: 14,
             }}
@@ -227,10 +233,10 @@ export default function CryptokeyRoutingLab() {
           <div
             style={{
               marginTop: 12,
-              padding: "10px 12px",
+              padding: "var(--space-10) var(--space-12)",
               borderRadius: 8,
-              background: "#fff",
-              border: `1px solid ${(accepted ? OK : DANGER)}55`,
+              background: PANEL,
+              border: `${HAIR} solid ${tint(accepted ? OK : DANGER, 33.3)}`,
               color: INK,
               fontSize: 14,
             }}

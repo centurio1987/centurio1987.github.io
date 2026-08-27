@@ -7,13 +7,19 @@ import { useState } from "react";
  * 기본값 = 캡처의 프레임 1 제안(ENCR·PRF·D-H 셋, 12+8+8=28 → +8 → 36 → +4 → 40).
  */
 
-const INK = "#20264A";
-const PAPER = "#F3EEE4";
-const CORE = "#4E6CA8";
-const ACCENT = "#D8A33F";
-const MUTED = "#6b6357";
-const OK = "#3E6B4F";
-const DANGER = "#A84B4B";
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const PAPER = "var(--paper, #F3EEE4)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const CORE = "var(--cat-architecture, #4E6CA8)";
+const ACCENT = "var(--pop, #D8A33F)";
+const MUTED = "var(--ink-2, #4a4f6a)";
+const OK = "var(--cat-planning, #3E6B4F)";
+const DANGER = "var(--cat-strategy, #A84B4B)";
+const HAIR = "var(--stroke-hair, 1px)";
+
+/** 알파 접미 hex(`${INK}33`)는 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
 
 type Tf = {
   key: string;
@@ -55,17 +61,17 @@ export default function ProposalTreeBuilder() {
 
   const btn = (active: boolean, disabled: boolean): React.CSSProperties => ({
     fontSize: 13,
-    padding: "6px 10px",
+    padding: "var(--space-6) var(--space-10)",
     borderRadius: 6,
-    border: `1px solid ${active ? CORE : INK + "33"}`,
-    background: active ? CORE : "#fff",
-    color: active ? "#fff" : disabled ? MUTED : INK,
+    border: `${HAIR} solid ${active ? CORE : tint(INK, 20)}`,
+    background: active ? CORE : PANEL,
+    color: active ? PANEL : disabled ? MUTED : INK,
     cursor: disabled ? "not-allowed" : "pointer",
     opacity: disabled ? 0.55 : 1,
   });
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `1px solid ${INK}22`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14 }}>
         {TRANSFORMS.map((t) => {
           const active = !!on[t.key];
@@ -86,7 +92,7 @@ export default function ProposalTreeBuilder() {
         })}
       </div>
 
-      <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${INK}18`, padding: 14, fontFamily: "monospace", fontSize: 13, lineHeight: 1.7, color: INK, overflowX: "auto" }}>
+      <div style={{ background: PANEL, borderRadius: 8, border: `${HAIR} solid ${tint(INK, 9.4)}`, padding: 14, fontFamily: "monospace", fontSize: 13, lineHeight: 1.7, color: INK, overflowX: "auto" }}>
         <div style={{ color: CORE, fontWeight: 700 }}>
           SA payload · length {saPayloadLen}
         </div>
@@ -123,7 +129,7 @@ export default function ProposalTreeBuilder() {
         </div>
       </div>
 
-      <p style={{ marginTop: 12, marginBottom: 0, padding: "8px 10px", borderRadius: 6, fontSize: 13, lineHeight: 1.7, color: redundantInteg ? DANGER : OK, background: `${redundantInteg ? DANGER : OK}12`, border: `1px solid ${redundantInteg ? DANGER : OK}44` }}>
+      <p style={{ marginTop: 12, marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: 6, fontSize: 13, lineHeight: 1.7, color: redundantInteg ? DANGER : OK, background: tint(redundantInteg ? DANGER : OK, 7.1), border: `${HAIR} solid ${tint(redundantInteg ? DANGER : OK, 26.7)}` }}>
         {redundantInteg
           ? "AES-GCM은 이미 암호화와 무결성을 한 몸으로 처리하는 AEAD입니다. INTEG 변환을 따로 넣으면 대개 거부되거나 무시됩니다 — 캡처에서 INTEG 칸이 비어 있던 이유입니다."
           : matchesCapture

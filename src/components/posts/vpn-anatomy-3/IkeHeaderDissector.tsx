@@ -7,12 +7,18 @@ import { useState } from "react";
  * 외우게 하는 대신 손으로 만지게 한다. SPI 두 개는 실제 캡처값(합성)을 기본으로 둔다.
  */
 
-const INK = "#20264A";
-const PAPER = "#F3EEE4";
-const CORE = "#4E6CA8";
-const ACCENT = "#D8A33F";
-const MUTED = "#6b6357";
-const OK = "#3E6B4F";
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const PAPER = "var(--paper, #F3EEE4)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const CORE = "var(--cat-architecture, #4E6CA8)";
+const ACCENT = "var(--pop, #D8A33F)";
+const MUTED = "var(--ink-2, #4a4f6a)";
+const OK = "var(--cat-planning, #3E6B4F)";
+const HAIR = "var(--stroke-hair, 1px)";
+
+/** 알파 접미 hex(`${INK}33`)는 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
 
 const EXCHANGES: { id: number; name: string }[] = [
   { id: 34, name: "IKE_SA_INIT" },
@@ -62,23 +68,23 @@ export default function IkeHeaderDissector() {
 
   const chip: React.CSSProperties = {
     fontSize: 13,
-    padding: "5px 9px",
+    padding: "var(--space-4) var(--space-8)",
     borderRadius: 6,
-    border: `1px solid ${INK}33`,
-    background: "#fff",
+    border: `${HAIR} solid ${tint(INK, 20)}`,
+    background: PANEL,
     color: INK,
     cursor: "pointer",
   };
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `1px solid ${INK}22`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", marginBottom: 14 }}>
         <label style={{ fontSize: 13, color: INK, fontWeight: 600 }}>
           Exchange Type{" "}
           <select
             value={exchange}
             onChange={(e) => setExchange(Number(e.target.value))}
-            style={{ fontSize: 13, padding: "4px 6px", borderRadius: 6, border: `1px solid ${INK}33` }}
+            style={{ fontSize: 13, padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
           >
             {EXCHANGES.map((e) => (
               <option key={e.id} value={e.id}>
@@ -89,14 +95,14 @@ export default function IkeHeaderDissector() {
         </label>
         <button
           type="button"
-          style={{ ...chip, background: initiator ? CORE : "#fff", color: initiator ? "#fff" : INK, borderColor: initiator ? CORE : INK + "33" }}
+          style={{ ...chip, background: initiator ? CORE : PANEL, color: initiator ? PANEL : INK, borderColor: initiator ? CORE : tint(INK, 20) }}
           onClick={() => setInitiator((v) => !v)}
         >
           I · Initiator (0x08) {initiator ? "켜짐" : "꺼짐"}
         </button>
         <button
           type="button"
-          style={{ ...chip, background: response ? CORE : "#fff", color: response ? "#fff" : INK, borderColor: response ? CORE : INK + "33" }}
+          style={{ ...chip, background: response ? CORE : PANEL, color: response ? PANEL : INK, borderColor: response ? CORE : tint(INK, 20) }}
           onClick={() => setResponse((v) => !v)}
         >
           R · Response (0x20) {response ? "켜짐" : "꺼짐"}
@@ -104,29 +110,29 @@ export default function IkeHeaderDissector() {
       </div>
 
       <div style={{ overflowX: "auto" }}>
-        <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 13, background: "#fff" }}>
+        <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 13, background: PANEL }}>
           <thead>
             <tr style={{ color: MUTED, textAlign: "left" }}>
-              <th style={{ padding: "6px 8px", borderBottom: `1px solid ${INK}22`, whiteSpace: "nowrap" }}>오프셋</th>
-              <th style={{ padding: "6px 8px", borderBottom: `1px solid ${INK}22` }}>필드</th>
-              <th style={{ padding: "6px 8px", borderBottom: `1px solid ${INK}22` }}>바이트</th>
-              <th style={{ padding: "6px 8px", borderBottom: `1px solid ${INK}22` }}>뜻</th>
+              <th style={{ padding: "var(--space-6) var(--space-8)", borderBottom: `${HAIR} solid ${tint(INK, 13.3)}`, whiteSpace: "nowrap" }}>오프셋</th>
+              <th style={{ padding: "var(--space-6) var(--space-8)", borderBottom: `${HAIR} solid ${tint(INK, 13.3)}` }}>필드</th>
+              <th style={{ padding: "var(--space-6) var(--space-8)", borderBottom: `${HAIR} solid ${tint(INK, 13.3)}` }}>바이트</th>
+              <th style={{ padding: "var(--space-6) var(--space-8)", borderBottom: `${HAIR} solid ${tint(INK, 13.3)}` }}>뜻</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((r) => (
-              <tr key={r.offset} style={{ background: r.live ? `${ACCENT}18` : "transparent" }}>
-                <td style={{ padding: "6px 8px", color: MUTED, fontFamily: "monospace", whiteSpace: "nowrap", verticalAlign: "top" }}>{r.offset}</td>
-                <td style={{ padding: "6px 8px", color: INK, fontWeight: r.live ? 700 : 500, verticalAlign: "top" }}>{r.field}</td>
-                <td style={{ padding: "6px 8px", fontFamily: "monospace", color: r.live ? ACCENT : INK, fontWeight: r.live ? 700 : 400, whiteSpace: "nowrap", verticalAlign: "top" }}>{r.bytes}</td>
-                <td style={{ padding: "6px 8px", color: MUTED, verticalAlign: "top" }}>{r.note}</td>
+              <tr key={r.offset} style={{ background: r.live ? tint(ACCENT, 9.4) : "transparent" }}>
+                <td style={{ padding: "var(--space-6) var(--space-8)", color: MUTED, fontFamily: "monospace", whiteSpace: "nowrap", verticalAlign: "top" }}>{r.offset}</td>
+                <td style={{ padding: "var(--space-6) var(--space-8)", color: INK, fontWeight: r.live ? 700 : 500, verticalAlign: "top" }}>{r.field}</td>
+                <td style={{ padding: "var(--space-6) var(--space-8)", fontFamily: "monospace", color: r.live ? ACCENT : INK, fontWeight: r.live ? 700 : 400, whiteSpace: "nowrap", verticalAlign: "top" }}>{r.bytes}</td>
+                <td style={{ padding: "var(--space-6) var(--space-8)", color: MUTED, verticalAlign: "top" }}>{r.note}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <p style={{ marginTop: 12, marginBottom: 0, padding: "8px 10px", borderRadius: 6, fontSize: 13, lineHeight: 1.7, color: OK, background: `${OK}12`, border: `1px solid ${OK}44` }}>
+      <p style={{ marginTop: 12, marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: 6, fontSize: 13, lineHeight: 1.7, color: OK, background: tint(OK, 7.1), border: `${HAIR} solid ${tint(OK, 26.7)}` }}>
         지금 Flags 바이트 = <strong style={{ fontFamily: "monospace" }}>0x{hex1(flags)}</strong> ({role} · {dir}).
         캡처의 프레임 1은 <strong style={{ fontFamily: "monospace" }}>0x08</strong>(개시자·요청), 프레임 2는 <strong style={{ fontFamily: "monospace" }}>0x20</strong>(응답자·응답)이었습니다.
       </p>

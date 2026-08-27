@@ -6,13 +6,19 @@ import { useState } from "react";
  * 누적 시프트 횟수를 세어 RFC 6479가 지적한 "정상 순서 패킷마다 시프트"의 비용을 눈으로 보게 한다.
  */
 
-const INK = "#20264A";
-const PAPER = "#F3EEE4";
-const CORE = "#4E6CA8";
-const ACCENT = "#D8A33F";
-const DANGER = "#A84B4B";
-const OK = "#3E6B4F";
-const MUTED = "#6b6357";
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const PAPER = "var(--paper, #F3EEE4)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const CORE = "var(--cat-architecture, #4E6CA8)";
+const ACCENT = "var(--pop, #D8A33F)";
+const DANGER = "var(--cat-strategy, #A84B4B)";
+const MUTED = "var(--ink-2, #4a4f6a)";
+const OK = "var(--cat-planning, #3E6B4F)";
+const HAIR = "var(--stroke-hair, 1px)";
+
+/** 알파 접미 hex(`${INK}33`)는 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
 
 type Verdict = {
   tone: "accept" | "reject";
@@ -105,23 +111,23 @@ export default function AntiReplayLab() {
 
   const btn: React.CSSProperties = {
     fontSize: 13,
-    padding: "6px 10px",
+    padding: "var(--space-6) var(--space-10)",
     borderRadius: 6,
-    border: `1px solid ${INK}33`,
-    background: "#fff",
+    border: `${HAIR} solid ${tint(INK, 20)}`,
+    background: PANEL,
     color: INK,
     cursor: "pointer",
   };
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `1px solid ${INK}22`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", marginBottom: 12 }}>
         <label style={{ fontSize: 13, color: INK, fontWeight: 600 }}>
           윈도우 크기{" "}
           <select
             value={size}
             onChange={(e) => reset(Number(e.target.value))}
-            style={{ fontSize: 13, padding: "4px 6px", borderRadius: 6, border: `1px solid ${INK}33` }}
+            style={{ fontSize: 13, padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
           >
             <option value={8}>8비트</option>
             <option value={16}>16비트</option>
@@ -136,10 +142,10 @@ export default function AntiReplayLab() {
             min={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            style={{ width: 84, fontSize: 13, padding: "4px 6px", borderRadius: 6, border: `1px solid ${INK}33` }}
+            style={{ width: 84, fontSize: 13, padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
           />
         </label>
-        <button type="button" style={{ ...btn, background: CORE, color: "#fff", borderColor: CORE }} onClick={() => receive(Number(input))}>
+        <button type="button" style={{ ...btn, background: CORE, color: PANEL, borderColor: CORE }} onClick={() => receive(Number(input))}>
           수신
         </button>
       </div>
@@ -183,10 +189,10 @@ export default function AntiReplayLab() {
                 width: 26,
                 height: 34,
                 borderRadius: 4,
-                border: `1px solid ${isRight ? ACCENT : INK + "44"}`,
+                border: `${HAIR} solid ${isRight ? ACCENT : tint(INK, 26.7)}`,
                 borderWidth: isRight ? 2 : 1,
-                background: got ? CORE : "#fff",
-                color: got ? "#fff" : MUTED,
+                background: got ? CORE : PANEL,
+                color: got ? PANEL : MUTED,
                 fontSize: 10,
                 display: "flex",
                 alignItems: "center",
@@ -216,13 +222,13 @@ export default function AntiReplayLab() {
           style={{
             marginTop: 10,
             marginBottom: 0,
-            padding: "8px 10px",
+            padding: "var(--space-8) var(--space-10)",
             borderRadius: 6,
             fontSize: 13,
             lineHeight: 1.7,
             color: verdict.color,
-            background: `${verdict.color}12`,
-            border: `1px solid ${verdict.color}44`,
+            background: tint(verdict.color, 7.1),
+            border: `${HAIR} solid ${tint(verdict.color, 26.7)}`,
           }}
         >
           {verdict.text}

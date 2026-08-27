@@ -6,12 +6,18 @@ import { useState } from "react";
  * + RFC 3602/4868(AES-CBC: 16바이트 IV, HMAC-SHA-256-128: 16바이트 ICV) + RFC 3948(NAT-T UDP 8바이트) 기준.
  */
 
-const INK = "#20264A";
-const PAPER = "#F3EEE4";
-const CORE = "#4E6CA8";
-const ACCENT = "#D8A33F";
-const DANGER = "#A84B4B";
-const MUTED = "#6b6357";
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const PAPER = "var(--paper, #F3EEE4)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const CORE = "var(--cat-architecture, #4E6CA8)";
+const ACCENT = "var(--pop, #D8A33F)";
+const DANGER = "var(--cat-strategy, #A84B4B)";
+const MUTED = "var(--ink-2, #4a4f6a)";
+const HAIR = "var(--stroke-hair, 1px)";
+
+/** 알파 접미 hex(`${INK}33`)는 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
 
 type Suite = {
   id: string;
@@ -57,7 +63,7 @@ export default function EspOverheadLab() {
   ];
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `1px solid ${INK}22`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", marginBottom: 14 }}>
         <label style={{ fontSize: 13, color: INK, fontWeight: 600 }}>
           바깥 경로 MTU: {mtu}바이트
@@ -76,7 +82,7 @@ export default function EspOverheadLab() {
           <select
             value={suiteId}
             onChange={(e) => setSuiteId(e.target.value)}
-            style={{ fontSize: 13, padding: "4px 6px", borderRadius: 6, border: `1px solid ${INK}33` }}
+            style={{ fontSize: 13, padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
           >
             {SUITES.map((s) => (
               <option key={s.id} value={s.id}>
@@ -91,24 +97,24 @@ export default function EspOverheadLab() {
         </label>
       </div>
 
-      <div style={{ display: "flex", height: 26, borderRadius: 5, overflow: "hidden", border: `1px solid ${INK}33`, marginBottom: 6 }}>
+      <div style={{ display: "flex", height: 26, borderRadius: 5, overflow: "hidden", border: `${HAIR} solid ${tint(INK, 20)}`, marginBottom: 6 }}>
         {rows
           .filter((r) => r.bytes > 0)
           .map((r) => (
             <div
               key={r.label}
               title={`${r.label} — ${r.bytes}바이트`}
-              style={{ width: `${(r.bytes / mtu) * 100}%`, background: r.color, borderRight: "1px solid #ffffff55" }}
+              style={{ width: `${(r.bytes / mtu) * 100}%`, background: r.color, borderRight: `${HAIR} solid ${tint(PANEL, 33.3)}` }}
             />
           ))}
         <div
           title={`원본 패킷 — ${payload}바이트`}
-          style={{ flex: 1, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: MUTED }}
+          style={{ flex: 1, background: PANEL, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: MUTED }}
         >
           원본 패킷 {payload}바이트
         </div>
       </div>
-      <p style={{ fontSize: 12, color: MUTED, margin: "0 0 14px" }}>
+      <p style={{ fontSize: 12, color: MUTED, margin: "0 0 var(--space-14)" }}>
         왼쪽 색 띠가 캡슐화 비용, 흰 칸이 실제로 실어 나르는 원본 IP 패킷입니다.
       </p>
 
@@ -116,7 +122,7 @@ export default function EspOverheadLab() {
         <tbody>
           {rows.map((r) => (
             <tr key={r.label}>
-              <td style={{ padding: "3px 0", color: INK }}>
+              <td style={{ padding: "var(--space-2) 0", color: INK }}>
                 <span
                   style={{
                     display: "inline-block",
@@ -129,7 +135,7 @@ export default function EspOverheadLab() {
                 />
                 {r.label}
               </td>
-              <td style={{ padding: "3px 0", textAlign: "right", color: r.bytes > 0 ? INK : MUTED, fontVariantNumeric: "tabular-nums" }}>
+              <td style={{ padding: "var(--space-2) 0", textAlign: "right", color: r.bytes > 0 ? INK : MUTED, fontVariantNumeric: "tabular-nums" }}>
                 {r.bytes}바이트
               </td>
             </tr>
@@ -145,7 +151,7 @@ export default function EspOverheadLab() {
         ].map((c) => (
           <div
             key={c.k}
-            style={{ flex: "1 1 150px", padding: "8px 10px", background: "#fff", borderRadius: 8, border: `1px solid ${INK}22` }}
+            style={{ flex: "1 1 150px", padding: "var(--space-8) var(--space-10)", background: PANEL, borderRadius: 8, border: `${HAIR} solid ${tint(INK, 13.3)}` }}
           >
             <div style={{ fontSize: 12, color: MUTED }}>{c.k}</div>
             <div style={{ fontSize: 18, fontWeight: 700, color: INK }}>{c.v}</div>

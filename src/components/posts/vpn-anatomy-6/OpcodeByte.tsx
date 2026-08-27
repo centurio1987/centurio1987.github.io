@@ -7,12 +7,18 @@ import { useState } from "react";
  * 그 결과가 캡처에서 본 값과 어떻게 맞아떨어지는지 보여 준다.
  */
 
-const INK = "#20264A";
-const PAPER = "#F3EEE4";
-const CORE = "#4E6CA8";
-const ACCENT = "#D8A33F";
-const OK = "#3E6B4F";
-const MUTED = "#6b6357";
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const PAPER = "var(--paper, #F3EEE4)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const CORE = "var(--cat-architecture, #4E6CA8)";
+const ACCENT = "var(--pop, #D8A33F)";
+const OK = "var(--cat-planning, #3E6B4F)";
+const MUTED = "var(--ink-2, #4a4f6a)";
+const HAIR = "var(--stroke-hair, 1px)";
+
+/** 알파 접미 hex(`${INK}33`)는 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
 
 type Op = { value: number; name: string; channel: "control" | "data" };
 
@@ -61,7 +67,7 @@ export default function OpcodeByte() {
         fontFamily: "monospace",
         fontSize: 20,
         fontWeight: 700,
-        color: "#fff",
+        color: PANEL,
         background: group === "op" ? CORE : ACCENT,
         borderRadius: 5,
       }}
@@ -78,7 +84,7 @@ export default function OpcodeByte() {
         margin: "1.75rem 0",
         padding: 16,
         background: PAPER,
-        border: `1px solid ${INK}22`,
+        border: `${HAIR} solid ${tint(INK, 13.3)}`,
         borderRadius: 10,
       }}
     >
@@ -88,7 +94,7 @@ export default function OpcodeByte() {
           <select
             value={opcode}
             onChange={(e) => setOpcode(Number(e.target.value))}
-            style={{ fontSize: 13, padding: "4px 6px", borderRadius: 6, border: `1px solid ${INK}33`, maxWidth: 280 }}
+            style={{ fontSize: 13, padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}`, maxWidth: 280 }}
           >
             {OPCODES.map((o) => (
               <option key={o.value} value={o.value}>
@@ -136,11 +142,11 @@ export default function OpcodeByte() {
         </span>
         <span
           style={{
-            padding: "2px 8px",
+            padding: "var(--space-2) var(--space-8)",
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 700,
-            color: "#fff",
+            color: PANEL,
             background: channelColor,
           }}
         >
@@ -153,13 +159,13 @@ export default function OpcodeByte() {
           style={{
             marginTop: 10,
             marginBottom: 0,
-            padding: "8px 10px",
+            padding: "var(--space-8) var(--space-10)",
             borderRadius: 6,
             fontSize: 13,
             lineHeight: 1.7,
             color: OK,
-            background: `${OK}12`,
-            border: `1px solid ${OK}44`,
+            background: tint(OK, 7.1),
+            border: `${HAIR} solid ${tint(OK, 26.7)}`,
           }}
         >
           이 바이트({hex})는 이 편 캡처에 실제로 등장합니다 — {captureNote}. 스펙의 비트 쪼개기가 회선에서 그대로 나옵니다.

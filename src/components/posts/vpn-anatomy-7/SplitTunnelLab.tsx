@@ -8,6 +8,20 @@ import { useState } from "react";
 
 type Fate = "tunnel" | "direct" | "leak" | "blocked";
 
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const MUTED = "var(--ink-2, #4a4f6a)";
+const MUTED_3 = "var(--ink-3, #6f7390)";
+const BORDER = "var(--border, #d8d0be)";
+const SUBTLE = "var(--subtle, #e8e2d6)";
+const CANVAS = "var(--canvas, #d8d4ca)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const HAIR = "var(--stroke-hair, 1px)";
+
+/** 알파 접미 색은 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
+
+// 상태 팔레트는 (bg, fg, border) 셋이 한 짝이라 통째로 옮기거나 통째로 두거나다 — 네 bg 중
+// 셋이 --cream/--paper 로 눌려 초록·금색·붉음 구분이 사라지므로 KAN-072-CPJCT1 배치5 에서 멈췄다.
 const FATE_META: Record<Fate, { label: string; bg: string; fg: string; border: string }> = {
   tunnel: { label: "터널로 보호", bg: "#e7efe6", fg: "#2f5d3a", border: "#8bb897" },
   direct: { label: "평문 직결(예상됨)", bg: "#f6ecd8", fg: "#7a5a1e", border: "#d9b871" },
@@ -51,13 +65,13 @@ export default function SplitTunnelLab() {
 
   const btn = (active: boolean): React.CSSProperties => ({
     flex: 1,
-    padding: "7px 10px",
+    padding: "var(--space-6) var(--space-10)",
     fontSize: 13,
     fontWeight: 600,
     cursor: "pointer",
     borderRadius: 6,
-    border: `1px solid ${active ? "#8a7a56" : "#c9c1b1"}`,
-    background: active ? "#efe3c6" : "#faf8f3",
+    border: `${HAIR} solid ${active ? "#8a7a56" : BORDER}`,
+    background: active ? "#efe3c6" : PANEL,
     color: active ? "#4a3f26" : "#7a7264",
   });
 
@@ -67,7 +81,7 @@ export default function SplitTunnelLab() {
     b: { text: string; on: boolean; set: () => void },
   ) => (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontSize: 12, color: "#6b6357", marginBottom: 4, fontWeight: 600 }}>{label}</div>
+      <div style={{ fontSize: 12, color: MUTED, marginBottom: 4, fontWeight: 600 }}>{label}</div>
       <div style={{ display: "flex", gap: 6 }}>
         <button type="button" aria-pressed={a.on} onClick={a.set} style={btn(a.on)}>{a.text}</button>
         <button type="button" aria-pressed={b.on} onClick={b.set} style={btn(b.on)}>{b.text}</button>
@@ -76,7 +90,7 @@ export default function SplitTunnelLab() {
   );
 
   return (
-    <figure style={{ margin: "1.5rem 0", border: "1px solid #e4ddcd", borderRadius: 10, padding: 16, background: "#fdfcf8" }}>
+    <figure style={{ margin: "1.5rem 0", border: `${HAIR} solid ${SUBTLE}`, borderRadius: 10, padding: 16, background: PANEL }}>
       <div style={{ display: "grid", gap: 18, gridTemplateColumns: "minmax(0,1fr)" }}>
         <div>
           {control(
@@ -102,7 +116,7 @@ export default function SplitTunnelLab() {
         </div>
 
         <div>
-          <div style={{ fontSize: 12, color: "#6b6357", marginBottom: 6, fontWeight: 600 }}>
+          <div style={{ fontSize: 12, color: MUTED, marginBottom: 6, fontWeight: 600 }}>
             트래픽이 흐르는 곳
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -117,15 +131,15 @@ export default function SplitTunnelLab() {
                     alignItems: "center",
                     justifyContent: "space-between",
                     gap: 10,
-                    padding: "9px 12px",
+                    padding: "var(--space-8) var(--space-12)",
                     borderRadius: 7,
                     background: meta.bg,
-                    border: `1px solid ${meta.border}`,
+                    border: `${HAIR} solid ${meta.border}`,
                   }}
                 >
                   <span style={{ display: "flex", flexDirection: "column" }}>
                     <span style={{ fontWeight: 700, fontSize: 14, color: meta.fg }}>{c.name}</span>
-                    <span style={{ fontSize: 11, color: "#8a8272" }}>{c.note}</span>
+                    <span style={{ fontSize: 11, color: MUTED_3 }}>{c.note}</span>
                   </span>
                   <span
                     style={{
@@ -133,10 +147,10 @@ export default function SplitTunnelLab() {
                       fontWeight: 700,
                       color: meta.fg,
                       whiteSpace: "nowrap",
-                      padding: "3px 8px",
+                      padding: "var(--space-2) var(--space-8)",
                       borderRadius: 999,
-                      border: `1px solid ${meta.border}`,
-                      background: "rgba(255,255,255,0.5)",
+                      border: `${HAIR} solid ${meta.border}`,
+                      background: tint(PANEL, 50),
                     }}
                   >
                     {meta.label}
@@ -154,7 +168,7 @@ export default function SplitTunnelLab() {
           fontSize: 13,
           lineHeight: 1.6,
           color: dnsLeaking || dropLeaking ? "#8a3320" : "#5f5a51",
-          borderTop: "1px dashed #e0d8c6",
+          borderTop: `${HAIR} dashed ${CANVAS}`,
           paddingTop: 10,
         }}
       >

@@ -101,6 +101,19 @@ const OBSERVERS: Observer[] = [
   },
 ];
 
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const MUTED = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const SUBTLE = "var(--subtle, #e8e2d6)";
+const SURFACE = "var(--surface, #F8F3E8)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const PAPER = "var(--paper, #F3EEE4)";
+const CORE = "var(--cat-architecture, #4E6CA8)";
+const HAIR = "var(--stroke-hair, 1px)";
+
+// 톤 팔레트는 (bg, fg) 가 짝이라 통째로 옮기거나 통째로 두거나다 — 네 bg 중 셋이
+// --paper 로 눌려 초록·붉음·금색 구분이 사라지므로 KAN-072-CPJCT1 배치5 에서 멈췄다.
 const TONE: Record<Cell["tone"], { bg: string; fg: string; mark: string }> = {
   hidden: { bg: "#e6ede4", fg: "#2f5238", mark: "가려짐" },
   visible: { bg: "#f6e3e3", fg: "#7a3232", mark: "보임" },
@@ -120,9 +133,9 @@ export default function ObserverView() {
       style={{
         margin: "1.75rem 0",
         padding: "1rem",
-        border: "1px solid #d8d0c0",
+        border: `${HAIR} solid ${BORDER}`,
         borderRadius: 10,
-        background: "#faf7f1",
+        background: SURFACE,
       }}
     >
       <div
@@ -139,18 +152,18 @@ export default function ObserverView() {
           onClick={() => setTunnel((v) => !v)}
           aria-pressed={tunnel}
           style={{
-            padding: "8px 14px",
+            padding: "var(--space-8) var(--space-14)",
             borderRadius: 8,
-            border: "1px solid #20264a",
-            background: tunnel ? "#4e6ca8" : "#f3efe6",
-            color: tunnel ? "#ffffff" : "#20264a",
+            border: `${HAIR} solid ${INK}`,
+            background: tunnel ? CORE : PAPER,
+            color: tunnel ? PANEL : INK,
             fontWeight: 700,
             cursor: "pointer",
           }}
         >
           {tunnel ? "터널 ON — VPN 연결됨" : "터널 OFF — 그냥 인터넷"}
         </button>
-        <span style={{ fontSize: 13, color: "#6b6357" }}>
+        <span style={{ fontSize: 13, color: MUTED }}>
           버튼을 눌러 터널을 켜고 끈 뒤, 아래에서 관찰자를 바꿔 보십시오.
         </span>
       </div>
@@ -169,11 +182,11 @@ export default function ObserverView() {
               onClick={() => setWho(o.id)}
               aria-pressed={active}
               style={{
-                padding: "6px 10px",
+                padding: "var(--space-6) var(--space-10)",
                 borderRadius: 999,
-                border: active ? "1px solid #20264a" : "1px solid #cfc7b6",
-                background: active ? "#20264a" : "#ffffff",
-                color: active ? "#ffffff" : "#3c3a33",
+                border: active ? `${HAIR} solid ${INK}` : "1px solid #cfc7b6",
+                background: active ? INK : PANEL,
+                color: active ? PANEL : "#3c3a33",
                 fontSize: 13,
                 cursor: "pointer",
               }}
@@ -183,7 +196,7 @@ export default function ObserverView() {
           );
         })}
       </div>
-      <p style={{ fontSize: 13, color: "#6b6357", margin: "8px 0 12px" }}>
+      <p style={{ fontSize: 13, color: MUTED, margin: "var(--space-8) 0 var(--space-12)" }}>
         {observer.hint}
       </p>
 
@@ -195,7 +208,7 @@ export default function ObserverView() {
           tableLayout: "fixed",
         }}
       >
-        <caption style={{ captionSide: "top", textAlign: "left", padding: "0 0 6px", fontSize: 13, color: "#6b6357" }}>
+        <caption style={{ captionSide: "top", textAlign: "left", padding: "0 0 var(--space-6)", fontSize: 13, color: MUTED }}>
           {observer.label}가 볼 수 있는 것 — 터널 {tunnel ? "ON" : "OFF"}
         </caption>
         <tbody>
@@ -208,11 +221,11 @@ export default function ObserverView() {
                   scope="row"
                   style={{
                     textAlign: "left",
-                    padding: "8px 10px",
-                    borderTop: "1px solid #e3ddd0",
+                    padding: "var(--space-8) var(--space-10)",
+                    borderTop: `${HAIR} solid ${SUBTLE}`,
                     width: "42%",
                     fontWeight: 600,
-                    color: "#3c3a33",
+                    color: INK,
                     verticalAlign: "top",
                   }}
                 >
@@ -220,15 +233,15 @@ export default function ObserverView() {
                 </th>
                 <td
                   style={{
-                    padding: "8px 10px",
-                    borderTop: "1px solid #e3ddd0",
+                    padding: "var(--space-8) var(--space-10)",
+                    borderTop: `${HAIR} solid ${SUBTLE}`,
                     verticalAlign: "top",
                   }}
                 >
                   <span
                     style={{
                       display: "inline-block",
-                      padding: "2px 8px",
+                      padding: "var(--space-2) var(--space-8)",
                       marginRight: 8,
                       borderRadius: 999,
                       background: tone.bg,
@@ -240,7 +253,7 @@ export default function ObserverView() {
                   >
                     {tone.mark}
                   </span>
-                  <span style={{ color: "#3c3a33" }}>{cell.text}</span>
+                  <span style={{ color: INK }}>{cell.text}</span>
                 </td>
               </tr>
             );
@@ -248,7 +261,7 @@ export default function ObserverView() {
         </tbody>
       </table>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 10, lineHeight: 1.6 }}>
+      <figcaption style={{ fontSize: 13, color: MUTED, marginTop: 10, lineHeight: 1.6 }}>
         터널을 켜면 <strong>경로 관찰자</strong>에게서 목적지와 방문 도메인이 가려집니다. 그 정보는 사라지는 게 아니라{" "}
         <strong>VPN 게이트웨이 운영자</strong>의 칸으로 옮겨갑니다. 추적 스크립트 칸은 터널과 무관하게 그대로입니다.
       </figcaption>
