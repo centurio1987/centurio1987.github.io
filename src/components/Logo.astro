@@ -36,7 +36,7 @@ const faceSize = Math.round(size * 1.35);
     display: inline-flex;
     /* 아바타·워드마크의 시각 중앙선을 맞춤(디자인 피드백 "텍스트와 중앙선이 맞아야") */
     align-items: center;
-    gap: 8px;
+    gap: var(--space-8);
     color: var(--accent);
   }
   .wordmark {
@@ -53,7 +53,7 @@ const faceSize = Math.round(size * 1.35);
     width: var(--face-size);
     height: var(--face-size);
     flex: none;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     object-fit: cover;
     box-shadow:
       0 0 0 1px rgba(32, 38, 74, 0.12),

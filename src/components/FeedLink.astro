@@ -39,14 +39,16 @@ const aria = label ? `${label} RSS 구독` : "RSS 구독";
   .feed-link {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: var(--space-4);
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-label);
     letter-spacing: 0.5px;
     color: var(--ink-3);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 4px 11px 4px 9px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--btn-radius);
+    /* 좌우가 다른 건 아이콘(왼쪽)이 글자보다 시각 무게가 가벼워서다 — 스냅 뒤에도
+       그 비대칭을 지킨다(11·9 → 10·8). */
+    padding: var(--space-4) var(--space-10) var(--space-4) var(--space-8);
     transition:
       color var(--dur) var(--ease),
       border-color var(--dur) var(--ease);
@@ -56,8 +58,10 @@ const aria = label ? `${label} RSS 구독` : "RSS 구독";
     border-color: var(--accent-tint);
   }
   .feed-icon {
+    /* 기준선 맞춤은 캡슐의 `align-items: center` 가 한다. 예전엔 여기 `margin-top: -1px`
+       가 하나 더 얹혀 있었는데 §9 스케일 밖이라 걷었다 — 실측으로 잃는 것이 없다:
+       아이콘 중심이 글자 캡 높이 중심에서 0.5px 위였던 것이 0.5px 아래가 될 뿐이다.
+       1px 을 다시 적는 대신 이 줄을 읽어라. */
     display: block;
-    /* 캡슐 안에서 글자 기준선에 맞추기 */
-    margin-top: -1px;
   }
 </style>

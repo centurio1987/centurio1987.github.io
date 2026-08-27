@@ -413,7 +413,7 @@ const viewData: GraphViewData = {
        확대된다 — 노드 좌표가 픽셀이 아니므로 겹침·잘림이 생기지 않는다. */
     max-width: var(--wide-max);
     margin: 0 auto;
-    padding: 56px var(--page-pad) 64px;
+    padding: var(--space-48) var(--page-pad) var(--space-64);
   }
   /* margin 이 0 인 건 P-06 때문이다 — DecoHeading 은 align-items:flex-end 인 flex
      행이라 감싼 h1 의 아래 마진이 그대로 행 높이가 되어 테이프 기준선이 들린다.
@@ -443,17 +443,19 @@ const viewData: GraphViewData = {
      선택자가 영영 매칭되지 않는다(CLAUDE.md 데코 절. 실측으로 확인: 머리 아래변과
      lead 윗변이 둘 다 164.5 로 간격이 0 이었다). 그래서 이 파일에 실재하는 요소인
      lead 로 옮겨 적는다. 값이 10 이 아니라 12 인 건 밑줄 때문이다: 밑줄 상자 아래변이
-     제목 상자 밑 4.9px(38px 기준 y 169.4)까지 내려오므로 lead 첫 줄이 그 아래로
-     충분히 비켜야 한다(§5 규칙 3). 12px 이면 여유가 10px 남는다. */
+     제목 상자 밑 4.9px 까지 내려오므로 lead 첫 줄이 그 아래로 충분히 비켜야 한다
+     (§5 규칙 3). 1280px 실측으로 밑줄 아래변 161.4 · lead 첫 줄 라인박스 윗변 170.5
+     — 여유 9.1px 이고 글리프는 그보다 더 아래에서 시작한다. lead 글자 크기가
+     17 → 18px(--text-body)로 스냅되며 반 행간이 커져 여유가 8.1 → 9.1px 로 늘었다. */
   .lead {
-    font-size: 17px;
+    font-size: var(--text-body);
     color: var(--ink-2);
-    margin: 12px 0 24px;
+    margin: var(--space-12) 0 var(--space-24);
     max-width: var(--measure);
   }
   .empty-note {
     color: var(--ink-3);
-    margin: 0 0 18px;
+    margin: 0 0 var(--space-16);
   }
 
   /* ── P-01 판 ──
@@ -509,7 +511,14 @@ const viewData: GraphViewData = {
     가둔다 — posts/index.astro 가 PostFilter 의 생성 CSS 를 다루는 방식과 같다. */}
 <style is:global>
   /* 액자는 이제 판이 쥔다. 걷어내지 않으면 종이 테두리 안에 옛 카드 테두리가
-     한 겹 더 들어가 액자가 둘이 된다. 배경도 마찬가지 — 불투명하면 모눈이 안 비친다. */
+     한 겹 더 들어가 액자가 둘이 된다. 배경도 마찬가지 — 불투명하면 모눈이 안 비친다.
+
+     ⚠ 이 세 줄은 `GraphExplorer.tsx` 의 `.graph-explorer svg` 가 든
+     `background`·`border`·`border-radius` 를 **덮어 죽인다.** 그 컴포넌트는 이 지면에서만
+     쓰이고 그 안의 `<svg>` 도 하나뿐이라(지도), 저쪽 세 선언은 화면에 한 번도 안 나온다 —
+     KAN-072 S4 가 그 자리를 토큰으로 옮겨 놨지만 **살아 있는 값이 아니다.** 저쪽을 보고
+     "지도 테두리는 --border 겠거니" 하고 읽지 마라. 액자의 정본은 여기와 P-01 판
+     (TapedBoard·PaperSurface)이다. */
   .graph-page .graph-explorer .graph-stage > svg {
     background: transparent;
     border: 0;
@@ -518,9 +527,10 @@ const viewData: GraphViewData = {
   /* 테이프는 판 윗변에 top:-14px 로 걸치고, -10° 회전이 그 위로 10.7px 를 더 얹어
      판 밖 24.7px 까지 올라간다(실측). 후보 패널의 margin-bottom 12px 로는 모자라
      테이프가 패널 아래 모서리를 문다. **인접 형제 마진은 합쳐지지 않고 큰 쪽으로
-     상쇄되므로**(12+30 이 아니라 30) 여기 값이 곧 최종 간격이다. */
+     상쇄되므로**(12+32 가 아니라 32) 여기 값이 곧 최종 간격이다.
+     원래 30px 이었고 §9 스케일 밖이라 32px 로 스냅했다(KAN-072) — 여유가 2px 늘었다. */
   .graph-page .graph-explorer .graph-stage {
-    margin-top: 30px;
+    margin-top: var(--space-32);
   }
 
   /* ── 머리 화살표(D3)를 좁은 화면에서 접는다 ──
@@ -555,18 +565,23 @@ const viewData: GraphViewData = {
      둘 다 10px(앞 블록의 margin-bottom) 뿐이라 클립이 커맨드 바의 진한 --ink
      테두리를 문다. 지도 판에서 겪은 것과 같은 함정이고 마진 상쇄도 같다 —
      **인접 형제 마진은 합쳐지지 않고 큰 쪽으로 상쇄되므로** 여기 값이 곧 최종 간격이다.
-     도움말은 닫히면 요소 자체가 없으므로 그 여백은 열릴 때만 든다. */
+     도움말은 닫히면 요소 자체가 없으므로 그 여백은 열릴 때만 든다.
+     원래 26px 이었고 §9 스케일 밖이라 24px 로 스냅했다(KAN-072). 클립이 위로 19.8px
+     올라가므로 남는 여유는 실측 4.2px 다 — 26px 일 때의 6.2px 에서 줄었지만 안 문다.
+     **이 값을 여기서 더 줄이지 마라**: 다음 단은 --space-16 이고 그건 -3.8px 라 문다. */
   .graph-page .graph-explorer .graph-cands {
-    margin-top: 26px;
+    margin-top: var(--space-24);
   }
   .graph-page .graph-explorer .graph-help {
-    margin-top: 24px;
-    /* 테이프가 자리를 차지하는 만큼 첫 줄을 내린다(원래 11px). 도트 테이프는
-       top:-13px 에 7° 라 패널 **안쪽으로 26.7px** 내려오는데, 넓은 화면에서는 첫 줄이
-       일찍 끝나 안 겹치지만 **769px 이하에서는 글이 폭을 꽉 채워 꼬리를 덮는다**
+    margin-top: var(--space-24);
+    /* 테이프가 자리를 차지하는 만큼 첫 줄을 내린다(부품 기본값은 --space-10 =
+       GraphExplorer.tsx 의 .graph-help padding. KAN-072 S4 가 11px 을 거기로 스냅했다).
+       도트 테이프는 top:-13px 에 7° 라 패널 **안쪽으로 26.7px** 내려오는데,
+       넓은 화면에서는 첫 줄이 일찍 끝나 안 겹치지만
+       **769px 이하에서는 글이 폭을 꽉 채워 꼬리를 덮는다**
        (규칙 3 — 실측으로 잡았다: 769px 에서 27.5×14.7px 겹침).
        데코를 옮기는 대신 판을 키워 푼다 — 히어로 콜라주에서 마스코트 자리를 푼 것과
        같은 수법이고, 위로 더 밀면 이번엔 테이프가 커맨드 바를 문다. */
-    padding-top: 32px;
+    padding-top: var(--space-32);
   }
 </style>

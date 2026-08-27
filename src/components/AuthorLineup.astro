@@ -183,7 +183,7 @@ const hung = lineup.map((author, i) => ({
     /* auto 최소값을 0 으로 눌러야 액자가 칸보다 넓어져도 열 중심이 격자에 남는다 */
     grid-template-columns: repeat(var(--n), minmax(0, 1fr));
     align-items: start;
-    margin-bottom: 4px;
+    margin-bottom: var(--space-4);
   }
   /* 실은 라인업 전체 폭을 가로지른다. 절대배치라 기준이 패딩 박스인데 이 판엔 패딩이
      없어서, 아래 .end 의 % 좌표와 그리드 열 중심이 같은 폭 위에 놓인다.

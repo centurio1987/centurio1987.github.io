@@ -17,28 +17,30 @@ import { HOME_URL } from "../lib/urls";
   .wrap {
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: 96px var(--page-pad);
+    padding: var(--space-96) var(--page-pad);
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-8);
   }
   h1 {
-    font-size: 64px;
+    /* 이 숫자가 이 지면의 Display 역할이다 — 고정 64px 이던 것을 역할 토큰으로
+       옮겼다. 데스크톱 60px · 390px 36px 로 좁은 화면에서는 함께 줄어든다. */
+    font-size: var(--text-display);
     font-weight: 800;
-    margin: 8px 0 0;
+    margin: var(--space-8) 0 0;
   }
   .msg {
     color: var(--ink-2);
-    margin: 0 0 16px;
+    margin: 0 0 var(--space-16);
   }
   .home {
     font-weight: 600;
     color: var(--ink);
     background: var(--pop);
-    border: 2px solid var(--ink);
-    padding: 9px 18px;
+    border: var(--stroke-bold) solid var(--ink);
+    padding: var(--space-8) var(--space-16);
     border-radius: var(--radius-md);
   }
 </style>

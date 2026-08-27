@@ -65,11 +65,15 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
      도장에 물린다(실측 1280px: 도장 아래변 485.3 · 요약 첫 줄 476.4~497.4 —
      겹친 띠 8.9px. 769px 도 같다). 제목이 길어 두 줄이 되던 동안에는 요약이
      도장 아래로 밀려나 안 보이던 결함이고, 짧은 제목 글이 맨 앞에 서는 순간
-     드러났다 — orca 글이 그 첫 사례다. 값을 제목과 같은 74px 로 두는 이유는
+     드러났다 — orca 글이 그 첫 사례다. 제목과 요약이 **같은 값**을 쓰는 이유는
      비키는 대상이 같은 도장 하나라서다(따로 두면 둘이 조용히 갈린다).
-     요약은 ragged-right 라 줄 길이가 줄어드는 것은 화면에 안 보인다. */
+     요약은 ragged-right 라 줄 길이가 줄어드는 것은 화면에 안 보인다.
+     값은 원래 74px 이었고 §9 스케일 밖이라 64px 로 스냅했다(KAN-072). 남는 여유는
+     실측으로 10px 이다 — 1280px 에서 도장 원의 왼쪽 끝이 898, 글자가 갈 수 있는
+     가장 오른쪽이 888(항목 오른쪽 952 - 64). 74px 일 때의 20px 에서 줄었지만
+     겹치지는 않는다. 이보다 더 줄이려면 도장 크기(54)부터 다시 재라. */
   .pf-wrap .post-item:first-child:not(.has-series) :is(.post-title, .post-desc) {
-    padding-right: 74px;
+    padding-right: var(--space-64);
   }
   /* 좁은 화면에선 접는다(DECO_KIT 5절 규칙 6) — 모바일에선 테이프가 흐름 안으로
      내려와 오른쪽 여백이 사라지고, 도장이 앉을 빈 띠 자체가 없다. */
@@ -84,10 +88,13 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
   .wrap {
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: 56px var(--page-pad) 0;
+    padding: var(--space-48) var(--page-pad) 0;
   }
   h1 {
-    font-size: clamp(30px, 6vw, 40px);
+    /* 끝값 30·40 은 §5 역할값 밖이었다. H1 역할의 끝값(28·38)으로 맞추면 /categories
+       의 제목과 **완전히 같은 램프**가 된다 — 두 목록 지면은 같은 얼굴이어야 한다.
+       6vw 를 5vw(--text-h1 원값)로 바꾸지 않는 이유가 그것이다. */
+    font-size: clamp(28px, 6vw, 38px);
     margin: 0;
   }
   .empty {

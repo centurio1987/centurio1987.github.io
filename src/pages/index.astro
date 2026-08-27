@@ -152,7 +152,7 @@ const hasMore = posts.length > recent.length;
 
   /* ── HERO ── */
   .hero {
-    border-bottom: 1.5px solid var(--ink);
+    border-bottom: var(--stroke) solid var(--ink);
     background: var(--paper);
     /* AmbientAurora 를 절대배치로 담고 넘침을 클리핑 */
     position: relative;
@@ -163,10 +163,10 @@ const hasMore = posts.length > recent.length;
        깔아 준다. 여기만 바꾸고 그쪽을 안 바꾸면 GNB 와 본문이 다시 어긋난다. */
     max-width: var(--wide-max);
     margin: 0 auto;
-    padding: 48px var(--page-pad) 56px;
+    padding: var(--space-48) var(--page-pad);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 36px;
+    gap: var(--space-32);
     align-items: center;
     /* 콘텐츠를 배경 오로라(z-index:0) 위로 */
     position: relative;
@@ -178,7 +178,8 @@ const hasMore = posts.length > recent.length;
   }
   /* 타이틀 우상단 폴라로이드. 세로로는 "반가워요 :)" 줄과 타이틀 첫 줄 옆에 걸치고,
      가로로는 타이틀 오른쪽 여백에 들어간다 — 여백은 실측으로 가장 좁은 데스크톱
-     (769px)에서 129px, 964px 에서 166px 이다(긴 줄 "천천히 만드는" 기준).
+     (769px)에서 131px, 964px 에서 168px 이다(긴 줄 "천천히 만드는" 기준.
+     칸 사이 gap 이 36 → 32px 로 스냅되며 칸이 2px 씩 넓어져 둘 다 +2px 됐다).
      회전 포함 바운딩 폭이 ~141px 이라 900px 아래에서는 접는다(안 접으면 타이틀에
      닿는다). 좁은 화면에서 데코를 먼저 접는 건 콜라주와 같은 규칙이다. */
   .hero-text :global(.hero-photo) {
@@ -192,11 +193,11 @@ const hasMore = posts.length > recent.length;
   .hero-hand {
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 26px;
+    font-size: var(--text-h2);
     color: var(--accent);
     display: inline-block;
     transform: rotate(-3deg);
-    margin-bottom: 14px;
+    margin-bottom: var(--space-14);
   }
   h1 {
     font-family: var(--font-display);
@@ -204,30 +205,30 @@ const hasMore = posts.length > recent.length;
     font-size: clamp(36px, 5vw, 60px);
     line-height: 1.15;
     color: var(--ink);
-    margin: 0 0 22px;
+    margin: 0 0 var(--space-24);
   }
   .accent {
     color: var(--accent);
   }
   .hero-sub {
-    font-size: 17px;
+    font-size: var(--text-body);
     line-height: 1.85;
     color: var(--ink-2);
-    margin: 0 0 30px;
+    margin: 0 0 var(--space-32);
     max-width: 380px;
   }
   .hero-cta {
     display: flex;
-    gap: 12px;
+    gap: var(--space-12);
     flex-wrap: wrap;
   }
   .btn-filled {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--text-meta);
     letter-spacing: 0.5px;
     background: var(--accent);
     color: var(--paper);
-    padding: 13px 24px;
+    padding: var(--space-12) var(--space-24);
     border-radius: var(--btn-radius);
     transition: opacity var(--dur) var(--ease);
   }
@@ -246,8 +247,10 @@ const hasMore = posts.length > recent.length;
      칸 폭에 **딱** 맞추는 것으로도 모자랐다 — 964px 실측에서 판 안쪽이 364px 이라
      흔들흔들(±4°)로 부푼 마스코트 발자국(≈329px)과 좌우 18px 밖에 안 떨어져,
      토니가 모눈에 낀 것처럼 보이고 오른쪽 티어 4(번개)가 빵 위로 올라탔다.
-     넘치는 28px 은 칸 사이 gap(36px)·페이지 여백(48px) 안에서만 논다 —
-     텍스트 칸을 좁히지 않으므로 타이틀 옆 폴라로이드 여백도 그대로다. */
+     넘치는 28px 은 칸 사이 gap(32px)·페이지 여백(48px) 안에서만 논다 —
+     텍스트 칸을 좁히지 않으므로 타이틀 옆 폴라로이드 여백도 그대로다.
+     gap 은 원래 36px 이었고 §9 스케일 밖이라 32px 로 스냅했다(KAN-072). 판이 2px
+     넓어졌을 뿐 마스코트는 그대로라 좌우 여유는 오히려 1px 씩 늘었다(964px 실측). */
   .hero-image :global(.collage) {
     /* flex:none 이 없으면 기본 flex-shrink 가 넘치는 28px 을 도로 깎아 칸 폭에 맞춘다. */
     flex: none;
@@ -277,18 +280,18 @@ const hasMore = posts.length > recent.length;
     margin: 0 auto;
     /* DecoHeading 의 레터링 테이프가 윗선 위로 16px 걸치므로 그만큼 숨통을 준다
        (8px 이면 히어로 아래 테두리를 타고 넘는다). */
-    padding: 30px var(--page-pad) 64px;
+    padding: var(--space-32) var(--page-pad) var(--space-64);
   }
   .recent h2 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 22px;
+    font-size: var(--text-h3);
     color: var(--ink);
     margin: 0;
   }
   .view-all {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-label);
     color: var(--ink-3);
     transition: color var(--dur) var(--ease);
   }
@@ -299,23 +302,28 @@ const hasMore = posts.length > recent.length;
     list-style: none;
     /* NEW 도장이 첫 항목 위로 삐져나오므로, 섹션 머리의 "전체 보기" 링크와
        스치지 않을 만큼 목록을 내린다 */
-    margin: 18px 0 0;
+    margin: var(--space-16) 0 0;
     padding: 0;
   }
   /* 도장(DecoLayer)의 절대배치 기준 */
   .post-list li {
     position: relative;
   }
-  /* 도장이 앉을 자리를 첫 항목 제목이 비켜준다 — 제목이 길어도 잉크에 안 깔린다 */
+  /* 도장이 앉을 자리를 첫 항목 제목이 비켜준다 — 제목이 길어도 잉크에 안 깔린다.
+     값은 원래 74px 이었고 §9 스케일 밖이라 64px 로 스냅했다(KAN-072). 1280px 실측:
+     도장 원의 왼쪽 끝 1050, 글자가 갈 수 있는 가장 오른쪽 1033.8 — 여유 16.2px
+     (74px 일 때 26.2px). 모바일은 이 값을 그대로 쓴다: 화살표가 사라져 도장이 제목
+     줄 바로 위까지 내려오지만, 예전의 58px 보다 오히려 6px 더 비켜서므로 따로 줄일
+     이유가 없어졌다(값을 둘로 나누면 다음에 조용히 갈린다). */
   .post-list li:first-child .post-title {
-    padding-right: 74px;
+    padding-right: var(--space-64);
   }
   .post-row {
     display: flex;
     align-items: center;
-    gap: 24px;
-    padding: 18px 4px;
-    border-bottom: 1px solid var(--border);
+    gap: var(--space-24);
+    padding: var(--space-16) var(--space-4);
+    border-bottom: var(--stroke-hair) solid var(--border);
     color: var(--ink);
     transition: color var(--dur) var(--ease), transform var(--dur) var(--ease);
   }
@@ -326,7 +334,7 @@ const hasMore = posts.length > recent.length;
   }
   .post-label {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-label);
     color: var(--accent);
     width: 160px;
     flex: none;
@@ -334,17 +342,17 @@ const hasMore = posts.length > recent.length;
   }
   .post-title {
     font-family: var(--font-body);
-    font-size: 19px;
+    font-size: var(--text-body);
     flex: 1;
   }
   .post-arrow {
     color: var(--accent);
-    font-size: 18px;
+    font-size: var(--text-body);
     flex: none;
   }
   .empty {
     color: var(--ink-2);
-    padding: 24px 0;
+    padding: var(--space-24) 0;
     font-family: var(--font-body);
   }
 
@@ -365,18 +373,14 @@ const hasMore = posts.length > recent.length;
     .post-row {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
-      padding: 16px 4px;
+      gap: var(--space-6);
+      padding: var(--space-16) var(--space-4);
     }
     .post-label {
       width: auto;
     }
     .post-arrow {
       display: none;
-    }
-    /* 화살표가 사라진 자리로 도장이 들어오므로 제목이 비켜줄 폭도 줄인다 */
-    .post-list li:first-child .post-title {
-      padding-right: 58px;
     }
   }
 </style>
