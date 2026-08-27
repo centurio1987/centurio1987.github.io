@@ -147,12 +147,12 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   .talk {
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: 40px var(--page-pad) 0;
+    padding: var(--space-32) var(--page-pad) 0;
   }
 
   /* ── 배너 ── */
   .talk-banner {
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-8);
   }
   .talk-banner img {
     display: block;
@@ -164,18 +164,18 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
 
   /* ── 헤더 ── */
   .talk-header {
-    padding: 36px 0 24px;
+    padding: var(--space-32) 0 var(--space-24);
     text-align: center;
   }
   .talk-kicker {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: var(--space-10);
+    margin-bottom: var(--space-16);
   }
   .kicker-series {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--ink-3);
@@ -183,37 +183,42 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   .kicker-dot {
     width: 5px;
     height: 5px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     background: var(--accent);
   }
   .kicker-ep {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     letter-spacing: 1px;
     color: var(--accent);
     background: color-mix(in srgb, var(--accent) 10%, transparent);
-    padding: 3px 10px;
-    border-radius: 20px;
+    padding: var(--space-2) var(--space-10);
+    border-radius: var(--btn-radius);
   }
   .talk-hand {
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 22px;
+    font-size: var(--text-h3);
     color: var(--accent);
     rotate: -2deg;
-    margin-bottom: 12px;
+    margin-bottom: var(--space-12);
   }
+  /* 램프는 6vw 로 두고 끝값만 역할값으로 맞춘다 — `posts/index.astro` 가 같은 수법이다.
+     `var(--text-h1)` 을 그대로 쓰면 5vw 라 지면마다 제목이 다른 속도로 자란다.
+     상한이 46 → 38px(-17%) 내려가는 것은 유저 판정이다(2026-08-27) — §5 의 H1(38)~
+     Display(60) 빈칸에 실재하는 값은 46px 이 자리 하나뿐이라, 칸을 세우면 스케일이 아니라
+     지면 하나짜리 별칭이 된다. 게이트는 clamp 끝값을 역할값으로 받으므로 이 표기가 준수다. */
   .talk-header h1 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(30px, 6vw, 46px);
+    font-size: clamp(28px, 6vw, 38px);
     line-height: 1.22;
     letter-spacing: -1px;
     color: var(--ink);
-    margin: 0 0 18px;
+    margin: 0 0 var(--space-16);
   }
   .talk-lead {
-    font-size: 17px;
+    font-size: var(--text-body);
     line-height: 1.9;
     color: var(--ink-2);
     max-width: 520px;
@@ -221,13 +226,13 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   }
   .talk-meta {
     display: flex;
-    gap: 14px;
+    gap: var(--space-14);
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    margin-top: 22px;
+    margin-top: var(--space-24);
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-label);
     color: var(--ink-3);
   }
   .meta-sep {
@@ -240,19 +245,19 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   /* ── 화자 ── */
   .speakers {
     display: flex;
-    gap: 14px;
+    gap: var(--space-14);
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    padding: 4px 0 32px;
+    padding: var(--space-4) 0 var(--space-32);
   }
   .speaker {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-12);
     background: var(--cream);
-    border-radius: 40px;
-    padding: 8px 20px 8px 8px;
+    border-radius: var(--btn-radius);
+    padding: var(--space-8) var(--space-16) var(--space-8) var(--space-8);
   }
   .speaker-ai {
     background: var(--accent);
@@ -260,7 +265,7 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   .speaker-avatar {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     object-fit: cover;
     object-position: center 18%;
     background: var(--surface);
@@ -270,13 +275,13 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
     align-items: center;
     justify-content: center;
     font-family: var(--font-display);
-    font-size: 18px;
+    font-size: var(--text-body);
     color: var(--ink);
   }
   .speaker-name {
     display: block;
     font-family: var(--font-display);
-    font-size: 15px;
+    font-size: var(--text-small);
     color: var(--ink);
   }
   .speaker-ai .speaker-name {
@@ -285,7 +290,7 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   .speaker-role {
     display: block;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     color: var(--ink-3);
   }
   .speaker-ai .speaker-role {
@@ -293,24 +298,24 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   }
   .speakers-x {
     font-family: var(--font-mono);
-    font-size: 18px;
+    font-size: var(--text-body);
     color: var(--accent);
   }
 
   /* ── 목차 ── */
   .talk-toc {
     background: var(--cream);
-    border-radius: 14px;
-    padding: 24px 30px;
-    margin-bottom: 20px;
+    border-radius: var(--card-radius);
+    padding: var(--space-24) var(--space-32);
+    margin-bottom: var(--space-16);
   }
   .toc-label {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--ink-3);
-    margin-bottom: 16px;
+    margin-bottom: var(--space-16);
   }
   .toc-list {
     list-style: none;
@@ -318,12 +323,12 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
     padding: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px 40px;
+    gap: var(--space-12) var(--space-32);
   }
   .toc-list :global(a) {
     display: flex;
-    gap: 12px;
-    font-size: 15px;
+    gap: var(--space-12);
+    font-size: var(--text-small);
     color: var(--ink);
     text-decoration: none;
     transition: color var(--dur) var(--ease);
@@ -344,17 +349,17 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   /* ── 태그 ── */
   .talk-tags {
     display: flex;
-    gap: 8px;
+    gap: var(--space-8);
     flex-wrap: wrap;
-    margin-top: 28px;
+    margin-top: var(--space-24);
   }
   .tag-pill {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-label);
     color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    border-radius: 20px;
-    padding: 5px 14px;
+    border: var(--stroke-hair) solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: var(--btn-radius);
+    padding: var(--space-4) var(--space-14);
     text-decoration: none;
     transition: background var(--dur) var(--ease);
   }
@@ -363,27 +368,27 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   }
 
   .talk-author {
-    margin-top: 56px;
+    margin-top: var(--space-48);
   }
 </style>
 
 <style is:global>
   /* 마치며 — 본문 마지막 h2("마치며") 섹션은 액센트 보더 스타일 */
   .talk-body {
-    font-size: 17px;
+    font-size: var(--text-body);
     line-height: 1.9;
   }
   .talk-body > p {
     color: var(--ink-2);
-    margin: 16px 0;
+    margin: var(--space-16) 0;
   }
   .talk-body h2 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 22px;
+    font-size: var(--text-h3);
     color: var(--ink);
-    border-left: 3px solid var(--accent);
-    padding-left: 16px;
-    margin: 44px 0 14px;
+    border-left: var(--stroke-bold) solid var(--accent);
+    padding-left: var(--space-16);
+    margin: var(--space-48) 0 var(--space-14);
   }
 </style>

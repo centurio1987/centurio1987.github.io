@@ -20,10 +20,10 @@ const { by = TALK.interviewee.name } = Astro.props;
 
 <style>
   .pull-quote {
-    margin: 32px 0;
+    margin: var(--space-32) 0;
     background: var(--accent);
-    border-radius: 18px;
-    padding: 40px 44px;
+    border-radius: var(--radius-lg);
+    padding: var(--space-32) var(--space-48);
     text-align: center;
   }
   .pq-text {
@@ -43,17 +43,17 @@ const { by = TALK.interviewee.name } = Astro.props;
   }
   .pq-by {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     letter-spacing: 1px;
     color: var(--accent-tint);
-    margin-top: 18px;
+    margin-top: var(--space-16);
   }
   @media (max-width: 560px) {
     .pull-quote {
-      padding: 26px 22px;
+      padding: var(--space-24);
     }
     .pq-text {
-      font-size: 21px;
+      font-size: var(--text-h3);
     }
   }
 </style>

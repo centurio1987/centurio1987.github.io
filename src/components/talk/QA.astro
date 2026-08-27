@@ -41,40 +41,40 @@ const avatarOk = publicFileExists(TALK.interviewee.avatar);
 
 <style>
   .qa {
-    padding: 28px 0;
-    border-top: 1px solid var(--border);
+    padding: var(--space-24) 0;
+    border-top: var(--stroke-hair) solid var(--border);
   }
   .qa-head {
     display: flex;
     align-items: baseline;
-    gap: 14px;
-    margin-bottom: 18px;
+    gap: var(--space-14);
+    margin-bottom: var(--space-16);
   }
   .qa-num {
     flex: none;
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--text-meta);
     color: var(--accent);
   }
   .qa-title {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 25px;
+    font-size: var(--text-h2);
     line-height: 1.4;
     color: var(--ink);
     margin: 0;
   }
   .qa-answer {
     display: flex;
-    gap: 14px;
+    gap: var(--space-14);
     align-items: flex-start;
-    padding-left: 4px;
+    padding-left: var(--space-4);
   }
   .qa-avatar {
     flex: none;
     width: 38px;
     height: 38px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     object-fit: cover;
     object-position: center 18%;
     background: var(--surface);
@@ -86,29 +86,29 @@ const avatarOk = publicFileExists(TALK.interviewee.avatar);
     justify-content: center;
     background: var(--hatch);
     font-family: var(--font-display);
-    font-size: 15px;
+    font-size: var(--text-small);
     color: var(--accent);
   }
   .qa-speaker {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--accent);
-    margin-bottom: 6px;
+    margin-bottom: var(--space-6);
   }
   .qa-text {
-    font-size: 16.5px;
+    font-size: var(--text-body);
     line-height: 1.95;
     color: var(--ink-2);
   }
   .qa-text :global(p) {
-    margin: 0 0 12px;
+    margin: 0 0 var(--space-12);
   }
   .qa-text :global(p:last-child) {
     margin-bottom: 0;
   }
   @media (max-width: 560px) {
     .qa-title {
-      font-size: 21px;
+      font-size: var(--text-h3);
     }
   }
 </style>

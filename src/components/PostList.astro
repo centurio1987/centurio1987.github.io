@@ -144,37 +144,37 @@ function tapeMetrics(name: string) {
     list-style: none;
     margin: 0;
     /* 첫 항목 스티커가 목록 위로 14px(+hover 시 7px 더) 삐져나오므로 자리를 준다 */
-    padding: 12px 0 0;
+    padding: var(--space-12) 0 0;
   }
   .post-item {
     /* 시리즈 스티커의 절대배치 기준 */
     position: relative;
   }
   .post-item + .post-item {
-    border-top: 1px dashed var(--border);
+    border-top: var(--stroke-hair) dashed var(--border);
   }
   .post-link {
     display: flex;
-    gap: 14px;
+    gap: var(--space-14);
     /* 아래 여백이 18px 이면 다음 항목 스티커가 떼어질 때(왼쪽이 들리며 위로 쓸림)
        이 항목 설명문의 마지막 줄을 덮는다. 24px 이 그 스침을 없애는 최소치. */
-    padding: 18px 0 24px;
+    padding: var(--space-16) 0 var(--space-24);
     color: var(--ink);
   }
   .bullet {
     flex-shrink: 0;
     width: 16px;
     height: 16px;
-    margin-top: 7px;
-    border-radius: 50%;
+    margin-top: var(--space-6);
+    border-radius: var(--radius-round);
     background: color-mix(in srgb, var(--cat) 45%, var(--surface));
-    border: 1.5px solid var(--ink);
+    border: var(--stroke) solid var(--ink);
     transition: background var(--dur) var(--ease);
   }
   .post-body {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-4);
     /* 시리즈 라벨이 흐름 안에 들어오는 좁은 화면에서, 줄바꿈 없는 라벨의
        min-content 가 이 칸의 자동 최소폭을 밀어올려 메타·제목을 한 글자씩
        쪼개는 것을 막는다. */
@@ -183,8 +183,8 @@ function tapeMetrics(name: string) {
   .post-meta {
     display: flex;
     align-items: center;
-    gap: 7px;
-    font-size: 13px;
+    gap: var(--space-6);
+    font-size: var(--text-meta);
     font-weight: 500;
     color: var(--ink-3);
   }
@@ -197,13 +197,13 @@ function tapeMetrics(name: string) {
   .post-author {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: var(--space-4);
   }
   .author-avatar {
     flex: none;
     width: 22px;
     height: 22px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     object-fit: cover;
     background: var(--paper);
     box-shadow: 0 0 0 1.5px var(--accent);
@@ -213,22 +213,22 @@ function tapeMetrics(name: string) {
     align-items: center;
     justify-content: center;
     font-family: var(--font-display);
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--accent);
     background: var(--hatch);
   }
   .ai-chip {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     line-height: 1;
     letter-spacing: 0.5px;
     color: var(--accent);
-    border: 1px solid var(--accent);
+    border: var(--stroke-hair) solid var(--accent);
     border-radius: var(--btn-radius);
-    padding: 2px 6px;
+    padding: var(--space-2) var(--space-6);
   }
   .post-title {
-    font-size: 20px;
+    font-size: var(--text-h3);
     font-weight: 700;
     letter-spacing: -0.02em;
     /* 시리즈 스티커가 제목 칸을 좁히는 만큼 줄바꿈이 잦아진다 — 한국어는 어절
@@ -238,7 +238,7 @@ function tapeMetrics(name: string) {
     transition: color var(--dur) var(--ease);
   }
   .post-desc {
-    font-size: 15px;
+    font-size: var(--text-small);
     color: var(--ink-2);
   }
   .post-link:hover .bullet {
@@ -250,7 +250,7 @@ function tapeMetrics(name: string) {
 
   .post-item.has-series .post-meta {
     flex-wrap: wrap;
-    row-gap: 4px;
+    row-gap: var(--space-4);
   }
 
   /* ── 시리즈 라벨 2b: 찢긴 테이프 + 회차 잉크 블록 ────────────────────────────
@@ -276,9 +276,9 @@ function tapeMetrics(name: string) {
   .st-name {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: var(--space-8);
     min-width: 0;
-    padding: 11px 16px 10px;
+    padding: var(--space-10) var(--space-16);
     background: var(--pop-tint);
     /* 찢긴 마스킹테이프 끝단 */
     clip-path: polygon(
@@ -316,26 +316,25 @@ function tapeMetrics(name: string) {
   .st-no {
     display: flex;
     align-items: baseline;
-    gap: 3px;
+    gap: var(--space-2);
     flex: none;
     margin-left: -2px;
-    padding: 0 12px;
+    padding: 0 var(--space-12);
     background: var(--ink);
     color: var(--paper);
     clip-path: polygon(0 4%, 100% 0, calc(100% - 4px) 52%, 100% 100%, 0 96%);
   }
   .st-n {
     align-self: center;
-    padding-top: 1px;
     font-family: var(--font-mono);
-    font-size: 21px;
+    font-size: var(--text-h3);
     line-height: 1;
   }
   .st-total {
     align-self: center;
-    padding-top: 6px;
+    padding-top: var(--space-6);
     font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: var(--text-nano);
     line-height: 1;
     opacity: 0.6;
   }
@@ -349,7 +348,7 @@ function tapeMetrics(name: string) {
      아래쪽이라 그대로 전폭을 쓴다. 비켜주는 폭은 테이프 상한을 그대로 따라간다. */
   .post-item.has-series .post-meta,
   .post-item.has-series .post-title {
-    padding-right: calc(var(--tape-w, 240px) + 14px);
+    padding-right: calc(var(--tape-w, 240px) + var(--space-14));
   }
 
   /* 테이프(≈230~290px)는 제목 칸을 꽤 먹는다. 좁은 화면에서는 절대배치를 풀어
@@ -364,13 +363,13 @@ function tapeMetrics(name: string) {
       position: static;
       align-self: flex-start;
       max-width: 100%;
-      margin: 2px 0 10px;
+      margin: var(--space-2) 0 var(--space-10);
     }
     .st-name {
-      padding: 9px 13px 8px;
+      padding: var(--space-8) var(--space-12);
     }
     .st-n {
-      font-size: 18px;
+      font-size: var(--text-body);
     }
   }
 </style>

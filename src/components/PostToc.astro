@@ -90,7 +90,7 @@ const show = items.length >= 2;
          겹치면 헤더가 이겨야 한다. */
       z-index: 9;
       /* 왼쪽 여백이 곧 "근처"의 크기다 — 포인터가 이만큼만 다가와도 펼쳐진다. */
-      padding: 8px 0 8px 16px;
+      padding: var(--space-8) 0 var(--space-8) var(--space-16);
     }
   }
 
@@ -121,8 +121,8 @@ const show = items.length >= 2;
     box-sizing: border-box;
     width: var(--toc-w);
     max-height: var(--toc-max-h);
-    padding: 10px 14px;
-    border: 1px solid transparent;
+    padding: var(--space-10) var(--space-14);
+    border: var(--stroke-hair) solid transparent;
     border-radius: var(--radius-md);
     background: transparent;
     /* 접힘: 넘치는 라벨을 왼쪽에서 잘라낸다. 클리핑 경계는 패딩 박스라 눈금이
@@ -155,7 +155,7 @@ const show = items.length >= 2;
 
   .toc-head {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: var(--text-nano);
     letter-spacing: 1.4px;
     text-transform: uppercase;
     color: var(--ink-3);
@@ -174,7 +174,7 @@ const show = items.length >= 2;
   .post-toc:focus-within .toc-head,
   .post-toc.is-open .toc-head {
     height: 15px;
-    margin-bottom: 8px;
+    margin-bottom: var(--space-8);
     opacity: 1;
   }
 
@@ -189,7 +189,7 @@ const show = items.length >= 2;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 10px;
+    gap: var(--space-10);
     height: var(--toc-pitch);
     transition:
       height var(--dur) var(--ease),
@@ -202,7 +202,7 @@ const show = items.length >= 2;
     display: block;
     width: 20px;
     height: 2px;
-    border-radius: 1px;
+    border-radius: var(--radius-xs);
     background: var(--ink-3);
     /* 크림 배경에서 묻히지 않을 만큼만 진하게. */
     opacity: 0.72;
@@ -252,7 +252,7 @@ const show = items.length >= 2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 13.5px;
+    font-size: var(--text-meta);
     line-height: 1.4;
     color: var(--ink-2);
     opacity: 0;
@@ -280,7 +280,7 @@ const show = items.length >= 2;
   .post-toc:hover .toc-list a[data-depth="2"],
   .post-toc:focus-within .toc-list a[data-depth="2"],
   .post-toc.is-open .toc-list a[data-depth="2"] {
-    margin-top: 9px;
+    margin-top: var(--space-8);
   }
   .post-toc:hover .toc-list li:first-child a,
   .post-toc:focus-within .toc-list li:first-child a,
@@ -291,7 +291,7 @@ const show = items.length >= 2;
   /* h3 = 절 안의 갈래. 한 단 들여쓰고 작고 옅게. */
   .toc-list a[data-depth="3"] .toc-label {
     width: calc(var(--toc-label-w) - var(--toc-indent));
-    font-size: 12px;
+    font-size: var(--text-label);
     font-weight: 400;
     color: var(--ink-3);
   }
@@ -304,9 +304,9 @@ const show = items.length >= 2;
     opacity: 1;
   }
   .toc-list a:focus-visible {
-    outline: 2px solid var(--accent);
+    outline: var(--stroke-bold) solid var(--accent);
     outline-offset: 1px;
-    border-radius: 3px;
+    border-radius: var(--radius-xs);
   }
   .toc-list a.is-active .toc-label {
     color: var(--accent);

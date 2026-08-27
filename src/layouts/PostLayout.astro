@@ -170,13 +170,13 @@ if (fs.existsSync(heroPath)) {
   .post {
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: 56px var(--page-pad) 0;
+    padding: var(--space-48) var(--page-pad) 0;
   }
   .post-meta {
     display: flex;
     align-items: center;
-    gap: 9px;
-    font-size: 14px;
+    gap: var(--space-8);
+    font-size: var(--text-meta);
     color: var(--ink-3);
     font-weight: 500;
   }
@@ -184,34 +184,34 @@ if (fs.existsSync(heroPath)) {
     font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(28px, 5vw, 38px);
-    margin: 16px 0 10px;
+    margin: var(--space-16) 0 var(--space-10);
   }
   .lead {
-    font-size: 19px;
+    font-size: var(--text-body);
     color: var(--ink-2);
-    margin: 0 0 18px;
+    margin: 0 0 var(--space-16);
   }
   .post-rule {
-    margin: 8px 0 4px;
+    margin: var(--space-8) 0 var(--space-4);
   }
   .updated {
-    margin-top: 48px;
-    font-size: 13px;
+    margin-top: var(--space-48);
+    font-size: var(--text-meta);
     color: var(--ink-3);
   }
   .post-author-card {
-    margin-top: 56px;
+    margin-top: var(--space-48);
   }
 
   /* ── P-08 시리즈 꼬리말 ── */
   .series-foot {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: var(--space-16);
     flex-wrap: wrap;
-    margin-top: 34px;
-    padding-top: 22px;
-    border-top: 1px dashed var(--border);
+    margin-top: var(--space-32);
+    padding-top: var(--space-24);
+    border-top: var(--stroke-hair) dashed var(--border);
   }
   /* 손으로 얹은 티가 나게 살짝 기운다 — 각도는 -12°~12° 안(DECO_KIT 5절 규칙 7) */
   .foot-ticket {
@@ -224,7 +224,7 @@ if (fs.existsSync(heroPath)) {
     margin: 0;
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 20px;
+    font-size: var(--text-h3);
     color: var(--ink-3);
   }
   .foot-stamp {
@@ -236,7 +236,7 @@ if (fs.existsSync(heroPath)) {
 
 <style is:global>
   .prose {
-    font-size: 18px;
+    font-size: var(--text-body);
     line-height: 1.8;
     /* 안전망: 공백 없는 초장문 인라인 런(예: `·`로 이어 붙인 코드 나열)이
        줄바꿈 기회를 못 찾아 페이지 가로 스크롤을 만드는 것을 막는다. 일반
@@ -249,9 +249,9 @@ if (fs.existsSync(heroPath)) {
   }
   .prose h2 {
     font-family: var(--font-body);
-    font-size: 26px;
+    font-size: var(--text-h2);
     font-weight: 700;
-    margin: 48px 0 14px;
+    margin: var(--space-48) 0 var(--space-14);
   }
   /* 목차·해시 링크로 점프했을 때 sticky 헤더가 제목을 덮지 않게 한다.
      --header-h 는 tokens.css 의 실측 폴백이고, tocSpy 가 뜨면 실제 헤더 높이로 갱신된다. */
@@ -260,14 +260,14 @@ if (fs.existsSync(heroPath)) {
   }
   .prose h3 {
     font-family: var(--font-body);
-    font-size: 20px;
+    font-size: var(--text-h3);
     font-weight: 700;
-    margin: 36px 0 10px;
+    margin: var(--space-32) 0 var(--space-10);
   }
   .prose p,
   .prose ul,
   .prose ol {
-    margin: 16px 0;
+    margin: var(--space-16) 0;
   }
   /* 인용의 틀은 P-04(MarkedQuote)와 같은 얼굴로 맞춘다.
    *
@@ -283,12 +283,12 @@ if (fs.existsSync(heroPath)) {
    * MarkedQuote 의 blockquote 규칙과 같게 유지한다(둘이 갈리면 인용이 두 얼굴이
    * 된다). 감싼 .marked-quote 쪽 규칙은 cid 덕에 특이도가 높아 이걸 덮어쓴다. */
   .prose blockquote {
-    margin: 34px 0;
-    padding: 6px 0 6px 22px;
-    border-left: 3px solid var(--deco-pink);
+    margin: var(--space-32) 0;
+    padding: var(--space-6) 0 var(--space-6) var(--space-24);
+    border-left: var(--stroke-bold) solid var(--deco-pink);
     background: none;
     border-radius: 0;
-    font-size: 19px;
+    font-size: var(--text-body);
     font-weight: 500;
     line-height: 1.8;
     color: var(--ink);
@@ -314,7 +314,7 @@ if (fs.existsSync(heroPath)) {
     display: block;
     max-width: 100%;
     height: auto;
-    margin: 24px auto;
+    margin: var(--space-24) auto;
   }
 
   /* ── 데코: 인용·코드에는 예외 없이 붙는다 ───────────────────────────────────

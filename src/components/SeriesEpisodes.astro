@@ -63,28 +63,28 @@ const thumbOf = (p: CollectionEntry<"posts">): string | null => {
 
 <style>
   .episodes {
-    margin-top: 40px;
+    margin-top: var(--space-32);
     background: var(--cream);
     border-radius: var(--radius-lg);
-    padding: 30px 32px 36px;
+    padding: var(--space-32);
   }
   .episodes-title {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 20px;
+    font-size: var(--text-h3);
     color: var(--ink);
-    margin: 0 0 18px;
+    margin: 0 0 var(--space-16);
   }
   .episodes-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    gap: var(--space-16);
   }
   .ep-card {
     display: flex;
     flex-direction: column;
     background: var(--paper);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
     text-decoration: none;
     transition: translate var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
@@ -94,7 +94,7 @@ const thumbOf = (p: CollectionEntry<"posts">): string | null => {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   }
   .ep-card.is-current {
-    outline: 2px solid var(--accent);
+    outline: var(--stroke-bold) solid var(--accent);
     outline-offset: -2px;
   }
   .ep-thumb {
@@ -107,30 +107,30 @@ const thumbOf = (p: CollectionEntry<"posts">): string | null => {
     background: var(--hatch);
   }
   .ep-body {
-    padding: 14px 16px 16px;
+    padding: var(--space-14) var(--space-16) var(--space-16);
   }
   .ep-num {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-8);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--accent);
   }
   .ep-now {
-    font-size: 10px;
+    font-size: var(--text-nano);
     background: var(--accent);
     color: var(--paper);
-    border-radius: 20px;
-    padding: 2px 8px;
+    border-radius: var(--btn-radius);
+    padding: var(--space-2) var(--space-8);
   }
   .ep-title {
     display: block;
     font-family: var(--font-display);
-    font-size: 16px;
+    font-size: var(--text-small);
     line-height: 1.4;
     color: var(--ink);
-    margin-top: 6px;
+    margin-top: var(--space-6);
   }
   @media (max-width: 720px) {
     .episodes-grid {

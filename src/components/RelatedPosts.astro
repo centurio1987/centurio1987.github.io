@@ -59,16 +59,16 @@ const REASON_PREFIX: Record<string, string> = {
 
 <style>
   .related {
-    margin-top: 56px;
+    margin-top: var(--space-48);
   }
   .related-rule {
-    margin-bottom: 8px;
+    margin-bottom: var(--space-8);
   }
   .related-title {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 24px;
-    margin: 0 0 6px;
+    font-size: var(--text-h3);
+    margin: 0 0 var(--space-6);
   }
   .related-list {
     list-style: none;
@@ -76,31 +76,31 @@ const REASON_PREFIX: Record<string, string> = {
     padding: 0;
   }
   .related-item + .related-item {
-    border-top: 1px dashed var(--border);
+    border-top: var(--stroke-hair) dashed var(--border);
   }
   .related-link {
     display: flex;
-    gap: 14px;
-    padding: 14px 0;
+    gap: var(--space-14);
+    padding: var(--space-14) 0;
     color: var(--ink);
   }
   .bullet {
     flex-shrink: 0;
     width: 14px;
     height: 14px;
-    margin-top: 5px;
-    border-radius: 50%;
+    margin-top: var(--space-4);
+    border-radius: var(--radius-round);
     background: color-mix(in srgb, var(--cat) 45%, var(--surface));
-    border: 1.5px solid var(--ink);
+    border: var(--stroke) solid var(--ink);
     transition: background var(--dur) var(--ease);
   }
   .related-body {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-6);
   }
   .related-post-title {
-    font-size: 17px;
+    font-size: var(--text-body);
     font-weight: 700;
     letter-spacing: -0.02em;
     transition: color var(--dur) var(--ease);
@@ -108,19 +108,19 @@ const REASON_PREFIX: Record<string, string> = {
   .chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: var(--space-6);
   }
   .chip {
-    font-size: 12px;
+    font-size: var(--text-label);
     color: var(--ink-2);
-    padding: 2px 9px;
-    border-radius: 999px;
-    border: 1px dashed var(--border);
+    padding: var(--space-2) var(--space-8);
+    border-radius: var(--btn-radius);
+    border: var(--stroke-hair) dashed var(--border);
     background: color-mix(in srgb, var(--cat) 12%, var(--surface));
   }
   .chip-kind {
     color: var(--ink-3);
-    margin-right: 4px;
+    margin-right: var(--space-4);
   }
   .chip-tag,
   .chip-recent {
@@ -133,8 +133,8 @@ const REASON_PREFIX: Record<string, string> = {
     color: var(--accent);
   }
   .related-more {
-    margin: 14px 0 0;
-    font-size: 14px;
+    margin: var(--space-14) 0 0;
+    font-size: var(--text-meta);
   }
   .related-more a {
     color: var(--ink-2);
