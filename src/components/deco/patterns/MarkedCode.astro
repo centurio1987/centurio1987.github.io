@@ -82,11 +82,11 @@ const { label = "", note = "", class: className = "" } = Astro.props;
   .marked-code {
     position: relative;
     /* 마크가 위로 17px 삐져나오므로 위 여백을 그만큼 확보한다 */
-    margin: 30px 0;
+    margin: var(--space-32) 0;
   }
   /* 포스트잇이 오른쪽 밖으로 나가는 만큼 아래 여백도 준다 */
   .marked-code.has-note {
-    margin-bottom: 44px;
+    margin-bottom: var(--space-48);
   }
   /* 안에 들어온 코드블록은 데코가 얹힐 대비로 살짝 띄운다 */
   .marked-code :global(pre) {
@@ -103,7 +103,7 @@ const { label = "", note = "", class: className = "" } = Astro.props;
       display: none;
     }
     .marked-code.has-note {
-      margin-bottom: 30px;
+      margin-bottom: var(--space-32);
     }
   }
 </style>

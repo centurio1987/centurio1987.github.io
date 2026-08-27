@@ -99,14 +99,23 @@ const {
         var(--deco-tape-vellum),
         rgba(236, 223, 196, 0.6)
       );
-    border-top: 1px solid rgba(255, 255, 255, 0.7);
-    border-bottom: 1px solid rgba(122, 104, 66, 0.16);
+    border-top: var(--stroke-hair) solid color-mix(in srgb, var(--surface-hi) 70%, transparent);
+    border-bottom: var(--stroke-hair) solid color-mix(in srgb, var(--deco-kraft-ink) 16%, transparent);
     clip-path: polygon(0 6%, 100% 0, 99% 100%, 1% 94%);
   }
 
   /* T4 — 레터링 */
   .letter {
     height: 30px;
+    /* 레터링만 폭을 스스로 벌린다. `.tape` 는 `width: var(--w)` 로 호출부가 준 폭에
+       묶이고 clip-path 가 자식까지 잘라내는데, 글씨는 --text-nano(10px) + 자간
+       0.34em 이라 문구가 길면 그 폭을 넘어 **마지막 글자가 잘린다**(홈 「최근 글」
+       머리의 `BAKED FRESH` 가 104px 판에서 108.6px 을 쓴다 — 실측). 호출부는 부품
+       밖이므로 부품이 스스로 맞춘다.
+       `width: max(var(--w), min-content)` 는 쓰지 마라 — `min-content` 는 `max()`
+       인자로 무효라 선언이 통째로 버려지고 모든 레터링 테이프가 글자 폭으로
+       쪼그라든다(156.5 → 111px 실측). */
+    min-width: max-content;
     background: color-mix(in srgb, var(--accent) 13%, transparent);
     clip-path: polygon(0 0, 100% 4%, 98% 100%, 2% 96%);
   }
@@ -115,11 +124,11 @@ const {
     box-shadow: 0 1px 3px rgba(32, 38, 74, 0.24);
   }
   .letter.on-dark .tape-label {
-    color: #fffcf6;
+    color: var(--surface-hi);
   }
   .tape-label {
     font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: var(--text-nano);
     font-weight: 700;
     line-height: 1;
     letter-spacing: 0.34em;

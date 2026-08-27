@@ -447,7 +447,7 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
     background-size: 11px 11px;
   }
   .well.rounded {
-    border-radius: 4px;
+    border-radius: var(--radius-xs);
   }
   /* 액자 안 사진은 칸을 채운다. global.css 가 img 에 주는 radius 는 지운다 —
      액자 안 사진은 각져야 인화지로 읽힌다(Polaroid 와 같은 판단). */
@@ -471,8 +471,8 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
 
   /* ── PF1 폴라로이드 + 마테 ─────────────────────────────────────────────── */
   .polaroid {
-    padding: 11px 11px 42px;
-    background: #fffcf6;
+    padding: var(--space-10) var(--space-10) var(--space-48);
+    background: var(--surface-hi);
     box-shadow: 0 3px 9px rgba(32, 38, 74, 0.16);
   }
   /* DecoLayer 의 transform 은 rotate 전용이라 가운데 맞춤을 겹쳐 쓸 수 없다 —
@@ -490,7 +490,7 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
     right: 0;
     bottom: 9px;
     display: block;
-    font-size: 21px;
+    font-size: var(--text-h3);
   }
 
   /* ── PF2 네 모서리 마테 ────────────────────────────────────────────────── */
@@ -507,15 +507,15 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
      자식 루트를 못 고친다) — 여백은 내가 가진 span 이 낸다. */
   .pad {
     display: block;
-    padding: 16px;
+    padding: var(--space-16);
   }
 
   /* ── PF4 필름 스트립 ───────────────────────────────────────────────────── */
   .strip {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 16px 8px;
+    gap: var(--space-6);
+    padding: var(--space-16) var(--space-8);
     background: var(--ink);
     box-shadow: 0 3px 8px rgba(32, 38, 74, 0.2);
   }
@@ -541,13 +541,13 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
   }
   .frame-cell {
     display: flex;
-    padding: 3px;
+    padding: var(--space-2);
     background: var(--cream);
   }
 
   /* ── PF5 실 + 집게 ─────────────────────────────────────────────────────── */
   .hung {
-    padding-top: 22px;
+    padding-top: var(--space-24);
   }
   .cord {
     position: absolute;
@@ -564,8 +564,8 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
   }
   .mat {
     display: block;
-    padding: 9px 9px 11px;
-    background: #fffcf6;
+    padding: var(--space-8) var(--space-8) var(--space-10);
+    background: var(--surface-hi);
     box-shadow: 0 4px 10px rgba(32, 38, 74, 0.16);
   }
 
@@ -576,7 +576,7 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
     filter: drop-shadow(0 3px 6px rgba(32, 38, 74, 0.16));
   }
   .torn {
-    padding: 14px 14px 30px;
+    padding: var(--space-14) var(--space-14) var(--space-32);
     background: linear-gradient(
       180deg,
       var(--deco-kraft, rgba(232, 214, 183, 0.98)),
@@ -604,13 +604,13 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
     right: 0;
     bottom: 5px;
     display: block;
-    font-size: 19px;
+    font-size: var(--text-body);
     color: var(--deco-kraft-ink, #6b5a3e);
   }
 
   /* ── PF7 크레용 테두리 ─────────────────────────────────────────────────── */
   .drawn {
-    padding: 11px;
+    padding: var(--space-10);
   }
   .border {
     position: absolute;
@@ -647,15 +647,15 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px;
-    border-radius: 50%;
-    background: #fffcf6;
+    padding: var(--space-12);
+    border-radius: var(--radius-round);
+    background: var(--surface-hi);
     box-shadow:
       0 3px 9px rgba(32, 38, 74, 0.18),
       0 0 0 2px var(--deco-pen-pink, #f4a9b4);
   }
   .round .well {
-    border-radius: 50%;
+    border-radius: var(--radius-round);
   }
   .one-sparkle {
     display: block;
@@ -683,9 +683,9 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
 
   /* ── PF9 인스탁스 ──────────────────────────────────────────────────────── */
   .instax {
-    padding: 10px 10px 34px;
-    background: #fffcf6;
-    border: 1px solid var(--border);
+    padding: var(--space-10) var(--space-10) var(--space-32);
+    background: var(--surface-hi);
+    border: var(--stroke-hair) solid var(--border);
     box-shadow: 0 3px 9px rgba(32, 38, 74, 0.15);
   }
   /* 인스탁스만 캡션이 활자다 — 손글씨 액자 사이에서 "기계가 찍은 날짜"로 읽혀야 한다 */
@@ -696,7 +696,7 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
     bottom: 8px;
     display: block;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.14em;
     color: var(--ink-3);
@@ -717,12 +717,12 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
   }
   .pile .mat {
     position: absolute;
-    padding: 6px 6px 15px;
+    padding: var(--space-6) var(--space-6) var(--space-14);
   }
   .pile .p-a {
     left: calc(var(--w) * -0.069);
     top: 0;
-    padding: 7px 7px 17px;
+    padding: var(--space-6) var(--space-6) var(--space-16);
     transform: rotate(-5deg);
   }
   .pile .p-b {
@@ -767,24 +767,24 @@ const uid = `pf${g.__decoPhotoFrameSeq}`;
       rgba(255, 252, 246, 0.86),
       rgba(255, 252, 246, 0.78)
     );
-    border-top: 1px solid rgba(255, 255, 255, 0.9);
+    border-top: var(--stroke-hair) solid color-mix(in srgb, var(--surface-hi) 90%, transparent);
     pointer-events: none;
   }
   .veil-band .hand {
-    font-size: 22px;
+    font-size: var(--text-h3);
   }
 
   /* ── PF12 도장 ─────────────────────────────────────────────────────────── */
   .plate {
-    padding: 13px;
-    background: #fffcf6;
-    border: 1px solid var(--border);
+    padding: var(--space-12);
+    background: var(--surface-hi);
+    border: var(--stroke-hair) solid var(--border);
     box-shadow: 0 3px 9px rgba(32, 38, 74, 0.14);
   }
   /* 도장 뒤에 종이색을 깔아야 사진 위에 찍힌 게 아니라 액자 위에 찍힌 것으로 읽힌다 */
   .stamp-disc {
     display: block;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     background: color-mix(in srgb, var(--surface) 55%, transparent);
   }
   .date-side {

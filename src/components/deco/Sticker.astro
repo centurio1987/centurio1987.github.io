@@ -164,15 +164,15 @@ const hidden = decorative ? "true" : undefined;
   .speech {
     position: relative;
     display: inline-block;
-    padding: 7px 14px 9px;
+    padding: var(--space-6) var(--space-14) var(--space-8);
     background: var(--sp-fill);
-    border-radius: 15px;
+    border-radius: var(--card-radius);
     box-shadow:
-      0 0 0 var(--deco-diecut) #fffcf6,
+      0 0 0 var(--deco-diecut) var(--surface-hi),
       0 3px 7px rgba(32, 38, 74, 0.16);
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 19px;
+    font-size: var(--text-body);
     line-height: 1.2;
     text-align: center;
     color: var(--sp-ink);
@@ -196,8 +196,8 @@ const hidden = decorative ? "true" : undefined;
     width: 13px;
     height: 13px;
     background: var(--sp-fill);
-    box-shadow: 0 0 0 var(--deco-diecut) #fffcf6;
-    border-radius: 2px;
+    box-shadow: 0 0 0 var(--deco-diecut) var(--surface-hi);
+    border-radius: var(--radius-xs);
     transform: rotate(45deg);
     /* 몸통 뒤로 보내 이음매를 감춘다 */
     z-index: -1;
@@ -209,11 +209,11 @@ const hidden = decorative ? "true" : undefined;
     align-items: center;
     justify-content: center;
     min-height: 32px;
-    padding: 0 22px;
+    padding: 0 var(--space-24);
     background: var(--pop);
     clip-path: polygon(0 0, 100% 0, 91% 50%, 100% 100%, 0 100%, 9% 50%);
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: var(--text-label);
     font-weight: 700;
     letter-spacing: 0.1em;
     color: var(--pop-ink);
@@ -226,7 +226,7 @@ const hidden = decorative ? "true" : undefined;
   .stars {
     display: inline-flex;
     align-items: center;
-    gap: 14px;
+    gap: var(--space-14);
   }
   /* S8 이름 다이컷의 작은 별도 같은 실루엣이다 — 별이 두 모양이면 같은 키트로
      안 읽히므로 clip-path 는 한 군데서만 적는다. */
@@ -270,14 +270,14 @@ const hidden = decorative ? "true" : undefined;
     justify-content: center;
     width: 64px;
     height: 64px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     background: var(--accent-tint);
     box-shadow:
-      0 0 0 var(--deco-diecut) #fffcf6,
+      0 0 0 var(--deco-diecut) var(--surface-hi),
       0 3px 7px rgba(32, 38, 74, 0.16);
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 21px;
+    font-size: var(--text-h3);
     line-height: 1;
     color: var(--accent);
     text-align: center;
@@ -291,9 +291,9 @@ const hidden = decorative ? "true" : undefined;
     justify-content: center;
     min-width: 112px;
     height: 38px;
-    padding: 0 14px 0 34px;
+    padding: 0 var(--space-14) 0 var(--space-32);
     background: var(--surface);
-    border: 1.5px solid var(--ink);
+    border: var(--stroke) solid var(--ink);
     /* 왼쪽 끝을 뾰족하게 — 끈을 꿰는 택 모양 */
     clip-path: polygon(11% 0, 100% 0, 100% 100%, 11% 100%, 0 50%);
     box-shadow: 2px 3px 0 rgba(32, 38, 74, 0.12);
@@ -305,13 +305,13 @@ const hidden = decorative ? "true" : undefined;
     width: 7px;
     height: 7px;
     margin-top: -4px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     background: var(--paper);
-    border: 1.5px solid var(--ink);
+    border: var(--stroke) solid var(--ink);
   }
   .tag-text {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.12em;
     color: var(--ink);
@@ -328,31 +328,31 @@ const hidden = decorative ? "true" : undefined;
     /* 시안 값은 150 인데 그쪽 판은 content-box 라 테두리가 밖에 붙어 총 153 이다.
        이 레포는 전역 border-box 라 150 을 그대로 쓰면 판이 3px 좁아진다. */
     width: 153px;
-    border-radius: 5px;
+    border-radius: var(--radius-xs);
     overflow: hidden;
     background: var(--surface);
-    border: 1.5px solid var(--ink);
+    border: var(--stroke) solid var(--ink);
     box-shadow: 2px 3px 0 rgba(32, 38, 74, 0.12);
   }
   .np-head {
     display: block;
-    padding: 4px 0;
+    padding: var(--space-4) 0;
     background: var(--ink);
     font-family: var(--font-mono);
-    font-size: 8.5px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.24em;
     text-align: center;
     /* 어두운 띠 위 글자는 --surface 가 아니라 스티커 흰색이다 — T4 레터링 테이프의
        on-dark 와 같은 값. */
-    color: #fffcf6;
+    color: var(--surface-hi);
   }
   .np-name {
     display: block;
-    padding: 7px 12px 9px;
+    padding: var(--space-6) var(--space-12) var(--space-8);
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 22px;
+    font-size: var(--text-h3);
     line-height: 1;
     text-align: center;
     color: var(--accent);
@@ -362,12 +362,12 @@ const hidden = decorative ? "true" : undefined;
   .namepill {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    padding: 6px 15px 8px;
-    border-radius: 999px;
+    gap: var(--space-6);
+    padding: var(--space-6) var(--space-14) var(--space-8);
+    border-radius: var(--btn-radius);
     background: var(--deco-pink-tint);
     box-shadow:
-      0 0 0 var(--deco-diecut) #fffcf6,
+      0 0 0 var(--deco-diecut) var(--surface-hi),
       0 3px 7px rgba(32, 38, 74, 0.16);
   }
   .np-star {
@@ -379,7 +379,7 @@ const hidden = decorative ? "true" : undefined;
   .np-text {
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 21px;
+    font-size: var(--text-h3);
     line-height: 1;
     color: var(--deco-pink-ink);
     white-space: nowrap;
@@ -392,22 +392,22 @@ const hidden = decorative ? "true" : undefined;
     position: relative;
     display: inline-block;
     width: 152px;
-    padding: 9px 13px 11px;
+    padding: var(--space-8) var(--space-12) var(--space-10);
     box-sizing: border-box;
     background: var(--surface);
-    border: 1.5px dashed rgba(32, 38, 74, 0.45);
-    border-radius: 4px;
+    border: var(--stroke) dashed color-mix(in srgb, var(--ink) 45%, transparent);
+    border-radius: var(--radius-xs);
     box-shadow: 0 2px 5px rgba(32, 38, 74, 0.1);
   }
   .nb-row {
     display: flex;
     align-items: baseline;
-    gap: 8px;
+    gap: var(--space-8);
   }
   .nb-label {
     flex: none;
     font-family: var(--font-mono);
-    font-size: 8.5px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.2em;
     color: var(--ink-3);
@@ -416,11 +416,11 @@ const hidden = decorative ? "true" : undefined;
      글자에 딱 맞으면 이미 채워진 것으로 보인다. */
   .nb-name {
     flex: 1;
-    padding-bottom: 2px;
-    border-bottom: 1.5px solid rgba(32, 38, 74, 0.25);
+    padding-bottom: var(--space-2);
+    border-bottom: var(--stroke) solid color-mix(in srgb, var(--ink) 25%, transparent);
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 21px;
+    font-size: var(--text-h3);
     line-height: 1;
     color: var(--ink);
   }
@@ -433,14 +433,14 @@ const hidden = decorative ? "true" : undefined;
     justify-content: center;
     width: 26px;
     height: 26px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     background: var(--accent-tint);
     /* --deco-diecut(5px)보다 한 픽셀 얇다. 26px 짜리에 5px 를 두르면 테두리가
        배지보다 도드라진다. */
-    box-shadow: 0 0 0 4px #fffcf6;
+    box-shadow: 0 0 0 var(--space-4) var(--surface-hi);
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 13px;
+    font-size: var(--text-meta);
     line-height: 1;
     color: var(--accent);
   }

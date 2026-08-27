@@ -66,9 +66,9 @@ const { cite = "", class: className = "" } = Astro.props;
 <style>
   .marked-quote {
     position: relative;
-    margin: 34px 0;
-    padding: 6px 0 6px 22px;
-    border-left: 3px solid var(--deco-pink);
+    margin: var(--space-32) 0;
+    padding: var(--space-6) 0 var(--space-6) var(--space-24);
+    border-left: var(--stroke-bold) solid var(--deco-pink);
   }
   /* 패턴이 자체 테두리·여백을 쥐므로 .prose blockquote 의 기본 장식은 지운다 */
   .marked-quote blockquote {
@@ -77,16 +77,16 @@ const { cite = "", class: className = "" } = Astro.props;
     border: none;
     background: none;
     border-radius: 0;
-    font-size: 19px;
+    font-size: var(--text-body);
     font-weight: 500;
     line-height: 1.8;
     color: var(--ink);
   }
   .marked-quote figcaption {
-    margin-top: 8px;
+    margin-top: var(--space-8);
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 19px;
+    font-size: var(--text-body);
     color: var(--ink-3);
   }
 </style>

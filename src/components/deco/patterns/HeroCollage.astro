@@ -156,8 +156,8 @@ const {
 <style>
   .collage {
     /* 데코가 판 밖으로 걸치므로 잘리지 않게 여백을 준다.
-       가로 여백(26px)은 가장 크게 걸치는 테이프(-20px)보다 커야 한다. */
-    padding: 26px;
+       가로 여백(--space-24)은 가장 크게 걸치는 테이프(-20px)보다 커야 한다. */
+    padding: var(--space-24);
   }
   .stage {
     position: relative;
@@ -169,7 +169,7 @@ const {
        더 부풀린다. 그래서 판 높이가 마스코트에 딱 붙어 귀와 발이 모눈 가장자리에
        닿아 있었다. 패딩이라 **판이 그만큼 커지고**, 부품 좌표(%)는 패딩 박스
        기준이라 비율 그대로 따라 내려온다. */
-    padding: 18px 0;
+    padding: var(--space-16) 0;
     min-height: calc(var(--m, 330px) * 1.18);
   }
   .mascot {
@@ -213,7 +213,7 @@ const {
 
   @media (max-width: 768px) {
     .collage {
-      padding: 18px 14px;
+      padding: var(--space-16) var(--space-14);
     }
     .mascot {
       width: min(var(--m, 330px), 62vw);

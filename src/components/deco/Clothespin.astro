@@ -39,7 +39,10 @@ const width = Math.round(height * 0.34);
   .body {
     position: absolute;
     inset: 0;
-    border-radius: 4px 4px 6px 6px;
+    /* 원래는 `4px 4px 6px 6px` 로 아래쪽만 한 단 둥글렸는데, 6px 은 radius 스케일
+       밖이고 최근접 눈금이 4·8 둘 다 2px 차라 작은 쪽(4px)으로 접었다. 결과가 네
+       모서리 같은 값이라 한 값으로 적는다. */
+    border-radius: var(--radius-xs);
     background: linear-gradient(
       90deg,
       var(--deco-wood),
@@ -64,7 +67,7 @@ const width = Math.round(height * 0.34);
     top: 38%;
     width: calc(var(--w) + 6px);
     height: max(4px, calc(var(--h) * 0.135));
-    border-radius: 5px;
+    border-radius: var(--radius-xs);
     background: linear-gradient(180deg, var(--deco-metal), var(--deco-metal-2));
     box-shadow: 0 1px 1px rgba(32, 38, 74, 0.25);
   }
@@ -75,7 +78,7 @@ const width = Math.round(height * 0.34);
     top: 33%;
     width: calc(var(--w) + 2px);
     height: max(2px, calc(var(--h) * 0.045));
-    border-radius: 2px;
+    border-radius: var(--radius-xs);
     background: var(--deco-metal);
   }
 </style>

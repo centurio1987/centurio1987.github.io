@@ -316,13 +316,13 @@ const GLYPH_HEARTS = [
       <CrayonFilters id={uid} kinds={["ink-fine"]} />
       <path
         d="M4 50C14 18 44 6 76 14"
-        stroke="var(--c, var(--deco-crayon-blue, var(--accent)))"
+        stroke="var(--c, var(--deco-crayon-blue, #2540e8))"
         stroke-width="2.6"
         stroke-linecap="round"
       />
       <path
         d="M62 6L78 14.5L64 24"
-        stroke="var(--c, var(--deco-crayon-blue, var(--accent)))"
+        stroke="var(--c, var(--deco-crayon-blue, #2540e8))"
         stroke-width="2.6"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -387,7 +387,7 @@ const GLYPH_HEARTS = [
       >
         <CrayonFilters id={`${uid}b`} kinds={["ink-fine"]} />
         <g
-          stroke="var(--deco-crayon-red, var(--deco-red))"
+          stroke="var(--deco-crayon-red, #e8564e)"
           stroke-width="3.2"
           stroke-linecap="round"
         >
@@ -705,7 +705,7 @@ const GLYPH_HEARTS = [
   .sparkles {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-12);
   }
   .sp {
     display: block;
@@ -725,7 +725,7 @@ const GLYPH_HEARTS = [
   .hearts {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-10);
     line-height: 1;
   }
   .ht {
@@ -742,7 +742,7 @@ const GLYPH_HEARTS = [
   .emphasis {
     display: inline-flex;
     align-items: center;
-    gap: 22px;
+    gap: var(--space-24);
   }
   .speed,
   .asterisk {
@@ -823,7 +823,7 @@ const GLYPH_HEARTS = [
     display: inline-block;
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 23px;
+    font-size: var(--text-h3);
     line-height: 1.25;
     color: var(--c, var(--ink-2));
     text-align: center;

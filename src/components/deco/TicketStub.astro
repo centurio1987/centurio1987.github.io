@@ -49,9 +49,9 @@ const {
     align-items: center;
     width: var(--w);
     height: 46px;
-    padding-left: 14px;
+    padding-left: var(--space-14);
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: var(--stroke-hair) solid var(--border);
     box-shadow: 0 2px 4px rgba(32, 38, 74, 0.1);
   }
   /* 양옆 반원 — 바탕색 원을 테두리 위에 겹쳐 파낸 것처럼 보이게 한다 */
@@ -60,10 +60,13 @@ const {
     top: 50%;
     width: 14px;
     height: 14px;
-    margin-top: -7px;
-    border-radius: 50%;
+    /* 스케일에 스냅하지 않는다 — 여백이 아니라 **제 높이의 절반**이다. `top: 50%` 로
+       내려온 14px 반원을 세로 중앙에 앉히는 값이라 -6px 로 밀면 노치가 1px 어긋난다.
+       위 height 와 같은 토큰에서 뽑아 둘이 함께 움직이게 한다. */
+    margin-top: calc(var(--space-14) / -2);
+    border-radius: var(--radius-round);
     background: var(--notch);
-    border: 1px solid var(--border);
+    border: var(--stroke-hair) solid var(--border);
   }
   .hole.l {
     left: -7px;
@@ -73,7 +76,7 @@ const {
   }
   .code {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.1em;
     color: var(--ink);
@@ -82,12 +85,12 @@ const {
   .rule {
     width: 1px;
     height: 26px;
-    margin: 0 12px;
-    border-left: 1px dashed color-mix(in srgb, var(--ink) 30%, transparent);
+    margin: 0 var(--space-12);
+    border-left: var(--stroke-hair) dashed color-mix(in srgb, var(--ink) 30%, transparent);
   }
   .note {
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--ink-2);
     white-space: nowrap;
   }

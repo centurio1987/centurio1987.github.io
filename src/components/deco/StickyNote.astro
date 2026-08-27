@@ -47,12 +47,12 @@ const lines = text.split("\n");
     width: var(--w);
     /* 붙인 종이라 높이는 글에 맞춰 늘어난다 — 시안의 고정 높이는 버렸다 */
     min-height: calc(var(--w) * 0.9);
-    padding: 11px 12px;
+    padding: var(--space-10) var(--space-12);
     background: linear-gradient(180deg, var(--deco-note), var(--deco-note-2));
     box-shadow: 2px 3px 8px rgba(32, 38, 74, 0.16);
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 15px;
+    font-size: var(--text-meta);
     line-height: 1.35;
     color: var(--deco-note-ink);
   }

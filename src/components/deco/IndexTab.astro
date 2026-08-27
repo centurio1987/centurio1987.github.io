@@ -33,11 +33,11 @@ const {
     display: inline-flex;
     align-items: center;
     height: 26px;
-    padding: 0 20px 0 12px;
+    padding: 0 var(--space-16) 0 var(--space-12);
     /* 오른쪽 끝 뾰족 */
     clip-path: polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%);
     font-family: var(--font-body);
-    font-size: 10px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.06em;
     line-height: 1;
@@ -45,7 +45,7 @@ const {
   }
   .pink {
     background: var(--deco-pink);
-    color: #fff;
+    color: var(--surface-hi);
   }
   .blue {
     background: var(--accent-tint);

@@ -59,11 +59,11 @@ const hidden = decorative ? "true" : undefined;
   /* ── 날짜 스탬프 ── */
   .date {
     display: inline-block;
-    padding: 5px 9px;
-    border: 1.5px dashed color-mix(in srgb, var(--deco-red) 70%, transparent);
-    border-radius: 4px;
+    padding: var(--space-4) var(--space-8);
+    border: var(--stroke) dashed color-mix(in srgb, var(--deco-red) 70%, transparent);
+    border-radius: var(--radius-xs);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     font-weight: 700;
     line-height: 1;
     letter-spacing: 0.14em;
@@ -78,8 +78,8 @@ const hidden = decorative ? "true" : undefined;
     justify-content: center;
     width: var(--s);
     height: var(--s);
-    border-radius: 50%;
-    border: 2px solid color-mix(in srgb, var(--deco-red) 65%, transparent);
+    border-radius: var(--radius-round);
+    border: var(--stroke-bold) solid color-mix(in srgb, var(--deco-red) 65%, transparent);
     opacity: 0.9;
   }
   .ring {
@@ -89,20 +89,20 @@ const hidden = decorative ? "true" : undefined;
     justify-content: center;
     width: calc(var(--s) - 12px);
     height: calc(var(--s) - 12px);
-    border-radius: 50%;
-    border: 1px dashed color-mix(in srgb, var(--deco-red) 55%, transparent);
+    border-radius: var(--radius-round);
+    border: var(--stroke-hair) dashed color-mix(in srgb, var(--deco-red) 55%, transparent);
     line-height: 1.15;
   }
   .line-1 {
     font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.06em;
     color: color-mix(in srgb, var(--deco-red) 85%, transparent);
   }
   .line-2 {
     font-family: var(--font-body);
-    font-size: 10px;
+    font-size: var(--text-nano);
     font-weight: 700;
     color: color-mix(in srgb, var(--deco-red) 85%, transparent);
   }
