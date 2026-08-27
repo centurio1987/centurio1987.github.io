@@ -3,7 +3,7 @@ card: KAN-072-CPJCT1
 batch: 5
 created: 2026-08-27
 branch: KAN-072-CPJCT1
-status: 계획
+status: 완료
 steps: S9, S10, S11
 ---
 
@@ -77,4 +77,63 @@ preview 확인도 따로 난다. 다만 `S9`·`S10` 은 같은 시리즈(osi-7-l
 - 되돌리기: 시리즈별 커밋이라 글 하나 단위로 되돌릴 수 있다.
 
 ## 4. 착수 시점 판단
-<!-- 착수할 때 채운다 — 마지막 work 를 다음 배치로 미룰지 여기서 정한다. -->
+
+**착수 2026-08-27. 세 WP 를 그대로 간다 — 미루지 않는다.**
+
+**구획 무게를 다시 쟀다 (`scripts/tokens-baseline.json` 의 `files` 맵).** 계획 시점 수는
+배치2 재분류 이전 값이라 낡았다.
+
+| WP | work | 파일 | 계획 시점 | **착수 시점** |
+|---|---|--:|--:|--:|
+| WP1 osi EP1~3 | `S9` | 6 | 118 | **171** |
+| WP2 osi EP4~6 | `S10` | 6 | 137 | **158** |
+| WP3 vpn-anatomy | `S11` | 9 | 102 | **149** |
+| 합계 | | 21 | 357 | **478** |
+
+파일별 상위: `SwitchLearningLab`(48) · `RoutingTableLab`(34) · `HopJourney`(33) ·
+`RequestJourneyLab`(31) · `HandshakeLab`(27) · `NonceReuseLab`(27).
+
+**미루지 않는 근거** — 배치3 이 552건, 배치4 가 443건을 각각 한 웨이브에 닫았다. 478 은 그
+사이이고 파일 수(21)는 배치4(25)보다 적다.
+
+### 지배값 처리 — 유저 판정 2026-08-27
+
+§2 가 "두 WP 는 착수 시점에 지배값 처리 방식을 먼저 맞춘다"고 한 자리다. **세 WP 전부에
+같은 표를 준다.**
+
+| 값 | 줄 | 쓰임 | → | ΔRGB |
+|---|--:|---|---|--:|
+| `#6b6357` | 53 | 부속 글자(캡션·팁) | `var(--ink-2, #4a4f6a)` | 43 |
+| `#302d28` | 44 | 본문 글자(제목·강조) | `var(--ink, #20264A)` | 38 |
+| `#c9c1b1` | 38 | 테두리 30 · 배경 7 | `var(--border, #d8d0be)` | 25 |
+| `#fffdf8` | 32 | 패널 배경 | `var(--surface-hi, #fffdf8)` | **0** |
+
+**유저 판정은 「사이트 팔레트로 통합」이다** — 감사(`UI_CONSISTENCY_AUDIT.md:223`)가
+`#302d28` 을 "본문 잉크가 두 벌이다"로 지목한 것을 한 벌로 모은다. 선례는
+`posts/tauri-2/PermissionGate.tsx:52-57`(`const INK = "var(--ink, #20264A)"`).
+**화면이 바뀐다 — 그것이 이 판정의 내용이고, 바뀐 자리는 수행 내역에 적는다.**
+
+### 상태색은 물을 것이 없다 — `--state-*` 신설은 불필요
+
+시뮬이 상수로 뽑아 쓰는 상태색이 **이미 토큰과 값이 정확히 같다.** `var()` 치환만 한다.
+
+```tsx
+const OK     = "#3E6B4F";   // = --cat-planning     → var(--cat-planning, #3E6B4F)
+const DANGER = "#A84B4B";   // = --cat-strategy     → var(--cat-strategy, #A84B4B)
+const ACCENT = "#4E6CA8";   // = --cat-architecture → var(--cat-architecture, #4E6CA8)
+const POP    = "#D8A33F";   // = --pop              → var(--pop, #D8A33F)
+//   #3e6b6b = --cat-skills · #20264a = --ink · #f3eee4 = --paper · #f8f3e8 = --surface
+```
+
+배치2 가 `--state-*` 를 이 배치로 미뤘으나 **세우지 않는다** — 세우면 같은 값에 이름이 둘이 된다.
+
+### 병렬 3 에서 지킬 것 — 배치4 가 실측으로 남긴 셋
+
+1. **스크래치패드는 `scratchpad/<work>/` 네임스페이스**다. 배치4 에서 세 세션이 `measure.mjs` ·
+   `shot-before/` 를 같은 이름으로 써서 측정 스크립트가 한 번 죽었고 한 세션이 남의 스냅샷을
+   지웠다.
+2. **같은 워크트리에서 찍은 전후 대조는 못 믿는다.** 자기 파일만 `HEAD` 로 되돌린 사본을 따로
+   구워 대조한다 — 배치4 에서 한 세션의 첫 짝이 남의 변경(홈 −49px · 글 목록 −483px)을 자기
+   몫으로 쟀다.
+3. **`deco:verify` · `width:verify` 는 `--base` 로 자기 빌드를 물린다.** 기본값이 공유 `dist` 라
+   병렬 중에는 낡은 빌드를 잰다.
