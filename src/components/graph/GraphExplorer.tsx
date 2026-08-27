@@ -1393,8 +1393,8 @@ export default function GraphExplorer({
           min-height: 420px;
           display: block;
           background: var(--surface);
-          border: 1.5px solid var(--border);
-          border-radius: var(--card-radius, 12px);
+          border: var(--stroke) solid var(--border);
+          border-radius: var(--card-radius);
         }
         /* ── 판과 그 위의 구멍 ──
            .graph-stage 는 지도 상자와 정확히 같은 크기의 배치 좌표계다(딸린 것은
@@ -1429,8 +1429,8 @@ export default function GraphExplorer({
         .graph-cmd {
           display: flex;
           align-items: flex-start;
-          gap: 10px;
-          margin-bottom: 10px;
+          gap: var(--space-10);
+          margin-bottom: var(--space-10);
         }
         .cmd-bar {
           flex: 1 1 auto;
@@ -1438,11 +1438,11 @@ export default function GraphExplorer({
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          gap: 7px;
-          padding: 8px 12px;
+          gap: var(--space-6);
+          padding: var(--space-8) var(--space-12);
           background: var(--surface);
-          border: 1.5px solid var(--ink);
-          border-radius: 14px;
+          border: var(--stroke) solid var(--ink);
+          border-radius: var(--card-radius);
           transition: box-shadow var(--dur) var(--ease);
         }
         .cmd-bar:focus-within {
@@ -1450,21 +1450,21 @@ export default function GraphExplorer({
         }
         .cmd-caret {
           font-family: var(--font-mono);
-          font-size: 12px;
+          font-size: var(--text-label);
           color: var(--ink-3);
         }
-        /* 토큰은 알약이 아니라 각진 모서리(7px) — 아래 후보 칩과 같은 어휘이고,
+        /* 토큰은 알약이 아니라 각진 모서리(--radius-sm) — 아래 후보 칩과 같은 어휘이고,
            지도 노드(원)와도 구분된다. */
         .cmd-token {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
+          gap: var(--space-6);
           font: inherit;
-          font-size: 12.5px;
+          font-size: var(--text-label);
           font-weight: 500;
-          padding: 3px 9px;
-          border-radius: 7px;
-          border: 1.5px solid var(--ink);
+          padding: var(--space-2) var(--space-8);
+          border-radius: var(--radius-sm);
+          border: var(--stroke) solid var(--ink);
           background: color-mix(in srgb, var(--tok, var(--accent)) 14%, var(--surface));
           color: color-mix(in srgb, var(--tok, var(--accent)) 76%, var(--ink));
           cursor: pointer;
@@ -1476,37 +1476,37 @@ export default function GraphExplorer({
         /* 값이 어느 축에서 왔는지 토큰 스스로 밝힌다 — 축별 행이 없어도 읽히는 이유. */
         .tok-axis {
           font-family: var(--font-mono);
-          font-size: 9.5px;
+          font-size: var(--text-nano);
           letter-spacing: 0.5px;
           opacity: 0.7;
         }
         .tok-dot {
           width: 9px;
           height: 9px;
-          border-radius: 50%;
-          border: 1px solid var(--ink);
+          border-radius: var(--radius-round);
+          border: var(--stroke-hair) solid var(--ink);
         }
         .tok-x {
           font-family: var(--font-mono);
-          font-size: 11px;
+          font-size: var(--text-micro);
           opacity: 0.7;
         }
         .cmd-input {
           flex: 1 1 120px;
           min-width: 120px;
           font: inherit;
-          font-size: 14px;
+          font-size: var(--text-meta);
           color: var(--ink);
           background: transparent;
           border: 0;
           outline: none;
-          padding: 2px 0;
+          padding: var(--space-2) 0;
         }
         .graph-count {
           flex: none;
-          padding-top: 9px;
+          padding-top: var(--space-8);
           font-family: var(--font-mono);
-          font-size: 12px;
+          font-size: var(--text-label);
           color: var(--ink-2);
           white-space: nowrap;
         }
@@ -1515,15 +1515,15 @@ export default function GraphExplorer({
         }
         .graph-help-btn {
           flex: none;
-          margin-top: 6px;
+          margin-top: var(--space-6);
           width: 24px;
           height: 24px;
-          border-radius: 50%;
-          border: 1.5px solid var(--border);
+          border-radius: var(--radius-round);
+          border: var(--stroke) solid var(--border);
           background: transparent;
           color: var(--ink-3);
           font-family: var(--font-mono);
-          font-size: 12px;
+          font-size: var(--text-label);
           cursor: pointer;
           transition: all var(--dur) var(--ease);
         }
@@ -1537,10 +1537,10 @@ export default function GraphExplorer({
            부품만 얹으므로 z 를 가를 필요가 없다(부품이 자기 z 로 위에 온다). */
         .graph-help {
           position: relative;
-          margin: 0 0 10px;
-          padding: 11px 13px;
-          border: 1px dashed color-mix(in srgb, var(--accent) 30%, transparent);
-          border-radius: 10px;
+          margin: 0 0 var(--space-10);
+          padding: var(--space-10) var(--space-12);
+          border: var(--stroke-hair) dashed color-mix(in srgb, var(--accent) 30%, transparent);
+          border-radius: var(--radius-sm);
           background: repeating-linear-gradient(
             45deg,
             color-mix(in srgb, var(--accent) 6%, transparent) 0 1px,
@@ -1549,7 +1549,7 @@ export default function GraphExplorer({
         }
         .graph-help p {
           margin: 0;
-          font-size: 12.5px;
+          font-size: var(--text-label);
           line-height: 1.7;
           color: var(--ink-2);
         }
@@ -1557,39 +1557,39 @@ export default function GraphExplorer({
         /* ── 후보 패널 ── 한 단 안쪽으로 들어간 표면(--paper)이라 커맨드 바가 위에 뜬다. */
         .graph-cands {
           position: relative;
-          margin-bottom: 12px;
-          padding: 10px;
-          border: 1.5px solid var(--border);
-          border-radius: 14px;
+          margin-bottom: var(--space-12);
+          padding: var(--space-10);
+          border: var(--stroke) solid var(--border);
+          border-radius: var(--card-radius);
           background: var(--paper);
         }
         .cand-period {
-          margin-bottom: 10px;
-          padding: 0 6px 10px;
-          border-bottom: 1px dashed var(--border);
+          margin-bottom: var(--space-10);
+          padding: 0 var(--space-6) var(--space-10);
+          border-bottom: var(--stroke-hair) dashed var(--border);
         }
         .cand-period-head {
           display: flex;
           align-items: baseline;
           justify-content: space-between;
-          gap: 10px;
+          gap: var(--space-10);
         }
         .cand-label {
           font-family: var(--font-mono);
-          font-size: 10.5px;
+          font-size: var(--text-nano);
           letter-spacing: 0.5px;
           color: var(--ink-3);
         }
         .gauge-read {
           display: flex;
           align-items: baseline;
-          gap: 9px;
+          gap: var(--space-8);
           flex: none;
           white-space: nowrap;
         }
         .read-span {
           font-family: var(--font-mono);
-          font-size: 11.5px;
+          font-size: var(--text-micro);
           color: var(--ink);
           transition: color 140ms var(--ease);
         }
@@ -1602,16 +1602,16 @@ export default function GraphExplorer({
         }
         .read-count {
           font-family: var(--font-mono);
-          font-size: 10.5px;
+          font-size: var(--text-nano);
           color: var(--ink-3);
         }
         .gauge-clear {
           font-family: var(--font-mono);
-          font-size: 10.5px;
+          font-size: var(--text-nano);
           color: var(--ink-2);
-          padding: 2px 8px;
-          border: 1px dashed var(--border);
-          border-radius: 999px;
+          padding: var(--space-2) var(--space-8);
+          border: var(--stroke-hair) dashed var(--border);
+          border-radius: var(--btn-radius);
           background: transparent;
           cursor: pointer;
           transition: all var(--dur) var(--ease);
@@ -1627,10 +1627,10 @@ export default function GraphExplorer({
         /* touch-action:none 은 이 트랙 안에서만. 지도는 pan-y 라 서로 간섭하지 않는다. */
         .gauge-track {
           position: relative;
-          margin: 10px 0 8px;
-          padding: 0 1px;
-          border: 1.5px solid var(--border);
-          border-radius: 999px;
+          margin: var(--space-10) 0 var(--space-8);
+          padding: 0 var(--space-2);
+          border: var(--stroke) solid var(--border);
+          border-radius: var(--btn-radius);
           background: var(--surface);
           touch-action: none;
           user-select: none;
@@ -1655,13 +1655,13 @@ export default function GraphExplorer({
           flex: 1 1 0;
           min-width: 0;
           box-sizing: border-box;
-          padding: 6px 0 5px;
+          padding: var(--space-6) 0 var(--space-4);
           text-align: center;
           font-family: var(--font-mono);
-          font-size: 11px;
+          font-size: var(--text-micro);
           letter-spacing: 0.3px;
           color: color-mix(in srgb, var(--ink-3) 60%, var(--paper));
-          border-right: 1px dashed color-mix(in srgb, var(--ink) 16%, transparent);
+          border-right: var(--stroke-hair) dashed color-mix(in srgb, var(--ink) 16%, transparent);
           transition:
             color 160ms var(--ease),
             background 160ms var(--ease);
@@ -1681,8 +1681,8 @@ export default function GraphExplorer({
           position: absolute;
           top: -4px;
           bottom: -4px;
-          border-radius: 999px;
-          border: 1.5px solid color-mix(in srgb, var(--accent) 62%, var(--surface));
+          border-radius: var(--btn-radius);
+          border: var(--stroke) solid color-mix(in srgb, var(--accent) 62%, var(--surface));
           background: color-mix(in srgb, var(--accent) 8%, transparent);
           pointer-events: none;
           transition:
@@ -1704,12 +1704,12 @@ export default function GraphExplorer({
           width: 18px;
           height: 21px;
           box-sizing: border-box;
-          border: 1.5px solid var(--accent);
-          border-radius: 999px;
+          border: var(--stroke) solid var(--accent);
+          border-radius: var(--btn-radius);
           background: var(--surface);
           color: var(--accent);
           font-family: var(--font-mono);
-          font-size: 11px;
+          font-size: var(--text-micro);
           line-height: 1;
           cursor: ew-resize;
           outline: none;
@@ -1743,33 +1743,33 @@ export default function GraphExplorer({
         .gauge-note {
           margin: 0;
           font-family: var(--font-mono);
-          font-size: 10px;
+          font-size: var(--text-nano);
           letter-spacing: 0.3px;
           color: color-mix(in srgb, var(--ink-3) 60%, var(--paper));
         }
         .cand-group {
-          margin-bottom: 8px;
+          margin-bottom: var(--space-8);
         }
         .cand-group .cand-label {
           display: block;
-          padding: 0 6px 5px;
+          padding: 0 var(--space-6) var(--space-4);
         }
         .cand-chips {
           display: flex;
           flex-wrap: wrap;
-          gap: 6px;
+          gap: var(--space-6);
         }
         .cand-chip {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
+          gap: var(--space-6);
           font: inherit;
-          font-size: 12.5px;
+          font-size: var(--text-label);
           font-weight: 500;
           color: var(--ink-2);
-          padding: 4px 10px;
-          border: 1.5px solid var(--border);
-          border-radius: 7px;
+          padding: var(--space-4) var(--space-10);
+          border: var(--stroke) solid var(--border);
+          border-radius: var(--radius-sm);
           background: var(--surface);
           cursor: pointer;
           transition: all var(--dur) var(--ease);
@@ -1790,27 +1790,27 @@ export default function GraphExplorer({
         .cand-dot {
           width: 9px;
           height: 9px;
-          border-radius: 50%;
-          border: 1px solid var(--ink);
+          border-radius: var(--radius-round);
+          border: var(--stroke-hair) solid var(--ink);
         }
         .cand-n {
           font-family: var(--font-mono);
-          font-size: 10px;
+          font-size: var(--text-nano);
           opacity: 0.6;
         }
         .cand-none {
           margin: 0;
-          padding: 8px 6px;
-          font-size: 12.5px;
+          padding: var(--space-8) var(--space-6);
+          font-size: var(--text-label);
           color: var(--ink-3);
         }
         .graph-empty {
-          margin: 0 0 10px;
-          font-size: 14px;
+          margin: 0 0 var(--space-10);
+          font-size: var(--text-meta);
           color: var(--ink-3);
         }
         .graph-viewport {
-          transition: transform 0.45s var(--ease, ease);
+          transition: transform 0.45s var(--ease);
         }
         /* 사용자 카메라는 조작에 1:1로 붙어야 하므로 기본이 transition 없음이다.
            "전체 보기"처럼 의도적으로 애니메이션할 때만 .animating 을 잠깐 얹는다. */
@@ -1818,7 +1818,7 @@ export default function GraphExplorer({
           transition: none;
         }
         .graph-pan.animating {
-          transition: transform 0.35s var(--ease, ease);
+          transition: transform 0.35s var(--ease);
         }
         .graph-explorer {
           position: relative;
@@ -1830,7 +1830,7 @@ export default function GraphExplorer({
           z-index: 2;
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: var(--space-4);
         }
         .graph-zoom button {
           width: 30px;
@@ -1838,12 +1838,12 @@ export default function GraphExplorer({
           display: grid;
           place-items: center;
           font: inherit;
-          font-size: 14px;
+          font-size: var(--text-meta);
           line-height: 1;
           color: var(--ink-2);
           background: var(--surface);
-          border: 1px solid var(--border);
-          border-radius: 8px;
+          border: var(--stroke-hair) solid var(--border);
+          border-radius: var(--radius-sm);
           cursor: pointer;
           transition: all var(--dur) var(--ease);
         }
@@ -1869,7 +1869,7 @@ export default function GraphExplorer({
         }
         .graph-explorer .node-label-post {
           font-family: var(--font-display);
-          font-size: 12px;
+          font-size: var(--text-label);
           fill: var(--ink);
           paint-order: stroke;
           stroke: var(--surface);
@@ -1879,10 +1879,10 @@ export default function GraphExplorer({
         /* 키워드 부채는 표시 전용 — 포인터를 가로채면 호버가 깜빡인다 */
         .graph-explorer .kw-fan {
           pointer-events: none;
-          animation: kw-in 200ms var(--ease, ease) both;
+          animation: kw-in 200ms var(--ease) both;
         }
         .graph-explorer .kw-label {
-          font-size: 11.5px;
+          font-size: var(--text-micro);
           fill: var(--ink-2);
           paint-order: stroke;
           stroke: var(--surface);
