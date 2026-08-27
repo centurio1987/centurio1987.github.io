@@ -6,6 +6,22 @@ import { useState } from "react";
 // ⚠️ 교육용 개념 지도: 좌표와 인접 관계는 학습용 단순화이며, 특정 스펙(RFC/OIDC 등)의
 //   형식 정의가 아니다. "OAuth는 인가, OIDC는 페더레이션" 같은 관계의 큰 그림을 잡기 위한 것.
 
+// 시각 값은 토큰에서 뽑는다 — fallback 은 tokens.css 값과 정확히 같아야 한다 (KAN-072).
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const IDLE = "var(--paper, #F3EEE4)";
+const TEAL = "var(--cat-skills, #3e6b6b)";
+const RED = "var(--cat-strategy, #A84B4B)";
+const BLUE = "var(--cat-architecture, #4E6CA8)";
+
+// 상태 배경 틴트는 축 색의 옅은 단이다 — 토큰을 늘리지 않고 관계를 식으로 드러낸다
+// (KAN-072 배치6, 유저 판정 2026-08-27).
+const ACTIVE_TINT = "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))";
+const DANGER_TINT = "color-mix(in srgb, var(--cat-strategy) 14%, var(--surface-hi))";
+const STATE_TINT = "color-mix(in srgb, var(--cat-architecture) 14%, var(--surface-hi))";
+
 type Axis = "authn" | "authz" | "state";
 
 type Coord = {
@@ -18,9 +34,13 @@ type Coord = {
 };
 
 const AXIS: Record<Axis, { label: string; color: string; bg: string }> = {
-  authn: { label: "인증 축 · 누구인가", color: "#3e6b6b", bg: "#e5f0ed" },
-  authz: { label: "인가 축 · 해도 되나", color: "#A84B4B", bg: "#f4e3e0" },
-  state: { label: "상태·구현 축", color: "#4E6CA8", bg: "#e4e9f3" },
+  authn: { label: "인증 축 · 누구인가", color: TEAL, bg: ACTIVE_TINT },
+  authz: { label: "인가 축 · 해도 되나", color: RED, bg: DANGER_TINT },
+  // 축은 형제가 지정한다 — 세 축이 전부 `color` + `bg` 짝이고, state 의 color 가 이미
+  // --cat-architecture 다. 그래서 bg 도 그 축의 옅은 단이다(Δ6.3). 수치상 더 가까운
+  // --accent 12%(Δ3.7)로 밀지 않은 이유는 그쪽이 포인트 색이라 축 카드 셋의 한 벌이
+  // 깨져서다 (유저 판정 2026-08-27 의 연장).
+  state: { label: "상태·구현 축", color: BLUE, bg: STATE_TINT },
 };
 
 const COORDS: Coord[] = [
@@ -102,12 +122,12 @@ export default function AuthzMap() {
     const isNeighbor = neighborIds.has(c.id);
     const axis = AXIS[c.axis];
     return {
-      padding: "10px 12px",
-      border: isSelected ? `2px solid ${axis.color}` : `1px solid #c9c1b1`,
+      padding: "var(--space-10) var(--space-12)",
+      border: isSelected ? `var(--stroke-bold) solid ${axis.color}` : `var(--stroke-hair) solid ${BORDER}`,
       borderRadius: 8,
-      background: isSelected ? axis.bg : isNeighbor ? "#fffdf8" : "#f3efe6",
+      background: isSelected ? axis.bg : isNeighbor ? PANEL : IDLE,
       opacity: isSelected || isNeighbor ? 1 : 0.82,
-      color: "#302d28",
+      color: INK,
       cursor: "pointer",
       textAlign: "left",
       lineHeight: 1.4,
@@ -120,19 +140,19 @@ export default function AuthzMap() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 6px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-6)", fontWeight: 600, color: INK }}>
         좌표를 눌러 무슨 질문에 답하는지, 어떤 기술이 사는지, 인접 좌표는 무엇인지 확인하세요.
       </p>
 
       {/* 축 범례 */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, margin: "8px 0 14px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, margin: "var(--space-8) 0 var(--space-14)" }}>
         {(Object.keys(AXIS) as Axis[]).map((a) => (
-          <span key={a} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: "#4a463f" }}>
+          <span key={a} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: INK_SOFT }}>
             <span
               style={{
                 width: 12,
@@ -186,23 +206,23 @@ export default function AuthzMap() {
         role="status"
         style={{
           padding: 14,
-          border: "1px solid #c9c1b1",
+          border: `var(--stroke-hair) solid ${BORDER}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           lineHeight: 1.6,
         }}
       >
-        <p style={{ margin: "0 0 8px" }}>
+        <p style={{ margin: "0 0 var(--space-8)" }}>
           <strong style={{ color: AXIS[selected.axis].color, fontSize: 17 }}>{selected.label}</strong>{" "}
-          <span style={{ fontSize: 12, color: "#6b6357" }}>· {AXIS[selected.axis].label}</span>
+          <span style={{ fontSize: 12, color: INK_SOFT }}>· {AXIS[selected.axis].label}</span>
         </p>
-        <p style={{ margin: "0 0 6px", fontSize: 15 }}>
+        <p style={{ margin: "0 0 var(--space-6)", fontSize: 15 }}>
           <strong>질문:</strong> {selected.question}
         </p>
-        <p style={{ margin: "0 0 6px", fontSize: 14, color: "#4a463f" }}>
+        <p style={{ margin: "0 0 var(--space-6)", fontSize: 14, color: INK_SOFT }}>
           <strong>여기 사는 기술:</strong> {selected.tech}
         </p>
-        <p style={{ margin: 0, fontSize: 14, color: "#4a463f" }}>
+        <p style={{ margin: 0, fontSize: 14, color: INK_SOFT }}>
           <strong>인접 좌표:</strong>{" "}
           {selected.neighbors.map((n, i) => (
             <span key={n}>
@@ -227,7 +247,7 @@ export default function AuthzMap() {
         </p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 10, lineHeight: 1.55 }}>
         교육용 개념 지도입니다. 좌표와 인접 관계는 큰 그림을 잡기 위한 학습용 단순화이며, 특정 스펙(RFC·OIDC
         등)의 형식 정의가 아닙니다. 색은 인증(누구인가)·인가(해도 되나)·상태(구현) 세 축을 구분합니다.
       </figcaption>

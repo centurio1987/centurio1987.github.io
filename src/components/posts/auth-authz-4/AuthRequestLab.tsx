@@ -6,8 +6,18 @@ import { useMemo, useState } from "react";
 // ⚠️ 교육용 개념 모델: 실제 nginx/네트워크 동작이 아니라 auth_request 규칙(2xx 허용 / 401 거부)과
 //   신뢰 경계 원칙(헤더 sanitize·직접 접근 차단)을 규칙으로 모사한다.
 
-const TEAL = "#3e6b6b";
-const RED = "#A84B4B";
+// 시각 값은 토큰에서 뽑는다 — fallback 은 tokens.css 값과 정확히 같아야 한다 (KAN-072).
+const TEAL = "var(--cat-skills, #3e6b6b)";
+const RED = "var(--cat-strategy, #A84B4B)";
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+
+// 상태 배경 틴트는 축 색의 옅은 단이다 — 토큰을 늘리지 않고 관계를 식으로 드러낸다
+// (KAN-072 배치6, 유저 판정 2026-08-27).
+const ACTIVE_TINT = "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))";
+const DANGER_TINT = "color-mix(in srgb, var(--cat-strategy) 14%, var(--surface-hi))";
 
 type Line = { text: string; kind: "info" | "ok" | "bad" };
 
@@ -80,33 +90,34 @@ export default function AuthRequestLab() {
   const result = useMemo(() => evaluate(session, forge, sanitize, bypass), [session, forge, sanitize, bypass]);
 
   const toggle = (on: boolean, danger = false): React.CSSProperties => ({
-    padding: "7px 11px",
-    border: on ? `2px solid ${danger ? RED : TEAL}` : "1px solid #c9c1b1",
+    // 7px·11px 은 §9 스케일 밖이라 동률에서 작은 쪽으로 접는다 (7→6 · 11→10).
+    padding: "var(--space-6) var(--space-10)",
+    border: on ? `var(--stroke-bold) solid ${danger ? RED : TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
     borderRadius: 7,
-    background: on ? (danger ? "#f4e3e0" : "#e5f0ed") : "#fffdf8",
-    color: "#302d28",
+    background: on ? (danger ? DANGER_TINT : ACTIVE_TINT) : PANEL,
+    color: INK,
     cursor: "pointer",
     fontSize: 13,
     textAlign: "left",
   });
 
-  const verdictColor = result.verdict === "ok" ? TEAL : result.verdict === "denied" ? "#6b6357" : RED;
+  const verdictColor = result.verdict === "ok" ? TEAL : result.verdict === "denied" ? INK_SOFT : RED;
   const verdictText =
     result.verdict === "ok" ? "✔ 통과(인증)" : result.verdict === "denied" ? "⛔ 거부" : "⚠ 침해";
 
-  const lineColor = (k: Line["kind"]) => (k === "ok" ? TEAL : k === "bad" ? RED : "#4a463f");
+  const lineColor = (k: Line["kind"]) => (k === "ok" ? TEAL : k === "bad" ? RED : INK_SOFT);
 
   return (
     <figure
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 12px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK }}>
         조건을 토글해 auth_request가 어디서 막고, 어디서 뚫리는지 보세요.
       </p>
 
@@ -145,9 +156,9 @@ export default function AuthRequestLab() {
       <div
         style={{
           padding: 14,
-          border: "1px solid #c9c1b1",
+          border: `var(--stroke-hair) solid ${BORDER}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           marginBottom: 12,
         }}
       >
@@ -171,19 +182,19 @@ export default function AuthRequestLab() {
         role="status"
         style={{
           padding: 14,
-          border: `1px solid ${verdictColor}`,
+          border: `var(--stroke-hair) solid ${verdictColor}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           lineHeight: 1.6,
         }}
       >
-        <p style={{ margin: "0 0 4px" }}>
+        <p style={{ margin: "0 0 var(--space-4)" }}>
           <strong style={{ color: verdictColor, fontSize: 16 }}>{verdictText}</strong>
         </p>
-        <p style={{ margin: 0, fontSize: 14, color: "#4a463f" }}>{result.summary}</p>
+        <p style={{ margin: 0, fontSize: 14, color: INK_SOFT }}>{result.summary}</p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 10, lineHeight: 1.55 }}>
         교육용 개념 모델입니다(실제 nginx 동작 재현 아님). auth_request의 2xx=허용·401=거부 규칙과, 신원 헤더
         sanitize·백엔드 직접 접근 차단이라는 신뢰 경계 원칙을 규칙으로 모사합니다.
       </figcaption>

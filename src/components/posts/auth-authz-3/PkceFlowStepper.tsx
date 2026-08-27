@@ -7,9 +7,24 @@ import { useMemo, useState } from "react";
 // ⚠️ 교육용 개념 모델: 실제 네트워크 요청·암호 연산을 수행하지 않는다. RFC 6749/7636의
 //   흐름과 검증 규칙을 규칙으로 모사한다. verifier/challenge 값은 RFC 7636 부록 예시.
 
-const TEAL = "#3e6b6b";
-const RED = "#A84B4B";
-const SAND = "#B07A2E";
+// 시각 값은 토큰에서 뽑는다 — fallback 은 tokens.css 값과 정확히 같아야 한다 (KAN-072).
+const TEAL = "var(--cat-skills, #3e6b6b)";
+const RED = "var(--cat-strategy, #A84B4B)";
+const SAND = "var(--cat-research, #B07A2E)";
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const IDLE = "var(--paper, #F3EEE4)";
+
+// 상태 배경 틴트는 축 색의 옅은 단이다 — 토큰을 늘리지 않고 관계를 식으로 드러낸다
+// (KAN-072 배치6, 유저 판정 2026-08-27).
+const ACTIVE_TINT = "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))";
+const DANGER_TINT = "color-mix(in srgb, var(--cat-strategy) 14%, var(--surface-hi))";
+// 결과 패널은 테두리가 축을 지정한다(`attackOutcome.ok ? RED : TEAL`) — 배경은 그 축의
+// 더 옅은 단이라 토글보다 낮은 9% 다 (유저 판정 2026-08-27 의 연장).
+const OUTCOME_BAD = "color-mix(in srgb, var(--cat-strategy) 9%, var(--surface-hi))";
+const OUTCOME_OK = "color-mix(in srgb, var(--cat-skills) 9%, var(--surface-hi))";
 
 type Channel = "internal" | "front" | "back";
 
@@ -20,7 +35,7 @@ type StepDef = {
 };
 
 const CH: Record<Channel, { label: string; color: string }> = {
-  internal: { label: "클라이언트 내부", color: "#6b6357" },
+  internal: { label: "클라이언트 내부", color: INK_SOFT },
   front: { label: "프론트채널(브라우저 URL)", color: SAND },
   back: { label: "백채널(서버→IdP)", color: TEAL },
 };
@@ -80,20 +95,22 @@ export default function PkceFlowStepper() {
   const chInfo = CH[step.channel];
 
   const btn = (disabled: boolean): React.CSSProperties => ({
-    padding: "8px 14px",
-    border: "1px solid #c9c1b1",
+    padding: "var(--space-8) var(--space-14)",
+    border: `var(--stroke-hair) solid ${BORDER}`,
     borderRadius: 8,
-    background: disabled ? "#f3efe6" : "#fffdf8",
-    color: disabled ? "#a9a294" : "#302d28",
+    background: disabled ? IDLE : PANEL,
+    // `#a9a294`(비활성 글자)는 매핑표 밖이다 — 최근접 토큰이 --ink-3 인데 ΔRGB 74.8 로 멀다.
+    // 임의로 고르지 않고 판정 대기로 둔다 (KAN-072 배치6 S13).
+    color: disabled ? "#a9a294" : INK,
     cursor: disabled ? "default" : "pointer",
     fontSize: 14,
   });
   const toggle = (on: boolean, danger = false): React.CSSProperties => ({
-    padding: "6px 10px",
-    border: on ? `2px solid ${danger ? RED : TEAL}` : "1px solid #c9c1b1",
+    padding: "var(--space-6) var(--space-10)",
+    border: on ? `var(--stroke-bold) solid ${danger ? RED : TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
     borderRadius: 7,
-    background: on ? (danger ? "#f4e3e0" : "#e5f0ed") : "#fffdf8",
-    color: "#302d28",
+    background: on ? (danger ? DANGER_TINT : ACTIVE_TINT) : PANEL,
+    color: INK,
     cursor: "pointer",
     fontSize: 13,
   });
@@ -103,9 +120,9 @@ export default function PkceFlowStepper() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
@@ -125,20 +142,20 @@ export default function PkceFlowStepper() {
       <div
         style={{
           padding: 14,
-          border: "1px solid #c9c1b1",
+          border: `var(--stroke-hair) solid ${BORDER}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           minHeight: 120,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-          <strong style={{ fontSize: 16, color: "#302d28" }}>{step.title}</strong>
+          <strong style={{ fontSize: 16, color: INK }}>{step.title}</strong>
           <span
             style={{
               fontSize: 12,
-              color: "#fffdf8",
+              color: PANEL,
               background: chInfo.color,
-              padding: "2px 8px",
+              padding: "var(--space-2) var(--space-8)",
               borderRadius: 20,
             }}
           >
@@ -150,7 +167,7 @@ export default function PkceFlowStepper() {
             margin: 0,
             fontSize: 12.5,
             lineHeight: 1.55,
-            color: "#4a463f",
+            color: INK_SOFT,
             whiteSpace: "pre-wrap",
             wordBreak: "break-all",
             fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
@@ -166,12 +183,13 @@ export default function PkceFlowStepper() {
           style={{
             marginTop: 10,
             padding: 12,
-            border: `1px solid ${attackOutcome.ok ? RED : TEAL}`,
+            border: `var(--stroke-hair) solid ${attackOutcome.ok ? RED : TEAL}`,
             borderRadius: 8,
-            background: attackOutcome.ok ? "#f7ebe9" : "#eaf1ee",
+            // 축을 살리면 짝이 안 깨진다 — 바로 위 border 와 같은 축의 옅은 단이다(Δ2.2 · Δ5.1).
+            background: attackOutcome.ok ? OUTCOME_BAD : OUTCOME_OK,
             fontSize: 13.5,
             lineHeight: 1.55,
-            color: "#302d28",
+            color: INK,
           }}
         >
           <strong style={{ color: attackOutcome.ok ? RED : TEAL }}>
@@ -185,7 +203,7 @@ export default function PkceFlowStepper() {
         <button type="button" onClick={() => setI((v) => Math.max(0, v - 1))} disabled={i === 0} style={btn(i === 0)}>
           ◀ 이전
         </button>
-        <span style={{ fontSize: 13, color: "#6b6357" }}>
+        <span style={{ fontSize: 13, color: INK_SOFT }}>
           {i + 1} / {STEPS.length}
         </span>
         <button
@@ -198,7 +216,7 @@ export default function PkceFlowStepper() {
         </button>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 12, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12, lineHeight: 1.55 }}>
         교육용 개념 모델입니다(실제 네트워크·암호 연산 없음). RFC 6749/7636의 흐름을 규칙으로 모사하며,
         verifier/challenge 값은 RFC 7636 부록의 예시입니다. "코드 가로채기"는 프론트채널로 돌아온 코드를 공격자가
         탈취한 상황을 가정합니다 — PKCE가 켜져 있으면 원본 code_verifier가 없어 토큰 교환이 거부됩니다.
