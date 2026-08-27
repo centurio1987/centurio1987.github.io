@@ -884,6 +884,7 @@
       "memo": "하위 6장으로 순서를 강제한다. 루트 넷으로 두면 scope 가 src/** 로 전부 겹쳐 루트 독립성이 그 자리에서 깨진다 — 칸반 3.6 의 상위 신설",
       "memo_hash": "6f447f56fb32b2dc62470bad2e854bf298aeea97",
       "scope": [
+        "CLAUDE.md",
         "scripts/tokens-baseline.json",
         "scripts/verify-tokens.ts",
         "scripts/lib/tokens/**",
@@ -1073,6 +1074,9 @@
     "KAN-072-CPJCT1",
     "KAN-072.7-D6DCXJ",
     "KAN-072.2-BF75X5",
+    "KAN-072.1-5XC1AT",
+    "KAN-072.5-WQV1KT",
+    "KAN-072.6-2YYK6V",
     "KAN-064",
     "KAN-062",
     "KAN-009",
@@ -1127,10 +1131,7 @@
     "KAN-068-5KMRV8",
     "KAN-069-M724GH",
     "KAN-070-DRF0QF",
-    "KAN-072.3-SC3ADV",
-    "KAN-072.1-5XC1AT",
-    "KAN-072.5-WQV1KT",
-    "KAN-072.6-2YYK6V"
+    "KAN-072.3-SC3ADV"
   ],
   "recent": [
     {
