@@ -1387,14 +1387,16 @@ export default function GraphExplorer({
         .graph-explorer svg.dragging {
           cursor: grabbing;
         }
+        /* 액자(배경·테두리·radius)는 여기서 안 그린다 — 이 컴포넌트를 쓰는 유일한 지면인
+           pages/graph.astro 가 is:global 로 셋을 전부 0/transparent 로 덮기 때문이다
+           (판이 액자를 쥐고, 안 걷으면 테두리가 두 겹이 되고 모눈이 안 비친다).
+           적어 두면 살아 있는 기본값처럼 보여 다음 사람이 여기를 고치게 된다.
+           이 CSS 는 템플릿 리터럴 안이라 주석에도 백틱을 못 쓴다. */
         .graph-explorer svg {
           width: 100%;
           height: auto;
           min-height: 420px;
           display: block;
-          background: var(--surface);
-          border: var(--stroke) solid var(--border);
-          border-radius: var(--card-radius);
         }
         /* ── 판과 그 위의 구멍 ──
            .graph-stage 는 지도 상자와 정확히 같은 크기의 배치 좌표계다(딸린 것은

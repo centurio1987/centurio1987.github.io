@@ -200,7 +200,7 @@
  * 알파 실루엣을 따라가게 하는 방식이라, 컷아웃 원본 하나로 다이컷을 얻는다
  * (외곽선을 구워 넣은 별도 래스터를 두지 않는다). */
 .deco-diecut {
-  filter: drop-shadow(0 0 var(--deco-diecut) #fffcf6)
-    drop-shadow(0 0 var(--deco-diecut) #fffcf6)
+  filter: drop-shadow(0 0 var(--deco-diecut) var(--surface-hi))
+    drop-shadow(0 0 var(--deco-diecut) var(--surface-hi))
     drop-shadow(0 3px 6px rgba(32, 38, 74, 0.22));
 }

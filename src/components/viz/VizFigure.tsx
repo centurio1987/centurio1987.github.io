@@ -84,7 +84,7 @@ export interface VizFigureProps {
    * 지금 없다** — 인용·코드는 테이프를 떼고 두들 마크로 갈아탔다(`MarkedQuote` ·
    * `MarkedCode`, `DECO_KIT.md` 규칙 11). F-A 는 애초에 테이프 액자도 아니다.
    *
-   * 알고 고른 대가 하나: **흰 판(#fffcf6)이 종이색보다 밝아 본문에서 눈에 띈다**
+   * 알고 고른 대가 하나: **흰 판(`--surface-hi`)이 종이색보다 밝아 본문에서 눈에 띈다**
    * (`/design/frame-picks` 의 F-A 단점 줄). 캡션 없는 그림에서 아래가 비는 쪽은
    * `:not(:has(figcaption))` 이 아래 여백으로 메운다.
    *
