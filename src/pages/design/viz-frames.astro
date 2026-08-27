@@ -192,17 +192,17 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
   .wrap {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 44px var(--page-pad) 80px;
+    padding: var(--space-48) var(--page-pad) var(--space-64);
   }
   .kicker {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-label);
     letter-spacing: 0.2em;
     color: var(--ink-3);
   }
   .page-head h1 {
-    margin: 8px 0 14px;
-    font-size: clamp(28px, 5vw, 38px);
+    margin: var(--space-8) 0 var(--space-14);
+    font-size: var(--text-h1);
   }
   .lede {
     max-width: 60ch;
@@ -210,42 +210,42 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
     line-height: 1.75;
   }
   .lede.warn {
-    margin-top: 10px;
-    padding: 12px 14px;
-    border-left: 3px solid var(--pop);
+    margin-top: var(--space-10);
+    padding: var(--space-12) var(--space-14);
+    border-left: var(--stroke-bold) solid var(--pop);
     background: var(--pop-tint);
     color: var(--pop-ink);
   }
 
   .sec {
-    margin: 56px 0 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    font-size: 20px;
+    margin: var(--space-48) 0 var(--space-14);
+    padding-bottom: var(--space-8);
+    border-bottom: var(--stroke-hair) solid var(--border);
+    font-size: var(--text-h3);
   }
   .sec .no {
     font-family: var(--font-mono);
     color: var(--accent);
-    margin-right: 8px;
+    margin-right: var(--space-8);
   }
   .sec small {
-    margin-left: 10px;
-    font-size: 13px;
+    margin-left: var(--space-10);
+    font-size: var(--text-meta);
     font-weight: 400;
     color: var(--ink-3);
   }
   .note-p {
     max-width: 68ch;
-    margin: 0 0 22px;
+    margin: 0 0 var(--space-24);
     color: var(--ink-2);
     line-height: 1.75;
-    font-size: 15px;
+    font-size: var(--text-meta);
   }
 
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 26px;
+    gap: var(--space-24);
   }
   .grid.two {
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -254,34 +254,35 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    margin: 0 0 10px;
-    font-size: 14px;
+    gap: var(--space-8);
+    margin: 0 0 var(--space-10);
+    font-size: var(--text-meta);
   }
   .code {
-    padding: 2px 7px;
+    padding: var(--space-2) var(--space-6);
     border-radius: var(--radius-sm);
     background: var(--accent-tint2);
     color: var(--accent);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     font-weight: 700;
   }
   .from {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--ink-3);
   }
   .cell-note {
-    margin: 8px 0 0;
-    font-size: 13px;
+    margin: var(--space-8) 0 0;
+    font-size: var(--text-meta);
     color: var(--ink-3);
     line-height: 1.6;
   }
-  /* 판 밖으로 나가는 것(테이프)이 윗칸을 물지 않게 여유를 둔다. 30px 인 근거는
-     글 지도와 같다 — 테이프가 top:-14px·-10° 라 판 밖 24.7px 까지 올라간다(DECO_KIT §7). */
+  /* 판 밖으로 나가는 것(테이프)이 윗칸을 물지 않게 여유를 둔다. 필요한 최소는
+     실측 24.7px 이다 — 테이프가 top:-14px·-10° 라 판 밖 그만큼 올라간다(DECO_KIT §7).
+     간격 눈금(§9)에서 그 위 첫 단이 32px 이라 --space-32 를 쓴다(옛 값 30px). */
   .stage {
-    padding-top: 30px;
+    padding-top: var(--space-32);
   }
   /* 카탈로그에서는 figure 의 위아래 28px 마진이 칸 사이 gap 과 겹쳐 보인다 */
   .stage :global(.viz-figure) {
@@ -289,32 +290,32 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
   }
 
   .pat {
-    margin-bottom: 40px;
+    margin-bottom: var(--space-32);
   }
   .pat-head {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 0 0 12px;
-    font-size: 15px;
+    gap: var(--space-8);
+    margin: 0 0 var(--space-12);
+    font-size: var(--text-meta);
     font-weight: 700;
   }
   .pid {
-    padding: 2px 7px;
+    padding: var(--space-2) var(--space-6);
     border-radius: var(--radius-sm);
     background: var(--cream);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--ink-2);
   }
   .triple {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 26px;
+    gap: var(--space-24);
     align-items: start;
   }
   .triple > div {
-    padding-top: 30px;
+    padding-top: var(--space-32);
   }
   .triple :global(.viz-figure) {
     margin: 0;
@@ -324,22 +325,22 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
     max-width: var(--content-max);
   }
   .m-row {
-    margin-bottom: 34px;
-    padding-top: 30px;
+    margin-bottom: var(--space-32);
+    padding-top: var(--space-32);
   }
   .m-head {
-    margin: 0 0 10px;
-    font-size: 14px;
+    margin: 0 0 var(--space-10);
+    font-size: var(--text-meta);
     color: var(--ink-2);
   }
 
   .int-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 26px;
+    gap: var(--space-24);
     align-items: start;
   }
   .int-cell .stage + .stage {
-    margin-top: 22px;
+    margin-top: var(--space-24);
   }
 </style>

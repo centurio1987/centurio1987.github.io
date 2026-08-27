@@ -476,68 +476,68 @@ ping: local error: message too long, mtu=1420</code></pre>
   .wrap {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 44px var(--page-pad) 80px;
+    padding: var(--space-48) var(--page-pad) var(--space-64);
   }
   .kicker {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.18em;
     color: var(--ink-3);
-    margin: 0 0 10px;
+    margin: 0 0 var(--space-10);
   }
   .page-head h1 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(30px, 5vw, 40px);
-    margin: 0 0 14px;
+    font-size: var(--text-h1);
+    margin: 0 0 var(--space-14);
   }
   .lede {
     max-width: 640px;
-    font-size: 15px;
+    font-size: var(--text-meta);
     line-height: 1.75;
     color: var(--ink-2);
-    margin: 0 0 12px;
+    margin: 0 0 var(--space-12);
   }
   code {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-label);
     font-weight: 700;
   }
 
   .sec {
     display: flex;
     align-items: baseline;
-    gap: 12px;
-    border-top: 2px solid var(--ink);
-    padding-top: 20px;
-    margin: 52px 0 18px;
+    gap: var(--space-12);
+    border-top: var(--stroke-bold) solid var(--ink);
+    padding-top: var(--space-16);
+    margin: var(--space-48) 0 var(--space-16);
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 24px;
+    font-size: var(--text-h2);
   }
   .sec .no {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.16em;
     background: var(--ink);
     color: var(--surface);
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-xs);
   }
   .sec small {
     font-family: var(--font-body);
-    font-size: 13px;
+    font-size: var(--text-meta);
     color: var(--ink-3);
   }
   .group {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.16em;
     color: var(--ink-3);
-    margin: 24px 0 12px;
+    margin: var(--space-24) 0 var(--space-12);
   }
 
   .group small {
@@ -545,7 +545,7 @@ ping: local error: message too long, mtu=1420</code></pre>
     font-weight: 400;
     letter-spacing: 0;
     text-transform: none;
-    margin-left: 8px;
+    margin-left: var(--space-8);
   }
 
   /* ── 두들 마크 셀 ──
@@ -554,71 +554,75 @@ ping: local error: message too long, mtu=1420</code></pre>
   .marks {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(94px, 1fr));
-    gap: 8px;
+    gap: var(--space-8);
   }
   .mark-cell {
     margin: 0;
-    padding: 10px 4px 8px;
+    padding: var(--space-10) var(--space-4) var(--space-8);
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-sm);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-6);
     box-shadow: 0 1px 2px rgba(32, 38, 74, 0.06);
   }
   /* 마크는 앉은 자리의 글자 크기를 따라가므로(부품이 `em` 으로 잰다) 칸에
      글자 크기를 하나 정해 주면 **자연 비율 그대로** 서로 견줘 볼 수 있다.
      px 로 못 박으면 세로가 낮은 마크(48×18 물결 밑줄)가 40×40 짜리와 같은
      크기로 부풀어 카탈로그가 거짓말을 한다.
-     높이를 고정하는 건 라벨 줄이 셀마다 어긋나지 않게 하기 위해서다. */
+     높이를 고정하는 건 라벨 줄이 셀마다 어긋나지 않게 하기 위해서다.
+     글자 크기가 리터럴 28px 인 이유: 옛 값 30px 의 최근접 역할값이 28px 인데,
+     같은 값을 `var(--text-h1)` 로 쓰면 그 토큰이 clamp(28px, 5vw, 38px) 이라 넓은
+     화면에서 38px 이 되고, 마크 기본 크기가 1.15em 이라 43.7px 로 부풀어 44px
+     스테이지를 꽉 채운다. 28px 은 §5 역할값이라 게이트가 「준수」로 받는다. */
   .mark-stage {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 44px;
-    font-size: 30px;
+    font-size: 28px;
   }
   .mark-cell figcaption {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: var(--space-2);
     text-align: center;
     line-height: 1.2;
   }
   .mark-cell figcaption b {
-    font-size: 11px;
+    font-size: var(--text-micro);
     font-weight: 500;
     color: var(--ink-2);
   }
   .mark-cell figcaption code {
     font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: var(--text-nano);
     color: var(--ink-3);
     word-break: break-all;
   }
 
   /* 본문 맥락 데모 — 마크가 글자를 따라 커지는지 한눈에 보라고 둔 자리다 */
   .mark-demo {
-    margin-top: 14px;
-    padding: 18px 20px;
+    margin-top: var(--space-14);
+    padding: var(--space-16);
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-sm);
   }
   .mark-demo-h {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.1em;
     color: var(--ink-3);
-    margin: 0 0 10px;
+    margin: 0 0 var(--space-10);
   }
   .mark-demo ul {
-    margin: 0 0 12px;
-    padding-left: 20px;
+    margin: 0 0 var(--space-12);
+    padding-left: var(--space-16);
   }
   .mark-demo li,
   .mark-demo p {
@@ -626,24 +630,24 @@ ping: local error: message too long, mtu=1420</code></pre>
     color: var(--ink-2);
   }
   .mark-demo h3 {
-    margin: 14px 0 0;
-    font-size: 24px;
+    margin: var(--space-14) 0 0;
+    font-size: var(--text-h2);
   }
 
   /* ── 부품 셀 ── */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(212px, 1fr));
-    gap: 14px;
+    gap: var(--space-14);
   }
   .cell {
     position: relative;
     margin: 0;
     height: 158px;
-    padding: 0 0 26px;
+    padding: 0 0 var(--space-24);
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -657,7 +661,7 @@ ping: local error: message too long, mtu=1420</code></pre>
     top: 9px;
     left: 11px;
     font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.1em;
     color: var(--ink-3);
@@ -668,17 +672,17 @@ ping: local error: message too long, mtu=1420</code></pre>
     justify-content: center;
   }
   .stage.gap {
-    gap: 22px;
+    gap: var(--space-24);
   }
   .stage.row {
-    gap: 10px;
+    gap: var(--space-10);
   }
   .stack {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    font-size: 17px;
+    gap: var(--space-4);
+    font-size: var(--text-body);
     font-weight: 700;
   }
   .cell figcaption {
@@ -686,13 +690,13 @@ ping: local error: message too long, mtu=1420</code></pre>
     bottom: 9px;
     left: 11px;
     right: 11px;
-    font-size: 11px;
+    font-size: var(--text-micro);
     font-weight: 500;
     color: var(--ink-2);
   }
   /* 부품을 헷갈릴 만한 칸에만 붙는 한 줄 주석 */
   .cell figcaption small {
-    font-size: 10px;
+    font-size: var(--text-nano);
     color: var(--ink-3);
   }
 
@@ -703,16 +707,16 @@ ping: local error: message too long, mtu=1420</code></pre>
   .pf-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
-    gap: 16px;
+    gap: var(--space-16);
   }
   .pf-cell {
     position: relative;
     margin: 0;
     min-height: 322px;
-    padding: 36px 24px 46px;
+    padding: var(--space-32) var(--space-24) var(--space-48);
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -732,12 +736,12 @@ ping: local error: message too long, mtu=1420</code></pre>
     bottom: 11px;
     left: 13px;
     right: 13px;
-    font-size: 11px;
+    font-size: var(--text-micro);
     font-weight: 500;
     color: var(--ink-2);
   }
   .pf-cell figcaption small {
-    font-size: 10px;
+    font-size: var(--text-nano);
     color: var(--ink-3);
   }
 
@@ -747,46 +751,46 @@ ping: local error: message too long, mtu=1420</code></pre>
   .picks {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: var(--space-14);
   }
   .pick {
-    padding: 14px 16px 12px;
+    padding: var(--space-14) var(--space-16) var(--space-12);
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-sm);
   }
   .pick-head {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 10px;
-    margin: 0 0 4px;
-    font-size: 14px;
+    gap: var(--space-10);
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-meta);
   }
   .pick-head code {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: var(--text-nano);
     color: var(--ink-3);
   }
   .pick-note {
-    margin: 0 0 10px;
-    font-size: 12px;
+    margin: 0 0 var(--space-10);
+    font-size: var(--text-label);
     color: var(--ink-2);
   }
   .pick-row {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 6px;
-    margin: 0 0 6px;
+    gap: var(--space-6);
+    margin: 0 0 var(--space-6);
   }
   .pick-tag {
     font-family: var(--font-mono);
-    font-size: 9.5px;
+    font-size: var(--text-nano);
     font-weight: 700;
     letter-spacing: 0.08em;
-    padding: 3px 7px;
-    border-radius: 4px;
+    padding: var(--space-2) var(--space-6);
+    border-radius: var(--radius-xs);
   }
   .pick-tag.ok {
     background: var(--accent-tint2);
@@ -799,12 +803,12 @@ ping: local error: message too long, mtu=1420</code></pre>
   .chip {
     display: inline-flex;
     align-items: baseline;
-    gap: 5px;
-    padding: 3px 8px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
+    gap: var(--space-4);
+    padding: var(--space-2) var(--space-8);
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--btn-radius);
     background: var(--paper);
-    font-size: 11.5px;
+    font-size: var(--text-micro);
     color: var(--ink-2);
   }
   /* 첫 후보 = 로직이 고르는 것. 나머지는 "써도 되는 것"이라 격이 다르다. */
@@ -820,46 +824,46 @@ ping: local error: message too long, mtu=1420</code></pre>
   .chip.dim {
     background: transparent;
     color: var(--ink-3);
-    font-size: 11px;
+    font-size: var(--text-micro);
   }
   .chip b {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: var(--text-nano);
     letter-spacing: 0.06em;
   }
   .chip i {
     font-style: normal;
-    font-size: 10px;
+    font-size: var(--text-nano);
     color: var(--ink-3);
   }
   .chip.dim i::before {
     content: "·";
-    margin-right: 4px;
+    margin-right: var(--space-4);
   }
   .lineage {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin: 0 0 8px;
+    gap: var(--space-4);
+    margin: 0 0 var(--space-8);
   }
   .lin {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--space-10);
     margin: 0;
-    font-size: 12px;
+    font-size: var(--text-label);
     color: var(--ink-2);
   }
   .lin code {
     min-width: 84px;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--accent);
   }
   .lin b {
     min-width: 108px;
-    font-size: 11.5px;
+    font-size: var(--text-micro);
   }
 
   /* ── W 칸 전용 데모 마크업 ──────────────────────────────────────────────
@@ -871,11 +875,11 @@ ping: local error: message too long, mtu=1420</code></pre>
     display: block;
     width: 34px;
     height: 24px;
-    border-radius: 2px;
+    border-radius: var(--radius-xs);
     background: linear-gradient(180deg, var(--deco-wood), var(--deco-wood-2));
     box-shadow: 0 1px 2px rgba(32, 38, 74, 0.18);
     transform: rotate(4deg);
-    border-top: 3px solid color-mix(in srgb, var(--ink) 16%, transparent);
+    border-top: var(--stroke-bold) solid color-mix(in srgb, var(--ink) 16%, transparent);
   }
   .w3-line {
     position: relative;
@@ -903,29 +907,29 @@ ping: local error: message too long, mtu=1420</code></pre>
 
   /* ── 강도 ── */
   .note-p {
-    font-size: 14px;
+    font-size: var(--text-meta);
     color: var(--ink-2);
-    margin: 0 0 16px;
+    margin: 0 0 var(--space-16);
     max-width: 640px;
   }
   .intensity {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 14px;
+    gap: var(--space-14);
   }
   .int-cell {
     margin: 0;
-    padding: 14px;
+    padding: var(--space-14);
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-sm);
     position: relative;
   }
   .int-stage {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 26px 10px 20px;
+    padding: var(--space-24) var(--space-10) var(--space-16);
   }
   .int-card {
     position: relative;
@@ -935,12 +939,12 @@ ping: local error: message too long, mtu=1420</code></pre>
     align-items: center;
     justify-content: center;
     background: var(--paper);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 13px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-meta);
   }
   .int-cell figcaption {
-    font-size: 12px;
+    font-size: var(--text-label);
     font-weight: 700;
     color: var(--ink);
     text-align: center;
@@ -948,124 +952,124 @@ ping: local error: message too long, mtu=1420</code></pre>
   .int-cell figcaption small {
     display: block;
     font-weight: 400;
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--ink-3);
-    margin-top: 3px;
+    margin-top: var(--space-2);
   }
 
   /* ── 패턴 ── */
   .pat {
-    margin: 0 0 40px;
+    margin: 0 0 var(--space-32);
   }
   .pat-head {
     display: flex;
     align-items: baseline;
-    gap: 9px;
-    font-size: 12px;
+    gap: var(--space-8);
+    font-size: var(--text-label);
     color: var(--ink-2);
-    margin: 0 0 10px;
+    margin: 0 0 var(--space-10);
   }
   .pat-head small {
-    font-size: 11.5px;
+    font-size: var(--text-micro);
     color: var(--ink-3);
   }
   .pid {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: var(--text-nano);
     font-weight: 700;
-    padding: 3px 7px;
+    padding: var(--space-2) var(--space-6);
     background: color-mix(in srgb, var(--ink) 9%, transparent);
     color: var(--ink);
-    border-radius: 5px;
+    border-radius: var(--radius-xs);
   }
   .pat-body {
     background: var(--cream);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-sm);
     overflow: hidden;
   }
   .pat-body.pad {
-    padding: 40px 40px 44px;
+    padding: var(--space-32) var(--space-32) var(--space-48);
   }
 
   .demo-h {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 26px;
+    font-size: var(--text-h2);
     margin: 0;
   }
   .view-all {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-label);
     color: var(--ink-3);
   }
   .demo-list {
     list-style: none;
-    margin: 22px 0 0;
+    margin: var(--space-24) 0 0;
     padding: 0;
   }
   .demo-row {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 24px;
-    padding: 18px 0;
-    border-bottom: 1px dashed color-mix(in srgb, var(--ink) 26%, transparent);
+    gap: var(--space-24);
+    padding: var(--space-16) 0;
+    border-bottom: var(--stroke-hair) dashed color-mix(in srgb, var(--ink) 26%, transparent);
   }
   .demo-meta {
     width: 130px;
     flex: none;
     font-family: var(--font-mono);
-    font-size: 11.5px;
+    font-size: var(--text-micro);
     font-weight: 700;
     color: var(--accent);
   }
   .demo-title {
     flex: 1;
-    font-size: 18px;
+    font-size: var(--text-body);
     font-weight: 700;
     word-break: keep-all;
   }
 
   .filter-card {
     background: color-mix(in srgb, var(--surface) 70%, transparent);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 22px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-16) var(--space-24);
   }
   .filter-row {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: var(--space-8);
     flex-wrap: wrap;
   }
   .filter-k {
     width: 62px;
     flex: none;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     font-weight: 700;
     letter-spacing: 0.1em;
     color: var(--ink-3);
   }
   .chip {
-    font-size: 13px;
+    font-size: var(--text-meta);
     color: var(--ink-2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 15px;
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6) var(--space-14);
   }
   .chip.on {
     font-weight: 700;
     color: var(--accent);
     background: var(--accent-tint2);
-    border: 1.5px solid var(--accent);
+    border: var(--stroke) solid var(--accent);
   }
 
   .map-stage {
     position: relative;
     height: 260px;
-    padding: 24px;
+    padding: var(--space-24);
   }
   .map-note {
     position: absolute;
@@ -1073,7 +1077,7 @@ ping: local error: message too long, mtu=1420</code></pre>
     bottom: 30px;
     display: flex;
     align-items: flex-end;
-    gap: 2px;
+    gap: var(--space-2);
     color: var(--deco-pink-ink);
   }
   .map-note :global(.memo) {
@@ -1084,40 +1088,40 @@ ping: local error: message too long, mtu=1420</code></pre>
     position: absolute;
     inset: 34px auto auto 40px;
     display: flex;
-    gap: 46px;
+    gap: var(--space-48);
     align-items: flex-start;
   }
   .map-dots i {
     width: 46px;
     height: 46px;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     background: var(--cat-skills);
     box-shadow: 0 2px 4px rgba(32, 38, 74, 0.2);
   }
   .map-dots i:nth-child(2) {
-    margin-top: 42px;
+    margin-top: var(--space-48);
     background: var(--cat-research);
   }
   .map-dots i:nth-child(3) {
-    margin-top: 16px;
+    margin-top: var(--space-16);
   }
   .map-dots i:nth-child(4) {
-    margin-top: 58px;
+    margin-top: var(--space-64);
     background: var(--cat-strategy);
   }
   .map-dots i:nth-child(5) {
-    margin-top: 26px;
+    margin-top: var(--space-24);
   }
 
   .demo-pre {
     margin: 0;
     background: var(--ink) !important;
     border: none;
-    border-radius: 10px;
-    padding: 26px;
+    border-radius: var(--radius-sm);
+    padding: var(--space-24);
     color: var(--cream);
     font-family: var(--font-code);
-    font-size: 13.5px;
+    font-size: var(--text-meta);
     line-height: 2;
     overflow-x: auto;
   }
@@ -1125,14 +1129,14 @@ ping: local error: message too long, mtu=1420</code></pre>
   .series-foot {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding-top: 26px;
-    border-top: 1px dashed color-mix(in srgb, var(--ink) 26%, transparent);
+    gap: var(--space-16);
+    padding-top: var(--space-24);
+    border-top: var(--stroke-hair) dashed color-mix(in srgb, var(--ink) 26%, transparent);
   }
   .foot-hand {
     font-family: var(--font-hand);
     font-weight: 700;
-    font-size: 20px;
+    font-size: var(--text-h3);
     color: var(--deco-pink-ink);
   }
   .foot-stamp {
@@ -1145,12 +1149,12 @@ ping: local error: message too long, mtu=1420</code></pre>
       grid-column: span 1;
     }
     .pat-body.pad {
-      padding: 30px 20px 34px;
+      padding: var(--space-32) var(--space-16) var(--space-32);
     }
     .demo-row {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: var(--space-6);
     }
     .demo-meta {
       width: auto;
@@ -1161,7 +1165,7 @@ ping: local error: message too long, mtu=1420</code></pre>
     /* 데모용 노드들이 좁은 화면에서 판 밖으로 나간다(잘려서 스크롤은 안 생기지만
        보기 나쁘다) — 간격·크기를 줄여 안에 앉힌다. */
     .map-dots {
-      gap: 18px;
+      gap: var(--space-16);
       inset: 24px auto auto 20px;
     }
     .map-dots i {

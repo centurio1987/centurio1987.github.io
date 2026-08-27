@@ -303,104 +303,104 @@ const P2 =
   .wrap {
     max-width: 980px;
     margin: 0 auto;
-    padding: 0 var(--page-pad) 96px;
+    padding: 0 var(--page-pad) var(--space-96);
   }
   .page-head {
-    margin: 8px 0 40px;
+    margin: var(--space-8) 0 var(--space-32);
   }
   .kicker {
-    margin: 0 0 6px;
-    font-size: 12px;
+    margin: 0 0 var(--space-6);
+    font-size: var(--text-label);
     letter-spacing: 0.16em;
     color: var(--ink-3);
   }
   h1 {
-    margin: 0 0 14px;
-    font-size: clamp(28px, 5vw, 38px);
+    margin: 0 0 var(--space-14);
+    font-size: var(--text-h1);
   }
   .lede {
     max-width: 68ch;
-    margin: 0 0 10px;
-    font-size: 16px;
+    margin: 0 0 var(--space-10);
+    font-size: var(--text-body);
     line-height: 1.75;
     color: var(--ink-2);
   }
   .lede.warn {
-    padding: 12px 14px;
-    border-left: 3px solid var(--deco-pink, #d98da6);
+    padding: var(--space-12) var(--space-14);
+    border-left: var(--stroke-bold) solid var(--deco-pink);
     background: var(--surface);
   }
   .sec {
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: var(--space-10);
     flex-wrap: wrap;
-    margin: 56px 0 10px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
-    font-size: 22px;
+    margin: var(--space-48) 0 var(--space-10);
+    padding-top: var(--space-14);
+    border-top: var(--stroke-hair) solid var(--border);
+    font-size: var(--text-h3);
   }
   .sec .no {
-    font-size: 13px;
+    font-size: var(--text-meta);
     color: var(--ink-3);
     letter-spacing: 0.08em;
   }
   .sec small {
-    font-size: 13px;
+    font-size: var(--text-meta);
     font-weight: 400;
     color: var(--ink-3);
   }
   .note-p {
     max-width: 68ch;
-    margin: 0 0 20px;
-    font-size: 15px;
+    margin: 0 0 var(--space-16);
+    font-size: var(--text-meta);
     line-height: 1.7;
     color: var(--ink-2);
   }
 
   .pick {
-    margin: 0 0 34px;
+    margin: 0 0 var(--space-32);
   }
   .pick-head {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-8);
     flex-wrap: wrap;
-    margin: 0 0 8px;
-    font-size: 15px;
+    margin: 0 0 var(--space-8);
+    font-size: var(--text-meta);
   }
   .code {
-    padding: 1px 6px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
+    padding: var(--space-2) var(--space-6);
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-xs);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--ink-3);
   }
   .from {
-    font-size: 12px;
+    font-size: var(--text-label);
     color: var(--ink-3);
   }
   .now {
-    padding: 1px 7px;
-    border-radius: 999px;
+    padding: var(--space-2) var(--space-6);
+    border-radius: var(--btn-radius);
     background: var(--deco-pen-mint, #4fae94);
-    color: #fff;
-    font-size: 11px;
+    color: var(--surface-hi);
+    font-size: var(--text-micro);
     font-weight: 700;
   }
 
   /* 실제 지면 재현 — 종이색 위 720px 칸에 PostLayout 의 .prose 값을 그대로 쓴다. */
   .page {
-    padding: 26px var(--page-pad, 24px);
+    padding: var(--space-24) var(--page-pad);
     background: var(--paper);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md, 8px);
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-md);
   }
   .body {
     max-width: var(--content-max);
     margin: 0 auto;
-    font-size: 18px;
+    font-size: var(--text-body);
     line-height: 1.8;
     color: var(--ink);
     overflow-wrap: break-word;
@@ -409,25 +409,25 @@ const P2 =
     max-width: var(--measure);
   }
   .body h3 {
-    margin: 0 0 10px;
+    margin: 0 0 var(--space-10);
     font-family: var(--font-body);
-    font-size: 20px;
+    font-size: var(--text-h3);
     font-weight: 700;
   }
   .body p {
-    margin: 16px 0;
+    margin: var(--space-16) 0;
   }
 
   .why {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 18px;
-    margin: 10px 0 0;
-    font-size: 14px;
+    gap: var(--space-10) var(--space-16);
+    margin: var(--space-10) 0 0;
+    font-size: var(--text-meta);
   }
   .why dt {
-    margin: 0 0 2px;
-    font-size: 12px;
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-label);
     font-weight: 700;
     color: var(--ink-3);
   }
@@ -440,53 +440,53 @@ const P2 =
   .marks {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 22px;
+    gap: var(--space-24);
   }
   .mcell {
-    padding: 16px;
+    padding: var(--space-16);
     background: var(--paper);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md, 8px);
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-md);
   }
   .mhead {
-    margin: 0 0 10px;
-    font-size: 14px;
+    margin: 0 0 var(--space-10);
+    font-size: var(--text-meta);
   }
   .mhead code {
-    font-size: 11px;
+    font-size: var(--text-micro);
     color: var(--ink-3);
   }
   .mnote {
-    margin: 8px 0 0;
-    font-size: 12px;
+    margin: var(--space-8) 0 0;
+    font-size: var(--text-label);
     line-height: 1.55;
     color: var(--ink-3);
   }
 
   .matrix {
     display: grid;
-    gap: 26px;
+    gap: var(--space-24);
   }
   .mrow-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    padding: 16px;
+    gap: var(--space-16);
+    padding: var(--space-16);
     background: var(--paper);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md, 8px);
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-md);
   }
 
   .tiers {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 18px;
+    gap: var(--space-16);
   }
   .tcell {
-    padding: 16px;
+    padding: var(--space-16);
     background: var(--paper);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md, 8px);
+    border: var(--stroke-hair) solid var(--border);
+    border-radius: var(--radius-md);
   }
 
   @media (max-width: 700px) {
