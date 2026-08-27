@@ -3,7 +3,25 @@ import { useState } from "react";
 // 한 줄 `curl https://www.example.com/` 가 어느 계층의 무엇을 차례로 깨우는지
 // 단계별로 본다 — 시리즈 전체를 한 화면에 종합한다.
 
-const TEAL = "#3e6b6b";
+// 시각 값은 tokens.css 토큰으로 옮긴다 (KAN-072-CPJCT1 배치5).
+// var() 의 fallback 은 토큰 값과 **정확히 같아야 한다** — 어긋나면 fallback 축이
+// 드리프트로 물어 게이트가 그 자리에서 막는다.
+const TEAL = "var(--cat-skills, #3e6b6b)";
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const ON_TEAL = "var(--surface-hi, #fffdf8)";
+const HAIR = "var(--stroke-hair, 1px)";
+const BOLD = "var(--stroke-bold, 2px)";
+const CODE_BG = "var(--cream, #EDE6D8)";
+const DONE_BG = "var(--surface, #F8F3E8)";
+// #9a5b2c(경고·질문 강조)는 **상수로 올리지 않는다** — 아직 판정 대기라 게이트 시야에
+// 남아 있어야 한다. 상수로 빼면 추출층이 못 본다(인라인 속성 꼴만 본다). 그러면 잔여 0 이
+// 「닫힌 것」과 「시야 밖으로 나간 것」을 섞어 버리고, 판정이 내려져도 자리를 못 찾는다.
+// 토큰 밖 — 최근접 토큰과 ΔRGB 가 15 이상이라 옮기지 않았다(배치5 규약: 15 이상은 임의로 고르지 않는다).
+const TEAL_TINT = "#e5f0ed"; // 최근접 --paper ΔRGB 17
+const MUTED = "#b8b0a0"; // 최근접 --border ΔRGB 54
 
 type Stage = {
   layer: string;
@@ -66,19 +84,26 @@ export default function RequestJourneyLab() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `${HAIR} solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 6px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-6, 6px)", fontWeight: 600, color: INK }}>
         한 줄{" "}
-        <code style={{ fontFamily: "monospace", background: "#f1eadb", padding: "1px 5px", borderRadius: 4 }}>
+        <code
+          style={{
+            fontFamily: "monospace",
+            background: CODE_BG,
+            padding: "var(--space-2, 2px) var(--space-4, 4px)",
+            borderRadius: 4,
+          }}
+        >
           curl https://www.example.com/
         </code>{" "}
         가 깨우는 계층을 차례로 따라가 보세요.
       </p>
-      <p style={{ margin: "0 0 14px", fontSize: 12.5, color: "#6b6357" }}>
+      <p style={{ margin: "0 0 var(--space-14, 14px)", fontSize: 12.5, color: INK_SOFT }}>
         이 위 단계마다, 아래에는 늘 IP 라우팅(L3·3편) → Ethernet/ARP(L2·2편) → 신호(L1·2편)가
         깔려 있습니다.
       </p>
@@ -100,11 +125,11 @@ export default function RequestJourneyLab() {
                 gap: 10,
                 alignItems: "center",
                 textAlign: "left",
-                padding: "9px 12px",
-                border: active ? `2px solid ${TEAL}` : "1px solid #c9c1b1",
+                padding: "var(--space-8, 8px) var(--space-12, 12px)",
+                border: active ? `${BOLD} solid ${TEAL}` : `${HAIR} solid ${BORDER}`,
                 borderRadius: 8,
-                background: active ? "#e5f0ed" : done ? "#f1f5f3" : "#fffdf8",
-                color: "#302d28",
+                background: active ? TEAL_TINT : done ? DONE_BG : PANEL,
+                color: INK,
                 cursor: "pointer",
                 opacity: !active && !done && idx > i ? 0.7 : 1,
               }}
@@ -113,7 +138,7 @@ export default function RequestJourneyLab() {
               <span>
                 <strong>{s.proto}</strong> · {s.title}
               </span>
-              <span style={{ fontSize: 11, color: "#6b6357" }}>{done ? "✓" : active ? "▶" : ""}</span>
+              <span style={{ fontSize: 11, color: INK_SOFT }}>{done ? "✓" : active ? "▶" : ""}</span>
             </button>
           );
         })}
@@ -123,21 +148,23 @@ export default function RequestJourneyLab() {
         role="status"
         style={{
           padding: 14,
-          border: "1px solid #c9c1b1",
+          border: `${HAIR} solid ${BORDER}`,
+          // 왼쪽 강조 막대 5px 은 --stroke 스케일(1/1.5/2) 밖이라 그대로 둔다 —
+          // 2px 로 밀면 막대가 절반 이하로 얇아진다(배치5 규약: 임의로 고르지 않는다).
           borderLeft: `5px solid ${TEAL}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           lineHeight: 1.6,
           marginBottom: 14,
         }}
       >
-        <p style={{ margin: "0 0 6px" }}>
+        <p style={{ margin: "0 0 var(--space-6, 6px)" }}>
           <strong style={{ color: TEAL }}>
             {stage.layer} · {stage.proto}
           </strong>{" "}
-          <span style={{ fontSize: 12, color: "#6b6357" }}>— {stage.part}에서 해부</span>
+          <span style={{ fontSize: 12, color: INK_SOFT }}>— {stage.part}에서 해부</span>
         </p>
-        <p style={{ margin: "0 0 6px", fontFamily: "monospace", fontSize: 13, color: "#9a5b2c" }}>
+        <p style={{ margin: "0 0 var(--space-6, 6px)", fontFamily: "monospace", fontSize: 13, color: "#9a5b2c" }}>
           {stage.produces}
         </p>
         <p style={{ margin: 0, fontSize: 13.5 }}>{stage.note}</p>
@@ -149,11 +176,11 @@ export default function RequestJourneyLab() {
           onClick={() => setI((v) => Math.max(0, v - 1))}
           disabled={i === 0}
           style={{
-            padding: "8px 14px",
-            border: "1px solid #c9c1b1",
+            padding: "var(--space-8, 8px) var(--space-14, 14px)",
+            border: `${HAIR} solid ${BORDER}`,
             borderRadius: 8,
-            background: "#fffdf8",
-            color: i === 0 ? "#b8b0a0" : "#302d28",
+            background: PANEL,
+            color: i === 0 ? MUTED : INK,
             cursor: i === 0 ? "not-allowed" : "pointer",
           }}
         >
@@ -164,23 +191,23 @@ export default function RequestJourneyLab() {
           onClick={() => setI((v) => Math.min(STAGES.length - 1, v + 1))}
           disabled={i === STAGES.length - 1}
           style={{
-            padding: "8px 14px",
+            padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: "none",
             borderRadius: 8,
-            background: i === STAGES.length - 1 ? "#c9c1b1" : TEAL,
-            color: "#fff",
+            background: i === STAGES.length - 1 ? BORDER : TEAL,
+            color: ON_TEAL,
             fontWeight: 600,
             cursor: i === STAGES.length - 1 ? "not-allowed" : "pointer",
           }}
         >
           다음 ▶
         </button>
-        <span style={{ marginLeft: "auto", fontSize: 12, color: "#6b6357" }}>
+        <span style={{ marginLeft: "auto", fontSize: 12, color: INK_SOFT }}>
           {i + 1} / {STAGES.length}
         </span>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 12 }}>
+      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
         한 줄의 명령이 일곱 책임을 모두 깨웁니다. 이 시리즈는 그 한 줄을 거꾸로 분해해 온 여정이었습니다.
       </figcaption>
     </figure>

@@ -3,8 +3,22 @@ import { useState } from "react";
 // TCP 3-way handshake를 한 단계씩 밟으며 양쪽 끝의 상태(state machine)와
 // 주고받는 세그먼트의 flag·seq·ack가 어떻게 변하는지 본다.
 
-const TEAL = "#3e6b6b";
-const SAND = "#e8c97a";
+// 시각 값은 tokens.css 토큰으로 옮긴다 (KAN-072-CPJCT1 배치5).
+// var() 의 fallback 은 토큰 값과 **정확히 같아야 한다** — 어긋나면 fallback 축이
+// 드리프트로 물어 게이트가 그 자리에서 막는다.
+const TEAL = "var(--cat-skills, #3e6b6b)";
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const ON_TEAL = "var(--surface-hi, #fffdf8)";
+const HAIR = "var(--stroke-hair, 1px)";
+const BOLD = "var(--stroke-bold, 2px)";
+const SEG_BG = "var(--surface, #F8F3E8)";
+// 토큰 밖 — 최근접 토큰과 ΔRGB 가 15 이상이라 옮기지 않았다(배치5 규약: 15 이상은 임의로 고르지 않는다).
+const SAND = "#e8c97a"; // 최근접 --pop-tint ΔRGB 50
+const TEAL_TINT = "#e5f0ed"; // 최근접 --paper ΔRGB 17
+const MUTED = "#b8b0a0"; // 최근접 --border ΔRGB 54
 
 type Step = {
   title: string;
@@ -52,13 +66,13 @@ function Endpoint({ label, state, active }: { label: string; state: string; acti
       style={{
         flex: 1,
         textAlign: "center",
-        padding: "10px 8px",
-        border: active ? `2px solid ${TEAL}` : "1px solid #c9c1b1",
+        padding: "var(--space-10, 10px) var(--space-8, 8px)",
+        border: active ? `${BOLD} solid ${TEAL}` : `${HAIR} solid ${BORDER}`,
         borderRadius: 10,
-        background: active ? "#e5f0ed" : "#fffdf8",
+        background: active ? TEAL_TINT : PANEL,
       }}
     >
-      <div style={{ fontWeight: 700, color: "#302d28", fontSize: 13 }}>{label}</div>
+      <div style={{ fontWeight: 700, color: INK, fontSize: 13 }}>{label}</div>
       <div
         style={{
           marginTop: 4,
@@ -83,12 +97,12 @@ export default function HandshakeLab() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `${HAIR} solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 14px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-14, 14px)", fontWeight: 600, color: INK }}>
         “다음” 버튼으로 3-way handshake를 한 단계씩 진행하며, 양쪽 상태와 세그먼트의 seq/ack가
         어떻게 맞물리는지 관찰하세요.
       </p>
@@ -114,10 +128,10 @@ export default function HandshakeLab() {
               display: "inline-flex",
               alignItems: "center",
               gap: 10,
-              padding: "8px 14px",
-              border: `1px solid ${SAND}`,
+              padding: "var(--space-8, 8px) var(--space-14, 14px)",
+              border: `${HAIR} solid ${SAND}`,
               borderRadius: 999,
-              background: "#fdf6e6",
+              background: SEG_BG,
               fontFamily: "monospace",
               fontSize: 13,
             }}
@@ -130,21 +144,21 @@ export default function HandshakeLab() {
             </span>
           </div>
         ) : (
-          <span style={{ color: "#6b6357", fontSize: 13 }}>아직 주고받는 세그먼트가 없습니다.</span>
+          <span style={{ color: INK_SOFT, fontSize: 13 }}>아직 주고받는 세그먼트가 없습니다.</span>
         )}
       </div>
 
       <p
         role="status"
         style={{
-          margin: "0 0 14px",
+          margin: "0 0 var(--space-14, 14px)",
           padding: 12,
-          background: "#fffdf8",
-          border: "1px solid #c9c1b1",
+          background: PANEL,
+          border: `${HAIR} solid ${BORDER}`,
           borderRadius: 8,
           lineHeight: 1.6,
           fontSize: 13.5,
-          color: "#302d28",
+          color: INK,
         }}
       >
         <strong>{step.title}</strong> — {step.note}
@@ -156,11 +170,11 @@ export default function HandshakeLab() {
           onClick={() => setI((v) => Math.max(0, v - 1))}
           disabled={i === 0}
           style={{
-            padding: "8px 14px",
-            border: "1px solid #c9c1b1",
+            padding: "var(--space-8, 8px) var(--space-14, 14px)",
+            border: `${HAIR} solid ${BORDER}`,
             borderRadius: 8,
-            background: "#fffdf8",
-            color: i === 0 ? "#b8b0a0" : "#302d28",
+            background: PANEL,
+            color: i === 0 ? MUTED : INK,
             cursor: i === 0 ? "not-allowed" : "pointer",
           }}
         >
@@ -171,23 +185,23 @@ export default function HandshakeLab() {
           onClick={() => setI((v) => Math.min(STEPS.length - 1, v + 1))}
           disabled={i === STEPS.length - 1}
           style={{
-            padding: "8px 14px",
+            padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: "none",
             borderRadius: 8,
-            background: i === STEPS.length - 1 ? "#c9c1b1" : TEAL,
-            color: "#fff",
+            background: i === STEPS.length - 1 ? BORDER : TEAL,
+            color: ON_TEAL,
             fontWeight: 600,
             cursor: i === STEPS.length - 1 ? "not-allowed" : "pointer",
           }}
         >
           다음 ▶
         </button>
-        <span style={{ marginLeft: "auto", fontSize: 12, color: "#6b6357" }}>
+        <span style={{ marginLeft: "auto", fontSize: 12, color: INK_SOFT }}>
           {i + 1} / {STEPS.length}
         </span>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 12 }}>
+      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
         세 번 주고받는 이유는 <strong>양쪽이 서로의 순서번호를 확인</strong>해야 하기 때문입니다. SYN
         하나로는 한 방향만 합의됩니다. 마지막 ACK이 유실되면 서버는 SYN-RECEIVED에 머물다 SYN-ACK을
         재전송합니다 — handshake도 신뢰성 규칙을 그대로 따릅니다.
