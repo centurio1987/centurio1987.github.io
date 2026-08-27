@@ -2,7 +2,7 @@
 card: KAN-072-CPJCT1
 title: UI 토큰 정합화 — 게이트가 무는 1,786건을 구획 단위로 0 으로 줄인다
 created: 2026-08-25
-scope: scripts/tokens-baseline.json, scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/fixtures/tokens/**, src/components/**, src/pages/**, src/layouts/**, src/styles/tokens.css, src/styles/global.css, src/styles/deco.css, src/styles/viz-frame.css, src/styles/viz.css, src/lib/categories.ts, src/lib/doodleMarks.ts, src/lib/viz/Comparison.tsx, src/lib/viz/PosterHero.tsx, src/lib/viz/ProcessSteps.tsx, src/lib/viz/layout.ts, design-concept/DESIGN_CONCEPT.md, design-concept/DECO_KIT.md, design-concept/DIAGRAM_STYLE_GUIDE.md
+scope: CLAUDE.md, scripts/tokens-baseline.json, scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/fixtures/tokens/**, src/components/**, src/pages/**, src/layouts/**, src/styles/tokens.css, src/styles/global.css, src/styles/deco.css, src/styles/viz-frame.css, src/styles/viz.css, src/lib/categories.ts, src/lib/doodleMarks.ts, src/lib/viz/Comparison.tsx, src/lib/viz/PosterHero.tsx, src/lib/viz/ProcessSteps.tsx, src/lib/viz/layout.ts, design-concept/DESIGN_CONCEPT.md, design-concept/DECO_KIT.md, design-concept/DIAGRAM_STYLE_GUIDE.md
 ---
 
 # KAN-072-CPJCT1 — UI 토큰 정합화 — 게이트가 무는 1,786건을 구획 단위로 0 으로 줄인다
@@ -112,9 +112,9 @@ work 하나 = 파일 구획 하나이고, 구획마다 **그 파일의 모든 �
 ## 실행 계획
 - [x] `S1` 게이트 인식층 — 토큰 이름 규칙을 데이터로 (`KAN-072.7`)
 - [x] `S2` 토큰 신설 — `tokens.css` + `DESIGN_CONCEPT` §5·§8·§9 (`KAN-072.2`)
-- [ ] `S3` 카탈로그 구획 — `pages/design/**` 3파일 285
-- [ ] `S4` 그래프 구획 — `components/graph/**` 1파일 94
-- [ ] `S5` 데코 구획 — `components/deco/**` 18파일 173
+- [>] `S3` 카탈로그 구획 — `pages/design/**` 3파일 285 <!-- claim:s=29c42810 t=2026-08-27T13:56 -->
+- [>] `S4` 그래프 구획 — `components/graph/**` 1파일 94 <!-- claim:s=29c42810 t=2026-08-27T13:56 -->
+- [>] `S5` 데코 구획 — `components/deco/**` 18파일 173 <!-- claim:s=29c42810 t=2026-08-27T13:56 -->
 - [ ] `S6` 글 컴포넌트·레이아웃 구획 — 13파일 (배치4 착수 시 재분할)
 - [ ] `S7` 페이지·셸 구획 — 10파일 (배치4 착수 시 재분할. S6+S7 합 375)
 - [ ] `S8` viz·전역 스타일 구획 — 2파일 68
@@ -192,3 +192,6 @@ work 하나 = 파일 구획 하나이고, 구획마다 **그 파일의 모든 �
 - 2026-08-27T03:03 · s:29c42810 — S2 착수 중 S1 누락 발견 — docrule.ts:89 의 FONT_MIN=12 가 상수라 --text-* 에 10·11 을 세워도 게이트가 여전히 '문서 최소치 미만 위반' 으로 판정한다. 스케일 집합만 토큰 파생으로 바꾸고 하한은 안 바꾼 것이 원인이다(S1 지시에 안 넣었다). 게이트 코드라 KAN-072.7 범위이고, work 를 다시 열지 않고 S2 에서 함께 처리한다
 - 2026-08-27T03:24 · s:29c42810 · S2 done — 토큰 25종 신설(44→69) + DESIGN_CONCEPT §5·§8·§9 개정. 종이흰색 --surface-hi #fffdf8 · --stroke-hair 1px · --radius-round 50% · --space-* 13종(2px 반 단 포함) · --text-* 9종(Micro 11 · Nano 10 신설). --state-* 는 배치5로 미룸. 게이트 보강 둘을 함께 처리했다 — FONT_MIN 을 역할값 최소로 파생(S1 누락분, 하한이 10px 로 따라온다) · 드리프트가 §9 축 관할을 보게 가드(치수·좌표 63건이 --space-* 와 값이 같다는 이유로 다시 물리던 것을 막는다. KAN-070 S5 의 축 재분류를 드리프트 쪽에도 일관 적용). 재현 검증 821·166 이 깨진 것도 함께 고쳤다(드리프트가 스케일보다 먼저 판정되는 탓). 결과: 위반 1305→762 · 드리프트 90→1024 · 래칫 대상 1395→1786. 전이는 위반→드리프트 542 · 준수→드리프트 392 · 판정불가→드리프트 63 이고 느슨해진 방향은 1건(PostList.astro:321 margin-left -2px). build 46쪽 · deco:verify 50회 · viz:verify 43개 통과. 기준선 갱신 후 게이트 통과
 - 2026-08-27T03:25 · s:29c42810 — `실행 계획` 섹션 교체
+- 2026-08-27T13:56 · s:29c42810 · S3 doing — 착수
+- 2026-08-27T13:56 · s:29c42810 · S4 doing — 착수
+- 2026-08-27T13:56 · s:29c42810 · S5 doing — 착수
