@@ -12,8 +12,17 @@ type Field = {
   vlanOnly?: boolean;
 };
 
-const TEAL = "#3e6b6b";
+// 시각 값은 토큰에서 뽑는다 — fallback 은 tokens.css 값과 정확히 같아야 한다 (KAN-072).
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const TEAL = "var(--cat-skills, #3e6b6b)";
 
+// 아래 `color` 일곱은 UI 색이 아니라 **필드를 서로 구분하는 계열형 스케일**이다. 사이트
+// 팔레트에 이 역할의 토큰이 없다(DESIGN_CONCEPT §4 는 중립·포인트·카테고리 셋뿐). payload
+// 하나만 최근접 토큰과 ΔRGB 12.8 이라 --canvas 로 갔고, 나머지 여섯은 28~80 이라 옮기면
+// 막대의 색 구분이 무너져 KAN-072 배치5 에서 보류했다 — 스케일 전체 판정이 나면 함께 옮긴다.
 const FIELDS: Field[] = [
   {
     id: "preamble",
@@ -55,7 +64,7 @@ const FIELDS: Field[] = [
     id: "payload",
     label: "Payload",
     bytes: "46–1500 B",
-    color: "#e2dccb",
+    color: "var(--canvas, #d8d4ca)",
     desc: "상위 계층 데이터(보통 IP packet)입니다. 46바이트보다 짧으면 패딩으로 채웁니다. 표준 상한 1500B가 곧 기본 MTU이며, jumbo frame은 이보다 큽니다.",
   },
   {
@@ -79,9 +88,9 @@ export default function FrameAnatomy() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
       <div
@@ -94,13 +103,13 @@ export default function FrameAnatomy() {
           marginBottom: 14,
         }}
       >
-        <p style={{ margin: 0, fontWeight: 600, color: "#302d28" }}>
+        <p style={{ margin: 0, fontWeight: 600, color: INK }}>
           각 칸을 눌러 Ethernet II 프레임의 field를 뜯어보세요.
         </p>
         <label
           style={{
             fontSize: 13,
-            color: "#302d28",
+            color: INK,
             display: "flex",
             alignItems: "center",
             gap: 6,
@@ -129,10 +138,10 @@ export default function FrameAnatomy() {
               style={{
                 flex: f.id === "payload" ? 3 : 1,
                 minWidth: 0,
-                padding: "12px 4px",
-                border: isActive ? "2px solid #302d28" : "1px solid #fff",
+                padding: "var(--space-12) var(--space-4)",
+                border: isActive ? `var(--stroke-bold) solid ${INK}` : `var(--stroke-hair) solid ${PANEL}`,
                 background: f.color,
-                color: "#302d28",
+                color: INK,
                 cursor: "pointer",
                 fontSize: 11.5,
                 lineHeight: 1.35,
@@ -140,12 +149,12 @@ export default function FrameAnatomy() {
               }}
             >
               <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{f.label}</div>
-              <div style={{ fontSize: 10.5, color: "#5c5648" }}>{f.bytes}</div>
+              <div style={{ fontSize: 10.5, color: INK_SOFT }}>{f.bytes}</div>
             </button>
           );
         })}
       </div>
-      <p style={{ margin: "6px 0 14px", fontSize: 12, color: "#6b6357", textAlign: "right" }}>
+      <p style={{ margin: "var(--space-6) 0 var(--space-14)", fontSize: 12, color: INK_SOFT, textAlign: "right" }}>
         ← 헤더 · 전송 방향 → · 꼬리(FCS)
       </p>
 
@@ -154,21 +163,21 @@ export default function FrameAnatomy() {
         role="status"
         style={{
           padding: 14,
-          border: `1px solid ${active.color}`,
+          border: `var(--stroke-hair) solid ${active.color}`,
           borderLeft: `5px solid ${active.color}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           lineHeight: 1.65,
         }}
       >
-        <p style={{ margin: "0 0 6px" }}>
+        <p style={{ margin: "0 0 var(--space-6)" }}>
           <strong style={{ color: TEAL }}>{active.label}</strong>{" "}
-          <span style={{ color: "#6b6357", fontSize: 13 }}>· {active.bytes}</span>
+          <span style={{ color: INK_SOFT, fontSize: 13 }}>· {active.bytes}</span>
         </p>
-        <p style={{ margin: 0, color: "#302d28" }}>{active.desc}</p>
+        <p style={{ margin: 0, color: INK }}>{active.desc}</p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 12 }}>
+      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
         VLAN tag를 끼워 보세요. Source MAC과 EtherType <em>사이</em>에 4바이트가 비집고
         들어갑니다 — 그래서 태그된 프레임의 최대 크기는 1518에서 1522바이트로 커지고,
         이를 모르는 장비는 멀쩡한 프레임을 "너무 길다"며 버리기도 합니다.

@@ -1,5 +1,13 @@
 import { useMemo, useState } from "react";
 
+// 시각 값은 토큰에서 뽑는다 — fallback 은 tokens.css 값과 정확히 같아야 한다 (KAN-072).
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const CREAM = "var(--cream, #EDE6D8)";
+const TEAL = "var(--cat-skills, #3e6b6b)";
+
 const layers = [
   { no: 7, name: "Application", unit: "Data", header: "HTTP" },
   { no: 6, name: "Presentation", unit: "Data", header: "TLS/encoding" },
@@ -26,7 +34,7 @@ export default function EncapsulationLab() {
   }
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: "1px solid #d7d0c2", borderRadius: 12, background: "#fbf8f1" }}>
+    <figure style={{ margin: "2rem 0", padding: 18, border: `var(--stroke-hair) solid ${BORDER}`, borderRadius: 12, background: PANEL }}>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
         <button type="button" onClick={() => changeDirection("send")} aria-pressed={direction === "send"}>송신: 캡슐화</button>
         <button type="button" onClick={() => changeDirection("receive")} aria-pressed={direction === "receive"}>수신: 역캡슐화</button>
@@ -44,10 +52,10 @@ export default function EncapsulationLab() {
               aria-current={active ? "step" : undefined}
               style={{
                 display: "grid", gridTemplateColumns: "3rem minmax(8rem, 1fr) minmax(7rem, 1fr)",
-                gap: 8, alignItems: "center", textAlign: "left", padding: "10px 12px",
-                border: active ? "2px solid #3e6b6b" : "1px solid #c9c1b1", borderRadius: 8,
-                background: active ? "#e5f0ed" : passed ? "#f1eadb" : "#fffdf8",
-                color: "#302d28", cursor: "pointer",
+                gap: 8, alignItems: "center", textAlign: "left", padding: "var(--space-10) var(--space-12)",
+                border: active ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`, borderRadius: 8,
+                background: active ? "#e5f0ed" : passed ? CREAM : PANEL,
+                color: INK, cursor: "pointer",
               }}
             >
               <strong>L{layer.no}</strong><span>{layer.name}</span><span>{layer.unit}</span>
@@ -56,10 +64,10 @@ export default function EncapsulationLab() {
         })}
       </div>
 
-      <p role="status" style={{ margin: "16px 0 4px", lineHeight: 1.6 }}>
+      <p role="status" style={{ margin: "var(--space-16) 0 var(--space-4)", lineHeight: 1.6 }}>
         <strong>L{current.no} {current.name}</strong>: {current.header} 정보를 {verb}. 이 단계에서 보이는 전송 단위는 <strong>{current.unit}</strong>입니다.
       </p>
-      <figcaption style={{ fontSize: 13, color: "#6b6357" }}>
+      <figcaption style={{ fontSize: 13, color: INK_SOFT }}>
         방향을 바꾸고 각 계층을 눌러 보세요. 실제 구현에서는 L5~L7이 한 애플리케이션 안에 합쳐지는 경우가 많습니다.
       </figcaption>
     </figure>

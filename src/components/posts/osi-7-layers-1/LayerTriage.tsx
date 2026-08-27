@@ -1,5 +1,13 @@
 import { useState } from "react";
 
+// 시각 값은 토큰에서 뽑는다 — fallback 은 tokens.css 값과 정확히 같아야 한다 (KAN-072).
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const CREAM = "var(--cream, #EDE6D8)";
+const TEAL = "var(--cat-skills, #3e6b6b)";
+
 type Symptom = {
   id: string;
   label: string;
@@ -90,12 +98,12 @@ export default function LayerTriage() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 12px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK }}>
         지금 관찰한 증상을 고르면, 어느 계층부터 의심하고 무엇을 확인할지 짚어줍니다.
       </p>
 
@@ -114,16 +122,16 @@ export default function LayerTriage() {
                 gap: 10,
                 alignItems: "center",
                 textAlign: "left",
-                padding: "10px 12px",
-                border: isActive ? "2px solid #3e6b6b" : "1px solid #c9c1b1",
+                padding: "var(--space-10) var(--space-12)",
+                border: isActive ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
                 borderRadius: 8,
-                background: isActive ? "#e5f0ed" : "#fffdf8",
-                color: "#302d28",
+                background: isActive ? "#e5f0ed" : PANEL,
+                color: INK,
                 cursor: "pointer",
                 lineHeight: 1.5,
               }}
             >
-              <strong style={{ color: "#3e6b6b" }}>L{s.layerNo}?</strong>
+              <strong style={{ color: TEAL }}>L{s.layerNo}?</strong>
               <span>{s.label}</span>
             </button>
           );
@@ -136,22 +144,22 @@ export default function LayerTriage() {
           style={{
             marginTop: 16,
             padding: 14,
-            border: "1px solid #c9c1b1",
+            border: `var(--stroke-hair) solid ${BORDER}`,
             borderRadius: 8,
-            background: "#fffdf8",
+            background: PANEL,
             lineHeight: 1.65,
           }}
         >
-          <p style={{ margin: "0 0 8px" }}>
-            <strong style={{ color: "#3e6b6b" }}>의심 계층: {active.layer}</strong>
+          <p style={{ margin: "0 0 var(--space-8)" }}>
+            <strong style={{ color: TEAL }}>의심 계층: {active.layer}</strong>
           </p>
-          <p style={{ margin: "0 0 8px" }}>{active.why}</p>
-          <p style={{ margin: "0 0 8px" }}>
+          <p style={{ margin: "0 0 var(--space-8)" }}>{active.why}</p>
+          <p style={{ margin: "0 0 var(--space-8)" }}>
             <strong>먼저 확인:</strong>{" "}
             <code
               style={{
-                background: "#f1eadb",
-                padding: "2px 6px",
+                background: CREAM,
+                padding: "var(--space-2) var(--space-6)",
                 borderRadius: 4,
                 fontSize: 13,
               }}
@@ -159,16 +167,16 @@ export default function LayerTriage() {
               {active.command}
             </code>
           </p>
-          <p style={{ margin: "0 0 6px" }}>
+          <p style={{ margin: "0 0 var(--space-6)" }}>
             ✅ <strong>정상</strong>: {active.healthy}
           </p>
-          <p style={{ margin: "0 0 8px" }}>
+          <p style={{ margin: "0 0 var(--space-8)" }}>
             ❌ <strong>이상</strong>: {active.broken}
           </p>
-          <p style={{ margin: 0, color: "#6b6357" }}>💡 {active.tip}</p>
+          <p style={{ margin: 0, color: INK_SOFT }}>💡 {active.tip}</p>
         </div>
       ) : (
-        <p style={{ marginTop: 14, marginBottom: 0, fontSize: 13, color: "#6b6357" }}>
+        <p style={{ marginTop: 14, marginBottom: 0, fontSize: 13, color: INK_SOFT }}>
           증상 하나를 눌러 보세요. 진단은 항상 <strong>아래(L1)에서 위(L7)로</strong> 좁혀가는 것이 안전합니다.
         </p>
       )}

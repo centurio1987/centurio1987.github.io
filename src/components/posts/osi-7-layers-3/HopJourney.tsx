@@ -3,7 +3,12 @@ import { useState } from "react";
 // 패킷이 Host A → R1 → R2 → Host B로 가는 동안
 // IP(종단까지 고정)와 MAC·TTL(홉마다 변함)이 어떻게 달라지는지 한 구간씩 본다.
 
-const TEAL = "#3e6b6b";
+// 시각 값은 토큰에서 뽑는다 — fallback 은 tokens.css 값과 정확히 같아야 한다 (KAN-072).
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const TEAL = "var(--cat-skills, #3e6b6b)";
 const SAND = "#e8c97a";
 
 const SRC_IP = "198.51.100.10"; // Host A
@@ -56,12 +61,12 @@ export default function HopJourney() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 14px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-14)", fontWeight: 600, color: INK }}>
         “다음 구간”을 눌러 패킷을 한 홉씩 옮기며, <strong>IP는 그대로인데 MAC과 TTL은 매 홉
         바뀌는</strong> 모습을 확인하세요.
       </p>
@@ -91,10 +96,10 @@ export default function HopJourney() {
                   width: 52,
                   height: 40,
                   borderRadius: isRouter ? 8 : 20,
-                  border: active ? `2px solid ${TEAL}` : "1px solid #c9c1b1",
-                  background: active ? "#e5f0ed" : "#fffdf8",
+                  border: active ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
+                  background: active ? "#e5f0ed" : PANEL,
                   fontWeight: 700,
-                  color: "#302d28",
+                  color: INK,
                   fontSize: 13,
                 }}
               >
@@ -105,7 +110,7 @@ export default function HopJourney() {
                   style={{
                     width: 46,
                     textAlign: "center",
-                    color: i === step ? TEAL : "#c9c1b1",
+                    color: i === step ? TEAL : BORDER,
                     fontWeight: 700,
                   }}
                 >
@@ -117,27 +122,27 @@ export default function HopJourney() {
         })}
       </div>
 
-      <p style={{ textAlign: "center", margin: "0 0 14px", fontSize: 13, color: "#6b6357" }}>
-        구간 {step + 1}/3 · <strong style={{ color: "#302d28" }}>{seg.label}</strong> ({seg.link})
+      <p style={{ textAlign: "center", margin: "0 0 var(--space-14)", fontSize: 13, color: INK_SOFT }}>
+        구간 {step + 1}/3 · <strong style={{ color: INK }}>{seg.label}</strong> ({seg.link})
       </p>
 
       {/* 헤더 패널 */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <div
           style={{
-            border: `1px solid ${TEAL}`,
+            border: `var(--stroke-hair) solid ${TEAL}`,
             borderRadius: 8,
             background: "#eef5f3",
             padding: 12,
           }}
         >
-          <p style={{ margin: "0 0 8px", fontWeight: 700, color: TEAL }}>
+          <p style={{ margin: "0 0 var(--space-8)", fontWeight: 700, color: TEAL }}>
             L3 IP 헤더 <span style={{ fontWeight: 400, fontSize: 12 }}>(종단까지 고정)</span>
           </p>
-          <p style={{ margin: "0 0 4px", fontFamily: "monospace", fontSize: 13 }}>
+          <p style={{ margin: "0 0 var(--space-4)", fontFamily: "monospace", fontSize: 13 }}>
             src: {SRC_IP}
           </p>
-          <p style={{ margin: "0 0 8px", fontFamily: "monospace", fontSize: 13 }}>
+          <p style={{ margin: "0 0 var(--space-8)", fontFamily: "monospace", fontSize: 13 }}>
             dst: {DST_IP}
           </p>
           <p style={{ margin: 0, fontSize: 13 }}>
@@ -145,22 +150,22 @@ export default function HopJourney() {
             <strong style={{ color: "#9a5b2c", fontFamily: "monospace", fontSize: 15 }}>
               {seg.ttl}
             </strong>{" "}
-            <span style={{ color: "#6b6357", fontSize: 12 }}>(홉마다 −1)</span>
+            <span style={{ color: INK_SOFT, fontSize: 12 }}>(홉마다 −1)</span>
           </p>
         </div>
 
         <div
           style={{
-            border: `1px solid ${SAND}`,
+            border: `var(--stroke-hair) solid ${SAND}`,
             borderRadius: 8,
-            background: "#fdf6e6",
+            background: "var(--surface, #F8F3E8)",
             padding: 12,
           }}
         >
-          <p style={{ margin: "0 0 8px", fontWeight: 700, color: "#9a5b2c" }}>
+          <p style={{ margin: "0 0 var(--space-8)", fontWeight: 700, color: "#9a5b2c" }}>
             L2 Ethernet 헤더 <span style={{ fontWeight: 400, fontSize: 12 }}>(구간마다 새로)</span>
           </p>
-          <p style={{ margin: "0 0 4px", fontFamily: "monospace", fontSize: 13 }}>
+          <p style={{ margin: "0 0 var(--space-4)", fontFamily: "monospace", fontSize: 13 }}>
             src MAC: {seg.srcMac}
           </p>
           <p style={{ margin: 0, fontFamily: "monospace", fontSize: 13 }}>
@@ -172,14 +177,14 @@ export default function HopJourney() {
       <p
         role="status"
         style={{
-          margin: "12px 0 0",
+          margin: "var(--space-12) 0 0",
           padding: 10,
-          background: "#fffdf8",
-          border: "1px solid #c9c1b1",
+          background: PANEL,
+          border: `var(--stroke-hair) solid ${BORDER}`,
           borderRadius: 8,
           lineHeight: 1.6,
           fontSize: 13.5,
-          color: "#302d28",
+          color: INK,
         }}
       >
         {seg.note}
@@ -191,11 +196,11 @@ export default function HopJourney() {
           onClick={() => setStep((s) => Math.max(0, s - 1))}
           disabled={step === 0}
           style={{
-            padding: "8px 14px",
-            border: "1px solid #c9c1b1",
+            padding: "var(--space-8) var(--space-14)",
+            border: `var(--stroke-hair) solid ${BORDER}`,
             borderRadius: 8,
-            background: "#fffdf8",
-            color: step === 0 ? "#b8b0a0" : "#302d28",
+            background: PANEL,
+            color: step === 0 ? "#b8b0a0" : INK,
             cursor: step === 0 ? "not-allowed" : "pointer",
           }}
         >
@@ -206,11 +211,11 @@ export default function HopJourney() {
           onClick={() => setStep((s) => Math.min(SEGMENTS.length - 1, s + 1))}
           disabled={step === SEGMENTS.length - 1}
           style={{
-            padding: "8px 14px",
+            padding: "var(--space-8) var(--space-14)",
             border: "none",
             borderRadius: 8,
-            background: step === SEGMENTS.length - 1 ? "#c9c1b1" : TEAL,
-            color: "#fff",
+            background: step === SEGMENTS.length - 1 ? BORDER : TEAL,
+            color: PANEL,
             fontWeight: 600,
             cursor: step === SEGMENTS.length - 1 ? "not-allowed" : "pointer",
           }}
@@ -219,7 +224,7 @@ export default function HopJourney() {
         </button>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 12 }}>
+      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
         세 구간 내내 <code>src/dst IP</code>는 한 글자도 변하지 않습니다(NAT가 없다면). 반면 MAC은
         구간마다 통째로 바뀌고 TTL은 라우터를 지날 때마다 줄어듭니다 — TTL이 0이 되면 패킷은 폐기되고
         라우터가 ICMP Time Exceeded를 돌려보내는데, 이게 바로 <code>traceroute</code>의 원리입니다.

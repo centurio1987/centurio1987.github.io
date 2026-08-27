@@ -9,7 +9,12 @@ type Route = {
   dev: string;
 };
 
-const TEAL = "#3e6b6b";
+// 시각 값은 토큰에서 뽑는다 — fallback 은 tokens.css 값과 정확히 같아야 한다 (KAN-072).
+const INK = "var(--ink, #20264A)";
+const INK_SOFT = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const TEAL = "var(--cat-skills, #3e6b6b)";
 const SAND = "#e8c97a";
 
 const TABLE: Route[] = [
@@ -68,12 +73,12 @@ export default function RoutingTableLab() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 12px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK }}>
         목적지 IP를 넣으면, 라우터가 이 테이블에서 <strong>가장 긴(=가장 구체적인) 프리픽스</strong>를
         골라 다음 홉을 정합니다.
       </p>
@@ -87,16 +92,16 @@ export default function RoutingTableLab() {
           marginBottom: 6,
         }}
       >
-        <label style={{ fontSize: 13, color: "#302d28" }}>
+        <label style={{ fontSize: 13, color: INK }}>
           목적지 IP:{" "}
           <input
             value={ip}
             onChange={(e) => setIp(e.target.value)}
             spellCheck={false}
             style={{
-              padding: "5px 8px",
+              padding: "var(--space-4) var(--space-8)",
               fontFamily: "monospace",
-              border: `1px solid ${valid ? "#c9c1b1" : "#c0392b"}`,
+              border: `var(--stroke-hair) solid ${valid ? BORDER : "#c0392b"}`,
               borderRadius: 6,
               width: 150,
             }}
@@ -116,13 +121,13 @@ export default function RoutingTableLab() {
             key={p}
             onClick={() => setIp(p)}
             style={{
-              padding: "4px 10px",
+              padding: "var(--space-4) var(--space-10)",
               fontSize: 12,
               fontFamily: "monospace",
-              border: "1px solid #c9c1b1",
+              border: `var(--stroke-hair) solid ${BORDER}`,
               borderRadius: 14,
-              background: ip === p ? "#e5f0ed" : "#fffdf8",
-              color: "#302d28",
+              background: ip === p ? "#e5f0ed" : PANEL,
+              color: INK,
               cursor: "pointer",
             }}
           >
@@ -134,11 +139,11 @@ export default function RoutingTableLab() {
       <div style={{ overflowX: "auto" }}>
         <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 13 }}>
           <thead>
-            <tr style={{ color: "#6b6357", textAlign: "left" }}>
-              <th style={{ padding: "4px 8px" }}>destination/prefix</th>
-              <th style={{ padding: "4px 8px" }}>next hop</th>
-              <th style={{ padding: "4px 8px" }}>dev</th>
-              <th style={{ padding: "4px 8px" }}>매치?</th>
+            <tr style={{ color: INK_SOFT, textAlign: "left" }}>
+              <th style={{ padding: "var(--space-4) var(--space-8)" }}>destination/prefix</th>
+              <th style={{ padding: "var(--space-4) var(--space-8)" }}>next hop</th>
+              <th style={{ padding: "var(--space-4) var(--space-8)" }}>dev</th>
+              <th style={{ padding: "var(--space-4) var(--space-8)" }}>매치?</th>
             </tr>
           </thead>
           <tbody>
@@ -150,12 +155,12 @@ export default function RoutingTableLab() {
                   key={e.route.cidr}
                   style={{
                     background: isWinner ? "#e5f0ed" : "transparent",
-                    color: matched ? "#302d28" : "#a59c8b",
+                    color: matched ? INK : "#a59c8b",
                   }}
                 >
                   <td
                     style={{
-                      padding: "4px 8px",
+                      padding: "var(--space-4) var(--space-8)",
                       fontFamily: "monospace",
                       fontWeight: isWinner ? 700 : 400,
                       borderLeft: isWinner ? `3px solid ${TEAL}` : "3px solid transparent",
@@ -163,11 +168,11 @@ export default function RoutingTableLab() {
                   >
                     {e.route.cidr}
                   </td>
-                  <td style={{ padding: "4px 8px" }}>{e.route.via}</td>
-                  <td style={{ padding: "4px 8px", fontFamily: "monospace" }}>{e.route.dev}</td>
-                  <td style={{ padding: "4px 8px" }}>
+                  <td style={{ padding: "var(--space-4) var(--space-8)" }}>{e.route.via}</td>
+                  <td style={{ padding: "var(--space-4) var(--space-8)", fontFamily: "monospace" }}>{e.route.dev}</td>
+                  <td style={{ padding: "var(--space-4) var(--space-8)" }}>
                     {matched ? (
-                      <span style={{ color: isWinner ? TEAL : "#6b6357" }}>
+                      <span style={{ color: isWinner ? TEAL : INK_SOFT }}>
                         /{e.len} 매치{isWinner ? " ✔ 선택" : ""}
                       </span>
                     ) : (
@@ -186,10 +191,10 @@ export default function RoutingTableLab() {
         style={{
           marginTop: 14,
           padding: 12,
-          border: `1px solid ${SAND}`,
+          border: `var(--stroke-hair) solid ${SAND}`,
           borderLeft: `5px solid ${SAND}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           lineHeight: 1.6,
         }}
       >
@@ -202,13 +207,13 @@ export default function RoutingTableLab() {
             선택. 여러 경로가 동시에 매치돼도 <strong>가장 긴 /{winner.len}</strong>를 고릅니다.
           </p>
         ) : (
-          <p style={{ margin: 0, color: "#6b6357" }}>
+          <p style={{ margin: 0, color: INK_SOFT }}>
             유효한 IP를 넣으면 선택 결과가 여기 표시됩니다.
           </p>
         )}
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 10 }}>
+      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 10 }}>
         <code>10.20.30.5</code>는 /8·/16·/24에 모두 걸리지만 선택되는 것은 가장 구체적인 /24입니다.
         <code> 10.99.0.1</code>은 /8만 걸리고, <code>8.8.8.8</code>은 아무 데도 안 걸려 결국{" "}
         <code>0.0.0.0/0</code> 기본 경로로 갑니다 — 그래서 default route를 "최후의 보루"라 부릅니다.
