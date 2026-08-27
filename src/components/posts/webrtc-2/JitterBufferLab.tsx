@@ -17,6 +17,18 @@ import {
 
 const LEVELS: JitterLevel[] = ["low", "medium", "high"];
 
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const INK_2 = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const TRACK = "var(--paper, #F3EEE4)"; // 타임라인 바탕
+const ON_CHIP = "var(--surface-hi, #fffdf8)"; // 색 칩 위 글자 — 종이 흰색
+const HAIR = "var(--stroke-hair, 1px)";
+const ARRIVED = "var(--cat-architecture, #4e6ca8)"; // 도착 순서 칩
+const ON_TIME = "var(--cat-skills, #3e6b6b)"; // 제때 재생
+const LATE = "var(--cat-strategy, #a84b4b)"; // 지각 → PLC 대체
+
 export default function JitterBufferLab() {
   const [level, setLevel] = useState<JitterLevel>("medium");
   const [targetDelay, setTargetDelay] = useState(80);
@@ -40,11 +52,11 @@ export default function JitterBufferLab() {
   };
 
   const buttonStyle: React.CSSProperties = {
-    padding: "8px 12px",
-    border: "1px solid #c9c1b1",
+    padding: "var(--space-8, 8px) var(--space-12, 12px)",
+    border: `${HAIR} solid ${BORDER}`,
     borderRadius: 8,
-    background: "#fffdf8",
-    color: "#302d28",
+    background: PANEL,
+    color: INK,
     cursor: "pointer",
     fontSize: 13,
     textAlign: "left",
@@ -55,12 +67,12 @@ export default function JitterBufferLab() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `${HAIR} solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 12px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: 600, color: INK }}>
         네트워크 지터와 목표 지연(target delay)을 바꿔가며, 버퍼가 무엇을 구해내고 무엇을 놓치는지 보세요.
       </p>
 
@@ -95,8 +107,8 @@ export default function JitterBufferLab() {
       </div>
 
       <div style={{ display: "grid", gap: 6, marginBottom: 10 }}>
-        <div style={{ fontSize: 12, color: "#6b6357", fontWeight: 600 }}>도착 순서 (뒤섞일 수 있음)</div>
-        <div style={{ position: "relative", height: 34, background: "#f3efe6", borderRadius: 6 }}>
+        <div style={{ fontSize: 12, color: INK_2, fontWeight: 600 }}>도착 순서 (뒤섞일 수 있음)</div>
+        <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: 6 }}>
           {packets.map((p) => (
             <div
               key={p.seq}
@@ -109,8 +121,8 @@ export default function JitterBufferLab() {
                 height: 26,
                 marginLeft: -11,
                 borderRadius: 4,
-                background: "#4E6CA8",
-                color: "#fff",
+                background: ARRIVED,
+                color: ON_CHIP,
                 fontSize: 10,
                 display: "flex",
                 alignItems: "center",
@@ -123,10 +135,10 @@ export default function JitterBufferLab() {
           ))}
         </div>
 
-        <div style={{ fontSize: 12, color: "#6b6357", fontWeight: 600, marginTop: 8 }}>
+        <div style={{ fontSize: 12, color: INK_2, fontWeight: 600, marginTop: 8 }}>
           재생 순서 (버퍼가 내보내는 일정한 리듬)
         </div>
-        <div style={{ position: "relative", height: 34, background: "#f3efe6", borderRadius: 6 }}>
+        <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: 6 }}>
           {results.map((r) => (
             <div
               key={r.seq}
@@ -141,8 +153,8 @@ export default function JitterBufferLab() {
                 height: 26,
                 marginLeft: -11,
                 borderRadius: 4,
-                background: r.status === "on-time" ? "#3e6b6b" : "#A84B4B",
-                color: "#fff",
+                background: r.status === "on-time" ? ON_TIME : LATE,
+                color: ON_CHIP,
                 fontSize: 10,
                 display: "flex",
                 alignItems: "center",
@@ -161,26 +173,26 @@ export default function JitterBufferLab() {
         style={{
           marginTop: 10,
           padding: 14,
-          border: "1px solid #c9c1b1",
+          border: `${HAIR} solid ${BORDER}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           lineHeight: 1.6,
           display: "grid",
           gap: 4,
         }}
       >
         <p style={{ margin: 0 }}>
-          이번 스트림: 지연 은닉(concealment) <strong style={{ color: "#A84B4B" }}>{stats.concealedCount}</strong>회
+          이번 스트림: 지연 은닉(concealment) <strong style={{ color: LATE }}>{stats.concealedCount}</strong>회
           / 재정렬 도착 <strong>{stats.reorderedCount}</strong>건 / 평균 버퍼 여유{" "}
           <strong>{Math.round(stats.avgHeadroom)}ms</strong>
         </p>
-        <p style={{ margin: 0, fontSize: 13, color: "#4a463f" }}>
+        <p style={{ margin: 0, fontSize: 13, color: INK_2 }}>
           목표 지연을 늘리면 지각(빨간 ×)이 줄어드는 대신, 전체 오디오/영상이 그만큼 늦게 나옵니다 — jitter
           buffer는 이 "지연 대 매끄러움" 트레이드오프를 계속 저울질합니다.
         </p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 10, lineHeight: 1.55 }}>
         교육용 개념 모델입니다(NetEQ 등 실제 구현 재현 아님). 패킷은 20ms 간격으로 전송되고, 편도 기본 지연
         60ms + 네트워크 지터 잡음을 더해 도착합니다. 재생은 <em>목표 지연만큼 기다린 뒤 일정한 리듬</em>으로
         나가며, 재생 시각까지 도착하지 못한 패킷은 PLC(패킷 손실 은닉)로 대체된다고 가정합니다. 실제 NetEQ는

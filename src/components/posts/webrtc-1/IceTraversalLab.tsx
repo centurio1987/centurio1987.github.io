@@ -13,10 +13,24 @@ import {
 // ⚠️ 교육용 개념 모델: 실제 브라우저 ICE(RFC 8445) 구현·연결성 점검을 재현하지 않는다.
 //   적용 산식과 한계는 ./iceModel.ts 주석 참조.
 
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const INK_2 = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const IDLE = "var(--paper, #F3EEE4)"; // 수집 안 된 후보
+const HAIR = "var(--stroke-hair, 1px)";
+const BOLD = "var(--stroke-bold, 2px)";
+const HOST = "var(--cat-skills, #3e6b6b)"; // host 후보 · 토글 켜짐
+const SRFLX = "var(--cat-architecture, #4e6ca8)"; // 흐름/공인 매핑
+const RELAY = "var(--cat-strategy, #a84b4b)"; // 릴레이(비용/지연) · 연결 실패
+/** 켜짐 배경 — 기술 축 색의 옅은 단(배치6 유저 판정). 토큰을 안 늘리고 관계만 드러낸다. */
+const ON_BG = "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))";
+
 const typeColor: Record<CandidateType, string> = {
-  host: "#3e6b6b", // teal — 직접
-  srflx: "#4E6CA8", // blue — 흐름/공인 매핑
-  relay: "#A84B4B", // red — 릴레이(비용/지연)
+  host: HOST,
+  srflx: SRFLX,
+  relay: RELAY,
 };
 
 const typeLabel: Record<CandidateType, string> = {
@@ -40,11 +54,11 @@ export default function IceTraversalLab() {
   const result = useMemo(() => computeIce(input), [input]);
 
   const toggleStyle = (on: boolean): React.CSSProperties => ({
-    padding: "8px 12px",
-    border: on ? "2px solid #3e6b6b" : "1px solid #c9c1b1",
+    padding: "var(--space-8, 8px) var(--space-12, 12px)",
+    border: on ? `${BOLD} solid ${HOST}` : `${HAIR} solid ${BORDER}`,
     borderRadius: 8,
-    background: on ? "#e5f0ed" : "#fffdf8",
-    color: "#302d28",
+    background: on ? ON_BG : PANEL,
+    color: INK,
     cursor: "pointer",
     fontSize: 13,
     textAlign: "left",
@@ -56,12 +70,12 @@ export default function IceTraversalLab() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `${HAIR} solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 12px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: 600, color: INK }}>
         네트워크 조건을 토글해 후보 수집과 경로 선택이 어떻게 달라지는지 보세요.
       </p>
 
@@ -134,10 +148,10 @@ export default function IceTraversalLab() {
               gridTemplateColumns: "minmax(11rem, 0.5fr) 1fr",
               gap: 10,
               alignItems: "start",
-              padding: "10px 12px",
-              border: "1px solid #c9c1b1",
+              padding: "var(--space-10, 10px) var(--space-12, 12px)",
+              border: `${HAIR} solid ${BORDER}`,
               borderRadius: 8,
-              background: c.gathered ? "#fffdf8" : "#f3efe6",
+              background: c.gathered ? PANEL : IDLE,
               opacity: c.gathered ? 1 : 0.7,
               lineHeight: 1.55,
             }}
@@ -145,7 +159,7 @@ export default function IceTraversalLab() {
             <strong style={{ color: typeColor[c.type] }}>
               {c.gathered ? "●" : "○"} {typeLabel[c.type]}
             </strong>
-            <span style={{ fontSize: 13, color: "#4a463f" }}>{c.note}</span>
+            <span style={{ fontSize: 13, color: INK_2 }}>{c.note}</span>
           </div>
         ))}
       </div>
@@ -155,16 +169,16 @@ export default function IceTraversalLab() {
         style={{
           marginTop: 14,
           padding: 14,
-          border: "1px solid #c9c1b1",
+          border: `${HAIR} solid ${BORDER}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           lineHeight: 1.6,
         }}
       >
-        <p style={{ margin: "0 0 6px" }}>
+        <p style={{ margin: "0 0 var(--space-6, 6px)" }}>
           <strong>이 모델이 추정하는 경로:</strong>{" "}
           {result.selected === "none" ? (
-            <strong style={{ color: "#A84B4B" }}>연결 실패</strong>
+            <strong style={{ color: RELAY }}>연결 실패</strong>
           ) : (
             <strong style={{ color: typeColor[result.selected] }}>{typeLabel[result.selected]}</strong>
           )}
@@ -172,7 +186,7 @@ export default function IceTraversalLab() {
         <p style={{ margin: 0, fontSize: 14 }}>{result.selectedReason}</p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 10, lineHeight: 1.55 }}>
         교육용 개념 모델입니다(브라우저 실제 ICE 구현 재현 아님). 산식: host&gt;srflx&gt;relay의 type
         preference로 단순화하고, srflx 성사는 "UDP 허용 + 매핑 endpoint-independent + 필터링 비대상의존"일 때만
         통한다고 가정합니다. {result.caveat}

@@ -15,6 +15,17 @@ const topoLabel: Record<Topology, string> = {
   mcu: "MCU (믹싱·재인코딩)",
 };
 
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const INK_2 = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const TRACK = "var(--paper, #F3EEE4)"; // 막대 바탕
+const HAIR = "var(--stroke-hair, 1px)";
+
+// 세 토폴로지를 **서로 가르는** 색표라 한 벌로 묶여 있다 — 하나만 옮기면 짝이 깨진다.
+// mcu 의 보라(#8b7bd8)는 최근접 토큰이 --ink-3 로 ΔRGB 77.7 이라 옮길 자리가 없어,
+// 셋을 통째로 판정 대기로 남긴다(KAN-072 배치6 · 매핑표 4절).
 const topoColor: Record<Topology, string> = {
   mesh: "#A84B4B", // red — 참가자 수에 취약
   sfu: "#4E6CA8", // blue — 서버 라우팅
@@ -34,13 +45,13 @@ function Bar({
 }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "6.5rem 1fr 6.5rem", gap: 10, alignItems: "center" }}>
-      <span style={{ fontSize: 13, color: "#4a463f" }}>{label}</span>
+      <span style={{ fontSize: 13, color: INK_2 }}>{label}</span>
       <div
         style={{
           height: 16,
           borderRadius: 6,
-          background: "#f3efe6",
-          border: "1px solid #d7d0c2",
+          background: TRACK,
+          border: `${HAIR} solid ${BORDER}`,
           overflow: "hidden",
         }}
       >
@@ -54,7 +65,7 @@ function Bar({
           }}
         />
       </div>
-      <span style={{ fontSize: 13, color: "#302d28", fontFamily: "monospace", textAlign: "right" }}>
+      <span style={{ fontSize: 13, color: INK, fontFamily: "monospace", textAlign: "right" }}>
         {valueLabel}
       </span>
     </div>
@@ -86,12 +97,12 @@ export default function ParticipantScaleLab() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `${HAIR} solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <label style={{ display: "block", marginBottom: 16, fontWeight: 600, color: "#302d28" }}>
+      <label style={{ display: "block", marginBottom: 16, fontWeight: 600, color: INK }}>
         참가자 수(N): {participants}명
         <input
           type="range"
@@ -111,9 +122,9 @@ export default function ParticipantScaleLab() {
               key={t}
               style={{
                 padding: 14,
-                border: "1px solid #c9c1b1",
+                border: `${HAIR} solid ${BORDER}`,
                 borderRadius: 8,
-                background: "#fffdf8",
+                background: PANEL,
               }}
             >
               <strong style={{ color: topoColor[t], display: "block", marginBottom: 10 }}>{topoLabel[t]}</strong>
@@ -142,7 +153,7 @@ export default function ParticipantScaleLab() {
         })}
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 12, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 12, lineHeight: 1.55 }}>
         교육용 개념 모델입니다(실제 SFU/MCU 구현 수치 재현 아님). 1인당 발신 스트림을{" "}
         {PER_STREAM_KBPS.toLocaleString()}kbps로 가정합니다. mesh는 업로드·다운로드가 모두 (N-1)에 비례해
         늘어나고, SFU는 업로드가 고정값(1×)인 대신 다운로드는 여전히 (N-1)에 비례합니다(다만 실제로는

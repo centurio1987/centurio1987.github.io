@@ -17,7 +17,22 @@ import { useEffect, useRef, useState } from "react";
 
 type Log = { t: string; who: "local" | "remote" | "sys"; msg: string };
 
-const whoColor = { local: "#3e6b6b", remote: "#4E6CA8", sys: "#6b6357" } as const;
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const INK_2 = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const IDLE = "var(--paper, #F3EEE4)";
+const HAIR = "var(--stroke-hair, 1px)";
+const LOCAL = "var(--cat-skills, #3e6b6b)"; // 로컬 피어 · 연결 성사 강조
+const REMOTE = "var(--cat-architecture, #4e6ca8)"; // 원격 피어
+const DANGER = "var(--cat-strategy, #a84b4b)";
+const NOTICE = "var(--pop, #d8a33f)"; // 비보안 컨텍스트 안내 테두리
+const NOTICE_BG = "var(--surface, #F8F3E8)";
+/** 성사·도달 배경 — 기술 축 색의 옅은 단(배치6 유저 판정). 토큰을 안 늘리고 관계만 드러낸다. */
+const REACHED = "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))";
+
+const whoColor = { local: LOCAL, remote: REMOTE, sys: INK_2 } as const;
 
 export default function LoopbackNegotiationDemo() {
   const [supported, setSupported] = useState<boolean | null>(null);
@@ -187,12 +202,12 @@ export default function LoopbackNegotiationDemo() {
         style={{
           margin: "2rem 0",
           padding: 18,
-          border: "1px solid #d7d0c2",
+          border: `${HAIR} solid ${BORDER}`,
           borderRadius: 12,
-          background: "#fbf8f1",
+          background: PANEL,
         }}
       >
-        <p style={{ margin: 0, color: "#A84B4B", lineHeight: 1.6 }}>
+        <p style={{ margin: 0, color: DANGER, lineHeight: 1.6 }}>
           이 환경에서는 <code>RTCPeerConnection</code> API가 없어 실습을 띄울 수 없습니다.
         </p>
       </figure>
@@ -204,23 +219,24 @@ export default function LoopbackNegotiationDemo() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `${HAIR} solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 12px", fontWeight: 600, color: "#302d28" }}>
+      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: 600, color: INK }}>
         한 탭 안에서 두 RTCPeerConnection이 협상하는 모습을 직접 돌려봅니다.
       </p>
 
       {insecure ? (
         <p
           style={{
-            margin: "0 0 12px",
-            padding: "8px 12px",
-            border: "1px solid #D8A33F",
+            margin: "0 0 var(--space-12, 12px)",
+            padding: "var(--space-8, 8px) var(--space-12, 12px)",
+            border: `${HAIR} solid ${NOTICE}`,
             borderRadius: 8,
-            background: "#fbf3df",
+            background: NOTICE_BG,
+            // 판정 대기 — 최근접 --cat-quality 도 ΔRGB 47.7 이라 게이트 시야 안에 남긴다(KAN-072 배치6).
             color: "#5c4a1f",
             fontSize: 13,
             lineHeight: 1.55,
@@ -237,12 +253,12 @@ export default function LoopbackNegotiationDemo() {
           onClick={start}
           disabled={running && connected}
           style={{
-            padding: "8px 14px",
-            border: "1px solid #3e6b6b",
+            padding: "var(--space-8, 8px) var(--space-14, 14px)",
+            border: `${HAIR} solid ${LOCAL}`,
             borderRadius: 8,
-            background: "#e5f0ed",
+            background: REACHED,
             cursor: "pointer",
-            color: "#302d28",
+            color: INK,
             fontWeight: 600,
           }}
         >
@@ -253,12 +269,12 @@ export default function LoopbackNegotiationDemo() {
           onClick={sendPing}
           disabled={!connected}
           style={{
-            padding: "8px 14px",
-            border: "1px solid #c9c1b1",
+            padding: "var(--space-8, 8px) var(--space-14, 14px)",
+            border: `${HAIR} solid ${BORDER}`,
             borderRadius: 8,
-            background: connected ? "#fffdf8" : "#f3efe6",
+            background: connected ? PANEL : IDLE,
             cursor: connected ? "pointer" : "default",
-            color: "#302d28",
+            color: INK,
           }}
         >
           "ping" 보내기
@@ -267,17 +283,17 @@ export default function LoopbackNegotiationDemo() {
           type="button"
           onClick={reset}
           style={{
-            padding: "8px 14px",
-            border: "1px solid #c9c1b1",
+            padding: "var(--space-8, 8px) var(--space-14, 14px)",
+            border: `${HAIR} solid ${BORDER}`,
             borderRadius: 8,
-            background: "#fffdf8",
+            background: PANEL,
             cursor: "pointer",
-            color: "#302d28",
+            color: INK,
           }}
         >
           초기화
         </button>
-        <span style={{ alignSelf: "center", fontSize: 13, color: connected ? "#3e6b6b" : "#6b6357" }}>
+        <span style={{ alignSelf: "center", fontSize: 13, color: connected ? LOCAL : INK_2 }}>
           상태: {connected ? "연결됨 ✅" : running ? "협상 중…" : "대기"}
         </span>
       </div>
@@ -286,12 +302,12 @@ export default function LoopbackNegotiationDemo() {
         <p
           role="status"
           style={{
-            margin: "0 0 12px",
-            padding: "8px 12px",
-            border: "1px solid #3e6b6b",
+            margin: "0 0 var(--space-12, 12px)",
+            padding: "var(--space-8, 8px) var(--space-12, 12px)",
+            border: `${HAIR} solid ${LOCAL}`,
             borderRadius: 8,
-            background: "#e5f0ed",
-            color: "#302d28",
+            background: REACHED,
+            color: INK,
           }}
         >
           echo 응답 수신: <strong>{echo}</strong> — 로컬 메모리만으로 1:1 채널이 양방향으로 열렸습니다.
@@ -302,26 +318,27 @@ export default function LoopbackNegotiationDemo() {
         style={{
           maxHeight: 220,
           overflowY: "auto",
-          border: "1px solid #c9c1b1",
+          border: `${HAIR} solid ${BORDER}`,
           borderRadius: 8,
-          background: "#fffdf8",
-          padding: "8px 10px",
+          background: PANEL,
+          padding: "var(--space-8, 8px) var(--space-10, 10px)",
           fontSize: 12.5,
           lineHeight: 1.6,
         }}
       >
         {logs.length === 0 ? (
-          <p style={{ margin: 0, color: "#6b6357" }}>"협상 시작"을 누르면 단계별 로그가 여기 쌓입니다.</p>
+          <p style={{ margin: 0, color: INK_2 }}>"협상 시작"을 누르면 단계별 로그가 여기 쌓입니다.</p>
         ) : (
           logs.map((l, idx) => (
             <div key={idx} style={{ color: whoColor[l.who] }}>
+              {/* 판정 대기 — 최근접 --ink-3 도 ΔRGB 68 이라 게이트 시야 안에 남긴다(KAN-072 배치6). */}
               <span style={{ color: "#a59c8b" }}>{l.t}</span> [{l.who}] {l.msg}
             </div>
           ))
         )}
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 10, lineHeight: 1.55 }}>
         이 실습은 <strong>협상 API 실습</strong>입니다. 같은 origin·같은 장비라 NAT/STUN/TURN 트래버설 문제는 재현하지
         못합니다(그건 위 시뮬레이션과 진단 절에서 다룹니다). 여기서 관찰할 것은 createOffer/Answer →
         setLocal/RemoteDescription → onicecandidate 교환 → 연결 성사로 이어지는 협상 절차 그 자체입니다. 이 데모는

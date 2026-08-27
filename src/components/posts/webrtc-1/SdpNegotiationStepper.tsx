@@ -84,7 +84,21 @@ const steps: Step[] = [
   },
 ];
 
-const actorColor = { caller: "#3e6b6b", callee: "#4E6CA8" } as const;
+// 시각 값은 토큰을 쓴다 (KAN-072-CPJCT1). fallback 은 tokens.css 값과 정확히 같다.
+const INK = "var(--ink, #20264A)";
+const INK_2 = "var(--ink-2, #4a4f6a)";
+const BORDER = "var(--border, #d8d0be)";
+const PANEL = "var(--surface-hi, #fffdf8)";
+const IDLE = "var(--paper, #F3EEE4)"; // 비활성(양 끝 단계) 버튼
+const CREAM = "var(--cream, #EDE6D8)"; // 지나온 단계 · 인라인 코드 칩
+const HAIR = "var(--stroke-hair, 1px)";
+const BOLD = "var(--stroke-bold, 2px)";
+const CALLER = "var(--cat-skills, #3e6b6b)"; // 발신자 · 진행 강조
+const CALLEE = "var(--cat-architecture, #4e6ca8)"; // 수신자
+/** 선택 배경 — 기술 축 색의 옅은 단(배치6 유저 판정). 토큰을 안 늘리고 관계만 드러낸다. */
+const ACTIVE = "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))";
+
+const actorColor = { caller: CALLER, callee: CALLEE } as const;
 
 export default function SdpNegotiationStepper() {
   const [i, setI] = useState(0);
@@ -95,9 +109,9 @@ export default function SdpNegotiationStepper() {
       style={{
         margin: "2rem 0",
         padding: 18,
-        border: "1px solid #d7d0c2",
+        border: `${HAIR} solid ${BORDER}`,
         borderRadius: 12,
-        background: "#fbf8f1",
+        background: PANEL,
       }}
     >
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
@@ -106,12 +120,12 @@ export default function SdpNegotiationStepper() {
           onClick={() => setI((v) => Math.max(0, v - 1))}
           disabled={i === 0}
           style={{
-            padding: "8px 14px",
-            border: "1px solid #c9c1b1",
+            padding: "var(--space-8, 8px) var(--space-14, 14px)",
+            border: `${HAIR} solid ${BORDER}`,
             borderRadius: 8,
-            background: i === 0 ? "#f3efe6" : "#fffdf8",
+            background: i === 0 ? IDLE : PANEL,
             cursor: i === 0 ? "default" : "pointer",
-            color: "#302d28",
+            color: INK,
           }}
         >
           ← 이전
@@ -121,18 +135,18 @@ export default function SdpNegotiationStepper() {
           onClick={() => setI((v) => Math.min(steps.length - 1, v + 1))}
           disabled={i === steps.length - 1}
           style={{
-            padding: "8px 14px",
-            border: "1px solid #3e6b6b",
+            padding: "var(--space-8, 8px) var(--space-14, 14px)",
+            border: `${HAIR} solid ${CALLER}`,
             borderRadius: 8,
-            background: i === steps.length - 1 ? "#f3efe6" : "#e5f0ed",
+            background: i === steps.length - 1 ? IDLE : ACTIVE,
             cursor: i === steps.length - 1 ? "default" : "pointer",
-            color: "#302d28",
+            color: INK,
             fontWeight: 600,
           }}
         >
           다음 →
         </button>
-        <span style={{ alignSelf: "center", fontSize: 13, color: "#6b6357" }}>
+        <span style={{ alignSelf: "center", fontSize: 13, color: INK_2 }}>
           {i + 1} / {steps.length}
         </span>
       </div>
@@ -153,11 +167,11 @@ export default function SdpNegotiationStepper() {
                 gap: 8,
                 alignItems: "center",
                 textAlign: "left",
-                padding: "8px 10px",
-                border: active ? "2px solid #3e6b6b" : "1px solid #c9c1b1",
+                padding: "var(--space-8, 8px) var(--space-10, 10px)",
+                border: active ? `${BOLD} solid ${CALLER}` : `${HAIR} solid ${BORDER}`,
                 borderRadius: 6,
-                background: active ? "#e5f0ed" : done ? "#f1eadb" : "#fffdf8",
-                color: "#302d28",
+                background: active ? ACTIVE : done ? CREAM : PANEL,
+                color: INK,
                 cursor: "pointer",
                 fontSize: 13,
                 lineHeight: 1.4,
@@ -175,25 +189,28 @@ export default function SdpNegotiationStepper() {
         style={{
           marginTop: 14,
           padding: 14,
-          border: "1px solid #c9c1b1",
+          border: `${HAIR} solid ${BORDER}`,
           borderRadius: 8,
-          background: "#fffdf8",
+          background: PANEL,
           lineHeight: 1.6,
         }}
       >
-        <p style={{ margin: "0 0 6px" }}>
+        <p style={{ margin: "0 0 var(--space-6, 6px)" }}>
           <strong style={{ color: actorColor[step.actor] }}>
             {step.actor === "caller" ? "발신자(caller)" : "수신자(callee)"}
           </strong>{" "}
-          · signalingState: <code style={{ background: "#f1eadb", padding: "1px 6px", borderRadius: 4 }}>{step.signaling}</code>
+          · signalingState:{" "}
+          <code style={{ background: CREAM, padding: "var(--space-2, 2px) var(--space-6, 6px)", borderRadius: 4 }}>
+            {step.signaling}
+          </code>
         </p>
-        <p style={{ margin: "0 0 6px" }}>{step.what}</p>
-        <p style={{ margin: 0, fontSize: 13, color: "#4a463f" }}>
+        <p style={{ margin: "0 0 var(--space-6, 6px)" }}>{step.what}</p>
+        <p style={{ margin: 0, fontSize: 13, color: INK_2 }}>
           <strong>이때 채워지는 것:</strong> {step.filled}
         </p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 10, lineHeight: 1.55 }}>
         교육용 개념 모델입니다(실제 SDP 본문·ICE 라인을 생성하지 않음). signalingState 전이와 단계별로 채워지는
         정보의 "구조"만 단순화해 보여줍니다 — 실제 협상은 trickle ICE로 후보가 비동기로 흐르고, 재협상·glare가 끼면
         순서가 달라집니다.
