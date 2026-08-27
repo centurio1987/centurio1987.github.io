@@ -36,7 +36,7 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 18px;
+  font-size: var(--text-body);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -71,7 +71,10 @@ a.sketch-link::after {
   bottom: -2px;
   height: 2px;
   background: var(--accent);
-  border-radius: 2px;
+  /* 2px 이던 자리다 → --radius-xs(4px). **화면은 안 움직인다** — 밑줄이 2px 높이라
+     CSS 가 반지름을 변의 절반(1px)으로 접는다(양쪽 합이 변보다 크면 전부 같은 비율로
+     줄인다). 2px 도 4px 도 결과는 1px 짜리 알약 끝이다. */
+  border-radius: var(--radius-xs);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--dur) var(--ease);
@@ -89,17 +92,24 @@ code {
 :not(pre) > code {
   background: var(--subtle);
   padding: 0.12em 0.4em;
-  border-radius: 6px;
-  border: 1px solid var(--border);
+  /* 6px 이던 자리다 — --radius-xs(4px) 와 --radius-sm(8px) 에서 똑같이 2 떨어져 작은 쪽으로 간다. */
+  border-radius: var(--radius-xs);
+  border: var(--stroke-hair) solid var(--border);
 }
 
 pre {
   background: var(--surface) !important;
-  border: 1px solid var(--border);
+  border: var(--stroke-hair) solid var(--border);
   border-radius: var(--radius-md);
-  padding: 16px 18px;
+  /* 16/18 이던 자리다 — 좌우만 스케일 밖이었고 스냅하면 네 변이 같아진다. */
+  padding: var(--space-16);
   overflow-x: auto;
-  font-size: 15px;
+  /* 15px 이던 자리다. §5 역할값의 13 ↔ 18 빈칸에 있어 이름이 없었고, 가까운 쪽이
+     --text-meta(13px)다(13 은 2, 18 은 3 떨어져 있다).
+     **알아 둘 것: 코드 글자는 이 값이 아니라 이 값의 0.875em 이다**(위 `code` 규칙).
+     15px 일 때 실측 13.125px 였고 13px 이면 11.375px 다 — 이 파일에서 눈에 가장 크게
+     띄는 변화이고, 되돌릴지는 값이 아니라 §5 의 빈칸을 어떻게 볼지의 문제다(KAN-072.2). */
+  font-size: var(--text-small);
   line-height: 1.6;
 }
 
@@ -113,25 +123,30 @@ img {
  * 카드 모티프(잉크 외곽선 + 부드러운 그림자)로 지면에서 분리한다.
  * 배너·아바타는 .prose 밖이라 영향받지 않는다. */
 .prose img {
-  border: 1px solid var(--border);
+  border: var(--stroke-hair) solid var(--border);
   box-shadow: 0 6px 18px rgba(32, 38, 74, 0.1);
 }
 
 .table-wrap {
   overflow-x: auto;
-  margin: 28px 0;
+  /* 28px 이던 자리다 — --space-24 와 --space-32 에서 똑같이 4 떨어져 작은 쪽으로 간다. */
+  margin: var(--space-24) 0;
 }
 
 table {
   border-collapse: collapse;
-  font-size: 16px;
+  /* 16px 이던 자리다. §5 역할값의 13 ↔ 18 빈칸이라 이름이 없었고, 가까운 쪽이
+     --text-body(18px)다(18 은 2, 13 은 3 떨어져 있다). 표는 `white-space: nowrap` 이라
+     글자가 커지면 가로로만 자란다 — 세로 배치는 안 흔들리고 `.table-wrap` 안에서
+     스크롤 폭이 늘어난다. */
+  font-size: var(--text-small);
   white-space: nowrap;
 }
 
 th,
 td {
-  padding: 10px 16px;
-  border: 1px solid var(--border);
+  padding: var(--space-10) var(--space-16);
+  border: var(--stroke-hair) solid var(--border);
   text-align: left;
   vertical-align: top;
 }
@@ -150,7 +165,7 @@ hr {
   border: none;
   height: 1px;
   background: var(--border);
-  margin: 32px 0;
+  margin: var(--space-32) 0;
 }
 
 ::selection {
@@ -158,11 +173,18 @@ hr {
   color: var(--ink);
 }
 
+/* 스크린리더 전용 텍스트. `margin: -1px` 이던 자리인데 **간격 스케일에 -1 의 자리가 없다** —
+   1 은 선 굵기(--stroke-hair)의 단위이지 여백의 단위가 아니고, 가장 가까운 --space-2 로 밀면
+   뜻이 없는 값이 뜻이 없는 다른 값으로 바뀔 뿐이다. 그래서 0 으로 접었다.
+   **화면도 낭독도 안 바뀐다**: `position: absolute` 라 -1px 은 형제 배치에 못 닿고, 이 상자는
+   1px×1px 에 `clip: rect(0 0 0 0)` 로 잘려 어차피 한 점도 안 그린다. -1px 은 이 패턴
+   (HTML5BP·Bootstrap `.sr-only`)이 position:static 이던 시절의 잔재다. 0 을 남기는 이유는
+   UA 기본 여백이 있는 요소(h2·p 등)에 이 클래스가 붙을 때를 위해서다. */
 .visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
-  margin: -1px;
+  margin: 0;
   padding: 0;
   overflow: hidden;
   clip: rect(0 0 0 0);
