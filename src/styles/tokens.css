@@ -36,11 +36,13 @@
   --cat-leadership: #b5602e;
 
   /* 형태 */
-  /* 선 굵기는 2단이다 (DESIGN_CONCEPT.md §8). `--stroke` 가 기본이고 `--stroke-hair` 는
-     구분선·미세 테두리처럼 존재만 알리면 되는 선이다. 실사용은 오히려 가는 쪽이 지배값이라
-     (`--stroke` 8건 vs `1px` 리터럴 129건) 이름을 세워 두지 않으면 리터럴이 계속 는다. */
+  /* 선 굵기는 3단이다 (DESIGN_CONCEPT.md §8). 실측 지배값 순서가 `1px` 205 → `2px` 23 →
+     `1.5px` 19 라, 가는 쪽과 굵은 쪽 **양쪽**에 이름이 없으면 리터럴이 계속 는다.
+     `--stroke-bold` 를 뺀 2단으로 두면 강조 테두리 31건이 전부 1.5px 로 얇아진다(실측). */
   --stroke: 1.5px;
   --stroke-hair: 1px;
+  --stroke-bold: 2px;
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;

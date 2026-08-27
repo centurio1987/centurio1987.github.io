@@ -81,6 +81,7 @@
   - 목표: 게이트 베이스라인이 0 으로 수렴해 tokens:verify 를 순수 하드월로 승격할 수 있다
   - 메모: 하위 6장으로 순서를 강제한다. 루트 넷으로 두면 scope 가 src/** 로 전부 겹쳐 루트 독립성이 그 자리에서 깨진다 — 칸반 3.6 의 상위 신설
   - 실행 문서: KANBAN.cards/KAN-072-CPJCT1.md (2/16 · 최근 08-27)
+  - 계획 리포트: KANBAN.reports/KAN-072-CPJCT1.report.html (낡음)
   - 원문:
     ```text
     위 artifact를 보고 전략과 실행 계획을 수립해라
@@ -343,6 +344,7 @@
 - `KAN-066-KK9Q50` 폭신 대담: 대화 원본 → 정형 구조화 저장 기능 (원문 보존 포함) — 생성:유저 · 최종:ai · 갱신:2026-08-18
   - 메모: 빵토교수님 대담(template: "talk", TalkLayout) 컨텐츠 제작 입력 단계. 대화 원본을 넣으면 ① 데이터 구조·파일 형식을 정형화해 저장(대담 에피소드 MDX 의 <QA n q> 골격과 어디까지 대응시킬지 포함) ② 톤앤매너·비문·맞춤법 교정 ③ 개선 방향이 바뀔 때 다시 굽을 수 있도록 대화 원문을 별도 보존 — 즉 원문/교정본 2계층. 착수 시 정할 것: 저장 위치(raws/ 인지 별도 디렉터리인지)·파일 포맷·스킬로 만들지 스크립트로 만들지·src/templates/talk-episode.mdx 및 init-post --talk 와의 접점.
   - 실행 문서: KANBAN.cards/KAN-066-KK9Q50.md (7/7 · 최근 08-18)
+  - 계획 리포트: KANBAN.reports/KAN-066-KK9Q50.report.html (지문 없음)
   - 검토 문서: KANBAN.reviews/KAN-066-KK9Q50.review.md (승인 5/6 · 승인)
   - 원문:
     ```text
@@ -351,6 +353,7 @@
 - `KAN-067-NH9SDQ` 폭신 대담에서 사용할 주제는 아래와 같다. 미리 주제에 대해 리서치를 하고, 대화를 대비한 준비를 해둬라. — 생성:유저 · 최종:ai · 갱신:2026-08-19
   - 메모: 폭신 대담(template: "talk") 에피소드용 주제 2건 + 사전 리서치 요구. 주제① 한 페이지의 여러 시각화가 대규모 aggregated 데이터를 한 번에 당겨와 생기는 반응성 문제 — 유저가 낸 갈래 셋(service worker+IndexedDB 프리패치·stale 판정 / socket 압축 스트리밍 / skeleton·loading UI)에 더해 그 외 방법까지 요구. 성능축·UX축 양쪽에서 볼 것. 주제② 요청이 영속성 데이터 조회에서 시작하면 성능이 DB 질의에 지배되어 자료구조·알고리즘 개입 여지가 없는 문제 — 버퍼로 올리는 것 말고 어떤 전략이 있는지. 착수 시 research 스킬로 두 주제를 수집한 뒤 대담 준비 노트를 만든다. 대화 원본 저장 규격은 KAN-066 과 맞물린다.
   - 실행 문서: KANBAN.cards/KAN-067-NH9SDQ.md (10/10 · 최근 08-19)
+  - 계획 리포트: KANBAN.reports/KAN-067-NH9SDQ.report.html (낡음)
   - 검토 문서: KANBAN.reviews/KAN-067-NH9SDQ.review.md (승인 2/5 · 승인)
   - 원문:
     ```text
@@ -364,6 +367,7 @@
     ```
 - `KAN-068-5KMRV8` UI QA — 생성:유저 · 최종:ai · 갱신:2026-08-24
   - 실행 문서: KANBAN.cards/KAN-068-5KMRV8.md (5/5 · 최근 08-24)
+  - 계획 리포트: KANBAN.reports/KAN-068-5KMRV8.report.html (낡음)
   - 검토 문서: KANBAN.reviews/KAN-068-5KMRV8.review.md (승인 4/4 · 추가 의견 총 2 · 승인)
   - 원문:
     ```text
@@ -389,6 +393,7 @@
   - 목표: bun run tokens:verify 가 감사 수치를 히트 단위로 재현하고, 위반이 늘면 CI 가 막는다
   - 메모: 감사 P3-1(게이트) + P3-2(react-sim 규칙 개정). 래칫으로 세운다 — 위반 1,567건이라 하드월은 첫 푸시부터 main 을 막는다
   - 실행 문서: KANBAN.cards/KAN-070-DRF0QF.md (10/10 · 최근 08-25)
+  - 계획 리포트: KANBAN.reports/KAN-070-DRF0QF.report.html (낡음)
   - 검토 문서: KANBAN.reviews/KAN-070-DRF0QF.review.md (승인 7/7 · 추가 의견 총 9 · 승인)
   - 원문:
     ```text
