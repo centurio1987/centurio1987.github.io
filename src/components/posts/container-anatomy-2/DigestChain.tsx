@@ -112,7 +112,7 @@ export default function DigestChain() {
 
   const panel: React.CSSProperties = {
     border: `${HAIR} solid ${C.border}`, borderRadius: 10, background: C.surface,
-    padding: 12, minWidth: 0,
+    padding: "var(--space-12)", minWidth: 0,
   };
   const mono: React.CSSProperties = { fontFamily: MONO };
 
@@ -124,7 +124,7 @@ export default function DigestChain() {
         onClick={() => setView(to)}
         style={{
           ...mono, display: "block", width: "100%", textAlign: "left",
-          fontSize: 12.5, padding: "var(--space-6) var(--space-8)", marginBottom: 6, borderRadius: 6,
+          fontSize: 12.5, padding: "var(--space-6) var(--space-8)", marginBottom: "var(--space-6)", borderRadius: 6,
           border: `${HAIR} solid ${C.border}`, background: C.surface, color: C.ink, cursor: "pointer",
         }}
       >
@@ -134,10 +134,10 @@ export default function DigestChain() {
   }
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${C.border}`, borderRadius: 12, background: C.paper }}>
+    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${C.border}`, borderRadius: "var(--radius-md)", background: C.paper }}>
       {/* 플랫폼 탭 */}
-      <div style={{ marginBottom: 12 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginRight: 8 }}>플랫폼</span>
+      <div style={{ marginBottom: "var(--space-12)" }}>
+        <span style={{ fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink, marginRight: "var(--space-8)" }}>플랫폼</span>
         {(Object.keys(PLATFORM_MANIFEST) as Platform[]).map((p) => (
           <button
             key={p}
@@ -145,7 +145,7 @@ export default function DigestChain() {
             onClick={() => { setPlatform(p); setView("index"); }}
             aria-pressed={platform === p}
             style={{
-              ...mono, fontSize: 12.5, padding: "var(--space-4) var(--space-10)", marginRight: 6, borderRadius: 999,
+              ...mono, fontSize: 12.5, padding: "var(--space-4) var(--space-10)", marginRight: "var(--space-6)", borderRadius: "var(--btn-radius)",
               border: platform === p ? `${BOLD} solid ${C.accent}` : `${HAIR} solid ${C.border}`,
               background: platform === p ? C.accentTint : C.surface, color: C.ink, cursor: "pointer",
             }}
@@ -155,10 +155,10 @@ export default function DigestChain() {
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 10 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: "var(--space-10)" }}>
         {/* 좌: 현재 위치 */}
         <div style={panel}>
-          <p style={{ ...mono, margin: "0 0 var(--space-10)", fontSize: 12, color: C.ink3 }}>
+          <p style={{ ...mono, margin: "0 0 var(--space-10)", fontSize: "var(--text-label)", color: C.ink3 }}>
             {crumbs.map((c, i) => (
               <span key={c}>
                 {i > 0 && <span style={{ color: C.border }}> › </span>}
@@ -167,7 +167,7 @@ export default function DigestChain() {
             ))}
           </p>
 
-          <div style={{ ...mono, fontSize: 12, background: C.cream, borderRadius: 6, padding: 9, lineHeight: 1.7 }}>
+          <div style={{ ...mono, fontSize: "var(--text-label)", background: C.cream, borderRadius: 6, padding: 9, lineHeight: 1.7 }}>
             {activeDigest === null ? (
               <>
                 <div><span style={{ color: C.ink3 }}>mediaType </span>…index.v1+json</div>
@@ -187,7 +187,7 @@ export default function DigestChain() {
             )}
           </div>
 
-          <p style={{ margin: "var(--space-12) 0 var(--space-6)", fontSize: 12, fontWeight: 700, color: C.ink }}>가리키는 곳</p>
+          <p style={{ margin: "var(--space-12) 0 var(--space-6)", fontSize: "var(--text-label)", fontWeight: 700, color: C.ink }}>가리키는 곳</p>
           {view === "index" && navBtn(`→ manifest`, "manifest", `${pm.label}`)}
           {view === "manifest" && (
             <>
@@ -196,7 +196,7 @@ export default function DigestChain() {
             </>
           )}
           {(view === "config" || view.startsWith("layer")) && (
-            <p style={{ fontSize: 12, color: C.ink3, margin: 0 }}>
+            <p style={{ fontSize: "var(--text-label)", color: C.ink3, margin: 0 }}>
               여기가 사슬의 끝입니다. 실제 내용(blob)이에요.
             </p>
           )}
@@ -204,7 +204,7 @@ export default function DigestChain() {
             <button
               type="button"
               onClick={() => setView("index")}
-              style={{ marginTop: 10, fontSize: 12.5, padding: "var(--space-4) var(--space-12)", borderRadius: 999, border: `${HAIR} solid ${C.border}`, background: C.cream, color: C.ink, cursor: "pointer" }}
+              style={{ marginTop: "var(--space-10)", fontSize: 12.5, padding: "var(--space-4) var(--space-12)", borderRadius: "var(--btn-radius)", border: `${HAIR} solid ${C.border}`, background: C.cream, color: C.ink, cursor: "pointer" }}
             >
               처음으로
             </button>
@@ -213,7 +213,7 @@ export default function DigestChain() {
 
         {/* 우: blobs 디렉터리 */}
         <div style={panel}>
-          <p style={{ margin: "0 0 var(--space-2)", fontSize: 13, fontWeight: 700, color: C.ink }}>blobs/sha256/</p>
+          <p style={{ margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink }}>blobs/sha256/</p>
           <p style={{ margin: "0 0 var(--space-10)", fontSize: 11.5, color: C.ink3, lineHeight: 1.45 }}>
             디스크에는 해시 이름만 있습니다
           </p>
@@ -223,7 +223,7 @@ export default function DigestChain() {
               <div
                 key={b.digest}
                 style={{
-                  ...mono, fontSize: 12, padding: "var(--space-6) var(--space-8)", marginBottom: 5, borderRadius: 6,
+                  ...mono, fontSize: "var(--text-label)", padding: "var(--space-6) var(--space-8)", marginBottom: 5, borderRadius: 6,
                   background: on ? C.popTint : C.surface,
                   border: `${HAIR} solid ${on ? C.pop : C.border}`,
                   color: on ? C.ink : C.ink3,
@@ -242,11 +242,11 @@ export default function DigestChain() {
         </div>
       </div>
 
-      <p role="status" style={{ margin: "var(--space-12) 0 0", fontSize: 13, color: C.ink, lineHeight: 1.6 }}>
+      <p role="status" style={{ margin: "var(--space-12) 0 0", fontSize: "var(--text-meta)", color: C.ink, lineHeight: 1.6 }}>
         {note}
       </p>
 
-      <figcaption style={{ fontSize: 13, color: C.ink3, marginTop: 10, lineHeight: 1.6 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: C.ink3, marginTop: "var(--space-10)", lineHeight: 1.6 }}>
         플랫폼을 바꾸면 <strong>매니페스트 다이제스트가 달라지는 것</strong>을 보세요. 그리고 오른쪽 목록에서
         선택하지 않은 blob은 <strong>해시 이름밖에 안 보입니다</strong> — 정체를 알려주는 건 가리키는 쪽의 <code>mediaType</code>입니다.
         다이제스트·크기는 OCI image-spec 문서의 예시 값입니다.

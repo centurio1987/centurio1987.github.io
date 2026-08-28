@@ -118,14 +118,14 @@ export default function CriCallTrace() {
 
   const panel: React.CSSProperties = {
     border: `${HAIR} solid ${C.border}`, borderRadius: 10, background: C.surface,
-    padding: 12, minWidth: 0,
+    padding: "var(--space-12)", minWidth: 0,
   };
 
   function box(label: string, made: boolean, up: boolean, sub?: string) {
     return (
       <div
         style={{
-          ...mono, fontSize: 12, padding: "var(--space-8) var(--space-10)", marginBottom: 6, borderRadius: 6,
+          ...mono, fontSize: "var(--text-label)", padding: "var(--space-8) var(--space-10)", marginBottom: "var(--space-6)", borderRadius: 6,
           border: made ? `${HAIR} solid ${up ? C.pop : C.border}` : `${HAIR} dashed ${C.border}`,
           background: made ? (up ? C.popTint : C.surface) : "transparent",
           color: made ? C.ink : C.ink3,
@@ -140,28 +140,28 @@ export default function CriCallTrace() {
   }
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${C.border}`, borderRadius: 12, background: C.paper }}>
+    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${C.border}`, borderRadius: "var(--radius-md)", background: C.paper }}>
       {/* 컨트롤 */}
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--space-6)", flexWrap: "wrap", marginBottom: "var(--space-12)", alignItems: "center" }}>
         <button
           type="button" onClick={() => setI((v) => Math.max(0, v - 1))} disabled={i === 0}
-          style={{ fontSize: 13, padding: "var(--space-6) var(--space-14)", borderRadius: 999, border: `${HAIR} solid ${C.border}`, background: C.cream, color: C.ink, cursor: i === 0 ? "default" : "pointer", opacity: i === 0 ? 0.45 : 1 }}
+          style={{ fontSize: "var(--text-meta)", padding: "var(--space-6) var(--space-14)", borderRadius: "var(--btn-radius)", border: `${HAIR} solid ${C.border}`, background: C.cream, color: C.ink, cursor: i === 0 ? "default" : "pointer", opacity: i === 0 ? 0.45 : 1 }}
         >← 이전</button>
         <button
           type="button" onClick={() => setI((v) => Math.min(STEPS.length - 1, v + 1))} disabled={i === STEPS.length - 1}
-          style={{ fontSize: 13, fontWeight: 600, padding: "var(--space-6) var(--space-14)", borderRadius: 999, border: `${HAIR} solid ${C.border}`, background: C.popTint, color: C.ink, cursor: i === STEPS.length - 1 ? "default" : "pointer", opacity: i === STEPS.length - 1 ? 0.45 : 1 }}
+          style={{ fontSize: "var(--text-meta)", fontWeight: 600, padding: "var(--space-6) var(--space-14)", borderRadius: "var(--btn-radius)", border: `${HAIR} solid ${C.border}`, background: C.popTint, color: C.ink, cursor: i === STEPS.length - 1 ? "default" : "pointer", opacity: i === STEPS.length - 1 ? 0.45 : 1 }}
         >다음 단계 →</button>
         <button
           type="button" onClick={() => setI(0)}
-          style={{ fontSize: 13, padding: "var(--space-6) var(--space-14)", borderRadius: 999, border: `${HAIR} solid ${C.border}`, background: C.surface, color: C.ink, cursor: "pointer" }}
+          style={{ fontSize: "var(--text-meta)", padding: "var(--space-6) var(--space-14)", borderRadius: "var(--btn-radius)", border: `${HAIR} solid ${C.border}`, background: C.surface, color: C.ink, cursor: "pointer" }}
         >처음으로</button>
-        <span style={{ ...mono, fontSize: 12.5, color: C.ink3, marginLeft: 4 }}>{i + 1} / {STEPS.length}</span>
+        <span style={{ ...mono, fontSize: 12.5, color: C.ink3, marginLeft: "var(--space-4)" }}>{i + 1} / {STEPS.length}</span>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 10 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "var(--space-10)" }}>
         {/* 좌: 호출 로그 */}
         <div style={panel}>
-          <p style={{ margin: "0 0 var(--space-10)", fontSize: 13, fontWeight: 700, color: C.ink }}>kubelet 의 CRI 호출</p>
+          <p style={{ margin: "0 0 var(--space-10)", fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink }}>kubelet 의 CRI 호출</p>
           {STEPS.map((s, n) => {
             const on = n === i;
             const done = n < i;
@@ -173,14 +173,14 @@ export default function CriCallTrace() {
                 aria-current={on ? "step" : undefined}
                 style={{
                   ...mono, display: "block", width: "100%", textAlign: "left",
-                  fontSize: 11.5, padding: "var(--space-6) var(--space-8)", marginBottom: 4, borderRadius: 6,
+                  fontSize: 11.5, padding: "var(--space-6) var(--space-8)", marginBottom: "var(--space-4)", borderRadius: 6,
                   border: on ? `${BOLD} solid ${C.accent}` : `${HAIR} solid ${C.border}`,
                   background: on ? C.accentTint : done ? C.cream : C.surface,
                   color: on || done ? C.ink : C.ink3, cursor: "pointer",
                 }}
               >
                 <span style={{
-                  fontSize: 9.5, padding: "var(--space-2) var(--space-4)", borderRadius: 999, marginRight: 5,
+                  fontSize: 9.5, padding: "var(--space-2) var(--space-4)", borderRadius: "var(--btn-radius)", marginRight: 5,
                   background: s.svc === "ImageService" ? C.popTint : C.accentTint,
                   color: s.svc === "ImageService" ? C.popInk : C.accent,
                 }}>
@@ -194,16 +194,16 @@ export default function CriCallTrace() {
 
         {/* 우: 노드 상태 */}
         <div style={panel}>
-          <p style={{ margin: "0 0 var(--space-2)", fontSize: 13, fontWeight: 700, color: C.ink }}>노드 위의 상태</p>
+          <p style={{ margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink }}>노드 위의 상태</p>
           <p style={{ margin: "0 0 var(--space-10)", fontSize: 11.5, color: C.ink3 }}>점선 = 아직 만들어지지 않음</p>
 
           <div style={{
             border: sandboxUp ? `${BOLD} solid ${C.teal}` : `${HAIR} dashed ${C.border}`,
-            borderRadius: 8, padding: 10, background: sandboxUp ? C.tealTint : "transparent",
+            borderRadius: "var(--radius-sm)", padding: "var(--space-10)", background: sandboxUp ? C.tealTint : "transparent",
           }}>
-            <div style={{ ...mono, fontSize: 11.5, color: sandboxUp ? C.teal : C.ink3, marginBottom: 8, fontWeight: 700 }}>
+            <div style={{ ...mono, fontSize: 11.5, color: sandboxUp ? C.teal : C.ink3, marginBottom: "var(--space-8)", fontWeight: 700 }}>
               PodSandbox {sandboxUp ? "· IP 10.244.1.7" : "(아직 없음)"}
-              {sandboxUp && <div style={{ fontWeight: 400, color: C.ink3, marginTop: 2 }}>pause 가 네임스페이스를 붙잡는 중</div>}
+              {sandboxUp && <div style={{ fontWeight: 400, color: C.ink3, marginTop: "var(--space-2)" }}>pause 가 네임스페이스를 붙잡는 중</div>}
             </div>
             {box("nginx", nginxMade, nginxUp)}
             {box("log-agent", agentMade, agentUp)}
@@ -212,7 +212,7 @@ export default function CriCallTrace() {
       </div>
 
       {/* 설명 */}
-      <div role="status" style={{ marginTop: 12, padding: 11, borderRadius: 8, background: C.surface, border: `${HAIR} solid ${C.border}` }}>
+      <div role="status" style={{ marginTop: "var(--space-12)", padding: 11, borderRadius: "var(--radius-sm)", background: C.surface, border: `${HAIR} solid ${C.border}` }}>
         <p style={{ margin: "0 0 var(--space-6)", fontSize: 13.5, color: C.ink, lineHeight: 1.6 }}>
           <strong style={mono}>{step.call}</strong> — {step.what}
         </p>
@@ -221,7 +221,7 @@ export default function CriCallTrace() {
         </p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: C.ink3, marginTop: 10, lineHeight: 1.6 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: C.ink3, marginTop: "var(--space-10)", lineHeight: 1.6 }}>
         <strong>1단계에서 이미 IP가 붙는 것</strong>을 보세요. 컨테이너는 하나도 없는데 파드는 벌써 주소를 가집니다.
         그리고 6단계에서 두 번째 컨테이너가 <strong>새 샌드박스를 만들지 않고</strong> 기존 샌드박스에 들어가는 것도요 —
         두 컨테이너가 같은 IP를 쓰는 이유가 여기 있습니다.
