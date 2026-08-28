@@ -67,6 +67,8 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+
+## 검토
 - `KAN-073-CVD8X7` 게이트 인식층 확장 — 추출층이 못 보는 두 갈래를 판정에 넣는다 — 생성:ai · 최종:ai · 갱신:2026-08-28
   - 짧은 제목: 인식층 확장
   - 목적: React 인라인 숫자값과 삼항·템플릿 리터럴 안의 시각 값을 tokens:verify 가 판정하게 만든다
@@ -75,12 +77,11 @@
   - 메모: KAN-072-CPJCT1 검토 항목 2 승인(2026-08-28). 게이트 코드는 KAN-070 계열 소유
   - 실행 문서: KANBAN.cards/KAN-073-CVD8X7.md (6/6 · 최근 08-28)
   - 계획 리포트: KANBAN.reports/KAN-073-CVD8X7.report.html (낡음)
+  - 검토 문서: KANBAN.reviews/KAN-073-CVD8X7.review.md (승인 0/6 · 검토 대기)
   - 원문:
     ```text
     추출층 정규식이 큰따옴표 문자열 값만 봐서 React 인라인 숫자값(fontSize 13 · borderRadius 8 · padding 18)과 삼항·템플릿 리터럴 안을 판정에 안 넣는다. 원문: scripts/lib/tokens/extract.ts:60. 배치6 의 세 작업 단위(webrtc 구획 · auth-authz 구획 · container·tauri 구획)가 독립적으로 같은 것을 짚었고 각각 열 자리 · 열두 자리를 셌다. 옮기면 그림 액자가 2px 씩 줄고 반픽셀 글자가 정수로 접히는, 게이트가 검증 못 하는 화면 변화다. 하위 카드 KAN-072.7 은 카드 목표(이름 규칙을 하드코딩에서 데이터로)를 달성해 닫았으므로 이건 새 카드다
     ```
-
-## 검토
 
 ## 완료
 - `KAN-062` 발행된 글 14편의 본문 이모지 83건을 두들 마크로 갈아 끼운다 — 생성:ai · 최종:ai · 갱신:2026-08-04
