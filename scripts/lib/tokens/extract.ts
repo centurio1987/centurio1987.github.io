@@ -21,7 +21,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import type { Axis, Hit, TokenDef, TokenDict } from "./types.ts";
 import { scanExceptionFor } from "./exceptions.ts";
-import { AXIS } from "./propAxis.ts";
+import { axisOfProp } from "./propAxis.ts";
 import type { RecognizeInput, Recognizer } from "./recognize/types.ts";
 import { styleNum } from "./recognize/styleNum.ts";
 import { exprValue } from "./recognize/exprValue.ts";
@@ -33,8 +33,15 @@ import { attrCss } from "./recognize/attrCss.ts";
  */
 export const RECOGNIZERS: Recognizer[] = [styleNum, exprValue, attrCss];
 
-// ── 축 정의는 `propAxis.ts` 가 소유한다(내용은 원본 s3-scan.py:29-46 그대로).
-//    옛 경로는 좁은 `AXIS` 를, 새 인식층은 `axisOfProp()` 의 넓은 표를 쓴다 — 위 머리주석.
+// ── 축 정의는 `propAxis.ts` 가 소유한다(내용은 원본 s3-scan.py:29-46 그대로 + camelCase 생성).
+//
+//    **옛 경로도 넓은 표를 쓴다 (KAN-073 S5, 관문 3).** 원본 표는 camelCase 를 일부만
+//    들고 있어서(`backgroundcolor`·`fontsize` 는 있고 `minwidth`·`margintop` 은 없다)
+//    `marginLeft: "16px"` 같은 **따옴표 값**이 축이 없다는 이유로 버려지고 있었다.
+//    이 한 줄이 옛 히트를 움직이는 유일한 변경이고, 실측 증분은 정확히 1건이다 —
+//    `src/components/posts/vpn-anatomy-2/NonceReuseLab.tsx:306` 의 `minWidth: "10rem"`.
+//    (`marginLeft: "auto"` 5자리는 `LITERAL` 이 안 물어 0건이다.)
+//    그 1건은 `scripts/fixtures/tokens/reference/` 대조에서 화이트리스트로 다룬다.
 
 /**
  * 토큰이 사는 축. 원본 s3-scan.py:56-72 그대로.
@@ -149,7 +156,7 @@ export function extract(root: string): { files: string[]; dict: TokenDict; hits:
     for (const [chunkRaw, off] of regions) {
       const chunk = chunkRaw.replace(COMMENT_CSS, (m) => "\n".repeat(nl(m)));
       for (const m of chunk.matchAll(DECL)) {
-        const axis = AXIS.get(m[1].trim().toLowerCase());
+        const axis = axisOfProp(m[1]);
         if (!axis) continue;
         hits.push(...classify(dict, axis, m[1], m[2], rel, off + nl(chunk.slice(0, m.index!)) + 1, "css-decl", ex));
       }
@@ -170,7 +177,7 @@ export function extract(root: string): { files: string[]; dict: TokenDict; hits:
         : text;
       for (const [pat, src] of [[ATTR, "jsx-attr"], [JSXOBJ, "style-obj"]] as const) {
         for (const m of body.matchAll(pat)) {
-          const axis = AXIS.get(m[1].trim().toLowerCase());
+          const axis = axisOfProp(m[1]);
           if (!axis) continue;
           hits.push(...classify(dict, axis, m[1], m[2], rel, nl(body.slice(0, m.index!)) + 1, src, ex));
         }
