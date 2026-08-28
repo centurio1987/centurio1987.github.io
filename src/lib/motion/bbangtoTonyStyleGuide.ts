@@ -1,10 +1,18 @@
 /**
  * bbangtoTonyStyleGuide — 빵관 토니 블로그 전용 모션/디자인 파운데이션.
  *
- * KAN-012(모션 도입)의 **단일 진실원**. 정적 셸 토큰(src/styles/motion.css를
- * 생성하는 scripts/gen-motion-css.ts)과 아일랜드용 StyleGuideProvider(Phase C)가
- * 모두 이 파운데이션 하나를 참조한다. blogVizStyleGuide.ts(시각화용 단일 진실원)의
- * 자매 파일이며, 같은 패턴(base → 블로그 값으로 leaf 덮어쓰기)을 따른다.
+ * KAN-012(모션 도입)의 **단일 진실원**. 소비자는 하나다 — 정적 셸 토큰을 굽는
+ * scripts/gen-motion-css.ts:23,40 이 이 파운데이션에서 src/styles/motion.css 를 만든다.
+ * blogVizStyleGuide.ts(시각화용 단일 진실원)의 자매 파일이며, 같은 패턴(base → 블로그
+ * 값으로 leaf 덮어쓰기)을 따른다.
+ *
+ * **StyleGuide export 는 KAN-071 이 걷었다 — 다시 만들지 마라.** 한때 여기 있던
+ * `bbangtoTonyStyleGuide`(foundationToStyleGuide 로 만든 StyleGuide)는 예고된
+ * 아일랜드용 StyleGuideProvider(Phase C)가 끝내 안 들어와 **소비처가 0건**이었고, 그
+ * 안 쓰이는 선언이 tokens.css 값의 두 번째 사본을 든 탓에 값 셋이 어긋나 있었다.
+ * 근거와 A/B/C 판단은 design-concept/UI_CONSISTENCY_AUDIT.md:474 (P4).
+ * 주입할 자리가 생기면 그때 이 파운데이션에서 다시 만든다 — 선언을 미리 세워 두면
+ * 안 쓰이는 채로 사본만 하나 더 는다.
  *
  * 카탈로그(@centurio1987/bbangto-ui-style-guide-catalog)에서 무엇을·왜 picking했나:
  *  - `makeSemantic` : 핵심 색 몇 개만 주면 SemanticColors 전체(상태·카테고리 기본값
@@ -28,10 +36,6 @@ import {
   mergeFoundation,
   type BbangtoFoundation,
 } from "@centurio1987/bbangto-ui-tokens";
-import {
-  foundationToStyleGuide,
-  type StyleGuide,
-} from "@centurio1987/bbangto-ui-core";
 
 /* --- 블로그 토큰 (src/styles/tokens.css v0.3 — 코발트+크림 에디토리얼) --- */
 const PAPER = "#F3EEE4"; // --paper
@@ -133,7 +137,3 @@ export const bbangtoTonyFoundation: BbangtoFoundation = mergeFoundation(
     },
   },
 );
-
-/** 아일랜드(Phase C)에서 스코프형 StyleGuideProvider에 넘길 StyleGuide 형태. */
-export const bbangtoTonyStyleGuide: StyleGuide =
-  foundationToStyleGuide(bbangtoTonyFoundation);
