@@ -76,8 +76,8 @@ const foundations: VisualizationFoundation = {
   },
   typography: {
     ...baseVisualizationFoundation.typography,
-    titleFont: "'Gowun Dodum', system-ui, sans-serif",
-    monoFont: "'Space Mono', 'JetBrains Mono', monospace",
+    titleFont: "'Gowun Dodum', sans-serif", // --font-body
+    monoFont: "'Space Mono', monospace", // --font-mono
     titleWeight: 700,
   },
 };

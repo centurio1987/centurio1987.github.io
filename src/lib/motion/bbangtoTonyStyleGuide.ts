@@ -94,15 +94,15 @@ const baseFoundation: BbangtoFoundation = makeFoundations({
   name: "bbangto-tony",
   description: "빵관 토니 블로그 — 코발트+크림 에디토리얼, 한국어 폰트, subtle 모션",
   semantic,
-  fontSans: "'Gowun Dodum', system-ui, sans-serif", // --font-body
-  fontMono: "'Space Mono', 'JetBrains Mono', monospace", // --font-mono
+  fontSans: "'Gowun Dodum', sans-serif", // --font-body
+  fontMono: "'Space Mono', monospace", // --font-mono
   radius: {
     none: "0px",
     sm: "8px", // --radius-sm
     md: "12px", // --radius-md
     lg: "16px", // --radius-lg
     xl: "16px",
-    full: "9999px", // --btn-radius
+    full: "999px", // --btn-radius
   },
   shadow: {
     // 에디토리얼 — 옅은 잉크 그림자만. lg는 블로그 카드/본문 이미지 리프트 값.
