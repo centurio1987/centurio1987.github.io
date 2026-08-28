@@ -96,7 +96,7 @@ const btn = (active: boolean): CSSProperties => ({
 const sel: CSSProperties = {
   fontSize: "var(--text-meta)",
   padding: "var(--space-4) var(--space-8)",
-  borderRadius: 6,
+  borderRadius: "var(--radius-sm)",
   border: `${HAIR} solid ${tint(INK, 20)}`,
   background: PANEL,
   color: INK,
@@ -114,7 +114,7 @@ export default function CryptokeyRoutingLab() {
   const accepted = inCidr !== null;
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-sm)" }}>
       {/* 표 */}
       <div style={{ fontSize: "var(--text-label)", color: MUTED, marginBottom: "var(--space-6)" }}>Cryptokey Routing 표 (백서 Configuration 1a 재구성)</div>
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--text-meta)", marginBottom: "var(--space-16)" }}>
@@ -131,7 +131,7 @@ export default function CryptokeyRoutingLab() {
               (mode === "out" && outResult?.peer.id === p.id) || (mode === "in" && p.id === peerId);
             return (
               <tr key={p.id} style={{ background: lit ? PANEL : "transparent" }}>
-                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontWeight: 600, borderLeft: `3px solid ${lit ? CORE : "transparent"}` }}>{p.name}</td>
+                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontWeight: 600, borderLeft: `var(--stroke-bold) solid ${lit ? CORE : "transparent"}` }}>{p.name}</td>
                 <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontFamily: "monospace" }}>{p.key}</td>
                 <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontFamily: "monospace" }}>
                   {p.allowed.map((c) => {
@@ -191,7 +191,7 @@ export default function CryptokeyRoutingLab() {
               background: PANEL,
               border: `${HAIR} solid ${tint(outResult ? CORE : DANGER, 33.3)}`,
               color: INK,
-              fontSize: 14,
+              fontSize: "var(--text-meta)",
             }}
           >
             {outResult ? (
@@ -238,7 +238,7 @@ export default function CryptokeyRoutingLab() {
               background: PANEL,
               border: `${HAIR} solid ${tint(accepted ? OK : DANGER, 33.3)}`,
               color: INK,
-              fontSize: 14,
+              fontSize: "var(--text-meta)",
             }}
           >
             {accepted ? (

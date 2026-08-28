@@ -85,7 +85,7 @@ export default function RequestJourneyLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -105,7 +105,7 @@ export default function RequestJourneyLab() {
         </code>{" "}
         가 깨우는 계층을 차례로 따라가 보세요.
       </p>
-      <p style={{ margin: "0 0 var(--space-14, 14px)", fontSize: 12.5, color: INK_SOFT }}>
+      <p style={{ margin: "0 0 var(--space-14, 14px)", fontSize: "var(--text-label)", color: INK_SOFT }}>
         이 위 단계마다, 아래에는 늘 IP 라우팅(L3·3편) → Ethernet/ARP(L2·2편) → 신호(L1·2편)가
         깔려 있습니다.
       </p>
@@ -169,7 +169,7 @@ export default function RequestJourneyLab() {
         <p style={{ margin: "0 0 var(--space-6, 6px)", fontFamily: "monospace", fontSize: "var(--text-meta)", color: ACCENT_INK }}>
           {stage.produces}
         </p>
-        <p style={{ margin: 0, fontSize: 13.5 }}>{stage.note}</p>
+        <p style={{ margin: 0, fontSize: "var(--text-meta)" }}>{stage.note}</p>
       </div>
 
       <div style={{ display: "flex", gap: "var(--space-8)", alignItems: "center" }}>

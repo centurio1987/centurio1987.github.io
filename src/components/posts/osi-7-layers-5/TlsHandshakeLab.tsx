@@ -100,7 +100,7 @@ export default function TlsHandshakeLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -150,7 +150,7 @@ export default function TlsHandshakeLab() {
         {step.carries.length === 0 ? (
           <span style={{ color: INK_SOFT, fontSize: "var(--text-meta)" }}>이 단계에선 TLS 메시지가 없습니다.</span>
         ) : (
-          <ul style={{ margin: 0, paddingLeft: 18 }}>
+          <ul style={{ margin: 0, paddingLeft: "var(--space-16)" }}>
             {step.carries.map((c, idx) => (
               <li
                 key={idx}
@@ -161,7 +161,7 @@ export default function TlsHandshakeLab() {
                   color: c.includes("──") ? ACCENT_INK : INK,
                   fontWeight: c.includes("──") ? 700 : 400,
                   listStyle: c.includes("──") ? "none" : "disc",
-                  marginLeft: c.includes("──") ? -18 : 0,
+                  marginLeft: c.includes("──") ? "calc(var(--space-16) * -1)" : 0,
                 }}
               >
                 {c}
@@ -180,7 +180,7 @@ export default function TlsHandshakeLab() {
           border: `${HAIR} solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
           lineHeight: 1.65,
-          fontSize: 13.5,
+          fontSize: "var(--text-meta)",
           color: INK,
         }}
       >

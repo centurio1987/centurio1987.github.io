@@ -136,7 +136,7 @@ export default function JwtVerifyLab() {
   const optBtn = (on: boolean): React.CSSProperties => ({
     padding: "var(--space-6) var(--space-10)",
     border: on ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
-    borderRadius: 7,
+    borderRadius: "var(--radius-sm)",
     background: on ? ACTIVE_TINT : PANEL,
     color: INK,
     cursor: "pointer",
@@ -155,7 +155,7 @@ export default function JwtVerifyLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -280,9 +280,9 @@ export default function JwtVerifyLab() {
         }}
       >
         <p style={{ margin: "0 0 var(--space-4)" }}>
-          <strong style={{ color: verdictColor, fontSize: 16 }}>{verdictText}</strong>
+          <strong style={{ color: verdictColor, fontSize: "var(--text-small)" }}>{verdictText}</strong>
         </p>
-        <p style={{ margin: 0, fontSize: 14, color: INK_SOFT }}>{result.summary}</p>
+        <p style={{ margin: 0, fontSize: "var(--text-meta)", color: INK_SOFT }}>{result.summary}</p>
       </div>
 
       <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: 1.55 }}>

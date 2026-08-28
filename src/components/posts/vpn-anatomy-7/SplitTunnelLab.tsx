@@ -92,7 +92,7 @@ export default function SplitTunnelLab() {
     fontSize: "var(--text-meta)",
     fontWeight: 600,
     cursor: "pointer",
-    borderRadius: 6,
+    borderRadius: "var(--radius-sm)",
     border: `${HAIR} solid ${active ? "#8a7a56" : BORDER}`,
     background: active ? "#efe3c6" : PANEL,
     color: active ? "#4a3f26" : "#7a7264",
@@ -113,8 +113,8 @@ export default function SplitTunnelLab() {
   );
 
   return (
-    <figure style={{ margin: "1.5rem 0", border: `${HAIR} solid ${SUBTLE}`, borderRadius: 10, padding: "var(--space-16)", background: PANEL }}>
-      <div style={{ display: "grid", gap: 18, gridTemplateColumns: "minmax(0,1fr)" }}>
+    <figure style={{ margin: "1.5rem 0", border: `${HAIR} solid ${SUBTLE}`, borderRadius: "var(--radius-sm)", padding: "var(--space-16)", background: PANEL }}>
+      <div style={{ display: "grid", gap: "var(--space-16)", gridTemplateColumns: "minmax(0,1fr)" }}>
         <div>
           {control(
             "터널 상태",
@@ -155,13 +155,13 @@ export default function SplitTunnelLab() {
                     justifyContent: "space-between",
                     gap: "var(--space-10)",
                     padding: "var(--space-8) var(--space-12)",
-                    borderRadius: 7,
+                    borderRadius: "var(--radius-sm)",
                     background: meta.bg,
                     border: `${HAIR} solid ${meta.border}`,
                   }}
                 >
                   <span style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontWeight: 700, fontSize: 14, color: meta.fg }}>{c.name}</span>
+                    <span style={{ fontWeight: 700, fontSize: "var(--text-meta)", color: meta.fg }}>{c.name}</span>
                     <span style={{ fontSize: "var(--text-micro)", color: MUTED_3 }}>{c.note}</span>
                   </span>
                   <span

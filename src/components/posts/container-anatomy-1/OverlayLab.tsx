@@ -136,7 +136,7 @@ export default function OverlayLab() {
 
   const colStyle: React.CSSProperties = {
     border: `${HAIR} solid ${C.border}`,
-    borderRadius: 10,
+    borderRadius: "var(--radius-sm)",
     background: C.surface,
     padding: "var(--space-12)",
     minWidth: 0,
@@ -145,16 +145,16 @@ export default function OverlayLab() {
     margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink,
   };
   const colHint: React.CSSProperties = {
-    margin: "0 0 var(--space-10)", fontSize: 11.5, color: C.ink3, lineHeight: 1.45,
+    margin: "0 0 var(--space-10)", fontSize: "var(--text-micro)", color: C.ink3, lineHeight: 1.45,
   };
   const rowBase: React.CSSProperties = {
-    fontFamily: MONO, fontSize: 12.5,
-    padding: "var(--space-6) var(--space-8)", borderRadius: 6, marginBottom: 5,
+    fontFamily: MONO, fontSize: "var(--text-label)",
+    padding: "var(--space-6) var(--space-8)", borderRadius: "var(--radius-sm)", marginBottom: "var(--space-4)",
     border: `${HAIR} solid transparent`, lineHeight: 1.4,
   };
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${C.border}`, borderRadius: "var(--radius-md)", background: C.paper }}>
+    <figure style={{ margin: "2rem 0", padding: "var(--space-16)", border: `${HAIR} solid ${C.border}`, borderRadius: "var(--radius-md)", background: C.paper }}>
       {/* 파일 선택 */}
       <div style={{ marginBottom: "var(--space-12)" }}>
         <span style={{ fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink, marginRight: "var(--space-8)" }}>파일</span>
@@ -166,7 +166,7 @@ export default function OverlayLab() {
               onClick={() => setSelected(f.name)}
               aria-pressed={selected === f.name}
               style={{
-                fontFamily: MONO, fontSize: 12.5,
+                fontFamily: MONO, fontSize: "var(--text-label)",
                 padding: "var(--space-4) var(--space-10)", borderRadius: "var(--btn-radius)", cursor: "pointer",
                 border: selected === f.name ? `${BOLD} solid ${C.accent}` : `${HAIR} solid ${C.border}`,
                 background: selected === f.name ? C.accentTint : C.surface,
@@ -243,7 +243,7 @@ export default function OverlayLab() {
       </div>
 
       {/* 사용량 */}
-      <p role="status" style={{ margin: "var(--space-14) 0 0", fontSize: 13.5, color: C.ink }}>
+      <p role="status" style={{ margin: "var(--space-14) 0 0", fontSize: "var(--text-meta)", color: C.ink }}>
         컨테이너 레이어 사용량:{" "}
         <strong style={{ fontFamily: MONO, color: usedBytes > 0 ? C.popInk : C.teal }}>
           {formatSize(usedBytes)}
@@ -253,7 +253,7 @@ export default function OverlayLab() {
       {/* 로그 */}
       <div style={{ marginTop: "var(--space-10)", padding: "var(--space-10)", borderRadius: "var(--radius-sm)", background: C.surface, border: `${HAIR} solid ${C.border}`, minHeight: 52 }}>
         {log.length === 0 ? (
-          <p style={{ margin: 0, fontSize: 12.5, color: C.ink3 }}>
+          <p style={{ margin: 0, fontSize: "var(--text-label)", color: C.ink3 }}>
             파일을 고르고 <strong>읽기 → 쓰기 → 삭제</strong> 순으로 눌러 보세요.
           </p>
         ) : (

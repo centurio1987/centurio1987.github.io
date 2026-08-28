@@ -34,7 +34,7 @@ export default function EncapsulationLab() {
   }
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `var(--stroke-hair) solid ${BORDER}`, borderRadius: "var(--radius-md)", background: PANEL }}>
+    <figure style={{ margin: "2rem 0", padding: "var(--space-16)", border: `var(--stroke-hair) solid ${BORDER}`, borderRadius: "var(--radius-md)", background: PANEL }}>
       <div style={{ display: "flex", gap: "var(--space-8)", flexWrap: "wrap", marginBottom: "var(--space-16)" }}>
         <button type="button" onClick={() => changeDirection("send")} aria-pressed={direction === "send"}>송신: 캡슐화</button>
         <button type="button" onClick={() => changeDirection("receive")} aria-pressed={direction === "receive"}>수신: 역캡슐화</button>
@@ -54,7 +54,7 @@ export default function EncapsulationLab() {
                 display: "grid", gridTemplateColumns: "3rem minmax(8rem, 1fr) minmax(7rem, 1fr)",
                 gap: "var(--space-8)", alignItems: "center", textAlign: "left", padding: "var(--space-10) var(--space-12)",
                 border: active ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`, borderRadius: "var(--radius-sm)",
-                background: active ? "#e5f0ed" : passed ? CREAM : PANEL,
+                background: active ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : passed ? CREAM : PANEL,
                 color: INK, cursor: "pointer",
               }}
             >

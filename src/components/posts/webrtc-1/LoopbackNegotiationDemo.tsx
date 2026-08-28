@@ -203,7 +203,7 @@ export default function LoopbackNegotiationDemo() {
       <figure
         style={{
           margin: "2rem 0",
-          padding: 18,
+          padding: "var(--space-16)",
           border: `${HAIR} solid ${BORDER}`,
           borderRadius: "var(--radius-md)",
           background: PANEL,
@@ -220,7 +220,7 @@ export default function LoopbackNegotiationDemo() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -324,7 +324,7 @@ export default function LoopbackNegotiationDemo() {
           borderRadius: "var(--radius-sm)",
           background: PANEL,
           padding: "var(--space-8, 8px) var(--space-10, 10px)",
-          fontSize: 12.5,
+          fontSize: "var(--text-label)",
           lineHeight: 1.6,
         }}
       >

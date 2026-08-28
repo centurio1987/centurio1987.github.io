@@ -65,7 +65,7 @@ export default function EncodingLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -171,8 +171,8 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
         background: PANEL,
       }}
     >
-      <span style={{ fontSize: 12.5, color: INK_SOFT, fontWeight: 600 }}>{label}</span>
-      <span style={{ fontSize: 14, color: INK }}>{children}</span>
+      <span style={{ fontSize: "var(--text-label)", color: INK_SOFT, fontWeight: 600 }}>{label}</span>
+      <span style={{ fontSize: "var(--text-meta)", color: INK }}>{children}</span>
     </div>
   );
 }

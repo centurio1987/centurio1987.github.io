@@ -62,7 +62,7 @@ export default function ProposalTreeBuilder() {
   const btn = (active: boolean, disabled: boolean): React.CSSProperties => ({
     fontSize: "var(--text-meta)",
     padding: "var(--space-6) var(--space-10)",
-    borderRadius: 6,
+    borderRadius: "var(--radius-sm)",
     border: `${HAIR} solid ${active ? CORE : tint(INK, 20)}`,
     background: active ? CORE : PANEL,
     color: active ? PANEL : disabled ? MUTED : INK,
@@ -71,7 +71,7 @@ export default function ProposalTreeBuilder() {
   });
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-sm)" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-8)", marginBottom: "var(--space-14)" }}>
         {TRANSFORMS.map((t) => {
           const active = !!on[t.key];
@@ -100,7 +100,7 @@ export default function ProposalTreeBuilder() {
           └ Proposal #1 · length {proposalLen} · Protocol ID: IKE(1) · SPI Size: 0 · transforms {count}
         </div>
         {selected.map((t, i) => (
-          <div key={t.key} style={{ paddingLeft: 34 }}>
+          <div key={t.key} style={{ paddingLeft: "var(--space-32)" }}>
             {i === selected.length - 1 ? "└" : "├"} Transform · len {t.len} · Type {t.type} · ID {t.id}
           </div>
         ))}
@@ -129,7 +129,7 @@ export default function ProposalTreeBuilder() {
         </div>
       </div>
 
-      <p style={{ marginTop: "var(--space-12)", marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: 6, fontSize: "var(--text-meta)", lineHeight: 1.7, color: redundantInteg ? DANGER : OK, background: tint(redundantInteg ? DANGER : OK, 7.1), border: `${HAIR} solid ${tint(redundantInteg ? DANGER : OK, 26.7)}` }}>
+      <p style={{ marginTop: "var(--space-12)", marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: "var(--radius-sm)", fontSize: "var(--text-meta)", lineHeight: 1.7, color: redundantInteg ? DANGER : OK, background: tint(redundantInteg ? DANGER : OK, 7.1), border: `${HAIR} solid ${tint(redundantInteg ? DANGER : OK, 26.7)}` }}>
         {redundantInteg
           ? "AES-GCM은 이미 암호화와 무결성을 한 몸으로 처리하는 AEAD입니다. INTEG 변환을 따로 넣으면 대개 거부되거나 무시됩니다 — 캡처에서 INTEG 칸이 비어 있던 이유입니다."
           : matchesCapture

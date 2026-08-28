@@ -63,7 +63,7 @@ export default function EspOverheadLab() {
   ];
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-sm)" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-16)", alignItems: "center", marginBottom: "var(--space-14)" }}>
         <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
           바깥 경로 MTU: {mtu}바이트
@@ -82,7 +82,7 @@ export default function EspOverheadLab() {
           <select
             value={suiteId}
             onChange={(e) => setSuiteId(e.target.value)}
-            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
+            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: "var(--radius-sm)", border: `${HAIR} solid ${tint(INK, 20)}` }}
           >
             {SUITES.map((s) => (
               <option key={s.id} value={s.id}>
@@ -97,7 +97,7 @@ export default function EspOverheadLab() {
         </label>
       </div>
 
-      <div style={{ display: "flex", height: 26, borderRadius: 5, overflow: "hidden", border: `${HAIR} solid ${tint(INK, 20)}`, marginBottom: "var(--space-6)" }}>
+      <div style={{ display: "flex", height: 26, borderRadius: "var(--radius-xs)", overflow: "hidden", border: `${HAIR} solid ${tint(INK, 20)}`, marginBottom: "var(--space-6)" }}>
         {rows
           .filter((r) => r.bytes > 0)
           .map((r) => (
@@ -128,7 +128,7 @@ export default function EspOverheadLab() {
                     display: "inline-block",
                     width: 10,
                     height: 10,
-                    borderRadius: 2,
+                    borderRadius: "var(--radius-xs)",
                     background: r.color,
                     marginRight: "var(--space-8)",
                   }}

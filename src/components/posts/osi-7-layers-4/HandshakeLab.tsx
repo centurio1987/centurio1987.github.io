@@ -68,7 +68,7 @@ function Endpoint({ label, state, active }: { label: string; state: string; acti
         textAlign: "center",
         padding: "var(--space-10, 10px) var(--space-8, 8px)",
         border: active ? `${BOLD} solid ${TEAL}` : `${HAIR} solid ${BORDER}`,
-        borderRadius: 10,
+        borderRadius: "var(--radius-sm)",
         background: active ? TEAL_TINT : PANEL,
       }}
     >
@@ -96,7 +96,7 @@ export default function HandshakeLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -157,7 +157,7 @@ export default function HandshakeLab() {
           border: `${HAIR} solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
           lineHeight: 1.6,
-          fontSize: 13.5,
+          fontSize: "var(--text-meta)",
           color: INK,
         }}
       >

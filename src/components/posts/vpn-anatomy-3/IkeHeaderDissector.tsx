@@ -69,7 +69,7 @@ export default function IkeHeaderDissector() {
   const chip: React.CSSProperties = {
     fontSize: "var(--text-meta)",
     padding: "var(--space-4) var(--space-8)",
-    borderRadius: 6,
+    borderRadius: "var(--radius-sm)",
     border: `${HAIR} solid ${tint(INK, 20)}`,
     background: PANEL,
     color: INK,
@@ -77,14 +77,14 @@ export default function IkeHeaderDissector() {
   };
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-sm)" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-12)", alignItems: "center", marginBottom: "var(--space-14)" }}>
         <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
           Exchange Type{" "}
           <select
             value={exchange}
             onChange={(e) => setExchange(Number(e.target.value))}
-            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
+            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: "var(--radius-sm)", border: `${HAIR} solid ${tint(INK, 20)}` }}
           >
             {EXCHANGES.map((e) => (
               <option key={e.id} value={e.id}>
@@ -132,7 +132,7 @@ export default function IkeHeaderDissector() {
         </table>
       </div>
 
-      <p style={{ marginTop: "var(--space-12)", marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: 6, fontSize: "var(--text-meta)", lineHeight: 1.7, color: OK, background: tint(OK, 7.1), border: `${HAIR} solid ${tint(OK, 26.7)}` }}>
+      <p style={{ marginTop: "var(--space-12)", marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: "var(--radius-sm)", fontSize: "var(--text-meta)", lineHeight: 1.7, color: OK, background: tint(OK, 7.1), border: `${HAIR} solid ${tint(OK, 26.7)}` }}>
         지금 Flags 바이트 = <strong style={{ fontFamily: "monospace" }}>0x{hex1(flags)}</strong> ({role} · {dir}).
         캡처의 프레임 1은 <strong style={{ fontFamily: "monospace" }}>0x08</strong>(개시자·요청), 프레임 2는 <strong style={{ fontFamily: "monospace" }}>0x20</strong>(응답자·응답)이었습니다.
       </p>

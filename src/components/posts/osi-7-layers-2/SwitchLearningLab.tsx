@@ -88,7 +88,7 @@ export default function SwitchLearningLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -120,7 +120,7 @@ export default function SwitchLearningLab() {
                 textAlign: "center",
                 border: `var(--stroke-hair) solid ${reached ? TEAL : BORDER}`,
                 borderRadius: "var(--radius-sm)",
-                background: reached ? "#e5f0ed" : PANEL,
+                background: reached ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : PANEL,
                 lineHeight: 1.4,
               }}
             >
@@ -273,7 +273,7 @@ export default function SwitchLearningLab() {
                 <li
                   key={i}
                   style={{
-                    fontSize: 12.5,
+                    fontSize: "var(--text-label)",
                     lineHeight: 1.5,
                     marginBottom: "var(--space-4)",
                     color:

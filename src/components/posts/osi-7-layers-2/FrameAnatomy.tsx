@@ -87,7 +87,7 @@ export default function FrameAnatomy() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -126,7 +126,7 @@ export default function FrameAnatomy() {
       </div>
 
       {/* 프레임 막대 */}
-      <div style={{ display: "flex", width: "100%", overflow: "hidden", borderRadius: 6 }}>
+      <div style={{ display: "flex", width: "100%", overflow: "hidden", borderRadius: "var(--radius-sm)" }}>
         {visible.map((f) => {
           const isActive = f.id === active.id;
           return (
@@ -143,13 +143,13 @@ export default function FrameAnatomy() {
                 background: f.color,
                 color: INK,
                 cursor: "pointer",
-                fontSize: 11.5,
+                fontSize: "var(--text-micro)",
                 lineHeight: 1.35,
                 fontWeight: isActive ? 700 : 500,
               }}
             >
               <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{f.label}</div>
-              <div style={{ fontSize: 10.5, color: INK_SOFT }}>{f.bytes}</div>
+              <div style={{ fontSize: "var(--text-nano)", color: INK_SOFT }}>{f.bytes}</div>
             </button>
           );
         })}

@@ -69,7 +69,7 @@ export default function IceTraversalLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -183,7 +183,7 @@ export default function IceTraversalLab() {
             <strong style={{ color: typeColor[result.selected] }}>{typeLabel[result.selected]}</strong>
           )}
         </p>
-        <p style={{ margin: 0, fontSize: 14 }}>{result.selectedReason}</p>
+        <p style={{ margin: 0, fontSize: "var(--text-meta)" }}>{result.selectedReason}</p>
       </div>
 
       <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: 1.55 }}>

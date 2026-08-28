@@ -80,7 +80,7 @@ export default function DnsResolveLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -109,7 +109,7 @@ export default function DnsResolveLab() {
               style={{
                 padding: "var(--space-4, 4px) var(--space-12, 12px)",
                 borderRadius: "var(--radius-sm)",
-                fontSize: 12.5,
+                fontSize: "var(--text-label)",
                 fontWeight: active ? 700 : 500,
                 border: active ? `${BOLD} solid ${TEAL}` : `${HAIR} solid ${BORDER}`,
                 background: active ? TEAL_TINT : PANEL,
@@ -156,11 +156,11 @@ export default function DnsResolveLab() {
         role="status"
       >
         <p style={{ margin: "0 0 var(--space-8, 8px)", fontWeight: 700, color: INK }}>{step.title}</p>
-        <p style={{ margin: "0 0 var(--space-6, 6px)", fontSize: 13.5 }}>
+        <p style={{ margin: "0 0 var(--space-6, 6px)", fontSize: "var(--text-meta)" }}>
           <strong style={{ color: ACCENT_INK }}>질문:</strong>{" "}
           <code style={{ fontFamily: "monospace" }}>{step.ask}</code>
         </p>
-        <p style={{ margin: 0, fontSize: 13.5 }}>
+        <p style={{ margin: 0, fontSize: "var(--text-meta)" }}>
           <strong style={{ color: TEAL }}>응답:</strong> {step.reply}
         </p>
       </div>

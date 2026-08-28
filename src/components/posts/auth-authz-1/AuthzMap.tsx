@@ -139,7 +139,7 @@ export default function AuthzMap() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -157,7 +157,7 @@ export default function AuthzMap() {
               style={{
                 width: 12,
                 height: 12,
-                borderRadius: 3,
+                borderRadius: "var(--radius-xs)",
                 background: AXIS[a].color,
                 display: "inline-block",
               }}
@@ -189,7 +189,7 @@ export default function AuthzMap() {
                 style={{
                   width: 9,
                   height: 9,
-                  borderRadius: 2,
+                  borderRadius: "var(--radius-xs)",
                   background: AXIS[c.axis].color,
                   display: "inline-block",
                   flexShrink: 0,
@@ -213,16 +213,16 @@ export default function AuthzMap() {
         }}
       >
         <p style={{ margin: "0 0 var(--space-8)" }}>
-          <strong style={{ color: AXIS[selected.axis].color, fontSize: 17 }}>{selected.label}</strong>{" "}
+          <strong style={{ color: AXIS[selected.axis].color, fontSize: "var(--text-body)" }}>{selected.label}</strong>{" "}
           <span style={{ fontSize: "var(--text-label)", color: INK_SOFT }}>· {AXIS[selected.axis].label}</span>
         </p>
         <p style={{ margin: "0 0 var(--space-6)", fontSize: "var(--text-small)" }}>
           <strong>질문:</strong> {selected.question}
         </p>
-        <p style={{ margin: "0 0 var(--space-6)", fontSize: 14, color: INK_SOFT }}>
+        <p style={{ margin: "0 0 var(--space-6)", fontSize: "var(--text-meta)", color: INK_SOFT }}>
           <strong>여기 사는 기술:</strong> {selected.tech}
         </p>
-        <p style={{ margin: 0, fontSize: 14, color: INK_SOFT }}>
+        <p style={{ margin: 0, fontSize: "var(--text-meta)", color: INK_SOFT }}>
           <strong>인접 좌표:</strong>{" "}
           {selected.neighbors.map((n, i) => (
             <span key={n}>
@@ -237,7 +237,7 @@ export default function AuthzMap() {
                   color: AXIS[byId(n).axis].color,
                   cursor: "pointer",
                   textDecoration: "underline",
-                  fontSize: 14,
+                  fontSize: "var(--text-meta)",
                 }}
               >
                 {byId(n).label}

@@ -63,7 +63,7 @@ export default function SlidingWindowLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -88,7 +88,7 @@ export default function SlidingWindowLab() {
       </label>
 
       {/* 세그먼트 띠 */}
-      <div style={{ display: "flex", gap: 3, marginBottom: "var(--space-10)" }}>
+      <div style={{ display: "flex", gap: "var(--space-2)", marginBottom: "var(--space-10)" }}>
         {Array.from({ length: TOTAL }, (_, i) => {
           const k = kindOf(i);
           return (
@@ -120,12 +120,12 @@ export default function SlidingWindowLab() {
       {/* 범례 */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-12)", marginBottom: "var(--space-14)" }}>
         {(Object.keys(STYLE) as Kind[]).map((k) => (
-          <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "var(--text-label)" }}>
+          <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-4)", fontSize: "var(--text-label)" }}>
             <span
               style={{
                 width: 14,
                 height: 14,
-                borderRadius: 3,
+                borderRadius: "var(--radius-xs)",
                 background: STYLE[k].bg,
                 border: `${HAIR} solid ${BORDER}`,
                 display: "inline-block",

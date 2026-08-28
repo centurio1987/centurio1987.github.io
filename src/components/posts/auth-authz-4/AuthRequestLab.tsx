@@ -93,7 +93,7 @@ export default function AuthRequestLab() {
     // 7px·11px 은 §9 스케일 밖이라 동률에서 작은 쪽으로 접는다 (7→6 · 11→10).
     padding: "var(--space-6) var(--space-10)",
     border: on ? `var(--stroke-bold) solid ${danger ? RED : TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
-    borderRadius: 7,
+    borderRadius: "var(--radius-sm)",
     background: on ? (danger ? DANGER_TINT : ACTIVE_TINT) : PANEL,
     color: INK,
     cursor: "pointer",
@@ -111,7 +111,7 @@ export default function AuthRequestLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -189,9 +189,9 @@ export default function AuthRequestLab() {
         }}
       >
         <p style={{ margin: "0 0 var(--space-4)" }}>
-          <strong style={{ color: verdictColor, fontSize: 16 }}>{verdictText}</strong>
+          <strong style={{ color: verdictColor, fontSize: "var(--text-small)" }}>{verdictText}</strong>
         </p>
-        <p style={{ margin: 0, fontSize: 14, color: INK_SOFT }}>{result.summary}</p>
+        <p style={{ margin: 0, fontSize: "var(--text-meta)", color: INK_SOFT }}>{result.summary}</p>
       </div>
 
       <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: 1.55 }}>

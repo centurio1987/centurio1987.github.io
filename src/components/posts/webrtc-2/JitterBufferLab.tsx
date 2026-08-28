@@ -66,7 +66,7 @@ export default function JitterBufferLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -108,7 +108,7 @@ export default function JitterBufferLab() {
 
       <div style={{ display: "grid", gap: "var(--space-6)", marginBottom: "var(--space-10)" }}>
         <div style={{ fontSize: "var(--text-label)", color: INK_2, fontWeight: 600 }}>도착 순서 (뒤섞일 수 있음)</div>
-        <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: 6 }}>
+        <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: "var(--radius-sm)" }}>
           {packets.map((p) => (
             <div
               key={p.seq}
@@ -119,7 +119,7 @@ export default function JitterBufferLab() {
                 top: 4,
                 width: 22,
                 height: 26,
-                marginLeft: -11,
+                marginLeft: "calc(var(--space-10) * -1)",
                 borderRadius: "var(--radius-xs)",
                 background: ARRIVED,
                 color: ON_CHIP,
@@ -138,7 +138,7 @@ export default function JitterBufferLab() {
         <div style={{ fontSize: "var(--text-label)", color: INK_2, fontWeight: 600, marginTop: "var(--space-8)" }}>
           재생 순서 (버퍼가 내보내는 일정한 리듬)
         </div>
-        <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: 6 }}>
+        <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: "var(--radius-sm)" }}>
           {results.map((r) => (
             <div
               key={r.seq}
@@ -151,7 +151,7 @@ export default function JitterBufferLab() {
                 top: 4,
                 width: 22,
                 height: 26,
-                marginLeft: -11,
+                marginLeft: "calc(var(--space-10) * -1)",
                 borderRadius: "var(--radius-xs)",
                 background: r.status === "on-time" ? ON_TIME : LATE,
                 color: ON_CHIP,

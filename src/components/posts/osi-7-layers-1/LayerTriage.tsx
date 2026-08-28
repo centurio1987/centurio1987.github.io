@@ -97,7 +97,7 @@ export default function LayerTriage() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -125,7 +125,7 @@ export default function LayerTriage() {
                 padding: "var(--space-10) var(--space-12)",
                 border: isActive ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
                 borderRadius: "var(--radius-sm)",
-                background: isActive ? "#e5f0ed" : PANEL,
+                background: isActive ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : PANEL,
                 color: INK,
                 cursor: "pointer",
                 lineHeight: 1.5,

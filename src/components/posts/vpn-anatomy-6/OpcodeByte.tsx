@@ -69,7 +69,7 @@ export default function OpcodeByte() {
         fontWeight: 700,
         color: PANEL,
         background: group === "op" ? CORE : ACCENT,
-        borderRadius: 5,
+        borderRadius: "var(--radius-xs)",
       }}
     >
       {b}
@@ -85,7 +85,7 @@ export default function OpcodeByte() {
         padding: "var(--space-16)",
         background: PAPER,
         border: `${HAIR} solid ${tint(INK, 13.3)}`,
-        borderRadius: 10,
+        borderRadius: "var(--radius-sm)",
       }}
     >
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-16)", alignItems: "center", marginBottom: "var(--space-16)" }}>
@@ -94,7 +94,7 @@ export default function OpcodeByte() {
           <select
             value={opcode}
             onChange={(e) => setOpcode(Number(e.target.value))}
-            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}`, maxWidth: 280 }}
+            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: "var(--radius-sm)", border: `${HAIR} solid ${tint(INK, 20)}`, maxWidth: 280 }}
           >
             {OPCODES.map((o) => (
               <option key={o.value} value={o.value}>
@@ -117,7 +117,7 @@ export default function OpcodeByte() {
         </label>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 20, alignItems: "flex-end", marginBottom: "var(--space-12)" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-16)", alignItems: "flex-end", marginBottom: "var(--space-12)" }}>
         <div>
           <div style={{ display: "flex", gap: "var(--space-4)", marginBottom: "var(--space-6)" }}>
             {bits.slice(0, 5).map((b, i) => (
@@ -132,7 +132,7 @@ export default function OpcodeByte() {
             <span style={{ width: 34 * 3 + 8, color: ACCENT, fontWeight: 600 }}>key-id = {keyId}</span>
           </div>
         </div>
-        <div style={{ fontFamily: "monospace", fontSize: 30, fontWeight: 700, color: INK }}>{hex}</div>
+        <div style={{ fontFamily: "monospace", fontSize: "var(--text-h2)", fontWeight: 700, color: INK }}>{hex}</div>
       </div>
 
       <div style={{ fontSize: "var(--text-meta)", color: INK, lineHeight: 1.9 }}>
@@ -160,7 +160,7 @@ export default function OpcodeByte() {
             marginTop: "var(--space-10)",
             marginBottom: 0,
             padding: "var(--space-8) var(--space-10)",
-            borderRadius: 6,
+            borderRadius: "var(--radius-sm)",
             fontSize: "var(--text-meta)",
             lineHeight: 1.7,
             color: OK,

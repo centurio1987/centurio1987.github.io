@@ -49,7 +49,7 @@ function Bar({
       <div
         style={{
           height: 16,
-          borderRadius: 6,
+          borderRadius: "var(--radius-sm)",
           background: TRACK,
           border: `${HAIR} solid ${BORDER}`,
           overflow: "hidden",
@@ -60,7 +60,7 @@ function Bar({
             height: "100%",
             width: `${Math.max(2, Math.min(100, ratio * 100))}%`,
             background: color,
-            borderRadius: 6,
+            borderRadius: "var(--radius-sm)",
             transition: "width 120ms ease-out",
           }}
         />
@@ -96,7 +96,7 @@ export default function ParticipantScaleLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -114,7 +114,7 @@ export default function ParticipantScaleLab() {
         />
       </label>
 
-      <div style={{ display: "grid", gap: 18 }}>
+      <div style={{ display: "grid", gap: "var(--space-16)" }}>
         {topologies.map((t) => {
           const load = result[t];
           return (

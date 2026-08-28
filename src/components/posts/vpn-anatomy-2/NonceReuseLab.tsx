@@ -74,7 +74,7 @@ const inputStyle: CSSProperties = {
   padding: "var(--space-8) var(--space-10)",
   border: `${HAIR} solid ${tint(INK, 20)}`,
   borderRadius: "var(--radius-sm)",
-  fontSize: 14,
+  fontSize: "var(--text-meta)",
   fontFamily: "'JetBrains Mono', monospace",
   background: PANEL,
   color: INK,
@@ -109,7 +109,7 @@ function toggleStyle(active: boolean): CSSProperties {
 const panelStyle: CSSProperties = {
   marginTop: "var(--space-14)",
   padding: "var(--space-14)",
-  borderRadius: 10,
+  borderRadius: "var(--radius-sm)",
   border: `${HAIR} solid ${tint(INK, 13.3)}`,
   background: PAPER,
 };
@@ -127,7 +127,7 @@ const rowLabel: CSSProperties = {
 
 function HexBytes({ bytes, compareWith }: { bytes: number[]; compareWith?: number[] }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 3, fontFamily: "'JetBrains Mono', monospace", fontSize: "var(--text-label)" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)", fontFamily: "'JetBrains Mono', monospace", fontSize: "var(--text-label)" }}>
       {bytes.map((b, i) => {
         const same = compareWith ? compareWith[i] === b : false;
         return (
@@ -189,7 +189,7 @@ export default function NonceReuseLab() {
   const sameKsCount = ks1.filter((v, i) => v === ks2[i]).length;
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-md)", background: SURFACE }}>
+    <figure style={{ margin: "2rem 0", padding: "var(--space-16)", border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-md)", background: SURFACE }}>
       <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK, lineHeight: 1.5 }}>
         P1·P2와 nonce 토글을 바꿔 가며, <strong>같은 nonce가 왜 위험한지</strong> 눈으로 확인하세요. 아래로 갈수록
         키스트림 → 암호문 → XOR 증명 → 실제 공격 순서로 이어집니다.
@@ -319,7 +319,7 @@ export default function NonceReuseLab() {
             fontSize: "var(--text-small)",
             padding: "var(--space-8) var(--space-10)",
             background: PANEL,
-            borderRadius: 6,
+            borderRadius: "var(--radius-sm)",
             wordBreak: "break-all",
             border: `${HAIR} solid ${tint(INK, 13.3)}`,
           }}

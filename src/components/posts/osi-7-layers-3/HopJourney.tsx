@@ -70,7 +70,7 @@ export default function HopJourney() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -105,9 +105,9 @@ export default function HopJourney() {
                   justifyContent: "center",
                   width: 52,
                   height: 40,
-                  borderRadius: isRouter ? "var(--radius-sm)" : 20,
+                  borderRadius: isRouter ? "var(--radius-sm)" : "var(--radius-lg)",
                   border: active ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
-                  background: active ? "#e5f0ed" : PANEL,
+                  background: active ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : PANEL,
                   fontWeight: 700,
                   color: INK,
                   fontSize: "var(--text-meta)",
@@ -193,7 +193,7 @@ export default function HopJourney() {
           border: `var(--stroke-hair) solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
           lineHeight: 1.6,
-          fontSize: 13.5,
+          fontSize: "var(--text-meta)",
           color: INK,
         }}
       >

@@ -108,7 +108,7 @@ export default function SdpNegotiationStepper() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `${HAIR} solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -169,7 +169,7 @@ export default function SdpNegotiationStepper() {
                 textAlign: "left",
                 padding: "var(--space-8, 8px) var(--space-10, 10px)",
                 border: active ? `${BOLD} solid ${CALLER}` : `${HAIR} solid ${BORDER}`,
-                borderRadius: 6,
+                borderRadius: "var(--radius-sm)",
                 background: active ? ACTIVE : done ? CREAM : PANEL,
                 color: INK,
                 cursor: "pointer",
@@ -178,7 +178,7 @@ export default function SdpNegotiationStepper() {
               }}
             >
               <strong style={{ color: actorColor[s.actor] }}>{s.actor === "caller" ? "발신자" : "수신자"}</strong>
-              <code style={{ fontSize: 12.5 }}>{s.api}</code>
+              <code style={{ fontSize: "var(--text-label)" }}>{s.api}</code>
             </button>
           );
         })}

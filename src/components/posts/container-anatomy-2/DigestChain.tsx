@@ -111,7 +111,7 @@ export default function DigestChain() {
           : "레이어입니다. 실제로는 압축된 tar 이고, 이 다이제스트는 압축된 파일의 해시(DiffID 와 다름)입니다.";
 
   const panel: React.CSSProperties = {
-    border: `${HAIR} solid ${C.border}`, borderRadius: 10, background: C.surface,
+    border: `${HAIR} solid ${C.border}`, borderRadius: "var(--radius-sm)", background: C.surface,
     padding: "var(--space-12)", minWidth: 0,
   };
   const mono: React.CSSProperties = { fontFamily: MONO };
@@ -124,7 +124,7 @@ export default function DigestChain() {
         onClick={() => setView(to)}
         style={{
           ...mono, display: "block", width: "100%", textAlign: "left",
-          fontSize: 12.5, padding: "var(--space-6) var(--space-8)", marginBottom: "var(--space-6)", borderRadius: 6,
+          fontSize: "var(--text-label)", padding: "var(--space-6) var(--space-8)", marginBottom: "var(--space-6)", borderRadius: "var(--radius-sm)",
           border: `${HAIR} solid ${C.border}`, background: C.surface, color: C.ink, cursor: "pointer",
         }}
       >
@@ -134,7 +134,7 @@ export default function DigestChain() {
   }
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${C.border}`, borderRadius: "var(--radius-md)", background: C.paper }}>
+    <figure style={{ margin: "2rem 0", padding: "var(--space-16)", border: `${HAIR} solid ${C.border}`, borderRadius: "var(--radius-md)", background: C.paper }}>
       {/* 플랫폼 탭 */}
       <div style={{ marginBottom: "var(--space-12)" }}>
         <span style={{ fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink, marginRight: "var(--space-8)" }}>플랫폼</span>
@@ -145,7 +145,7 @@ export default function DigestChain() {
             onClick={() => { setPlatform(p); setView("index"); }}
             aria-pressed={platform === p}
             style={{
-              ...mono, fontSize: 12.5, padding: "var(--space-4) var(--space-10)", marginRight: "var(--space-6)", borderRadius: "var(--btn-radius)",
+              ...mono, fontSize: "var(--text-label)", padding: "var(--space-4) var(--space-10)", marginRight: "var(--space-6)", borderRadius: "var(--btn-radius)",
               border: platform === p ? `${BOLD} solid ${C.accent}` : `${HAIR} solid ${C.border}`,
               background: platform === p ? C.accentTint : C.surface, color: C.ink, cursor: "pointer",
             }}
@@ -167,7 +167,7 @@ export default function DigestChain() {
             ))}
           </p>
 
-          <div style={{ ...mono, fontSize: "var(--text-label)", background: C.cream, borderRadius: 6, padding: 9, lineHeight: 1.7 }}>
+          <div style={{ ...mono, fontSize: "var(--text-label)", background: C.cream, borderRadius: "var(--radius-sm)", padding: "var(--space-8)", lineHeight: 1.7 }}>
             {activeDigest === null ? (
               <>
                 <div><span style={{ color: C.ink3 }}>mediaType </span>…index.v1+json</div>
@@ -204,7 +204,7 @@ export default function DigestChain() {
             <button
               type="button"
               onClick={() => setView("index")}
-              style={{ marginTop: "var(--space-10)", fontSize: 12.5, padding: "var(--space-4) var(--space-12)", borderRadius: "var(--btn-radius)", border: `${HAIR} solid ${C.border}`, background: C.cream, color: C.ink, cursor: "pointer" }}
+              style={{ marginTop: "var(--space-10)", fontSize: "var(--text-label)", padding: "var(--space-4) var(--space-12)", borderRadius: "var(--btn-radius)", border: `${HAIR} solid ${C.border}`, background: C.cream, color: C.ink, cursor: "pointer" }}
             >
               처음으로
             </button>
@@ -214,7 +214,7 @@ export default function DigestChain() {
         {/* 우: blobs 디렉터리 */}
         <div style={panel}>
           <p style={{ margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink }}>blobs/sha256/</p>
-          <p style={{ margin: "0 0 var(--space-10)", fontSize: 11.5, color: C.ink3, lineHeight: 1.45 }}>
+          <p style={{ margin: "0 0 var(--space-10)", fontSize: "var(--text-micro)", color: C.ink3, lineHeight: 1.45 }}>
             디스크에는 해시 이름만 있습니다
           </p>
           {blobs.map((b) => {
@@ -223,7 +223,7 @@ export default function DigestChain() {
               <div
                 key={b.digest}
                 style={{
-                  ...mono, fontSize: "var(--text-label)", padding: "var(--space-6) var(--space-8)", marginBottom: 5, borderRadius: 6,
+                  ...mono, fontSize: "var(--text-label)", padding: "var(--space-6) var(--space-8)", marginBottom: "var(--space-4)", borderRadius: "var(--radius-sm)",
                   background: on ? C.popTint : C.surface,
                   border: `${HAIR} solid ${on ? C.pop : C.border}`,
                   color: on ? C.ink : C.ink3,
@@ -231,7 +231,7 @@ export default function DigestChain() {
               >
                 {short(b.digest)}…
                 {on && (
-                  <div style={{ fontSize: 10.5, color: C.popInk, marginTop: 3 }}>
+                  <div style={{ fontSize: "var(--text-nano)", color: C.popInk, marginTop: "var(--space-2)" }}>
                     {b.mt}
                     <br />= {b.what}
                   </div>

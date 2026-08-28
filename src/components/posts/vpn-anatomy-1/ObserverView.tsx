@@ -134,7 +134,7 @@ export default function ObserverView() {
         margin: "1.75rem 0",
         padding: "1rem",
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 10,
+        borderRadius: "var(--radius-sm)",
         background: SURFACE,
       }}
     >
@@ -184,9 +184,9 @@ export default function ObserverView() {
               style={{
                 padding: "var(--space-6) var(--space-10)",
                 borderRadius: "var(--btn-radius)",
-                border: active ? `${HAIR} solid ${INK}` : "var(--stroke-hair) solid #cfc7b6",
+                border: active ? `${HAIR} solid ${INK}` : "var(--stroke-hair) solid var(--border)",
                 background: active ? INK : PANEL,
-                color: active ? PANEL : "#3c3a33",
+                color: active ? PANEL : "var(--ink)",
                 fontSize: "var(--text-meta)",
                 cursor: "pointer",
               }}
@@ -204,7 +204,7 @@ export default function ObserverView() {
         style={{
           width: "100%",
           borderCollapse: "collapse",
-          fontSize: 14,
+          fontSize: "var(--text-meta)",
           tableLayout: "fixed",
         }}
       >

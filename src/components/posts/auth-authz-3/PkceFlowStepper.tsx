@@ -99,16 +99,18 @@ export default function PkceFlowStepper() {
     border: `var(--stroke-hair) solid ${BORDER}`,
     borderRadius: "var(--radius-sm)",
     background: disabled ? IDLE : PANEL,
-    // `#a9a294`(비활성 글자)는 매핑표 밖이다 — 최근접 토큰이 --ink-3 인데 ΔRGB 74.8 로 멀다.
-    // 임의로 고르지 않고 판정 대기로 둔다 (KAN-072 배치6 S13).
-    color: disabled ? "#a9a294" : INK,
+    // `#a9a294`(비활성 글자) → --ink-muted. KAN-072 배치6 S13 이 「최근접 --ink-3 이
+    // Δ74.8 로 멀다」며 판정 대기로 뒀는데, 그 뒤 --ink-muted(#a59c8b)가 서면서 Δ11.5 가
+    // 됐다. 역할도 같다(비활성 글자). 유저 판정 2026-08-29 — DESIGN_CONCEPT.md:85 가
+    // 「셋을 한 값으로 모으는 것은 별도 판정」이라 남겨 둔 자리 중 하나를 닫은 것이다.
+    color: disabled ? "var(--ink-muted)" : INK,
     cursor: disabled ? "default" : "pointer",
-    fontSize: 14,
+    fontSize: "var(--text-meta)",
   });
   const toggle = (on: boolean, danger = false): React.CSSProperties => ({
     padding: "var(--space-6) var(--space-10)",
     border: on ? `var(--stroke-bold) solid ${danger ? RED : TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
-    borderRadius: 7,
+    borderRadius: "var(--radius-sm)",
     background: on ? (danger ? DANGER_TINT : ACTIVE_TINT) : PANEL,
     color: INK,
     cursor: "pointer",
@@ -119,7 +121,7 @@ export default function PkceFlowStepper() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -149,14 +151,14 @@ export default function PkceFlowStepper() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-10)", marginBottom: "var(--space-8)" }}>
-          <strong style={{ fontSize: 16, color: INK }}>{step.title}</strong>
+          <strong style={{ fontSize: "var(--text-small)", color: INK }}>{step.title}</strong>
           <span
             style={{
               fontSize: "var(--text-label)",
               color: PANEL,
               background: chInfo.color,
               padding: "var(--space-2) var(--space-8)",
-              borderRadius: 20,
+              borderRadius: "var(--radius-lg)",
             }}
           >
             {chInfo.label}
@@ -165,7 +167,7 @@ export default function PkceFlowStepper() {
         <pre
           style={{
             margin: 0,
-            fontSize: 12.5,
+            fontSize: "var(--text-label)",
             lineHeight: 1.55,
             color: INK_SOFT,
             whiteSpace: "pre-wrap",
@@ -187,7 +189,7 @@ export default function PkceFlowStepper() {
             borderRadius: "var(--radius-sm)",
             // 축을 살리면 짝이 안 깨진다 — 바로 위 border 와 같은 축의 옅은 단이다(Δ2.2 · Δ5.1).
             background: attackOutcome.ok ? OUTCOME_BAD : OUTCOME_OK,
-            fontSize: 13.5,
+            fontSize: "var(--text-meta)",
             lineHeight: 1.55,
             color: INK,
           }}

@@ -112,7 +112,7 @@ export default function AntiReplayLab() {
   const btn: React.CSSProperties = {
     fontSize: "var(--text-meta)",
     padding: "var(--space-6) var(--space-10)",
-    borderRadius: 6,
+    borderRadius: "var(--radius-sm)",
     border: `${HAIR} solid ${tint(INK, 20)}`,
     background: PANEL,
     color: INK,
@@ -120,14 +120,14 @@ export default function AntiReplayLab() {
   };
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
+    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-sm)" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-12)", alignItems: "center", marginBottom: "var(--space-12)" }}>
         <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
           윈도우 크기{" "}
           <select
             value={size}
             onChange={(e) => reset(Number(e.target.value))}
-            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
+            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: "var(--radius-sm)", border: `${HAIR} solid ${tint(INK, 20)}` }}
           >
             <option value={8}>8비트</option>
             <option value={16}>16비트</option>
@@ -142,7 +142,7 @@ export default function AntiReplayLab() {
             min={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            style={{ width: 84, fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
+            style={{ width: 84, fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: "var(--radius-sm)", border: `${HAIR} solid ${tint(INK, 20)}` }}
           />
         </label>
         <button type="button" style={{ ...btn, background: CORE, color: PANEL, borderColor: CORE }} onClick={() => receive(Number(input))}>
@@ -177,7 +177,7 @@ export default function AntiReplayLab() {
         </button>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: "var(--space-10)" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)", marginBottom: "var(--space-10)" }}>
         {cells.map((s) => {
           const got = seen.includes(s);
           const isRight = s === right;
@@ -223,7 +223,7 @@ export default function AntiReplayLab() {
             marginTop: "var(--space-10)",
             marginBottom: 0,
             padding: "var(--space-8) var(--space-10)",
-            borderRadius: 6,
+            borderRadius: "var(--radius-sm)",
             fontSize: "var(--text-meta)",
             lineHeight: 1.7,
             color: verdict.color,

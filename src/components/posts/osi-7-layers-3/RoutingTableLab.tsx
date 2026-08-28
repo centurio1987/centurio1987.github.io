@@ -75,7 +75,7 @@ export default function RoutingTableLab() {
     <figure
       style={{
         margin: "2rem 0",
-        padding: 18,
+        padding: "var(--space-16)",
         border: `var(--stroke-hair) solid ${BORDER}`,
         borderRadius: "var(--radius-md)",
         background: PANEL,
@@ -105,7 +105,7 @@ export default function RoutingTableLab() {
               padding: "var(--space-4) var(--space-8)",
               fontFamily: "monospace",
               border: `var(--stroke-hair) solid ${valid ? BORDER : DANGER}`,
-              borderRadius: 6,
+              borderRadius: "var(--radius-sm)",
               width: 150,
             }}
           />
@@ -129,7 +129,7 @@ export default function RoutingTableLab() {
               fontFamily: "monospace",
               border: `var(--stroke-hair) solid ${BORDER}`,
               borderRadius: "var(--card-radius)",
-              background: ip === p ? "#e5f0ed" : PANEL,
+              background: ip === p ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : PANEL,
               color: INK,
               cursor: "pointer",
             }}
@@ -157,7 +157,7 @@ export default function RoutingTableLab() {
                 <tr
                   key={e.route.cidr}
                   style={{
-                    background: isWinner ? "#e5f0ed" : "transparent",
+                    background: isWinner ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : "transparent",
                     color: matched ? INK : "var(--ink-muted)",
                   }}
                 >
@@ -166,7 +166,7 @@ export default function RoutingTableLab() {
                       padding: "var(--space-4) var(--space-8)",
                       fontFamily: "monospace",
                       fontWeight: isWinner ? 700 : 400,
-                      borderLeft: isWinner ? `3px solid ${TEAL}` : "3px solid transparent",
+                      borderLeft: isWinner ? `var(--stroke-bold) solid ${TEAL}` : "var(--stroke-bold) solid transparent",
                     }}
                   >
                     {e.route.cidr}
