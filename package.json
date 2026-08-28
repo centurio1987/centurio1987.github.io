@@ -13,6 +13,7 @@
     "deco:verify": "bun scripts/verify-deco.ts",
     "width:verify": "bun scripts/verify-widths.ts",
     "tokens:verify": "bun scripts/verify-tokens.ts",
+    "render:compare": "bun scripts/compare-render.ts",
     "talk:build": "bun scripts/build-talk.ts",
     "talk:verify": "bun scripts/verify-talk.ts",
     "graph:refresh": "bash scripts/refresh-graph.sh && bash scripts/graph-stamp.sh",
