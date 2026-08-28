@@ -158,9 +158,9 @@ S5 에서 1건짜리 화이트리스트와 함께 따로 한다.
 **배치2 — 인식기 셋 (병렬, 폭 3)** · 확인 명령은 `bun scripts/verify-tokens.ts --json --warn-only`
 (인식기가 붙으면 래칫이 실패하므로 `tokens:verify` 로는 못 잰다. `--warn-only` 는 **로컬 전용**이고 커밋에 안 들어간다 — `main.yml:75` 가 금지한 것은 CI 사용이다)
 
-- [ ] `S2` 갈래 A `recognize/styleNum.ts` — 완료 기준: 836건이 판정에 들어오고 그중 175건이 스케일 밖 · `Doodle.astro` 좌표표 새 히트 0 · 단위 없는 속성 181건에서 새 히트 0
-- [ ] `S3` 갈래 B `recognize/exprValue.ts` — 완료 기준: 34건이 들어오고 `PermissionGate.tsx:124` 의 `var(--stroke, 1.5px)` 가 위반이 아니며 **새 히트와 옛 히트의 `(file, line, value)` 교집합이 0**
-- [ ] `S4` 갈래 C `recognize/attrCss.ts` — 완료 기준: `CrayonFilters.astro:42` 의 `width:0`·`height:0` 이 준수로 판정된다(부채를 거의 안 내므로 건수가 아니라 구멍이 닫혔는지로 본다)
+- [>] `S2` 갈래 A `recognize/styleNum.ts` — 완료 기준: 836건이 판정에 들어오고 그중 175건이 스케일 밖 · `Doodle.astro` 좌표표 새 히트 0 · 단위 없는 속성 181건에서 새 히트 0 <!-- claim:s=557e0f67 t=2026-08-28T19:14 -->
+- [>] `S3` 갈래 B `recognize/exprValue.ts` — 완료 기준: 34건이 들어오고 `PermissionGate.tsx:124` 의 `var(--stroke, 1.5px)` 가 위반이 아니며 **새 히트와 옛 히트의 `(file, line, value)` 교집합이 0** <!-- claim:s=557e0f67 t=2026-08-28T19:14 -->
+- [>] `S4` 갈래 C `recognize/attrCss.ts` — 완료 기준: `CrayonFilters.astro:42` 의 `width:0`·`height:0` 이 준수로 판정된다(부채를 거의 안 내므로 건수가 아니라 구멍이 닫혔는지로 본다) <!-- claim:s=557e0f67 t=2026-08-28T19:14 -->
 
 **배치3 — 수렴 (직렬, 폭 1)**
 
@@ -185,3 +185,6 @@ S5 에서 1건짜리 화이트리스트와 함께 따로 한다.
 - 2026-08-28T18:58 · s:557e0f67 — `검증` 섹션 교체
 - 2026-08-28T19:04 · s:557e0f67 · S1 doing — 착수
 - 2026-08-28T19:10 · s:557e0f67 · S1 done — 계약·축 표·스텁 셋을 박았다. propAxis.ts 가 축 표를 소유하되 옛 AXIS 는 내용 그대로 두고 camelCase 는 새 경로 전용 axisOfProp() 에만 넓혔다 — 공유 맵에 보태면 그 값을 줍는 것이 새 인식기가 아니라 기존 JSXOBJ 라 옛 집합이 움직인다. docrule 의 SPACING_GROUP 도 같은 표를 읽게 했고(지금 판정 불변 — camelCase spacing 히트가 0건), selftest 는 고장 파일을 확장자별로 얹고 CASES 를 인식기 faults 에서 모으며 유일성 키를 (verdict, want, src) 로 바꿨다. 검증: 히트 3135·판정 3654·토큰 108·파일 152 로 변경 전과 완전 동일, 옛 집합 (file,line,prop,value,src) 키 대조에서 증분 0·소실 0, 자가검사 정상 1 + 고장 6종 사유 6가지, scripts/ tsc 신규 0
+- 2026-08-28T19:14 · s:557e0f67 · S2 doing — 착수
+- 2026-08-28T19:14 · s:557e0f67 · S3 doing — 착수
+- 2026-08-28T19:14 · s:557e0f67 · S4 doing — 착수
