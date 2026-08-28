@@ -84,7 +84,7 @@
   - 메모: KAN-073 검토 항목 1·5 승인(2026-08-28). 대부분이 인라인 숫자값이라 옮기면 화면이 바뀐다 — 그림 액자가 2px 씩 줄고 반픽셀 글자가 정수로 접힌다. KAN-072 처럼 격리 사본 대조 하네스가 필요하고 그 하네스가 조용히 통과하는 고장 셋은 KANBAN.cards/KAN-072-CPJCT1.md:229 에 있다. 드리프트 608 은 값이 같아 화면 변화 0 이라 먼저 갚을 수 있다
   - 실행 문서: KANBAN.cards/KAN-074-MQ9KRB.md (8/8 · 최근 08-29)
   - 계획 리포트: KANBAN.reports/KAN-074-MQ9KRB.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-074-MQ9KRB.review.md (승인 0/5 · 검토 대기)
+  - 검토 문서: KANBAN.reviews/KAN-074-MQ9KRB.review.md (승인 0/2 · 검토 대기)
 
 ## 완료
 - `KAN-062` 발행된 글 14편의 본문 이모지 83건을 두들 마크로 갈아 끼운다 — 생성:ai · 최종:ai · 갱신:2026-08-04

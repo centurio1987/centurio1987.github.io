@@ -24,9 +24,10 @@ status: 검토 대기
 | 베이스 | `d082433b` |
 | 변경 훑기 | `git diff d082433b...HEAD` |
 
-**커밋 12건**
+**커밋 13건**
 
 ```text
+659f44c kanban: KAN-074-MQ9KRB 검토로 이동 — 검토서 · 판단 항목 5 (KAN-074-MQ9KRB)
 aabd999 S8: 새 기준선 778 → 0 · 문서 셋 — 하드월 승격은 KAN-075~077 뒤로 (KAN-074-MQ9KRB)
 fe47253 S6+S7: 위반 170건 처분 — 기하 97 · 글자 53 · 색 9 · 음수 여백 3 · 예외 8 (KAN-074-MQ9KRB)
 dfa7df0 S6: 예외 표에 자리 단위 좁히기(site) — 파일 단위로 걸면 그 파일의 준수분까지 내려간다 (KAN-074-MQ9KRB)
@@ -41,21 +42,25 @@ fc689c5 S3: 하네스 보강 — 안 그려지는 노드 제외 · 상태별 잡
 a6a65c3 kanban: KAN-074-MQ9KRB 착수 — 진행 중 이동 · 실행 문서 · 배치 3개
 ```
 
-**변경 파일 53개 (+2465 −717)**
+**변경 파일 57개 (+3926 −730)**
 
 | 파일 | 상태 | 추가 | 삭제 |
 |---|:--:|---:|---:|
-| `.kanban/archive.jsonl` | M | 1 | 0 |
-| `.kanban/log.md` | M | 1 | 1 |
-| `.kanban/state.json` | M | 23 | 14 |
+| `.kanban/archive.jsonl` | M | 2 | 0 |
+| `.kanban/log.md` | M | 2 | 2 |
+| `.kanban/reviews/KAN-074-MQ9KRB.events.jsonl` | M | 11 | 0 |
+| `.kanban/reviews/KAN-074-MQ9KRB.review.json` | M | 21 | 0 |
+| `.kanban/state.json` | M | 37 | 26 |
 | `CLAUDE.md` | M | 17 | 1 |
 | `KANBAN.batches/KAN-074-MQ9KRB.batch1.md` | M | 109 | 0 |
 | `KANBAN.batches/KAN-074-MQ9KRB.batch2.md` | M | 76 | 0 |
 | `KANBAN.batches/KAN-074-MQ9KRB.batch3.md` | M | 58 | 0 |
 | `KANBAN.board.html` | M | 4 | 4 |
 | `KANBAN.cards/KAN-074-MQ9KRB.md` | M | 212 | 0 |
-| `KANBAN.md` | M | 8 | 6 |
+| `KANBAN.md` | M | 9 | 6 |
 | `KANBAN.reports/KAN-074-MQ9KRB.report.html` | M | 555 | 0 |
+| `KANBAN.reviews/KAN-074-MQ9KRB.review.html` | M | 1164 | 0 |
+| `KANBAN.reviews/KAN-074-MQ9KRB.review.md` | M | 248 | 0 |
 | `design-concept/DESIGN_CONCEPT.md` | M | 24 | 0 |
 | `design-concept/UI_CONSISTENCY_AUDIT.md` | M | 11 | 0 |
 | `package.json` | M | 1 | 0 |
@@ -138,25 +143,38 @@ a6a65c3 kanban: KAN-074-MQ9KRB 착수 — 진행 중 이동 · 실행 문서 · 
 
 ```text
 — tokens:verify —
-  · 예외 5건 — motion-css-generated(scan+verdict, 근거 2) · viz-css-vendored(scan, 근거 1) · accent-bar-5px(verdict, 근거 1) · kraft-toggle-set(verdict, 근거 1) · apply-viz-generated(scan, 근거 1)
-  · 자가검사: 정상 1 + 고장 9종, 사유 9가지
-  · color / 정당한 예외 4건
-  · stroke / 정당한 예외 4건
-  · 기준선과 같다.
-  · 래칫 기준(제외분 빼고 · fallback 포함 — 지금 고쳐야 할 것): 정당한 예외 8 · 준수 3571 · 판정 불가 953
-✓ 토큰 게이트 통과.
+예외 5건(근거 전건 실재) · 자가검사 정상 1 + 고장 9종 사유 9가지 · 기준선과 같다
+래칫: 위반 0 · 드리프트 0 · 정당한 예외 8 · 준수 3571 · 판정 불가 953
+(착수 전: 위반 170 · 드리프트 608 · 준수 2795)
 
-— 회귀 —
-build 46쪽 OK · tsc(posts) 신규 0 · viz/deco/talk/width verify OK
-check-post-markers OK · check-emphasis OK · --dist OK · check-quote-blocks OK · gen:motion 드리프트 0
+— 회귀 아홉 —
+build 46쪽 · tsc(posts) 신규 0 · viz/deco/talk/width verify
+check-post-markers · check-emphasis(+--dist) · check-quote-blocks · gen:motion 후 motion.css 드리프트 0
 
-— 화면 (compare-render, getComputedStyle 전수) —
+— 화면: 계산값 전수 대조 (compare-render, getComputedStyle) —
 배치1(드리프트 608): 24쪽 x 뷰포트 2 x 상태 9 에서 차이 0
-배치2(위반 170): 높이 바뀐 지면 45곳 전부 감소 · 늘어난 곳 0 · 최대 -0.26%(auth-authz-2 desktop 15212.1 -> 15172.5)
-가로 넘침 961 -> 952 (새 넘침 0). 961 은 선행 상태이고 대부분 가로 스크롤 컨테이너 안이다
+배치2(위반 170): 높이 바뀐 지면 45곳 전부 감소 · 늘어난 곳 0 · 최대 -0.26%
+가로 넘침 961 -> 952(새 넘침 0). 961 은 선행 상태이고 대부분 가로 스크롤 컨테이너 안이다
+
+— 화면: 실제 브라우저로 확인 (aside, 24쪽 전수) —
+글자 크기가 바뀐 요소 116 · 줄 수가 바뀐 요소 10 · **줄이 늘어난 요소 0** · 요소 수 어긋난 쪽 0
+줄이 바뀐 10건은 전부 줄어든 쪽(3->2, 2->1)이고 글자 크기는 그대로다.
+원인을 끝까지 짚었다 — auth-authz-2 의 라벨에서 조상 padding 이 18->16px 이 되며 안쪽 폭이
+586 -> 590px 로 넓어져 짧은 라벨이 더는 안 접힌다. 액자가 2px 줄었는데 글자 자리는 늘었다.
+모서리는 vpn-anatomy-3 토글 버튼을 3.4배로 확대해 양쪽을 찍어 대조했다 —
+확대해야 겨우 구별되고 1배에서는 구별되지 않는다. 같은 지면 radius 분포 6px10+10px2+8px1 -> 8px13.
 
 — 하네스 자가검사 —
 잡음 0 · 고장1 맨 var() 토큰 삭제 80건 · 고장2 값 반전 80건 · 고장3 셀렉터 0곳 대 계산값 1770곳
+
+— 판정이 필요 없어 뺀 것 셋 (기록) —
+1) 하드월 승격을 안 했다. 고를 여지가 없다 — 하드월에는 기준선이 없어서, 인식층을 여는
+   KAN-075~077 이 새 위반을 들고 오는 순간 CI 가 빨개지고 deploy 가 needs: build 라
+   사이트 배포가 멈춘다(main.yml:78). 승격 조건을 「인식층이 다 열린 뒤의 0」으로 CLAUDE.md:135 에 적었다.
+2) 예외 표에 자리 단위 좁히기(site)를 열었다. 유저 판정(5px 막대·크래프트 네 색을 그대로 둔다)을
+   실행할 다른 수단이 없었다 — 파일 단위로 걸면 그 파일의 준수분과 다른 부채까지 판정에서 내려간다.
+   선택 필드 하나 + 호출부 둘이고, 안 쓰면 동작이 이전과 같다.
+3) 「눈으로 봤는가」는 위 절에서 답했다. 물을 것이 아니라 하면 되는 일이었다.
 ```
 
 ## 3. 판단 항목 — 스크립트가 판정할 수 없는 것
@@ -189,36 +207,15 @@ python3 scripts/kanban.py review-item <project-root> --card KAN-074-MQ9KRB --add
 **전체 승인은 살아있는 항목이 전부 승인일 때만 섭니다**(철회는 분모에서 빠집니다). 하나라도
 반려·추가 의견·미정이면 4항의 전체 승인도 `→ 완료` 이동도 종료코드 14로 거부됩니다.
 
-- [ ] 게이트가 「0」인데 하드월로 안 올린 것에 동의하는가 — 안 올렸습니다
-    - **상세** — 래칫이 0 이 되면 하드월(0건이면 통과)로 올린다는 것이 원래 계획이었습니다. 안 올린 이유는 뒤에 인식층을 더 여는 카드 셋이 서 있어서입니다 — KAN-075(여러 줄 CSS 선언 47건) · KAN-076(선 굵기 81건) · KAN-077(상수로 올린 리터럴 15건). KAN-073 이 인식층 셋을 열었을 때 실제로 0 이 778 로 다시 섰습니다. 지금 올리면 그 셋이 CI 를 빨갛게 만들며 착수하고, 게이트가 build 잡 안 astro build 앞에 돌며 deploy 가 needs: build 라 사이트 배포까지 멈춥니다. 원문: .github/workflows/main.yml:78 · 승격 조건을 고쳐 적은 자리는 CLAUDE.md:135
+- [ ] 비활성 글자 한 자리가 이름이 어긋난 토큰을 가리킵니다 — 값을 지킬까요, 이름을 지킬까요
+    - **상세** — src/components/posts/osi-7-layers-3/HopJourney.tsx:213 은 step===0 일 때의 버튼 글자색이고 바로 옆 줄이 cursor: not-allowed 입니다. 곧 비활성 글자이고, 그것은 --ink-muted 의 문서상 역할과 정확히 같습니다(DESIGN_CONCEPT.md:72 「흐린·비활성 글자」). 그런데 지금은 --fate-blocked-border 를 가리킵니다. 게이트는 리터럴 값이 어떤 토큰의 값과 한 글자도 다르지 않으면 그 토큰을 가리키는데, #b8b0a0 이 그 토큰 값과 정확히 같았기 때문입니다. 치환기는 값이 같은 자리만 옮기므로 화면 변화는 0 이었습니다. --fate-blocked-border 는 구분 팔레트 --fate-blocked-* 세 색(배경·글자·테두리) 중 테두리이고(DESIGN_CONCEPT.md:127), 원래 쓰임은 SplitTunnelLab.tsx:51 의 border 입니다. --ink-muted 로 옮기면 색차 34.7 이라 눈에 보이게 흐려집니다. 같은 갈래를 이미 한 번 판정하셨습니다 — #a9a294 는 색차 11.5 라 --ink-muted 로 모으기로 했고, DESIGN_CONCEPT.md:85 는 #b8b0a0 6자리가 아직 남았다고 적고 있습니다(그중 게이트가 보는 것은 이 한 자리뿐입니다). 이 카드가 심은 823자리를 전수로 훑어 이름과 쓰인 자리가 어긋난 것은 이 하나뿐임을 확인했습니다
 
     > **판정** — _아직 없습니다._
 
     > **추가 의견** — _아직 없습니다._
 
-- [ ] 게이트에 자리 단위 예외(site)를 연 것이 이 카드 범위 안인가 — 열었습니다
-    - **상세** — 카드 전략은 「인식층을 넓히지 않는다」였는데 예외 표는 인식층이 아니라 판정 층입니다. 연 이유는 유저 판정을 실행할 수단이 없어서입니다 — borderLeft 5px 4자리와 크래프트 네 색을 「그대로 둔다」로 판정받았는데 기존 예외는 파일 단위라 그 파일의 준수분과 다른 부채까지 판정에서 통째로 내려갑니다. KAN-072 가 구분 팔레트 11건을 예외로 안 올린 이유가 정확히 그것입니다. 바꾼 것은 선택 필드 하나와 호출부 둘입니다. 원문: scripts/lib/tokens/exceptions.ts:47 · scripts/lib/tokens/color.ts:131 · scripts/lib/tokens/docrule.ts:214
-
-    > **판정** — _아직 없습니다._
-
-    > **추가 의견** — _아직 없습니다._
-
-- [ ] 대조 하네스를 레포에 커밋한 것이 맞는가 — 커밋했습니다
-    - **상세** — KAN-072 의 하네스는 스크래치패드에만 있었고 세션과 함께 사라졌습니다. 이 카드가 다시 지었고 KAN-075·076·077 이 또 지어야 합니다. 게이트가 아니라 개발 도구라 CI 에 안 물립니다(main.yml 변경 0). 안 커밋했을 때의 대안은 「세 번 다시 짓는다」이고 그때마다 조용히 통과하는 고장 셋을 다시 밟습니다 — 이 카드에서 셋을 다 밟았고 전부 코드로 막았습니다. 원문: scripts/compare-render.ts:1 의 머리주석 · package.json:16 · 고장 셋의 출처는 KANBAN.cards/KAN-072-CPJCT1.md:229
-
-    > **판정** — _아직 없습니다._
-
-    > **추가 의견** — _아직 없습니다._
-
-- [ ] 드리프트 치환에서 #b8b0a0 이 --fate-blocked-border 로 간 것을 그대로 둘 것인가 — 그대로 뒀습니다
-    - **상세** — 그 자리의 글자 색 #b8b0a0 이 --fate-blocked-border 와 값이 정확히 같아 게이트의 D1(같은 표기) 규칙이 그 토큰을 가리켰고, 치환기는 값이 같은 것만 옮기므로 그대로 갔습니다. 화면 변화 0. 다만 역할로 보면 「테두리」 토큰을 글자 색에 쓴 것이라 어긋나고, 문서가 「--ink-muted 는 아직 한 값으로 모이지 않았다 — #b8b0a0 6자리가 남았다」고 적은 그 값이기도 합니다. 이번에 옮긴 것은 게이트가 무는 1자리뿐입니다. 원문: src/components/posts/osi-7-layers-3/HopJourney.tsx:213 · design-concept/DESIGN_CONCEPT.md:85
-
-    > **판정** — _아직 없습니다._
-
-    > **추가 의견** — _아직 없습니다._
-
-- [ ] 글 21편의 화면이 실제로 바뀐 것을 눈으로 봤는가 — 못 봤습니다. 수치로만 확인했습니다
-    - **상세** — compare-render 는 계산된 스타일과 상자 크기를 전수로 재지 눈으로 보지 않습니다. 배치2 의 변화는 높이 기준 최대 -0.26% 이고 늘어난 지면이 없으며 새 가로 넘침이 없습니다. 그래도 「모서리 28자리가 6px 에서 8px 이 된 것」과 「반픽셀 글자 35자리가 정수로 접힌 것」이 실제로 어떻게 보이는지는 사람 눈으로만 판정됩니다. 워크트리에서 bun run build 뒤 bun run preview 로 보실 수 있고, 대상 글은 osi-7-layers 6편 · vpn-anatomy 7편 · container-anatomy 3편 · webrtc 3편 · auth-authz 4편 · tauri-2 입니다. 원문: scripts/compare-render.ts:200 의 「재는 속성은 좁히되 요소는 안 좁힌다」 절
+- [ ] scripts/compare-render.ts 를 레포에 남길까요, 지울까요
+    - **상세** — 670줄이고 CI 에 안 물립니다(main.yml 언급 0). 남기는 값은 KAN-075·076·077 이 같은 대조를 다시 필요로 한다는 것입니다 — KAN-072 의 하네스는 스크래치패드에만 있어 사라졌고, 이 카드가 다시 지으면서 조용히 통과하는 고장 셋을 실제로 밟았습니다(하드링크 사본이 원본 레포를 덮음 · 시간에 끌려다니는 값 · 브라우저가 죽어도 안 끝나는 대기). 지우는 값은 scripts/ 가 670줄만큼 가벼워진다는 것이고, 그때 세 카드는 각자 다시 지어야 합니다. 게이트 다섯(verify-tokens 142줄 · verify-deco 360줄 등)과 달리 이것은 판정을 안 하는 개발 도구라 CLAUDE.md 의 게이트 규약 대상도 아닙니다. 원문: scripts/compare-render.ts:1 머리주석 · package.json:16 · 고장 셋의 출처 KANBAN.cards/KAN-072-CPJCT1.md:229
 
     > **판정** — _아직 없습니다._
 
