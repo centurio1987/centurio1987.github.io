@@ -1,6 +1,6 @@
 {
   "next_id": 74,
-  "next_seq": 318,
+  "next_seq": 319,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -1057,7 +1057,7 @@
       "parent": "KAN-072-CPJCT1"
     },
     "KAN-073-CVD8X7": {
-      "col": "review",
+      "col": "done",
       "title": "게이트 인식층 확장 — 추출층이 못 보는 두 갈래를 판정에 넣는다",
       "verbatim": "추출층 정규식이 큰따옴표 문자열 값만 봐서 React 인라인 숫자값(fontSize 13 · borderRadius 8 · padding 18)과 삼항·템플릿 리터럴 안을 판정에 안 넣는다. 원문: scripts/lib/tokens/extract.ts:60. 배치6 의 세 작업 단위(webrtc 구획 · auth-authz 구획 · container·tauri 구획)가 독립적으로 같은 것을 짚었고 각각 열 자리 · 열두 자리를 셌다. 옮기면 그림 액자가 2px 씩 줄고 반픽셀 글자가 정수로 접히는, 게이트가 검증 못 하는 화면 변화다. 하위 카드 KAN-072.7 은 카드 목표(이름 규칙을 하드코딩에서 데이터로)를 달성해 닫았으므로 이건 새 카드다",
       "생성": "ai",
@@ -1164,6 +1164,16 @@
     "KAN-073-CVD8X7"
   ],
   "recent": [
+    {
+      "seq": 318,
+      "t": "2026-08-28T22:33",
+      "a": "ai",
+      "id": "KAN-073-CVD8X7",
+      "op": "move",
+      "w": "VX53DE",
+      "from": "review",
+      "to": "done"
+    },
     {
       "seq": 317,
       "t": "2026-08-28T19:42",
@@ -1746,16 +1756,6 @@
       "w": "HZ6D0W",
       "from": "doing",
       "to": "review"
-    },
-    {
-      "seq": 268,
-      "t": "2026-08-18T23:16",
-      "a": "ai",
-      "id": "KAN-067-NH9SDQ",
-      "op": "move",
-      "w": "HZ6D0W",
-      "from": "review",
-      "to": "doing"
     }
   ],
   "layout": 2,
