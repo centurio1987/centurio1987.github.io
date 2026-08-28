@@ -262,8 +262,16 @@ const snapshotSource = (allProps: boolean) => `(() => {
     const r = el.getBoundingClientRect();
     vals.push("@box:" + [r.width, r.height].map((n) => Math.round(n * 100) / 100).join(","));
     out.push({ path, style: vals.join(";") });
+    // 그려지지 않는 노드는 세지도 밟지도 않는다. Astro 는 하이드레이션 <style>/<script> 를
+    // **페이지마다 다른 위치**에 끼우는데(첫 아일랜드 앞이거나 뒤), 그것을 형제로 세면 그
+    // 뒤 인덱스가 통째로 한 칸 밀려 멀쩡한 아일랜드가 "없던 노드"로 잡힌다(실측:
+    // osi-7-layers-3 에서 40건). 화면에 안 그려지는 것들이라 빼는 것이 옳다.
+    const SKIP = new Set(["SCRIPT", "STYLE", "LINK", "META", "TEMPLATE", "NOSCRIPT"]);
     let i = 0;
-    for (const c of el.children) walk(c, path + "/" + (i++) + ":" + c.tagName.toLowerCase());
+    for (const c of el.children) {
+      if (SKIP.has(c.tagName)) continue;
+      walk(c, path + "/" + (i++) + ":" + c.tagName.toLowerCase());
+    }
   };
   walk(document.body, "body");
   return out;
@@ -325,18 +333,26 @@ const PAGE_HYDRATE = `(async () => {
 })()`;
 
 /** 조작 대상 — 문서 순서 고정이라 양쪽이 같은 순서로 같은 것을 누른다. */
+/** 잡음 표본을 뜨기 전 잠깐 기다린다 — 타이머가 한 번은 돌아야 움직이는 자리가 드러난다. */
+const NOISE_WAIT = `new Promise((r) => setTimeout(r, 600))`;
+
 const PAGE_CONTROLS = `(() => {
   const sel = "astro-island button, astro-island [role=button], astro-island input[type=range], astro-island select";
   return [...document.querySelectorAll(sel)].length;
 })()`;
 
-async function snapshotPage(page: any, url: string, states: number) {
+async function snapshotPage(page: any, url: string, states: number, noise = false) {
   const shots: Shot[] = [];
   let left = 0;
   await page.goto(url, { waitUntil: "load", timeout: 60000 });
   await page.evaluate(PAGE_FREEZE);
   left = await page.evaluate(PAGE_HYDRATE);
   shots.push({ state: "base", nodes: await page.evaluate(PAGE_SNAPSHOT) });
+  // **상태마다** 한 번 더 잰다 — 같은 빌드에서 연달아 잰 두 값이 갈리면 그 자리는 시간에
+  // 끌려다니는 것이고, 전후 대조의 신호가 아니다. 마지막 상태만 재서는 못 잡는다:
+  // webrtc-2 지터 버퍼는 ctrl1 에서만 움직였고 osi-7-layers-4 슬라이딩 윈도는 ctrl2~5 의
+  // 칸 강조색이 갈렸다(둘 다 코드모드가 background 를 한 줄도 안 건드린 자리다).
+  if (noise) { await page.evaluate(NOISE_WAIT); shots.push({ state: "base#noise", nodes: await page.evaluate(PAGE_SNAPSHOT) }); }
 
   const n = Math.min(states, await page.evaluate(PAGE_CONTROLS));
   for (let i = 0; i < n; i++) {
@@ -359,6 +375,7 @@ async function snapshotPage(page: any, url: string, states: number) {
       await page.evaluate(`new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))`);
     } else if (!ok) continue;
     shots.push({ state: `ctrl${i}`, nodes: await page.evaluate(PAGE_SNAPSHOT) });
+    if (noise) { await page.evaluate(NOISE_WAIT); shots.push({ state: `ctrl${i}#noise`, nodes: await page.evaluate(PAGE_SNAPSHOT) }); }
   }
   return { shots, left };
 }
@@ -373,11 +390,56 @@ async function snapshotPage(page: any, url: string, states: number) {
 const withTimeout = <T,>(p: Promise<T>, ms: number, what: string): Promise<T> =>
   Promise.race([p, new Promise<T>((_, rej) => setTimeout(() => rej(new Error(`${what} 가 ${ms}ms 를 넘겼다`), ), ms))]);
 
+/**
+ * 바깥으로 나가는 요청을 전부 막는다 — 실행을 밀폐한다.
+ *
+ * 이 사이트는 한국어 웹폰트를 `fonts.googleapis.com` 에서 받는다. 그 응답이 올 때와 안 올
+ * 때가 갈리면 **글자 상자가 폴백 메트릭과 진짜 폰트 사이를 오간다.** 실측으로 그렇게 걸렸다:
+ * `webrtc-2` 의 `<strong>` 이 36.14px 대 30.3px, 그 뒤 칸 위치가 2px 씩 밀렸다. 재실행하면
+ * 사라지는 종류라 원인을 못 짚으면 "가끔 빨개지는 대조"가 되어 아무도 안 믿게 된다.
+ *
+ * 폴백 폰트로 재는 것이 실제 화면과 다르지만, 여기서 묻는 것은 "폰트가 어떻게 보이나"가
+ * 아니라 "리터럴을 토큰으로 바꿨을 때 값이 그대로인가"다. **양쪽이 같은 조건이면 답이 나온다.**
+ */
+async function blockExternal(ctx: any) {
+  await ctx.route("**/*", (route: any) => {
+    const u = route.request().url();
+    return u.startsWith("http://127.0.0.1") || u.startsWith("data:") || u.startsWith("blob:")
+      ? route.continue() : route.abort();
+  });
+}
+
 interface Node { path: string; style: string }
 interface Shot { state: string; nodes: Node[] }
 interface Diff { url: string; vp: string; state: string; path: string; prop: string; before: string; after: string }
 
-function diffShots(url: string, vp: string, a: Shot[], b: Shot[], cap = 40): Diff[] {
+/**
+ * 같은 쪽을 두 번 잰 짝에서 **스스로 움직이는 (경로, 속성)** 을 뽑는다.
+ * 여기 든 자리는 전후 대조에서 뺀다 — 빌드가 같아도 갈리는 값이라 신호가 아니다.
+ */
+function noiseKeys(shots: Shot[]): { keys: Set<string>; states: Set<string> } {
+  const keys = new Set<string>(), states = new Set<string>();
+  for (const sh of shots) {
+    if (!sh.state.endsWith("#noise")) continue;
+    states.add(sh.state);
+    const base = shots.find((x) => x.state === sh.state.replace("#noise", ""));
+    if (!base) continue;
+    const byPath = new Map(base.nodes.map((n) => [n.path, n]));
+    for (const n of sh.nodes) {
+      const o = byPath.get(n.path);
+      if (!o) { keys.add(`${n.path}|*`); continue; }
+      if (o.style === n.style) continue;
+      const ma = new Map(o.style.split(";").map((x) => [x.slice(0, x.indexOf(":")), x.slice(x.indexOf(":") + 1)]));
+      for (const part of n.style.split(";")) {
+        const k = part.slice(0, part.indexOf(":")), v = part.slice(part.indexOf(":") + 1);
+        if (ma.get(k) !== v) keys.add(`${n.path}|${k}`);
+      }
+    }
+  }
+  return { keys, states };
+}
+
+function diffShots(url: string, vp: string, a: Shot[], b: Shot[], noisy = new Set<string>(), cap = 40): Diff[] {
   const out: Diff[] = [];
   const states = new Set([...a.map((s) => s.state), ...b.map((s) => s.state)]);
   for (const st of states) {
@@ -395,7 +457,9 @@ function diffShots(url: string, vp: string, a: Shot[], b: Shot[], cap = 40): Dif
       const ma = new Map(na.style.split(";").map((x: string) => [x.slice(0, x.indexOf(":")), x.slice(x.indexOf(":") + 1)]));
       const mb = new Map(nb.style.split(";").map((x: string) => [x.slice(0, x.indexOf(":")), x.slice(x.indexOf(":") + 1)]));
       for (const [k, v] of mb) {
-        if (ma.get(k) !== v) out.push({ url, vp, state: st, path: nb.path, prop: k, before: String(ma.get(k)), after: String(v) });
+        if (ma.get(k) === v) continue;
+        if (noisy.has(`${nb.path}|${k}`) || noisy.has(`${nb.path}|*`)) continue;
+        out.push({ url, vp, state: st, path: nb.path, prop: k, before: String(ma.get(k)), after: String(v) });
         if (out.length >= cap) return out;
       }
     }
@@ -414,15 +478,18 @@ async function run(beforeDist: string, afterDist: string, pages: string[], share
         viewport: { width: vp.width, height: vp.height },
         reducedMotion: "reduce",
       });
+      await blockExternal(ctx);
       const pb = await ctx.newPage(), pa = await ctx.newPage();
       for (const path of pages) {
         log(`${vp.name} ${path}`);
-        const A = await withTimeout(snapshotPage(pb, `http://127.0.0.1:${sb.port}${path}`, MAX_STATES), 180000, `before ${path}`);
+        const A = await withTimeout(snapshotPage(pb, `http://127.0.0.1:${sb.port}${path}`, MAX_STATES, true), 200000, `before ${path}`);
         const B = await withTimeout(snapshotPage(pa, `http://127.0.0.1:${sa.port}${path}`, MAX_STATES), 180000, `after ${path}`);
         // 수화 잔여는 **양쪽이 다를 때만** 말한다 — client:media 섬은 reducedMotion 아래에서
         // 설계상 영영 안 뜨고(Footer.astro:22), 그것은 양쪽에 똑같이 남으므로 신호가 아니다.
         if (A.left !== B.left) notes.push(`${path} [${vp.name}] 수화 잔여가 갈렸다 — before ${A.left} / after ${B.left}`);
-        diffs.push(...diffShots(path, vp.name, A.shots, B.shots));
+        const { keys: noisy, states: noiseStates } = noiseKeys(A.shots);
+        if (noisy.size) notes.push(`${path} [${vp.name}] 스스로 움직이는 자리 ${noisy.size}곳을 대조에서 뺐다(같은 빌드끼리도 갈린다)`);
+        diffs.push(...diffShots(path, vp.name, A.shots.filter((s) => !noiseStates.has(s.state)), B.shots, noisy));
       }
       await ctx.close();
     }
@@ -505,6 +572,7 @@ async function blindSpot(dist: string, pages: string[], hex: string, rgb: string
   let selHits = 0, cssHits = 0;
   try {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    await blockExternal(ctx);
     const page = await ctx.newPage();
     for (const p of pages) {
       log(`맹점 측정 ${p}`);
