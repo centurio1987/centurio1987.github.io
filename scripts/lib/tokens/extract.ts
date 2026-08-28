@@ -8,30 +8,33 @@
  * **원본을 한 글자도 안 바꿔 옮겼다.** 정규식·축 정의·분류 규칙이 원본과 다르면
  * 감사 원자료(3,539 히트)와 히트 단위로 대조할 수 없고, 그러면 이식이 맞는지 판정할
  * 방법이 사라진다. 고칠 것이 있으면 여기가 아니라 축 모듈에서 고친다.
+ *
+ * **KAN-073 이 인식층을 넓혔다 — 옛 경로는 그대로 두고 덧붙였다.**
+ *   정규식 넷(`DECL`·`ATTR`·`JSXOBJ`·`LITERAL`)과 아래 A·B/C 구간은 한 글자도 안 바뀌었다.
+ *   새 갈래는 `recognize/` 의 인식기들이 내고 **새 `src` 라벨**을 달고 나오므로,
+ *   `src ∈ {css-decl, jsx-attr, style-obj}` 로 거르면 옛 집합이 그대로 재현된다.
+ *   축 표(`AXIS`)는 `propAxis.ts` 로 자리만 옮겼고 **내용은 원본 그대로다** —
+ *   거기에 camelCase 를 보태면 그 값을 줍는 것이 새 인식기가 아니라 기존 `JSXOBJ` 라서
+ *   옛 집합이 움직인다. 새 인식기만 `propAxis.axisOfProp()` 의 넓은 표를 쓴다.
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import type { Axis, Hit, TokenDef, TokenDict } from "./types.ts";
 import { scanExceptionFor } from "./exceptions.ts";
+import { AXIS } from "./propAxis.ts";
+import type { RecognizeInput, Recognizer } from "./recognize/types.ts";
+import { styleNum } from "./recognize/styleNum.ts";
+import { exprValue } from "./recognize/exprValue.ts";
+import { attrCss } from "./recognize/attrCss.ts";
 
-// ── 축 정의: CSS 속성 → 축. 원본 s3-scan.py:29-46 그대로.
-const AXIS = new Map<string, Axis>();
-const reg = (axis: Axis, ...props: string[]) => props.forEach((p) => AXIS.set(p, axis));
-reg("color", "color","background","background-color","background-image","border-color",
-  "border","border-top","border-right","border-bottom","border-left",
-  "border-top-color","border-right-color","border-bottom-color","border-left-color",
-  "outline","outline-color","fill","stroke","stop-color","stopcolor",
-  "text-decoration-color","caret-color","accent-color","backgroundcolor","bordercolor");
-reg("spacing","margin","margin-top","margin-right","margin-bottom","margin-left",
-  "padding","padding-top","padding-right","padding-bottom","padding-left",
-  "gap","row-gap","column-gap","top","right","bottom","left","inset",
-  "width","height","min-width","min-height","max-width","max-height","flex-basis");
-reg("radius","border-radius","border-top-left-radius","border-top-right-radius",
-  "border-bottom-left-radius","border-bottom-right-radius","borderradius");
-reg("shadow","box-shadow","text-shadow","filter","boxshadow","textshadow");
-reg("font","font","font-family","font-size","font-weight","line-height","letter-spacing",
-  "fontfamily","fontsize","fontweight","lineheight","letterspacing");
-reg("zindex","z-index","zindex");
+/**
+ * 새 인식층 — 갈래마다 하나. 진입점이 자가검사 고장도 여기서 모은다.
+ * 순서는 보고 순서일 뿐이고 판정에는 영향이 없다.
+ */
+export const RECOGNIZERS: Recognizer[] = [styleNum, exprValue, attrCss];
+
+// ── 축 정의는 `propAxis.ts` 가 소유한다(내용은 원본 s3-scan.py:29-46 그대로).
+//    옛 경로는 좁은 `AXIS` 를, 새 인식층은 `axisOfProp()` 의 넓은 표를 쓴다 — 위 머리주석.
 
 /**
  * 토큰이 사는 축. 원본 s3-scan.py:56-72 그대로.
@@ -97,11 +100,12 @@ export function readTokenDict(root: string): TokenDict {
 function classify(
   dict: TokenDict, axis: Axis, prop: string, raw: string,
   file: string, line: number, src: Hit["src"], excluded: string | null,
+  rawValue?: string,
 ): Hit[] {
   const out: Hit[] = [];
   for (const m of raw.matchAll(VARUSE)) {
     out.push({ axis, kind: "token", prop, value: `var(${m[1]})`, token: m[1],
-               sameValueOtherAxis: null, file, line, src, excluded });
+               sameValueOtherAxis: null, file, line, src, excluded, ...(rawValue ? { rawValue } : {}) });
   }
   // var() 안쪽은 리터럴이 아니다 — 지우고 남은 것만 본다.
   const stripped = raw.replace(VARCALL, " ");
@@ -116,7 +120,7 @@ function classify(
     out.push({ axis, kind: hits.length ? "literal_dup" : "literal_new", prop, value: v,
                token: hits.length ? hits : null,
                sameValueOtherAxis: loose.length ? loose : null,
-               file, line, src, excluded });
+               file, line, src, excluded, ...(rawValue ? { rawValue } : {}) });
   }
   return out;
 }
@@ -151,6 +155,14 @@ export function extract(root: string): { files: string[]; dict: TokenDict; hits:
       }
     }
 
+    // ── 위 A 구간이 **먹은 바이트 범위**. 새 인식층이 같은 자리를 두 번 세지 않게 넘긴다.
+    //    `.tsx` 의 템플릿 리터럴이 여기 들어온다 — 옛 경로와 새 경로가 겹치는 유일한 자리다.
+    const legacyCssSpans: [number, number][] =
+      rel.endsWith(".css")
+        ? [[0, text.length]]
+        : [...text.matchAll(rel.endsWith(".astro") ? STYLE_BLOCK : TEMPLATE)]
+            .map((m) => [m.index!, m.index! + m[0].length] as [number, number]);
+
     // ── B/C. JSX 속성 + 인라인 style 객체
     if (rel.endsWith(".astro") || rel.endsWith(".tsx")) {
       const body = rel.endsWith(".astro")
@@ -162,6 +174,20 @@ export function extract(root: string): { files: string[]; dict: TokenDict; hits:
           if (!axis) continue;
           hits.push(...classify(dict, axis, m[1], m[2], rel, nl(body.slice(0, m.index!)) + 1, src, ex));
         }
+      }
+    }
+
+    // ── D. 새 인식층 (KAN-073) — 옛 경로가 못 보는 갈래들.
+    //    **반드시 같은 `classify()` 를 지나간다.** 예외 표(`ex`)와 `var()` 제거가 거기 붙어
+    //    있어서, 직접 `hits.push` 하면 AUTO-GENERATED viz 파일의 리터럴이 새고
+    //    `var(--stroke, 1.5px)` 같은 이미 준수인 자리가 위반으로 잡힌다.
+    const input: RecognizeInput = {
+      file: rel, text, legacyCssSpans,
+      lineAt: (offset) => nl(text.slice(0, offset)) + 1,
+    };
+    for (const r of RECOGNIZERS) {
+      for (const rec of r.scan(input)) {
+        hits.push(...classify(dict, rec.axis, rec.prop, rec.value, rel, rec.line, rec.src, ex, rec.rawValue));
       }
     }
   }

@@ -13,30 +13,52 @@
  * 어떻게 도나.
  *   `scripts/fixtures/tokens/faults/base/` 가 최소 정본 트리다(토큰 10개 + 정상 파일 하나).
  *   임시 디렉터리에 복사하고 `cases/` 의 고장 파일을 하나씩 얹어 돌린다.
- *   **여섯이 각자 다른 사유로 걸려야 한다** — 하나의 규칙이 여섯을 다 잡으면 그건
+ *   **각자 다른 사유로 걸려야 한다** — 하나의 규칙이 여럿을 다 잡으면 그건
  *   검사가 아니라 우연이다.
+ *
+ * 유일성 키가 `(verdict, want, src)` 셋인 이유 (KAN-073 S1).
+ *   원래는 사유(`want`) 하나였다. 그런데 KAN-073 의 새 인식층은 새 갈래를 **CSS 자리와
+ *   똑같은 코드로** 판정한다 — 그래야 축 모듈에 숫자 분기가 안 생긴다. 그 결과
+ *   `.tsx` 의 `padding: 10` 은 기존 `spacing-out.astro` 와 사유가 같은 `"§9"` 가 된다.
+ *   사유를 억지로 다르게 쓰면 「같은 코드로 판정한다」가 깨지고, `baseline.ts` 가 축을
+ *   되뽑을 때 쓰는 네 접두와도 부딪힌다. **인식 경로가 다르면 다른 검사**라는 것이
+ *   이 확장의 논지 자체이므로, 취지를 그대로 두고 키에 `src` 를 더했다.
+ *
+ * 고장은 인식기가 소유한다.
+ *   갈래별 고장은 `recognize/<갈래>.ts` 의 `faults` 에 있고 여기서 모으기만 한다.
+ *   한 배열에 몰아 두면 갈래를 병렬로 채우는 세션들이 같은 줄을 고치게 된다.
  *
  * 진짜 `src/` 를 안 쓰는 이유는 둘이다 — 빠르고, 실제 부채가 줄어도 검사가 안 흔들린다.
  */
 import { cpSync, mkdtempSync, rmSync, copyFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { extract } from "./extract.ts";
+import { extract, RECOGNIZERS } from "./extract.ts";
 import { color } from "./color.ts";
 import { docrule } from "./docrule.ts";
-import type { Verdict } from "./types.ts";
+import type { Hit, Verdict } from "./types.ts";
+import type { FaultCase } from "./recognize/types.ts";
 
 const FAULTS = "scripts/fixtures/tokens/faults";
 
-/** 고장 하나와 그것이 걸려야 하는 사유. `want` 는 `reason` 에 들어 있어야 하는 조각이다. */
-const CASES: { file: string; verdict: Verdict["verdict"]; want: string; what: string }[] = [
-  { file: "drift.astro",      verdict: "드리프트", want: "D1 같은 표기", what: "토큰과 같은 값을 리터럴로" },
-  { file: "color-out.astro",  verdict: "위반",     want: "color 축",    what: "토큰 밖 색" },
-  { file: "radius-out.astro", verdict: "위반",     want: "radius 축",   what: "radius 스케일 밖" },
-  { file: "stroke-out.astro", verdict: "위반",     want: "stroke 축",   what: "선 굵기 토큰 밖" },
-  { file: "spacing-out.astro",verdict: "위반",     want: "§9",          what: "여백 스케일 밖" },
-  { file: "font-min.astro",   verdict: "위반",     want: "최소치",       what: "글자 최소치 미만" },
+/**
+ * 옛 경로(`css-decl`)의 고장 여섯. 갈래별 고장은 인식기가 각자 들고 있다 — 아래 `CASES`.
+ */
+const BASE_CASES: FaultCase[] = [
+  { file: "drift.astro",      verdict: "드리프트", want: "D1 같은 표기", what: "토큰과 같은 값을 리터럴로", src: "css-decl" },
+  { file: "color-out.astro",  verdict: "위반",     want: "color 축",    what: "토큰 밖 색",              src: "css-decl" },
+  { file: "radius-out.astro", verdict: "위반",     want: "radius 축",   what: "radius 스케일 밖",         src: "css-decl" },
+  { file: "stroke-out.astro", verdict: "위반",     want: "stroke 축",   what: "선 굵기 토큰 밖",           src: "css-decl" },
+  { file: "spacing-out.astro",verdict: "위반",     want: "§9",          what: "여백 스케일 밖",            src: "css-decl" },
+  { file: "font-min.astro",   verdict: "위반",     want: "최소치",       what: "글자 최소치 미만",          src: "css-decl" },
 ];
+
+/** 옛 여섯 + 인식기들이 낸 것. 인식기가 비어 있으면(스텁) 여섯 그대로다. */
+const CASES: FaultCase[] = [...BASE_CASES, ...RECOGNIZERS.flatMap((r) => r.faults)];
+
+/** 유일성 키 — 같은 사유라도 인식 경로가 다르면 다른 검사다(위 머리주석). */
+const keyOf = (c: { verdict: Verdict["verdict"]; want: string; src: Hit["src"] }) =>
+  `${c.verdict} / ${c.want} / ${c.src}`;
 
 function judge(root: string): Verdict[] {
   const { files, dict, hits } = extract(root);
@@ -60,21 +82,25 @@ export function selfTest(repoRoot: string): { failures: string[]; notes: string[
       );
     }
 
-    // ② 고장 여섯 — 각자 기대한 사유로 걸려야 한다.
+    // ② 고장들 — 각자 기대한 사유로, 기대한 인식 경로에서 걸려야 한다.
+    //    파일 이름을 확장자별로 만든다: `.tsx` 고장은 `.astro` 로 두면 스캔 경로가 달라진다.
     const seen: string[] = [];
     for (const c of CASES) {
-      const dst = join(tmp, "src/components/_fault.astro");
+      const ext = c.file.slice(c.file.lastIndexOf("."));
+      const name = `_fault${ext}`;
+      const dst = join(tmp, "src/components", name);
       copyFileSync(join(repoRoot, FAULTS, "cases", c.file), dst);
       const hit = judge(tmp).find(
-        (v) => v.hit.file.endsWith("_fault.astro") && v.verdict === c.verdict && v.reason.includes(c.want),
+        (v) => v.hit.file.endsWith(name) && v.verdict === c.verdict
+            && v.reason.includes(c.want) && v.hit.src === c.src,
       );
       rmSync(dst, { force: true });
-      if (!hit) { failures.push(`자가검사 ②: 「${c.what}」(${c.file}) 를 안 잡는다 — ${c.verdict} / "${c.want}" 를 기대했다`); continue; }
-      seen.push(`${c.what} → ${c.want}`);
+      if (!hit) { failures.push(`자가검사 ②: 「${c.what}」(${c.file}) 를 안 잡는다 — ${c.verdict} / "${c.want}" / ${c.src} 를 기대했다`); continue; }
+      seen.push(keyOf(c));
     }
 
-    // ③ 여섯이 **각자 다른** 사유로 걸려야 한다. 하나가 다 잡으면 검사가 아니라 우연이다.
-    const uniq = new Set(seen.map((s) => s.split(" → ")[1]));
+    // ③ 각자 **다른** 검사여야 한다. 하나가 다 잡으면 검사가 아니라 우연이다.
+    const uniq = new Set(seen);
     if (seen.length === CASES.length && uniq.size < CASES.length) {
       failures.push(`자가검사 ③: 고장 ${CASES.length}종이 사유 ${uniq.size}가지로만 갈린다 — 한 규칙이 여러 고장을 덮고 있다`);
     }

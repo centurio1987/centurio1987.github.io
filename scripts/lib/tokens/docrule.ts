@@ -51,23 +51,24 @@
  * 모듈은 규약을 안 진다 — 셰뱅·`process.exit`·"고치는 법" 은 진입점이 진다.
  */
 import type { Axis, AxisModule, AxisResult, Hit, ScanContext, TokenDict, Verdict } from "./types.ts";
+import { spacingGroupOf } from "./propAxis.ts";
+import type { SpacingGroup } from "./propAxis.ts";
 import { verdictExceptionFor } from "./exceptions.ts";
 import { judgeTokenAxis } from "./axis.ts";
 
 // ── 이 모듈이 보는 축. 나머지(color·radius, 그리고 S4 가 color 에서 갈라낸 stroke)는 color.ts 가 본다.
 const OWNED: ReadonlySet<Axis> = new Set<Axis>(["spacing", "font", "shadow", "zindex"]);
 
-/** `spacing` 축 안의 세 갈래. §9 관할은 `spacing` 하나뿐이다. */
-export type SpacingGroup = "spacing" | "dimension" | "position";
-
-// 속성 → 갈래. 원본 축 정의(`s3-scan.py:34-38`)의 26개를 빠짐없이 셋으로 나눈 것이다.
-const SPACING_GROUP = new Map<string, SpacingGroup>();
-const grp = (g: SpacingGroup, ...props: string[]) => props.forEach((p) => SPACING_GROUP.set(p, g));
-grp("spacing", "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
-  "padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
-  "gap", "row-gap", "column-gap");
-grp("dimension", "width", "height", "min-width", "min-height", "max-width", "max-height", "flex-basis");
-grp("position", "top", "right", "bottom", "left", "inset");
+/**
+ * `spacing` 축 안의 세 갈래. §9 관할은 `spacing` 하나뿐이다.
+ *
+ * 표는 `propAxis.ts` 로 옮겼다(내용은 원본 축 정의 `s3-scan.py:34-38` 의 26개 그대로).
+ * **옮긴 이유는 camelCase 다** — 표가 하이픈 표기만 들고 있어서 `minWidth` 가 아래
+ * `?? "spacing"` 폴백에 걸려 **여백 취급**됐고, KAN-073 이 인라인 숫자값을 열면
+ * `minWidth: 200` 이 §9(4·8·12·16…)로 재어져 **가짜 위반**이 된다.
+ * 지금 판정은 안 바뀐다 — camelCase spacing 히트가 아직 0건이기 때문이다.
+ */
+export type { SpacingGroup } from "./propAxis.ts";
 
 // ── 문서 규칙.
 /** `DESIGN_CONCEPT.md` §9 — 기준 4px, 4·8·12·16·24·32·48·64·96px. 0 은 여백 없음이라 규칙 안이다. */
@@ -319,7 +320,7 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
     const prop = hit.prop.trim().toLowerCase();
     // 표에 없는 spacing 속성은 여백으로 본다 — 축 정의가 닫혀 있어 지금은 안 생기지만,
     // 새 속성이 `extract.ts` 에 늘 때 조용히 관할 밖으로 새는 쪽이 더 나쁘다.
-    const group = hit.axis === "spacing" ? (SPACING_GROUP.get(prop) ?? "spacing") : null;
+    const group = hit.axis === "spacing" ? spacingGroupOf(prop) : null;
     // 여백이면 평소대로, 치수·좌표면 `--space-*` 를 뺀 자로 드리프트를 본다(바로 위 주석).
     const governed = hit.axis !== "spacing" || opts.legacySpacingAxis || group === "spacing";
     const { label, reason } = auditLabelOf(ctx.dict, hit, governed ? ignoreDrift : ignoreDriftUngoverned);
