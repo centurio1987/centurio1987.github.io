@@ -43,3 +43,4 @@
 {"at": "2026-08-28", "by": "유저", "id": "6579165b05e5cb38", "kind": "judge", "ref": "a8ac3e04f83a", "seq": 42, "t": "2026-08-28T15:11", "verdict": "승인", "via": "화면", "w": "Q4EWPR"}
 {"at": "2026-08-28", "by": "유저", "id": "0d7fea980b5250f6", "kind": "judge", "ref": "59f15d776e96", "seq": 43, "t": "2026-08-28T15:11", "verdict": "승인", "via": "화면", "w": "Q4EWPR"}
 {"at": "2026-08-28", "by": "ai", "id": "f8c5f5f07aeca563", "kind": "note", "ref": "406c5cfff9f5", "seq": 44, "t": "2026-08-28T15:12", "text": "반영했습니다 — public/tony.svg 를 지웠고, tokens.css 주석과 DESIGN_CONCEPT 팔레트 표 아래 문장을 「다시 만들지 마라」로 바꿨습니다. 사본이 다시 생기면 스타일시트 없이 단독으로 뜨는 파일이라 토큰을 못 써서 값을 복제하게 되고, 그 순간 팔레트가 두 벌이 됩니다. 코드 참조는 삭제 전에 전수로 다시 확인해 0건이었습니다(걸린 것은 전부 문서·검토 기록). build 46쪽 · tokens:verify 통과.", "via": "CLI", "w": "Q4EWPR"}
+{"at": "2026-08-28", "by": "유저", "id": "1fff82bdb9b28634", "kind": "judge", "seq": 45, "t": "2026-08-28T15:39", "verdict": "승인", "via": "CLI", "w": "Q4EWPR"}

@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 313,
+  "next_seq": 314,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -865,7 +865,7 @@
       ]
     },
     "KAN-072-CPJCT1": {
-      "col": "review",
+      "col": "done",
       "title": "UI 토큰 정합화 — 게이트가 무는 1,786건을 구획 단위로 0 으로 줄인다",
       "verbatim": "위 artifact를 보고 전략과 실행 계획을 수립해라",
       "생성": "ai",
@@ -1134,6 +1134,16 @@
     "KAN-072-CPJCT1"
   ],
   "recent": [
+    {
+      "seq": 313,
+      "t": "2026-08-28T15:39",
+      "a": "ai",
+      "id": "KAN-072-CPJCT1",
+      "op": "move",
+      "w": "Q4EWPR",
+      "from": "review",
+      "to": "done"
+    },
     {
       "seq": 312,
       "t": "2026-08-28T14:10",
@@ -1710,16 +1720,6 @@
       "w": "NYGJHE",
       "from": "review",
       "to": "done"
-    },
-    {
-      "seq": 263,
-      "t": "2026-08-16T12:36",
-      "a": "ai",
-      "id": "KAN-066-KK9Q50",
-      "op": "move",
-      "w": "NYGJHE",
-      "from": "doing",
-      "to": "review"
     }
   ],
   "layout": 2,
