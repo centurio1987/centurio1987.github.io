@@ -54,11 +54,11 @@ export default function JitterBufferLab() {
   const buttonStyle: React.CSSProperties = {
     padding: "var(--space-8, 8px) var(--space-12, 12px)",
     border: `${HAIR} solid ${BORDER}`,
-    borderRadius: 8,
+    borderRadius: "var(--radius-sm)",
     background: PANEL,
     color: INK,
     cursor: "pointer",
-    fontSize: 13,
+    fontSize: "var(--text-meta)",
     textAlign: "left",
   };
 
@@ -68,7 +68,7 @@ export default function JitterBufferLab() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -80,8 +80,8 @@ export default function JitterBufferLab() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(13rem, 1fr))",
-          gap: 8,
-          marginBottom: 16,
+          gap: "var(--space-8)",
+          marginBottom: "var(--space-16)",
         }}
       >
         <button type="button" onClick={cycleLevel} style={buttonStyle} aria-pressed>
@@ -97,7 +97,7 @@ export default function JitterBufferLab() {
             step={10}
             value={targetDelay}
             onChange={(e) => setTargetDelay(Number(e.target.value))}
-            style={{ display: "block", width: "100%", marginTop: 6 }}
+            style={{ display: "block", width: "100%", marginTop: "var(--space-6)" }}
           />
         </label>
 
@@ -106,8 +106,8 @@ export default function JitterBufferLab() {
         </button>
       </div>
 
-      <div style={{ display: "grid", gap: 6, marginBottom: 10 }}>
-        <div style={{ fontSize: 12, color: INK_2, fontWeight: 600 }}>도착 순서 (뒤섞일 수 있음)</div>
+      <div style={{ display: "grid", gap: "var(--space-6)", marginBottom: "var(--space-10)" }}>
+        <div style={{ fontSize: "var(--text-label)", color: INK_2, fontWeight: 600 }}>도착 순서 (뒤섞일 수 있음)</div>
         <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: 6 }}>
           {packets.map((p) => (
             <div
@@ -120,10 +120,10 @@ export default function JitterBufferLab() {
                 width: 22,
                 height: 26,
                 marginLeft: -11,
-                borderRadius: 4,
+                borderRadius: "var(--radius-xs)",
                 background: ARRIVED,
                 color: ON_CHIP,
-                fontSize: 10,
+                fontSize: "var(--text-nano)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -135,7 +135,7 @@ export default function JitterBufferLab() {
           ))}
         </div>
 
-        <div style={{ fontSize: 12, color: INK_2, fontWeight: 600, marginTop: 8 }}>
+        <div style={{ fontSize: "var(--text-label)", color: INK_2, fontWeight: 600, marginTop: "var(--space-8)" }}>
           재생 순서 (버퍼가 내보내는 일정한 리듬)
         </div>
         <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: 6 }}>
@@ -152,10 +152,10 @@ export default function JitterBufferLab() {
                 width: 22,
                 height: 26,
                 marginLeft: -11,
-                borderRadius: 4,
+                borderRadius: "var(--radius-xs)",
                 background: r.status === "on-time" ? ON_TIME : LATE,
                 color: ON_CHIP,
-                fontSize: 10,
+                fontSize: "var(--text-nano)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -171,14 +171,14 @@ export default function JitterBufferLab() {
       <div
         role="status"
         style={{
-          marginTop: 10,
-          padding: 14,
+          marginTop: "var(--space-10)",
+          padding: "var(--space-14)",
           border: `${HAIR} solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           lineHeight: 1.6,
           display: "grid",
-          gap: 4,
+          gap: "var(--space-4)",
         }}
       >
         <p style={{ margin: 0 }}>
@@ -186,13 +186,13 @@ export default function JitterBufferLab() {
           / 재정렬 도착 <strong>{stats.reorderedCount}</strong>건 / 평균 버퍼 여유{" "}
           <strong>{Math.round(stats.avgHeadroom)}ms</strong>
         </p>
-        <p style={{ margin: 0, fontSize: 13, color: INK_2 }}>
+        <p style={{ margin: 0, fontSize: "var(--text-meta)", color: INK_2 }}>
           목표 지연을 늘리면 지각(빨간 ×)이 줄어드는 대신, 전체 오디오/영상이 그만큼 늦게 나옵니다 — jitter
           buffer는 이 "지연 대 매끄러움" 트레이드오프를 계속 저울질합니다.
         </p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
         교육용 개념 모델입니다(NetEQ 등 실제 구현 재현 아님). 패킷은 20ms 간격으로 전송되고, 편도 기본 지연
         60ms + 네트워크 지터 잡음을 더해 도착합니다. 재생은 <em>목표 지연만큼 기다린 뒤 일정한 리듬</em>으로
         나가며, 재생 시각까지 도착하지 못한 패킷은 PLC(패킷 손실 은닉)로 대체된다고 가정합니다. 실제 NetEQ는

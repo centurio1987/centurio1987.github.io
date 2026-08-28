@@ -56,11 +56,11 @@ export default function IceTraversalLab() {
   const toggleStyle = (on: boolean): React.CSSProperties => ({
     padding: "var(--space-8, 8px) var(--space-12, 12px)",
     border: on ? `${BOLD} solid ${HOST}` : `${HAIR} solid ${BORDER}`,
-    borderRadius: 8,
+    borderRadius: "var(--radius-sm)",
     background: on ? ON_BG : PANEL,
     color: INK,
     cursor: "pointer",
-    fontSize: 13,
+    fontSize: "var(--text-meta)",
     textAlign: "left",
     lineHeight: 1.4,
   });
@@ -71,7 +71,7 @@ export default function IceTraversalLab() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -83,8 +83,8 @@ export default function IceTraversalLab() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(13rem, 1fr))",
-          gap: 8,
-          marginBottom: 14,
+          gap: "var(--space-8)",
+          marginBottom: "var(--space-14)",
         }}
       >
         <button type="button" onClick={() => setSameLan((v) => !v)} aria-pressed={sameLan} style={toggleStyle(sameLan)}>
@@ -139,18 +139,18 @@ export default function IceTraversalLab() {
         </button>
       </div>
 
-      <div style={{ display: "grid", gap: 6 }}>
+      <div style={{ display: "grid", gap: "var(--space-6)" }}>
         {result.candidates.map((c) => (
           <div
             key={c.type}
             style={{
               display: "grid",
               gridTemplateColumns: "minmax(11rem, 0.5fr) 1fr",
-              gap: 10,
+              gap: "var(--space-10)",
               alignItems: "start",
               padding: "var(--space-10, 10px) var(--space-12, 12px)",
               border: `${HAIR} solid ${BORDER}`,
-              borderRadius: 8,
+              borderRadius: "var(--radius-sm)",
               background: c.gathered ? PANEL : IDLE,
               opacity: c.gathered ? 1 : 0.7,
               lineHeight: 1.55,
@@ -159,7 +159,7 @@ export default function IceTraversalLab() {
             <strong style={{ color: typeColor[c.type] }}>
               {c.gathered ? "●" : "○"} {typeLabel[c.type]}
             </strong>
-            <span style={{ fontSize: 13, color: INK_2 }}>{c.note}</span>
+            <span style={{ fontSize: "var(--text-meta)", color: INK_2 }}>{c.note}</span>
           </div>
         ))}
       </div>
@@ -167,10 +167,10 @@ export default function IceTraversalLab() {
       <div
         role="status"
         style={{
-          marginTop: 14,
-          padding: 14,
+          marginTop: "var(--space-14)",
+          padding: "var(--space-14)",
           border: `${HAIR} solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           lineHeight: 1.6,
         }}
@@ -186,7 +186,7 @@ export default function IceTraversalLab() {
         <p style={{ margin: 0, fontSize: 14 }}>{result.selectedReason}</p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
         교육용 개념 모델입니다(브라우저 실제 ICE 구현 재현 아님). 산식: host&gt;srflx&gt;relay의 type
         preference로 단순화하고, srflx 성사는 "UDP 허용 + 매핑 endpoint-independent + 필터링 비대상의존"일 때만
         통한다고 가정합니다. {result.caveat}

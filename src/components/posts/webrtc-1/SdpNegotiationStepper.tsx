@@ -110,11 +110,11 @@ export default function SdpNegotiationStepper() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+      <div style={{ display: "flex", gap: "var(--space-8)", flexWrap: "wrap", marginBottom: "var(--space-14)" }}>
         <button
           type="button"
           onClick={() => setI((v) => Math.max(0, v - 1))}
@@ -122,7 +122,7 @@ export default function SdpNegotiationStepper() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: i === 0 ? IDLE : PANEL,
             cursor: i === 0 ? "default" : "pointer",
             color: INK,
@@ -137,7 +137,7 @@ export default function SdpNegotiationStepper() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${CALLER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: i === steps.length - 1 ? IDLE : ACTIVE,
             cursor: i === steps.length - 1 ? "default" : "pointer",
             color: INK,
@@ -146,12 +146,12 @@ export default function SdpNegotiationStepper() {
         >
           다음 →
         </button>
-        <span style={{ alignSelf: "center", fontSize: 13, color: INK_2 }}>
+        <span style={{ alignSelf: "center", fontSize: "var(--text-meta)", color: INK_2 }}>
           {i + 1} / {steps.length}
         </span>
       </div>
 
-      <div style={{ display: "grid", gap: 4 }}>
+      <div style={{ display: "grid", gap: "var(--space-4)" }}>
         {steps.map((s, idx) => {
           const active = idx === i;
           const done = idx < i;
@@ -164,7 +164,7 @@ export default function SdpNegotiationStepper() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "5.5rem 1fr",
-                gap: 8,
+                gap: "var(--space-8)",
                 alignItems: "center",
                 textAlign: "left",
                 padding: "var(--space-8, 8px) var(--space-10, 10px)",
@@ -173,7 +173,7 @@ export default function SdpNegotiationStepper() {
                 background: active ? ACTIVE : done ? CREAM : PANEL,
                 color: INK,
                 cursor: "pointer",
-                fontSize: 13,
+                fontSize: "var(--text-meta)",
                 lineHeight: 1.4,
               }}
             >
@@ -187,10 +187,10 @@ export default function SdpNegotiationStepper() {
       <div
         role="status"
         style={{
-          marginTop: 14,
-          padding: 14,
+          marginTop: "var(--space-14)",
+          padding: "var(--space-14)",
           border: `${HAIR} solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           lineHeight: 1.6,
         }}
@@ -200,17 +200,17 @@ export default function SdpNegotiationStepper() {
             {step.actor === "caller" ? "발신자(caller)" : "수신자(callee)"}
           </strong>{" "}
           · signalingState:{" "}
-          <code style={{ background: CREAM, padding: "var(--space-2, 2px) var(--space-6, 6px)", borderRadius: 4 }}>
+          <code style={{ background: CREAM, padding: "var(--space-2, 2px) var(--space-6, 6px)", borderRadius: "var(--radius-xs)" }}>
             {step.signaling}
           </code>
         </p>
         <p style={{ margin: "0 0 var(--space-6, 6px)" }}>{step.what}</p>
-        <p style={{ margin: 0, fontSize: 13, color: INK_2 }}>
+        <p style={{ margin: 0, fontSize: "var(--text-meta)", color: INK_2 }}>
           <strong>이때 채워지는 것:</strong> {step.filled}
         </p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
         교육용 개념 모델입니다(실제 SDP 본문·ICE 라인을 생성하지 않음). signalingState 전이와 단계별로 채워지는
         정보의 "구조"만 단순화해 보여줍니다 — 실제 협상은 trickle ICE로 후보가 비동기로 흐르고, 재협상·glare가 끼면
         순서가 달라집니다.

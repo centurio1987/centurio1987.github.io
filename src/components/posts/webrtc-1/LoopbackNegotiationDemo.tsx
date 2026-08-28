@@ -205,7 +205,7 @@ export default function LoopbackNegotiationDemo() {
           margin: "2rem 0",
           padding: 18,
           border: `${HAIR} solid ${BORDER}`,
-          borderRadius: 12,
+          borderRadius: "var(--radius-md)",
           background: PANEL,
         }}
       >
@@ -222,7 +222,7 @@ export default function LoopbackNegotiationDemo() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -236,11 +236,11 @@ export default function LoopbackNegotiationDemo() {
             margin: "0 0 var(--space-12, 12px)",
             padding: "var(--space-8, 8px) var(--space-12, 12px)",
             border: `${HAIR} solid ${NOTICE}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: NOTICE_BG,
             // 최근접 --cat-quality 가 Δ47.7 로 멀어 밀지 않고 --ink-notice 를 세웠다(KAN-072 배치7).
             color: NOTICE_INK,
-            fontSize: 13,
+            fontSize: "var(--text-meta)",
             lineHeight: 1.55,
           }}
         >
@@ -249,7 +249,7 @@ export default function LoopbackNegotiationDemo() {
         </p>
       ) : null}
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+      <div style={{ display: "flex", gap: "var(--space-8)", flexWrap: "wrap", marginBottom: "var(--space-14)" }}>
         <button
           type="button"
           onClick={start}
@@ -257,7 +257,7 @@ export default function LoopbackNegotiationDemo() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${LOCAL}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: REACHED,
             cursor: "pointer",
             color: INK,
@@ -273,7 +273,7 @@ export default function LoopbackNegotiationDemo() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: connected ? PANEL : IDLE,
             cursor: connected ? "pointer" : "default",
             color: INK,
@@ -287,7 +287,7 @@ export default function LoopbackNegotiationDemo() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
             cursor: "pointer",
             color: INK,
@@ -295,7 +295,7 @@ export default function LoopbackNegotiationDemo() {
         >
           초기화
         </button>
-        <span style={{ alignSelf: "center", fontSize: 13, color: connected ? LOCAL : INK_2 }}>
+        <span style={{ alignSelf: "center", fontSize: "var(--text-meta)", color: connected ? LOCAL : INK_2 }}>
           상태: {connected ? "연결됨 ✅" : running ? "협상 중…" : "대기"}
         </span>
       </div>
@@ -307,7 +307,7 @@ export default function LoopbackNegotiationDemo() {
             margin: "0 0 var(--space-12, 12px)",
             padding: "var(--space-8, 8px) var(--space-12, 12px)",
             border: `${HAIR} solid ${LOCAL}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: REACHED,
             color: INK,
           }}
@@ -321,7 +321,7 @@ export default function LoopbackNegotiationDemo() {
           maxHeight: 220,
           overflowY: "auto",
           border: `${HAIR} solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           padding: "var(--space-8, 8px) var(--space-10, 10px)",
           fontSize: 12.5,
@@ -340,7 +340,7 @@ export default function LoopbackNegotiationDemo() {
         )}
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
         이 실습은 <strong>협상 API 실습</strong>입니다. 같은 origin·같은 장비라 NAT/STUN/TURN 트래버설 문제는 재현하지
         못합니다(그건 위 시뮬레이션과 진단 절에서 다룹니다). 여기서 관찰할 것은 createOffer/Answer →
         setLocal/RemoteDescription → onicecandidate 교환 → 연결 성사로 이어지는 협상 절차 그 자체입니다. 이 데모는

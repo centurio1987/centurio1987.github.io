@@ -44,8 +44,8 @@ function Bar({
   color: string;
 }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "6.5rem 1fr 6.5rem", gap: 10, alignItems: "center" }}>
-      <span style={{ fontSize: 13, color: INK_2 }}>{label}</span>
+    <div style={{ display: "grid", gridTemplateColumns: "6.5rem 1fr 6.5rem", gap: "var(--space-10)", alignItems: "center" }}>
+      <span style={{ fontSize: "var(--text-meta)", color: INK_2 }}>{label}</span>
       <div
         style={{
           height: 16,
@@ -65,7 +65,7 @@ function Bar({
           }}
         />
       </div>
-      <span style={{ fontSize: 13, color: INK, fontFamily: "monospace", textAlign: "right" }}>
+      <span style={{ fontSize: "var(--text-meta)", color: INK, fontFamily: "monospace", textAlign: "right" }}>
         {valueLabel}
       </span>
     </div>
@@ -98,11 +98,11 @@ export default function ParticipantScaleLab() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
-      <label style={{ display: "block", marginBottom: 16, fontWeight: 600, color: INK }}>
+      <label style={{ display: "block", marginBottom: "var(--space-16)", fontWeight: 600, color: INK }}>
         참가자 수(N): {participants}명
         <input
           type="range"
@@ -110,7 +110,7 @@ export default function ParticipantScaleLab() {
           max={16}
           value={participants}
           onChange={(e) => setParticipants(Number(e.target.value))}
-          style={{ display: "block", width: "100%", marginTop: 6 }}
+          style={{ display: "block", width: "100%", marginTop: "var(--space-6)" }}
         />
       </label>
 
@@ -121,14 +121,14 @@ export default function ParticipantScaleLab() {
             <div
               key={t}
               style={{
-                padding: 14,
+                padding: "var(--space-14)",
                 border: `${HAIR} solid ${BORDER}`,
-                borderRadius: 8,
+                borderRadius: "var(--radius-sm)",
                 background: PANEL,
               }}
             >
-              <strong style={{ color: topoColor[t], display: "block", marginBottom: 10 }}>{topoLabel[t]}</strong>
-              <div style={{ display: "grid", gap: 8 }}>
+              <strong style={{ color: topoColor[t], display: "block", marginBottom: "var(--space-10)" }}>{topoLabel[t]}</strong>
+              <div style={{ display: "grid", gap: "var(--space-8)" }}>
                 <Bar
                   label="업로드"
                   valueLabel={`${load.uploadKbps.toLocaleString()} kbps`}
@@ -153,7 +153,7 @@ export default function ParticipantScaleLab() {
         })}
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_2, marginTop: 12, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-12)", lineHeight: 1.55 }}>
         교육용 개념 모델입니다(실제 SFU/MCU 구현 수치 재현 아님). 1인당 발신 스트림을{" "}
         {PER_STREAM_KBPS.toLocaleString()}kbps로 가정합니다. mesh는 업로드·다운로드가 모두 (N-1)에 비례해
         늘어나고, SFU는 업로드가 고정값(1×)인 대신 다운로드는 여전히 (N-1)에 비례합니다(다만 실제로는
