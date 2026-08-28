@@ -2,7 +2,7 @@
 card: KAN-074-MQ9KRB
 title: 토큰 게이트 부채 상환 — 인식층 확장으로 드러난 778건을 옮긴다
 created: 2026-08-28
-scope: src/components/posts/**, src/styles/tokens.css, scripts/tokens-baseline.json, scripts/compare-render.ts, design-concept/DESIGN_CONCEPT.md, design-concept/UI_CONSISTENCY_AUDIT.md, CLAUDE.md
+scope: src/components/posts/**, src/styles/tokens.css, scripts/tokens-baseline.json, scripts/compare-render.ts, scripts/lib/tokens/**, package.json, design-concept/DESIGN_CONCEPT.md, design-concept/UI_CONSISTENCY_AUDIT.md, CLAUDE.md
 ---
 
 # KAN-074-MQ9KRB — 토큰 게이트 부채 상환 — 인식층 확장으로 드러난 778건을 옮긴다

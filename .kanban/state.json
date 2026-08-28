@@ -1,6 +1,6 @@
 {
   "next_id": 78,
-  "next_seq": 324,
+  "next_seq": 325,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1097,12 +1097,12 @@
       ]
     },
     "KAN-074-MQ9KRB": {
-      "col": "doing",
+      "col": "review",
       "title": "토큰 게이트 부채 상환 — 인식층 확장으로 드러난 778건을 옮긴다",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-28",
+      "갱신": "2026-08-29",
       "title_hash": "4107bc6857e8d1e55f0d128b422abcb0ecd24213",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "short": "게이트 부채 상환",
@@ -1120,6 +1120,8 @@
         "src/styles/tokens.css",
         "scripts/tokens-baseline.json",
         "scripts/compare-render.ts",
+        "scripts/lib/tokens/**",
+        "package.json",
         "design-concept/DESIGN_CONCEPT.md",
         "design-concept/UI_CONSISTENCY_AUDIT.md",
         "CLAUDE.md"
@@ -1202,7 +1204,6 @@
     "KAN-003",
     "KAN-004",
     "KAN-005",
-    "KAN-074-MQ9KRB",
     "KAN-062",
     "KAN-009",
     "KAN-006",
@@ -1266,9 +1267,20 @@
     "KAN-072-CPJCT1",
     "KAN-064",
     "KAN-071-6361MY",
-    "KAN-073-CVD8X7"
+    "KAN-073-CVD8X7",
+    "KAN-074-MQ9KRB"
   ],
   "recent": [
+    {
+      "seq": 324,
+      "t": "2026-08-29T02:30",
+      "a": "ai",
+      "id": "KAN-074-MQ9KRB",
+      "op": "move",
+      "w": "XR3P1E",
+      "from": "doing",
+      "to": "review"
+    },
     {
       "seq": 323,
       "t": "2026-08-28T22:46",
@@ -1867,16 +1879,6 @@
       "w": "670G7J",
       "from": "review",
       "to": "done"
-    },
-    {
-      "seq": 277,
-      "t": "2026-08-24T18:43",
-      "a": "ai",
-      "id": "KAN-069-M724GH",
-      "op": "move",
-      "w": "670G7J",
-      "from": "doing",
-      "to": "review"
     }
   ],
   "waivers": [
