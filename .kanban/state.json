@@ -904,6 +904,7 @@
         "src/lib/viz/ProcessSteps.tsx",
         "src/lib/viz/layout.ts",
         "design-concept/DESIGN_CONCEPT.md",
+        "design-concept/UI_CONSISTENCY_AUDIT.md",
         "design-concept/DECO_KIT.md",
         "design-concept/DIAGRAM_STYLE_GUIDE.md"
       ]
@@ -1085,6 +1086,7 @@
     "KAN-048",
     "KAN-065",
     "KAN-071-6361MY",
+    "KAN-073-CVD8X7",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -1151,8 +1153,7 @@
     "KAN-072.5-WQV1KT",
     "KAN-072.6-2YYK6V",
     "KAN-072.7-D6DCXJ",
-    "KAN-072-CPJCT1",
-    "KAN-073-CVD8X7"
+    "KAN-072-CPJCT1"
   ],
   "recent": [
     {
