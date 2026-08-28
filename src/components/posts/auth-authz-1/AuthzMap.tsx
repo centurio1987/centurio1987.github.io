@@ -124,7 +124,7 @@ export default function AuthzMap() {
     return {
       padding: "var(--space-10) var(--space-12)",
       border: isSelected ? `var(--stroke-bold) solid ${axis.color}` : `var(--stroke-hair) solid ${BORDER}`,
-      borderRadius: 8,
+      borderRadius: "var(--radius-sm)",
       background: isSelected ? axis.bg : isNeighbor ? PANEL : IDLE,
       opacity: isSelected || isNeighbor ? 1 : 0.82,
       color: INK,
@@ -141,7 +141,7 @@ export default function AuthzMap() {
         margin: "2rem 0",
         padding: 18,
         border: `var(--stroke-hair) solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -150,9 +150,9 @@ export default function AuthzMap() {
       </p>
 
       {/* 축 범례 */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, margin: "var(--space-8) 0 var(--space-14)" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-12)", margin: "var(--space-8) 0 var(--space-14)" }}>
         {(Object.keys(AXIS) as Axis[]).map((a) => (
-          <span key={a} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: INK_SOFT }}>
+          <span key={a} style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-6)", fontSize: "var(--text-meta)", color: INK_SOFT }}>
             <span
               style={{
                 width: 12,
@@ -172,8 +172,8 @@ export default function AuthzMap() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(9rem, 1fr))",
-          gap: 8,
-          marginBottom: 14,
+          gap: "var(--space-8)",
+          marginBottom: "var(--space-14)",
         }}
       >
         {COORDS.map((c) => (
@@ -184,7 +184,7 @@ export default function AuthzMap() {
             aria-pressed={c.id === selectedId}
             style={cardStyle(c)}
           >
-            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ display: "flex", alignItems: "center", gap: "var(--space-6)" }}>
               <span
                 style={{
                   width: 9,
@@ -205,18 +205,18 @@ export default function AuthzMap() {
       <div
         role="status"
         style={{
-          padding: 14,
+          padding: "var(--space-14)",
           border: `var(--stroke-hair) solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           lineHeight: 1.6,
         }}
       >
         <p style={{ margin: "0 0 var(--space-8)" }}>
           <strong style={{ color: AXIS[selected.axis].color, fontSize: 17 }}>{selected.label}</strong>{" "}
-          <span style={{ fontSize: 12, color: INK_SOFT }}>· {AXIS[selected.axis].label}</span>
+          <span style={{ fontSize: "var(--text-label)", color: INK_SOFT }}>· {AXIS[selected.axis].label}</span>
         </p>
-        <p style={{ margin: "0 0 var(--space-6)", fontSize: 15 }}>
+        <p style={{ margin: "0 0 var(--space-6)", fontSize: "var(--text-small)" }}>
           <strong>질문:</strong> {selected.question}
         </p>
         <p style={{ margin: "0 0 var(--space-6)", fontSize: 14, color: INK_SOFT }}>
@@ -247,7 +247,7 @@ export default function AuthzMap() {
         </p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
         교육용 개념 지도입니다. 좌표와 인접 관계는 큰 그림을 잡기 위한 학습용 단순화이며, 특정 스펙(RFC·OIDC
         등)의 형식 정의가 아닙니다. 색은 인증(누구인가)·인가(해도 되나)·상태(구현) 세 축을 구분합니다.
       </figcaption>

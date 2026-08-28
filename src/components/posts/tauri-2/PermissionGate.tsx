@@ -127,17 +127,17 @@ export default function PermissionGate() {
     >
       <figcaption
         style={{
-          fontSize: 13,
+          fontSize: "var(--text-meta)",
           color: INK_SOFT,
-          marginBottom: 14,
+          marginBottom: "var(--space-14)",
           fontWeight: 600,
         }}
       >
         케이퍼빌리티 권한 게이트 — 체크박스로 permissions를 조절하고, 호출할 커맨드를 골라 판정을 관찰해 보십시오.
       </figcaption>
 
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 8 }}>
+      <div style={{ marginBottom: "var(--space-16)" }}>
+        <div style={{ fontSize: "var(--text-meta)", fontWeight: 600, color: INK, marginBottom: "var(--space-8)" }}>
           1. capabilities/default.json — permissions
         </div>
         <div
@@ -156,7 +156,7 @@ export default function PermissionGate() {
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 6,
+                  gap: "var(--space-6)",
                   fontSize: 13.5,
                   color: INK,
                   cursor: "pointer",
@@ -177,11 +177,11 @@ export default function PermissionGate() {
         </div>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 8 }}>
+      <div style={{ marginBottom: "var(--space-16)" }}>
+        <div style={{ fontSize: "var(--text-meta)", fontWeight: 600, color: INK, marginBottom: "var(--space-8)" }}>
           2. 호출할 커맨드
         </div>
-        <div role="radiogroup" aria-label="호출할 커맨드" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <div role="radiogroup" aria-label="호출할 커맨드" style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-8)" }}>
           {COMMANDS.map((c) => {
             const isActive = c.key === commandKey;
             return (
@@ -193,7 +193,7 @@ export default function PermissionGate() {
                 onClick={() => setCommandKey(c.key)}
                 style={{
                   fontFamily: MONO,
-                  fontSize: 13,
+                  fontSize: "var(--text-meta)",
                   padding: "var(--space-6) var(--space-12)",
                   borderRadius: "var(--btn-radius, 999px)",
                   border: `var(--stroke, 1.5px) solid ${isActive ? INK : BORDER}`,
@@ -209,8 +209,8 @@ export default function PermissionGate() {
         </div>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 8 }}>
+      <div style={{ marginBottom: "var(--space-16)" }}>
+        <div style={{ fontSize: "var(--text-meta)", fontWeight: 600, color: INK, marginBottom: "var(--space-8)" }}>
           3. capabilities JSON 미리보기
         </div>
         <pre
@@ -233,7 +233,7 @@ export default function PermissionGate() {
       </div>
 
       <div>
-        <div style={{ fontSize: 13, fontWeight: 600, color: INK, marginBottom: 8 }}>
+        <div style={{ fontSize: "var(--text-meta)", fontWeight: 600, color: INK, marginBottom: "var(--space-8)" }}>
           4. 판정 결과
         </div>
         <div
@@ -244,14 +244,14 @@ export default function PermissionGate() {
             background: passed ? tint(PASS, 10) : tint(REJECT, 10),
             color: passed ? PASS : REJECT,
             fontFamily: MONO,
-            fontSize: 13,
+            fontSize: "var(--text-meta)",
             fontWeight: 600,
           }}
         >
           {resultText}
         </div>
         {resultNote && (
-          <p style={{ fontSize: 13, color: INK_SOFT, marginTop: 8, lineHeight: 1.6 }}>
+          <p style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-8)", lineHeight: 1.6 }}>
             {resultNote}
           </p>
         )}

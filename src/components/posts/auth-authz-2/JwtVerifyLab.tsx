@@ -132,7 +132,7 @@ export default function JwtVerifyLab() {
 
   const result = useMemo(() => evaluate(alg, kid, exp, aud, weak), [alg, kid, exp, aud, weak]);
 
-  const groupStyle: React.CSSProperties = { display: "grid", gap: 4 };
+  const groupStyle: React.CSSProperties = { display: "grid", gap: "var(--space-4)" };
   const optBtn = (on: boolean): React.CSSProperties => ({
     padding: "var(--space-6) var(--space-10)",
     border: on ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
@@ -140,9 +140,9 @@ export default function JwtVerifyLab() {
     background: on ? ACTIVE_TINT : PANEL,
     color: INK,
     cursor: "pointer",
-    fontSize: 13,
+    fontSize: "var(--text-meta)",
   });
-  const label: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: INK_SOFT };
+  const label: React.CSSProperties = { fontSize: "var(--text-label)", fontWeight: 600, color: INK_SOFT };
 
   // `#8a5a00`(위조 통과 경고색)은 매핑표 밖이다 — 최근접 토큰이 --pop-ink 인데 ΔRGB 21.0 이고
   // 그쪽은 서브 CTA 의 진한 단이라 역할이 다르다. 판정 대기로 둔다 (KAN-072 배치6 S13).
@@ -157,7 +157,7 @@ export default function JwtVerifyLab() {
         margin: "2rem 0",
         padding: 18,
         border: `var(--stroke-hair) solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -169,13 +169,13 @@ export default function JwtVerifyLab() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(11rem, 1fr))",
-          gap: 12,
-          marginBottom: 14,
+          gap: "var(--space-12)",
+          marginBottom: "var(--space-14)",
         }}
       >
         <div style={groupStyle}>
           <span style={label}>헤더 alg</span>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "var(--space-6)", flexWrap: "wrap" }}>
             {(["RS256", "none", "HS256"] as Alg[]).map((a) => (
               <button type="button" key={a} onClick={() => setAlg(a)} aria-pressed={alg === a} style={optBtn(alg === a)}>
                 {a}
@@ -185,7 +185,7 @@ export default function JwtVerifyLab() {
         </div>
         <div style={groupStyle}>
           <span style={label}>kid</span>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "var(--space-6)", flexWrap: "wrap" }}>
             {(
               [
                 ["match", "매칭"],
@@ -201,7 +201,7 @@ export default function JwtVerifyLab() {
         </div>
         <div style={groupStyle}>
           <span style={label}>exp(만료)</span>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "var(--space-6)", flexWrap: "wrap" }}>
             {(
               [
                 ["valid", "유효"],
@@ -216,7 +216,7 @@ export default function JwtVerifyLab() {
         </div>
         <div style={groupStyle}>
           <span style={label}>aud(대상)</span>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "var(--space-6)", flexWrap: "wrap" }}>
             {(
               [
                 ["match", "우리 앱"],
@@ -239,32 +239,32 @@ export default function JwtVerifyLab() {
           ...optBtn(weak),
           border: weak ? `var(--stroke-bold) solid ${RED}` : `var(--stroke-hair) solid ${BORDER}`,
           background: weak ? DANGER_TINT : PANEL,
-          marginBottom: 14,
+          marginBottom: "var(--space-14)",
         }}
       >
         취약 검증기(헤더 alg를 그대로 신뢰): <strong>{weak ? "켜짐" : "꺼짐"}</strong>
       </button>
 
-      <div style={{ display: "grid", gap: 6, marginBottom: 12 }}>
+      <div style={{ display: "grid", gap: "var(--space-6)", marginBottom: "var(--space-12)" }}>
         {result.steps.map((s) => (
           <div
             key={s.n}
             style={{
               display: "grid",
               gridTemplateColumns: "2rem minmax(6rem, 0.4fr) 1fr",
-              gap: 10,
+              gap: "var(--space-10)",
               alignItems: "start",
               padding: "var(--space-8) var(--space-12)",
               border: `var(--stroke-hair) solid ${BORDER}`,
-              borderRadius: 8,
+              borderRadius: "var(--radius-sm)",
               // 축을 살리면 짝이 안 깨진다 — 통과는 패널, 막힘은 전략 축의 옅은 단(Δ2.2).
               background: s.ok ? PANEL : STEP_FAIL_BG,
               lineHeight: 1.5,
             }}
           >
             <strong style={{ color: s.ok ? TEAL : RED }}>{s.ok ? "✔" : "✘"}{s.n}</strong>
-            <strong style={{ fontSize: 13, color: INK }}>{s.name}</strong>
-            <span style={{ fontSize: 13, color: INK_SOFT }}>{s.detail}</span>
+            <strong style={{ fontSize: "var(--text-meta)", color: INK }}>{s.name}</strong>
+            <span style={{ fontSize: "var(--text-meta)", color: INK_SOFT }}>{s.detail}</span>
           </div>
         ))}
       </div>
@@ -272,9 +272,9 @@ export default function JwtVerifyLab() {
       <div
         role="status"
         style={{
-          padding: 14,
+          padding: "var(--space-14)",
           border: `var(--stroke-hair) solid ${verdictColor}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           lineHeight: 1.6,
         }}
@@ -285,7 +285,7 @@ export default function JwtVerifyLab() {
         <p style={{ margin: 0, fontSize: 14, color: INK_SOFT }}>{result.summary}</p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
         교육용 개념 모델입니다(실제 암호 연산 없음). RFC 8725의 검증 순서를 규칙으로 모사합니다. "취약 검증기"는
         헤더 alg를 그대로 신뢰하는 잘못된 구현으로, alg=none·HS256 혼동 시 위조가 통과하는 실제 취약점을 재현합니다.
       </figcaption>

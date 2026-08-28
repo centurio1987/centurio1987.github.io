@@ -97,7 +97,7 @@ export default function AuthRequestLab() {
     background: on ? (danger ? DANGER_TINT : ACTIVE_TINT) : PANEL,
     color: INK,
     cursor: "pointer",
-    fontSize: 13,
+    fontSize: "var(--text-meta)",
     textAlign: "left",
   });
 
@@ -113,7 +113,7 @@ export default function AuthRequestLab() {
         margin: "2rem 0",
         padding: 18,
         border: `var(--stroke-hair) solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -125,8 +125,8 @@ export default function AuthRequestLab() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(13rem, 1fr))",
-          gap: 8,
-          marginBottom: 14,
+          gap: "var(--space-8)",
+          marginBottom: "var(--space-14)",
         }}
       >
         <button
@@ -155,18 +155,18 @@ export default function AuthRequestLab() {
 
       <div
         style={{
-          padding: 14,
+          padding: "var(--space-14)",
           border: `var(--stroke-hair) solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
-          marginBottom: 12,
+          marginBottom: "var(--space-12)",
         }}
       >
         {result.lines.map((l, idx) => (
           <div
             key={idx}
             style={{
-              fontSize: 13,
+              fontSize: "var(--text-meta)",
               lineHeight: 1.7,
               color: lineColor(l.kind),
               fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
@@ -181,9 +181,9 @@ export default function AuthRequestLab() {
       <div
         role="status"
         style={{
-          padding: 14,
+          padding: "var(--space-14)",
           border: `var(--stroke-hair) solid ${verdictColor}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           lineHeight: 1.6,
         }}
@@ -194,7 +194,7 @@ export default function AuthRequestLab() {
         <p style={{ margin: 0, fontSize: 14, color: INK_SOFT }}>{result.summary}</p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 10, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
         교육용 개념 모델입니다(실제 nginx 동작 재현 아님). auth_request의 2xx=허용·401=거부 규칙과, 신원 헤더
         sanitize·백엔드 직접 접근 차단이라는 신뢰 경계 원칙을 규칙으로 모사합니다.
       </figcaption>

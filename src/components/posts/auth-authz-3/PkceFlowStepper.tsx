@@ -97,7 +97,7 @@ export default function PkceFlowStepper() {
   const btn = (disabled: boolean): React.CSSProperties => ({
     padding: "var(--space-8) var(--space-14)",
     border: `var(--stroke-hair) solid ${BORDER}`,
-    borderRadius: 8,
+    borderRadius: "var(--radius-sm)",
     background: disabled ? IDLE : PANEL,
     // `#a9a294`(비활성 글자)는 매핑표 밖이다 — 최근접 토큰이 --ink-3 인데 ΔRGB 74.8 로 멀다.
     // 임의로 고르지 않고 판정 대기로 둔다 (KAN-072 배치6 S13).
@@ -112,7 +112,7 @@ export default function PkceFlowStepper() {
     background: on ? (danger ? DANGER_TINT : ACTIVE_TINT) : PANEL,
     color: INK,
     cursor: "pointer",
-    fontSize: 13,
+    fontSize: "var(--text-meta)",
   });
 
   return (
@@ -121,11 +121,11 @@ export default function PkceFlowStepper() {
         margin: "2rem 0",
         padding: 18,
         border: `var(--stroke-hair) solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+      <div style={{ display: "flex", gap: "var(--space-8)", flexWrap: "wrap", marginBottom: "var(--space-14)" }}>
         <button type="button" onClick={() => setPkce((v) => !v)} aria-pressed={pkce} style={toggle(pkce)}>
           PKCE(S256): <strong>{pkce ? "켜짐" : "꺼짐"}</strong>
         </button>
@@ -141,18 +141,18 @@ export default function PkceFlowStepper() {
 
       <div
         style={{
-          padding: 14,
+          padding: "var(--space-14)",
           border: `var(--stroke-hair) solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           minHeight: 120,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-10)", marginBottom: "var(--space-8)" }}>
           <strong style={{ fontSize: 16, color: INK }}>{step.title}</strong>
           <span
             style={{
-              fontSize: 12,
+              fontSize: "var(--text-label)",
               color: PANEL,
               background: chInfo.color,
               padding: "var(--space-2) var(--space-8)",
@@ -181,10 +181,10 @@ export default function PkceFlowStepper() {
         <div
           role="status"
           style={{
-            marginTop: 10,
-            padding: 12,
+            marginTop: "var(--space-10)",
+            padding: "var(--space-12)",
             border: `var(--stroke-hair) solid ${attackOutcome.ok ? RED : TEAL}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             // 축을 살리면 짝이 안 깨진다 — 바로 위 border 와 같은 축의 옅은 단이다(Δ2.2 · Δ5.1).
             background: attackOutcome.ok ? OUTCOME_BAD : OUTCOME_OK,
             fontSize: 13.5,
@@ -199,11 +199,11 @@ export default function PkceFlowStepper() {
         </div>
       )}
 
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-10)", marginTop: "var(--space-14)" }}>
         <button type="button" onClick={() => setI((v) => Math.max(0, v - 1))} disabled={i === 0} style={btn(i === 0)}>
           ◀ 이전
         </button>
-        <span style={{ fontSize: 13, color: INK_SOFT }}>
+        <span style={{ fontSize: "var(--text-meta)", color: INK_SOFT }}>
           {i + 1} / {STEPS.length}
         </span>
         <button
@@ -216,7 +216,7 @@ export default function PkceFlowStepper() {
         </button>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)", lineHeight: 1.55 }}>
         교육용 개념 모델입니다(실제 네트워크·암호 연산 없음). RFC 6749/7636의 흐름을 규칙으로 모사하며,
         verifier/challenge 값은 RFC 7636 부록의 예시입니다. "코드 가로채기"는 프론트채널로 돌아온 코드를 공격자가
         탈취한 상황을 가정합니다 — PKCE가 켜져 있으면 원본 code_verifier가 없어 토큰 교환이 거부됩니다.
