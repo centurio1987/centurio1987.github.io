@@ -1,6 +1,6 @@
 {
   "next_id": 73,
-  "next_seq": 312,
+  "next_seq": 313,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -865,12 +865,12 @@
       ]
     },
     "KAN-072-CPJCT1": {
-      "col": "doing",
+      "col": "review",
       "title": "UI 토큰 정합화 — 게이트가 무는 1,786건을 구획 단위로 0 으로 줄인다",
       "verbatim": "위 artifact를 보고 전략과 실행 계획을 수립해라",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-27",
+      "갱신": "2026-08-28",
       "title_hash": "dd5987034b3d5bd7458769f19d67ba735880ac57",
       "verbatim_hash": "d974799dd590aa8904c89759a571462d678add6c",
       "short": "토큰 정합화",
@@ -1070,7 +1070,6 @@
     "KAN-003",
     "KAN-004",
     "KAN-005",
-    "KAN-072-CPJCT1",
     "KAN-064",
     "KAN-062",
     "KAN-009",
@@ -1131,9 +1130,20 @@
     "KAN-072.4-GJ9M4N",
     "KAN-072.5-WQV1KT",
     "KAN-072.6-2YYK6V",
-    "KAN-072.7-D6DCXJ"
+    "KAN-072.7-D6DCXJ",
+    "KAN-072-CPJCT1"
   ],
   "recent": [
+    {
+      "seq": 312,
+      "t": "2026-08-28T14:10",
+      "a": "ai",
+      "id": "KAN-072-CPJCT1",
+      "op": "move",
+      "w": "Q4EWPR",
+      "from": "doing",
+      "to": "review"
+    },
     {
       "seq": 311,
       "t": "2026-08-28T14:02",
@@ -1710,16 +1720,6 @@
       "w": "NYGJHE",
       "from": "doing",
       "to": "review"
-    },
-    {
-      "seq": 262,
-      "t": "2026-08-16T01:12",
-      "a": "ai",
-      "id": "KAN-066-KK9Q50",
-      "op": "move",
-      "w": "NYGJHE",
-      "from": "todo",
-      "to": "doing"
     }
   ],
   "layout": 2,

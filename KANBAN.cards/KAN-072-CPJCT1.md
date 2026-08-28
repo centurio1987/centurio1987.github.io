@@ -2,7 +2,7 @@
 card: KAN-072-CPJCT1
 title: UI 토큰 정합화 — 게이트가 무는 1,786건을 구획 단위로 0 으로 줄인다
 created: 2026-08-25
-scope: CLAUDE.md, scripts/tokens-baseline.json, scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/fixtures/tokens/**, src/components/**, src/pages/**, src/layouts/**, src/styles/tokens.css, src/styles/global.css, src/styles/deco.css, src/styles/viz-frame.css, src/styles/viz.css, src/lib/categories.ts, src/lib/doodleMarks.ts, src/lib/viz/Comparison.tsx, src/lib/viz/PosterHero.tsx, src/lib/viz/ProcessSteps.tsx, src/lib/viz/layout.ts, design-concept/DESIGN_CONCEPT.md, design-concept/DECO_KIT.md, design-concept/DIAGRAM_STYLE_GUIDE.md
+scope: CLAUDE.md, scripts/tokens-baseline.json, scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/fixtures/tokens/**, src/components/**, src/pages/**, src/layouts/**, src/styles/tokens.css, src/styles/global.css, src/styles/deco.css, src/styles/viz-frame.css, src/styles/viz.css, src/lib/categories.ts, src/lib/doodleMarks.ts, src/lib/viz/Comparison.tsx, src/lib/viz/PosterHero.tsx, src/lib/viz/ProcessSteps.tsx, src/lib/viz/layout.ts, design-concept/DESIGN_CONCEPT.md, design-concept/UI_CONSISTENCY_AUDIT.md, design-concept/DECO_KIT.md, design-concept/DIAGRAM_STYLE_GUIDE.md
 ---
 
 # KAN-072-CPJCT1 — UI 토큰 정합화 — 게이트가 무는 1,786건을 구획 단위로 0 으로 줄인다
