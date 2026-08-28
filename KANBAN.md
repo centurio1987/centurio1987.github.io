@@ -83,7 +83,7 @@
   - 메모: 하위 6장으로 순서를 강제한다. 루트 넷으로 두면 scope 가 src/** 로 전부 겹쳐 루트 독립성이 그 자리에서 깨진다 — 칸반 3.6 의 상위 신설
   - 실행 문서: KANBAN.cards/KAN-072-CPJCT1.md (16/16 · 최근 08-28)
   - 계획 리포트: KANBAN.reports/KAN-072-CPJCT1.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-072-CPJCT1.review.md (승인 0/8 · 검토 대기)
+  - 검토 문서: KANBAN.reviews/KAN-072-CPJCT1.review.md (승인 8/8 · 추가 의견 총 2 · 검토 대기)
   - 원문:
     ```text
     위 artifact를 보고 전략과 실행 계획을 수립해라
