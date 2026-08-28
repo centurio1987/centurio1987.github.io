@@ -41,6 +41,21 @@ export interface TokenException {
    */
   evidence: string[];
   match(file: string, text: string): boolean;
+  /**
+   * **자리 단위 좁히기(선택).** 있으면 `match` 로 고른 파일 **안에서 이 술어를 만족하는
+   * 히트만** 예외가 된다.
+   *
+   * 왜 필요한가. `match` 는 파일 단위라 「이 파일의 이 값 하나만 일부러 그렇다」를 못 적는다.
+   * 그래서 예외를 걸면 **그 파일의 준수분과 다른 부채까지 판정에서 통째로 내려간다** —
+   * KAN-072 가 구분 팔레트 11건을 예외로 안 올린 이유가 정확히 이것이었다
+   * (`KANBAN.cards/KAN-072-CPJCT1.md` 배치5 S2 보강). 값 하나를 지키려고 파일 전체의
+   * 눈을 감기지 않는다.
+   *
+   * **줄 번호로 안 쓴다.** 같은 파일을 한 줄만 고쳐도 조용히 빗나가고, 빗나간 예외는
+   * 「부채가 늘었다」가 아니라 「예외가 안 걸린다」로 나타나 원인을 짚기 어렵다.
+   * 속성과 값으로 쓴다 — 편집에 안 흔들리고 무엇을 예외로 뒀는지가 그대로 읽힌다.
+   */
+  site?(hit: { prop: string; value: string; axis: string }): boolean;
 }
 
 export const EXCEPTIONS: TokenException[] = [
@@ -59,6 +74,30 @@ export const EXCEPTIONS: TokenException[] = [
     why: "패키지 복제물 — @centurio1987/bbangto-ui-visualization 의 CONTRACT_CSS 사본이라 고쳐도 재추출에서 되돌아간다",
     evidence: ["src/styles/viz.css:4"],
     match: (f) => f === "src/styles/viz.css",
+  },
+  {
+    id: "accent-bar-5px",
+    kind: ["verdict"],
+    what: "글 안 시뮬 네 곳의 borderLeft 5px 왼쪽 강조 막대",
+    why: "굵기가 곧 뜻인 자리 — 옆 테두리가 --stroke-hair(1px) 이라 5배로 단을 가르는데, --stroke-bold(2px) 로 밀면 배율이 2배로 떨어져 막대와 테두리가 한 단으로 붙는다",
+    evidence: ["design-concept/DESIGN_CONCEPT.md:369"],
+    match: (f) => [
+      "src/components/posts/osi-7-layers-2/FrameAnatomy.tsx",
+      "src/components/posts/osi-7-layers-3/RoutingTableLab.tsx",
+      "src/components/posts/osi-7-layers-6/DnsResolveLab.tsx",
+      "src/components/posts/osi-7-layers-6/RequestJourneyLab.tsx",
+    ].includes(f),
+    // 자리 단위 — 그 파일의 다른 값은 계속 판정한다. 줄 번호를 안 쓰는 이유는 위 주석에.
+    site: (h) => h.prop === "borderLeft" && h.value === "5px",
+  },
+  {
+    id: "kraft-toggle-set",
+    kind: ["verdict"],
+    what: "vpn-anatomy-7/SplitTunnelLab.tsx 활성 토글의 크래프트 네 색",
+    why: "넷이 서로를 받치는 한 벌이라 하나만 옮기면 짝이 깨지는데 토큰에 그 계열이 없다 — 최근접이 --cat-quality Δ42 · --fate-leak-bg Δ16 으로 전부 역할이 다르다",
+    evidence: ["design-concept/DESIGN_CONCEPT.md:95"],
+    match: (f) => f === "src/components/posts/vpn-anatomy-7/SplitTunnelLab.tsx",
+    site: (h) => ["#8a7a56", "#efe3c6", "#4a3f26", "#7a7264"].includes(h.value),
   },
   {
     id: "apply-viz-generated",
@@ -84,6 +123,9 @@ export function validateExceptions(root: string): string[] {
     seen.add(e.id);
     if (!e.kind.length) bad.push(`예외 「${e.id}」 에 갈래가 없다(scan·verdict 중 하나는 있어야 한다)`);
     if (!e.why.trim()) bad.push(`예외 「${e.id}」 에 사유가 비었다`);
+    if (e.site && !e.kind.includes("verdict")) {
+      bad.push(`예외 「${e.id}」 에 site 가 있는데 갈래에 verdict 가 없다 — 자리 단위 좁히기는 판정 예외에만 뜻이 있다`);
+    }
     if (!e.evidence.length) {
       bad.push(`예외 「${e.id}」 에 근거 문서 위치가 없다 — 근거 없는 예외는 안 받는다`);
       continue;
@@ -105,5 +147,9 @@ export function validateExceptions(root: string): string[] {
 export const scanExceptionFor = (file: string, text: string): TokenException | null =>
   EXCEPTIONS.find((e) => e.kind.includes("scan") && e.match(file, text)) ?? null;
 
-export const verdictExceptionFor = (file: string, text = ""): TokenException | null =>
-  EXCEPTIONS.find((e) => e.kind.includes("verdict") && e.match(file, text)) ?? null;
+export const verdictExceptionFor = (
+  file: string, text = "", hit?: { prop: string; value: string; axis: string },
+): TokenException | null =>
+  EXCEPTIONS.find((e) =>
+    e.kind.includes("verdict") && e.match(file, text) && (!e.site || (hit ? e.site(hit) : false)),
+  ) ?? null;

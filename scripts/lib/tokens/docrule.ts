@@ -211,7 +211,7 @@ function auditLabelOf(dict: TokenDict, hit: Hit, ignore: ReadonlySet<string>): {
   if (hit.kind === "token") return { label: "준수", reason: "var(--토큰) 을 썼다" };
   const drift = driftToken(dict, hit, ignore);
   if (drift) return { label: "드리프트", reason: `D1 같은 표기 — ${drift}` };
-  const exc = verdictExceptionFor(hit.file);
+  const exc = verdictExceptionFor(hit.file, "", hit);
   if (exc) return { label: "정당한 예외", reason: `${exc.why} (근거 ${exc.evidence.join(" · ")})` };
   if (comparable(hit.axis, hit.prop)) {
     return { label: "위반", reason: `${hit.axis} 축에 토큰 체계가 있는데 토큰 밖 값이고 근거 문서를 못 걸었다` };

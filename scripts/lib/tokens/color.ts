@@ -128,8 +128,8 @@ function buildIndex(ctx: ScanContext): TokenIndex {
  * 공통 추출의 `Hit.excluded`(스캔 제외)와 섞지 않는다 — `viz.css` 의 색 리터럴이
  * 감사에서 위반으로 남아 있는 것이 그 차이다.
  */
-function exceptionFor(path: string, _axis: JudgeAxis): string | null {
-  const e = verdictExceptionFor(path);
+function exceptionFor(path: string, _axis: JudgeAxis, hit?: Hit): string | null {
+  const e = verdictExceptionFor(path, "", hit);
   return e ? `${e.why} (근거 ${e.evidence.join(" · ")})` : null;
 }
 
@@ -201,7 +201,7 @@ export const color: AxisModule = {
         continue;
       }
 
-      const why = exceptionFor(hit.file, axis);
+      const why = exceptionFor(hit.file, axis, hit);
       if (why) { emit(hit, axis, "정당한 예외", why); continue; }
 
       // 남은 것은 전부 위반이다. 이 세 축은 셋 다 대조할 토큰 체계가 있어서다

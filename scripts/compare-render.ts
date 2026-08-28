@@ -52,6 +52,7 @@ const NS = opt("--ns", "default");
 const KEEP = flag("--keep");
 const SELF_TEST = flag("--self-test");
 const MAX_STATES = Number(opt("--states", "8"));
+const SUMMARY = flag("--summary");
 const VIEWPORTS = [
   { name: "desktop", width: 1280, height: 900 },
   { name: "mobile", width: 390, height: 844 },
@@ -439,7 +440,7 @@ function noiseKeys(shots: Shot[]): { keys: Set<string>; states: Set<string> } {
   return { keys, states };
 }
 
-function diffShots(url: string, vp: string, a: Shot[], b: Shot[], noisy = new Set<string>(), cap = 40): Diff[] {
+function diffShots(url: string, vp: string, a: Shot[], b: Shot[], noisy = new Set<string>(), cap = SUMMARY ? 100000 : 40): Diff[] {
   const out: Diff[] = [];
   const states = new Set([...a.map((s) => s.state), ...b.map((s) => s.state)]);
   for (const st of states) {
@@ -620,6 +621,27 @@ try {
     makeCopy(B, []);      // 지금 상태 그대로
     build(A, "before"); build(B, "after");
     const diffs = await run(join(A, "dist"), join(B, "dist"), pages);
+    if (SUMMARY) {
+      // 판정용 요약 — "무엇이 얼마나 움직였나"를 지면과 속성으로 접는다.
+      // 차이 목록을 그대로 내밀면 수백 줄이라 사람이 판정할 재료가 안 된다.
+      const byPage = new Map<string, Map<string, number>>();
+      const heights = new Map<string, [string, string]>();
+      for (const d of diffs) {
+        const key = `${d.url} [${d.vp}]`;
+        const m = byPage.get(key) ?? new Map<string, number>();
+        m.set(d.prop, (m.get(d.prop) ?? 0) + 1);
+        byPage.set(key, m);
+        if (d.path === "body" && d.prop === "@box") heights.set(key, [d.before, d.after]);
+      }
+      console.log(`\n요약 — 지면 ${byPage.size}곳에서 값이 움직였다 (총 ${diffs.length}건)`);
+      for (const [k, m] of [...byPage].sort()) {
+        const h = heights.get(k);
+        const hs = h ? ` · 문서 높이 ${h[0].split(",")[1]} → ${h[1].split(",")[1]}` : "";
+        const top = [...m].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([p, n]) => `${p} ${n}`).join(" · ");
+        console.log(`  ${k}${hs}\n      ${top}`);
+      }
+      process.exit(0);
+    }
     if (diffs.length) {
       for (const d of diffs.slice(0, 40)) {
         failures.push(`${d.url} [${d.vp}/${d.state}] ${d.path}\n      ${d.prop}: ${d.before} → ${d.after}`);
