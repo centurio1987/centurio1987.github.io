@@ -264,3 +264,4 @@
 {"seq": 261, "t": "2026-08-15T23:49", "a": "ai", "id": "KAN-067-NH9SDQ", "op": "edit", "w": "WTCH92", "field": "memo", "before": "", "after": "폭신 대담(template: \"talk\") 에피소드용 주제 2건 + 사전 리서치 요구. 주제① 한 페이지의 여러 시각화가 대규모 aggregated 데이터를 한 번에 당겨와 생기는 반응성 문제 — 유저가 낸 갈래 셋(service worker+IndexedDB 프리패치·stale 판정 / socket 압축 스트리밍 / skeleton·loading UI)에 더해 그 외 방법까지 요구. 성능축·UX축 양쪽에서 볼 것. 주제② 요청이 영속성 데이터 조회에서 시작하면 성능이 DB 질의에 지배되어 자료구조·알고리즘 개입 여지가 없는 문제 — 버퍼로 올리는 것 말고 어떤 전략이 있는지. 착수 시 research 스킬로 두 주제를 수집한 뒤 대담 준비 노트를 만든다. 대화 원본 저장 규격은 KAN-066 과 맞물린다."}
 {"seq": 262, "t": "2026-08-16T01:12", "a": "ai", "id": "KAN-066-KK9Q50", "op": "move", "w": "NYGJHE", "from": "todo", "to": "doing"}
 {"seq": 263, "t": "2026-08-16T12:36", "a": "ai", "id": "KAN-066-KK9Q50", "op": "move", "w": "NYGJHE", "from": "doing", "to": "review"}
+{"seq": 264, "t": "2026-08-18T16:17", "a": "ai", "id": "KAN-066-KK9Q50", "op": "move", "w": "NYGJHE", "from": "review", "to": "done"}

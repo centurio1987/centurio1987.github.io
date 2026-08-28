@@ -1,6 +1,6 @@
 {
-  "next_id": 73,
-  "next_seq": 314,
+  "next_id": 74,
+  "next_seq": 315,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -1054,6 +1054,26 @@
       "memo": "KAN-070 전략이 전제했으나 구현 안 된 전환. color.ts:54 COLOR_TOKENS 18개 고정 · :66 --stroke 정확 일치 · docrule.ts:66,79 SPACING_SCALE/FONT_ROLES 상수. radius 만 color.ts:64 includes 라 이미 자동이다. 자가검사가 reason 문자열을 매칭하므로(selftest.ts:69) 판정 문구를 바꾸면 픽스처도 함께 간다. 이 카드만 scripts/lib/tokens/** scope 를 진다 — 유저 선택 2026-08-27",
       "memo_hash": "5d4faf775f7a38eb4a8d74bd985fea14ab3bdc3a",
       "parent": "KAN-072-CPJCT1"
+    },
+    "KAN-073-CVD8X7": {
+      "col": "todo",
+      "title": "게이트 인식층 확장 — 추출층이 못 보는 두 갈래를 판정에 넣는다",
+      "verbatim": "추출층 정규식이 큰따옴표 문자열 값만 봐서 React 인라인 숫자값(fontSize 13 · borderRadius 8 · padding 18)과 삼항·템플릿 리터럴 안을 판정에 안 넣는다. 원문: scripts/lib/tokens/extract.ts:60. 배치6 의 세 작업 단위(webrtc 구획 · auth-authz 구획 · container·tauri 구획)가 독립적으로 같은 것을 짚었고 각각 열 자리 · 열두 자리를 셌다. 옮기면 그림 액자가 2px 씩 줄고 반픽셀 글자가 정수로 접히는, 게이트가 검증 못 하는 화면 변화다. 하위 카드 KAN-072.7 은 카드 목표(이름 규칙을 하드코딩에서 데이터로)를 달성해 닫았으므로 이건 새 카드다",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-08-28",
+      "title_hash": "fca040214bb9283143dde519d475a3cc5fdb76b2",
+      "verbatim_hash": "2d9207030c091651b5070af6e9d949d07277beb0",
+      "short": "인식층 확장",
+      "short_hash": "18b125ba0f7b32e7749084200889a631dd9891a5",
+      "purpose": "React 인라인 숫자값과 삼항·템플릿 리터럴 안의 시각 값을 tokens:verify 가 판정하게 만든다",
+      "purpose_hash": "a30ac6ebc9fd8a616d83bb68c1b08db588b1e82c",
+      "reason": "KAN-072 가 래칫을 0 으로 만들었지만 그 0 은 추출층이 보는 범위 안에서의 0 이다 — 안 보는 자리에 스케일 밖 값이 남아 있다",
+      "reason_hash": "76c1f1e63be02d531cdc569b49ce0961a6ed5951",
+      "goal": "fontSize·borderRadius·padding 같은 숫자 스타일과 삼항 안 리터럴이 판정에 들어오고, 그때 드러나는 건수로 새 기준선이 선다",
+      "goal_hash": "39bbf052cb7fa1b3a8804076d00cd32581a81606",
+      "memo": "KAN-072-CPJCT1 검토 항목 2 승인(2026-08-28). 게이트 코드는 KAN-070 계열 소유",
+      "memo_hash": "c3452441f6c1ecc3b1fcc345313d4d01daaa950d"
     }
   },
   "order": [
@@ -1131,9 +1151,27 @@
     "KAN-072.5-WQV1KT",
     "KAN-072.6-2YYK6V",
     "KAN-072.7-D6DCXJ",
-    "KAN-072-CPJCT1"
+    "KAN-072-CPJCT1",
+    "KAN-073-CVD8X7"
   ],
   "recent": [
+    {
+      "seq": 314,
+      "t": "2026-08-28T15:42",
+      "a": "ai",
+      "id": "KAN-073-CVD8X7",
+      "op": "create",
+      "w": "WTCH92",
+      "col": "todo",
+      "title": "게이트 인식층 확장 — 추출층이 못 보는 두 갈래를 판정에 넣는다",
+      "verbatim": "추출층 정규식이 큰따옴표 문자열 값만 봐서 React 인라인 숫자값(fontSize 13 · borderRadius 8 · padding 18)과 삼항·템플릿 리터럴 안을 판정에 안 넣는다. 원문: scripts/lib/tokens/extract.ts:60. 배치6 의 세 작업 단위(webrtc 구획 · auth-authz 구획 · container·tauri 구획)가 독립적으로 같은 것을 짚었고 각각 열 자리 · 열두 자리를 셌다. 옮기면 그림 액자가 2px 씩 줄고 반픽셀 글자가 정수로 접히는, 게이트가 검증 못 하는 화면 변화다. 하위 카드 KAN-072.7 은 카드 목표(이름 규칙을 하드코딩에서 데이터로)를 달성해 닫았으므로 이건 새 카드다",
+      "parent": null,
+      "short": "인식층 확장",
+      "purpose": "React 인라인 숫자값과 삼항·템플릿 리터럴 안의 시각 값을 tokens:verify 가 판정하게 만든다",
+      "reason": "KAN-072 가 래칫을 0 으로 만들었지만 그 0 은 추출층이 보는 범위 안에서의 0 이다 — 안 보는 자리에 스케일 밖 값이 남아 있다",
+      "goal": "fontSize·borderRadius·padding 같은 숫자 스타일과 삼항 안 리터럴이 판정에 들어오고, 그때 드러나는 건수로 새 기준선이 선다",
+      "memo": "KAN-072-CPJCT1 검토 항목 2 승인(2026-08-28). 게이트 코드는 KAN-070 계열 소유"
+    },
     {
       "seq": 313,
       "t": "2026-08-28T15:39",
@@ -1710,16 +1748,6 @@
       "col": "backlog",
       "title": "viz 도식을 감싸는 액자 프레임 디자인 — 패턴 스크래치 + 예시 페이지",
       "memo": ""
-    },
-    {
-      "seq": 264,
-      "t": "2026-08-18T16:17",
-      "a": "ai",
-      "id": "KAN-066-KK9Q50",
-      "op": "move",
-      "w": "NYGJHE",
-      "from": "review",
-      "to": "done"
     }
   ],
   "layout": 2,
