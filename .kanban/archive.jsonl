@@ -266,3 +266,4 @@
 {"seq": 263, "t": "2026-08-16T12:36", "a": "ai", "id": "KAN-066-KK9Q50", "op": "move", "w": "NYGJHE", "from": "doing", "to": "review"}
 {"seq": 264, "t": "2026-08-18T16:17", "a": "ai", "id": "KAN-066-KK9Q50", "op": "move", "w": "NYGJHE", "from": "review", "to": "done"}
 {"seq": 265, "t": "2026-08-18T16:49", "a": "유저", "id": "KAN-063", "op": "archive", "w": "WTCH92", "col": "backlog", "title": "viz 도식을 감싸는 액자 프레임 디자인 — 패턴 스크래치 + 예시 페이지", "memo": ""}
+{"seq": 266, "t": "2026-08-18T17:16", "a": "ai", "id": "KAN-067-NH9SDQ", "op": "move", "w": "HZ6D0W", "from": "todo", "to": "doing"}

@@ -1,6 +1,6 @@
 {
   "next_id": 74,
-  "next_seq": 316,
+  "next_seq": 317,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -839,12 +839,12 @@
       ]
     },
     "KAN-071-6361MY": {
-      "col": "todo",
+      "col": "doing",
       "title": "선언 층을 줄인다 — bbangtoTonyStyleGuide export 를 걷고 foundation 만 남긴다",
       "verbatim": "위 artifact를 보고 전략과 실행 계획을 수립해라",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-25",
+      "갱신": "2026-08-28",
       "title_hash": "0a6180d4c96fcd2e32cefb7c25f021b8a4c043bc",
       "verbatim_hash": "d974799dd590aa8904c89759a571462d678add6c",
       "short": "선언 층 처분",
@@ -1085,7 +1085,6 @@
     "KAN-061",
     "KAN-048",
     "KAN-065",
-    "KAN-071-6361MY",
     "KAN-073-CVD8X7",
     "KAN-001",
     "KAN-002",
@@ -1153,9 +1152,20 @@
     "KAN-072.6-2YYK6V",
     "KAN-072.7-D6DCXJ",
     "KAN-072-CPJCT1",
-    "KAN-064"
+    "KAN-064",
+    "KAN-071-6361MY"
   ],
   "recent": [
+    {
+      "seq": 316,
+      "t": "2026-08-28T21:05",
+      "a": "ai",
+      "id": "KAN-071-6361MY",
+      "op": "move",
+      "w": "9RGV8D",
+      "from": "todo",
+      "to": "doing"
+    },
     {
       "seq": 315,
       "t": "2026-08-28T16:55",
@@ -1738,16 +1748,6 @@
       "w": "HZ6D0W",
       "from": "doing",
       "to": "review"
-    },
-    {
-      "seq": 266,
-      "t": "2026-08-18T17:16",
-      "a": "ai",
-      "id": "KAN-067-NH9SDQ",
-      "op": "move",
-      "w": "HZ6D0W",
-      "from": "todo",
-      "to": "doing"
     }
   ],
   "layout": 2,
