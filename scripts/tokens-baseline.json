@@ -2,12 +2,10 @@
   "generator": "verify-tokens@1",
   "srcFiles": 152,
   "counts": {
-    "color / 드리프트": 7,
-    "color / 위반": 40,
-    "color / 준수": 931,
+    "color / 준수": 975,
     "font / 준수": 358,
     "font / 판정 불가": 244,
-    "other / 준수": 196,
+    "other / 준수": 252,
     "radius / 준수": 117,
     "shadow / 준수": 17,
     "shadow / 판정 불가": 129,
@@ -17,16 +15,8 @@
     "잡음 / 판정 불가": 59
   },
   "totals": {
-    "드리프트": 7,
-    "위반": 40,
-    "준수": 2603,
+    "준수": 2703,
     "판정 불가": 891
   },
-  "files": {
-    "src/components/motifs/Mascot.astro": 34,
-    "src/components/posts/osi-7-layers-2/FrameAnatomy.tsx": 6,
-    "src/components/posts/osi-7-layers-3/HopJourney.tsx": 1,
-    "src/components/posts/vpn-anatomy-7/SplitTunnelLab.tsx": 4,
-    "src/components/posts/webrtc-1/LoopbackNegotiationDemo.tsx": 2
-  }
+  "files": {}
 }

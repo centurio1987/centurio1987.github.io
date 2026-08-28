@@ -20,13 +20,36 @@ const HAIR = "var(--stroke-hair, 1px)";
 /** 알파 접미 색은 var() 와 이어붙일 수 없다 — 같은 비율을 color-mix 로 푼다. */
 const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
 
-// 상태 팔레트는 (bg, fg, border) 셋이 한 짝이라 통째로 옮기거나 통째로 두거나다 — 네 bg 중
-// 셋이 --cream/--paper 로 눌려 초록·금색·붉음 구분이 사라지므로 KAN-072-CPJCT1 배치5 에서 멈췄다.
+// 상태 팔레트는 (bg, fg, border) 셋이 한 짝이라 통째로 옮기거나 통째로 두거나다. 네 bg 중
+// 셋이 --cream/--paper 로 눌려 초록·금색·붉음 구분이 사라지므로 최근접 토큰으로 밀지 않고
+// --fate-* 로 세웠다(KAN-072-CPJCT1 배치7 · DESIGN_CONCEPT §4 「구분 팔레트」). 게이트가 무는
+// 것은 border 넷뿐이지만(bg·fg 는 CSS 속성명이 아니라 추출층이 안 본다) 열둘을 함께 옮긴
+// 이유가 그 짝이다 — 넷만 옮기면 한쪽은 토큰이고 한쪽은 리터럴인 채로 대비를 조정하게 된다.
 const FATE_META: Record<Fate, { label: string; bg: string; fg: string; border: string }> = {
-  tunnel: { label: "터널로 보호", bg: "#e7efe6", fg: "#2f5d3a", border: "#8bb897" },
-  direct: { label: "평문 직결(예상됨)", bg: "#f6ecd8", fg: "#7a5a1e", border: "#d9b871" },
-  leak: { label: "유출 — 노출됨", bg: "#f4dcd4", fg: "#8a3320", border: "#d99b86" },
-  blocked: { label: "차단됨(침묵)", bg: "#eae6df", fg: "#5f5a51", border: "#b8b0a0" },
+  tunnel: {
+    label: "터널로 보호",
+    bg: "var(--fate-tunnel-bg, #e7efe6)",
+    fg: "var(--fate-tunnel-fg, #2f5d3a)",
+    border: "var(--fate-tunnel-border, #8bb897)",
+  },
+  direct: {
+    label: "평문 직결(예상됨)",
+    bg: "var(--fate-direct-bg, #f6ecd8)",
+    fg: "var(--fate-direct-fg, #7a5a1e)",
+    border: "var(--fate-direct-border, #d9b871)",
+  },
+  leak: {
+    label: "유출 — 노출됨",
+    bg: "var(--fate-leak-bg, #f4dcd4)",
+    fg: "var(--fate-leak-fg, #8a3320)",
+    border: "var(--fate-leak-border, #d99b86)",
+  },
+  blocked: {
+    label: "차단됨(침묵)",
+    bg: "var(--fate-blocked-bg, #eae6df)",
+    fg: "var(--fate-blocked-fg, #5f5a51)",
+    border: "var(--fate-blocked-border, #b8b0a0)",
+  },
 };
 
 const CLASSES: { id: "corp" | "internet" | "dns"; name: string; note: string }[] = [
@@ -167,7 +190,9 @@ export default function SplitTunnelLab() {
           marginTop: 14,
           fontSize: 13,
           lineHeight: 1.6,
-          color: dnsLeaking || dropLeaking ? "#8a3320" : "#5f5a51",
+          // 값이 FATE_META 의 leak.fg / blocked.fg 와 정확히 같다 — 같은 뜻이므로 같은 토큰을 쓴다.
+          // 게이트는 삼항 안을 못 보지만, 리터럴로 두면 팔레트를 고칠 때 이 자리만 안 따라온다.
+          color: dnsLeaking || dropLeaking ? "var(--fate-leak-fg, #8a3320)" : "var(--fate-blocked-fg, #5f5a51)",
           borderTop: `${HAIR} dashed ${CANVAS}`,
           paddingTop: 10,
         }}

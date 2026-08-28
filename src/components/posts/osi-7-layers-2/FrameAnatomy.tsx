@@ -19,37 +19,37 @@ const BORDER = "var(--border, #d8d0be)";
 const PANEL = "var(--surface-hi, #fffdf8)";
 const TEAL = "var(--cat-skills, #3e6b6b)";
 
-// 아래 `color` 일곱은 UI 색이 아니라 **필드를 서로 구분하는 계열형 스케일**이다. 사이트
-// 팔레트에 이 역할의 토큰이 없다(DESIGN_CONCEPT §4 는 중립·포인트·카테고리 셋뿐). payload
-// 하나만 최근접 토큰과 ΔRGB 12.8 이라 --canvas 로 갔고, 나머지 여섯은 28~80 이라 옮기면
-// 막대의 색 구분이 무너져 KAN-072 배치5 에서 보류했다 — 스케일 전체 판정이 나면 함께 옮긴다.
+// 아래 `color` 일곱은 UI 색이 아니라 **필드를 서로 구분하는 계열형 스케일**이다. 여섯은
+// 최근접 토큰과 ΔRGB 28~80 이라 밀면 막대의 구분이 무너진다 — 그래서 최근접으로 미는 대신
+// --field-* 로 세웠다(KAN-072 배치7 · DESIGN_CONCEPT §4 「구분 팔레트」). payload 하나만
+// 최근접과 Δ12.8 이라 --canvas 를 그대로 쓴다. fallback 은 tokens.css 값과 정확히 같다.
 const FIELDS: Field[] = [
   {
     id: "preamble",
     label: "Preamble + SFD",
     bytes: "7 + 1 B",
-    color: "#cdbfa6",
+    color: "var(--field-preamble, #cdbfa6)",
     desc: "수신 NIC의 클럭을 송신 비트열에 맞춰 동기화하는 신호 구간입니다. 엄밀히는 L1 영역이라 캡처 도구나 FCS 계산 범위에는 보통 잡히지 않습니다.",
   },
   {
     id: "dst",
     label: "Destination MAC",
     bytes: "6 B",
-    color: "#e8c97a",
+    color: "var(--field-dst, #e8c97a)",
     desc: "이 프레임을 받을 다음 장치의 L2 주소입니다. 원격 서버가 아니라 '같은 링크의 다음 홉'(보통 기본 gateway) 주소입니다. 브로드캐스트면 ff:ff:ff:ff:ff:ff.",
   },
   {
     id: "src",
     label: "Source MAC",
     bytes: "6 B",
-    color: "#dcc18a",
+    color: "var(--field-src, #dcc18a)",
     desc: "보낸 장치의 MAC입니다. 스위치는 이 값을 보고 '이 MAC은 이 port에 있다'를 학습합니다. 앞 3바이트(OUI)는 제조사 식별자입니다.",
   },
   {
     id: "vlan",
     label: "802.1Q Tag",
     bytes: "4 B",
-    color: "#8fb8a8",
+    color: "var(--field-vlan, #8fb8a8)",
     desc: "VLAN ID(12bit)와 우선순위(PCP 3bit)를 담습니다. TPID 0x8100로 시작해 '이 다음은 VLAN 태그'임을 알립니다. access port에서는 보통 떼고, trunk port에서만 붙은 채 오갑니다.",
     vlanOnly: true,
   },
@@ -57,7 +57,7 @@ const FIELDS: Field[] = [
     id: "ethertype",
     label: "EtherType",
     bytes: "2 B",
-    color: "#bcd0c9",
+    color: "var(--field-ethertype, #bcd0c9)",
     desc: "payload의 상위 protocol을 가리킵니다. 0x0800=IPv4, 0x86DD=IPv6, 0x0806=ARP. 값이 1500 이하면 길이(Length) 필드로 해석하는 옛 규약도 있습니다.",
   },
   {
@@ -71,7 +71,7 @@ const FIELDS: Field[] = [
     id: "fcs",
     label: "FCS",
     bytes: "4 B",
-    color: "#d9b896",
+    color: "var(--field-fcs, #d9b896)",
     desc: "Frame Check Sequence입니다. CRC-32로 전송 중 비트 오류를 검출합니다. 어긋나면 프레임을 조용히 버립니다 — '재전송'은 L2가 아니라 상위(TCP)의 몫입니다.",
   },
 ];

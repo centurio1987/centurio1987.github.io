@@ -29,6 +29,8 @@ const REMOTE = "var(--cat-architecture, #4e6ca8)"; // 원격 피어
 const DANGER = "var(--cat-strategy, #a84b4b)";
 const NOTICE = "var(--pop, #d8a33f)"; // 비보안 컨텍스트 안내 테두리
 const NOTICE_BG = "var(--surface, #F8F3E8)";
+const NOTICE_INK = "var(--ink-notice, #5c4a1f)"; // 안내문 글자 — 「주의」이지 --danger(「오류」)가 아니다
+const MUTED_INK = "var(--ink-muted, #a59c8b)"; // 흐린 글자 — 로그 타임스탬프
 /** 성사·도달 배경 — 기술 축 색의 옅은 단(배치6 유저 판정). 토큰을 안 늘리고 관계만 드러낸다. */
 const REACHED = "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))";
 
@@ -236,8 +238,8 @@ export default function LoopbackNegotiationDemo() {
             border: `${HAIR} solid ${NOTICE}`,
             borderRadius: 8,
             background: NOTICE_BG,
-            // 판정 대기 — 최근접 --cat-quality 도 ΔRGB 47.7 이라 게이트 시야 안에 남긴다(KAN-072 배치6).
-            color: "#5c4a1f",
+            // 최근접 --cat-quality 가 Δ47.7 로 멀어 밀지 않고 --ink-notice 를 세웠다(KAN-072 배치7).
+            color: NOTICE_INK,
             fontSize: 13,
             lineHeight: 1.55,
           }}
@@ -331,8 +333,8 @@ export default function LoopbackNegotiationDemo() {
         ) : (
           logs.map((l, idx) => (
             <div key={idx} style={{ color: whoColor[l.who] }}>
-              {/* 판정 대기 — 최근접 --ink-3 도 ΔRGB 68 이라 게이트 시야 안에 남긴다(KAN-072 배치6). */}
-              <span style={{ color: "#a59c8b" }}>{l.t}</span> [{l.who}] {l.msg}
+              {/* 최근접 --ink-3 이 Δ68 로 멀어 밀지 않고 --ink-muted 를 세웠다(KAN-072 배치7). */}
+              <span style={{ color: MUTED_INK }}>{l.t}</span> [{l.who}] {l.msg}
             </div>
           ))
         )}
