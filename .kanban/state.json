@@ -1,6 +1,6 @@
 {
   "next_id": 74,
-  "next_seq": 316,
+  "next_seq": 317,
   "cards": {
     "KAN-001": {
       "col": "doing",
@@ -1057,7 +1057,7 @@
       "parent": "KAN-072-CPJCT1"
     },
     "KAN-073-CVD8X7": {
-      "col": "todo",
+      "col": "doing",
       "title": "게이트 인식층 확장 — 추출층이 못 보는 두 갈래를 판정에 넣는다",
       "verbatim": "추출층 정규식이 큰따옴표 문자열 값만 봐서 React 인라인 숫자값(fontSize 13 · borderRadius 8 · padding 18)과 삼항·템플릿 리터럴 안을 판정에 안 넣는다. 원문: scripts/lib/tokens/extract.ts:60. 배치6 의 세 작업 단위(webrtc 구획 · auth-authz 구획 · container·tauri 구획)가 독립적으로 같은 것을 짚었고 각각 열 자리 · 열두 자리를 셌다. 옮기면 그림 액자가 2px 씩 줄고 반픽셀 글자가 정수로 접히는, 게이트가 검증 못 하는 화면 변화다. 하위 카드 KAN-072.7 은 카드 목표(이름 규칙을 하드코딩에서 데이터로)를 달성해 닫았으므로 이건 새 카드다",
       "생성": "ai",
@@ -1074,7 +1074,15 @@
       "goal": "fontSize·borderRadius·padding 같은 숫자 스타일과 삼항 안 리터럴이 판정에 들어오고, 그때 드러나는 건수로 새 기준선이 선다",
       "goal_hash": "39bbf052cb7fa1b3a8804076d00cd32581a81606",
       "memo": "KAN-072-CPJCT1 검토 항목 2 승인(2026-08-28). 게이트 코드는 KAN-070 계열 소유",
-      "memo_hash": "c3452441f6c1ecc3b1fcc345313d4d01daaa950d"
+      "memo_hash": "c3452441f6c1ecc3b1fcc345313d4d01daaa950d",
+      "scope": [
+        "scripts/verify-tokens.ts",
+        "scripts/lib/tokens/**",
+        "scripts/fixtures/tokens/**",
+        "scripts/tokens-baseline.json",
+        "design-concept/UI_CONSISTENCY_AUDIT.md",
+        "CLAUDE.md"
+      ]
     }
   },
   "order": [
@@ -1086,7 +1094,6 @@
     "KAN-048",
     "KAN-065",
     "KAN-071-6361MY",
-    "KAN-073-CVD8X7",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -1153,9 +1160,20 @@
     "KAN-072.6-2YYK6V",
     "KAN-072.7-D6DCXJ",
     "KAN-072-CPJCT1",
-    "KAN-064"
+    "KAN-064",
+    "KAN-073-CVD8X7"
   ],
   "recent": [
+    {
+      "seq": 316,
+      "t": "2026-08-28T18:56",
+      "a": "ai",
+      "id": "KAN-073-CVD8X7",
+      "op": "move",
+      "w": "VX53DE",
+      "from": "todo",
+      "to": "doing"
+    },
     {
       "seq": 315,
       "t": "2026-08-28T16:55",
@@ -1738,16 +1756,6 @@
       "w": "HZ6D0W",
       "from": "doing",
       "to": "review"
-    },
-    {
-      "seq": 266,
-      "t": "2026-08-18T17:16",
-      "a": "ai",
-      "id": "KAN-067-NH9SDQ",
-      "op": "move",
-      "w": "HZ6D0W",
-      "from": "todo",
-      "to": "doing"
     }
   ],
   "layout": 2,
