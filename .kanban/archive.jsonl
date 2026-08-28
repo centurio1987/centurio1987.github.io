@@ -269,3 +269,6 @@
 {"seq": 266, "t": "2026-08-18T17:16", "a": "ai", "id": "KAN-067-NH9SDQ", "op": "move", "w": "HZ6D0W", "from": "todo", "to": "doing"}
 {"seq": 267, "t": "2026-08-18T17:45", "a": "ai", "id": "KAN-067-NH9SDQ", "op": "move", "w": "HZ6D0W", "from": "doing", "to": "review"}
 {"seq": 268, "t": "2026-08-18T23:16", "a": "ai", "id": "KAN-067-NH9SDQ", "op": "move", "w": "HZ6D0W", "from": "review", "to": "doing"}
+{"seq": 271, "t": "2026-08-24T15:09", "a": "유저", "id": "KAN-068-5KMRV8", "op": "create", "w": "WTCH92", "col": "todo", "title": "UI QA", "verbatim": "UI QA\n- 메인 컨텐츠 섹션의 폭이 main 화면과 블로그 탭이 서로 다르다. 일관성을 지킬 필요가 있다.\n- main 화면에서 GnB 컨텐츠 폭과 메인 컨텐츠 섹션의 폭이 서로 다르다. 일관성을 지킬 필요가 있다.", "short": "", "purpose": "", "reason": "", "goal": "", "memo": ""}
+{"seq": 270, "t": "2026-08-19T09:09", "a": "ai", "id": "KAN-067-NH9SDQ", "op": "move", "w": "HZ6D0W", "from": "review", "to": "done"}
+{"seq": 269, "t": "2026-08-18T23:48", "a": "ai", "id": "KAN-067-NH9SDQ", "op": "move", "w": "HZ6D0W", "from": "doing", "to": "review"}

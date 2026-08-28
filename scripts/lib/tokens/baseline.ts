@@ -134,7 +134,13 @@ export function ratchet(
       if (n <= b) continue;
       const sites = verdicts
         .filter((v) => v.hit.file === f && isRatcheted(v))
-        .map((v) => `${f}:${v.hit.line} ${v.hit.prop}: ${v.hit.value} — ${v.verdict}`);
+        // 승격된 숫자는 원문을 함께 낸다 — `6(→6px)`. 안 그러면 "고치는 법" 이
+        // `borderRadius: 6px` 처럼 **그 파일에서 grep 이 안 되는 값**을 가리킨다
+        // (인라인 스타일 원문은 `borderRadius: 6` 이다. KAN-073 S5).
+        .map((v) => {
+          const shown = v.hit.rawValue ? `${v.hit.rawValue}(→${v.hit.value})` : v.hit.value;
+          return `${f}:${v.hit.line} ${v.hit.prop}: ${shown} — ${v.verdict}`;
+        });
       failures.push(
         `  ↳ ${f} 가 ${b} → ${n} (${n - b}건). 이 파일의 무는 자리 ${sites.length}곳:\n` +
         sites.slice(0, 12).map((x) => `      ${x}`).join("\n") +

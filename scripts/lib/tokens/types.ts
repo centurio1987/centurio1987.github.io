@@ -48,6 +48,15 @@ export interface Hit {
   prop: string;
   /** 리터럴 값, 또는 `var(--x)`. */
   value: string;
+  /**
+   * 소스에 실제로 적힌 표기 — `value` 와 다를 때만 채운다.
+   *
+   * 새 인식층이 `fontSize: 13` 을 `13px` 로 승격해 넘기기 때문에 생긴 필드다. 승격은
+   * 판정을 CSS 자리와 똑같은 코드로 하려는 것인데, 그대로 두면 게이트가 지목하는 「값」이
+   * **그 파일에 문자열로 존재하지 않게** 된다 — `verify-tokens.ts` 의 "고치는 법" 이
+   * grep 으로 못 찾는 값을 가리킨다. 출력에서 `13(→13px)` 로 병기하는 데 쓴다.
+   */
+  rawValue?: string;
   /** `token` 이면 쓴 토큰. `literal_dup` 이면 값이 같은 토큰들. */
   token: string | string[] | null;
   /** 값은 같은데 축이 다른 토큰들 — 우연한 일치라 드리프트가 아니다. */
@@ -56,8 +65,17 @@ export interface Hit {
   file: string;
   /** 1부터 세는 줄 번호. */
   line: number;
-  /** 어느 자리에서 읽었나 — CSS 선언 · JSX 속성 · 인라인 style 객체. */
-  src: "css-decl" | "jsx-attr" | "style-obj";
+  /**
+   * 어느 자리에서 읽었나.
+   *
+   * 앞의 셋이 **옛 경로**(감사 원자료 3,539 히트와 대조되는 집합)이고, 뒤의 셋은
+   * KAN-073 이 연 **새 인식층**이다. 갈라 둔 이유가 둘이다 —
+   *   ① 옛 집합만 골라 「한 건도 안 움직였다」를 증명할 수 있어야 하고,
+   *   ② 자가검사의 사유 유일성 키가 `(verdict, want, src)` 셋이라
+   *      같은 사유라도 인식 경로가 다르면 다른 검사가 된다(`recognize/types.ts`).
+   */
+  src: "css-decl" | "jsx-attr" | "style-obj"
+     | "style-num" | "expr-literal" | "attr-css";
   /**
    * 게이트 대상에서 빠지는 히트에는 사유가 붙는다(생성물·패키지 복제물 등).
    * **빼는 것이 아니라 표시만 한다** — 감사 원자료와 히트 단위로 대조하려면
