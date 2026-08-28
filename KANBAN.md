@@ -73,7 +73,7 @@
   - 이유: KAN-072 가 래칫을 0 으로 만들었지만 그 0 은 추출층이 보는 범위 안에서의 0 이다 — 안 보는 자리에 스케일 밖 값이 남아 있다
   - 목표: fontSize·borderRadius·padding 같은 숫자 스타일과 삼항 안 리터럴이 판정에 들어오고, 그때 드러나는 건수로 새 기준선이 선다
   - 메모: KAN-072-CPJCT1 검토 항목 2 승인(2026-08-28). 게이트 코드는 KAN-070 계열 소유
-  - 실행 문서: KANBAN.cards/KAN-073-CVD8X7.md (3/6 · 최근 08-28)
+  - 실행 문서: KANBAN.cards/KAN-073-CVD8X7.md (4/6 · 최근 08-28)
   - 계획 리포트: KANBAN.reports/KAN-073-CVD8X7.report.html (낡음)
   - 원문:
     ```text
