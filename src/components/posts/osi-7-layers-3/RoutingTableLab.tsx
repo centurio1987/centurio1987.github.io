@@ -77,7 +77,7 @@ export default function RoutingTableLab() {
         margin: "2rem 0",
         padding: 18,
         border: `var(--stroke-hair) solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -90,12 +90,12 @@ export default function RoutingTableLab() {
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: 8,
+          gap: "var(--space-8)",
           alignItems: "center",
-          marginBottom: 6,
+          marginBottom: "var(--space-6)",
         }}
       >
-        <label style={{ fontSize: 13, color: INK }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK }}>
           목적지 IP:{" "}
           <input
             value={ip}
@@ -111,13 +111,13 @@ export default function RoutingTableLab() {
           />
         </label>
         {!valid && (
-          <span style={{ color: DANGER, fontSize: 12 }}>
+          <span style={{ color: DANGER, fontSize: "var(--text-label)" }}>
             올바른 IPv4 주소를 입력하세요 (예: 10.20.30.5)
           </span>
         )}
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-6)", marginBottom: "var(--space-14)" }}>
         {PRESETS.map((p) => (
           <button
             type="button"
@@ -125,10 +125,10 @@ export default function RoutingTableLab() {
             onClick={() => setIp(p)}
             style={{
               padding: "var(--space-4) var(--space-10)",
-              fontSize: 12,
+              fontSize: "var(--text-label)",
               fontFamily: "monospace",
               border: `var(--stroke-hair) solid ${BORDER}`,
-              borderRadius: 14,
+              borderRadius: "var(--card-radius)",
               background: ip === p ? "#e5f0ed" : PANEL,
               color: INK,
               cursor: "pointer",
@@ -140,7 +140,7 @@ export default function RoutingTableLab() {
       </div>
 
       <div style={{ overflowX: "auto" }}>
-        <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 13 }}>
+        <table style={{ borderCollapse: "collapse", width: "100%", fontSize: "var(--text-meta)" }}>
           <thead>
             <tr style={{ color: INK_SOFT, textAlign: "left" }}>
               <th style={{ padding: "var(--space-4) var(--space-8)" }}>destination/prefix</th>
@@ -158,7 +158,7 @@ export default function RoutingTableLab() {
                   key={e.route.cidr}
                   style={{
                     background: isWinner ? "#e5f0ed" : "transparent",
-                    color: matched ? INK : "#a59c8b",
+                    color: matched ? INK : "var(--ink-muted)",
                   }}
                 >
                   <td
@@ -192,11 +192,11 @@ export default function RoutingTableLab() {
       <div
         role="status"
         style={{
-          marginTop: 14,
-          padding: 12,
+          marginTop: "var(--space-14)",
+          padding: "var(--space-12)",
           border: `var(--stroke-hair) solid ${SAND}`,
           borderLeft: `5px solid ${SAND}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           lineHeight: 1.6,
         }}
@@ -216,7 +216,7 @@ export default function RoutingTableLab() {
         )}
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 10 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)" }}>
         <code>10.20.30.5</code>는 /8·/16·/24에 모두 걸리지만 선택되는 것은 가장 구체적인 /24입니다.
         <code> 10.99.0.1</code>은 /8만 걸리고, <code>8.8.8.8</code>은 아무 데도 안 걸려 결국{" "}
         <code>0.0.0.0/0</code> 기본 경로로 갑니다 — 그래서 default route를 "최후의 보루"라 부릅니다.

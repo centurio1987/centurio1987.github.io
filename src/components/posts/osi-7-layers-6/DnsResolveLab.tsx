@@ -82,7 +82,7 @@ export default function DnsResolveLab() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -96,9 +96,9 @@ export default function DnsResolveLab() {
         style={{
           display: "flex",
           justifyContent: "center",
-          gap: 6,
+          gap: "var(--space-6)",
           flexWrap: "wrap",
-          marginBottom: 14,
+          marginBottom: "var(--space-14)",
         }}
       >
         {["Root", ".com TLD", "권한 서버"].map((lvl, idx) => {
@@ -108,7 +108,7 @@ export default function DnsResolveLab() {
               key={lvl}
               style={{
                 padding: "var(--space-4, 4px) var(--space-12, 12px)",
-                borderRadius: 8,
+                borderRadius: "var(--radius-sm)",
                 fontSize: 12.5,
                 fontWeight: active ? 700 : 500,
                 border: active ? `${BOLD} solid ${TEAL}` : `${HAIR} solid ${BORDER}`,
@@ -127,11 +127,11 @@ export default function DnsResolveLab() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: 8,
-          marginBottom: 12,
+          gap: "var(--space-8)",
+          marginBottom: "var(--space-12)",
           flexWrap: "wrap",
           fontFamily: "monospace",
-          fontSize: 13,
+          fontSize: "var(--text-meta)",
           color: TEAL,
           fontWeight: 700,
         }}
@@ -143,14 +143,14 @@ export default function DnsResolveLab() {
 
       <div
         style={{
-          padding: 14,
+          padding: "var(--space-14)",
           border: `${HAIR} solid ${step.cached ? TEAL : BORDER}`,
           // 왼쪽 강조 막대 5px 은 --stroke 스케일(1/1.5/2) 밖이라 그대로 둔다 —
           // 2px 로 밀면 막대가 절반 이하로 얇아진다(배치5 규약: 임의로 고르지 않는다).
           borderLeft: `5px solid ${step.cached ? TEAL : SAND}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
-          marginBottom: 14,
+          marginBottom: "var(--space-14)",
           lineHeight: 1.6,
         }}
         role="status"
@@ -165,7 +165,7 @@ export default function DnsResolveLab() {
         </p>
       </div>
 
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--space-8)", alignItems: "center" }}>
         <button
           type="button"
           onClick={() => setI((v) => Math.max(0, v - 1))}
@@ -173,7 +173,7 @@ export default function DnsResolveLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
             color: i === 0 ? MUTED : INK,
             cursor: i === 0 ? "not-allowed" : "pointer",
@@ -188,7 +188,7 @@ export default function DnsResolveLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: "none",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: i === STEPS.length - 1 ? BORDER : TEAL,
             color: ON_TEAL,
             fontWeight: 600,
@@ -197,12 +197,12 @@ export default function DnsResolveLab() {
         >
           다음 ▶
         </button>
-        <span style={{ marginLeft: "auto", fontSize: 12, color: INK_SOFT }}>
+        <span style={{ marginLeft: "auto", fontSize: "var(--text-label)", color: INK_SOFT }}>
           {i + 1} / {STEPS.length}
         </span>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)" }}>
         “재귀”는 내 OS가 한 번 부탁하면 resolver가 <strong>나 대신 여러 서버를 차례로</strong> 물어
         끝까지 답을 가져온다는 뜻입니다. 각 단계의 답은 TTL 동안 캐시돼, 인터넷 전체가 매번 root까지
         가지 않게 해 줍니다. (예시 IP는 설명용입니다.)

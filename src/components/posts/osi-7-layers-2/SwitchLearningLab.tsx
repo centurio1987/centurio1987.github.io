@@ -90,7 +90,7 @@ export default function SwitchLearningLab() {
         margin: "2rem 0",
         padding: 18,
         border: `var(--stroke-hair) solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -104,8 +104,8 @@ export default function SwitchLearningLab() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 8,
-          marginBottom: 12,
+          gap: "var(--space-8)",
+          marginBottom: "var(--space-12)",
         }}
       >
         {HOSTS.map((h) => {
@@ -119,7 +119,7 @@ export default function SwitchLearningLab() {
                 padding: "var(--space-8) var(--space-6)",
                 textAlign: "center",
                 border: `var(--stroke-hair) solid ${reached ? TEAL : BORDER}`,
-                borderRadius: 8,
+                borderRadius: "var(--radius-sm)",
                 background: reached ? "#e5f0ed" : PANEL,
                 lineHeight: 1.4,
               }}
@@ -129,13 +129,13 @@ export default function SwitchLearningLab() {
                 {isSrc ? " ▶" : ""}
                 {isDst ? " ◎" : ""}
               </div>
-              <div style={{ fontSize: 11, color: INK_SOFT }}>{h.mac}</div>
-              <div style={{ fontSize: 11, color: INK_SOFT }}>port {h.port}</div>
+              <div style={{ fontSize: "var(--text-micro)", color: INK_SOFT }}>{h.mac}</div>
+              <div style={{ fontSize: "var(--text-micro)", color: INK_SOFT }}>port {h.port}</div>
             </div>
           );
         })}
       </div>
-      <p style={{ margin: "0 0 var(--space-14)", fontSize: 12, color: INK_SOFT }}>
+      <p style={{ margin: "0 0 var(--space-14)", fontSize: "var(--text-label)", color: INK_SOFT }}>
         ▶ source · ◎ destination · 테두리가 칠해진 host = 이번 프레임이 실제로 도달한 곳
       </p>
 
@@ -144,17 +144,17 @@ export default function SwitchLearningLab() {
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: 12,
+          gap: "var(--space-12)",
           alignItems: "flex-end",
-          marginBottom: 14,
+          marginBottom: "var(--space-14)",
         }}
       >
-        <label style={{ fontSize: 13, color: INK }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK }}>
           보내는 host (source)
           <select
             value={frame.src}
             onChange={(e) => setFrame((f) => ({ ...f, src: e.target.value }))}
-            style={{ display: "block", marginTop: 4, padding: "var(--space-4) var(--space-8)" }}
+            style={{ display: "block", marginTop: "var(--space-4)", padding: "var(--space-4) var(--space-8)" }}
           >
             {HOSTS.map((h) => (
               <option key={h.id} value={h.id}>
@@ -163,12 +163,12 @@ export default function SwitchLearningLab() {
             ))}
           </select>
         </label>
-        <label style={{ fontSize: 13, color: INK }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK }}>
           받는 host (destination)
           <select
             value={frame.dst}
             onChange={(e) => setFrame((f) => ({ ...f, dst: e.target.value }))}
-            style={{ display: "block", marginTop: 4, padding: "var(--space-4) var(--space-8)" }}
+            style={{ display: "block", marginTop: "var(--space-4)", padding: "var(--space-4) var(--space-8)" }}
           >
             {HOSTS.map((h) => (
               <option key={h.id} value={h.id}>
@@ -184,7 +184,7 @@ export default function SwitchLearningLab() {
           style={{
             padding: "var(--space-8) var(--space-16)",
             border: "none",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: frame.src === frame.dst ? BORDER : TEAL,
             color: PANEL,
             cursor: frame.src === frame.dst ? "not-allowed" : "pointer",
@@ -199,7 +199,7 @@ export default function SwitchLearningLab() {
           style={{
             padding: "var(--space-8) var(--space-16)",
             border: `var(--stroke-hair) solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
             color: INK,
             cursor: "pointer",
@@ -214,26 +214,26 @@ export default function SwitchLearningLab() {
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: 12,
+          gap: "var(--space-12)",
         }}
       >
         <div
           style={{
             border: `var(--stroke-hair) solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
-            padding: 12,
+            padding: "var(--space-12)",
           }}
         >
           <p style={{ margin: "0 0 var(--space-8)", fontWeight: 600, color: TEAL }}>
             스위치 MAC 주소 테이블
           </p>
           {Object.keys(table).length === 0 ? (
-            <p style={{ margin: 0, fontSize: 13, color: INK_SOFT }}>
+            <p style={{ margin: 0, fontSize: "var(--text-meta)", color: INK_SOFT }}>
               (비어 있음 — 아직 아무 source도 학습하지 않음)
             </p>
           ) : (
-            <table style={{ fontSize: 13, borderCollapse: "collapse", width: "100%" }}>
+            <table style={{ fontSize: "var(--text-meta)", borderCollapse: "collapse", width: "100%" }}>
               <thead>
                 <tr style={{ color: INK_SOFT }}>
                   <th style={{ textAlign: "left", padding: "var(--space-2) var(--space-4)" }}>MAC</th>
@@ -255,16 +255,16 @@ export default function SwitchLearningLab() {
         <div
           style={{
             border: `var(--stroke-hair) solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
-            padding: 12,
+            padding: "var(--space-12)",
           }}
         >
           <p style={{ margin: "0 0 var(--space-8)", fontWeight: 600, color: TEAL }}>
             스위치가 한 일 (최근 순)
           </p>
           {log.length === 0 ? (
-            <p style={{ margin: 0, fontSize: 13, color: INK_SOFT }}>
+            <p style={{ margin: 0, fontSize: "var(--text-meta)", color: INK_SOFT }}>
               프레임을 전송해 보세요.
             </p>
           ) : (
@@ -275,7 +275,7 @@ export default function SwitchLearningLab() {
                   style={{
                     fontSize: 12.5,
                     lineHeight: 1.5,
-                    marginBottom: 4,
+                    marginBottom: "var(--space-4)",
                     color:
                       l.kind === "flood"
                         ? ACCENT_INK
@@ -293,7 +293,7 @@ export default function SwitchLearningLab() {
         </div>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)" }}>
         같은 destination으로 두 번 보내 보세요. 첫 번째는{" "}
         <span style={{ color: ACCENT_INK }}>FLOOD</span>, 그러나 그 host가 한 번이라도
         프레임을 <em>보낸 뒤</em>엔 테이블에 학습돼{" "}

@@ -72,12 +72,12 @@ function Endpoint({ label, state, active }: { label: string; state: string; acti
         background: active ? TEAL_TINT : PANEL,
       }}
     >
-      <div style={{ fontWeight: 700, color: INK, fontSize: 13 }}>{label}</div>
+      <div style={{ fontWeight: 700, color: INK, fontSize: "var(--text-meta)" }}>{label}</div>
       <div
         style={{
-          marginTop: 4,
+          marginTop: "var(--space-4)",
           fontFamily: "monospace",
-          fontSize: 13,
+          fontSize: "var(--text-meta)",
           color: TEAL,
           fontWeight: 700,
         }}
@@ -98,7 +98,7 @@ export default function HandshakeLab() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -107,7 +107,7 @@ export default function HandshakeLab() {
         어떻게 맞물리는지 관찰하세요.
       </p>
 
-      <div style={{ display: "flex", gap: 12, alignItems: "stretch", marginBottom: 10 }}>
+      <div style={{ display: "flex", gap: "var(--space-12)", alignItems: "stretch", marginBottom: "var(--space-10)" }}>
         <Endpoint label="Client" state={step.clientState} active={step.seg?.dir === "c2s"} />
         <Endpoint label="Server" state={step.serverState} active={step.seg?.dir === "s2c"} />
       </div>
@@ -119,7 +119,7 @@ export default function HandshakeLab() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          marginBottom: 10,
+          marginBottom: "var(--space-10)",
         }}
       >
         {step.seg ? (
@@ -127,13 +127,13 @@ export default function HandshakeLab() {
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: 10,
+              gap: "var(--space-10)",
               padding: "var(--space-8, 8px) var(--space-14, 14px)",
               border: `${HAIR} solid ${SAND}`,
-              borderRadius: 999,
+              borderRadius: "var(--btn-radius)",
               background: SEG_BG,
               fontFamily: "monospace",
-              fontSize: 13,
+              fontSize: "var(--text-meta)",
             }}
           >
             <span style={{ color: TEAL, fontWeight: 700 }}>
@@ -144,7 +144,7 @@ export default function HandshakeLab() {
             </span>
           </div>
         ) : (
-          <span style={{ color: INK_SOFT, fontSize: 13 }}>아직 주고받는 세그먼트가 없습니다.</span>
+          <span style={{ color: INK_SOFT, fontSize: "var(--text-meta)" }}>아직 주고받는 세그먼트가 없습니다.</span>
         )}
       </div>
 
@@ -152,10 +152,10 @@ export default function HandshakeLab() {
         role="status"
         style={{
           margin: "0 0 var(--space-14, 14px)",
-          padding: 12,
+          padding: "var(--space-12)",
           background: PANEL,
           border: `${HAIR} solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           lineHeight: 1.6,
           fontSize: 13.5,
           color: INK,
@@ -164,7 +164,7 @@ export default function HandshakeLab() {
         <strong>{step.title}</strong> — {step.note}
       </p>
 
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--space-8)", alignItems: "center" }}>
         <button
           type="button"
           onClick={() => setI((v) => Math.max(0, v - 1))}
@@ -172,7 +172,7 @@ export default function HandshakeLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
             color: i === 0 ? MUTED : INK,
             cursor: i === 0 ? "not-allowed" : "pointer",
@@ -187,7 +187,7 @@ export default function HandshakeLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: "none",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: i === STEPS.length - 1 ? BORDER : TEAL,
             color: ON_TEAL,
             fontWeight: 600,
@@ -196,12 +196,12 @@ export default function HandshakeLab() {
         >
           다음 ▶
         </button>
-        <span style={{ marginLeft: "auto", fontSize: 12, color: INK_SOFT }}>
+        <span style={{ marginLeft: "auto", fontSize: "var(--text-label)", color: INK_SOFT }}>
           {i + 1} / {STEPS.length}
         </span>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)" }}>
         세 번 주고받는 이유는 <strong>양쪽이 서로의 순서번호를 확인</strong>해야 하기 때문입니다. SYN
         하나로는 한 방향만 합의됩니다. 마지막 ACK이 유실되면 서버는 SYN-RECEIVED에 머물다 SYN-ACK을
         재전송합니다 — handshake도 신뢰성 규칙을 그대로 따릅니다.

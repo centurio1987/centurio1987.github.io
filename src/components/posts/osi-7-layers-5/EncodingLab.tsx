@@ -67,7 +67,7 @@ export default function EncodingLab() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -76,7 +76,7 @@ export default function EncodingLab() {
         엉뚱한 charset으로 읽으면 어떻게 <strong>깨지는지</strong> 보여 줍니다.
       </p>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-8)", marginBottom: "var(--space-8)" }}>
         {PRESETS.map((p) => (
           <button
             type="button"
@@ -84,9 +84,9 @@ export default function EncodingLab() {
             onClick={() => setText(p)}
             style={{
               padding: "var(--space-4, 4px) var(--space-10, 10px)",
-              fontSize: 13,
+              fontSize: "var(--text-meta)",
               border: `${HAIR} solid ${BORDER}`,
-              borderRadius: 14,
+              borderRadius: "var(--card-radius)",
               background: text === p ? TEAL_TINT : PANEL,
               color: INK,
               cursor: "pointer",
@@ -106,19 +106,19 @@ export default function EncodingLab() {
           width: "100%",
           boxSizing: "border-box",
           padding: "var(--space-8, 8px) var(--space-10, 10px)",
-          fontSize: 15,
+          fontSize: "var(--text-small)",
           border: `${HAIR} solid ${BORDER}`,
-          borderRadius: 8,
-          marginBottom: 14,
+          borderRadius: "var(--radius-sm)",
+          marginBottom: "var(--space-14)",
         }}
       />
 
-      <div style={{ display: "grid", gap: 10 }}>
+      <div style={{ display: "grid", gap: "var(--space-10)" }}>
         <Row label="글자 수 vs byte 수">
           <strong style={{ color: TEAL }}>{cps.length}</strong> 글자 →{" "}
           <strong style={{ color: ACCENT_INK }}>{bytes.length}</strong> byte
           {bytes.length !== cps.length && (
-            <span style={{ color: INK_SOFT, fontSize: 12 }}>
+            <span style={{ color: INK_SOFT, fontSize: "var(--text-label)" }}>
               {" "}
               — 한 글자가 1byte가 아닐 수 있다
             </span>
@@ -126,7 +126,7 @@ export default function EncodingLab() {
         </Row>
 
         <Row label="UTF-8 byte (hex)">
-          <code style={{ fontFamily: "monospace", fontSize: 13, wordBreak: "break-all" }}>
+          <code style={{ fontFamily: "monospace", fontSize: "var(--text-meta)", wordBreak: "break-all" }}>
             {bytes.length ? bytes.map(hex).join(" ") : "—"}
           </code>
         </Row>
@@ -135,18 +135,18 @@ export default function EncodingLab() {
           <code
             style={{
               fontFamily: "monospace",
-              fontSize: 15,
+              fontSize: "var(--text-small)",
               color: ACCENT_INK,
               wordBreak: "break-all",
             }}
           >
             {mojibake || "—"}
           </code>
-          <span style={{ color: INK_SOFT, fontSize: 12 }}> ← 글자 깨짐(mojibake)</span>
+          <span style={{ color: INK_SOFT, fontSize: "var(--text-label)" }}> ← 글자 깨짐(mojibake)</span>
         </Row>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 14 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-14)" }}>
         <code>café</code>의 <code>é</code>는 UTF-8에서 2byte(<code>C3 A9</code>)인데, 이걸 Latin-1로
         읽으면 그 2byte가 각각 한 글자가 돼 <code>café</code>가 <code>cafÃ©</code>로 깨집니다. 바로 이
         “byte는 같은데 해석이 달라 뜻이 어긋나는” 문제를 막는 게 L6의 일이고, 그래서 HTML·HTTP는{" "}
@@ -163,11 +163,11 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
       style={{
         display: "grid",
         gridTemplateColumns: "minmax(120px, 200px) 1fr",
-        gap: 10,
+        gap: "var(--space-10)",
         alignItems: "baseline",
         padding: "var(--space-8, 8px) var(--space-10, 10px)",
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 8,
+        borderRadius: "var(--radius-sm)",
         background: PANEL,
       }}
     >

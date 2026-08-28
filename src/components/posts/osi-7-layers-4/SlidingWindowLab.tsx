@@ -65,7 +65,7 @@ export default function SlidingWindowLab() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -74,7 +74,7 @@ export default function SlidingWindowLab() {
         세그먼트를 보내고 ACK을 받으며 윈도우가 오른쪽으로 미끄러지는 모습을 보세요.
       </p>
 
-      <label style={{ display: "block", fontSize: 13, color: INK, marginBottom: 12 }}>
+      <label style={{ display: "block", fontSize: "var(--text-meta)", color: INK, marginBottom: "var(--space-12)" }}>
         수신 윈도우: <strong>{win}</strong> 세그먼트{" "}
         {win === 0 && <span style={{ color: ACCENT_INK }}>(zero window — 전송 정지!)</span>}
         <input
@@ -83,12 +83,12 @@ export default function SlidingWindowLab() {
           max={8}
           value={win}
           onChange={(e) => setWin(Number(e.target.value))}
-          style={{ display: "block", width: "100%", marginTop: 6 }}
+          style={{ display: "block", width: "100%", marginTop: "var(--space-6)" }}
         />
       </label>
 
       {/* 세그먼트 띠 */}
-      <div style={{ display: "flex", gap: 3, marginBottom: 10 }}>
+      <div style={{ display: "flex", gap: 3, marginBottom: "var(--space-10)" }}>
         {Array.from({ length: TOTAL }, (_, i) => {
           const k = kindOf(i);
           return (
@@ -100,9 +100,9 @@ export default function SlidingWindowLab() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 11,
+                fontSize: "var(--text-micro)",
                 color: CELL_INK,
-                borderRadius: 4,
+                borderRadius: "var(--radius-xs)",
                 background: STYLE[k].bg,
                 border:
                   i === base && inflight === 0 && k !== "acked"
@@ -118,9 +118,9 @@ export default function SlidingWindowLab() {
       </div>
 
       {/* 범례 */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-12)", marginBottom: "var(--space-14)" }}>
         {(Object.keys(STYLE) as Kind[]).map((k) => (
-          <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12 }}>
+          <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "var(--text-label)" }}>
             <span
               style={{
                 width: 14,
@@ -136,7 +136,7 @@ export default function SlidingWindowLab() {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "var(--space-8)", flexWrap: "wrap" }}>
         <button
           type="button"
           onClick={() => setInflight((n) => n + 1)}
@@ -144,7 +144,7 @@ export default function SlidingWindowLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: "none",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: canSend ? TEAL : BORDER,
             color: ON_TEAL,
             fontWeight: 600,
@@ -163,7 +163,7 @@ export default function SlidingWindowLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: canAck ? PANEL : CREAM,
             color: canAck ? INK : MUTED,
             cursor: canAck ? "pointer" : "not-allowed",
@@ -177,7 +177,7 @@ export default function SlidingWindowLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
             color: INK,
             cursor: "pointer",
@@ -185,12 +185,12 @@ export default function SlidingWindowLab() {
         >
           초기화
         </button>
-        <span style={{ marginLeft: "auto", alignSelf: "center", fontSize: 12, color: INK_SOFT }}>
+        <span style={{ marginLeft: "auto", alignSelf: "center", fontSize: "var(--text-label)", color: INK_SOFT }}>
           ACK 완료 {base} · 대기 중 {inflight} · 남은 윈도우 {Math.max(0, win - inflight)}
         </span>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)" }}>
         윈도우를 키우면 한 번에 더 많이 “날아갈” 수 있습니다(처리량↑). 윈도우를 <code>0</code>으로
         내리면 수신 측이 “잠깐 멈춰”라고 말한 셈이라 전송이 막힙니다(zero window). 이것이{" "}
         <strong>흐름 제어</strong> — 빠른 송신자가 느린 수신자의 버퍼를 넘치게 하지 않도록 수신자가

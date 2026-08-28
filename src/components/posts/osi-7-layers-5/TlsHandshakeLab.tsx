@@ -102,7 +102,7 @@ export default function TlsHandshakeLab() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -117,17 +117,17 @@ export default function TlsHandshakeLab() {
           alignItems: "center",
           justifyContent: "space-between",
           flexWrap: "wrap",
-          gap: 8,
-          marginBottom: 12,
+          gap: "var(--space-8)",
+          marginBottom: "var(--space-12)",
         }}
       >
         <span style={{ fontFamily: "monospace", fontWeight: 700, color: TEAL }}>{dirLabel}</span>
         <span
           style={{
-            fontSize: 12,
+            fontSize: "var(--text-label)",
             fontWeight: 700,
             padding: "var(--space-2, 2px) var(--space-10, 10px)",
-            borderRadius: 999,
+            borderRadius: "var(--btn-radius)",
             background: step.enc === "encrypted" ? TEAL_TINT : PLAIN_BG,
             color: step.enc === "encrypted" ? TEAL : ACCENT_INK,
             border: `${HAIR} solid ${step.enc === "encrypted" ? TEAL : SAND}`,
@@ -140,22 +140,22 @@ export default function TlsHandshakeLab() {
       <div
         style={{
           minHeight: 96,
-          padding: 12,
+          padding: "var(--space-12)",
           border: `${HAIR} solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
-          marginBottom: 12,
+          marginBottom: "var(--space-12)",
         }}
       >
         {step.carries.length === 0 ? (
-          <span style={{ color: INK_SOFT, fontSize: 13 }}>이 단계에선 TLS 메시지가 없습니다.</span>
+          <span style={{ color: INK_SOFT, fontSize: "var(--text-meta)" }}>이 단계에선 TLS 메시지가 없습니다.</span>
         ) : (
           <ul style={{ margin: 0, paddingLeft: 18 }}>
             {step.carries.map((c, idx) => (
               <li
                 key={idx}
                 style={{
-                  fontSize: 13,
+                  fontSize: "var(--text-meta)",
                   lineHeight: 1.7,
                   fontFamily: c.includes("──") ? "inherit" : "monospace",
                   color: c.includes("──") ? ACCENT_INK : INK,
@@ -175,10 +175,10 @@ export default function TlsHandshakeLab() {
         role="status"
         style={{
           margin: "0 0 var(--space-14, 14px)",
-          padding: 12,
+          padding: "var(--space-12)",
           background: PANEL,
           border: `${HAIR} solid ${BORDER}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           lineHeight: 1.65,
           fontSize: 13.5,
           color: INK,
@@ -187,7 +187,7 @@ export default function TlsHandshakeLab() {
         <strong>{step.title}</strong> — {step.note}
       </p>
 
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--space-8)", alignItems: "center" }}>
         <button
           type="button"
           onClick={() => setI((v) => Math.max(0, v - 1))}
@@ -195,7 +195,7 @@ export default function TlsHandshakeLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
             color: i === 0 ? MUTED : INK,
             cursor: i === 0 ? "not-allowed" : "pointer",
@@ -210,7 +210,7 @@ export default function TlsHandshakeLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: "none",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: i === STEPS.length - 1 ? BORDER : TEAL,
             color: ON_TEAL,
             fontWeight: 600,
@@ -219,12 +219,12 @@ export default function TlsHandshakeLab() {
         >
           다음 ▶
         </button>
-        <span style={{ marginLeft: "auto", fontSize: 12, color: INK_SOFT }}>
+        <span style={{ marginLeft: "auto", fontSize: "var(--text-label)", color: INK_SOFT }}>
           {i + 1} / {STEPS.length}
         </span>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)" }}>
         TLS 1.3은 키 교환에 ECDHE를 써서, 서버 개인키가 훗날 유출돼도 과거 트래픽은 못 푸는{" "}
         <strong>forward secrecy</strong>를 보장합니다. 또 ServerHello 직후부터 인증서까지 암호화하므로
         엿보는 쪽이 볼 수 있는 평문은 사실상 SNI 정도뿐입니다.

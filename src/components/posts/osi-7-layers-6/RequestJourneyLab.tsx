@@ -87,7 +87,7 @@ export default function RequestJourneyLab() {
         margin: "2rem 0",
         padding: 18,
         border: `${HAIR} solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -98,7 +98,7 @@ export default function RequestJourneyLab() {
             fontFamily: "monospace",
             background: CODE_BG,
             padding: "var(--space-2, 2px) var(--space-4, 4px)",
-            borderRadius: 4,
+            borderRadius: "var(--radius-xs)",
           }}
         >
           curl https://www.example.com/
@@ -111,7 +111,7 @@ export default function RequestJourneyLab() {
       </p>
 
       {/* 단계 스택 */}
-      <div style={{ display: "grid", gap: 6, marginBottom: 14 }}>
+      <div style={{ display: "grid", gap: "var(--space-6)", marginBottom: "var(--space-14)" }}>
         {STAGES.map((s, idx) => {
           const active = idx === i;
           const done = idx < i;
@@ -124,12 +124,12 @@ export default function RequestJourneyLab() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "3rem 1fr auto",
-                gap: 10,
+                gap: "var(--space-10)",
                 alignItems: "center",
                 textAlign: "left",
                 padding: "var(--space-8, 8px) var(--space-12, 12px)",
                 border: active ? `${BOLD} solid ${TEAL}` : `${HAIR} solid ${BORDER}`,
-                borderRadius: 8,
+                borderRadius: "var(--radius-sm)",
                 background: active ? TEAL_TINT : done ? DONE_BG : PANEL,
                 color: INK,
                 cursor: "pointer",
@@ -140,7 +140,7 @@ export default function RequestJourneyLab() {
               <span>
                 <strong>{s.proto}</strong> · {s.title}
               </span>
-              <span style={{ fontSize: 11, color: INK_SOFT }}>{done ? "✓" : active ? "▶" : ""}</span>
+              <span style={{ fontSize: "var(--text-micro)", color: INK_SOFT }}>{done ? "✓" : active ? "▶" : ""}</span>
             </button>
           );
         })}
@@ -149,30 +149,30 @@ export default function RequestJourneyLab() {
       <div
         role="status"
         style={{
-          padding: 14,
+          padding: "var(--space-14)",
           border: `${HAIR} solid ${BORDER}`,
           // 왼쪽 강조 막대 5px 은 --stroke 스케일(1/1.5/2) 밖이라 그대로 둔다 —
           // 2px 로 밀면 막대가 절반 이하로 얇아진다(배치5 규약: 임의로 고르지 않는다).
           borderLeft: `5px solid ${TEAL}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           lineHeight: 1.6,
-          marginBottom: 14,
+          marginBottom: "var(--space-14)",
         }}
       >
         <p style={{ margin: "0 0 var(--space-6, 6px)" }}>
           <strong style={{ color: TEAL }}>
             {stage.layer} · {stage.proto}
           </strong>{" "}
-          <span style={{ fontSize: 12, color: INK_SOFT }}>— {stage.part}에서 해부</span>
+          <span style={{ fontSize: "var(--text-label)", color: INK_SOFT }}>— {stage.part}에서 해부</span>
         </p>
-        <p style={{ margin: "0 0 var(--space-6, 6px)", fontFamily: "monospace", fontSize: 13, color: ACCENT_INK }}>
+        <p style={{ margin: "0 0 var(--space-6, 6px)", fontFamily: "monospace", fontSize: "var(--text-meta)", color: ACCENT_INK }}>
           {stage.produces}
         </p>
         <p style={{ margin: 0, fontSize: 13.5 }}>{stage.note}</p>
       </div>
 
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "var(--space-8)", alignItems: "center" }}>
         <button
           type="button"
           onClick={() => setI((v) => Math.max(0, v - 1))}
@@ -180,7 +180,7 @@ export default function RequestJourneyLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: `${HAIR} solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
             color: i === 0 ? MUTED : INK,
             cursor: i === 0 ? "not-allowed" : "pointer",
@@ -195,7 +195,7 @@ export default function RequestJourneyLab() {
           style={{
             padding: "var(--space-8, 8px) var(--space-14, 14px)",
             border: "none",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: i === STAGES.length - 1 ? BORDER : TEAL,
             color: ON_TEAL,
             fontWeight: 600,
@@ -204,12 +204,12 @@ export default function RequestJourneyLab() {
         >
           다음 ▶
         </button>
-        <span style={{ marginLeft: "auto", fontSize: 12, color: INK_SOFT }}>
+        <span style={{ marginLeft: "auto", fontSize: "var(--text-label)", color: INK_SOFT }}>
           {i + 1} / {STAGES.length}
         </span>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)" }}>
         한 줄의 명령이 일곱 책임을 모두 깨웁니다. 이 시리즈는 그 한 줄을 거꾸로 분해해 온 여정이었습니다.
       </figcaption>
     </figure>

@@ -99,7 +99,7 @@ export default function LayerTriage() {
         margin: "2rem 0",
         padding: 18,
         border: `var(--stroke-hair) solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -107,7 +107,7 @@ export default function LayerTriage() {
         지금 관찰한 증상을 고르면, 어느 계층부터 의심하고 무엇을 확인할지 짚어줍니다.
       </p>
 
-      <div style={{ display: "grid", gap: 6 }}>
+      <div style={{ display: "grid", gap: "var(--space-6)" }}>
         {symptoms.map((s) => {
           const isActive = s.id === selected;
           return (
@@ -119,12 +119,12 @@ export default function LayerTriage() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "3rem 1fr",
-                gap: 10,
+                gap: "var(--space-10)",
                 alignItems: "center",
                 textAlign: "left",
                 padding: "var(--space-10) var(--space-12)",
                 border: isActive ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
-                borderRadius: 8,
+                borderRadius: "var(--radius-sm)",
                 background: isActive ? "#e5f0ed" : PANEL,
                 color: INK,
                 cursor: "pointer",
@@ -142,10 +142,10 @@ export default function LayerTriage() {
         <div
           role="status"
           style={{
-            marginTop: 16,
-            padding: 14,
+            marginTop: "var(--space-16)",
+            padding: "var(--space-14)",
             border: `var(--stroke-hair) solid ${BORDER}`,
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             background: PANEL,
             lineHeight: 1.65,
           }}
@@ -160,8 +160,8 @@ export default function LayerTriage() {
               style={{
                 background: CREAM,
                 padding: "var(--space-2) var(--space-6)",
-                borderRadius: 4,
-                fontSize: 13,
+                borderRadius: "var(--radius-xs)",
+                fontSize: "var(--text-meta)",
               }}
             >
               {active.command}
@@ -176,7 +176,7 @@ export default function LayerTriage() {
           <p style={{ margin: 0, color: INK_SOFT }}>💡 {active.tip}</p>
         </div>
       ) : (
-        <p style={{ marginTop: 14, marginBottom: 0, fontSize: 13, color: INK_SOFT }}>
+        <p style={{ marginTop: "var(--space-14)", marginBottom: 0, fontSize: "var(--text-meta)", color: INK_SOFT }}>
           증상 하나를 눌러 보세요. 진단은 항상 <strong>아래(L1)에서 위(L7)로</strong> 좁혀가는 것이 안전합니다.
         </p>
       )}

@@ -89,7 +89,7 @@ export default function FrameAnatomy() {
         margin: "2rem 0",
         padding: 18,
         border: `var(--stroke-hair) solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: "var(--radius-md)",
         background: PANEL,
       }}
     >
@@ -99,8 +99,8 @@ export default function FrameAnatomy() {
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
-          gap: 8,
-          marginBottom: 14,
+          gap: "var(--space-8)",
+          marginBottom: "var(--space-14)",
         }}
       >
         <p style={{ margin: 0, fontWeight: 600, color: INK }}>
@@ -108,11 +108,11 @@ export default function FrameAnatomy() {
         </p>
         <label
           style={{
-            fontSize: 13,
+            fontSize: "var(--text-meta)",
             color: INK,
             display: "flex",
             alignItems: "center",
-            gap: 6,
+            gap: "var(--space-6)",
             cursor: "pointer",
           }}
         >
@@ -154,7 +154,7 @@ export default function FrameAnatomy() {
           );
         })}
       </div>
-      <p style={{ margin: "var(--space-6) 0 var(--space-14)", fontSize: 12, color: INK_SOFT, textAlign: "right" }}>
+      <p style={{ margin: "var(--space-6) 0 var(--space-14)", fontSize: "var(--text-label)", color: INK_SOFT, textAlign: "right" }}>
         ← 헤더 · 전송 방향 → · 꼬리(FCS)
       </p>
 
@@ -162,22 +162,22 @@ export default function FrameAnatomy() {
       <div
         role="status"
         style={{
-          padding: 14,
+          padding: "var(--space-14)",
           border: `var(--stroke-hair) solid ${active.color}`,
           borderLeft: `5px solid ${active.color}`,
-          borderRadius: 8,
+          borderRadius: "var(--radius-sm)",
           background: PANEL,
           lineHeight: 1.65,
         }}
       >
         <p style={{ margin: "0 0 var(--space-6)" }}>
           <strong style={{ color: TEAL }}>{active.label}</strong>{" "}
-          <span style={{ color: INK_SOFT, fontSize: 13 }}>· {active.bytes}</span>
+          <span style={{ color: INK_SOFT, fontSize: "var(--text-meta)" }}>· {active.bytes}</span>
         </p>
         <p style={{ margin: 0, color: INK }}>{active.desc}</p>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: INK_SOFT, marginTop: 12 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)" }}>
         VLAN tag를 끼워 보세요. Source MAC과 EtherType <em>사이</em>에 4바이트가 비집고
         들어갑니다 — 그래서 태그된 프레임의 최대 크기는 1518에서 1522바이트로 커지고,
         이를 모르는 장비는 멀쩡한 프레임을 "너무 길다"며 버리기도 합니다.
