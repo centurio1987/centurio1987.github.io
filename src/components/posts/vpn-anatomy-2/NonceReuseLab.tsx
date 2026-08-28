@@ -68,12 +68,12 @@ function toAscii(bytes: number[]): string {
 
 // --- 스타일 ---
 
-const labelBlock: CSSProperties = { display: "grid", gap: 6, fontSize: 12, fontWeight: 600, color: INK };
+const labelBlock: CSSProperties = { display: "grid", gap: "var(--space-6)", fontSize: "var(--text-label)", fontWeight: 600, color: INK };
 
 const inputStyle: CSSProperties = {
   padding: "var(--space-8) var(--space-10)",
   border: `${HAIR} solid ${tint(INK, 20)}`,
-  borderRadius: 8,
+  borderRadius: "var(--radius-sm)",
   fontSize: 14,
   fontFamily: "'JetBrains Mono', monospace",
   background: PANEL,
@@ -84,11 +84,11 @@ const inputStyle: CSSProperties = {
 
 const ghostBtn: CSSProperties = {
   padding: "var(--space-6) var(--space-12)",
-  borderRadius: 999,
+  borderRadius: "var(--btn-radius)",
   border: `${HAIR} solid ${tint(INK, 20)}`,
   background: PANEL,
   color: INK,
-  fontSize: 12,
+  fontSize: "var(--text-label)",
   cursor: "pointer",
   whiteSpace: "nowrap",
 };
@@ -96,38 +96,38 @@ const ghostBtn: CSSProperties = {
 function toggleStyle(active: boolean): CSSProperties {
   return {
     padding: "var(--space-8) var(--space-14)",
-    borderRadius: 999,
+    borderRadius: "var(--btn-radius)",
     border: `${BOLD} solid ${active ? DANGER : ACCENT}`,
     background: active ? tint(DANGER, 12.2) : tint(ACCENT, 12.2),
     color: active ? DANGER : ACCENT,
     fontWeight: 700,
-    fontSize: 13,
+    fontSize: "var(--text-meta)",
     cursor: "pointer",
   };
 }
 
 const panelStyle: CSSProperties = {
-  marginTop: 14,
-  padding: 14,
+  marginTop: "var(--space-14)",
+  padding: "var(--space-14)",
   borderRadius: 10,
   border: `${HAIR} solid ${tint(INK, 13.3)}`,
   background: PAPER,
 };
 
-const panelTitle: CSSProperties = { margin: "0 0 var(--space-8)", fontSize: 13, fontWeight: 700, color: INK };
+const panelTitle: CSSProperties = { margin: "0 0 var(--space-8)", fontSize: "var(--text-meta)", fontWeight: 700, color: INK };
 
 const rowLabel: CSSProperties = {
   display: "inline-block",
   minWidth: 42,
-  fontSize: 12,
+  fontSize: "var(--text-label)",
   fontWeight: 700,
   color: MUTED,
-  marginRight: 6,
+  marginRight: "var(--space-6)",
 };
 
 function HexBytes({ bytes, compareWith }: { bytes: number[]; compareWith?: number[] }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 3, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 3, fontFamily: "'JetBrains Mono', monospace", fontSize: "var(--text-label)" }}>
       {bytes.map((b, i) => {
         const same = compareWith ? compareWith[i] === b : false;
         return (
@@ -135,7 +135,7 @@ function HexBytes({ bytes, compareWith }: { bytes: number[]; compareWith?: numbe
             key={i}
             style={{
               padding: "var(--space-2) var(--space-4)",
-              borderRadius: 4,
+              borderRadius: "var(--radius-xs)",
               color: INK,
               background: same ? tint(POP, 23.9) : "transparent",
               border: same ? `${HAIR} solid ${POP}` : `${HAIR} solid transparent`,
@@ -189,13 +189,13 @@ export default function NonceReuseLab() {
   const sameKsCount = ks1.filter((v, i) => v === ks2[i]).length;
 
   return (
-    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 12, background: SURFACE }}>
+    <figure style={{ margin: "2rem 0", padding: 18, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-md)", background: SURFACE }}>
       <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK, lineHeight: 1.5 }}>
         P1·P2와 nonce 토글을 바꿔 가며, <strong>같은 nonce가 왜 위험한지</strong> 눈으로 확인하세요. 아래로 갈수록
         키스트림 → 암호문 → XOR 증명 → 실제 공격 순서로 이어집니다.
       </p>
 
-      <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(13rem, 1fr))", marginBottom: 14 }}>
+      <div style={{ display: "grid", gap: "var(--space-12)", gridTemplateColumns: "repeat(auto-fit, minmax(13rem, 1fr))", marginBottom: "var(--space-14)" }}>
         <label style={labelBlock}>
           평문 P1
           <input
@@ -216,7 +216,7 @@ export default function NonceReuseLab() {
         </label>
       </div>
 
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", marginBottom: 4 }}>
+      <div style={{ display: "flex", gap: "var(--space-10)", flexWrap: "wrap", alignItems: "center", marginBottom: "var(--space-4)" }}>
         <button
           type="button"
           onClick={() => setReuseNonce((v) => !v)}
@@ -225,7 +225,7 @@ export default function NonceReuseLab() {
         >
           {reuseNonce ? "⚠ 같은 nonce 사용 (취약)" : "✔ 다른 nonce 사용 (안전)"}
         </button>
-        <span style={{ fontSize: 12, color: MUTED }}>
+        <span style={{ fontSize: "var(--text-label)", color: MUTED }}>
           nonce1 = <code>{nonce1}</code> · nonce2 = <code>{nonce2}</code>
         </span>
         <button type="button" onClick={regenerateKey} style={ghostBtn}>
@@ -235,7 +235,7 @@ export default function NonceReuseLab() {
 
       <div style={panelStyle}>
         <p style={panelTitle}>키스트림 KS (교육용 PRNG — 실제 ChaCha20 아님)</p>
-        <div style={{ display: "grid", gap: 6 }}>
+        <div style={{ display: "grid", gap: "var(--space-6)" }}>
           <div>
             <span style={rowLabel}>KS1</span>
             <HexBytes bytes={ks1} compareWith={ks2} />
@@ -245,7 +245,7 @@ export default function NonceReuseLab() {
             <HexBytes bytes={ks2} compareWith={ks1} />
           </div>
         </div>
-        <p style={{ fontSize: 12, color: MUTED, margin: "var(--space-8) 0 0" }}>
+        <p style={{ fontSize: "var(--text-label)", color: MUTED, margin: "var(--space-8) 0 0" }}>
           {sameKsCount}/{len} 바이트 동일
           {sameKsCount === len ? " — 키스트림이 완전히 겹칩니다." : " — 서로 다른 키스트림입니다."}
         </p>
@@ -253,7 +253,7 @@ export default function NonceReuseLab() {
 
       <div style={panelStyle}>
         <p style={panelTitle}>암호문 C = P XOR KS</p>
-        <div style={{ display: "grid", gap: 6 }}>
+        <div style={{ display: "grid", gap: "var(--space-6)" }}>
           <div>
             <span style={rowLabel}>C1</span>
             <HexBytes bytes={c1} />
@@ -267,7 +267,7 @@ export default function NonceReuseLab() {
 
       <div style={panelStyle}>
         <p style={panelTitle}>C1 XOR C2 vs P1 XOR P2</p>
-        <div style={{ display: "grid", gap: 6 }}>
+        <div style={{ display: "grid", gap: "var(--space-6)" }}>
           <div>
             <span style={rowLabel}>C1⊕C2</span>
             <HexBytes bytes={xorC} />
@@ -280,9 +280,9 @@ export default function NonceReuseLab() {
         <div
           role="status"
           style={{
-            marginTop: 10,
+            marginTop: "var(--space-10)",
             padding: "var(--space-8) var(--space-12)",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             display: "inline-block",
             border: `${HAIR} solid ${proofMatches ? POP : ACCENT}`,
             background: proofMatches ? tint(POP, 10.2) : tint(ACCENT, 10.2),
@@ -298,7 +298,7 @@ export default function NonceReuseLab() {
         <p style={panelTitle}>공격 시뮬레이션 — 공격자가 P1을 이렇게 추측했다면?</p>
         <label style={labelBlock}>
           추측한 P1
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "var(--space-8)", flexWrap: "wrap" }}>
             <input
               value={guessP1}
               maxLength={MAX_LEN}
@@ -310,13 +310,13 @@ export default function NonceReuseLab() {
             </button>
           </div>
         </label>
-        <p style={{ fontSize: 12, color: MUTED, margin: "var(--space-10) 0 var(--space-4)" }}>
+        <p style={{ fontSize: "var(--text-label)", color: MUTED, margin: "var(--space-10) 0 var(--space-4)" }}>
           (C1 XOR C2) XOR 추측한 P1 → ASCII로 복원
         </p>
         <p
           style={{
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 15,
+            fontSize: "var(--text-small)",
             padding: "var(--space-8) var(--space-10)",
             background: PANEL,
             borderRadius: 6,
@@ -330,7 +330,7 @@ export default function NonceReuseLab() {
           role="status"
           style={{
             padding: "var(--space-8) var(--space-12)",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             display: "inline-block",
             border: `${HAIR} solid ${attackSucceeds ? DANGER : ACCENT}`,
             background: attackSucceeds ? tint(DANGER, 10.2) : tint(ACCENT, 10.2),
@@ -342,7 +342,7 @@ export default function NonceReuseLab() {
         </div>
       </div>
 
-      <figcaption style={{ fontSize: 13, color: MUTED, marginTop: 12, lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.55 }}>
         ⚠ 교육용 모형입니다. 실제 ChaCha20이 아니라 (키, nonce)를 해시해 시드로 쓰는 결정론적 의사난수로
         키스트림을 대신합니다. C1 XOR C2 = P1 XOR P2 라는 XOR 성질은 어떤 키스트림을 쓰든 동일하게
         성립하므로, 이 모형만으로도 nonce 재사용의 위험은 그대로 체감됩니다.

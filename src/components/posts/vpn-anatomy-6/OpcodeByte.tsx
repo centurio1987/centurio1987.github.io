@@ -65,7 +65,7 @@ export default function OpcodeByte() {
         width: 34,
         height: 42,
         fontFamily: "monospace",
-        fontSize: 20,
+        fontSize: "var(--text-h3)",
         fontWeight: 700,
         color: PANEL,
         background: group === "op" ? CORE : ACCENT,
@@ -76,25 +76,25 @@ export default function OpcodeByte() {
     </span>
   );
 
-  const label: React.CSSProperties = { fontSize: 13, color: INK, fontWeight: 600 };
+  const label: React.CSSProperties = { fontSize: "var(--text-meta)", color: INK, fontWeight: 600 };
 
   return (
     <figure
       style={{
         margin: "1.75rem 0",
-        padding: 16,
+        padding: "var(--space-16)",
         background: PAPER,
         border: `${HAIR} solid ${tint(INK, 13.3)}`,
         borderRadius: 10,
       }}
     >
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", marginBottom: 16 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-16)", alignItems: "center", marginBottom: "var(--space-16)" }}>
         <label style={label}>
           opcode (상위 5비트){" "}
           <select
             value={opcode}
             onChange={(e) => setOpcode(Number(e.target.value))}
-            style={{ fontSize: 13, padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}`, maxWidth: 280 }}
+            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}`, maxWidth: 280 }}
           >
             {OPCODES.map((o) => (
               <option key={o.value} value={o.value}>
@@ -111,15 +111,15 @@ export default function OpcodeByte() {
             max={7}
             value={keyId}
             onChange={(e) => setKeyId(Number(e.target.value))}
-            style={{ display: "block", width: 160, marginTop: 6 }}
+            style={{ display: "block", width: 160, marginTop: "var(--space-6)" }}
             aria-label="key-id"
           />
         </label>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 20, alignItems: "flex-end", marginBottom: 12 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 20, alignItems: "flex-end", marginBottom: "var(--space-12)" }}>
         <div>
-          <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
+          <div style={{ display: "flex", gap: "var(--space-4)", marginBottom: "var(--space-6)" }}>
             {bits.slice(0, 5).map((b, i) => (
               <span key={`op-${i}`}>{cell(b, "op")}</span>
             ))}
@@ -127,7 +127,7 @@ export default function OpcodeByte() {
               <span key={`key-${i}`}>{cell(b, "key")}</span>
             ))}
           </div>
-          <div style={{ display: "flex", gap: 4, fontSize: 11, color: MUTED }}>
+          <div style={{ display: "flex", gap: "var(--space-4)", fontSize: "var(--text-micro)", color: MUTED }}>
             <span style={{ width: 34 * 5 + 16, color: CORE, fontWeight: 600 }}>opcode = {opcode}</span>
             <span style={{ width: 34 * 3 + 8, color: ACCENT, fontWeight: 600 }}>key-id = {keyId}</span>
           </div>
@@ -135,16 +135,16 @@ export default function OpcodeByte() {
         <div style={{ fontFamily: "monospace", fontSize: 30, fontWeight: 700, color: INK }}>{hex}</div>
       </div>
 
-      <div style={{ fontSize: 13, color: INK, lineHeight: 1.9 }}>
-        <span style={{ marginRight: 14 }}>
+      <div style={{ fontSize: "var(--text-meta)", color: INK, lineHeight: 1.9 }}>
+        <span style={{ marginRight: "var(--space-14)" }}>
           메시지:{" "}
           <strong style={{ fontFamily: "monospace", color: channelColor }}>{op.name}</strong>
         </span>
         <span
           style={{
             padding: "var(--space-2) var(--space-8)",
-            borderRadius: 999,
-            fontSize: 12,
+            borderRadius: "var(--btn-radius)",
+            fontSize: "var(--text-label)",
             fontWeight: 700,
             color: PANEL,
             background: channelColor,
@@ -157,11 +157,11 @@ export default function OpcodeByte() {
       {captureNote && (
         <p
           style={{
-            marginTop: 10,
+            marginTop: "var(--space-10)",
             marginBottom: 0,
             padding: "var(--space-8) var(--space-10)",
             borderRadius: 6,
-            fontSize: 13,
+            fontSize: "var(--text-meta)",
             lineHeight: 1.7,
             color: OK,
             background: tint(OK, 7.1),
@@ -172,7 +172,7 @@ export default function OpcodeByte() {
         </p>
       )}
 
-      <figcaption style={{ fontSize: 13, color: MUTED, marginTop: 12, lineHeight: 1.75 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.75 }}>
         파란 다섯 칸 = opcode(메시지 종류), 금색 세 칸 = key-id(어느 키로 풀지). 둘을 이어 붙이면 패킷 맨 앞 1바이트가 됩니다. 이
         바이트는 수신자가 처리 방법을 정하려고 <strong>복호 전에</strong> 읽어야 하는 라우팅 정보라, tls-crypt로 제어 채널을
         암호화해도 <strong>평문으로 남습니다</strong>.

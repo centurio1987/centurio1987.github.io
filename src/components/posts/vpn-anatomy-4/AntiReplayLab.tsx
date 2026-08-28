@@ -110,7 +110,7 @@ export default function AntiReplayLab() {
   }
 
   const btn: React.CSSProperties = {
-    fontSize: 13,
+    fontSize: "var(--text-meta)",
     padding: "var(--space-6) var(--space-10)",
     borderRadius: 6,
     border: `${HAIR} solid ${tint(INK, 20)}`,
@@ -120,14 +120,14 @@ export default function AntiReplayLab() {
   };
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", marginBottom: 12 }}>
-        <label style={{ fontSize: 13, color: INK, fontWeight: 600 }}>
+    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-12)", alignItems: "center", marginBottom: "var(--space-12)" }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
           윈도우 크기{" "}
           <select
             value={size}
             onChange={(e) => reset(Number(e.target.value))}
-            style={{ fontSize: 13, padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
+            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
           >
             <option value={8}>8비트</option>
             <option value={16}>16비트</option>
@@ -135,14 +135,14 @@ export default function AntiReplayLab() {
             <option value={64}>64비트 (권장)</option>
           </select>
         </label>
-        <label style={{ fontSize: 13, color: INK, fontWeight: 600 }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
           받을 시퀀스{" "}
           <input
             type="number"
             min={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            style={{ width: 84, fontSize: 13, padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
+            style={{ width: 84, fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
           />
         </label>
         <button type="button" style={{ ...btn, background: CORE, color: PANEL, borderColor: CORE }} onClick={() => receive(Number(input))}>
@@ -150,7 +150,7 @@ export default function AntiReplayLab() {
         </button>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-8)", marginBottom: "var(--space-14)" }}>
         <button type="button" style={btn} onClick={() => receive(right + 1)}>
           다음 순번 ({right + 1})
         </button>
@@ -177,7 +177,7 @@ export default function AntiReplayLab() {
         </button>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: 10 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: "var(--space-10)" }}>
         {cells.map((s) => {
           const got = seen.includes(s);
           const isRight = s === right;
@@ -188,12 +188,12 @@ export default function AntiReplayLab() {
               style={{
                 width: 26,
                 height: 34,
-                borderRadius: 4,
+                borderRadius: "var(--radius-xs)",
                 border: `${HAIR} solid ${isRight ? ACCENT : tint(INK, 26.7)}`,
                 borderWidth: isRight ? 2 : 1,
                 background: got ? CORE : PANEL,
                 color: got ? PANEL : MUTED,
-                fontSize: 10,
+                fontSize: "var(--text-nano)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -205,11 +205,11 @@ export default function AntiReplayLab() {
         })}
       </div>
 
-      <div style={{ fontSize: 13, color: INK, lineHeight: 1.8 }}>
-        <span style={{ marginRight: 14 }}>
+      <div style={{ fontSize: "var(--text-meta)", color: INK, lineHeight: 1.8 }}>
+        <span style={{ marginRight: "var(--space-14)" }}>
           윈도우: <strong>[{left} … {right}]</strong>
         </span>
-        <span style={{ marginRight: 14 }}>
+        <span style={{ marginRight: "var(--space-14)" }}>
           우측 가장자리(검증된 최고 시퀀스): <strong>{right}</strong>
         </span>
         <span>
@@ -220,11 +220,11 @@ export default function AntiReplayLab() {
       {verdict && (
         <p
           style={{
-            marginTop: 10,
+            marginTop: "var(--space-10)",
             marginBottom: 0,
             padding: "var(--space-8) var(--space-10)",
             borderRadius: 6,
-            fontSize: 13,
+            fontSize: "var(--text-meta)",
             lineHeight: 1.7,
             color: verdict.color,
             background: tint(verdict.color, 7.1),
@@ -235,7 +235,7 @@ export default function AntiReplayLab() {
         </p>
       )}
 
-      <figcaption style={{ fontSize: 13, color: MUTED, marginTop: 12, lineHeight: 1.75 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.75 }}>
         파란 칸 = 이미 받은 시퀀스, 금색 테두리 = 윈도우 우측 가장자리. "다음 순번"을 계속 누르면 패킷 하나마다 시프트가 1회씩
         쌓입니다 — RFC 6479가 없애려 한 비용이 바로 이 숫자입니다. (여기 들어오는 패킷은 모두 무결성 검증을 통과했다고 가정합니다.
         실제 구현은 검증에 성공한 뒤에만 이 윈도우를 갱신합니다.)

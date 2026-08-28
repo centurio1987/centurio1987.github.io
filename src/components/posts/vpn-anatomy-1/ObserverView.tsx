@@ -143,8 +143,8 @@ export default function ObserverView() {
           display: "flex",
           flexWrap: "wrap",
           alignItems: "center",
-          gap: 10,
-          marginBottom: 12,
+          gap: "var(--space-10)",
+          marginBottom: "var(--space-12)",
         }}
       >
         <button
@@ -153,7 +153,7 @@ export default function ObserverView() {
           aria-pressed={tunnel}
           style={{
             padding: "var(--space-8) var(--space-14)",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             border: `${HAIR} solid ${INK}`,
             background: tunnel ? CORE : PAPER,
             color: tunnel ? PANEL : INK,
@@ -163,7 +163,7 @@ export default function ObserverView() {
         >
           {tunnel ? "터널 ON — VPN 연결됨" : "터널 OFF — 그냥 인터넷"}
         </button>
-        <span style={{ fontSize: 13, color: MUTED }}>
+        <span style={{ fontSize: "var(--text-meta)", color: MUTED }}>
           버튼을 눌러 터널을 켜고 끈 뒤, 아래에서 관찰자를 바꿔 보십시오.
         </span>
       </div>
@@ -171,7 +171,7 @@ export default function ObserverView() {
       <div
         role="group"
         aria-label="관찰자 선택"
-        style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 4 }}
+        style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-6)", marginBottom: "var(--space-4)" }}
       >
         {OBSERVERS.map((o) => {
           const active = o.id === who;
@@ -183,11 +183,11 @@ export default function ObserverView() {
               aria-pressed={active}
               style={{
                 padding: "var(--space-6) var(--space-10)",
-                borderRadius: 999,
-                border: active ? `${HAIR} solid ${INK}` : "1px solid #cfc7b6",
+                borderRadius: "var(--btn-radius)",
+                border: active ? `${HAIR} solid ${INK}` : "var(--stroke-hair) solid #cfc7b6",
                 background: active ? INK : PANEL,
                 color: active ? PANEL : "#3c3a33",
-                fontSize: 13,
+                fontSize: "var(--text-meta)",
                 cursor: "pointer",
               }}
             >
@@ -196,7 +196,7 @@ export default function ObserverView() {
           );
         })}
       </div>
-      <p style={{ fontSize: 13, color: MUTED, margin: "var(--space-8) 0 var(--space-12)" }}>
+      <p style={{ fontSize: "var(--text-meta)", color: MUTED, margin: "var(--space-8) 0 var(--space-12)" }}>
         {observer.hint}
       </p>
 
@@ -208,7 +208,7 @@ export default function ObserverView() {
           tableLayout: "fixed",
         }}
       >
-        <caption style={{ captionSide: "top", textAlign: "left", padding: "0 0 var(--space-6)", fontSize: 13, color: MUTED }}>
+        <caption style={{ captionSide: "top", textAlign: "left", padding: "0 0 var(--space-6)", fontSize: "var(--text-meta)", color: MUTED }}>
           {observer.label}가 볼 수 있는 것 — 터널 {tunnel ? "ON" : "OFF"}
         </caption>
         <tbody>
@@ -242,11 +242,11 @@ export default function ObserverView() {
                     style={{
                       display: "inline-block",
                       padding: "var(--space-2) var(--space-8)",
-                      marginRight: 8,
-                      borderRadius: 999,
+                      marginRight: "var(--space-8)",
+                      borderRadius: "var(--btn-radius)",
                       background: tone.bg,
                       color: tone.fg,
-                      fontSize: 12,
+                      fontSize: "var(--text-label)",
                       fontWeight: 700,
                       whiteSpace: "nowrap",
                     }}
@@ -261,7 +261,7 @@ export default function ObserverView() {
         </tbody>
       </table>
 
-      <figcaption style={{ fontSize: 13, color: MUTED, marginTop: 10, lineHeight: 1.6 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-10)", lineHeight: 1.6 }}>
         터널을 켜면 <strong>경로 관찰자</strong>에게서 목적지와 방문 도메인이 가려집니다. 그 정보는 사라지는 게 아니라{" "}
         <strong>VPN 게이트웨이 운영자</strong>의 칸으로 옮겨갑니다. 추적 스크립트 칸은 터널과 무관하게 그대로입니다.
       </figcaption>

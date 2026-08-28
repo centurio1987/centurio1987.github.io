@@ -63,9 +63,9 @@ export default function EspOverheadLab() {
   ];
 
   return (
-    <figure style={{ margin: "1.75rem 0", padding: 16, background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", marginBottom: 14 }}>
-        <label style={{ fontSize: 13, color: INK, fontWeight: 600 }}>
+    <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: 10 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-16)", alignItems: "center", marginBottom: "var(--space-14)" }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
           바깥 경로 MTU: {mtu}바이트
           <input
             type="range"
@@ -74,15 +74,15 @@ export default function EspOverheadLab() {
             step={4}
             value={mtu}
             onChange={(e) => setMtu(Number(e.target.value))}
-            style={{ display: "block", width: 240, marginTop: 6 }}
+            style={{ display: "block", width: 240, marginTop: "var(--space-6)" }}
           />
         </label>
-        <label style={{ fontSize: 13, color: INK, fontWeight: 600 }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
           암호군{" "}
           <select
             value={suiteId}
             onChange={(e) => setSuiteId(e.target.value)}
-            style={{ fontSize: 13, padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
+            style={{ fontSize: "var(--text-meta)", padding: "var(--space-4) var(--space-6)", borderRadius: 6, border: `${HAIR} solid ${tint(INK, 20)}` }}
           >
             {SUITES.map((s) => (
               <option key={s.id} value={s.id}>
@@ -91,13 +91,13 @@ export default function EspOverheadLab() {
             ))}
           </select>
         </label>
-        <label style={{ fontSize: 13, color: INK, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6 }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "var(--space-6)" }}>
           <input type="checkbox" checked={natt} onChange={(e) => setNatt(e.target.checked)} />
           NAT-T (UDP 4500)
         </label>
       </div>
 
-      <div style={{ display: "flex", height: 26, borderRadius: 5, overflow: "hidden", border: `${HAIR} solid ${tint(INK, 20)}`, marginBottom: 6 }}>
+      <div style={{ display: "flex", height: 26, borderRadius: 5, overflow: "hidden", border: `${HAIR} solid ${tint(INK, 20)}`, marginBottom: "var(--space-6)" }}>
         {rows
           .filter((r) => r.bytes > 0)
           .map((r) => (
@@ -109,16 +109,16 @@ export default function EspOverheadLab() {
           ))}
         <div
           title={`원본 패킷 — ${payload}바이트`}
-          style={{ flex: 1, background: PANEL, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: MUTED }}
+          style={{ flex: 1, background: PANEL, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "var(--text-micro)", color: MUTED }}
         >
           원본 패킷 {payload}바이트
         </div>
       </div>
-      <p style={{ fontSize: 12, color: MUTED, margin: "0 0 var(--space-14)" }}>
+      <p style={{ fontSize: "var(--text-label)", color: MUTED, margin: "0 0 var(--space-14)" }}>
         왼쪽 색 띠가 캡슐화 비용, 흰 칸이 실제로 실어 나르는 원본 IP 패킷입니다.
       </p>
 
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 12 }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--text-meta)", marginBottom: "var(--space-12)" }}>
         <tbody>
           {rows.map((r) => (
             <tr key={r.label}>
@@ -130,7 +130,7 @@ export default function EspOverheadLab() {
                     height: 10,
                     borderRadius: 2,
                     background: r.color,
-                    marginRight: 8,
+                    marginRight: "var(--space-8)",
                   }}
                 />
                 {r.label}
@@ -143,7 +143,7 @@ export default function EspOverheadLab() {
         </tbody>
       </table>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-10)" }}>
         {[
           { k: "캡슐화 오버헤드", v: `${overhead}바이트` },
           { k: "유효 내부 MTU", v: `${payload}바이트` },
@@ -151,15 +151,15 @@ export default function EspOverheadLab() {
         ].map((c) => (
           <div
             key={c.k}
-            style={{ flex: "1 1 150px", padding: "var(--space-8) var(--space-10)", background: PANEL, borderRadius: 8, border: `${HAIR} solid ${tint(INK, 13.3)}` }}
+            style={{ flex: "1 1 150px", padding: "var(--space-8) var(--space-10)", background: PANEL, borderRadius: "var(--radius-sm)", border: `${HAIR} solid ${tint(INK, 13.3)}` }}
           >
-            <div style={{ fontSize: 12, color: MUTED }}>{c.k}</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: INK }}>{c.v}</div>
+            <div style={{ fontSize: "var(--text-label)", color: MUTED }}>{c.k}</div>
+            <div style={{ fontSize: "var(--text-body)", fontWeight: 700, color: INK }}>{c.v}</div>
           </div>
         ))}
       </div>
 
-      <figcaption style={{ fontSize: 13, color: MUTED, marginTop: 12, lineHeight: 1.75 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.75 }}>
         NAT-T를 켜 보십시오 — UDP 헤더 8바이트가 붙는 순간 유효 내부 MTU가 내려앉습니다. 거기에 CBC 계열까지 고르면 16바이트
         블록에 맞추느라 붉은 패딩이 튀어나옵니다(AEAD는 4바이트 경계만 맞추면 되니 대개 0입니다). 이 표의 마지막 줄(MSS 상한)이
         뒤에 나올 MSS clamping 값의 근거입니다.

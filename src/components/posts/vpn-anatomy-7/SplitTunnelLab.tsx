@@ -89,7 +89,7 @@ export default function SplitTunnelLab() {
   const btn = (active: boolean): React.CSSProperties => ({
     flex: 1,
     padding: "var(--space-6) var(--space-10)",
-    fontSize: 13,
+    fontSize: "var(--text-meta)",
     fontWeight: 600,
     cursor: "pointer",
     borderRadius: 6,
@@ -103,9 +103,9 @@ export default function SplitTunnelLab() {
     a: { text: string; on: boolean; set: () => void },
     b: { text: string; on: boolean; set: () => void },
   ) => (
-    <div style={{ marginBottom: 10 }}>
-      <div style={{ fontSize: 12, color: MUTED, marginBottom: 4, fontWeight: 600 }}>{label}</div>
-      <div style={{ display: "flex", gap: 6 }}>
+    <div style={{ marginBottom: "var(--space-10)" }}>
+      <div style={{ fontSize: "var(--text-label)", color: MUTED, marginBottom: "var(--space-4)", fontWeight: 600 }}>{label}</div>
+      <div style={{ display: "flex", gap: "var(--space-6)" }}>
         <button type="button" aria-pressed={a.on} onClick={a.set} style={btn(a.on)}>{a.text}</button>
         <button type="button" aria-pressed={b.on} onClick={b.set} style={btn(b.on)}>{b.text}</button>
       </div>
@@ -113,7 +113,7 @@ export default function SplitTunnelLab() {
   );
 
   return (
-    <figure style={{ margin: "1.5rem 0", border: `${HAIR} solid ${SUBTLE}`, borderRadius: 10, padding: 16, background: PANEL }}>
+    <figure style={{ margin: "1.5rem 0", border: `${HAIR} solid ${SUBTLE}`, borderRadius: 10, padding: "var(--space-16)", background: PANEL }}>
       <div style={{ display: "grid", gap: 18, gridTemplateColumns: "minmax(0,1fr)" }}>
         <div>
           {control(
@@ -139,10 +139,10 @@ export default function SplitTunnelLab() {
         </div>
 
         <div>
-          <div style={{ fontSize: 12, color: MUTED, marginBottom: 6, fontWeight: 600 }}>
+          <div style={{ fontSize: "var(--text-label)", color: MUTED, marginBottom: "var(--space-6)", fontWeight: 600 }}>
             트래픽이 흐르는 곳
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
             {CLASSES.map((c) => {
               const f = fate(c.id);
               const meta = FATE_META[f];
@@ -153,7 +153,7 @@ export default function SplitTunnelLab() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    gap: 10,
+                    gap: "var(--space-10)",
                     padding: "var(--space-8) var(--space-12)",
                     borderRadius: 7,
                     background: meta.bg,
@@ -162,16 +162,16 @@ export default function SplitTunnelLab() {
                 >
                   <span style={{ display: "flex", flexDirection: "column" }}>
                     <span style={{ fontWeight: 700, fontSize: 14, color: meta.fg }}>{c.name}</span>
-                    <span style={{ fontSize: 11, color: MUTED_3 }}>{c.note}</span>
+                    <span style={{ fontSize: "var(--text-micro)", color: MUTED_3 }}>{c.note}</span>
                   </span>
                   <span
                     style={{
-                      fontSize: 12,
+                      fontSize: "var(--text-label)",
                       fontWeight: 700,
                       color: meta.fg,
                       whiteSpace: "nowrap",
                       padding: "var(--space-2) var(--space-8)",
-                      borderRadius: 999,
+                      borderRadius: "var(--btn-radius)",
                       border: `${HAIR} solid ${meta.border}`,
                       background: tint(PANEL, 50),
                     }}
@@ -187,14 +187,14 @@ export default function SplitTunnelLab() {
 
       <figcaption
         style={{
-          marginTop: 14,
-          fontSize: 13,
+          marginTop: "var(--space-14)",
+          fontSize: "var(--text-meta)",
           lineHeight: 1.6,
           // 값이 FATE_META 의 leak.fg / blocked.fg 와 정확히 같다 — 같은 뜻이므로 같은 토큰을 쓴다.
           // 게이트는 삼항 안을 못 보지만, 리터럴로 두면 팔레트를 고칠 때 이 자리만 안 따라온다.
           color: dnsLeaking || dropLeaking ? "var(--fate-leak-fg, #8a3320)" : "var(--fate-blocked-fg, #5f5a51)",
           borderTop: `${HAIR} dashed ${CANVAS}`,
-          paddingTop: 10,
+          paddingTop: "var(--space-10)",
         }}
       >
         {summary}
