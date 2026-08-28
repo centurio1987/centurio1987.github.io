@@ -160,7 +160,7 @@ S5 에서 1건짜리 화이트리스트와 함께 따로 한다.
 
 - [>] `S2` 갈래 A `recognize/styleNum.ts` — 완료 기준: 836건이 판정에 들어오고 그중 175건이 스케일 밖 · `Doodle.astro` 좌표표 새 히트 0 · 단위 없는 속성 181건에서 새 히트 0 <!-- claim:s=557e0f67 t=2026-08-28T19:14 -->
 - [>] `S3` 갈래 B `recognize/exprValue.ts` — 완료 기준: 34건이 들어오고 `PermissionGate.tsx:124` 의 `var(--stroke, 1.5px)` 가 위반이 아니며 **새 히트와 옛 히트의 `(file, line, value)` 교집합이 0** <!-- claim:s=557e0f67 t=2026-08-28T19:14 -->
-- [>] `S4` 갈래 C `recognize/attrCss.ts` — 완료 기준: `CrayonFilters.astro:42` 의 `width:0`·`height:0` 이 준수로 판정된다(부채를 거의 안 내므로 건수가 아니라 구멍이 닫혔는지로 본다) <!-- claim:s=557e0f67 t=2026-08-28T19:14 -->
+- [x] `S4` 갈래 C `recognize/attrCss.ts` — 완료 기준: `CrayonFilters.astro:42` 의 `width:0`·`height:0` 이 준수로 판정된다(부채를 거의 안 내므로 건수가 아니라 구멍이 닫혔는지로 본다)
 
 **배치3 — 수렴 (직렬, 폭 1)**
 
@@ -188,3 +188,4 @@ S5 에서 1건짜리 화이트리스트와 함께 따로 한다.
 - 2026-08-28T19:14 · s:557e0f67 · S2 doing — 착수
 - 2026-08-28T19:14 · s:557e0f67 · S3 doing — 착수
 - 2026-08-28T19:14 · s:557e0f67 · S4 doing — 착수
+- 2026-08-28T19:22 · s:557e0f67 · S4 done — 갈래 C 인식기. 히트 2건(CrayonFilters.astro:42 의 width·height) · 옛 히트와 겹침 0 · 축 없는 속성 38자리에서 0건 · 자가검사 7종 사유 7가지. 계획과 다른 것 하나 — 그 둘은 준수가 아니라 판정 불가로 뜬다. docrule 이 width·height 를 dimension 갈래로 내려 §9 관할 밖에 두기 때문이고(KAN-070 S5 가 굳힌 자리), 준수로 만들려면 치수를 §9 로 되돌려야 해서 치수·좌표 63건이 래칫에 물린다 — 규칙을 안 비틀고 뒀다. 구멍은 닫혔다(판정 0건 → 2건). 맨 숫자 0 을 0px 로 승격했다: 승격 안 하면 classify 의 맨 숫자 필터가 버려 attr-css 히트가 실소스에서 0건이 된다. 계획서의 「같은 파일 8건은 전부 style 블록」은 틀렸다 — 실제로는 width="150%" 꼴 jsx-attr 이다
