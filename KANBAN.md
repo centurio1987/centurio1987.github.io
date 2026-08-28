@@ -75,7 +75,7 @@
   - 목표: bbangtoTonyFoundation 만 남고 어긋난 값 셋이 맞춰지거나 왜 다른지 주석으로 걸린다
   - 메모: 감사 P4 의 B안 — 검토 판단 항목 2번이 승인으로 확정. 파일명은 안 바꾼다: gen-motion-css.ts:23 과 main.yml:60 이 문자열로 들고 있다
   - 실행 문서: KANBAN.cards/KAN-071-6361MY.md (3/3 · 최근 08-28)
-  - 검토 문서: KANBAN.reviews/KAN-071-6361MY.review.md (승인 0/4 · 검토 대기)
+  - 검토 문서: KANBAN.reviews/KAN-071-6361MY.review.md (승인 4/5 · 추가 의견 1 · 추가 의견 총 3 · 검토 대기)
   - 원문:
     ```text
     위 artifact를 보고 전략과 실행 계획을 수립해라
