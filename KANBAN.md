@@ -78,7 +78,7 @@
   - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 design-concept/UI_CONSISTENCY_AUDIT.md 6절 11항. 실측 47건 · 약 12파일. 다른 갈래와 다른 점이 하나 있다 — 옛 정규식 자체를 고쳐야 해서 KAN-073 이 지킨 「옛 히트 한 건도 안 움직인다」 계약이 성립하지 않는다. 감사 원자료 3,539 히트와의 대조를 어떻게 유지할지가 이 카드의 첫 판단이다
   - 실행 문서: KANBAN.cards/KAN-075-7DF37H.md (6/6 · 최근 08-29)
   - 계획 리포트: KANBAN.reports/KAN-075-7DF37H.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-075-7DF37H.review.md (승인 0/2 · 검토 대기)
+  - 검토 문서: KANBAN.reviews/KAN-075-7DF37H.review.md (승인 2/2 · 승인)
 
 ## 완료
 - `KAN-062` 발행된 글 14편의 본문 이모지 83건을 두들 마크로 갈아 끼운다 — 생성:ai · 최종:ai · 갱신:2026-08-04
