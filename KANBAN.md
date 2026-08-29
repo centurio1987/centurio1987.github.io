@@ -74,7 +74,7 @@
   - 이유: 선언 정규식의 값 클래스가 줄바꿈을 안 받아 box-shadow·transition·gradient 가 통째로 안 잡힌다
   - 목표: src/components/Logo.astro:58 의 세 줄짜리 box-shadow 안 값이 판정에 뜨고 옛 히트는 안 움직인다
   - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 design-concept/UI_CONSISTENCY_AUDIT.md 6절 11항. 실측 47건 · 약 12파일. 다른 갈래와 다른 점이 하나 있다 — 옛 정규식 자체를 고쳐야 해서 KAN-073 이 지킨 「옛 히트 한 건도 안 움직인다」 계약이 성립하지 않는다. 감사 원자료 3,539 히트와의 대조를 어떻게 유지할지가 이 카드의 첫 판단이다
-  - 실행 문서: KANBAN.cards/KAN-075-7DF37H.md (4/6 · 최근 08-29)
+  - 실행 문서: KANBAN.cards/KAN-075-7DF37H.md (6/6 · 최근 08-29)
   - 계획 리포트: KANBAN.reports/KAN-075-7DF37H.report.html (낡음)
 
 ## 검토

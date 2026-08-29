@@ -245,8 +245,8 @@
   border-radius: var(--radius-md);
   background-color: var(--surface);
   background-image:
-    repeating-linear-gradient(0deg, rgba(32, 38, 74, 0.07) 0 1px, transparent 1px 24px),
-    repeating-linear-gradient(90deg, rgba(32, 38, 74, 0.07) 0 1px, transparent 1px 24px);
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--ink) 7%, transparent) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink) 7%, transparent) 0 1px, transparent 1px 24px);
   box-shadow: var(--deco-shadow, 0 1px 3px rgba(32, 38, 74, 0.14));
 }
 
@@ -284,7 +284,7 @@
       var(--deco-tape-yellow, rgba(216, 163, 63, 0.42)) 0 12px,
       transparent 12px 24px
     ),
-    rgba(240, 222, 180, 0.62);
+    var(--deco-tape-check, rgba(240, 222, 180, 0.62));
   clip-path: polygon(0 4%, 100% 0, 98% 100%, 2% 96%);
   transform: rotate(-10deg);
 }
@@ -299,10 +299,10 @@
     linear-gradient(
       104deg,
       transparent 0 20%,
-      rgba(255, 255, 255, 0.5) 32% 44%,
+      color-mix(in srgb, var(--surface-hi) 50%, transparent) 32% 44%,
       transparent 58%
     ),
-    linear-gradient(180deg, var(--deco-tape-vellum, rgba(253, 248, 236, 0.66)), rgba(236, 223, 196, 0.6));
+    linear-gradient(180deg, var(--deco-tape-vellum, rgba(253, 248, 236, 0.66)), var(--deco-tape-vellum-2, rgba(236, 223, 196, 0.6)));
   /* 벨럼의 위·아래 테두리는 `Tape.astro:102-103` 과 **같은 표현**이다 — 값을 여기서 다시
      적고 있었고(`UI_CONSISTENCY_AUDIT.md` §3-9), 그러면 한쪽만 고쳐지는 날이 온다.
      `--deco-kraft-ink` 에만 fallback 이 붙는 이유는 이 파일 머리글의 「적재 경로」 절이다 —
@@ -433,10 +433,10 @@
      이었고, 한쪽만 고치면 홀더가 카드 모서리에서 떨어져 "모서리를 잘라낸 판"으로 읽힌다. */
   inset: calc(var(--space-16) + var(--stroke-hair));
   background-image:
-    linear-gradient(to bottom right, rgba(255, 255, 255, 0.92) 0 50%, transparent 50%),
-    linear-gradient(to bottom left, rgba(255, 255, 255, 0.92) 0 50%, transparent 50%),
-    linear-gradient(to top right, rgba(255, 255, 255, 0.92) 0 50%, transparent 50%),
-    linear-gradient(to top left, rgba(255, 255, 255, 0.92) 0 50%, transparent 50%);
+    linear-gradient(to bottom right, color-mix(in srgb, var(--surface-hi) 92%, transparent) 0 50%, transparent 50%),
+    linear-gradient(to bottom left, color-mix(in srgb, var(--surface-hi) 92%, transparent) 0 50%, transparent 50%),
+    linear-gradient(to top right, color-mix(in srgb, var(--surface-hi) 92%, transparent) 0 50%, transparent 50%),
+    linear-gradient(to top left, color-mix(in srgb, var(--surface-hi) 92%, transparent) 0 50%, transparent 50%);
   background-position: top left, top right, bottom left, bottom right;
   background-size: 18px 18px;
   background-repeat: no-repeat;

@@ -101,7 +101,14 @@ function changedFiles(): string[] {
  * `src/components/posts/<slug>/X.tsx` 의 `<slug>` 는 `src/content/posts/<slug>.mdx` 와
  * 1:1 이라 글 주소가 그대로 나온다. 그 밖의 파일이 섞이면 어느 글에 나오는지 모르므로
  * **전 글 대조로 올린다** — 좁혀서 놓치는 것보다 넓게 재는 쪽이 싸다.
+ *
+ * **글이 아닌 지면 넷도 함께 넣는다 (KAN-075).** "전 글"이 "전 지면"이 아니었다 —
+ * 데코 부품(`Tape`·`PaperSurface`·`Polaroid`·`HeroCollage`)이 실제로 앉는 곳은 홈 ·
+ * 글 목록 · 글 지도 · 데코 카탈로그이고, 그 넷은 `/posts/<slug>/` 어디에도 안 나온다.
+ * 그래서 데코 색을 통째로 옮겨도 **대조가 초록**이던 자리였다. 손으로 `--pages` 를 붙이는
+ * 규율로 막으면 붙이는 것을 잊은 날 조용히 통과하므로, 넓힐 때는 기계가 함께 넣는다.
  */
+const EXTRA_PAGES = ["/", "/posts/", "/graph/", "/design/deco/"];
 function pagesFor(files: string[]): { pages: string[]; widened: boolean } {
   const given = opt("--pages");
   if (given) return { pages: given.split(",").map((s) => s.trim()).filter(Boolean), widened: false };
@@ -116,7 +123,8 @@ function pagesFor(files: string[]): { pages: string[]; widened: boolean } {
     const r = sh("bash", ["-lc", "ls src/content/posts/*.mdx | xargs -n1 basename | sed 's/\\.mdx$//'"]);
     for (const s of r.stdout.split("\n").map((x) => x.trim()).filter(Boolean)) slugs.add(s);
   }
-  return { pages: [...slugs].sort().map((s) => `/posts/${s}/`), widened };
+  const posts = [...slugs].sort().map((s) => `/posts/${s}/`);
+  return { pages: widened ? [...EXTRA_PAGES, ...posts] : posts, widened };
 }
 
 /**
@@ -248,8 +256,31 @@ const PROPS = [
   "flex-basis", "flex-grow", "flex-shrink", "grid-template-columns", "transform", "z-index",
 ];
 
+/**
+ * **색 함수 표기 정규화** — `color(srgb r g b / a)` → `rgba(R, G, B, a)` (KAN-075).
+ *
+ * 왜 필요한가.
+ *   `color-mix()` 는 이 레포가 이미 쓰는 관용구인데(`Tape.astro` · `PhotoFrame.astro` ·
+ *   `viz-frame.css`), 브라우저가 그것을 **`rgba()` 가 아니라 `color(srgb …)` 로 직렬화**한다.
+ *   그래서 `rgba(32, 38, 74, 0.07)` 을 값이 같은 `color-mix(in srgb, var(--ink) 7%, transparent)`
+ *   로 옮기면 **화면은 한 픽셀도 안 바뀌는데 대조는 전건 차이**로 나온다(실측:
+ *   `color(srgb 0.12549 0.14902 0.290196 / 0.07)` — 255 를 곱하면 정확히 32·38·74).
+ *   알파를 낀 드리프트를 토큰으로 되돌릴 때마다 이 잡음이 나므로, 표기를 한 벌로 접는다.
+ *
+ * **무엇을 삼키는가.** 1/255 보다 작은 색 차이는 반올림에 묻힌다. 그보다 큰 차이는 그대로
+ * 나온다 — `--self-test` 의 고장4 가 「같은 색은 안 물고 다른 색은 문다」를 매번 확인한다.
+ * 위의 `#dd\d+-` 치환과 같은 부류다: 값이 아니라 **표기**를 지운다.
+ */
+const NORM_COLOR_FN = `((s) => s.replace(
+  /color\\(srgb ([\\d.]+) ([\\d.]+) ([\\d.]+)(?: \\/ ([\\d.]+))?\\)/g,
+  (_m, r, g, b, a) => {
+    const c = [r, g, b].map((v) => Math.round(parseFloat(v) * 255)).join(", ");
+    return a === undefined || parseFloat(a) === 1 ? "rgb(" + c + ")" : "rgba(" + c + ", " + parseFloat(a) + ")";
+  }))`;
+
 const snapshotSource = (allProps: boolean) => `(() => {
   const PROPS = ${JSON.stringify(PROPS)};
+  const normColor = ${NORM_COLOR_FN};
   const out = [];
   const walk = (el, path) => {
     const cs = getComputedStyle(el);
@@ -258,7 +289,7 @@ const snapshotSource = (allProps: boolean) => `(() => {
     for (const p of names) {
       // 손그림 필터 id 는 빌드 전역 카운터라(Doodle.astro:87 dd<n>) 빌드가 갈리면 번호가
       // 갈릴 수 있다. 번호를 지운다 — 값이 아니라 이름이고, 이 카드가 못 바꾸는 것이다.
-      vals.push(p + ":" + cs.getPropertyValue(p).replace(/#dd\\d+-/g, "#dd*-"));
+      vals.push(p + ":" + normColor(cs.getPropertyValue(p).replace(/#dd\\d+-/g, "#dd*-")));
     }
     const r = el.getBoundingClientRect();
     vals.push("@box:" + [r.width, r.height].map((n) => Math.round(n * 100) / 100).join(","));
@@ -560,6 +591,32 @@ async function selfTest() {
     bit: bs.cssHits > 0 && bs.selHits < bs.cssHits,
     detail: `[style*=] 방식 ${bs.selHits}곳 · getComputedStyle 방식 ${bs.cssHits}곳`,
   });
+
+  // 고장4 — **색 함수 표기 정규화가 진짜 색 차이를 삼키지 않는가** (KAN-075).
+  //   정규화는 잡음을 지우려고 넣은 것이라, 과하면 그 자리에서 대조가 눈이 먼다.
+  //   빌드를 안 탄다 — 브라우저가 `color-mix()` 를 어떻게 직렬화하는가만 보면 되는 검사다.
+  {
+    const ctx = await br.newContext({ viewport: { width: 400, height: 300 } });
+    const pg = await ctx.newPage();
+    await pg.setContent(
+      `<style>:root{--ink:#20264A}` +
+      `.lit{color:rgba(32, 38, 74, 0.07)}` +
+      `.same{color:color-mix(in srgb, var(--ink) 7%, transparent)}` +
+      `.diff{color:color-mix(in srgb, var(--ink) 20%, transparent)}` +
+      `</style><i class=lit></i><i class=same></i><i class=diff></i>`,
+    );
+    const [lit, same, diff] = await pg.evaluate(`(() => {
+      const norm = ${NORM_COLOR_FN};
+      return ["lit", "same", "diff"].map((k) =>
+        norm(getComputedStyle(document.querySelector("." + k)).color));
+    })()`) as [string, string, string];
+    await ctx.close();
+    st.push({
+      name: "고장4 색 함수 표기 정규화",
+      bit: lit === same && lit !== diff,
+      detail: `리터럴 ${lit} · 같은 값 color-mix ${same} · 다른 값 color-mix ${diff}`,
+    });
+  }
 
   return st;
   } finally { await br.close(); }

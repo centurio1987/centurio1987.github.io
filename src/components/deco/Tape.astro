@@ -66,7 +66,7 @@ const {
         var(--deco-tape-yellow) 0 12px,
         transparent 12px 24px
       ),
-      rgba(240, 222, 180, 0.62);
+      var(--deco-tape-check);
     clip-path: polygon(0 4%, 100% 0, 98% 100%, 2% 96%);
   }
 
@@ -91,13 +91,13 @@ const {
       linear-gradient(
         104deg,
         transparent 0 20%,
-        rgba(255, 255, 255, 0.5) 32% 44%,
+        color-mix(in srgb, var(--surface-hi) 50%, transparent) 32% 44%,
         transparent 58%
       ),
       linear-gradient(
         180deg,
         var(--deco-tape-vellum),
-        rgba(236, 223, 196, 0.6)
+        var(--deco-tape-vellum-2)
       );
     border-top: var(--stroke-hair) solid color-mix(in srgb, var(--surface-hi) 70%, transparent);
     border-bottom: var(--stroke-hair) solid color-mix(in srgb, var(--deco-kraft-ink) 16%, transparent);
@@ -142,9 +142,9 @@ const {
   .dot {
     height: 34px;
     background:
-      radial-gradient(rgba(32, 38, 74, 0.16) 1.5px, transparent 1.6px) 0 0 /
+      radial-gradient(color-mix(in srgb, var(--ink) 16%, transparent) 1.5px, transparent 1.6px) 0 0 /
         11px 11px,
-      rgba(255, 255, 255, 0.5);
+      color-mix(in srgb, var(--surface-hi) 50%, transparent);
     clip-path: polygon(0 3%, 100% 0, 98% 97%, 2% 100%);
   }
 
@@ -153,8 +153,8 @@ const {
     height: 36px;
     background: linear-gradient(
       180deg,
-      rgba(219, 201, 170, 0.95),
-      rgba(205, 184, 150, 0.95)
+      var(--deco-tape-kraft),
+      var(--deco-tape-kraft-2)
     );
     clip-path: polygon(
       0 0,

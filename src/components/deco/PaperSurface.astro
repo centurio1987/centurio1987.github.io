@@ -83,18 +83,18 @@ const sizeStyle = [
   .grid {
     background-image: repeating-linear-gradient(
         0deg,
-        rgba(32, 38, 74, 0.07) 0 1px,
+        color-mix(in srgb, var(--ink) 7%, transparent) 0 1px,
         transparent 1px var(--cell)
       ),
       repeating-linear-gradient(
         90deg,
-        rgba(32, 38, 74, 0.07) 0 1px,
+        color-mix(in srgb, var(--ink) 7%, transparent) 0 1px,
         transparent 1px var(--cell)
       );
   }
   .dot {
     background-image: radial-gradient(
-      rgba(32, 38, 74, 0.14) 1.4px,
+      color-mix(in srgb, var(--ink) 14%, transparent) 1.4px,
       transparent 1.5px
     );
     background-size: var(--cell) var(--cell);
@@ -104,7 +104,7 @@ const sizeStyle = [
     background-image: repeating-linear-gradient(
       0deg,
       transparent 0 calc(var(--cell) - 1px),
-      rgba(32, 38, 74, 0.1) calc(var(--cell) - 1px) var(--cell)
+      color-mix(in srgb, var(--ink) 10%, transparent) calc(var(--cell) - 1px) var(--cell)
     );
   }
   /* 펀치 구멍은 판 높이에 맞춰 나눠 앉는다 — 고정 간격으로 두면 판이 낮을 때

@@ -54,18 +54,18 @@ const {
   .shot.grid {
     background-image: repeating-linear-gradient(
         0deg,
-        rgba(32, 38, 74, 0.07) 0 1px,
+        color-mix(in srgb, var(--ink) 7%, transparent) 0 1px,
         transparent 1px 11px
       ),
       repeating-linear-gradient(
         90deg,
-        rgba(32, 38, 74, 0.07) 0 1px,
+        color-mix(in srgb, var(--ink) 7%, transparent) 0 1px,
         transparent 1px 11px
       );
   }
   .shot.dot {
     background-image: radial-gradient(
-      rgba(32, 38, 74, 0.13) 1.4px,
+      color-mix(in srgb, var(--ink) 13%, transparent) 1.4px,
       transparent 1.5px
     );
     background-size: 12px 12px;
