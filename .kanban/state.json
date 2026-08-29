@@ -1,6 +1,6 @@
 {
   "next_id": 78,
-  "next_seq": 327,
+  "next_seq": 328,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1128,7 +1128,7 @@
       ]
     },
     "KAN-075-7DF37H": {
-      "col": "doing",
+      "col": "review",
       "title": "게이트 인식층 — 여러 줄에 걸쳐 쓴 CSS 선언 47건을 판정에 넣는다",
       "verbatim": "",
       "생성": "ai",
@@ -1148,12 +1148,16 @@
       "memo_hash": "b8ea4c14840eea5d4ee658ccf653d49c7311ec65",
       "scope": [
         "scripts/verify-tokens.ts",
+        "scripts/check-recognize-invariant.ts",
+        "scripts/compare-render.ts",
         "scripts/lib/tokens/**",
         "scripts/fixtures/tokens/**",
         "scripts/tokens-baseline.json",
+        "package.json",
         "design-concept/UI_CONSISTENCY_AUDIT.md",
         "CLAUDE.md",
         "src/components/deco/**",
+        "src/styles/deco.css",
         "src/styles/viz-frame.css"
       ]
     },
@@ -1281,6 +1285,16 @@
     "KAN-075-7DF37H"
   ],
   "recent": [
+    {
+      "seq": 327,
+      "t": "2026-08-29T19:15",
+      "a": "ai",
+      "id": "KAN-075-7DF37H",
+      "op": "move",
+      "w": "2F7CRQ",
+      "from": "doing",
+      "to": "review"
+    },
     {
       "seq": 326,
       "t": "2026-08-29T18:17",
@@ -1865,23 +1879,6 @@
       "reason": "준수율이 44.3% 이고 무너진 구획 둘(글 안 시뮬 3.6% · 마스코트 8.1%)이 발행물 안에 있다",
       "goal": "게이트 베이스라인이 0 으로 수렴해 tokens:verify 를 순수 하드월로 승격할 수 있다",
       "memo": "하위 6장으로 순서를 강제한다. 루트 넷으로 두면 scope 가 src/** 로 전부 겹쳐 루트 독립성이 그 자리에서 깨진다 — 칸반 3.6 의 상위 신설"
-    },
-    {
-      "seq": 280,
-      "t": "2026-08-25T00:09",
-      "a": "ai",
-      "id": "KAN-071-6361MY",
-      "op": "create",
-      "w": "WTCH92",
-      "col": "todo",
-      "title": "선언 층을 줄인다 — bbangtoTonyStyleGuide export 를 걷고 foundation 만 남긴다",
-      "verbatim": "위 artifact를 보고 전략과 실행 계획을 수립해라",
-      "parent": null,
-      "short": "선언 층 처분",
-      "purpose": "소비처가 0건인 StyleGuide 선언을 걷어 tokens.css 값의 두 번째 사본을 없앤다",
-      "reason": "안 쓰이는 선언이 tokens.css 와 어긋난 값 셋을 들고 있어, 주입되는 순간 화면이 갈라진다",
-      "goal": "bbangtoTonyFoundation 만 남고 어긋난 값 셋이 맞춰지거나 왜 다른지 주석으로 걸린다",
-      "memo": "감사 P4 의 B안 — 검토 판단 항목 2번이 승인으로 확정. 파일명은 안 바꾼다: gen-motion-css.ts:23 과 main.yml:60 이 문자열로 들고 있다"
     }
   ],
   "waivers": [

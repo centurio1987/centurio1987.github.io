@@ -68,6 +68,8 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+
+## 검토
 - `KAN-075-7DF37H` 게이트 인식층 — 여러 줄에 걸쳐 쓴 CSS 선언 47건을 판정에 넣는다 — 생성:ai · 최종:ai · 갱신:2026-08-29
   - 짧은 제목: 여러 줄 선언 인식
   - 목적: 줄바꿈을 넘는 CSS 선언 안의 시각 값이 판정에 들어오게 한다
@@ -76,8 +78,7 @@
   - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 design-concept/UI_CONSISTENCY_AUDIT.md 6절 11항. 실측 47건 · 약 12파일. 다른 갈래와 다른 점이 하나 있다 — 옛 정규식 자체를 고쳐야 해서 KAN-073 이 지킨 「옛 히트 한 건도 안 움직인다」 계약이 성립하지 않는다. 감사 원자료 3,539 히트와의 대조를 어떻게 유지할지가 이 카드의 첫 판단이다
   - 실행 문서: KANBAN.cards/KAN-075-7DF37H.md (6/6 · 최근 08-29)
   - 계획 리포트: KANBAN.reports/KAN-075-7DF37H.report.html (낡음)
-
-## 검토
+  - 검토 문서: KANBAN.reviews/KAN-075-7DF37H.review.md (승인 0/2 · 검토 대기)
 
 ## 완료
 - `KAN-062` 발행된 글 14편의 본문 이모지 83건을 두들 마크로 갈아 끼운다 — 생성:ai · 최종:ai · 갱신:2026-08-04
