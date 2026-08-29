@@ -278,3 +278,4 @@
 {"seq": 275, "t": "2026-08-24T16:58", "a": "ai", "id": "KAN-068-5KMRV8", "op": "move", "w": "HXHMY8", "from": "review", "to": "done"}
 {"seq": 276, "t": "2026-08-24T17:38", "a": "ai", "id": "KAN-069-M724GH", "op": "move", "w": "670G7J", "from": "todo", "to": "doing"}
 {"seq": 277, "t": "2026-08-24T18:43", "a": "ai", "id": "KAN-069-M724GH", "op": "move", "w": "670G7J", "from": "doing", "to": "review"}
+{"seq": 278, "t": "2026-08-24T20:11", "a": "ai", "id": "KAN-069-M724GH", "op": "move", "w": "670G7J", "from": "review", "to": "done"}
