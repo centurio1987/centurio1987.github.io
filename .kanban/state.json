@@ -1,6 +1,6 @@
 {
   "next_id": 78,
-  "next_seq": 326,
+  "next_seq": 327,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1128,12 +1128,12 @@
       ]
     },
     "KAN-075-7DF37H": {
-      "col": "backlog",
+      "col": "doing",
       "title": "게이트 인식층 — 여러 줄에 걸쳐 쓴 CSS 선언 47건을 판정에 넣는다",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-28",
+      "갱신": "2026-08-29",
       "title_hash": "ee42f90e69677caef86c77ccd61dd30e7fd0a065",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "short": "여러 줄 선언 인식",
@@ -1204,7 +1204,6 @@
     "KAN-032",
     "KAN-060",
     "KAN-061",
-    "KAN-075-7DF37H",
     "KAN-076-X1C8PY",
     "KAN-077-RA2SYG",
     "KAN-048",
@@ -1278,9 +1277,20 @@
     "KAN-064",
     "KAN-071-6361MY",
     "KAN-073-CVD8X7",
-    "KAN-074-MQ9KRB"
+    "KAN-074-MQ9KRB",
+    "KAN-075-7DF37H"
   ],
   "recent": [
+    {
+      "seq": 326,
+      "t": "2026-08-29T18:17",
+      "a": "ai",
+      "id": "KAN-075-7DF37H",
+      "op": "move",
+      "w": "2F7CRQ",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 325,
       "t": "2026-08-29T18:00",
@@ -1872,23 +1882,6 @@
       "reason": "안 쓰이는 선언이 tokens.css 와 어긋난 값 셋을 들고 있어, 주입되는 순간 화면이 갈라진다",
       "goal": "bbangtoTonyFoundation 만 남고 어긋난 값 셋이 맞춰지거나 왜 다른지 주석으로 걸린다",
       "memo": "감사 P4 의 B안 — 검토 판단 항목 2번이 승인으로 확정. 파일명은 안 바꾼다: gen-motion-css.ts:23 과 main.yml:60 이 문자열로 들고 있다"
-    },
-    {
-      "seq": 279,
-      "t": "2026-08-25T00:08",
-      "a": "ai",
-      "id": "KAN-070-DRF0QF",
-      "op": "create",
-      "w": "WTCH92",
-      "col": "todo",
-      "title": "UI 토큰 게이트를 세운다 — verify-tokens 래칫 신설과 집필 규칙 개정",
-      "verbatim": "위 artifact를 보고 전략과 실행 계획을 수립해라",
-      "parent": null,
-      "short": "토큰 게이트 신설",
-      "purpose": "토큰 밖 값이 새로 들어오는 것을 CI 에서 그 자리에 막는 게이트를 세운다",
-      "reason": "감사 판정기가 세션 스크래치패드에만 있어 지워지면 수치 재현이 불가하고, 게이트가 없으면 치환 성과를 매번 사람이 세야 한다",
-      "goal": "bun run tokens:verify 가 감사 수치를 히트 단위로 재현하고, 위반이 늘면 CI 가 막는다",
-      "memo": "감사 P3-1(게이트) + P3-2(react-sim 규칙 개정). 래칫으로 세운다 — 위반 1,567건이라 하드월은 첫 푸시부터 main 을 막는다"
     }
   ],
   "waivers": [

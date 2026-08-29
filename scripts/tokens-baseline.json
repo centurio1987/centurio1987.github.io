@@ -2,23 +2,34 @@
   "generator": "verify-tokens@1",
   "srcFiles": 152,
   "counts": {
+    "color / 드리프트": 21,
+    "color / 위반": 8,
     "color / 정당한 예외": 8,
-    "color / 준수": 1051,
+    "color / 준수": 1077,
     "font / 준수": 610,
     "font / 판정 불가": 244,
     "other / 준수": 252,
     "radius / 준수": 295,
-    "shadow / 준수": 17,
-    "shadow / 판정 불가": 129,
+    "shadow / 준수": 28,
+    "shadow / 판정 불가": 150,
     "spacing / 준수": 1346,
     "spacing / 판정 불가": 498,
     "zindex / 판정 불가": 17,
-    "잡음 / 판정 불가": 65
+    "잡음 / 판정 불가": 151
   },
   "totals": {
+    "드리프트": 21,
+    "위반": 8,
     "정당한 예외": 8,
-    "준수": 3571,
-    "판정 불가": 953
+    "준수": 3608,
+    "판정 불가": 1060
   },
-  "files": {}
+  "files": {
+    "src/components/deco/PaperSurface.astro": 4,
+    "src/components/deco/Polaroid.astro": 3,
+    "src/components/deco/StickyNote.astro": 1,
+    "src/components/deco/Tape.astro": 7,
+    "src/components/deco/patterns/PhotoFrame.astro": 5,
+    "src/styles/viz-frame.css": 9
+  }
 }

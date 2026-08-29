@@ -13,6 +13,12 @@
  *   정규식 넷(`DECL`·`ATTR`·`JSXOBJ`·`LITERAL`)과 아래 A·B/C 구간은 한 글자도 안 바뀌었다.
  *   새 갈래는 `recognize/` 의 인식기들이 내고 **새 `src` 라벨**을 달고 나오므로,
  *   `src ∈ {css-decl, jsx-attr, style-obj}` 로 거르면 옛 집합이 그대로 재현된다.
+ *
+ * **KAN-075 가 넷째 갈래를 열었다 — 여기서는 옛 히트가 한 건도 안 움직인다.**
+ *   줄바꿈을 넘는 CSS 선언(`multilineDecl`)이고, `DECL` 을 고치는 대신 같은 구간을
+ *   다시 훑는 별도 패스로 붙였다. 그래서 KAN-073 이 관문 3 에서 옛 집합을 1건 움직인 것과
+ *   달리 **증분이 정확히 0** 이다. 그 인식기가 A 구간과 **같은 바이트**를 보게 하려고
+ *   아래 A 구간이 주석을 걷어낸 본문을 `cssChunks` 로 모아 넘긴다.
  *   축 표(`AXIS`)는 `propAxis.ts` 로 자리만 옮겼고 **내용은 원본 그대로다** —
  *   거기에 camelCase 를 보태면 그 값을 줍는 것이 새 인식기가 아니라 기존 `JSXOBJ` 라서
  *   옛 집합이 움직인다. 새 인식기만 `propAxis.axisOfProp()` 의 넓은 표를 쓴다.
@@ -26,12 +32,13 @@ import type { RecognizeInput, Recognizer } from "./recognize/types.ts";
 import { styleNum } from "./recognize/styleNum.ts";
 import { exprValue } from "./recognize/exprValue.ts";
 import { attrCss } from "./recognize/attrCss.ts";
+import { multilineDecl } from "./recognize/multilineDecl.ts";
 
 /**
  * 새 인식층 — 갈래마다 하나. 진입점이 자가검사 고장도 여기서 모은다.
  * 순서는 보고 순서일 뿐이고 판정에는 영향이 없다.
  */
-export const RECOGNIZERS: Recognizer[] = [styleNum, exprValue, attrCss];
+export const RECOGNIZERS: Recognizer[] = [styleNum, exprValue, attrCss, multilineDecl];
 
 // ── 축 정의는 `propAxis.ts` 가 소유한다(내용은 원본 s3-scan.py:29-46 그대로 + camelCase 생성).
 //
@@ -153,8 +160,14 @@ export function extract(root: string): { files: string[]; dict: TokenDict; hits:
     else
       regions = [...text.matchAll(TEMPLATE)].map((m) => [m[0], nl(text.slice(0, m.index!))]);
 
+    // 새 인식층이 **A 구간과 같은 바이트**를 보게 하려고 여기서 모아 둔다(KAN-075).
+    // 인식기가 주석을 다시 걷으면 옛 경로와 다른 것을 보게 되고, 그러면
+    // 「옛 경로가 못 보던 자리」라는 말이 성립하지 않는다.
+    const cssChunks: [string, number][] = [];
+
     for (const [chunkRaw, off] of regions) {
       const chunk = chunkRaw.replace(COMMENT_CSS, (m) => "\n".repeat(nl(m)));
+      cssChunks.push([chunk, off]);
       for (const m of chunk.matchAll(DECL)) {
         const axis = axisOfProp(m[1]);
         if (!axis) continue;
@@ -189,7 +202,7 @@ export function extract(root: string): { files: string[]; dict: TokenDict; hits:
     //    있어서, 직접 `hits.push` 하면 AUTO-GENERATED viz 파일의 리터럴이 새고
     //    `var(--stroke, 1.5px)` 같은 이미 준수인 자리가 위반으로 잡힌다.
     const input: RecognizeInput = {
-      file: rel, text, legacyCssSpans,
+      file: rel, text, legacyCssSpans, cssChunks,
       lineAt: (offset) => nl(text.slice(0, offset)) + 1,
     };
     for (const r of RECOGNIZERS) {

@@ -73,9 +73,13 @@ export interface Hit {
    *   ① 옛 집합만 골라 「한 건도 안 움직였다」를 증명할 수 있어야 하고,
    *   ② 자가검사의 사유 유일성 키가 `(verdict, want, src)` 셋이라
    *      같은 사유라도 인식 경로가 다르면 다른 검사가 된다(`recognize/types.ts`).
+   *
+   * `ml-decl` 은 KAN-075 가 연 넷째 갈래다 — **줄바꿈을 넘는 CSS 선언**.
+   * 옛 `DECL` 을 고치지 않고 별도 패스로 열었기 때문에 여기서도 옛 집합은 안 움직인다.
    */
   src: "css-decl" | "jsx-attr" | "style-obj"
-     | "style-num" | "expr-literal" | "attr-css";
+     | "style-num" | "expr-literal" | "attr-css"
+     | "ml-decl";
   /**
    * 게이트 대상에서 빠지는 히트에는 사유가 붙는다(생성물·패키지 복제물 등).
    * **빼는 것이 아니라 표시만 한다** — 감사 원자료와 히트 단위로 대조하려면
