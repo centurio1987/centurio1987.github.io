@@ -24,25 +24,32 @@ status: 검토 대기
 | 베이스 | `3b355f8` |
 | 변경 훑기 | `git diff 3b355f8...HEAD` |
 
-**커밋 3건**
+**커밋 5건**
 
 ```text
+28c7437 S9: 검토 1항 반영 — 값이 아니라 의미로 나눈다, --state-plain · --state-inactive 신설 (KAN-077-RA2SYG)
+13311b9 kanban: KAN-077-RA2SYG 검토로 이동 — 검토서 · 판단 항목 5 (KAN-077-RA2SYG)
 8e6db31 S7+S6+S8: 부채 15건 처분 · 문서 셋 — 래칫 0, 인식 갈래 여섯 완결 (KAN-077-RA2SYG)
 f49dd80 S1~S5: 상수로 올린 리터럴을 판정에 넣는다 — 옛 히트 증분 0 · 새 기준선 드리프트 10 · 위반 5 (KAN-077-RA2SYG)
 77a8fd4 kanban: KAN-077-RA2SYG 진행 중으로 이동 (KAN-077-RA2SYG)
 ```
 
-**변경 파일 23개 (+511 −88)**
+**변경 파일 29개 (+2022 −122)**
 
 | 파일 | 상태 | 추가 | 삭제 |
 |---|:--:|---:|---:|
-| `.kanban/archive.jsonl` | M | 1 | 0 |
-| `.kanban/log.md` | M | 1 | 1 |
-| `.kanban/state.json` | M | 12 | 19 |
+| `.kanban/archive.jsonl` | M | 3 | 0 |
+| `.kanban/log.md` | M | 3 | 3 |
+| `.kanban/reviews/KAN-077-RA2SYG.events.jsonl` | M | 16 | 0 |
+| `.kanban/reviews/KAN-077-RA2SYG.review.json` | M | 21 | 0 |
+| `.kanban/state.json` | M | 32 | 46 |
 | `CLAUDE.md` | M | 20 | 5 |
 | `KANBAN.board.html` | M | 4 | 4 |
-| `KANBAN.cards/KAN-077-RA2SYG.md` | M | 73 | 22 |
-| `KANBAN.md` | M | 8 | 7 |
+| `KANBAN.cards/KAN-077-RA2SYG.md` | M | 102 | 22 |
+| `KANBAN.md` | M | 9 | 7 |
+| `KANBAN.reviews/KAN-077-RA2SYG.review.html` | M | 1145 | 0 |
+| `KANBAN.reviews/KAN-077-RA2SYG.review.md` | M | 230 | 0 |
+| `design-concept/DESIGN_CONCEPT.md` | M | 18 | 3 |
 | `design-concept/UI_CONSISTENCY_AUDIT.md` | M | 37 | 0 |
 | `scripts/fixtures/tokens/faults/cases/const-ref-drift.tsx` | M | 13 | 0 |
 | `scripts/fixtures/tokens/faults/cases/const-ref.tsx` | M | 13 | 0 |
@@ -51,14 +58,15 @@ f49dd80 S1~S5: 상수로 올린 리터럴을 판정에 넣는다 — 옛 히트 
 | `scripts/lib/tokens/recognize/styleNum.ts` | M | 9 | 4 |
 | `scripts/lib/tokens/types.ts` | M | 7 | 1 |
 | `scripts/tokens-baseline.json` | M | 3 | 3 |
-| `src/components/posts/osi-7-layers-3/HopJourney.tsx` | M | 4 | 1 |
+| `src/components/posts/osi-7-layers-3/HopJourney.tsx` | M | 5 | 2 |
 | `src/components/posts/osi-7-layers-3/RoutingTableLab.tsx` | M | 4 | 1 |
-| `src/components/posts/osi-7-layers-4/HandshakeLab.tsx` | M | 11 | 4 |
-| `src/components/posts/osi-7-layers-4/SlidingWindowLab.tsx` | M | 9 | 2 |
-| `src/components/posts/osi-7-layers-5/EncodingLab.tsx` | M | 9 | 2 |
-| `src/components/posts/osi-7-layers-5/TlsHandshakeLab.tsx` | M | 11 | 4 |
-| `src/components/posts/osi-7-layers-6/DnsResolveLab.tsx` | M | 11 | 4 |
-| `src/components/posts/osi-7-layers-6/RequestJourneyLab.tsx` | M | 10 | 3 |
+| `src/components/posts/osi-7-layers-4/HandshakeLab.tsx` | M | 13 | 4 |
+| `src/components/posts/osi-7-layers-4/SlidingWindowLab.tsx` | M | 11 | 2 |
+| `src/components/posts/osi-7-layers-5/EncodingLab.tsx` | M | 11 | 2 |
+| `src/components/posts/osi-7-layers-5/TlsHandshakeLab.tsx` | M | 13 | 4 |
+| `src/components/posts/osi-7-layers-6/DnsResolveLab.tsx` | M | 13 | 4 |
+| `src/components/posts/osi-7-layers-6/RequestJourneyLab.tsx` | M | 12 | 3 |
+| `src/styles/tokens.css` | M | 14 | 1 |
 
 **롤백 태그 0개** — 없음(`--tags` 를 넘기지 않았거나 아직 태그가 없습니다)
 
@@ -109,18 +117,24 @@ bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan077-before.json
 **실행 결과**
 
 ```text
+[S9 재작업 뒤 다시 돌린 결과]
+
 1. tokens:verify               exit 0 — 자가검사 정상 1 + 고장 14종·사유 14가지 · 「기준선과 같다」
-                               래칫 기준: 위반 0 · 드리프트 0 · 정당한 예외 10 · 준수 3649 · 판정 불가 1130
-2. tokens:invariant            exit 0 (기준점 = S5 커밋 f49dd80, HEAD 아님 — S7 이 그 뒤 src/ 를 일부러 고쳤다)
-                               ① 옛 판정 4841건이 열 필드 키로 그대로 ② 새 판정 15건과 옛 히트의 (file,line,value) 교집합 0 ③ 겹침 가드 자가검사 통과
-3. 인식기 죽이기               ✗ 로 빨개짐(기대대로) — RECOGNIZERS 에서 constRef 제거 시 고장 14 → 12 로 selfTestFaults 래칫이 물었다
-4. 회피 경로 재현              ✗ 로 빨개짐(기대대로) — #ab12cd 를 const PROBE 로 올렸더니 EncodingLab.tsx:30(선언 줄)을 위반으로 지목
+                               래칫: 위반 0 · 드리프트 0 · 정당한 예외 10 · 준수 3649 · 판정 불가 1130
+                               색 축 토큰 108 → 110 (--state-plain · --state-inactive 신설)
+                               fallback 축 532자리 — 일치 487 · 불일치 0
+2. tokens:invariant            exit 0 (기준점 = S5 커밋 f49dd80, HEAD 아님 — S7·S9 가 그 뒤 src/ 를 일부러 고쳤다)
+                               ① 옛 판정 4841건 그대로 ② 새 판정 15건과 옛 히트 교집합 0 ③ 겹침 가드 자가검사 통과
+3. 인식기 죽이기               ✗ 로 빨개짐(기대대로) — constRef 제거 시 고장 14 → 12 로 selfTestFaults 래칫이 물었다
+4. 회피 경로 재현              ✗ 로 빨개짐(기대대로) — #ab12cd 를 const 로 올리니 선언 줄(EncodingLab.tsx:30)을 위반으로 지목
 5. build                       exit 0 — 46쪽
 6. tsc --noEmit                고친 파일 에러 0 (남은 3건은 선행 상태: s2-declared-layers.ts 2 · baseline.ts:167 1)
-7. render:compare              지면 4곳 중 EP5·EP6 에서 background-color 28건만 이동 (rgb(229,240,237) → rgb(234,237,232))
-                               문서 높이·기하 변화 0. EP3 은 무변경(TEAL_TINT 가 이미 6% color-mix), EP4 는 하네스가 active 상태 미도달
-8. git diff --stat -- src/     8파일 (+69 −21) — S7 이 고친 목록과 정확히 같다
-9. 나머지 게이트 7종           viz:verify · deco:verify · talk:verify · width:verify · check-post-markers · check-emphasis · check-emphasis --dist  전부 exit 0
+7. render:compare (S7 몫)      지면 4곳 중 EP5·EP6 에서 background-color 28건 이동 (rgb(229,240,237) → rgb(234,237,232))
+                               문서 높이·기하 변화 0 — 2항에서 승인됨
+   render:compare (S9 몫)      **지면 0곳 · 총 0건.** tokens.css 가 바뀌어 범위가 전 글로 넓어졌고 46쪽 전수에서 차이가 없다
+                               (토큰 이름만 바뀌고 값이 그대로이므로)
+8. git diff --stat -- src/     9파일 — S7 의 8파일 + S9 가 신설한 tokens.css
+9. 나머지 게이트 7종           viz:verify · deco:verify · talk:verify · width:verify · check-post-markers · check-emphasis(+--dist) 전부 exit 0
 ```
 
 ## 3. 판단 항목 — 스크립트가 판정할 수 없는 것
