@@ -40,12 +40,13 @@ import { exprValue } from "./recognize/exprValue.ts";
 import { attrCss } from "./recognize/attrCss.ts";
 import { multilineDecl } from "./recognize/multilineDecl.ts";
 import { svgStroke } from "./recognize/svgStroke.ts";
+import { constRef } from "./recognize/constRef.ts";
 
 /**
  * 새 인식층 — 갈래마다 하나. 진입점이 자가검사 고장도 여기서 모은다.
  * 순서는 보고 순서일 뿐이고 판정에는 영향이 없다.
  */
-export const RECOGNIZERS: Recognizer[] = [styleNum, exprValue, attrCss, multilineDecl, svgStroke];
+export const RECOGNIZERS: Recognizer[] = [styleNum, exprValue, attrCss, multilineDecl, svgStroke, constRef];
 
 // ── 축 정의는 `propAxis.ts` 가 소유한다(내용은 원본 s3-scan.py:29-46 그대로 + camelCase 생성).
 //

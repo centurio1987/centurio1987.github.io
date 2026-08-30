@@ -52,7 +52,7 @@ const CSSPROP = /(?<![\w$])CSSProperties(?![\w$])/g;
 const BRIDGE = /^[\s=>(]*$/;
 
 /** 객체 안의 속성 이름 자리. 값은 따로 잘라 본다. */
-const PROP = /(?<![\w$.])([A-Za-z_$][\w$]*)\s*:/g;
+export const PROP = /(?<![\w$.])([A-Za-z_$][\w$]*)\s*:/g;
 
 /**
  * 값 자리의 숫자 리터럴. 옛 `LITERAL`(`extract.ts:67`)의 `\b\d{1,4}\b` 를 **안 쓴다** —
@@ -149,13 +149,18 @@ function maskObject(text: string, open: number): { masked: string; end: number }
 }
 
 /** 스타일 객체 하나의 자리 — 여는 `{` 오프셋 · 닫는 `}` 오프셋 · 지운 사본. */
-interface Scope { open: number; end: number; masked: string }
+export interface Scope { open: number; end: number; masked: string }
 
 /**
  * 이 파일에서 스타일 객체가 사는 자리 전부. 겹치는 것은 바깥쪽만 남긴다 —
  * 남기지 않으면 같은 숫자를 두 번 센다.
+ *
+ * **`constRef`(갈래 F)가 이 함수를 그대로 쓴다** — 「스타일 값 자리가 어디까지인가」를
+ * 두 벌로 정의하면 한쪽만 고쳐지고, 그 어긋남은 「부채가 적다」로 읽혀 통과한다.
+ * 그쪽은 `masked` 로 속성 자리만 찾고 값은 원문에서 읽는다(템플릿 안의 `${SAND}` 를
+ * 봐야 하기 때문이다 — 여기서는 그것이 지워져 있어도 되지만 거기서는 아니다).
  */
-function scopesOf(text: string): Scope[] {
+export function scopesOf(text: string): Scope[] {
   const opens: number[] = [];
   for (const m of text.matchAll(STYLE_ATTR)) opens.push(m.index! + m[0].length - 1);
   for (const m of text.matchAll(CSSPROP)) {
@@ -184,7 +189,7 @@ function scopesOf(text: string): Scope[] {
  * 안쪽은 지나친다 — `padding: fn(a, b)` 의 첫 쉼표에서 끊으면 뒤 인자가 값이 아닌 자리에서
  * 다시 읽힌다.
  */
-function valueEnd(masked: string, from: number, limit: number): number {
+export function valueEnd(masked: string, from: number, limit: number): number {
   let depth = 0;
   for (let i = from; i < limit; i++) {
     const c = masked[i];
