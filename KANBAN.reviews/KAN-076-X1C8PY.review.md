@@ -24,35 +24,44 @@ status: 검토 대기
 | 베이스 | `599a011` |
 | 변경 훑기 | `git diff 599a011...HEAD` |
 
-**커밋 3건**
+**커밋 5건**
 
 ```text
+11c1b5a S8: 자가검사 자기 축소를 래칫이 문다 — 검토 항목 4 승인 (KAN-076-X1C8PY)
+571d5ab kanban: KAN-076-X1C8PY 검토로 이동 — 검토서 · 판단 항목 4 (KAN-076-X1C8PY)
 81c410e S6+S7: 갈림선을 문서에 박고 부채 2건 처분 — 래칫 0 (KAN-076-X1C8PY)
 ef0670e S1~S5: stroke-width 를 판정에 넣는다 — 옛 히트 증분 0 · 새 기준선 위반 2 (KAN-076-X1C8PY)
 cca1067 kanban: KAN-076-X1C8PY 진행 중으로 이동 (KAN-076-X1C8PY)
 ```
 
-**변경 파일 17개 (+501 −58)**
+**변경 파일 24개 (+1943 −81)**
 
 | 파일 | 상태 | 추가 | 삭제 |
 |---|:--:|---:|---:|
-| `.kanban/archive.jsonl` | M | 1 | 0 |
-| `.kanban/log.md` | M | 1 | 1 |
-| `.kanban/state.json` | M | 15 | 22 |
+| `.kanban/archive.jsonl` | M | 2 | 0 |
+| `.kanban/log.md` | M | 2 | 2 |
+| `.kanban/reviews/KAN-076-X1C8PY.events.jsonl` | M | 9 | 0 |
+| `.kanban/reviews/KAN-076-X1C8PY.review.json` | M | 27 | 0 |
+| `.kanban/state.json` | M | 25 | 39 |
 | `CLAUDE.md` | M | 12 | 4 |
 | `KANBAN.board.html` | M | 4 | 4 |
-| `KANBAN.cards/KAN-076-X1C8PY.md` | M | 21 | 7 |
-| `KANBAN.md` | M | 8 | 7 |
+| `KANBAN.cards/KAN-076-X1C8PY.md` | M | 22 | 7 |
+| `KANBAN.md` | M | 9 | 7 |
+| `KANBAN.reviews/KAN-076-X1C8PY.review.html` | M | 1158 | 0 |
+| `KANBAN.reviews/KAN-076-X1C8PY.review.md` | M | 196 | 0 |
 | `design-concept/DESIGN_CONCEPT.md` | M | 18 | 0 |
 | `design-concept/UI_CONSISTENCY_AUDIT.md` | M | 38 | 0 |
 | `scripts/fixtures/tokens/faults/cases/svg-stroke.astro` | M | 16 | 0 |
+| `scripts/lib/tokens/baseline.ts` | M | 19 | 2 |
 | `scripts/lib/tokens/color.ts` | M | 27 | 2 |
 | `scripts/lib/tokens/exceptions.ts` | M | 10 | 0 |
 | `scripts/lib/tokens/extract.ts` | M | 16 | 6 |
 | `scripts/lib/tokens/recognize/svgStroke.ts` | M | 258 | 0 |
 | `scripts/lib/tokens/recognize/types.ts` | M | 8 | 1 |
+| `scripts/lib/tokens/selftest.ts` | M | 15 | 0 |
 | `scripts/lib/tokens/types.ts` | M | 44 | 2 |
-| `scripts/tokens-baseline.json` | M | 4 | 2 |
+| `scripts/tokens-baseline.json` | M | 6 | 3 |
+| `scripts/verify-tokens.ts` | M | 2 | 2 |
 
 **롤백 태그 0개** — 없음(`--tags` 를 넘기지 않았거나 아직 태그가 없습니다)
 
@@ -102,16 +111,14 @@ stroke / 판정 불가 49건
 ③ 겹침 가드 둘 + 양성 대조 — 셋 다 산다(각각 하나만 죽여도 빨개지는 것까지 확인한 구성이다)
 ✓ 인식층 불변 검사 통과.
 
-[bun run build]
-13:31:57 [build] 46 page(s) built in 1.99s
-13:31:57 [build] Complete!
+[bun run build] 46 page(s) built · Complete
+[git diff --stat -- src/] 빈 출력 — src/ 를 한 글자도 안 고쳤다
+[viz:verify] ✓ 텍스트 넘침 없음  ·  [deco:verify] ✓ 겹침·가로챔·오버플로 없음
 
-[git diff --stat -- src/]
-빈 출력 — src/ 를 한 글자도 안 고쳤다
-
-[다른 게이트]
-viz:verify ✓ 텍스트 넘침 없음 (글 27편 / figure 43개)
-deco:verify ✓ 겹침·가로챔·오버플로 없음 (검사 50회)
+[항목 4 승인 반영 — 새로 넣은 고장주입 2회]
+RECOGNIZERS 에서 svgStroke 제거 → 자가검사 고장이 12 → 10 종으로 줄었다 (게이트 실패)
+svgStroke 의 고장 하나 삭제        → 자가검사 고장이 12 → 11 종으로 줄었다 (게이트 실패)
+둘 다 직전까지는 조용히 통과하던 자리다
 ```
 
 ## 3. 판단 항목 — 스크립트가 판정할 수 없는 것
