@@ -1,6 +1,6 @@
 {
   "next_id": 78,
-  "next_seq": 331,
+  "next_seq": 332,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1162,7 +1162,7 @@
       ]
     },
     "KAN-076-X1C8PY": {
-      "col": "review",
+      "col": "done",
       "title": "게이트 인식층 — 선 굵기 81건에 viewBox 를 아는 판정 규칙을 세운다",
       "verbatim": "",
       "생성": "ai",
@@ -1187,7 +1187,8 @@
         "scripts/fixtures/tokens/**",
         "scripts/tokens-baseline.json",
         "design-concept/UI_CONSISTENCY_AUDIT.md",
-        "design-concept/DESIGN_CONCEPT.md"
+        "design-concept/DESIGN_CONCEPT.md",
+        "CLAUDE.md"
       ]
     },
     "KAN-077-RA2SYG": {
@@ -1294,6 +1295,16 @@
     "KAN-076-X1C8PY"
   ],
   "recent": [
+    {
+      "seq": 331,
+      "t": "2026-08-30T14:55",
+      "a": "ai",
+      "id": "KAN-076-X1C8PY",
+      "op": "move",
+      "w": "G8E4E9",
+      "from": "review",
+      "to": "done"
+    },
     {
       "seq": 330,
       "t": "2026-08-30T13:32",
@@ -1850,23 +1861,6 @@
       "reason": "값 종류가 37종인데 문서가 정한 역할은 6개이고, 하한 12px 아래가 71건이다",
       "goal": "문서 역할값 밖 95건과 최소치 미만 71건이 0 이 된다",
       "memo": "발행물을 하나도 안 건드린다 — 166건 중 components/posts/** 가 0건이다(카탈로그 45·공용 66·데코 24·레이아웃 17·viz 11·전역 3). 그래서 간격 축보다 먼저 간다"
-    },
-    {
-      "seq": 284,
-      "t": "2026-08-25T00:12",
-      "a": "ai",
-      "id": "KAN-072.3-SC3ADV",
-      "op": "create",
-      "w": "WTCH92",
-      "col": "backlog",
-      "title": "축 재분류 — 간격 위반 821건을 간격·치수·위치 셋으로 가른다 (판정만)",
-      "verbatim": "",
-      "parent": "KAN-072-CPJCT1",
-      "short": "축 재분류",
-      "purpose": "DESIGN_CONCEPT 9절이 실제로 다스리는 범위만 남기고 나머지를 관할 밖으로 내린다",
-      "reason": "감사의 간격 축 정의에 width·height·top·left 가 섞여 있는데 9절은 여백 규칙이지 치수나 좌표 규칙이 아니다",
-      "goal": "치수·위치가 위반 목록에서 빠지고 감사 문서 3-5절 수치가 새 축 정의로 고쳐진다",
-      "memo": "코드 변경 0 — 판정 규칙만 바꾼다. 위치 축 상위 파일이 전부 데코 실측 좌표(deco.astro 26 · PhotoFrame 23)라 스냅을 돌리면 조용히 깨진다. 정확한 수는 판정기 이식 뒤 확정(검토자 572·내 재계산 574로 갈린다)"
     }
   ],
   "waivers": [

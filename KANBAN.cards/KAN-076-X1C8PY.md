@@ -2,7 +2,7 @@
 card: KAN-076-X1C8PY
 title: 게이트 인식층 — 선 굵기 81건에 viewBox 를 아는 판정 규칙을 세운다
 created: 2026-08-30
-scope: scripts/lib/tokens/**, scripts/verify-tokens.ts, scripts/check-recognize-invariant.ts, scripts/fixtures/tokens/**, scripts/tokens-baseline.json, design-concept/UI_CONSISTENCY_AUDIT.md, design-concept/DESIGN_CONCEPT.md
+scope: scripts/lib/tokens/**, scripts/verify-tokens.ts, scripts/check-recognize-invariant.ts, scripts/fixtures/tokens/**, scripts/tokens-baseline.json, design-concept/UI_CONSISTENCY_AUDIT.md, design-concept/DESIGN_CONCEPT.md, CLAUDE.md
 ---
 
 # KAN-076-X1C8PY — 게이트 인식층 — 선 굵기 81건에 viewBox 를 아는 판정 규칙을 세운다
