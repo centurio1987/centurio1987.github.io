@@ -34,6 +34,15 @@
  *   판정 기준은 `axis.ts` 하나이고 `docrule` 도 같은 것을 쓴다 — 두 모듈이 각자 표를
  *   들고 있다가 갈리면 같은 토큰이 축 모듈마다 다른 축에 산다(KAN-072).
  *
+ * ── stroke 축은 두 갈래에서 온다 (KAN-076)
+ *   ① 위 축 누수 보정이 색 축 shorthand 에서 갈라낸 길이 — `border: 1px solid …` 의 `1px`.
+ *   ② `svgStroke` 인식기가 낸 `stroke-width` 계열 — `hit.axis` 자체가 `stroke` 다.
+ *   ②는 판정 전에 **단위를 먼저 본다.** `--stroke-*` 3단은 CSS px 자인데 SVG 좌표계 안의
+ *   `stroke-width` 는 사용자 단위이고 그 배율을 **호출자가 정하기** 때문이다 — 같은 소스 한 줄이
+ *   지면마다 다른 px 로 그려진다(`recognize/svgStroke.ts` 머리주석에 실측표가 있다).
+ *   그래서 사용자 단위 자리는 대조 상대를 물을 수가 없어 `판정 불가` 이고, 배율이 1 로 확정되는
+ *   자리만 아래 (2)(3) 을 그대로 탄다. 실측 51 히트 중 css-px 는 2 다.
+ *
  * ── 알아 둘 것: 축 누수 50건은 `측정 제외` 다
  *   색 축 shorthand(`border: 1px solid #ccc`·그라디언트)에 색이 아닌 값이 섞여 들어온다.
  *   판정할 대상이 아니라 **측정에서 걷어내는** 것이라 위반으로 세면 안 된다 — 셋으로
@@ -173,9 +182,25 @@ export const color: AxisModule = {
     };
 
     for (const hit of ctx.hits) {
-      // 이 모듈이 지는 것은 색 축과 radius 축뿐이다. stroke·잡음은 색 축에서 갈라져 나온다.
-      if (hit.axis !== "color" && hit.axis !== "radius") continue;
+      // 이 모듈이 지는 것은 색·radius, 그리고 KAN-076 이 연 stroke 축이다.
+      // (색 축에서 갈라져 나오는 stroke·잡음은 아래 (1) 이 만든다 — 그쪽은 `hit.axis` 가 color 다.)
+      if (hit.axis !== "color" && hit.axis !== "radius" && hit.axis !== "stroke") continue;
       let axis: JudgeAxis = hit.axis;
+
+      // (0) stroke 축은 **단위를 드리프트 검사보다 먼저** 본다 (KAN-076).
+      //
+      //     순서가 곧 규칙이다. 뒤로 미루면 `PosterHero.tsx:124` 의 `strokeWidth: 2` 가
+      //     `--stroke-bold`(2px)와 값이 같아 **드리프트로 잡히는데**, 그 SVG 는 래스터 2배라
+      //     화면에서 4px 다 — 토큰을 안 쓴 것이 아니라 **애초에 같은 자로 잰 값이 아니다.**
+      //     `GraphExplorer.tsx:1308` 의 `strokeWidth={2}` 도 같은 자리다.
+      //
+      //     사유를 `stroke 축` 으로 시작하는 것은 규약이다 — `baseline.ts` 의 `judgeAxis` 가
+      //     사유 접두로 판정 축을 되뽑으므로, 다르게 쓰면 이 판정이 `other` 칸에 쌓인다.
+      if (hit.axis === "stroke" && hit.coord?.unit !== "css-px") {
+        emit(hit, "stroke", "판정 불가",
+             `stroke 축 — SVG 사용자 단위라 --stroke*(CSS px) 자로 못 잰다: ${hit.coord?.why ?? "좌표계 미상"}`);
+        continue;
+      }
 
       if (hit.kind === "token") {
         emit(hit, axis, "준수", `var() 로 토큰을 썼다 — ${hit.value}`);

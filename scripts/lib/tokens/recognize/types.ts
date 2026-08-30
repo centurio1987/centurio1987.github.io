@@ -24,10 +24,15 @@
  *   `multilineDecl` — CSS 구간 안에서 **줄바꿈을 넘는 선언**(KAN-075). 갈래를 가르는 선이
  *     리터럴의 종류가 아니라 **자리**인 유일한 인식기다 — 옛 `DECL` 이 값 클래스에
  *     `\n` 을 안 받아 통째로 못 보던 자리이고, 그 안의 리터럴은 종류를 안 가린다.
+ *   `svgStroke` — `stroke-width` 계열(KAN-076). 가르는 선이 **속성 하나**인 유일한 인식기다.
+ *     그 속성이 `propAxis.AXIS` 에 없어서 네 형태가 통째로 판정 밖이었고, 표에 보태면
+ *     값을 줍는 것이 새 인식기가 아니라 기존 `DECL`/`ATTR` 이라 옛 집합이 움직인다.
+ *     그래서 **네 형태를 이 인식기 하나가 다 진다** — 앞 넷과 관할이 안 겹치는 것은
+ *     그 넷이 전부 `axisOfProp()` 을 지나기 때문이다(`stroke-width` 에 `undefined` 를 낸다).
  *   이렇게 가르면 빈틈도 겹침도 없다. 문법(삼항이냐 아니냐)으로 가르면
  *   `fontSize: ok ? 13 : 15` 가 어느 쪽도 아니게 된다.
  */
-import type { Axis, Hit, VerdictName } from "../types.ts";
+import type { Axis, CoordUnit, Hit, VerdictName } from "../types.ts";
 
 /** 진입점이 인식기에 넘기는 것. 파일 하나 분량이다. */
 export interface RecognizeInput {
@@ -75,6 +80,8 @@ export interface Recognition {
    * 게이트가 지목하는 값이 파일에서 grep 되게 하려는 것이다.
    */
   rawValue?: string;
+  /** 이 자리의 길이 1 이 무엇인가. `svgStroke` 만 채운다 — `Hit.coord` 로 그대로 넘어간다. */
+  coord?: CoordUnit;
   line: number;
   src: Hit["src"];
 }

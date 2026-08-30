@@ -14,6 +14,12 @@
  *   새 갈래는 `recognize/` 의 인식기들이 내고 **새 `src` 라벨**을 달고 나오므로,
  *   `src ∈ {css-decl, jsx-attr, style-obj}` 로 거르면 옛 집합이 그대로 재현된다.
  *
+ * **KAN-076 이 다섯째 갈래를 열었다 — `stroke-width` 계열.**
+ *   `AXIS` 표에 속성 자체가 없어서 네 형태(svg 속성 · CSS 선언 · JSX 표현식 · style 객체)가
+ *   통째로 판정 밖이었다. 표에 보태지 않고 인식기(`recognize/svgStroke.ts`)로 붙였으므로
+ *   옛 경로는 이 축(`Axis` 의 `"stroke"`)을 **영영 못 낸다** — 그것이 옛 집합 불변의 근거다.
+ *   그 인식기가 `Hit.coord` 를 채우고, 판정은 그 단위를 **드리프트 검사보다 먼저** 본다.
+ *
  * **KAN-075 가 넷째 갈래를 열었다 — 여기서는 옛 히트가 한 건도 안 움직인다.**
  *   줄바꿈을 넘는 CSS 선언(`multilineDecl`)이고, `DECL` 을 고치는 대신 같은 구간을
  *   다시 훑는 별도 패스로 붙였다. 그래서 KAN-073 이 관문 3 에서 옛 집합을 1건 움직인 것과
@@ -25,7 +31,7 @@
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
-import type { Axis, Hit, TokenDef, TokenDict } from "./types.ts";
+import type { Axis, CoordUnit, Hit, TokenDef, TokenDict } from "./types.ts";
 import { scanExceptionFor } from "./exceptions.ts";
 import { axisOfProp } from "./propAxis.ts";
 import type { RecognizeInput, Recognizer } from "./recognize/types.ts";
@@ -33,12 +39,13 @@ import { styleNum } from "./recognize/styleNum.ts";
 import { exprValue } from "./recognize/exprValue.ts";
 import { attrCss } from "./recognize/attrCss.ts";
 import { multilineDecl } from "./recognize/multilineDecl.ts";
+import { svgStroke } from "./recognize/svgStroke.ts";
 
 /**
  * 새 인식층 — 갈래마다 하나. 진입점이 자가검사 고장도 여기서 모은다.
  * 순서는 보고 순서일 뿐이고 판정에는 영향이 없다.
  */
-export const RECOGNIZERS: Recognizer[] = [styleNum, exprValue, attrCss, multilineDecl];
+export const RECOGNIZERS: Recognizer[] = [styleNum, exprValue, attrCss, multilineDecl, svgStroke];
 
 // ── 축 정의는 `propAxis.ts` 가 소유한다(내용은 원본 s3-scan.py:29-46 그대로 + camelCase 생성).
 //
@@ -114,12 +121,15 @@ export function readTokenDict(root: string): TokenDict {
 function classify(
   dict: TokenDict, axis: Axis, prop: string, raw: string,
   file: string, line: number, src: Hit["src"], excluded: string | null,
-  rawValue?: string,
+  rawValue?: string, coord?: CoordUnit,
 ): Hit[] {
   const out: Hit[] = [];
+  // 좌표계는 값이 아니라 **자리**의 성질이라 그 자리에서 나온 히트 전부가 같은 것을 진다
+  // (한 값 자리가 리터럴 둘을 낼 수 있다 — `strokeWidth={1 + 2.4 * s}`).
+  const extra = { ...(rawValue ? { rawValue } : {}), ...(coord ? { coord } : {}) };
   for (const m of raw.matchAll(VARUSE)) {
     out.push({ axis, kind: "token", prop, value: `var(${m[1]})`, token: m[1],
-               sameValueOtherAxis: null, file, line, src, excluded, ...(rawValue ? { rawValue } : {}) });
+               sameValueOtherAxis: null, file, line, src, excluded, ...extra });
   }
   // var() 안쪽은 리터럴이 아니다 — 지우고 남은 것만 본다.
   const stripped = raw.replace(VARCALL, " ");
@@ -134,7 +144,7 @@ function classify(
     out.push({ axis, kind: hits.length ? "literal_dup" : "literal_new", prop, value: v,
                token: hits.length ? hits : null,
                sameValueOtherAxis: loose.length ? loose : null,
-               file, line, src, excluded, ...(rawValue ? { rawValue } : {}) });
+               file, line, src, excluded, ...extra });
   }
   return out;
 }
@@ -207,7 +217,7 @@ export function extract(root: string): { files: string[]; dict: TokenDict; hits:
     };
     for (const r of RECOGNIZERS) {
       for (const rec of r.scan(input)) {
-        hits.push(...classify(dict, rec.axis, rec.prop, rec.value, rel, rec.line, rec.src, ex, rec.rawValue));
+        hits.push(...classify(dict, rec.axis, rec.prop, rec.value, rel, rec.line, rec.src, ex, rec.rawValue, rec.coord));
       }
     }
   }

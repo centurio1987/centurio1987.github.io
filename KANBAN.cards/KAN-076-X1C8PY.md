@@ -113,12 +113,12 @@ KAN-073·KAN-075 가 세운 규약 그대로다. **옛 정규식(`DECL`·`ATTR`�
 ## 실행 계획
 work 는 `S<n>` 하나가 단위다. 완료 기준을 각 단계에 달았다.
 
-- [ ] `S1` 실측을 레포에 굳힌다 — `stroke-width` 자리 전수와 좌표계
+- [x] `S1` 실측을 레포에 굳힌다 — `stroke-width` 자리 전수와 좌표계
       완료 기준: 스캔 범위 안 50자리마다 `(파일, 줄, 형태, 값, viewBox, 렌더 크기, 배율)`
       이 나오고, **배율 1 인 자리가 0 · viewBox 없는 SVG 가 0** 임이 출력으로 확인된다.
       범위 밖 `.ts` 35건은 따로 세어 「이 카드 밖」으로 적는다.
 
-- [ ] `S2` 다섯째 인식기 `recognize/svgStroke.ts` — 네 형태를 잡고 좌표계를 붙인다
+- [x] `S2` 다섯째 인식기 `recognize/svgStroke.ts` — 네 형태를 잡고 좌표계를 붙인다
       완료 기준: `stroke-width="9"`(svg 속성) · `stroke-width: 4px`(CSS) ·
       `strokeWidth={2}`(JSX 표현식) · `strokeWidth: 2.6`(style 객체) 넷이 전부 히트로
       나오고, 각 히트가 감싸는 `<svg>` 의 좌표계를 들고 있다. **`<svg>` 태그보다 위에
@@ -126,19 +126,19 @@ work 는 `S<n>` 하나가 단위다. 완료 기준을 각 단계에 달았다.
       (`PosterHero.tsx:124` 의 `<Canvas viewBox=…>`)에서 좌표계를 못 찾으면 「미상」으로
       내고 사용자 단위로 다룬다 — 못 찾은 것을 px 로 넘기면 가짜 위반이 된다.
 
-- [ ] `S3` 판정 — `Axis` 에 `stroke` 를 더하고 `color.ts` 가 단위별로 가른다
+- [x] `S3` 판정 — `Axis` 에 `stroke` 를 더하고 `color.ts` 가 단위별로 가른다
       완료 기준: 사용자 단위 자리는 `판정 불가` + 사유에 viewBox 가 적히고, px 자리는
       기존 `stroke` 판정(`--stroke*` 대조)을 그대로 탄다. `bun run tokens:verify` 가
       `stroke / 판정 불가 50` 을 내고 **위반·드리프트 증분 0**.
 
-- [ ] `S4` 자가검사 — `svgStroke.faults` 와 고장 픽스처
+- [x] `S4` 자가검사 — `svgStroke.faults` 와 고장 픽스처
       완료 기준: 고장 둘이 각자 다른 `(판정, 사유, 인식 경로)` 로 걸린다. ① px 자리
       (viewBox 없는 SVG)의 토큰 밖 굵기 → `위반 / stroke 축 / svg-stroke`,
       ② 사용자 단위 자리가 **인식은 되는지** — 인식기가 죽으면 판정이 0 건이 되고
       래칫은 그것을 「줄었다」로 읽는다. `bun run tokens:verify` 의 자가검사 줄이
       고장 12종·사유 12가지로 늘어난다.
 
-- [ ] `S5` 불변 증명 + 기준선 갱신 — **같은 커밋에서**
+- [x] `S5` 불변 증명 + 기준선 갱신 — **같은 커밋에서**
       완료 기준: `bun run tokens:invariant -- --before <기준 커밋 스냅샷> --self-test` 가
       옛 히트 증분 0 · 새·옛 인식 경로 겹침 0 · 겹침 가드 자가검사 통과로 끝난다.
       `--update-baseline` 으로 갱신한 `scripts/tokens-baseline.json` 이 같은 커밋에 든다
@@ -181,3 +181,13 @@ git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan076-be
 - 2026-08-30T13:10 · s:c6a8fb52 — `전략` 섹션 교체
 - 2026-08-30T13:11 · s:c6a8fb52 — `실행 계획` 섹션 교체
 - 2026-08-30T13:11 · s:c6a8fb52 — `검증` 섹션 교체
+- 2026-08-30T13:17 · s:c6a8fb52 · S1 doing — 착수
+- 2026-08-30T13:17 · s:c6a8fb52 · S1 done — 실측 고정 — 스캔 범위 안 50자리(svg속성 39·CSS선언 5·JSX표현식 4·style객체 2), viewBox 없는 SVG 0개, 정적 배율 1인 자리 0개, 범위 밖 .ts 35건. 좌표계 못 찾는 자리 4 = VizNote.tsx:47(객체가 svg 위에 선언) · PosterHero.tsx:124(<Canvas>가 svg를 그린다) · viz.css 2(CSS 파일이라 svg 태그가 없다). 별도 survey 스크립트를 레포에 안 남긴다 — viewBox 판별이 두 벌이 되어 인식기와 갈린다. 재현은 S2 이후 tokens:verify --json 의 src=svg-stroke 로 한다
+- 2026-08-30T13:19 · s:c6a8fb52 · S2 doing — 착수
+- 2026-08-30T13:24 · s:c6a8fb52 · S2 done — 다섯째 인식기 recognize/svgStroke.ts (src=svg-stroke). 네 형태 전부 인식 — 50자리 → 히트 51(GraphExplorer:1265 의 {1 + 2.4 * l.strength} 가 리터럴 둘). 좌표계 판별 규칙 넷(감싸는 svg 없음 → 사용자 단위 / viewBox 없음 → CSS px / viewBox 치수 == 고정 width·height → CSS px 배율1 / 그 외 → 사용자 단위). AXIS 표·옛 정규식 무수정, classify() 도 무수정(맨 숫자 pxify 승격으로 필터를 안 만난다). 실측 정정: 카드가 적은 '정적 배율 1인 자리 0개' 가 틀렸다 — Doodle.astro:373(34x26)·391(28x28) 두 SVG 가 width/height 를 viewBox 치수 그대로 박아 진짜 1:1 이고 CSS 재조정도 없다
+- 2026-08-30T13:24 · s:c6a8fb52 · S3 doing — 착수
+- 2026-08-30T13:25 · s:c6a8fb52 · S3 done — color.ts 가 stroke 축을 받고 단위를 드리프트 검사보다 먼저 본다. 결과: stroke / 판정 불가 49 · 위반 2 (Doodle.astro:373·391 의 stroke-width=3.2 — 배율 1 이라 진짜 3.2 CSS px 이고 3단 1/1.5/2px 밖). 순서가 규칙인 근거를 실측으로 확인: PosterHero:124 strokeWidth:2 와 GraphExplorer:1308 {2} 는 --stroke-bold(2px) 와 값이 같아 순서를 뒤집으면 드리프트로 잡히는데 화면에서는 각각 4px·유동이다
+- 2026-08-30T13:25 · s:c6a8fb52 · S4 doing — 착수
+- 2026-08-30T13:26 · s:c6a8fb52 · S4 done — 고장 픽스처 svg-stroke.astro (고장 둘: viewBox 없는 SVG 의 7 → 위반 / viewBox 있는 SVG 의 9 → 판정 불가). 자가검사 10종·10사유 → 12종·12사유. 죽여서 확인 3회: ①scan 을 빈 배열로 → 고장 둘 다 빨개짐 ②좌표계 미상을 css-px 로 뒤집음 → 사용자 단위 고장만 빨개짐(순서 규칙이 실제로 무는 것을 확인) ③RECOGNIZERS 에서 제거 → 빨개지지 않고 고장 수만 12→10 으로 줄었다. ③은 인식기가 자기 고장을 소유하는 구조의 성질이라 다섯 인식기 모두에 해당한다(이 카드가 만든 것이 아니다) — 검토 판단 항목으로 올린다
+- 2026-08-30T13:26 · s:c6a8fb52 · S5 doing — 착수
+- 2026-08-30T13:27 · s:c6a8fb52 · S5 done — tokens:invariant --before <착수 직전 스냅샷> --self-test 통과 — ①옛 판정 4790건이 열 필드 키로 그대로 ②새 판정 51건과 옛 히트의 (file,line,value) 교집합 0 ③겹침 가드 자가검사 통과. 기준선 갱신: 위반 0→2 · 판정 불가 1083→1130(+47, svg-user 49 중 viz.css 2 는 제외분) · 준수 3639 불변. build 통과 · git diff --stat -- src/ 빈 출력

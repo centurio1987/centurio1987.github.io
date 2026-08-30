@@ -37,7 +37,30 @@ export interface TokenDict {
  * (여백 / 치수 / 위치 — `DESIGN_CONCEPT.md` §9 는 여백 규칙이지 치수·좌표 규칙이 아니다),
  * 여기서는 원본 축 이름을 유지한다. 재분류는 `docrule` 모듈이 `spacingGroup` 으로 낸다.
  */
-export type Axis = "color" | "spacing" | "radius" | "shadow" | "font" | "zindex" | "motion" | "other";
+export type Axis =
+  | "color" | "spacing" | "radius" | "shadow" | "font" | "zindex" | "motion" | "other"
+  /**
+   * **`stroke` 는 새 인식층만 낸다** (KAN-076). 옛 경로가 이 축을 내려면 `propAxis.AXIS` 에
+   * `stroke-width` 가 있어야 하는데 거기 없고, 보태지 않는 것이 그 파일의 명시적 제약이다
+   * (보태면 값을 줍는 것이 새 인식기가 아니라 기존 `DECL`/`ATTR` 이라 옛 집합이 움직인다).
+   * 그래서 이 값이 붙어도 감사 원자료 3,539 히트와의 대조는 안 깨진다 —
+   * `bun run tokens:invariant` 가 그것을 증명한다.
+   */
+  | "stroke";
+
+/**
+ * 길이 값 하나가 사는 좌표계 (KAN-076).
+ *
+ * `why` 가 필수인 이유는 이것이 **사람에게 보이는 판정 사유의 일부**이기 때문이다.
+ * 「판정 불가」라고만 하면 게이트가 무엇을 못 봤는지 알 수 없고, 다음 사람이 그 자리를
+ * 「게이트가 놓친 부채」로 다시 파헤친다. viewBox 원문을 함께 실어 그 왕복을 없앤다.
+ */
+export interface CoordUnit {
+  /** `css-px` = 1 단위가 1 CSS px · `svg-user` = SVG 사용자 단위(배율은 호출자가 정한다). */
+  unit: "css-px" | "svg-user";
+  /** 왜 그렇게 봤는지 한 줄. 판정 사유에 그대로 실린다. */
+  why: string;
+}
 
 /** 추출된 히트 하나. 판정 전 상태다. */
 export interface Hit {
@@ -57,6 +80,20 @@ export interface Hit {
    * grep 으로 못 찾는 값을 가리킨다. 출력에서 `13(→13px)` 로 병기하는 데 쓴다.
    */
   rawValue?: string;
+  /**
+   * **이 자리의 길이 1 이 무엇인가** — `svgStroke` 인식기만 채운다 (KAN-076).
+   *
+   * `--stroke-hair/--stroke/--stroke-bold` 3단은 **CSS px 자**인데(`DESIGN_CONCEPT.md` §8)
+   * SVG 좌표계 안의 `stroke-width` 는 **사용자 단위**다. 그리고 그 배율은 **호출자가 정한다** —
+   * `<Mascot size={40}/>` 면 0.238 이고 같은 `Doodle` 한 줄이 `/design/deco` 에서는 1.0,
+   * `HeroCollage` 에서는 0.581 이다. **같은 소스 한 줄이 지면마다 다른 px 로 그려지므로**
+   * 정적 게이트가 px 를 알아낼 방법이 없다.
+   *
+   * 그래서 이 값을 **판정보다 먼저** 본다. 단위가 안 맞는 자를 들이대면 81 자리가 통째로
+   * 가짜 위반이 되고, 고칠 길이 없는 위반은 예외로 덮이거나 우회당한다.
+   * 판정에 쓰는 입력이므로 `prop` 문자열에 숨기지 않고 필드로 싣는다(`rawValue` 와 같은 이유).
+   */
+  coord?: CoordUnit;
   /** `token` 이면 쓴 토큰. `literal_dup` 이면 값이 같은 토큰들. */
   token: string | string[] | null;
   /** 값은 같은데 축이 다른 토큰들 — 우연한 일치라 드리프트가 아니다. */
@@ -76,10 +113,15 @@ export interface Hit {
    *
    * `ml-decl` 은 KAN-075 가 연 넷째 갈래다 — **줄바꿈을 넘는 CSS 선언**.
    * 옛 `DECL` 을 고치지 않고 별도 패스로 열었기 때문에 여기서도 옛 집합은 안 움직인다.
+   *
+   * `svg-stroke` 는 KAN-076 이 연 다섯째 갈래다 — **`stroke-width` 계열**. 여기는 앞의
+   * 넷과 다른 점이 하나 있다: 갈래를 가르는 것이 자리도 리터럴 종류도 아니라 **속성 하나**다.
+   * 그 속성이 `AXIS` 표에 없어서 네 형태(svg 속성 · CSS 선언 · JSX 표현식 · style 객체)가
+   * 통째로 판정 밖이었고, 표에 보태는 대신 인식기를 세운 이유는 위 `Axis` 의 `stroke` 주석에 있다.
    */
   src: "css-decl" | "jsx-attr" | "style-obj"
      | "style-num" | "expr-literal" | "attr-css"
-     | "ml-decl";
+     | "ml-decl" | "svg-stroke";
   /**
    * 게이트 대상에서 빠지는 히트에는 사유가 붙는다(생성물·패키지 복제물 등).
    * **빼는 것이 아니라 표시만 한다** — 감사 원자료와 히트 단위로 대조하려면
