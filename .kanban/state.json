@@ -1179,7 +1179,16 @@
       "goal": "스케일되는 SVG 와 안 되는 SVG 를 갈라 판정하고 그 갈림선이 코드와 문서에 적힌다",
       "goal_hash": "34aadf880b33f5cf761c04b94df1bcbcdc9ab32e",
       "memo": "KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 6절 12항. 실측 81건(속성 표기 72 · JSX 3 · 인라인 3 · CSS 3, 전부 생성물 밖). 갈림선은 viewBox 유무다 — src/components/deco/Doodle.astro:437 의 stroke-width=9 는 86x74 viewBox 사용자 단위라 화면 px 로는 1~2px 이고 값 분포가 9·8·10·3.6·3.4 로 스케일이 아니라 손그림 굵기의 연속 스펙트럼이다. 반대로 src/components/graph/GraphExplorer.tsx:1308 의 strokeWidth={2} 는 안 스케일되는 인라인 SVG 라 1단위=1px 이고 --stroke-bold 와 값이 같다",
-      "memo_hash": "93378994c2ca2df7f3369a775ee3d9abb4c97f0d"
+      "memo_hash": "93378994c2ca2df7f3369a775ee3d9abb4c97f0d",
+      "scope": [
+        "scripts/lib/tokens/**",
+        "scripts/verify-tokens.ts",
+        "scripts/check-recognize-invariant.ts",
+        "scripts/fixtures/tokens/**",
+        "scripts/tokens-baseline.json",
+        "design-concept/UI_CONSISTENCY_AUDIT.md",
+        "design-concept/DESIGN_CONCEPT.md"
+      ]
     },
     "KAN-077-RA2SYG": {
       "col": "backlog",
