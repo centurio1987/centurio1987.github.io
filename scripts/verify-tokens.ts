@@ -43,7 +43,7 @@ import { color } from "./lib/tokens/color.ts";
 import { fallback } from "./lib/tokens/fallback.ts";
 import { docrule } from "./lib/tokens/docrule.ts";
 import { EXCEPTIONS, validateExceptions } from "./lib/tokens/exceptions.ts";
-import { selfTest } from "./lib/tokens/selftest.ts";
+import { FAULT_COUNT, selfTest } from "./lib/tokens/selftest.ts";
 import { BASELINE_PATH, auditBasis, ratchet, readBaseline, tally, writeBaseline } from "./lib/tokens/baseline.ts";
 import type { AxisModule, ScanContext } from "./lib/tokens/types.ts";
 
@@ -94,7 +94,7 @@ const inScope = hits.length - excluded;
 
 // ── 래칫 — 제외분을 뺀 것만 센다. 생성물의 리터럴을 사람이 고칠 수는 없다.
 const scored = verdicts.filter((v) => !v.hit.excluded);
-const now = tally(scored, files.length);
+const now = tally(scored, files.length, FAULT_COUNT);
 if (UPDATE_BASELINE) {
   writeBaseline(ROOT, now);
   console.log(`기준선을 갱신했다 — ${BASELINE_PATH}`);

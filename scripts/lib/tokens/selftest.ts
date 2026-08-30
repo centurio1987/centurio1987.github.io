@@ -56,6 +56,21 @@ const BASE_CASES: FaultCase[] = [
 /** 옛 여섯 + 인식기들이 낸 것. 인식기가 비어 있으면(스텁) 여섯 그대로다. */
 const CASES: FaultCase[] = [...BASE_CASES, ...RECOGNIZERS.flatMap((r) => r.faults)];
 
+/**
+ * **고장이 몇 종인가** — 기준선이 이 수를 들고 래칫이 문다 (KAN-076, 검토 항목 4 승인).
+ *
+ * 왜 필요한가. 이 파일의 ②·③ 은 **등록된 고장들이 잡히는지**만 본다. 그런데 고장은
+ * 인식기가 소유하므로(`RECOGNIZERS.flatMap`) **인식기를 배열에서 빼면 그 인식기의 고장도
+ * 함께 사라진다.** 실측: `svgStroke` 를 빼면 게이트가 빨개지지 않고 고장 수만 12 → 10 으로
+ * 줄어든 채 **통과한다.** 자가검사가 자기 축소를 못 보는 이 자리가 곧 이 게이트가 막으려던
+ * 실패 그 자체다 — 죽은 게이트와 다 갚은 게이트가 화면에서 같은 모양이 된다.
+ *
+ * 그래서 수를 기준선에 박고 **줄면 실패**시킨다. 늘리는 것은 자유이고(`--update-baseline`),
+ * 줄이는 것만 명시적 행위로 만든다. `--no-self-test` 로 돌 때도 이 값은 유효하다 —
+ * 검사를 **돌린 결과**가 아니라 등록된 고장의 **개수**라 실행과 무관하다.
+ */
+export const FAULT_COUNT = CASES.length;
+
 /** 유일성 키 — 같은 사유라도 인식 경로가 다르면 다른 검사다(위 머리주석). */
 const keyOf = (c: { verdict: Verdict["verdict"]; want: string; src: Hit["src"] }) =>
   `${c.verdict} / ${c.want} / ${c.src}`;

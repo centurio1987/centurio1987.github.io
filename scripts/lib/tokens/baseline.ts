@@ -46,6 +46,15 @@ export interface Baseline {
    * 지금 실행에서 뽑아 `파일:줄` 로 지목할 수 있다.
    */
   files: Record<string, number>;
+  /**
+   * **등록된 자가검사 고장 종수.** 줄면 실패한다 (KAN-076).
+   *
+   * 판정 수를 세는 나머지 필드와 성질이 다르다 — 이건 **게이트 자신의 크기**다.
+   * 고장은 인식기가 소유하므로 인식기를 하나 빼면 그 고장도 함께 사라지고, 그러면
+   * 자가검사는 「덜 검사하면서 통과」한다. 옛 기준선(이 필드가 없는 것)은 검사를
+   * 건너뛴다 — 없는 값을 0 으로 읽으면 첫 실행이 무조건 통과해 도입이 무의미해진다.
+   */
+  selfTestFaults?: number;
 }
 
 /** 판정 축 — `Hit.axis` 가 아니라 사유에서 되뽑는다(색 축이 stroke·잡음으로 갈리기 때문). */
@@ -81,7 +90,7 @@ export function auditBasis(classifyVerdicts: Verdict[]): Record<string, number> 
   return Object.fromEntries(Object.entries(t).sort(([a], [b]) => (a < b ? -1 : 1)));
 }
 
-export function tally(verdicts: Verdict[], srcFiles: number): Baseline {
+export function tally(verdicts: Verdict[], srcFiles: number, selfTestFaults: number): Baseline {
   const counts: Record<string, number> = {};
   const totals: Record<string, number> = {};
   const files: Record<string, number> = {};
@@ -93,7 +102,8 @@ export function tally(verdicts: Verdict[], srcFiles: number): Baseline {
   }
   const sort = (o: Record<string, number>) =>
     Object.fromEntries(Object.entries(o).sort(([a], [b]) => (a < b ? -1 : 1)));
-  return { generator: GENERATOR, srcFiles, counts: sort(counts), totals: sort(totals), files: sort(files) };
+  return { generator: GENERATOR, srcFiles, counts: sort(counts), totals: sort(totals),
+           files: sort(files), selfTestFaults };
 }
 
 export const readBaseline = (root: string): Baseline | null => {
@@ -153,6 +163,13 @@ export function ratchet(
     notes.push(`${down}칸이 줄었다 — \`--update-baseline\` 으로 기준선을 내려 굳혀라(안 내리면 되돌아가도 안 잡힌다).`);
   }
   if (!failures.length && !down) notes.push("기준선과 같다.");
+  // 게이트 자신이 작아졌는가 — 판정 수와 달리 **줄면 그 자체가 실패**다(위 `selfTestFaults`).
+  if (typeof base.selfTestFaults === "number" && now.selfTestFaults < base.selfTestFaults) {
+    failures.push(
+      `자가검사 고장이 ${base.selfTestFaults} → ${now.selfTestFaults} 종으로 줄었다 — ` +
+      `인식기가 배열에서 빠졌거나 고장이 지워졌다. 게이트가 덜 검사하면서 통과하는 자리다.`,
+    );
+  }
   if (base.srcFiles !== now.srcFiles) {
     notes.push(`스캔 파일 수가 ${base.srcFiles} → ${now.srcFiles} 로 바뀌었다 — 범위가 달라졌는지 확인해라.`);
   }
