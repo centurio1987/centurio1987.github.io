@@ -1,6 +1,6 @@
 {
   "next_id": 78,
-  "next_seq": 330,
+  "next_seq": 331,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1162,7 +1162,7 @@
       ]
     },
     "KAN-076-X1C8PY": {
-      "col": "doing",
+      "col": "review",
       "title": "게이트 인식층 — 선 굵기 81건에 viewBox 를 아는 판정 규칙을 세운다",
       "verbatim": "",
       "생성": "ai",
@@ -1294,6 +1294,16 @@
     "KAN-076-X1C8PY"
   ],
   "recent": [
+    {
+      "seq": 330,
+      "t": "2026-08-30T13:32",
+      "a": "ai",
+      "id": "KAN-076-X1C8PY",
+      "op": "move",
+      "w": "G8E4E9",
+      "from": "doing",
+      "to": "review"
+    },
     {
       "seq": 329,
       "t": "2026-08-30T13:16",
@@ -1857,23 +1867,6 @@
       "reason": "감사의 간격 축 정의에 width·height·top·left 가 섞여 있는데 9절은 여백 규칙이지 치수나 좌표 규칙이 아니다",
       "goal": "치수·위치가 위반 목록에서 빠지고 감사 문서 3-5절 수치가 새 축 정의로 고쳐진다",
       "memo": "코드 변경 0 — 판정 규칙만 바꾼다. 위치 축 상위 파일이 전부 데코 실측 좌표(deco.astro 26 · PhotoFrame 23)라 스냅을 돌리면 조용히 깨진다. 정확한 수는 판정기 이식 뒤 확정(검토자 572·내 재계산 574로 갈린다)"
-    },
-    {
-      "seq": 283,
-      "t": "2026-08-25T00:11",
-      "a": "ai",
-      "id": "KAN-072.2-BF75X5",
-      "op": "create",
-      "w": "WTCH92",
-      "col": "backlog",
-      "title": "토큰 체계 보강 — 종이 흰색 · 선 굵기 2단 · radius · 상태색 · 간격/글자 스케일 토큰",
-      "verbatim": "",
-      "parent": "KAN-072-CPJCT1",
-      "short": "토큰 체계 보강",
-      "purpose": "다음 치환이 딛고 설 토큰을 먼저 세운다",
-      "reason": "옮길 자리가 없어서 못 옮기는 것이 위반의 다수다 — 종이 흰색 100건은 맡을 토큰이 아예 없고 상태색도 없다",
-      "goal": "tokens.css 만 보고도 게이트가 전 축을 판정할 수 있다 — 문서를 파싱하지 않는다",
-      "memo": "신설: 종이흰색 · --stroke-hair 1px(2단) · --state-bad/ok/warn/info(초기값=현 카테고리 색, 화면 변화 0) · --space-* · --text-*. DESIGN_CONCEPT 8절에 선굵기와 50% 허용값을 적는다"
     }
   ],
   "waivers": [

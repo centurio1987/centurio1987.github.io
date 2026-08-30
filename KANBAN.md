@@ -62,6 +62,8 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+
+## 검토
 - `KAN-076-X1C8PY` 게이트 인식층 — 선 굵기 81건에 viewBox 를 아는 판정 규칙을 세운다 — 생성:ai · 최종:ai · 갱신:2026-08-30
   - 짧은 제목: 선 굵기 판정 규칙
   - 목적: stroke-width 계열 81건을 단위가 맞는 자로 재게 한다
@@ -70,8 +72,7 @@
   - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 6절 12항. 실측 81건(속성 표기 72 · JSX 3 · 인라인 3 · CSS 3, 전부 생성물 밖). 갈림선은 viewBox 유무다 — src/components/deco/Doodle.astro:437 의 stroke-width=9 는 86x74 viewBox 사용자 단위라 화면 px 로는 1~2px 이고 값 분포가 9·8·10·3.6·3.4 로 스케일이 아니라 손그림 굵기의 연속 스펙트럼이다. 반대로 src/components/graph/GraphExplorer.tsx:1308 의 strokeWidth={2} 는 안 스케일되는 인라인 SVG 라 1단위=1px 이고 --stroke-bold 와 값이 같다
   - 실행 문서: KANBAN.cards/KAN-076-X1C8PY.md (7/7 · 최근 08-30)
   - 계획 리포트: KANBAN.reports/KAN-076-X1C8PY.report.html (낡음)
-
-## 검토
+  - 검토 문서: KANBAN.reviews/KAN-076-X1C8PY.review.md (승인 0/4 · 검토 대기)
 
 ## 완료
 - `KAN-062` 발행된 글 14편의 본문 이모지 83건을 두들 마크로 갈아 끼운다 — 생성:ai · 최종:ai · 갱신:2026-08-04
