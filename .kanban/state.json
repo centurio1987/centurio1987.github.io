@@ -1,6 +1,6 @@
 {
   "next_id": 78,
-  "next_seq": 335,
+  "next_seq": 336,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1192,7 +1192,7 @@
       ]
     },
     "KAN-077-RA2SYG": {
-      "col": "review",
+      "col": "doing",
       "title": "게이트 회피 경로를 막는다 — 상수로 끌어올린 리터럴 15건을 판정에 넣는다",
       "verbatim": "",
       "생성": "ai",
@@ -1310,6 +1310,16 @@
     "KAN-077-RA2SYG"
   ],
   "recent": [
+    {
+      "seq": 335,
+      "t": "2026-08-30T21:06",
+      "a": "ai",
+      "id": "KAN-077-RA2SYG",
+      "op": "move",
+      "w": "JJMGQR",
+      "from": "review",
+      "to": "doing"
+    },
     {
       "seq": 334,
       "t": "2026-08-30T15:51",
@@ -1845,16 +1855,6 @@
       "w": "WTCH92",
       "with_": "KAN-072-CPJCT1",
       "reason": "scripts/tokens-baseline.json 은 커밋된 결정론적 생성물이고 갱신은 tokens:verify --update-baseline 하나가 한다 — src/styles/motion.css 와 같은 모양이다. KAN-070 이 파일을 만들고 KAN-072 가 부채를 갚으며 카운트를 줄인다. 스코프를 비틀어 겹침을 없애면 KAN-070 의 CI 활성화가 KAN-072.1 완료에 묶여 병렬이 그 자리에서 깨진다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹친다 (KAN-070 scope 에 축 모듈 scripts/lib/tokens/** 를 더해 재기록)"
-    },
-    {
-      "seq": 288,
-      "t": "2026-08-25T00:18",
-      "a": "유저",
-      "id": "KAN-070-DRF0QF",
-      "op": "waive",
-      "w": "WTCH92",
-      "with_": "KAN-072-CPJCT1",
-      "reason": "scripts/tokens-baseline.json 은 커밋된 결정론적 생성물이고 갱신은 tokens:verify --update-baseline 하나가 한다 — src/styles/motion.css 와 같은 모양이다. KAN-070 이 파일을 만들고 KAN-072 가 부채를 갚으며 카운트를 줄인다. 스코프를 비틀어 겹침을 없애면 KAN-070 의 CI 활성화가 KAN-072.1 완료에 묶여 병렬이 그 자리에서 깨진다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹친다"
     }
   ],
   "waivers": [

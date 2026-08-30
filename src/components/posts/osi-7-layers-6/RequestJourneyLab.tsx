@@ -27,10 +27,12 @@ const ACCENT_INK = "var(--ink-accent, #9a5b2c)";
 // 숨어 인라인으로 되돌려야 했다). KAN-077 이 여섯째 인식기로 그 자리를 막았으므로
 // (`scripts/lib/tokens/recognize/constRef.ts`) **이제는 숨지 않는다** — 여기 셋이 그 게이트가
 // 처음 문 15건이고, 상수로 묶는 것 자체는 문제가 아니다.
-// 값의 근거 — SAND·MUTED 는 토큰과 **값이 정확히 같아** 화면 변화 0 이고,
+// 값의 근거 — SAND·MUTED 는 **자기 뜻의 토큰**(--state-plain·--state-inactive)을 가리키고
+// 값이 안 바뀌어 화면 변화 0 이다. 값이 같다는 이유로 --field-dst·--fate-blocked-border 에
+// 묶지 않은 것이 KAN-077 검토 1항의 판정이다 — 값은 본질이 아니고 의미로 나눈다.
 // TEAL_TINT 는 이 시리즈가 이미 일곱 자리에서 쓰는 활성 틴트 관용구(--cat-skills 11%)로 모았다.
 const TEAL_TINT = "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))";
-const MUTED = "var(--fate-blocked-border, #b8b0a0)";
+const MUTED = "var(--state-inactive, #b8b0a0)";
 
 type Stage = {
   layer: string;

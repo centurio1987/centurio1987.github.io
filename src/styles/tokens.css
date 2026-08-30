@@ -99,7 +99,7 @@
   --tony-buddy-belly: #8cc2a0; /* 동행 배 (1) */
   --tony-buddy-mark: #2f5740;  /* 동행 무늬 선 (1) */
 
-  /* 구분 팔레트 18종 — 글 안 시뮬이 「항목을 서로 가르는」 색표
+  /* 구분 팔레트 20종 — 글 안 시뮬이 「항목을 서로 가르는」 색표
      (KAN-072 배치7, 유저 판정 2026-08-27)
 
      **UI 팔레트와 독립이다.** 위 `--tony-*` 와 논리가 같다 — 고유 팔레트라 UI 토큰은 아니지만
@@ -140,6 +140,19 @@
   --fate-blocked-bg: #eae6df;     /* 차단됨(침묵) */
   --fate-blocked-fg: #5f5a51;
   --fate-blocked-border: #b8b0a0;
+
+  /* 시뮬 조작 상태 — OSI 7계층 EP3~EP6 의 시뮬 여섯(HopJourney·RoutingTableLab·HandshakeLab·
+     SlidingWindowLab·EncodingLab·TlsHandshakeLab·DnsResolveLab·RequestJourneyLab)
+
+     **값이 위 둘과 겹치지만 이름을 따로 세운다** — `--state-plain` 은 `--field-dst`(목적지 MAC)와,
+     `--state-inactive` 는 `--fate-blocked-border`(차단됨)와 값이 같다. 그래도 묶지 않는 이유는
+     KAN-077 검토 1항의 판정이다: **값은 본질이 아니고 의미로 나눈다.** 묶으면 한 이름이 두 뜻을
+     지고, 나중에 프레임 필드 색표나 VPN 상태 색표를 다시 고를 때 OSI 시뮬이 함께 움직인다 —
+     그것을 막는 장치가 없다. 반대로 이름을 나누면 그때 **어느 쪽을 고칠지 고를 수 있다.**
+     (KAN-072 가 `--state-*` 를 안 세운 근거는 「같은 값에 이름이 둘이 된다」였는데, 그 카드는
+     값이 같으면 곧 역할도 같은 자리만 봤다. 여기는 역할이 갈리는 자리다.) */
+  --state-plain: #e8c97a;       /* 평문 · 캐시 미스 — 보호됨/적중은 --cat-skills */
+  --state-inactive: #b8b0a0;    /* 비활성 · 조작 불가 */
 
   /* 형태 */
   /* 선 굵기는 3단이다 (DESIGN_CONCEPT.md §8). 실측 지배값 순서가 `1px` 205 → `2px` 23 →

@@ -20,8 +20,8 @@ const TEAL = "var(--cat-skills, #3e6b6b)";
 const DANGER = "var(--danger, #c0392b)";
 // 평문/비캐시 상태 테두리. **상수에는 리터럴이 아니라 토큰 참조를 담는다** —
 // 리터럴을 const 로 올리면 게이트 시야를 벗어나던 자리이고, KAN-077 이 그것을 막았다
-// (`scripts/lib/tokens/recognize/constRef.ts`). --field-dst 와 값이 정확히 같다.
-const SAND = "var(--field-dst, #e8c97a)";
+// (`scripts/lib/tokens/recognize/constRef.ts`). --field-dst(2화 목적지 MAC 칸)와 값은 같지만 뜻이 달라 이름을 따로 세웠다.
+const SAND = "var(--state-plain, #e8c97a)";
 
 const TABLE: Route[] = [
   { cidr: "0.0.0.0/0", via: "via 203.0.113.1 (기본 경로)", dev: "eth0" },

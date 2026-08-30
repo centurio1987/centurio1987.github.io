@@ -16,8 +16,8 @@ const TEAL = "var(--cat-skills, #3e6b6b)";
 const ACCENT_INK = "var(--ink-accent, #9a5b2c)";
 // 평문/비캐시 상태 테두리. **상수에는 리터럴이 아니라 토큰 참조를 담는다** —
 // 리터럴을 const 로 올리면 게이트 시야를 벗어나던 자리이고, KAN-077 이 그것을 막았다
-// (`scripts/lib/tokens/recognize/constRef.ts`). --field-dst 와 값이 정확히 같다.
-const SAND = "var(--field-dst, #e8c97a)";
+// (`scripts/lib/tokens/recognize/constRef.ts`). --field-dst(2화 목적지 MAC 칸)와 값은 같지만 뜻이 달라 이름을 따로 세웠다.
+const SAND = "var(--state-plain, #e8c97a)";
 /** L3 헤더 패널 배경 — 같은 요소의 테두리가 TEAL(--cat-skills)이라 그 옅은 단으로 푼다.
     토큰을 안 늘리고 관계만 드러낸다(KAN-072 배치7 · 배치6 의 CriCallTrace 와 같은 논리).
     #eef5f3 대비 ΔRGB 5.9(8비트로 반올림해 잰 값) · 6.5(브라우저가 실제로 그리는 float
@@ -213,7 +213,7 @@ export default function HopJourney() {
             border: `var(--stroke-hair) solid ${BORDER}`,
             borderRadius: "var(--radius-sm)",
             background: PANEL,
-            color: step === 0 ? "var(--fate-blocked-border)" : INK,
+            color: step === 0 ? "var(--state-inactive, #b8b0a0)" : INK,
             cursor: step === 0 ? "not-allowed" : "pointer",
           }}
         >
