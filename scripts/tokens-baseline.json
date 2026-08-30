@@ -12,18 +12,15 @@
     "shadow / 판정 불가": 150,
     "spacing / 준수": 1346,
     "spacing / 판정 불가": 498,
-    "stroke / 위반": 2,
+    "stroke / 정당한 예외": 2,
     "stroke / 판정 불가": 47,
     "zindex / 판정 불가": 17,
     "잡음 / 판정 불가": 174
   },
   "totals": {
-    "위반": 2,
-    "정당한 예외": 8,
+    "정당한 예외": 10,
     "준수": 3639,
     "판정 불가": 1130
   },
-  "files": {
-    "src/components/deco/Doodle.astro": 2
-  }
+  "files": {}
 }

@@ -68,7 +68,7 @@
   - 이유: 축 표에 속성 자체가 없어 형태를 불문하고 안 보이는데, 넣더라도 한 자로 재면 전부 가짜 위반이 된다
   - 목표: 스케일되는 SVG 와 안 되는 SVG 를 갈라 판정하고 그 갈림선이 코드와 문서에 적힌다
   - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 6절 12항. 실측 81건(속성 표기 72 · JSX 3 · 인라인 3 · CSS 3, 전부 생성물 밖). 갈림선은 viewBox 유무다 — src/components/deco/Doodle.astro:437 의 stroke-width=9 는 86x74 viewBox 사용자 단위라 화면 px 로는 1~2px 이고 값 분포가 9·8·10·3.6·3.4 로 스케일이 아니라 손그림 굵기의 연속 스펙트럼이다. 반대로 src/components/graph/GraphExplorer.tsx:1308 의 strokeWidth={2} 는 안 스케일되는 인라인 SVG 라 1단위=1px 이고 --stroke-bold 와 값이 같다
-  - 실행 문서: KANBAN.cards/KAN-076-X1C8PY.md (5/7 · 최근 08-30)
+  - 실행 문서: KANBAN.cards/KAN-076-X1C8PY.md (7/7 · 최근 08-30)
   - 계획 리포트: KANBAN.reports/KAN-076-X1C8PY.report.html (낡음)
 
 ## 검토

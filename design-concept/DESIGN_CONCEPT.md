@@ -390,6 +390,24 @@ import 한다.
 (`scripts/lib/tokens/exceptions.ts` 의 `site` — 파일 단위로 걸면 그 파일의 준수분까지 판정에서
 내려간다).
 
+**이 3단은 CSS px 자다 — SVG 좌표계 안의 `stroke-width` 는 이 자로 재지 않는다 (KAN-076).**
+SVG 안의 길이는 **사용자 단위**이고 화면 px 로 바꾸려면 배율이 필요한데, 그 배율을 **호출자가
+정한다**: `<Mascot size={40}/>` 면 0.238 이고, 같은 `Doodle` 한 줄이 `/design/deco` 에서는 1.0,
+`HeroCollage` 에서는 0.581 이다. **같은 소스 한 줄이 지면마다 다른 굵기로 그려지므로** 정적으로
+잴 수 있는 값이 아니고, 그래서 토큰 게이트는 그 자리를 위반이 아니라 **판정 불가**로 둔다
+(`scripts/lib/tokens/recognize/svgStroke.ts`). 손그림 모티프의 굵기는 애초에 UI 테두리가 아니라
+**그림의 일부**다 — 실측 값 분포가 1·1.3·1.4·1.6·1.8·2·2.1·2.2·2.4·2.6·3·3.2·3.4·3.6·4·7·8·9·10
+으로 눈금이 아니라 연속 스펙트럼이고, 여기에 3단을 들이대면 획이 통째로 얇아진다.
+
+**예외는 배율이 1 로 굳은 SVG 다.** `width`·`height` 를 `viewBox` 치수 그대로 박아 두면 1 사용자
+단위 = 1 CSS px 이라 3단이 그대로 적용되고, 게이트도 그때만 판정한다. 지금 그런 자리가 둘이고
+둘 다 크레용 두들이다 — `Doodle.astro` 의 속도선(34×26)과 별표(28×28)에 든 `stroke-width="3.2"`.
+**이 둘은 3단으로 접지 않는다**: 같은 `emphasis` 변종 안에서 나란히 서는 획이라 한쪽만 2px 로
+밀면 두 그림의 필압이 갈리고, 무엇보다 크레용 필터(`--deco-ink-fine`)를 통과한 뒤의 굵기라
+UI 테두리와 같은 자가 아니다. 토큰 게이트에는 **자리 단위 예외**로 둔다
+(`scripts/lib/tokens/exceptions.ts` 의 `site` — 파일 단위로 걸면 그 파일의 색 준수분까지
+판정에서 내려간다).
+
 버튼 2종:
 - **Filled**: `background: var(--accent)`, `color: var(--paper)`, Space Mono 13px
 - **Outlined**: `border: var(--stroke) solid var(--ink)`, `color: var(--ink)`, 호버 시 `--cream` 배경

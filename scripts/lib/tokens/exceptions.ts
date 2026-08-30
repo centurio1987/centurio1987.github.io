@@ -100,6 +100,16 @@ export const EXCEPTIONS: TokenException[] = [
     site: (h) => ["#8a7a56", "#efe3c6", "#4a3f26", "#7a7264"].includes(h.value),
   },
   {
+    id: "doodle-crayon-stroke",
+    kind: ["verdict"],
+    what: "Doodle.astro 의 강조 두들(속도선·별표) stroke-width 3.2",
+    why: "배율 1 로 굳은 SVG 라 판정에는 들어오지만 UI 테두리가 아니라 크레용 획이다 — 나란히 서는 두 그림의 필압이 갈리고, --deco-ink-fine 필터를 지난 뒤의 굵기라 3단과 같은 자가 아니다",
+    evidence: ["design-concept/DESIGN_CONCEPT.md:402"],
+    match: (f) => f === "src/components/deco/Doodle.astro",
+    // 자리 단위 — 이 파일의 나머지 49 자리(전부 사용자 단위)와 색 준수분은 그대로 판정한다.
+    site: (h) => h.axis === "stroke" && h.value === "3.2px",
+  },
+  {
     id: "apply-viz-generated",
     kind: ["scan"],
     what: "AUTO-GENERATED 헤더가 붙은 apply-viz 산출물",
