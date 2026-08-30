@@ -2,13 +2,11 @@
   "generator": "verify-tokens@1",
   "srcFiles": 152,
   "counts": {
-    "color / 드리프트": 10,
-    "color / 위반": 5,
     "color / 정당한 예외": 8,
     "color / 준수": 1106,
     "font / 준수": 610,
     "font / 판정 불가": 244,
-    "other / 준수": 254,
+    "other / 준수": 264,
     "radius / 준수": 295,
     "shadow / 준수": 28,
     "shadow / 판정 불가": 150,
@@ -20,21 +18,10 @@
     "잡음 / 판정 불가": 174
   },
   "totals": {
-    "드리프트": 10,
-    "위반": 5,
     "정당한 예외": 10,
-    "준수": 3639,
+    "준수": 3649,
     "판정 불가": 1130
   },
-  "files": {
-    "src/components/posts/osi-7-layers-3/HopJourney.tsx": 1,
-    "src/components/posts/osi-7-layers-3/RoutingTableLab.tsx": 1,
-    "src/components/posts/osi-7-layers-4/HandshakeLab.tsx": 3,
-    "src/components/posts/osi-7-layers-4/SlidingWindowLab.tsx": 1,
-    "src/components/posts/osi-7-layers-5/EncodingLab.tsx": 1,
-    "src/components/posts/osi-7-layers-5/TlsHandshakeLab.tsx": 3,
-    "src/components/posts/osi-7-layers-6/DnsResolveLab.tsx": 3,
-    "src/components/posts/osi-7-layers-6/RequestJourneyLab.tsx": 2
-  },
+  "files": {},
   "selfTestFaults": 14
 }

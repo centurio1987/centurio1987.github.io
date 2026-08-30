@@ -15,10 +15,17 @@ const ON_TEAL = "var(--surface-hi, #fffdf8)";
 const HAIR = "var(--stroke-hair, 1px)";
 const BOLD = "var(--stroke-bold, 2px)";
 const SEG_BG = "var(--surface, #F8F3E8)";
-// 토큰 밖 — 최근접 토큰과 ΔRGB 가 15 이상이라 옮기지 않았다(배치5 규약: 15 이상은 임의로 고르지 않는다).
-const SAND = "#e8c97a"; // 최근접 --pop-tint ΔRGB 50
-const TEAL_TINT = "#e5f0ed"; // 최근접 --paper ΔRGB 17
-const MUTED = "#b8b0a0"; // 최근접 --border ΔRGB 54
+// 상태 색 셋. **상수에는 리터럴이 아니라 토큰 참조를 담는다.**
+// 한때 이 셋은 리터럴이었고, 그것이 곧 게이트 회피 경로였다 — 값을 const 로 올리면 값 자리에
+// 남는 것이 식별자뿐이라 인식층이 통째로 못 봤다(KAN-072 S10 실측: 158→0 중 6건이 그렇게
+// 숨어 인라인으로 되돌려야 했다). KAN-077 이 여섯째 인식기로 그 자리를 막았으므로
+// (`scripts/lib/tokens/recognize/constRef.ts`) **이제는 숨지 않는다** — 여기 셋이 그 게이트가
+// 처음 문 15건이고, 상수로 묶는 것 자체는 문제가 아니다.
+// 값의 근거 — SAND·MUTED 는 토큰과 **값이 정확히 같아** 화면 변화 0 이고,
+// TEAL_TINT 는 이 시리즈가 이미 일곱 자리에서 쓰는 활성 틴트 관용구(--cat-skills 11%)로 모았다.
+const SAND = "var(--field-dst, #e8c97a)";
+const TEAL_TINT = "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))";
+const MUTED = "var(--fate-blocked-border, #b8b0a0)";
 
 type Step = {
   title: string;
