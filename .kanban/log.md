@@ -1,6 +1,7 @@
 # KANBAN 변경 이력
 > 최근 50건. 이보다 오래된 이력은 archive.jsonl 로 압축 보관한다.
 
+- #334 2026-08-30 15:51 · ai · KAN-077-RA2SYG 이동 진행 중 → 검토
 - #333 2026-08-30 15:13 · ai · KAN-077-RA2SYG 이동 할 일 → 진행 중
 - #332 2026-08-30 15:03 · ai · KAN-077-RA2SYG 이동 백로그 → 할 일
 - #331 2026-08-30 14:55 · ai · KAN-076-X1C8PY 이동 검토 → 완료
@@ -50,4 +51,3 @@
 - #290 2026-08-25 00:31 · ai · KAN-070-DRF0QF 이동 할 일 → 진행 중
 - #289 2026-08-25 00:24 · 유저 · KAN-070-DRF0QF 독립성 겹침 용인 (상대 KAN-072-CPJCT1) — scripts/tokens-baseline.json 은 커밋된 결정론적 생성물이고 갱신은 tokens:verify --update-baseline 하나가 한다 — src/styles/motion.css 와 같은 모양이다. KAN-070 이 파일을 만들고 KAN-072 가 부채를 갚으며 카운트를 줄인다. 스코프를 비틀어 겹침을 없애면 KAN-070 의 CI 활성화가 KAN-072.1 완료에 묶여 병렬이 그 자리에서 깨진다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹친다 (KAN-070 scope 에 축 모듈 scripts/lib/tokens/** 를 더해 재기록)
 - #288 2026-08-25 00:18 · 유저 · KAN-070-DRF0QF 독립성 겹침 용인 (상대 KAN-072-CPJCT1) — scripts/tokens-baseline.json 은 커밋된 결정론적 생성물이고 갱신은 tokens:verify --update-baseline 하나가 한다 — src/styles/motion.css 와 같은 모양이다. KAN-070 이 파일을 만들고 KAN-072 가 부채를 갚으며 카운트를 줄인다. 스코프를 비틀어 겹침을 없애면 KAN-070 의 CI 활성화가 KAN-072.1 완료에 묶여 병렬이 그 자리에서 깨진다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹친다
-- #287 2026-08-25 00:14 · ai · KAN-072.6-2YYK6V 생성 "제2 팔레트 정리 — 글 안 시뮬 389 · 마스코트 28 · 카탈로그/데코/viz 103" → 백로그 (상위 KAN-072-CPJCT1)
