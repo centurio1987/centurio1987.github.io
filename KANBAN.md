@@ -32,13 +32,6 @@
   - 메모: KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×).
 - `KAN-061` 홈 배경 모션 아일랜드(AmbientAurora/Waves)가 끌고 오는 JS ~130KB 재검토 — 생성:ai · 최종:ai · 갱신:2026-07-31
   - 메모: KAN-059 실측에서 드러난 별건. 홈(/)이 client.js 56KB + dist.js 67KB(= bbangto-ui-core 배럴) + react 등 ~130KB 를 High 로 받아 4.5초까지 회선·메인스레드를 문다. 받아오는 값은 "아주 옅은 배경 오로라 + 푸터 파도" 하나뿐이다. 이미 client:media 로 reduced-motion 사용자는 청크 로드 0 이고(코어 배럴은 tree-shake 가 안 돼 컴포넌트 1개=67KB gzip — 그래서 전역 Footer 에 안 올린 선례가 있다), 그 판단 자체는 유효하다. 재검토할 것: ① 같은 그림을 CSS 그라디언트/SVG 애니로 대체 가능한지(그러면 JS 0) ② 못 대체하면 client:visible 이나 로드 지연으로 첫 화면 회선 다툼에서 빼기 ③ 그대로 둘 근거를 남기기. 판단 근거는 KAN-059 처럼 실측으로 — 특히 이 JS 가 푸터 저자 라인업 이미지(Low)를 얼마나 뒤로 미는지.
-- `KAN-076-X1C8PY` 게이트 인식층 — 선 굵기 81건에 viewBox 를 아는 판정 규칙을 세운다 — 생성:ai · 최종:ai · 갱신:2026-08-28
-  - 짧은 제목: 선 굵기 판정 규칙
-  - 목적: stroke-width 계열 81건을 단위가 맞는 자로 재게 한다
-  - 이유: 축 표에 속성 자체가 없어 형태를 불문하고 안 보이는데, 넣더라도 한 자로 재면 전부 가짜 위반이 된다
-  - 목표: 스케일되는 SVG 와 안 되는 SVG 를 갈라 판정하고 그 갈림선이 코드와 문서에 적힌다
-  - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 6절 12항. 실측 81건(속성 표기 72 · JSX 3 · 인라인 3 · CSS 3, 전부 생성물 밖). 갈림선은 viewBox 유무다 — src/components/deco/Doodle.astro:437 의 stroke-width=9 는 86x74 viewBox 사용자 단위라 화면 px 로는 1~2px 이고 값 분포가 9·8·10·3.6·3.4 로 스케일이 아니라 손그림 굵기의 연속 스펙트럼이다. 반대로 src/components/graph/GraphExplorer.tsx:1308 의 strokeWidth={2} 는 안 스케일되는 인라인 SVG 라 1단위=1px 이고 --stroke-bold 와 값이 같다
-  - 실행 문서: KANBAN.cards/KAN-076-X1C8PY.md (0/7 · 최근 08-30)
 - `KAN-077-RA2SYG` 게이트 회피 경로를 막는다 — 상수로 끌어올린 리터럴 15건을 판정에 넣는다 — 생성:ai · 최종:ai · 갱신:2026-08-28
   - 짧은 제목: 상수 승격 리터럴
   - 목적: const 로 빼놓은 시각 값이 게이트 시야를 벗어나는 구멍을 막는다
@@ -69,6 +62,14 @@
   - 메모: draft: draft/inheritance-vs-composition-draft.md · 대부분 Composite 권장, 상속 고려 상황, Evolving 관점
 - `KAN-005` 모델링 철학 고려 사항 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: draft: draft/modeling-philosophy-draft.md · 속성 우연일치≠동일모델, 내러티브 중심. 모델 구분 기준 보강 필요
+- `KAN-076-X1C8PY` 게이트 인식층 — 선 굵기 81건에 viewBox 를 아는 판정 규칙을 세운다 — 생성:ai · 최종:ai · 갱신:2026-08-30
+  - 짧은 제목: 선 굵기 판정 규칙
+  - 목적: stroke-width 계열 81건을 단위가 맞는 자로 재게 한다
+  - 이유: 축 표에 속성 자체가 없어 형태를 불문하고 안 보이는데, 넣더라도 한 자로 재면 전부 가짜 위반이 된다
+  - 목표: 스케일되는 SVG 와 안 되는 SVG 를 갈라 판정하고 그 갈림선이 코드와 문서에 적힌다
+  - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 6절 12항. 실측 81건(속성 표기 72 · JSX 3 · 인라인 3 · CSS 3, 전부 생성물 밖). 갈림선은 viewBox 유무다 — src/components/deco/Doodle.astro:437 의 stroke-width=9 는 86x74 viewBox 사용자 단위라 화면 px 로는 1~2px 이고 값 분포가 9·8·10·3.6·3.4 로 스케일이 아니라 손그림 굵기의 연속 스펙트럼이다. 반대로 src/components/graph/GraphExplorer.tsx:1308 의 strokeWidth={2} 는 안 스케일되는 인라인 SVG 라 1단위=1px 이고 --stroke-bold 와 값이 같다
+  - 실행 문서: KANBAN.cards/KAN-076-X1C8PY.md (0/7 · 최근 08-30)
+  - 계획 리포트: KANBAN.reports/KAN-076-X1C8PY.report.html (낡음)
 
 ## 검토
 

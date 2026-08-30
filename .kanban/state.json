@@ -1,6 +1,6 @@
 {
   "next_id": 78,
-  "next_seq": 329,
+  "next_seq": 330,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1162,12 +1162,12 @@
       ]
     },
     "KAN-076-X1C8PY": {
-      "col": "backlog",
+      "col": "doing",
       "title": "게이트 인식층 — 선 굵기 81건에 viewBox 를 아는 판정 규칙을 세운다",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-28",
+      "갱신": "2026-08-30",
       "title_hash": "6f1022f6bfd29c9ad9440385a31f1ddf7faa7fb1",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "short": "선 굵기 판정 규칙",
@@ -1217,7 +1217,6 @@
     "KAN-032",
     "KAN-060",
     "KAN-061",
-    "KAN-076-X1C8PY",
     "KAN-077-RA2SYG",
     "KAN-048",
     "KAN-065",
@@ -1291,9 +1290,20 @@
     "KAN-071-6361MY",
     "KAN-073-CVD8X7",
     "KAN-074-MQ9KRB",
-    "KAN-075-7DF37H"
+    "KAN-075-7DF37H",
+    "KAN-076-X1C8PY"
   ],
   "recent": [
+    {
+      "seq": 329,
+      "t": "2026-08-30T13:16",
+      "a": "ai",
+      "id": "KAN-076-X1C8PY",
+      "op": "move",
+      "w": "G8E4E9",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 328,
       "t": "2026-08-30T03:10",
@@ -1864,23 +1874,6 @@
       "reason": "옮길 자리가 없어서 못 옮기는 것이 위반의 다수다 — 종이 흰색 100건은 맡을 토큰이 아예 없고 상태색도 없다",
       "goal": "tokens.css 만 보고도 게이트가 전 축을 판정할 수 있다 — 문서를 파싱하지 않는다",
       "memo": "신설: 종이흰색 · --stroke-hair 1px(2단) · --state-bad/ok/warn/info(초기값=현 카테고리 색, 화면 변화 0) · --space-* · --text-*. DESIGN_CONCEPT 8절에 선굵기와 50% 허용값을 적는다"
-    },
-    {
-      "seq": 282,
-      "t": "2026-08-25T00:11",
-      "a": "ai",
-      "id": "KAN-072.1-5XC1AT",
-      "op": "create",
-      "w": "WTCH92",
-      "col": "todo",
-      "title": "판단 없는 치환 — 드리프트 71 · 못 가르는 색 46 · fallback 23",
-      "verbatim": "",
-      "parent": "KAN-072-CPJCT1",
-      "short": "판단 없는 치환",
-      "purpose": "값이 이미 같거나 눈으로 못 가르는 자리를 토큰으로 되돌린다",
-      "reason": "무엇으로 바꿀지 물을 것이 없는 자리라 가장 먼저 닫히고, 토큰을 고쳐도 이 자리들만 안 따라온다",
-      "goal": "게이트의 드리프트 축과 fallback 축이 0 이 되고 화면은 안 바뀐다",
-      "memo": "감사 P0-1~P0-4. rgba 전개 3건은 color-mix 로(DECO_KIT.md:32). motifs/** 는 제외한다 — SVG presentation attribute 라 var() 가 무효값이 되고 값 동일이 뜻 동일이 아니라 C4 로 넘긴다"
     }
   ],
   "waivers": [
