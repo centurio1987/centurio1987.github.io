@@ -1,0 +1,21 @@
+{
+ "card": "KAN-078-D44PD1",
+ "front": {
+  "base": "f53fbed",
+  "branch": "KAN-078-D44PD1",
+  "card": "KAN-078-D44PD1",
+  "created": "2026-08-31",
+  "inherits": null,
+  "merged": null,
+  "status": "검토 대기",
+  "title": "render:compare 가 대조를 안 하고도 「전후 동일」이라고 답한다 — 거짓 통과를 막는다",
+  "worktree": "/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-078-D44PD1"
+ },
+ "inherited_md": "",
+ "md_fp": "e0dc06db070b11258d663e399c1b5faeb8506449",
+ "md_src_fp": "29731378099a5ad55f047f498f5032dd48fc68d5",
+ "schema": 1,
+ "target_md": "| 항목 | 값 |\n|---|---|\n| 브랜치 | `KAN-078-D44PD1` |\n| 워크트리 | `/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-078-D44PD1` |\n| 베이스 | `f53fbed` |\n| 변경 훑기 | `git diff f53fbed...HEAD` |\n\n**커밋 7건**\n\n```text\ne890a7b kanban: KAN-078-D44PD1 S3 완료 — 실측으로 결말 확인, 배치1 닫음\nfbf1f14 kanban: KAN-078-D44PD1 진행률 파생 줄 갱신 (work 2/3)\n5b223c9 docs: 결말 규약을 파일 머리주석과 CLAUDE.md 에 적는다 (KAN-078 S3)\n4c9aeb4 compare-render: 결말을 endOf()/finish() 하나로 모으고 거짓 통과 재현 자가검사를 붙인다 (KAN-078 S1·S2)\neaa95fc kanban: KAN-078-D44PD1 계획 리포트 발행\n1d7fcc4 kanban: KAN-078-D44PD1 배치1 계획 — S1~S3 일직선, 병렬 폭 1\nf42abc6 kanban: KAN-078-D44PD1 착수 — 카드 실행 문서 작성 + 진행 중 이동\n```\n\n**변경 파일 10개 (+874 −52)**\n\n| 파일 | 상태 | 추가 | 삭제 |\n|---|:--:|---:|---:|\n| `.kanban/archive.jsonl` | M | 1 | 0 |\n| `.kanban/log.md` | M | 1 | 1 |\n| `.kanban/state.json` | M | 19 | 15 |\n| `CLAUDE.md` | M | 8 | 1 |\n| `KANBAN.batches/KAN-078-D44PD1.batch1.md` | M | 75 | 0 |\n| `KANBAN.board.html` | M | 4 | 4 |\n| `KANBAN.cards/KAN-078-D44PD1.md` | M | 84 | 0 |\n| `KANBAN.md` | M | 12 | 10 |\n| `KANBAN.reports/KAN-078-D44PD1.report.html` | M | 508 | 0 |\n| `scripts/compare-render.ts` | M | 162 | 21 |\n\n**롤백 태그 4개**\n\n```text\nkan/KAN-078-D44PD1/S1\nkan/KAN-078-D44PD1/S2\nkan/KAN-078-D44PD1/S3\nkan/KAN-078-D44PD1/batch1\n```",
+ "verdicts": [],
+ "verify_md": "<!-- 기준은 카드 실행 문서 「검증」 절의 사본이다. 정본은 KANBAN.cards/KAN-078-D44PD1.md 이므로\n     기준이 바뀌면 그쪽을 고치고 review-init --refresh 로 이 항만 다시 뜬다.\n     결과는 착수한 쪽이 이미 돌린 것이다 — 검토자에게 다시 돌리라고 시키지 않는다.\n     **다시 돌려 아래와 다르게 나오면 그 자체가 반려 사유다.** -->\n\n**기준**\n\n전부 이 카드의 워크트리에서 돈다. `bun install` 이 먼저다(새 체크아웃이라 `node_modules` 가 없다).\n\n```bash\n# 1) 결말 자가검사 — 빌드·브라우저 없이 매 실행 첫머리에 돈다\nbun scripts/compare-render.ts        # src/ 에 변경이 없는 상태\n#   → 「결말 자가검사 … 통과」가 찍히고, 마지막 줄에 「대조 안 함」이 있다. 종료코드 0\n\n# 2) 이 카드의 본론 — 자가검사만 돌린 실행이 「전후 동일」로 안 끝난다\nbun scripts/compare-render.ts --self-test 2>&1 | tail -3\n#   → 마지막 줄에 「전후 동일」이 없고 「대조 안 함」이 있다. 고장 4종 + 잡음 0 은 종전대로\n\n# 3) 옛 결말을 주입하면 무는가 — (1)·(2) 어느 쪽을 돌려도 결말 자가검사가 그 사례를 함께 판정한다\n#    일부러 깨서 보려면 verdict() 표의 selftest 행을 「✓ 전후 동일.」로 되돌린다 → 첫머리에서 종료코드 3\n\n# 4) 정상 대조 경로가 그대로인가 — src/ 를 한 줄 고쳐 놓고\nbun scripts/compare-render.ts --pages /posts/tauri-2/\n#   → 차이가 있으면 종료코드 1, 없으면 「✓ 전후 동일」 + 0\n\n# 5) 회귀 없음\nbun run build && bunx tsc --noEmit\n```\n\n**판정 기준은 마지막 줄과 종료코드 둘 다다.** 문구만 고치고 종료코드를 안 가르면 스크립트로\n부르는 쪽에서 같은 거짓이 그대로 남는다.\n\n**실행 결과**\n\n```text\n[1] 결말 자가검사 (빌드·브라우저 없이 매 실행 첫머리)\n    bun scripts/compare-render.ts  →  「· 결말 자가검사 10건 통과 — 대조와 자가검사를 마지막 줄이 가른다」\n    마지막 줄: 「· 변경 파일이 없다 (대조 안 함 — 잴 것이 없다).」 · 종료코드 0\n\n[2] 이 카드의 본론 — 자가검사만 돌린 실행 (전체 실행, 사본 둘 + Chromium)\n    bun scripts/compare-render.ts --self-test --ns kan078  →  종료코드 0\n      ✓ 잡음 0 (같은 빌드끼리) — 차이 0\n      ✓ 고장1 맨 var() 토큰 이름 삭제 — 80건\n      ✓ 고장2 값 지역 반전 — 80건 (color rgb(32,38,74) → rgb(255,0,0))\n      ✓ 고장3 속성 문자열 방식의 맹점 — [style*=] 0곳 · getComputedStyle 1770곳\n      ✓ 고장4 색 함수 표기 정규화 — 같은 값은 같게, 다른 값은 다르게\n    마지막 줄: 「✓ 자가검사 통과 (대조 안 함 — 전후를 재려면 옵션 없이 돌린다).」\n    ← 옛 결말은 이 자리에서 「✓ 전후 동일.」이었다(KAN-077 S8 이 받은 그 줄)\n\n[3] 고장 주입 3종 — 결말 자가검사가 무는가 (소스 사본에 주입, 각각 종료코드 3)\n    ① 옛 결말(selftest 행을 PASS 로)        → 「selftest/0 문구 — \"✓ 전후 동일.\"」\n    ② finish() 밖 process.exit 신설          → 「종료 지점 — finish() 밖 process.exit — 803줄」\n    ③ 갈래가 통과 문구를 직접 인쇄           → 「통과 문구 생산 지점 — PASS 밖에서 문구를 찍는다 — 852줄」\n    셋의 사유가 서로 다르다(verify-talk 의 selfTestFaults 규약).\n\n[4] 실제 대조 경로가 그대로인가\n    src/styles/tokens.css 에 무해한 주석 한 줄 → bun scripts/compare-render.ts --pages /posts/tauri-2/\n      · 계산된 스타일 차이 0 — 1쪽 × 뷰포트 2 × 상태 최대 9\n    마지막 줄: 「✓ 전후 동일.」 · 종료코드 0   (주석은 실행 후 되돌렸다)\n\n[5] 회귀\n    bun run build → 46 page(s) built, Complete!\n    bunx tsc --noEmit → scripts/compare-render.ts 에러 0 (레포 기존 에러 18건은 astro sync 미실행분으로 이 카드 전후 동일)\n```"
+}
