@@ -1,6 +1,6 @@
 {
   "next_id": 81,
-  "next_seq": 344,
+  "next_seq": 345,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1275,12 +1275,20 @@
       "title": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.",
       "verbatim": "",
       "생성": "유저",
-      "최종": "유저",
+      "최종": "ai",
       "갱신": "2026-08-31",
       "title_hash": "24d1a6e7b2ac4be83e486e039ec9dae7efa4019f",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "memo": "",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "short": "타이포그래피 체계 채택",
+      "short_hash": "8211a9b1ccecbbeea5c082ffaa2baf7b2c83411d",
+      "purpose": "폰트·크기만 있는 타이포 토큰에 굵기·행간·자간 역할을 세우고, 한 디자인 스타일을 따르는 조합을 조사해 채택한다",
+      "purpose_hash": "0969bdc52ac03ddb0a348d32da0e7f873bfc616f",
+      "reason": "타이포 토큰이 폰트·크기 두 축뿐이라 행간 59자리(값 21종)·자간 44자리(px/em 혼용 20종)·굵기 5종·시뮬 raw monospace 35자리가 관리 밖이고, propAxis.ts 의 UNITLESS_PROPS 가 행간·굵기를 게이트 시야에서 빼 tokens:verify 는 0 이라고 답한다",
+      "reason_hash": "19e72a8a2b193ed688c8024ee5211bb782c9c701",
+      "goal": "굵기·행간·자간이 역할 토큰으로 서고 게이트 인식층에 들어가며, raw monospace 35자리가 --font-mono·--font-code 로 모여 지면마다 갈리던 글자 조합이 한 벌로 수렴한다",
+      "goal_hash": "56d59a40b3fb9a42f21d55be3e0c42d143801098"
     }
   },
   "order": [
@@ -1369,6 +1377,26 @@
     "KAN-078-D44PD1"
   ],
   "recent": [
+    {
+      "seq": 344,
+      "t": "2026-08-31T16:25",
+      "a": "ai",
+      "id": "KAN-080-WTQ7AV",
+      "op": "brief",
+      "w": "WTCH92",
+      "fields": {
+        "short": "타이포그래피 체계 채택",
+        "purpose": "폰트·크기만 있는 타이포 토큰에 굵기·행간·자간 역할을 세우고, 한 디자인 스타일을 따르는 조합을 조사해 채택한다",
+        "reason": "타이포 토큰이 폰트·크기 두 축뿐이라 행간 59자리(값 21종)·자간 44자리(px/em 혼용 20종)·굵기 5종·시뮬 raw monospace 35자리가 관리 밖이고, propAxis.ts 의 UNITLESS_PROPS 가 행간·굵기를 게이트 시야에서 빼 tokens:verify 는 0 이라고 답한다",
+        "goal": "굵기·행간·자간이 역할 토큰으로 서고 게이트 인식층에 들어가며, raw monospace 35자리가 --font-mono·--font-code 로 모여 지면마다 갈리던 글자 조합이 한 벌로 수렴한다"
+      },
+      "before": {
+        "short": "",
+        "purpose": "",
+        "reason": "",
+        "goal": ""
+      }
+    },
     {
       "seq": 343,
       "t": "2026-08-31T16:23",
@@ -1914,17 +1942,6 @@
       "w": "Q4EWPR",
       "from": "todo",
       "to": "doing"
-    },
-    {
-      "seq": 297,
-      "t": "2026-08-27T01:10",
-      "a": "ai",
-      "id": "KAN-072-CPJCT1",
-      "op": "edit",
-      "w": "WTCH92",
-      "field": "title",
-      "before": "UI 토큰 정합화 — 위반 1,567건을 카드 단위로 0 으로 줄인다",
-      "after": "UI 토큰 정합화 — 게이트가 무는 1,395건을 구획 단위로 0 으로 줄인다"
     }
   ],
   "waivers": [
