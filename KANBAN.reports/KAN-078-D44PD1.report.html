@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<!-- kanban-fp:2500f475304093758208715276fc866ee7727476 voiced -->
+<!-- kanban-fp:1a8fe645c1ae43f78f7c6e9f933b221dca9698be voiced -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KAN-078-D44PD1 실행 계획</title>
 <style>
@@ -418,7 +418,7 @@ details[open] > summary::before { content: "\25BE\00a0"; }
 
 
 <div class="kpis">
-  <div class="kpi"><span class="meta">work</span><b>0/3</b></div>
+  <div class="kpi"><span class="meta">work</span><b>3/3</b></div>
   <div class="kpi"><span class="meta">배치</span><b>1</b></div>
   <div class="kpi"><span class="meta">보류</span><b>0</b></div>
   <div class="kpi"><span class="meta">독립성</span><b>OK</b></div>
@@ -464,15 +464,15 @@ details[open] > summary::before { content: "\25BE\00a0"; }
 <p><strong>게이트가 아니다.</strong> 이 도구는 CI 에 안 물린 개발 도구이고(파일 머리주석), 이 카드는 그 성질을 안 바꾼다. 래칫도 기준선도 안 만든다 — 늘고 줄 수가 없는 판정이다.</p></section>
 
 <h2>실행 계획 (WBS)</h2>
-<div class="chart"><svg viewBox="0 0 860 148" role="img" aria-label="WBS 간트"><text x="16" y="57" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S1</text><rect x="148.0" y="45" width="696.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="156.0" y="59" font-size="12" fill="#1C1B17">결말을 verdict() 표 하나로 모은다 — 완료 기준: --self-test…</text><text x="16" y="87" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S2</text><rect x="148.0" y="75" width="696.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="156.0" y="89" font-size="12" fill="#1C1B17">거짓 통과를 재현하는 자가검사를 붙인다 — 완료 기준: 옛 결말(갈래 공통 한 …</text><text x="16" y="117" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S3</text><rect x="148.0" y="105" width="696.0" height="20" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="156.0" y="119" font-size="12" fill="#1C1B17">실측으로 확인하고 문서를 맞춘다 — 완료 기준: bun scripts/compa…</text><line x1="148.0" y1="34" x2="148.0" y2="144" stroke="#1C1B17" stroke-width="2" stroke-dasharray="4 3"/><text x="154.0" y="28" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">배치1</text></svg></div>
+<div class="chart"><svg viewBox="0 0 860 148" role="img" aria-label="WBS 간트"><text x="16" y="57" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S1</text><rect x="148.0" y="45" width="696.0" height="20" fill="#5C7A4A" stroke="#1C1B17" stroke-width="2"/><text x="156.0" y="59" font-size="12" fill="#1C1B17">결말을 verdict() 표 하나로 모은다 — 완료 기준: --self-test…</text><text x="16" y="87" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S2</text><rect x="148.0" y="75" width="696.0" height="20" fill="#5C7A4A" stroke="#1C1B17" stroke-width="2"/><text x="156.0" y="89" font-size="12" fill="#1C1B17">거짓 통과를 재현하는 자가검사를 붙인다 — 완료 기준: 옛 결말(갈래 공통 한 …</text><text x="16" y="117" font-size="12" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#4A463C">S3</text><rect x="148.0" y="105" width="696.0" height="20" fill="#5C7A4A" stroke="#1C1B17" stroke-width="2"/><text x="156.0" y="119" font-size="12" fill="#1C1B17">실측으로 확인하고 문서를 맞춘다 — 완료 기준: bun scripts/compa…</text><line x1="148.0" y1="34" x2="148.0" y2="144" stroke="#1C1B17" stroke-width="2" stroke-dasharray="4 3"/><text x="154.0" y="28" font-size="11" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace" fill="#6E6A5E">배치1</text></svg></div>
 <div class="scroll"><table>
-<tr><th>work</th><th>내용</th><th>상태</th></tr><tr><td><code>S1</code></td><td>결말을 <code>verdict()</code> 표 하나로 모은다 — 완료 기준: <code>--self-test</code> · 변경 파일 0 · <code>--summary</code> · 정상 대조 넷이 전부 그 표를 지나 끝나고, <code>compared=false</code> 인 셋의 마지막 줄에 「대조 안 함」이 들어간다. <code>--summary</code> 는 차이가 있으면 종료코드 1 로 끝나 머리주석 계약과 맞는다</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S2</code></td><td>거짓 통과를 재현하는 자가검사를 붙인다 — 완료 기준: 옛 결말(갈래 공통 한 줄)을 주입한 사례가 <strong>실패로 잡히고</strong>, 통과 문구 생산 지점이 하나임을 소스에서 확인하며, 이 검사가 <code>--self-test</code> 없이도 매 실행 돈다</td><td><span class="tag tag-todo">미착수</span></td></tr><tr><td><code>S3</code></td><td>실측으로 확인하고 문서를 맞춘다 — 완료 기준: <code>bun scripts/compare-render.ts --self-test</code> 의 마지막 줄에 「전후 동일」이 없고, 옵션 없는 실행이 종전대로 동작하며, 파일 머리주석과 <code>CLAUDE.md</code> 의 <code>render:compare</code> 절이 새 결말을 적는다</td><td><span class="tag tag-todo">미착수</span></td></tr>
+<tr><th>work</th><th>내용</th><th>상태</th></tr><tr><td><code>S1</code></td><td>결말을 <code>verdict()</code> 표 하나로 모은다 — 완료 기준: <code>--self-test</code> · 변경 파일 0 · <code>--summary</code> · 정상 대조 넷이 전부 그 표를 지나 끝나고, <code>compared=false</code> 인 셋의 마지막 줄에 「대조 안 함」이 들어간다. <code>--summary</code> 는 차이가 있으면 종료코드 1 로 끝나 머리주석 계약과 맞는다</td><td><span class="tag tag-done">완료</span></td></tr><tr><td><code>S2</code></td><td>거짓 통과를 재현하는 자가검사를 붙인다 — 완료 기준: 옛 결말(갈래 공통 한 줄)을 주입한 사례가 <strong>실패로 잡히고</strong>, 통과 문구 생산 지점이 하나임을 소스에서 확인하며, 이 검사가 <code>--self-test</code> 없이도 매 실행 돈다</td><td><span class="tag tag-done">완료</span></td></tr><tr><td><code>S3</code></td><td>실측으로 확인하고 문서를 맞춘다 — 완료 기준: <code>bun scripts/compare-render.ts --self-test</code> 의 마지막 줄에 「전후 동일」이 없고, 옵션 없는 실행이 종전대로 동작하며, 파일 머리주석과 <code>CLAUDE.md</code> 의 <code>render:compare</code> 절이 새 결말을 적는다</td><td><span class="tag tag-done">완료</span></td></tr>
 </table></div>
 
 <h2>배치 구성</h2>
 <div class="chart"><svg viewBox="0 0 860 164" role="img" aria-label="배치 2안 비교"><text x="16" y="52" font-size="14" font-weight="700" fill="#1C1B17">단일 에이전트</text><rect x="190.0" y="30" width="638.0" height="36" fill="#F3E8C9" stroke="#1C1B17" stroke-width="2"/><text x="198.0" y="52" font-size="12" fill="#1C1B17">단계1</text><text x="16" y="108" font-size="14" font-weight="700" fill="#1C1B17">오케스트레이션</text><rect x="190.0" y="86" width="638.0" height="36" fill="#C2D3B4" stroke="#1C1B17" stroke-width="2"/><text x="198.0" y="108" font-size="12" fill="#1C1B17">단계1</text><text x="16" y="160" font-size="11" fill="#6E6A5E">배치 크기 기준: work 3~4개 = 한 세션 예산의 절반</text></svg></div>
 <div class="scroll"><table>
-<tr><th>배치</th><th>work</th><th>진행</th><th>배정 출처</th></tr><tr><td>배치1</td><td><code>S1, S2, S3</code></td><td>0/3</td><td>frontmatter</td></tr>
+<tr><th>배치</th><th>work</th><th>진행</th><th>배정 출처</th></tr><tr><td>배치1</td><td><code>S1, S2, S3</code></td><td>3/3</td><td>frontmatter</td></tr>
 </table></div>
 
 
