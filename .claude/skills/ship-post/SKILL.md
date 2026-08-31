@@ -3,7 +3,7 @@ name: ship-post
 description: >
   발행된 글을 **최종 재검증하고 블로그 레포에 commit&push**하는 마무리 스킬. ① `bun run build`로
   회귀 없이 빌드되는지 확인하고 링크/이미지(잔존 figure·깨진 경로)/frontmatter 스키마를 재검증한 뒤,
-  ② git-shipper(haiku)로 발행물(과 관련 컴포넌트·이미지) 경로만 commit&push 한다(공유 가드 스크립트 경유).
+  ② 공유 가드 스크립트(`scripts/git-commit-push.sh`)를 직접 호출해 발행물(과 관련 컴포넌트·이미지) 경로만 commit&push 한다.
   "/ship-post <파일>", "이 글 배포까지 끝내줘", "빌드 확인하고 푸시해줘" 같은 표현에 반응한다.
   파이프라인 **맨 마지막 단계**로, 자동 모드에서는 push까지 완전 자동(가드 스크립트는 항상 적용).
 argument-hint: <발행된 글 경로 (src/content/posts/*.mdx)>
@@ -14,13 +14,13 @@ argument-hint: <발행된 글 경로 (src/content/posts/*.mdx)>
 발행 파이프라인의 **마지막 단계**다. `publish-post`가 글을 `src/content/posts/`로 정식 편입한 뒤, 이 스킬이
 **최종 빌드 재검증 → 블로그 레포 commit&push**로 배포를 끝낸다(GitHub Pages는 `main` push 시 자동 배포).
 
-git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스크립트(`scripts/git-commit-push.sh`)를 호출한다.
+git 처리는 **이 스킬을 도는 세션이 직접** 공유 가드 스크립트(`scripts/git-commit-push.sh`)를 호출한다(서브에이전트에 위임하지 않는다).
 빌드·검증은 이 스킬(또는 오케스트레이터/ship-finalizer)이 하고 git만 위탁한다.
 
 ## 워크플로우 상의 위치
 
 ```
-… → post-finalize → publish-post (src/content/posts/로 편입) → [ship-post: build 재검증 → git-shipper commit&push]
+… → post-finalize → publish-post (src/content/posts/로 편입) → [ship-post: build 재검증 → 가드 스크립트로 commit&push]
 ```
 
 ## 입력 / 출력 계약
@@ -63,8 +63,13 @@ git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스�
 ### 1.6 빌드 재확인
 1.5에서 아무것도 안 바꿨으므로 1의 `bun run build` 결과가 그대로 유효하다. 추가 빌드 불필요.
 
-### 2. commit & push (git-shipper / haiku)
-`git-shipper` 서브에이전트(haiku)에 위임한다. git-shipper는 직접 git을 쓰지 않고 **`scripts/git-commit-push.sh`만** 호출한다. 인자:
+### 2. commit & push (**직접 한다**)
+**`scripts/git-commit-push.sh` 를 Bash 로 직접 호출한다.** `git add -A`·`git commit` 을 손으로 치지 않는다 — 가드가 그 스크립트에 있다. 인자:
+> **위임하지 않는다 — 이 자리를 부르는 세션이 직접 친다.** 한때 haiku 서브에이전트
+> (`git-shipper`)에 위임했는데, 「스크립트만 호출하라」가 그 정의에 적혀 있었는데도 위임 프롬프트를
+> 해석한 에이전트가 **공유 가드 스크립트를 고쳐서 푸시한** 실측 사고가 있었다. 적어 두는 것으로는
+> 안 막힌다. **스크립트가 비0으로 끝나면 스크립트를 고치지 말고** 출력을 그대로 보고하고 멈춘다.
+
 - `--repo <블로그 레포 경로>` · `--branch main` · `--message "post: <slug> 발행"`
 - `--` 뒤에 **이번 글 관련 경로만**: `src/content/posts/<slug>.mdx`, `src/components/posts/<slug>/`, `public/images/<slug>/`. **전체 add 금지**. `graphify-out/`·`src/data/graph.json`은 **넣지 마라** — 그래프는 main에서 따로 갱신·커밋한다(1.5).
 - 가드(브랜치 일치·secret·대용량·`pull --rebase`·`--force` 금지)는 스크립트가 적용. 자동 모드면 실제 push까지.
@@ -79,7 +84,7 @@ git 처리는 직접 하지 않고 **git-shipper(haiku)** 가 공유 가드 스�
 - 재실행해도 빌드·검증을 다시 돌릴 뿐 새 부작용이 없어야 한다.
 
 ## 참조 파일
-- `scripts/git-commit-push.sh` — 공유 git 가드(git-shipper가 호출). research 단계와 **동일 스크립트 재사용**(repo만 다름).
+- `scripts/git-commit-push.sh` — 공유 git 가드(이 스킬이 직접 호출). research 단계와 **동일 스크립트 재사용**(repo만 다름).
 
 ## 주의
 - **검증 실패 시 push 금지.** 빌드/링크/frontmatter 중 하나라도 깨지면 배포하지 않고 보고한다.

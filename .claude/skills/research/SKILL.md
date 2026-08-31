@@ -3,7 +3,7 @@ name: research
 description: >
   기술 글 집필 **전 단계**의 자료 수집 스킬. 주제/글감을 받아 ① `web-research` 플러그인에 위임해 신뢰 소스를 수집하고, 그 결과를 `assets/RESEARCH_GUIDE.md` 의 산출물 형식으로 정리해 `~/blog-research/raws/NNN-slug.md`
   (불변 원본)로 저장하고, ② `~/blog-research/CLAUDE.md`(LLM Wiki 스키마)의 Ingest 연산대로
-  위키에 통합(요약·교차링크·angle 추출·index/log 갱신)하며, ③ git-shipper(haiku)로 blog-research
+  위키에 통합(요약·교차링크·angle 추출·index/log 갱신)하며, ③ 공유 가드 스크립트를 직접 호출해 blog-research
   레포를 commit&push 한다. 출력은 집필에 바로 넘길 **angle 페이지 경로**다.
   "/research <주제>", "이 주제 자료 조사해줘", "리서치 먼저 돌려줘" 같은 표현에 반응한다.
   코드 전용·개인 경험 글처럼 외부 자료가 불필요하면 오케스트레이터가 이 단계를 skip 할 수 있다.
@@ -76,10 +76,15 @@ raws 문서의 구성(개요 → 소주제별 충실 정리 → open questions �
 5. 관련 페이지 frontmatter `sources`에 이번 raws 번호를 추가한다.
 - 모든 wiki 페이지 frontmatter는 `title/type/status/sources/created/updated/tags`(스키마 §3)를 채운다.
 
-### 4. blog-research 레포 commit & push (git-shipper / haiku)
+### 4. blog-research 레포 commit & push (**직접 한다**)
 
-`git-shipper` 서브에이전트(haiku)에 위임한다. git-shipper는 직접 git 명령을 쓰지 않고 **`scripts/git-commit-push.sh`만**
-호출한다(이 블로그 레포의 스크립트를 절대경로로 호출). 인자:
+**`scripts/git-commit-push.sh` 를 Bash 로 직접 호출한다**(이 블로그 레포의 스크립트를 절대경로로).
+`git add -A`·`git commit` 을 손으로 치지 않는다 — 가드가 그 스크립트에 있다. 인자:
+> **위임하지 않는다 — 이 자리를 부르는 세션이 직접 친다.** 한때 haiku 서브에이전트
+> (`git-shipper`)에 위임했는데, 「스크립트만 호출하라」가 그 정의에 적혀 있었는데도 위임 프롬프트를
+> 해석한 에이전트가 **공유 가드 스크립트를 고쳐서 푸시한** 실측 사고가 있었다. 적어 두는 것으로는
+> 안 막힌다. **스크립트가 비0으로 끝나면 스크립트를 고치지 말고** 출력을 그대로 보고하고 멈춘다.
+
 - `--repo ~/blog-research` · `--branch <blog-research 기본 브랜치>` · `--message "research: <slug> 수집·ingest"`
 - `--` 뒤에 이번에 추가/수정한 경로만(`raws/NNN-slug.md`, `wiki/...`, `index.md`, `log.md`). **전체 add 금지**.
 - 자동 모드면 실제 push까지. 스크립트가 비0으로 끝나면(브랜치 불일치·secret·대용량·pull 충돌 등) 멈추고 원인을 보고한다.
@@ -95,7 +100,7 @@ raws 문서의 구성(개요 → 소주제별 충실 정리 → open questions �
 - `assets/RESEARCH_GUIDE.md` — **산출물 형식만** 이 프로젝트가 소유한다(raws 문서 구성).
   수집 규칙은 `web-research` 플러그인이 소유한다 — 같은 규칙을 두 벌로 두지 않는다.
 - `~/blog-research/CLAUDE.md` — LLM Wiki 스키마(Ingest/Query/Lint 연산, 페이지 규약). **ingest는 이 문서를 따른다.**
-- `scripts/git-commit-push.sh` — 공유 git 가드(git-shipper가 호출).
+- `scripts/git-commit-push.sh` — 공유 git 가드(이 스킬이 직접 호출).
 
 ## 주의
 

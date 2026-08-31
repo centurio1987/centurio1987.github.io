@@ -40,7 +40,9 @@ tools: ["Skill", "Agent", "Read", "Write", "Edit", "Bash", "Glob", "Grep", "AskU
 - **`writing-reviewer`(sonnet)**: 거시 글쓰기 검토(`review-writing`) — 설득·구조·문체 채점.
 - **`quality-gate-checker`(sonnet)**: 기술 품질 채점(`quality-gate`) — 채점·단순 보완.
 - **`react-sim-builder`(sonnet)** / **`image-maker`(sonnet)**: 집필 단계의 시뮬·구조형 이미지 생성 위탁.
-- **`git-shipper`(haiku)**: 공유 git 커밋&푸시(가드 스크립트 호출). research 단계·ship-post 단계 **양쪽에서 재사용**(repo만 다름).
+- **git 커밋&푸시는 위임하지 않는다.** 오케스트레이터가 `scripts/git-commit-push.sh` 를 **직접** 호출한다 —
+  research 단계(`~/blog-research`)·ship-post 단계(블로그 레포) 양쪽에서 같은 스크립트를 쓰고 repo 만 다르다.
+  옛 `git-shipper` 서브에이전트는 은퇴했다(`.claude/agents/git-shipper.md` 에 사유).
 - 위임은 `Agent` 도구로 호출하고, 모델은 각 서브에이전트 정의의 `model`을 따른다(필요 시 `model`로 덮어쓴다).
 
 ## Step 0. 모드 선택 (단 한 번)
@@ -59,7 +61,7 @@ tools: ["Skill", "Agent", "Read", "Write", "Edit", "Bash", "Glob", "Grep", "AskU
 ```
 research        → tech-deepdive   → review-post → review-writing → quality-gate    → post-finalize → publish-post → ship-post
 (수집·ingest)      (집필+외부검토)    (4축 미시)     (설득·구조·문체)   (기술 체크리스트)    (개념이미지·태그)   (정식 발행)    (빌드재검증+푸시)
- sonnet            오케(+react-sim    sonnet         sonnet            sonnet              오케            오케           오케(+git-shipper)
+ sonnet            오케(+react-sim    sonnet         sonnet            sonnet              오케            오케           오케(git 직접)
                     /make-image 위탁)
 ```
 
@@ -69,7 +71,7 @@ research        → tech-deepdive   → review-post → review-writing → quali
 
 ### 1. 자료 수집 + 위키 ingest — `research-gatherer`(sonnet)에 위임
 - `Agent`로 `research-gatherer` 호출(인자: `주제/글감`, `모드(MODE)`). 절차: 웹수집 → `~/blog-research/raws/NNN-slug.md`
-  불변 저장 → 위키 ingest(angle 추출) → `git-shipper`로 blog-research 레포 commit&push.
+  불변 저장 → 위키 ingest(angle 추출) → 가드 스크립트를 **직접** 호출해 blog-research 레포 commit&push.
 - **조건부 skip**: 외부 자료가 의미 없는 글(순수 코드 튜토리얼·개인 회고/경험담)은 이 단계를 건너뛴다. 그 경우 집필 입력은 글감 메모.
 - 산출물(집필 입력): **angle 페이지 경로 + 상태(mature/draft)** + open questions.
 
@@ -117,10 +119,10 @@ research        → tech-deepdive   → review-post → review-writing → quali
   단 **게이트 D·E(품질 PASS)는 auto에서도 선행 조건**이다.
 - `publish-post` → `src/content/posts/`로 발행, draft 제거. co-located 컴포넌트를 발행 위치에 맞게 두고 import 경로 갱신 확인.
 
-### 8. 마무리 재검증 + 푸시 — `ship-post` (오케스트레이터 직접 + `git-shipper` 위임)
+### 8. 마무리 재검증 + 푸시 — `ship-post` (오케스트레이터가 전부 직접)
 - `Skill`로 `ship-post` 호출: `bun run build` 통과 + 링크/이미지(미치환 ```viz```·레거시 ```figure```/`[[[…]]]`/`(( ))`·깨진 경로)·frontmatter 재검증.
   깨지면 **push로 넘어가지 않고** 보고.
-- 검증 통과 후 `git-shipper`(haiku)에 위임 — 블로그 레포(`--branch main`), 이번 글 관련 경로만(`src/content/posts/<slug>.mdx`,
+- 검증 통과 후 `scripts/git-commit-push.sh` 를 **직접** 호출 — 블로그 레포(`--branch main`), 이번 글 관련 경로만(`src/content/posts/<slug>.mdx`,
   `src/components/posts/<slug>/`, `public/images/<slug>/`) commit&push. 가드 스크립트 항상 적용.
 - **auto**: push까지 자동(Step 0 승인이 겸함, 가드는 항상 적용). **interactive**: push 전 사용자 확인.
 
@@ -142,7 +144,10 @@ research        → tech-deepdive   → review-post → review-writing → quali
   어디부터 재검증(보완한 게이트부터), 최대 반복(게이트당 3라운드), 중단 조건(3라운드 후 FAIL은 발행 중단·보고).
 - **멱등성**: 재실행 시 중복 발행·중복 커밋을 만들지 않는다 — research raws는 불변(NNN 자동 산정), 이미지는 이미 있으면 skip,
   git 스크립트는 staged 변경 없으면 nothing-to-commit, publish는 이미 발행됐으면 재이동하지 않는다.
-- **외부 작업 가드**: push 두 지점(blog-research/블로그)은 항상 `git-shipper`+가드 스크립트 경유(직접 git·`--force` 금지).
+- **외부 작업 가드**: push 두 지점(blog-research/블로그)은 항상 가드 스크립트 경유(`git add -A`·맨 `git push`·`--force` 금지).
+  **그 호출을 서브에이전트에 위임하지 않는다** — 위임하면 무엇이 실행되는지가 프롬프트 해석에 달리고, 실측으로
+  위임받은 에이전트가 가드 스크립트를 **호출하는 대신 고쳐서** 푸시한 사고가 있었다(`4689cf5`, 되돌림 `7295e9a`).
+  스크립트가 비0으로 끝나면 **고치지 말고** 출력을 그대로 보고하고 멈춘다.
   auto라도 secret/대용량/브랜치 안전장치는 우회하지 않는다.
 - **시리즈**: tech-deepdive가 1편씩 만든다. auto라도 현재 글 1편을 발행·푸시까지 끝내고 **남은 편은 강행하지 말고** 보고만 한다.
 - **상태 보존**: 중간에 멈추면 어디까지(어느 단계/게이트/draft) 됐는지 명확히 보고해 재개 가능하게 한다.

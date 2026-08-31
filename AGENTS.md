@@ -108,8 +108,11 @@ research -> tech-deepdive -> review-post -> review-writing -> quality-gate
 - Respect every gate: external review status, agreed critical review fixes, `review-writing` `PASS`,
   `quality-gate` `PASS`, and explicit publication approval in interactive mode.
 - If either quality gate still fails after three rounds, stop publication and report the remaining gaps.
-- Delegate React simulations to `react-sim-builder`, structured information graphics to `image-maker`,
-  and guarded commits/pushes to `git-shipper`. Never push directly or use `--force`.
+- Delegate React simulations to `react-sim-builder` and structured information graphics to `image-maker`.
+- **Do not delegate commits or pushes.** Call `scripts/git-commit-push.sh` yourself with explicit paths,
+  never `git add -A` and never `--force`. A delegated shipper once rewrote that guard script instead of
+  calling it, and pushed the change (`4689cf5`, reverted in `7295e9a`) — writing the rule into the agent
+  definition did not prevent it. If the script exits non-zero, report its output and stop; do not fix the script.
 - For a series, complete one article per pipeline run and ask before starting the next article.
 - When interrupted, report the draft path and the last completed gate so the workflow can resume.
 
@@ -124,7 +127,8 @@ The Claude role definitions under `.claude/agents/` map to these Codex responsib
 - `quality-gate-checker`: enforce technical depth, completeness, multiple perspectives, accuracy, and build checks.
 - `react-sim-builder`: create co-located React simulations and verify type-check/build results.
 - `image-maker`: implement fenced `viz` specifications as structured visuals via the bbangto-ui-visualization viz engine (inline `.tsx` SSR SVG / hero webp); no ChatGPT image generation.
-- `git-shipper`: invoke only `scripts/git-commit-push.sh` with explicit paths and report its result.
+- `git-shipper`: **retired.** Commits and pushes are never delegated — the acting session calls
+  `scripts/git-commit-push.sh` directly. See `.claude/agents/git-shipper.md` for why.
 
 Claude `sonnet`, `haiku`, and `inherit` model labels are role hints, not valid Codex model identifiers.
 Codex agent configuration must inherit the active OpenAI model unless the user explicitly selects a valid
