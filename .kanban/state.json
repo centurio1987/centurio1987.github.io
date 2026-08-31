@@ -1,6 +1,6 @@
 {
   "next_id": 81,
-  "next_seq": 345,
+  "next_seq": 346,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1273,12 +1273,12 @@
     "KAN-080-WTQ7AV": {
       "col": "todo",
       "title": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.",
-      "verbatim": "",
+      "verbatim": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.",
       "생성": "유저",
       "최종": "ai",
       "갱신": "2026-08-31",
       "title_hash": "24d1a6e7b2ac4be83e486e039ec9dae7efa4019f",
-      "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "verbatim_hash": "24d1a6e7b2ac4be83e486e039ec9dae7efa4019f",
       "memo": "",
       "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "short": "타이포그래피 체계 채택",
@@ -1377,6 +1377,17 @@
     "KAN-078-D44PD1"
   ],
   "recent": [
+    {
+      "seq": 345,
+      "t": "2026-08-31T16:25",
+      "a": "ai",
+      "id": "KAN-080-WTQ7AV",
+      "op": "edit",
+      "w": "WTCH92",
+      "field": "verbatim",
+      "before": "",
+      "after": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라."
+    },
     {
       "seq": 344,
       "t": "2026-08-31T16:25",
@@ -1932,16 +1943,6 @@
       "w": "Q4EWPR",
       "from": "backlog",
       "to": "done"
-    },
-    {
-      "seq": 298,
-      "t": "2026-08-27T01:49",
-      "a": "ai",
-      "id": "KAN-072-CPJCT1",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "todo",
-      "to": "doing"
     }
   ],
   "waivers": [
