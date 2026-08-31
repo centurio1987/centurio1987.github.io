@@ -1,6 +1,6 @@
 {
-  "next_id": 78,
-  "next_seq": 338,
+  "next_id": 79,
+  "next_seq": 339,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1225,6 +1225,26 @@
         "design-concept/DESIGN_CONCEPT.md",
         "CLAUDE.md"
       ]
+    },
+    "KAN-078-D44PD1": {
+      "col": "backlog",
+      "title": "render:compare 가 대조를 안 하고도 「전후 동일」이라고 답한다 — 거짓 통과를 막는다",
+      "verbatim": "새카드",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-08-31",
+      "title_hash": "9a21b2fba072ad11cceae5bb80e2c2b0442bf197",
+      "verbatim_hash": "b91aafd366471acd622485f3b13c384cd4f97861",
+      "short": "compare-render 거짓 통과",
+      "short_hash": "1a1998544e9a245a536c642f4d8f3309343eb7f1",
+      "purpose": "화면 무변경을 증명하는 도구가 대조를 건너뛰고도 통과로 끝나는 자리를 막는다",
+      "purpose_hash": "46133b0f52d7adf51f72f3f71b73e515145ec6a7",
+      "reason": "KAN-077 에서 실제로 밟았다 — 「전후 동일」을 받은 뒤 옵션만 빼고 다시 돌리니 28건이 나왔다",
+      "reason_hash": "e91d4f5a7b0a99b2ade5a80832993d0f32abd5dc",
+      "goal": "자가검사만 돌린 실행이 「전후 동일」로 끝나지 않고, 같은 거짓 통과가 다시 나면 검사가 문다",
+      "goal_hash": "2a84eed3276e9cd7127c571777a5e03ed0527945",
+      "memo": "scripts/compare-render.ts:667 에서 SELF_TEST 갈래와 실제 전후 대조가 if/else 로 갈리는데 파일 끝의 console.log(\"✓ 전후 동일.\") 이 두 갈래 공통이라, 자가검사만 돌린 실행이 **대조를 한 번도 안 하고** 통과로 끝난다. 실측(KAN-077 S8): S7 직후 --self-test 로 돌려 「✓ 전후 동일」을 받았고 옵션만 빼고 다시 돌리니 background-color 28건 차이가 나왔다 — 그 사이 코드는 한 글자도 안 바뀌었다. 이 도구는 「값을 바꿨는데 화면이 안 바뀌었음」을 증명하려고 만든 것이라 그 증명이 거짓으로 통과하는 것은 도구 자신이 막으려던 실패 모드다. 고칠 것은 한 줄이지만 **고치는 것으로 끝내지 않는다** — 그 거짓 통과를 재현하는 자가검사를 함께 둔다(KAN-076 S8 이 selfTestFaults 로 같은 종류의 자기 축소를 막은 선례). 갈래 후보 둘: ①자가검사 뒤에도 실제 대조를 이어서 돈다 ②자가검사만 돌았으면 마지막 줄을 「자가검사 통과(대조 안 함)」로 가른다. KAN-077 은 이 파일이 scope 밖이라 안 고치고 넘겼다(검토 4항, 유저 판정 「새카드」 2026-08-30).",
+      "memo_hash": "53db0264f7c6b998a62bfb3a8da788675beee0b1"
     }
   },
   "order": [
@@ -1307,9 +1327,27 @@
     "KAN-074-MQ9KRB",
     "KAN-075-7DF37H",
     "KAN-076-X1C8PY",
-    "KAN-077-RA2SYG"
+    "KAN-077-RA2SYG",
+    "KAN-078-D44PD1"
   ],
   "recent": [
+    {
+      "seq": 338,
+      "t": "2026-08-31T14:55",
+      "a": "ai",
+      "id": "KAN-078-D44PD1",
+      "op": "create",
+      "w": "WTCH92",
+      "col": "backlog",
+      "title": "render:compare 가 대조를 안 하고도 「전후 동일」이라고 답한다 — 거짓 통과를 막는다",
+      "verbatim": "새카드",
+      "parent": null,
+      "short": "compare-render 거짓 통과",
+      "purpose": "화면 무변경을 증명하는 도구가 대조를 건너뛰고도 통과로 끝나는 자리를 막는다",
+      "reason": "KAN-077 에서 실제로 밟았다 — 「전후 동일」을 받은 뒤 옵션만 빼고 다시 돌리니 28건이 나왔다",
+      "goal": "자가검사만 돌린 실행이 「전후 동일」로 끝나지 않고, 같은 거짓 통과가 다시 나면 검사가 문다",
+      "memo": "scripts/compare-render.ts:667 에서 SELF_TEST 갈래와 실제 전후 대조가 if/else 로 갈리는데 파일 끝의 console.log(\"✓ 전후 동일.\") 이 두 갈래 공통이라, 자가검사만 돌린 실행이 **대조를 한 번도 안 하고** 통과로 끝난다. 실측(KAN-077 S8): S7 직후 --self-test 로 돌려 「✓ 전후 동일」을 받았고 옵션만 빼고 다시 돌리니 background-color 28건 차이가 나왔다 — 그 사이 코드는 한 글자도 안 바뀌었다. 이 도구는 「값을 바꿨는데 화면이 안 바뀌었음」을 증명하려고 만든 것이라 그 증명이 거짓으로 통과하는 것은 도구 자신이 막으려던 실패 모드다. 고칠 것은 한 줄이지만 **고치는 것으로 끝내지 않는다** — 그 거짓 통과를 재현하는 자가검사를 함께 둔다(KAN-076 S8 이 selfTestFaults 로 같은 종류의 자기 축소를 막은 선례). 갈래 후보 둘: ①자가검사 뒤에도 실제 대조를 이어서 돈다 ②자가검사만 돌았으면 마지막 줄을 「자가검사 통과(대조 안 함)」로 가른다. KAN-077 은 이 파일이 scope 밖이라 안 고치고 넘겼다(검토 4항, 유저 판정 「새카드」 2026-08-30)."
+    },
     {
       "seq": 337,
       "t": "2026-08-31T14:53",
@@ -1845,16 +1883,6 @@
       "w": "9X26DD",
       "from": "doing",
       "to": "review"
-    },
-    {
-      "seq": 291,
-      "t": "2026-08-25T12:25",
-      "a": "유저",
-      "id": "KAN-070-DRF0QF",
-      "op": "waive",
-      "w": "9X26DD",
-      "with_": "KAN-072-CPJCT1",
-      "reason": "scripts/tokens-baseline.json 은 커밋된 결정론적 생성물이고 갱신은 tokens:verify --update-baseline 하나가 한다 — src/styles/motion.css 와 같은 모양이다. KAN-070 이 만들고 KAN-072 가 부채를 갚으며 줄인다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹친다. (감사 문서 UI_CONSISTENCY_AUDIT.md 를 KAN-070 으로 옮기고 KAN-072 는 실제로 고치는 규칙 문서 셋만 갖도록 scope 를 조정해 재기록)"
     }
   ],
   "waivers": [
