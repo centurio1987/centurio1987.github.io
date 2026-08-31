@@ -3,7 +3,11 @@
 # haiku(git-shipper) 서브에이전트는 직접 git 명령을 쓰지 말고 이 스크립트만 호출한다.
 #
 # 사용법:
-#   scripts/git-commit-push.sh --repo <path> --branch <expected> --message <msg> [--dry-run] [--force-allow] -- <path...>
+#   scripts/git-commit-push.sh --repo <path> --branch <expected> --message <msg> [--dry-run] [--force-allow] -- [<path...>]
+#
+# 모드:
+#   - <path...> 있음 → 경로 스테이징 + (staged 있으면 커밋) + push
+#   - <path...> 없음 → push-only (이미 로컬 커밋이 있고 push만 필요한 경우)
 #
 # 가드: 지정 경로만 add(전체 add 금지) · 기대 브랜치 확인 · staged secret/대용량 검사 ·
 #       원격 동기화(아래 규칙) · push(--force 금지) · 실패 시 비0 종료(자동 롤백 안 함, 상태만 보고)
@@ -32,7 +36,7 @@ done
 [[ -n "$REPO" ]] || { echo "missing --repo" >&2; exit 1; }
 [[ -n "$BRANCH" ]] || { echo "missing --branch (expected branch name)" >&2; exit 1; }
 [[ -n "$MSG" ]] || { echo "missing --message" >&2; exit 1; }
-[[ ${#PATHS[@]} -gt 0 ]] || { echo "missing -- <paths to commit>" >&2; exit 1; }
+# 경로 없음 허용 (push-only 모드)
 
 cd "$REPO"
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "not a git repo: $REPO" >&2; exit 1; }
@@ -43,58 +47,67 @@ if [[ "$CUR_BRANCH" != "$BRANCH" ]]; then
   exit 2
 fi
 
-# 지정 경로만 스테이징 (전체 add 금지)
-git reset -q
-for p in "${PATHS[@]}"; do
-  if [[ ! -e "$p" ]]; then
-    # File doesn't exist; check if it's tracked by git (could be a deletion)
-    if ! git ls-files -- "$p" >/dev/null 2>&1; then
-      echo "path not found: $p" >&2; exit 1; fi
-  fi
-  git add -- "$p"
-done
-
-if git diff --cached --quiet; then
-  echo "no staged changes — nothing to commit. (skip)"
-  exit 0
-fi
-
-STAGED="$(git diff --cached --name-only)"
-echo "staged files:"; echo "$STAGED" | sed 's/^/  - /'
-
-# 대용량 파일 검사 (>10MB)
-while IFS= read -r f; do
-  [[ -f "$f" ]] || continue
-  sz=$(wc -c <"$f" | tr -d ' ')
-  if (( sz > 10485760 )); then
-    echo "large file (>10MB) staged: $f ($sz bytes). 중단." >&2; exit 3
-  fi
-done <<< "$STAGED"
-
-# secret 패턴 검사 (staged 추가분만)
-#   값의 **첫 글자에서만** `-` 를 뺀다. CSS 커스텀 프로퍼티는 항상 `--` 로 시작해서
-#   `"token": "--cat-architecture"` 같은 줄이 값 자리에 걸렸다(KAN-070 에서 감사 원자료
-#   회수가 이것으로 막혔다 — 히트 5건 전부 `--cat-*` 였고 `-` 로 안 시작하는 히트는 0건).
-#   `-` 로 시작하는 진짜 크리덴셜은 사실상 없고, `-----BEGIN … PRIVATE KEY` 는 앞의
-#   별도 패턴이 따로 잡는다. 첫 글자만 빼므로 값 안쪽의 `-` 는 그대로 매칭한다.
-if git diff --cached -U0 | grep -nE \
-  'BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY|AKIA[0-9A-Z]{16}|(api[_-]?key|secret|token|password)["'"'"' ]*[:=]["'"'"' ]*[A-Za-z0-9/+_][A-Za-z0-9/+_-]{15,}|sk-[A-Za-z0-9]{20,}' \
-  >/tmp/_secret_hits 2>/dev/null; then
-  echo "잠재적 secret이 staged diff에 감지됨. 중단(수동 확인 필요):" >&2
-  cat /tmp/_secret_hits >&2
-  exit 4
-fi
-
-if [[ $DRYRUN -eq 1 ]]; then
-  echo "[dry-run] would commit on '$BRANCH' with message:"; echo "    $MSG"
-  echo "[dry-run] would: 원격 동기화(머지 커밋 rebase 금지) 후 git push (no --force). 실제 변경 없음."
+# 모드 결정: 경로가 있으면 커밋 모드, 없으면 push-only 모드
+if [[ ${#PATHS[@]} -gt 0 ]]; then
+  # 커밋 모드: 지정 경로만 스테이징 (전체 add 금지)
   git reset -q
-  exit 0
-fi
+  for p in "${PATHS[@]}"; do
+    if [[ ! -e "$p" ]]; then
+      # File doesn't exist; check if it's tracked by git (could be a deletion)
+      if ! git ls-files -- "$p" >/dev/null 2>&1; then
+        echo "path not found: $p" >&2; exit 1; fi
+    fi
+    git add -- "$p"
+  done
 
-# 커밋
-git commit -q -m "$MSG" -m "Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
-echo "committed: $(git rev-parse --short HEAD)"
+  STAGED="$(git diff --cached --name-only)"
+  if [[ -z "$STAGED" ]]; then
+    echo "no staged changes — nothing to commit. (skip commit, proceeding to push)"
+  else
+    echo "staged files:"; echo "$STAGED" | sed 's/^/  - /'
+
+    # 대용량 파일 검사 (>10MB)
+    while IFS= read -r f; do
+      [[ -f "$f" ]] || continue
+      sz=$(wc -c <"$f" | tr -d ' ')
+      if (( sz > 10485760 )); then
+        echo "large file (>10MB) staged: $f ($sz bytes). 중단." >&2; exit 3
+      fi
+    done <<< "$STAGED"
+
+    # secret 패턴 검사 (staged 추가분만)
+    #   값의 **첫 글자에서만** `-` 를 뺀다. CSS 커스텀 프로퍼티는 항상 `--` 로 시작해서
+    #   `"token": "--cat-architecture"` 같은 줄이 값 자리에 걸렸다(KAN-070 에서 감사 원자료
+    #   회수가 이것으로 막혔다 — 히트 5건 전부 `--cat-*` 였고 `-` 로 안 시작하는 히트는 0건).
+    #   `-` 로 시작하는 진짜 크리덴셜은 사실상 없고, `-----BEGIN … PRIVATE KEY` 는 앞의
+    #   별도 패턴이 따로 잡는다. 첫 글자만 빼므로 값 안쪽의 `-` 는 그대로 매칭한다.
+    if git diff --cached -U0 | grep -nE \
+      'BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY|AKIA[0-9A-Z]{16}|(api[_-]?key|secret|token|password)["'"'"' ]*[:=]["'"'"' ]*[A-Za-z0-9/+_][A-Za-z0-9/+_-]{15,}|sk-[A-Za-z0-9]{20,}' \
+      >/tmp/_secret_hits 2>/dev/null; then
+      echo "잠재적 secret이 staged diff에 감지됨. 중단(수동 확인 필요):" >&2
+      cat /tmp/_secret_hits >&2
+      exit 4
+    fi
+
+    if [[ $DRYRUN -eq 1 ]]; then
+      echo "[dry-run] would commit on '$BRANCH' with message:"; echo "    $MSG"
+      echo "[dry-run] would: 원격 동기화(머지 커밋 rebase 금지) 후 git push (no --force). 실제 변경 없음."
+      git reset -q
+      exit 0
+    fi
+
+    # 커밋 (staged changes가 있을 때만)
+    git commit -q -m "$MSG" -m "Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>"
+    echo "committed: $(git rev-parse --short HEAD)"
+  fi
+else
+  # push-only 모드: 경로가 없으면 이미 있는 커밋을 push만 함
+  if [[ $DRYRUN -eq 1 ]]; then
+    echo "[dry-run] push-only mode: 원격 동기화 후 git push (no --force). 실제 변경 없음."
+    exit 0
+  fi
+  echo "push-only mode: 이미 로컬 커밋이 있고, push만 수행."
+fi
 
 # 원격 동기화 후 push (force 금지)
 if git remote get-url origin >/dev/null 2>&1; then
