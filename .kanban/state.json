@@ -1,6 +1,6 @@
 {
   "next_id": 78,
-  "next_seq": 337,
+  "next_seq": 338,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1192,12 +1192,12 @@
       ]
     },
     "KAN-077-RA2SYG": {
-      "col": "review",
+      "col": "done",
       "title": "게이트 회피 경로를 막는다 — 상수로 끌어올린 리터럴 15건을 판정에 넣는다",
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-30",
+      "갱신": "2026-08-31",
       "title_hash": "8d8ba8eec3f41e78ad3e3191f7f5be208fb4c330",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "short": "상수 승격 리터럴",
@@ -1310,6 +1310,16 @@
     "KAN-077-RA2SYG"
   ],
   "recent": [
+    {
+      "seq": 337,
+      "t": "2026-08-31T14:53",
+      "a": "ai",
+      "id": "KAN-077-RA2SYG",
+      "op": "move",
+      "w": "JJMGQR",
+      "from": "review",
+      "to": "done"
+    },
     {
       "seq": 336,
       "t": "2026-08-30T21:46",
@@ -1845,16 +1855,6 @@
       "w": "9X26DD",
       "with_": "KAN-072-CPJCT1",
       "reason": "scripts/tokens-baseline.json 은 커밋된 결정론적 생성물이고 갱신은 tokens:verify --update-baseline 하나가 한다 — src/styles/motion.css 와 같은 모양이다. KAN-070 이 만들고 KAN-072 가 부채를 갚으며 줄인다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹친다. (감사 문서 UI_CONSISTENCY_AUDIT.md 를 KAN-070 으로 옮기고 KAN-072 는 실제로 고치는 규칙 문서 셋만 갖도록 scope 를 조정해 재기록)"
-    },
-    {
-      "seq": 290,
-      "t": "2026-08-25T00:31",
-      "a": "ai",
-      "id": "KAN-070-DRF0QF",
-      "op": "move",
-      "w": "9X26DD",
-      "from": "todo",
-      "to": "doing"
     }
   ],
   "waivers": [
