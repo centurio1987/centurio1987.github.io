@@ -29,10 +29,15 @@
  *   bun scripts/compare-render.ts                      # 변경 파일 자동 감지 → 대응 글만 대조
  *   bun scripts/compare-render.ts --ns s3              # 병렬 시 네임스페이스(필수)
  *   bun scripts/compare-render.ts --pages /posts/tauri-2/
- *   bun scripts/compare-render.ts --self-test          # 고장 3종이 물리는지
+ *   bun scripts/compare-render.ts --self-test          # 하네스가 고장을 무는지 — 화면은 안 본다
+ *   bun scripts/compare-render.ts --summary            # 차이를 지면·속성으로 접어 판정용으로
  *   bun scripts/compare-render.ts --keep               # 사본·빌드를 남긴다
  *
- * 차이가 있으면 종료코드 1.
+ * 결말은 마지막 줄 하나가 말한다 (KAN-078).
+ *   차이가 있으면 종료코드 1, 없으면 0. 그리고 **전후를 실제로 안 잰 실행은 마지막 줄에
+ *   「대조 안 함」을 적는다** — `--self-test` 와 「변경 파일 없음」이 그렇다. 옛날에는 그 둘도
+ *   통과 문구로 끝나서 **대조를 한 번도 안 한 실행이 「✓ 전후 동일」을 받았다**(KAN-077 S8
+ *   실측). 그 구분은 매 실행 첫머리에 도는 `selfTestEnding()` 이 지킨다.
  */
 import { spawnSync } from "node:child_process";
 import { createServer, type Server } from "node:http";
