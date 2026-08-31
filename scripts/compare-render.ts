@@ -58,8 +58,8 @@ const VIEWPORTS = [
   { name: "mobile", width: 390, height: 844 },
 ];
 
-process.on("uncaughtException", (e) => { console.error("\n✗ 예외로 죽었다:", e); process.exit(3); });
-process.on("unhandledRejection", (e) => { console.error("\n✗ 안 잡힌 거부로 죽었다:", e); process.exit(3); });
+process.on("uncaughtException", (e) => { console.error("\n✗ 예외로 죽었다:", e); process.exit(3); });   // exit-ok
+process.on("unhandledRejection", (e) => { console.error("\n✗ 안 잡힌 거부로 죽었다:", e); process.exit(3); });   // exit-ok
 process.on("exit", (c) => { if (c !== 0 && c !== 1) console.error(`\n✗ 종료코드 ${c} 로 끝났다`); });
 
 const failures: string[] = [];
@@ -67,6 +67,125 @@ const notes: string[] = [];
 /** 즉시 나가는 진행 로그 — notes[] 는 끝에야 찍혀서 긴 실행의 정지 지점을 못 짚는다. */
 const t0 = Date.now();
 const log = (m: string) => console.error(`  [${String(Math.round((Date.now() - t0) / 1000)).padStart(4)}s] ${m}`);
+
+// ── 결말 — 「대조를 했는가」를 종료 지점 **하나가** 정한다 (KAN-078).
+//
+//    왜 함수 하나인가.
+//      갈래마다 자기 마지막 줄을 찍던 시절, `--self-test` 는 전후를 **한 번도 안 대조하고도**
+//      「✓ 전후 동일.」로 끝났다. 실측이 있다(KAN-077 S8) — 그 줄을 받은 직후 옵션만 빼고 다시
+//      돌리니 background-color 28건이 나왔고, 그 사이 코드는 한 글자도 안 바뀌었다. 이 도구는
+//      「값을 바꿨는데 화면이 안 바뀌었음」을 증명하려고 있는 것이라, 그 증명이 대조 없이
+//      통과하는 것은 도구가 스스로 막으려던 실패 그 자체다.
+//      **갈래를 고치는 것으로는 안 끝난다.** 마지막 줄이 갈래 공통인 한 다음에 종료 갈래가
+//      하나 더 생기면 같은 거짓이 그대로 다시 선다. 그래서 결말을 값 하나로 모은다 —
+//      `compared`(전후를 실제로 쟀는가) · 마지막 줄 · 종료코드를 `endOf()` 표가 함께 낸다.
+type EndMode = "compare" | "summary" | "selftest" | "no-files";
+type End = { compared: boolean; line: string; code: number };
+
+/** 통과 문구의 **유일한 생산 지점**. 갈래가 이 문구를 직접 찍으면 거짓 통과가 다시 선다. */
+const PASS = "✓ 전후 동일.";                      // pass-line
+/** 대조를 안 한 결말이 **반드시** 담는 말. 통과 문구와 눈으로 갈리는 자리가 이것 하나다. */
+const NOT_COMPARED = "대조 안 함";
+
+/** mode 와 셈(대조 차이 건수 · 자가검사 실패 종수) 하나로 결말이 정해진다. */
+function endOf(mode: EndMode, n: number): End {
+  switch (mode) {
+    case "compare":
+      return n
+        ? { compared: true, line: `✗ 전후가 다르다 — ${n}건.`, code: 1 }
+        : { compared: true, line: PASS, code: 0 };
+    case "summary":
+      // 요약도 대조는 실제로 했다. 차이가 있으면 1 이어야 머리주석의 계약과 맞는다.
+      return n
+        ? { compared: true, line: `✗ 요약 — 값이 움직인 자리 ${n}건. 통과가 아니다.`, code: 1 }
+        : { compared: true, line: `${PASS} (요약 모드 — 움직인 자리 0)`, code: 0 };
+    case "selftest":
+      // 하네스만 봤고 화면은 안 봤다. 그 말을 마지막 줄이 직접 한다.
+      return n
+        ? { compared: false, line: `✗ 자가검사 ${n}종 실패 (${NOT_COMPARED} — 하네스만 봤다).`, code: 1 }
+        : { compared: false, line: `✓ 자가검사 통과 (${NOT_COMPARED} — 전후를 재려면 옵션 없이 돌린다).`, code: 0 };
+    case "no-files":
+      return { compared: false, line: `· 변경 파일이 없다 (${NOT_COMPARED} — 잴 것이 없다).`, code: 0 };
+  }
+}
+
+/** 모든 경로가 여기로 끝난다. 마지막 줄은 언제나 이 함수가 찍는다. */
+function finish(mode: EndMode, n: number): never {
+  const e = endOf(mode, n);
+  console.log(`\n${e.line}`);
+  process.exit(e.code);   // exit-ok
+}
+
+/**
+ * 결말 자가검사 — **옵션과 무관하게 매 실행 첫머리에 돈다** (KAN-078).
+ *
+ *   왜 `--self-test` 뒤에 안 숨기는가. 이 스크립트가 저지른 고장이 바로 「자가검사를 돌렸다」와
+ *   「전후를 대조했다」를 사람이 헷갈린 것이다. 그 구분을 지키는 검사를 다시 옵션 뒤에 두면
+ *   같은 자리에 같은 함정을 판다. 빌드도 브라우저도 안 타므로 밀리초다.
+ *
+ *   다섯을 본다.
+ *     ① 모드마다 `compared` 가 맞는가 · 종료코드가 셈을 따르는가
+ *     ② `compared=false` 인 결말이 통과 문구를 안 쓰고 「대조 안 함」을 쓰는가
+ *     ③ **옛 결말(갈래 공통 한 줄)을 주입하면 ②가 무는가.** 검사가 죽으면 「줄었다」가 아니라
+ *        **「조용히 통과」**로 나타난다 — `verify-talk` 의 selfTestFaults() 와 같은 장치다
+ *     ④ `finish()` 를 안 지나는 `process.exit` 가 생겼는가 — 새 갈래가 표를 우회하는 길
+ *     ⑤ 통과 문구를 직접 찍는 자리가 또 생겼는가
+ *
+ *   물면 종료코드 3 이다. 결말을 못 믿는 채로 대조를 돌려 봐야 그 답도 못 믿는다.
+ */
+function selfTestEnding(): void {
+  const bad: string[] = [];
+  const check = (name: string, bit: boolean, detail: string) => {
+    if (!bit) bad.push(`${name} — ${detail}`);
+  };
+  /** ②의 규약. ③이 이 함수 자체를 옛 결말로 때려 본다. */
+  const speaksTruth = (e: End) =>
+    e.compared || (!e.line.includes("전후 동일") && e.line.includes(NOT_COMPARED));   // selftest-ok
+
+  const expect: [EndMode, boolean][] = [
+    ["compare", true], ["summary", true], ["selftest", false], ["no-files", false],
+  ];
+  let cases = 0;
+  for (const [mode, compared] of expect) {
+    for (const n of mode === "no-files" ? [0] : [0, 3]) {
+      const e = endOf(mode, n);
+      cases++;
+      check(`${mode}/${n} compared`, e.compared === compared, `${e.compared} (기대 ${compared})`);
+      check(`${mode}/${n} 종료코드`, e.code === (n ? 1 : 0), `${e.code} (기대 ${n ? 1 : 0})`);
+      check(`${mode}/${n} 문구`, speaksTruth(e), `"${e.line}"`);
+    }
+  }
+
+  // ③ 고장 주입 — KAN-077 S8 이 실제로 받은 그 결말이다(대조는 안 했는데 통과 문구).
+  cases++;
+  check(
+    "고장 재현 — 옛 결말(갈래 공통 한 줄)",
+    !speaksTruth({ compared: false, line: PASS, code: 0 }),
+    "문구 규약이 옛 결말을 통과시켰다 — 검사가 죽었다",
+  );
+
+  // ④·⑤ 소스 자기검사. 표를 우회하는 길이 다시 열렸는지 본다.
+  const src = readFileSync(new URL(import.meta.url), "utf-8").split("\n");
+  const hits = (re: RegExp, skip: RegExp) =>
+    src.map((l, i) => [i + 1, l] as const)
+       .filter(([, l]) => re.test(l) && !skip.test(l)).map(([i]) => i);
+  cases += 2;
+  const strayExit = hits(/process\.exit\(/, /exit-ok/);
+  check("종료 지점", strayExit.length === 0, `finish() 밖 process.exit — ${strayExit.join(", ")}줄`);
+  const strayPass = hits(/"[^"]*전후 동일/, /pass-line|selftest-ok/);
+  check("통과 문구 생산 지점", strayPass.length === 0, `PASS 밖에서 문구를 찍는다 — ${strayPass.join(", ")}줄`);
+
+  if (bad.length) {
+    console.error("\n✗ 결말 자가검사가 물었다 — 이 실행의 결말을 믿을 수 없다.");
+    for (const b of bad) console.error(`  ${b}`);
+    console.error(
+      "\n  고치는 법: 결말은 endOf() 표에서만 나온다. 갈래가 자기 마지막 줄을 직접 찍거나\n" +
+      "  finish() 를 안 지나는 process.exit 가 생기면, 그것이 곧 KAN-078 이 막은 거짓 통과다.",
+    );
+    process.exit(3);   // exit-ok
+  }
+  notes.push(`결말 자가검사 ${cases}건 통과 — 대조와 자가검사를 마지막 줄이 가른다`);
+}
 
 // ── 사본 자리. 레포 **밖**이다 — 안에 두면 tsc 가 두 벌로 훑고(실측 에러 4→2),
 //    `dist-s9` 같은 이름은 .gitignore 의 `dist` 정확 일치에 안 걸린다.
@@ -654,6 +773,8 @@ async function blindSpot(dist: string, pages: string[], hex: string, rgb: string
 }
 
 // ── main
+// **결말 자가검사가 맨 앞이다.** 결말을 못 믿으면 그 뒤로 무엇을 재도 그 답을 못 믿는다.
+selfTestEnding();
 // 지문을 **아무것도 만들기 전에** 뜬다 — 첫 makeCopy 뒤에 뜨면 그 한 번의 피해를 못 잡는다.
 assertRepoUntouched();
 const files = changedFiles();
@@ -663,24 +784,34 @@ mkdirSync(WORK, { recursive: true });
 console.log(`compare-render — ns=${NS} · 작업 자리 ${WORK}`);
 console.log(`변경 파일 ${files.length}개 · 대조 페이지 ${pages.length}쪽${widened ? " (범위 유도 실패로 전 글 대조)" : ""}`);
 
+// 갈래는 **무엇을 했는지만** 정한다. 끝내는 것은 finish() 하나다 — 갈래마다 마지막 줄을 찍던
+// 것이 KAN-078 이 막은 거짓 통과다.
+let mode: EndMode | undefined;
+let tally = 0;
+
 try {
   if (SELF_TEST) {
+    mode = "selftest";
     const st = await selfTest();
     for (const c of st) {
       console.log(`  ${c.bit ? "✓" : "✗"} ${c.name} — ${c.detail}`);
       if (!c.bit) failures.push(`자가검사 「${c.name}」 실패 — ${c.detail}`);
     }
     notes.push(`자가검사 ${st.length}종 — 통과 ${st.filter((c) => c.bit).length}`);
+    tally = st.filter((c) => !c.bit).length;
+  } else if (!files.length) {
+    mode = "no-files";
   } else {
-    if (!files.length) { console.log("변경 파일이 없다 — 대조할 것이 없다."); process.exit(0); }
     const A = join(WORK, "before"), B = join(WORK, "after");
     makeCopy(A, files);   // 내 파일만 HEAD 로
     makeCopy(B, []);      // 지금 상태 그대로
     build(A, "before"); build(B, "after");
     const diffs = await run(join(A, "dist"), join(B, "dist"), pages);
+    tally = diffs.length;
     if (SUMMARY) {
       // 판정용 요약 — "무엇이 얼마나 움직였나"를 지면과 속성으로 접는다.
       // 차이 목록을 그대로 내밀면 수백 줄이라 사람이 판정할 재료가 안 된다.
+      mode = "summary";
       const byPage = new Map<string, Map<string, number>>();
       const heights = new Map<string, [string, string]>();
       for (const d of diffs) {
@@ -697,15 +828,16 @@ try {
         const top = [...m].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([p, n]) => `${p} ${n}`).join(" · ");
         console.log(`  ${k}${hs}\n      ${top}`);
       }
-      process.exit(0);
-    }
-    if (diffs.length) {
-      for (const d of diffs.slice(0, 40)) {
-        failures.push(`${d.url} [${d.vp}/${d.state}] ${d.path}\n      ${d.prop}: ${d.before} → ${d.after}`);
-      }
-      if (diffs.length > 40) failures.push(`… 그리고 ${diffs.length - 40}건 더`);
     } else {
-      notes.push(`계산된 스타일 차이 0 — ${pages.length}쪽 × 뷰포트 ${VIEWPORTS.length} × 상태 최대 ${MAX_STATES + 1}`);
+      mode = "compare";
+      if (diffs.length) {
+        for (const d of diffs.slice(0, 40)) {
+          failures.push(`${d.url} [${d.vp}/${d.state}] ${d.path}\n      ${d.prop}: ${d.before} → ${d.after}`);
+        }
+        if (diffs.length > 40) failures.push(`… 그리고 ${diffs.length - 40}건 더`);
+      } else {
+        notes.push(`계산된 스타일 차이 0 — ${pages.length}쪽 × 뷰포트 ${VIEWPORTS.length} × 상태 최대 ${MAX_STATES + 1}`);
+      }
     }
   }
 } finally {
@@ -713,15 +845,19 @@ try {
   else notes.push(`--keep — 사본을 남겼다: ${WORK}`);
 }
 
+// 새 갈래가 mode 를 안 정하고 여기까지 오면 그것이 곧 다음 거짓 통과다 — 통과 대신 죽는다.
+if (!mode) throw new Error("결말 모드가 안 정해졌다 — 새 종료 갈래가 endOf() 표를 안 지났다.");
+
 for (const n of notes) console.log(`  · ${n}`);
 if (failures.length) {
-  console.error("\n✗ 전후가 다르다.");
+  console.error(`\n  ── 잡힌 것 ${failures.length}`);
   for (const f of failures) console.error(`  ${f}`);
-  console.error(
-    "\n  고치는 법: 위 자리의 var(--토큰) 이 실제로 그 값으로 풀리는지 본다. tokens.css 에\n" +
-    "  그 이름이 없으면 선언이 통째로 무효가 되어 속성이 떨어진다(에러 없이). 값을 일부러\n" +
-    "  바꾼 것이라면 이 스크립트로 재는 구간이 아니다 — 무엇이 얼마나 바뀌는지 판정표에 적어라.",
-  );
-  process.exit(1);
+  if (mode === "compare") {
+    console.error(
+      "\n  고치는 법: 위 자리의 var(--토큰) 이 실제로 그 값으로 풀리는지 본다. tokens.css 에\n" +
+      "  그 이름이 없으면 선언이 통째로 무효가 되어 속성이 떨어진다(에러 없이). 값을 일부러\n" +
+      "  바꾼 것이라면 이 스크립트로 재는 구간이 아니다 — 무엇이 얼마나 바뀌는지 판정표에 적어라.",
+    );
+  }
 }
-console.log("\n✓ 전후 동일.");
+finish(mode, tally);
