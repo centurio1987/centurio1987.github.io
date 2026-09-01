@@ -48,8 +48,8 @@ Astro static site. Source lives entirely under `src/`; `public/` is served at th
     categories.ts        # 8 category slugs → {label, color}; single source of truth
     format.ts            # date / reading-time helpers
   styles/
-    tokens.css           # design tokens (DESIGN_CONCEPT.md v0.2)
-    global.css           # base styles, fonts (Pretendard/JetBrains Mono), sketch underline
+    tokens.css           # design tokens (DESIGN_CONCEPT.md v0.3)
+    global.css           # base styles, fonts (Jua/Gowun Dodum/Gaegu/Space Mono/JetBrains Mono), sketch underline
   layouts/               # BaseLayout, PostLayout
   components/            # Header, Footer, PostList, CategoryBadge, Logo
     motifs/              # hand-drawn SVGs: Sparkle, Squiggle, Mascot

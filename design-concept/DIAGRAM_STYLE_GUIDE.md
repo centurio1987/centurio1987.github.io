@@ -49,11 +49,11 @@ viz 시각물은 일반 일러스트가 아니라, 글의 논리 구조를 독�
 
 React/SVG/HTML 다이어그램 컴포넌트를 만들 때:
 
-- 글꼴: Pretendard 계열.
-- 라벨: 13-15px, 500-700 weight.
-- 보조 라벨: 12-13px, `ink-2`.
+- 글꼴: `--font-body`(Gowun Dodum). **Pretendard 는 v0.2 의 값이고 지금 어디에도 없다.**
+- 라벨: `--text-meta`~`--text-small`(13~15px), `--font-weight-medium`~`--font-weight-bold`(500~700).
+- 보조 라벨: `--text-meta`~`--text-label`(12~13px), `ink-2`.
 - 줄 수: 노드당 1-2줄, 줄당 12자 안팎.
-- 코드·타입 이름: JetBrains Mono 또는 mono fallback.
+- 코드·타입 이름: `--font-code`(JetBrains Mono, 한글은 Gowun Dodum 으로 떨어진다 — DESIGN_CONCEPT §5).
 
 3차 산출물용 이미지로 export할 때:
 
