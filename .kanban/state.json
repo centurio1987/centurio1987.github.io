@@ -1,6 +1,6 @@
 {
   "next_id": 81,
-  "next_seq": 348,
+  "next_seq": 349,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1271,12 +1271,12 @@
       "memo_hash": "9f6a2e49b20edfdaf3abacff17f14156f0af81cf"
     },
     "KAN-080-WTQ7AV": {
-      "col": "todo",
+      "col": "doing",
       "title": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.",
       "verbatim": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.",
       "생성": "유저",
       "최종": "ai",
-      "갱신": "2026-08-31",
+      "갱신": "2026-09-01",
       "title_hash": "24d1a6e7b2ac4be83e486e039ec9dae7efa4019f",
       "verbatim_hash": "24d1a6e7b2ac4be83e486e039ec9dae7efa4019f",
       "memo": "",
@@ -1313,7 +1313,6 @@
     "KAN-079-1QVHJ2",
     "KAN-048",
     "KAN-065",
-    "KAN-080-WTQ7AV",
     "KAN-001",
     "KAN-002",
     "KAN-003",
@@ -1387,9 +1386,20 @@
     "KAN-075-7DF37H",
     "KAN-076-X1C8PY",
     "KAN-077-RA2SYG",
-    "KAN-078-D44PD1"
+    "KAN-078-D44PD1",
+    "KAN-080-WTQ7AV"
   ],
   "recent": [
+    {
+      "seq": 348,
+      "t": "2026-09-01T15:14",
+      "a": "ai",
+      "id": "KAN-080-WTQ7AV",
+      "op": "move",
+      "w": "WT5WYG",
+      "from": "todo",
+      "to": "doing"
+    },
     {
       "seq": 347,
       "t": "2026-09-01T15:07",
@@ -1947,16 +1957,6 @@
       "field": "title",
       "before": "UI 토큰 정합화 — 게이트가 무는 1,395건을 구획 단위로 0 으로 줄인다",
       "after": "UI 토큰 정합화 — 게이트가 무는 1,786건을 구획 단위로 0 으로 줄인다"
-    },
-    {
-      "seq": 301,
-      "t": "2026-08-27T03:01",
-      "a": "ai",
-      "id": "KAN-072.2-BF75X5",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "backlog",
-      "to": "doing"
     }
   ],
   "waivers": [
