@@ -1,6 +1,6 @@
 {
   "next_id": 81,
-  "next_seq": 347,
+  "next_seq": 348,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1288,7 +1288,20 @@
       "reason": "타이포 토큰이 폰트·크기 두 축뿐이라 행간 59자리(21종)·자간 44자리(20종)·굵기 5종이 관리 밖이고, 게이트도 UNITLESS_PROPS 로 행간·굵기를 안 본다",
       "reason_hash": "57f1f0dd223cfcc87367d1e144c9ff39d5657d8c",
       "goal": "굵기·행간·자간이 역할 토큰으로 서고 게이트 인식층에 들어가며, raw monospace 35자리가 --font-mono·--font-code 로 모여 지면마다 갈리던 글자 조합이 한 벌로 수렴한다",
-      "goal_hash": "56d59a40b3fb9a42f21d55be3e0c42d143801098"
+      "goal_hash": "56d59a40b3fb9a42f21d55be3e0c42d143801098",
+      "scope": [
+        "src/**",
+        "design-concept/**",
+        "scripts/lib/tokens/**",
+        "scripts/verify-tokens.ts",
+        "scripts/tokens-baseline.json",
+        "scripts/fixtures/tokens/**",
+        "scripts/check-recognize-invariant.ts",
+        "scripts/compare-render.ts",
+        "scripts/render-viz.ts",
+        ".claude/skills/react-sim/assets/REACT_SIM_GUIDE.md",
+        "AGENTS.md"
+      ]
     }
   },
   "order": [
@@ -1377,6 +1390,16 @@
     "KAN-078-D44PD1"
   ],
   "recent": [
+    {
+      "seq": 347,
+      "t": "2026-09-01T15:07",
+      "a": "유저",
+      "id": "KAN-079-1QVHJ2",
+      "op": "serialize",
+      "w": "WTCH92",
+      "with_": "KAN-080-WTQ7AV",
+      "reason": "둘 다 scripts/lib/tokens/** 와 scripts/tokens-baseline.json 을 고친다. KAN-080 이 글자 축 셋을 게이트 판정 대상으로 열면 위반이 비0 이 되는데, KAN-079 가 먼저 하드월로 승격해 있으면 그 순간 CI 가 빨개지고 게이트가 astro build 앞에 돌며 deploy 가 needs: build 라 사이트 배포가 멈춘다. 유저 판정 2026-08-31."
+    },
     {
       "seq": 346,
       "t": "2026-08-31T16:26",
@@ -1934,16 +1957,6 @@
       "w": "Q4EWPR",
       "from": "backlog",
       "to": "doing"
-    },
-    {
-      "seq": 300,
-      "t": "2026-08-27T01:50",
-      "a": "ai",
-      "id": "KAN-072.7-D6DCXJ",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "todo",
-      "to": "doing"
     }
   ],
   "waivers": [
@@ -1953,6 +1966,20 @@
       "reason": "scripts/tokens-baseline.json 은 커밋된 결정론적 생성물이고 갱신은 tokens:verify --update-baseline 하나가 한다 — src/styles/motion.css 와 같은 모양이다. KAN-070 이 만들고 KAN-072 가 부채를 갚으며 줄인다. 그 파일 밖으로는 두 루트가 한 경로도 안 겹친다. (감사 문서 UI_CONSISTENCY_AUDIT.md 를 KAN-070 으로 옮기고 KAN-072 는 실제로 고치는 규칙 문서 셋만 갖도록 scope 를 조정해 재기록)",
       "created": "2026-08-25T12:25",
       "by": "유저"
+    }
+  ],
+  "serials": [
+    {
+      "pair": "KAN-079-1QVHJ2|KAN-080-WTQ7AV",
+      "order": [
+        "KAN-080-WTQ7AV",
+        "KAN-079-1QVHJ2"
+      ],
+      "scope_hash": "cdcf58d73bb8a4fd",
+      "reason": "둘 다 scripts/lib/tokens/** 와 scripts/tokens-baseline.json 을 고친다. KAN-080 이 글자 축 셋을 게이트 판정 대상으로 열면 위반이 비0 이 되는데, KAN-079 가 먼저 하드월로 승격해 있으면 그 순간 CI 가 빨개지고 게이트가 astro build 앞에 돌며 deploy 가 needs: build 라 사이트 배포가 멈춘다. 유저 판정 2026-08-31.",
+      "created": "2026-09-01T15:07",
+      "by": "유저",
+      "restrategy_required": false
     }
   ]
 }

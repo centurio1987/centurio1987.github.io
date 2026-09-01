@@ -300,3 +300,4 @@
 {"seq": 297, "t": "2026-08-27T01:10", "a": "ai", "id": "KAN-072-CPJCT1", "op": "edit", "w": "WTCH92", "field": "title", "before": "UI 토큰 정합화 — 위반 1,567건을 카드 단위로 0 으로 줄인다", "after": "UI 토큰 정합화 — 게이트가 무는 1,395건을 구획 단위로 0 으로 줄인다"}
 {"seq": 298, "t": "2026-08-27T01:49", "a": "ai", "id": "KAN-072-CPJCT1", "op": "move", "w": "Q4EWPR", "from": "todo", "to": "doing"}
 {"seq": 299, "t": "2026-08-27T01:49", "a": "ai", "id": "KAN-072.3-SC3ADV", "op": "move", "w": "Q4EWPR", "from": "backlog", "to": "done"}
+{"seq": 300, "t": "2026-08-27T01:50", "a": "ai", "id": "KAN-072.7-D6DCXJ", "op": "move", "w": "Q4EWPR", "from": "todo", "to": "doing"}
