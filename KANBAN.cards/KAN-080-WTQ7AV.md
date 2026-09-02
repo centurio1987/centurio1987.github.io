@@ -8,7 +8,6 @@ scope: src/**, design-concept/**, scripts/lib/tokens/**, scripts/verify-tokens.t
 # KAN-080-WTQ7AV — 타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.
 
 ## 전략
-## 전략
 ### 무엇이 문제인가 — 네 축 중 하나만 서 있다
 
 `src/styles/tokens.css:215-241` 이 정의하는 것은 **서체 5종과 크기 10단**뿐이다. **굵기·행간·자간 토큰은 0개**다.
@@ -129,7 +128,6 @@ scope: src/**, design-concept/**, scripts/lib/tokens/**, scripts/verify-tokens.t
 
 플랜 전문(리스크·배치 2안 포함): `~/.claude/plans/kan-080-wtq7av-snoopy-pony.md`. `plan-reviewer` 검토 10건을 전부 반영한 판이다.
 
-## 실행 계획
 ## 실행 계획
 work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 
