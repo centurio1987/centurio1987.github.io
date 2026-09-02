@@ -185,7 +185,7 @@ function tapeMetrics(name: string) {
     align-items: center;
     gap: var(--space-6);
     font-size: var(--text-meta);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     color: var(--ink-3);
   }
   .post-cat {
@@ -224,8 +224,8 @@ function tapeMetrics(name: string) {
     font-weight: var(--font-weight-regular);
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    line-height: 1;
-    letter-spacing: 0.5px;
+    line-height: var(--font-leading-flat);
+    letter-spacing: var(--font-track-label);
     color: var(--accent);
     border: var(--stroke-hair) solid var(--accent);
     border-radius: var(--btn-radius);
@@ -233,8 +233,8 @@ function tapeMetrics(name: string) {
   }
   .post-title {
     font-size: var(--text-h3);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-tight);
     /* 시리즈 스티커가 제목 칸을 좁히는 만큼 줄바꿈이 잦아진다 — 한국어는 어절
        단위로 끊고(keep-all), 끊을 데 없는 긴 라틴 토큰만 예외로 쪼갠다. */
     word-break: keep-all;
@@ -301,8 +301,11 @@ function tapeMetrics(name: string) {
     font-family: var(--font-mono);
     /* 이름이 길수록 작아진다(12 → 11 → 10 → 9px). 주입값은 tapeMetrics() 산정. */
     font-size: var(--tape-font, 12px);
-    line-height: 1;
-    letter-spacing: 0.1em;
+    line-height: var(--font-leading-flat);
+    /* 0.1em 이던 자리다. 이 상자는 `SER.`(라틴 캡스)과 시리즈명(한글)을 같이 담는데
+       한 요소 안에서 둘의 자간을 나눌 수단이 CSS 에 없다 — §5 대로 한글 기준으로
+       고른다(wide 에서 한 단 아래). `VPN의 해부` 가 §5 가 이름으로 든 자리다. */
+    letter-spacing: var(--font-track-label);
     color: var(--pop-ink);
     white-space: nowrap;
   }
@@ -332,14 +335,14 @@ function tapeMetrics(name: string) {
     align-self: center;
     font-family: var(--font-mono);
     font-size: var(--text-h3);
-    line-height: 1;
+    line-height: var(--font-leading-flat);
   }
   .st-total {
     align-self: center;
     padding-top: var(--space-6);
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    line-height: 1;
+    line-height: var(--font-leading-flat);
     opacity: 0.6;
   }
   /* 떼어짐 — 항목 전체가 링크이므로 트리거도 항목 단위로 잡는다(키보드 포함) */
