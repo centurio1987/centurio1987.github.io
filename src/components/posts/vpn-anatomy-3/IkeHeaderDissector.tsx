@@ -79,7 +79,7 @@ export default function IkeHeaderDissector() {
   return (
     <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-sm)" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-12)", alignItems: "center", marginBottom: "var(--space-14)" }}>
-        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)" }}>
           Exchange Type{" "}
           <select
             value={exchange}
@@ -122,9 +122,9 @@ export default function IkeHeaderDissector() {
           <tbody>
             {rows.map((r) => (
               <tr key={r.offset} style={{ background: r.live ? tint(ACCENT, 9.4) : "transparent" }}>
-                <td style={{ padding: "var(--space-6) var(--space-8)", color: MUTED, fontFamily: "monospace", whiteSpace: "nowrap", verticalAlign: "top" }}>{r.offset}</td>
-                <td style={{ padding: "var(--space-6) var(--space-8)", color: INK, fontWeight: r.live ? 700 : 500, verticalAlign: "top" }}>{r.field}</td>
-                <td style={{ padding: "var(--space-6) var(--space-8)", fontFamily: "monospace", color: r.live ? ACCENT : INK, fontWeight: r.live ? 700 : 400, whiteSpace: "nowrap", verticalAlign: "top" }}>{r.bytes}</td>
+                <td style={{ padding: "var(--space-6) var(--space-8)", color: MUTED, fontFamily: "var(--font-code)", whiteSpace: "nowrap", verticalAlign: "top" }}>{r.offset}</td>
+                <td style={{ padding: "var(--space-6) var(--space-8)", color: INK, fontWeight: r.live ? "var(--font-weight-bold)" : "var(--font-weight-medium)", verticalAlign: "top" }}>{r.field}</td>
+                <td style={{ padding: "var(--space-6) var(--space-8)", fontFamily: "var(--font-code)", color: r.live ? ACCENT : INK, fontWeight: r.live ? "var(--font-weight-bold)" : "var(--font-weight-regular)", whiteSpace: "nowrap", verticalAlign: "top" }}>{r.bytes}</td>
                 <td style={{ padding: "var(--space-6) var(--space-8)", color: MUTED, verticalAlign: "top" }}>{r.note}</td>
               </tr>
             ))}
@@ -132,12 +132,12 @@ export default function IkeHeaderDissector() {
         </table>
       </div>
 
-      <p style={{ marginTop: "var(--space-12)", marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: "var(--radius-sm)", fontSize: "var(--text-meta)", lineHeight: 1.7, color: OK, background: tint(OK, 7.1), border: `${HAIR} solid ${tint(OK, 26.7)}` }}>
-        지금 Flags 바이트 = <strong style={{ fontFamily: "monospace" }}>0x{hex1(flags)}</strong> ({role} · {dir}).
-        캡처의 프레임 1은 <strong style={{ fontFamily: "monospace" }}>0x08</strong>(개시자·요청), 프레임 2는 <strong style={{ fontFamily: "monospace" }}>0x20</strong>(응답자·응답)이었습니다.
+      <p style={{ marginTop: "var(--space-12)", marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: "var(--radius-sm)", fontSize: "var(--text-meta)", lineHeight: "var(--font-leading-read)", color: OK, background: tint(OK, 7.1), border: `${HAIR} solid ${tint(OK, 26.7)}` }}>
+        지금 Flags 바이트 = <strong style={{ fontFamily: "var(--font-code)" }}>0x{hex1(flags)}</strong> ({role} · {dir}).
+        캡처의 프레임 1은 <strong style={{ fontFamily: "var(--font-code)" }}>0x08</strong>(개시자·요청), 프레임 2는 <strong style={{ fontFamily: "var(--font-code)" }}>0x20</strong>(응답자·응답)이었습니다.
       </p>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.75 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: "var(--font-leading-read)" }}>
         금색 두 줄(오프셋 18·19)만 위 버튼으로 바뀝니다. 나머지 26바이트는 협상 내내 자리가 고정입니다.
         SPI·Length는 실제 캡처값(합성)을 그대로 뒀습니다 — 값 자체는 매 실행 달라지지만 <strong>자리</strong>는 바뀌지 않습니다.
       </figcaption>

@@ -92,8 +92,8 @@ export default function ProposalTreeBuilder() {
         })}
       </div>
 
-      <div style={{ background: PANEL, borderRadius: "var(--radius-sm)", border: `${HAIR} solid ${tint(INK, 9.4)}`, padding: "var(--space-14)", fontFamily: "monospace", fontSize: "var(--text-meta)", lineHeight: 1.7, color: INK, overflowX: "auto" }}>
-        <div style={{ color: CORE, fontWeight: 700 }}>
+      <div style={{ background: PANEL, borderRadius: "var(--radius-sm)", border: `${HAIR} solid ${tint(INK, 9.4)}`, padding: "var(--space-14)", fontFamily: "var(--font-code)", fontSize: "var(--text-meta)", lineHeight: "var(--font-leading-read)", color: INK, overflowX: "auto" }}>
+        <div style={{ color: CORE, fontWeight: "var(--font-weight-bold)" }}>
           SA payload · length {saPayloadLen}
         </div>
         <div style={{ paddingLeft: "var(--space-16)" }}>
@@ -106,30 +106,30 @@ export default function ProposalTreeBuilder() {
         ))}
       </div>
 
-      <div style={{ marginTop: "var(--space-12)", fontSize: "var(--text-meta)", color: INK, lineHeight: 1.9 }}>
+      <div style={{ marginTop: "var(--space-12)", fontSize: "var(--text-meta)", color: INK, lineHeight: "var(--font-leading-read)" }}>
         <div>
           변환 길이 합계:{" "}
-          <strong style={{ fontFamily: "monospace" }}>
+          <strong style={{ fontFamily: "var(--font-code)" }}>
             {selected.map((t) => t.len).join(" + ")} = {transformsBytes}
           </strong>
         </div>
         <div>
           + Proposal 고정부 8:{" "}
-          <strong style={{ fontFamily: "monospace", color: ACCENT }}>
+          <strong style={{ fontFamily: "var(--font-code)", color: ACCENT }}>
             {transformsBytes} + 8 = {proposalLen}
           </strong>{" "}
           = Proposal Length
         </div>
         <div>
           + Generic Payload Header 4:{" "}
-          <strong style={{ fontFamily: "monospace", color: ACCENT }}>
+          <strong style={{ fontFamily: "var(--font-code)", color: ACCENT }}>
             {proposalLen} + 4 = {saPayloadLen}
           </strong>{" "}
           = SA Payload Length
         </div>
       </div>
 
-      <p style={{ marginTop: "var(--space-12)", marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: "var(--radius-sm)", fontSize: "var(--text-meta)", lineHeight: 1.7, color: redundantInteg ? DANGER : OK, background: tint(redundantInteg ? DANGER : OK, 7.1), border: `${HAIR} solid ${tint(redundantInteg ? DANGER : OK, 26.7)}` }}>
+      <p style={{ marginTop: "var(--space-12)", marginBottom: 0, padding: "var(--space-8) var(--space-10)", borderRadius: "var(--radius-sm)", fontSize: "var(--text-meta)", lineHeight: "var(--font-leading-read)", color: redundantInteg ? DANGER : OK, background: tint(redundantInteg ? DANGER : OK, 7.1), border: `${HAIR} solid ${tint(redundantInteg ? DANGER : OK, 26.7)}` }}>
         {redundantInteg
           ? "AES-GCM은 이미 암호화와 무결성을 한 몸으로 처리하는 AEAD입니다. INTEG 변환을 따로 넣으면 대개 거부되거나 무시됩니다 — 캡처에서 INTEG 칸이 비어 있던 이유입니다."
           : matchesCapture
@@ -137,7 +137,7 @@ export default function ProposalTreeBuilder() {
             : "변환을 켜고 끌 때마다 아래 두 길이가 정확히 그만큼 움직입니다. 길이는 외우는 값이 아니라 더해지는 값입니다."}
       </p>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.75 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: "var(--font-leading-read)" }}>
         Transform은 고정부 8옥텟이지만, ENCR은 Key Length 속성(4옥텟)이 붙어 12가 됩니다. Proposal 고정부 8옥텟과
         Generic Payload Header 4옥텟이 그 위에 얹혀, 캡처의 <strong>40</strong>이라는 SA payload length가 덧셈 한 줄로 설명됩니다.
       </figcaption>

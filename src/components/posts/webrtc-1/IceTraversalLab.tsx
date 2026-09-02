@@ -62,7 +62,7 @@ export default function IceTraversalLab() {
     cursor: "pointer",
     fontSize: "var(--text-meta)",
     textAlign: "left",
-    lineHeight: 1.4,
+    lineHeight: "var(--font-leading-sub)",
   });
 
   return (
@@ -75,7 +75,7 @@ export default function IceTraversalLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         네트워크 조건을 토글해 후보 수집과 경로 선택이 어떻게 달라지는지 보세요.
       </p>
 
@@ -153,7 +153,7 @@ export default function IceTraversalLab() {
               borderRadius: "var(--radius-sm)",
               background: c.gathered ? PANEL : IDLE,
               opacity: c.gathered ? 1 : 0.7,
-              lineHeight: 1.55,
+              lineHeight: "var(--font-leading-ui)",
             }}
           >
             <strong style={{ color: typeColor[c.type] }}>
@@ -172,7 +172,7 @@ export default function IceTraversalLab() {
           border: `${HAIR} solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
           background: PANEL,
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
         }}
       >
         <p style={{ margin: "0 0 var(--space-6, 6px)" }}>
@@ -186,7 +186,7 @@ export default function IceTraversalLab() {
         <p style={{ margin: 0, fontSize: "var(--text-meta)" }}>{result.selectedReason}</p>
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         교육용 개념 모델입니다(브라우저 실제 ICE 구현 재현 아님). 산식: host&gt;srflx&gt;relay의 type
         preference로 단순화하고, srflx 성사는 "UDP 허용 + 매핑 endpoint-independent + 필터링 비대상의존"일 때만
         통한다고 가정합니다. {result.caveat}

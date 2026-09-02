@@ -122,7 +122,7 @@ export default function AntiReplayLab() {
   return (
     <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-sm)" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-12)", alignItems: "center", marginBottom: "var(--space-12)" }}>
-        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)" }}>
           윈도우 크기{" "}
           <select
             value={size}
@@ -135,7 +135,7 @@ export default function AntiReplayLab() {
             <option value={64}>64비트 (권장)</option>
           </select>
         </label>
-        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)" }}>
           받을 시퀀스{" "}
           <input
             type="number"
@@ -205,7 +205,7 @@ export default function AntiReplayLab() {
         })}
       </div>
 
-      <div style={{ fontSize: "var(--text-meta)", color: INK, lineHeight: 1.8 }}>
+      <div style={{ fontSize: "var(--text-meta)", color: INK, lineHeight: "var(--font-leading-read)" }}>
         <span style={{ marginRight: "var(--space-14)" }}>
           윈도우: <strong>[{left} … {right}]</strong>
         </span>
@@ -225,7 +225,7 @@ export default function AntiReplayLab() {
             padding: "var(--space-8) var(--space-10)",
             borderRadius: "var(--radius-sm)",
             fontSize: "var(--text-meta)",
-            lineHeight: 1.7,
+            lineHeight: "var(--font-leading-read)",
             color: verdict.color,
             background: tint(verdict.color, 7.1),
             border: `${HAIR} solid ${tint(verdict.color, 26.7)}`,
@@ -235,7 +235,7 @@ export default function AntiReplayLab() {
         </p>
       )}
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.75 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: "var(--font-leading-read)" }}>
         파란 칸 = 이미 받은 시퀀스, 금색 테두리 = 윈도우 우측 가장자리. "다음 순번"을 계속 누르면 패킷 하나마다 시프트가 1회씩
         쌓입니다 — RFC 6479가 없애려 한 비용이 바로 이 숫자입니다. (여기 들어오는 패킷은 모두 무결성 검증을 통과했다고 가정합니다.
         실제 구현은 검증에 성공한 뒤에만 이 윈도우를 갱신합니다.)

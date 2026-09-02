@@ -209,7 +209,7 @@ export default function LoopbackNegotiationDemo() {
           background: PANEL,
         }}
       >
-        <p style={{ margin: 0, color: DANGER, lineHeight: 1.6 }}>
+        <p style={{ margin: 0, color: DANGER, lineHeight: "var(--font-leading-ui)" }}>
           이 환경에서는 <code>RTCPeerConnection</code> API가 없어 실습을 띄울 수 없습니다.
         </p>
       </figure>
@@ -226,7 +226,7 @@ export default function LoopbackNegotiationDemo() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         한 탭 안에서 두 RTCPeerConnection이 협상하는 모습을 직접 돌려봅니다.
       </p>
 
@@ -241,7 +241,7 @@ export default function LoopbackNegotiationDemo() {
             // 최근접 --cat-quality 가 Δ47.7 로 멀어 밀지 않고 --ink-notice 를 세웠다(KAN-072 배치7).
             color: NOTICE_INK,
             fontSize: "var(--text-meta)",
-            lineHeight: 1.55,
+            lineHeight: "var(--font-leading-ui)",
           }}
         >
           참고: 지금 보안 컨텍스트(HTTPS/localhost)가 아닙니다. DataChannel-only 협상은 대개 동작하지만, 카메라·마이크가
@@ -261,7 +261,7 @@ export default function LoopbackNegotiationDemo() {
             background: REACHED,
             cursor: "pointer",
             color: INK,
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
           }}
         >
           협상 시작
@@ -325,7 +325,7 @@ export default function LoopbackNegotiationDemo() {
           background: PANEL,
           padding: "var(--space-8, 8px) var(--space-10, 10px)",
           fontSize: "var(--text-label)",
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
         }}
       >
         {logs.length === 0 ? (
@@ -340,7 +340,7 @@ export default function LoopbackNegotiationDemo() {
         )}
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         이 실습은 <strong>협상 API 실습</strong>입니다. 같은 origin·같은 장비라 NAT/STUN/TURN 트래버설 문제는 재현하지
         못합니다(그건 위 시뮬레이션과 진단 절에서 다룹니다). 여기서 관찰할 것은 createOffer/Answer →
         setLocal/RemoteDescription → onicecandidate 교환 → 연결 성사로 이어지는 협상 절차 그 자체입니다. 이 데모는

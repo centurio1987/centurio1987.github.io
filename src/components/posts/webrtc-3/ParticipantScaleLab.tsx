@@ -65,7 +65,7 @@ function Bar({
           }}
         />
       </div>
-      <span style={{ fontSize: "var(--text-meta)", color: INK, fontFamily: "monospace", textAlign: "right" }}>
+      <span style={{ fontSize: "var(--text-meta)", color: INK, fontFamily: "var(--font-code)", textAlign: "right" }}>
         {valueLabel}
       </span>
     </div>
@@ -102,7 +102,7 @@ export default function ParticipantScaleLab() {
         background: PANEL,
       }}
     >
-      <label style={{ display: "block", marginBottom: "var(--space-16)", fontWeight: 600, color: INK }}>
+      <label style={{ display: "block", marginBottom: "var(--space-16)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         참가자 수(N): {participants}명
         <input
           type="range"
@@ -153,7 +153,7 @@ export default function ParticipantScaleLab() {
         })}
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-12)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-12)", lineHeight: "var(--font-leading-ui)" }}>
         교육용 개념 모델입니다(실제 SFU/MCU 구현 수치 재현 아님). 1인당 발신 스트림을{" "}
         {PER_STREAM_KBPS.toLocaleString()}kbps로 가정합니다. mesh는 업로드·다운로드가 모두 (N-1)에 비례해
         늘어나고, SFU는 업로드가 고정값(1×)인 대신 다운로드는 여전히 (N-1)에 비례합니다(다만 실제로는

@@ -84,7 +84,7 @@ function acceptedBy(peer: Peer, ip: string): string | null {
 
 const btn = (active: boolean): CSSProperties => ({
   fontSize: "var(--text-meta)",
-  fontWeight: 600,
+  fontWeight: "var(--font-weight-bold)",
   padding: "var(--space-6) var(--space-12)",
   borderRadius: "var(--radius-sm)",
   border: `${HAIR} solid ${active ? INK : tint(INK, 20)}`,
@@ -120,9 +120,9 @@ export default function CryptokeyRoutingLab() {
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--text-meta)", marginBottom: "var(--space-16)" }}>
         <thead>
           <tr style={{ color: MUTED, textAlign: "left" }}>
-            <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: 600 }}>피어</th>
-            <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: 600 }}>공개키</th>
-            <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: 600 }}>Allowed IPs</th>
+            <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: "var(--font-weight-bold)" }}>피어</th>
+            <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: "var(--font-weight-bold)" }}>공개키</th>
+            <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: "var(--font-weight-bold)" }}>Allowed IPs</th>
           </tr>
         </thead>
         <tbody>
@@ -131,9 +131,9 @@ export default function CryptokeyRoutingLab() {
               (mode === "out" && outResult?.peer.id === p.id) || (mode === "in" && p.id === peerId);
             return (
               <tr key={p.id} style={{ background: lit ? PANEL : "transparent" }}>
-                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontWeight: 600, borderLeft: `var(--stroke-bold) solid ${lit ? CORE : "transparent"}` }}>{p.name}</td>
-                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontFamily: "monospace" }}>{p.key}</td>
-                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontFamily: "monospace" }}>
+                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontWeight: "var(--font-weight-bold)", borderLeft: `var(--stroke-bold) solid ${lit ? CORE : "transparent"}` }}>{p.name}</td>
+                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontFamily: "var(--font-code)" }}>{p.key}</td>
+                <td style={{ padding: "var(--space-4) var(--space-6)", color: INK, fontFamily: "var(--font-code)" }}>
                   {p.allowed.map((c) => {
                     const hit =
                       (mode === "out" && outResult?.peer.id === p.id && outResult?.cidr === c) ||
@@ -173,7 +173,7 @@ export default function CryptokeyRoutingLab() {
 
       {mode === "out" ? (
         <div>
-          <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "var(--space-8)" }}>
+          <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)", display: "inline-flex", alignItems: "center", gap: "var(--space-8)" }}>
             목적지 IP
             <select value={destIp} onChange={(e) => setDestIp(e.target.value)} style={sel}>
               {CANDIDATE_IPS.map((ip) => (
@@ -209,7 +209,7 @@ export default function CryptokeyRoutingLab() {
       ) : (
         <div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-14)", alignItems: "center" }}>
-            <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "var(--space-8)" }}>
+            <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)", display: "inline-flex", alignItems: "center", gap: "var(--space-8)" }}>
               복호에 쓰인 키
               <select value={peerId} onChange={(e) => setPeerId(e.target.value)} style={sel}>
                 {PEERS.map((p) => (
@@ -219,7 +219,7 @@ export default function CryptokeyRoutingLab() {
                 ))}
               </select>
             </label>
-            <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "var(--space-8)" }}>
+            <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)", display: "inline-flex", alignItems: "center", gap: "var(--space-8)" }}>
               패킷이 주장하는 소스 IP
               <select value={srcIp} onChange={(e) => setSrcIp(e.target.value)} style={sel}>
                 {CANDIDATE_IPS.map((ip) => (
@@ -254,7 +254,7 @@ export default function CryptokeyRoutingLab() {
         </div>
       )}
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.75 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: "var(--font-leading-read)" }}>
         같은 표가 두 방향으로 쓰입니다. 나가는 패킷은 목적지 IP로 <b>암호화에 쓸 세션 키(즉 어느 피어)를 고르고</b>(라우팅), 들어오는
         패킷은 복호에 쓰인 세션 키의 피어에 허용된 Allowed IP에 <b>소스 IP가 들어야만 수락</b>합니다(인증). "들어오는 패킷" 모드에서 <b>피어 B · 소스 IP
         10.192.122.3</b>(피어 A의 몫)을 골라 보십시오 — 복호는 됐지만 사칭이라 폐기됩니다.

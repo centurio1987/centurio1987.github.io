@@ -157,7 +157,7 @@ export default function ObserverView() {
             border: `${HAIR} solid ${INK}`,
             background: tunnel ? CORE : PAPER,
             color: tunnel ? PANEL : INK,
-            fontWeight: 700,
+            fontWeight: "var(--font-weight-bold)",
             cursor: "pointer",
           }}
         >
@@ -224,7 +224,7 @@ export default function ObserverView() {
                     padding: "var(--space-8) var(--space-10)",
                     borderTop: `${HAIR} solid ${SUBTLE}`,
                     width: "42%",
-                    fontWeight: 600,
+                    fontWeight: "var(--font-weight-bold)",
                     color: INK,
                     verticalAlign: "top",
                   }}
@@ -247,7 +247,7 @@ export default function ObserverView() {
                       background: tone.bg,
                       color: tone.fg,
                       fontSize: "var(--text-label)",
-                      fontWeight: 700,
+                      fontWeight: "var(--font-weight-bold)",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -261,7 +261,7 @@ export default function ObserverView() {
         </tbody>
       </table>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-10)", lineHeight: 1.6 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         터널을 켜면 <strong>경로 관찰자</strong>에게서 목적지와 방문 도메인이 가려집니다. 그 정보는 사라지는 게 아니라{" "}
         <strong>VPN 게이트웨이 운영자</strong>의 칸으로 옮겨갑니다. 추적 스크립트 칸은 터널과 무관하게 그대로입니다.
       </figcaption>
