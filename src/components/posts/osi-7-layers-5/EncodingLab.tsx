@@ -80,7 +80,7 @@ export default function EncodingLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         글자를 입력하면 UTF-8이 그것을 어떤 <strong>byte</strong>로 표현하는지, 그리고 그 byte를
         엉뚱한 charset으로 읽으면 어떻게 <strong>깨지는지</strong> 보여 줍니다.
       </p>
@@ -135,7 +135,7 @@ export default function EncodingLab() {
         </Row>
 
         <Row label="UTF-8 byte (hex)">
-          <code style={{ fontFamily: "monospace", fontSize: "var(--text-meta)", wordBreak: "break-all" }}>
+          <code style={{ fontFamily: "var(--font-code)", fontSize: "var(--text-meta)", wordBreak: "break-all" }}>
             {bytes.length ? bytes.map(hex).join(" ") : "—"}
           </code>
         </Row>
@@ -143,7 +143,7 @@ export default function EncodingLab() {
         <Row label="이 byte를 Latin-1로 잘못 읽으면">
           <code
             style={{
-              fontFamily: "monospace",
+              fontFamily: "var(--font-code)",
               fontSize: "var(--text-small)",
               color: ACCENT_INK,
               wordBreak: "break-all",
@@ -180,7 +180,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
         background: PANEL,
       }}
     >
-      <span style={{ fontSize: "var(--text-label)", color: INK_SOFT, fontWeight: 600 }}>{label}</span>
+      <span style={{ fontSize: "var(--text-label)", color: INK_SOFT, fontWeight: "var(--font-weight-bold)" }}>{label}</span>
       <span style={{ fontSize: "var(--text-meta)", color: INK }}>{children}</span>
     </div>
   );

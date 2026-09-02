@@ -95,7 +95,7 @@ export default function DnsResolveLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-14, 14px)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-14, 14px)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         “다음”으로 재귀 resolver가 <strong>root → TLD → 권한 서버</strong>로 내려가며 이름을 IP로
         바꾸는 과정을 따라가세요.
       </p>
@@ -119,7 +119,7 @@ export default function DnsResolveLab() {
                 padding: "var(--space-4, 4px) var(--space-12, 12px)",
                 borderRadius: "var(--radius-sm)",
                 fontSize: "var(--text-label)",
-                fontWeight: active ? 700 : 500,
+                fontWeight: active ? "var(--font-weight-bold)" : "var(--font-weight-medium)",
                 border: active ? `${BOLD} solid ${TEAL}` : `${HAIR} solid ${BORDER}`,
                 background: active ? TEAL_TINT : PANEL,
                 color: INK,
@@ -139,10 +139,10 @@ export default function DnsResolveLab() {
           gap: "var(--space-8)",
           marginBottom: "var(--space-12)",
           flexWrap: "wrap",
-          fontFamily: "monospace",
+          fontFamily: "var(--font-code)",
           fontSize: "var(--text-meta)",
           color: TEAL,
-          fontWeight: 700,
+          fontWeight: "var(--font-weight-bold)",
         }}
       >
         <span>{step.from}</span>
@@ -160,14 +160,14 @@ export default function DnsResolveLab() {
           borderRadius: "var(--radius-sm)",
           background: PANEL,
           marginBottom: "var(--space-14)",
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
         }}
         role="status"
       >
-        <p style={{ margin: "0 0 var(--space-8, 8px)", fontWeight: 700, color: INK }}>{step.title}</p>
+        <p style={{ margin: "0 0 var(--space-8, 8px)", fontWeight: "var(--font-weight-bold)", color: INK }}>{step.title}</p>
         <p style={{ margin: "0 0 var(--space-6, 6px)", fontSize: "var(--text-meta)" }}>
           <strong style={{ color: ACCENT_INK }}>질문:</strong>{" "}
-          <code style={{ fontFamily: "monospace" }}>{step.ask}</code>
+          <code style={{ fontFamily: "var(--font-code)" }}>{step.ask}</code>
         </p>
         <p style={{ margin: 0, fontSize: "var(--text-meta)" }}>
           <strong style={{ color: TEAL }}>응답:</strong> {step.reply}
@@ -200,7 +200,7 @@ export default function DnsResolveLab() {
             borderRadius: "var(--radius-sm)",
             background: i === STEPS.length - 1 ? BORDER : TEAL,
             color: ON_TEAL,
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
             cursor: i === STEPS.length - 1 ? "not-allowed" : "pointer",
           }}
         >

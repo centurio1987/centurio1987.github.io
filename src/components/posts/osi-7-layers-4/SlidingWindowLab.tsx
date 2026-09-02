@@ -78,7 +78,7 @@ export default function SlidingWindowLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         수신 측이 알려 준 <strong>윈도우 크기</strong>만큼만 ACK 없이 미리 보낼 수 있습니다.
         세그먼트를 보내고 ACK을 받으며 윈도우가 오른쪽으로 미끄러지는 모습을 보세요.
       </p>
@@ -156,7 +156,7 @@ export default function SlidingWindowLab() {
             borderRadius: "var(--radius-sm)",
             background: canSend ? TEAL : BORDER,
             color: ON_TEAL,
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
             cursor: canSend ? "pointer" : "not-allowed",
           }}
         >

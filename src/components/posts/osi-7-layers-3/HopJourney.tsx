@@ -79,7 +79,7 @@ export default function HopJourney() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-14)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-14)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         “다음 구간”을 눌러 패킷을 한 홉씩 옮기며, <strong>IP는 그대로인데 MAC과 TTL은 매 홉
         바뀌는</strong> 모습을 확인하세요.
       </p>
@@ -111,7 +111,7 @@ export default function HopJourney() {
                   borderRadius: isRouter ? "var(--radius-sm)" : "var(--radius-lg)",
                   border: active ? `var(--stroke-bold) solid ${TEAL}` : `var(--stroke-hair) solid ${BORDER}`,
                   background: active ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : PANEL,
-                  fontWeight: 700,
+                  fontWeight: "var(--font-weight-bold)",
                   color: INK,
                   fontSize: "var(--text-meta)",
                 }}
@@ -124,7 +124,7 @@ export default function HopJourney() {
                     width: 46,
                     textAlign: "center",
                     color: i === step ? TEAL : BORDER,
-                    fontWeight: 700,
+                    fontWeight: "var(--font-weight-bold)",
                   }}
                 >
                   {i === step ? "▶▶" : "──"}
@@ -149,18 +149,18 @@ export default function HopJourney() {
             padding: "var(--space-12)",
           }}
         >
-          <p style={{ margin: "0 0 var(--space-8)", fontWeight: 700, color: TEAL }}>
-            L3 IP 헤더 <span style={{ fontWeight: 400, fontSize: "var(--text-label)" }}>(종단까지 고정)</span>
+          <p style={{ margin: "0 0 var(--space-8)", fontWeight: "var(--font-weight-bold)", color: TEAL }}>
+            L3 IP 헤더 <span style={{ fontWeight: "var(--font-weight-regular)", fontSize: "var(--text-label)" }}>(종단까지 고정)</span>
           </p>
-          <p style={{ margin: "0 0 var(--space-4)", fontFamily: "monospace", fontSize: "var(--text-meta)" }}>
+          <p style={{ margin: "0 0 var(--space-4)", fontFamily: "var(--font-code)", fontSize: "var(--text-meta)" }}>
             src: {SRC_IP}
           </p>
-          <p style={{ margin: "0 0 var(--space-8)", fontFamily: "monospace", fontSize: "var(--text-meta)" }}>
+          <p style={{ margin: "0 0 var(--space-8)", fontFamily: "var(--font-code)", fontSize: "var(--text-meta)" }}>
             dst: {DST_IP}
           </p>
           <p style={{ margin: 0, fontSize: "var(--text-meta)" }}>
             TTL:{" "}
-            <strong style={{ color: ACCENT_INK, fontFamily: "monospace", fontSize: "var(--text-small)" }}>
+            <strong style={{ color: ACCENT_INK, fontFamily: "var(--font-code)", fontSize: "var(--text-small)" }}>
               {seg.ttl}
             </strong>{" "}
             <span style={{ color: INK_SOFT, fontSize: "var(--text-label)" }}>(홉마다 −1)</span>
@@ -175,13 +175,13 @@ export default function HopJourney() {
             padding: "var(--space-12)",
           }}
         >
-          <p style={{ margin: "0 0 var(--space-8)", fontWeight: 700, color: ACCENT_INK }}>
-            L2 Ethernet 헤더 <span style={{ fontWeight: 400, fontSize: "var(--text-label)" }}>(구간마다 새로)</span>
+          <p style={{ margin: "0 0 var(--space-8)", fontWeight: "var(--font-weight-bold)", color: ACCENT_INK }}>
+            L2 Ethernet 헤더 <span style={{ fontWeight: "var(--font-weight-regular)", fontSize: "var(--text-label)" }}>(구간마다 새로)</span>
           </p>
-          <p style={{ margin: "0 0 var(--space-4)", fontFamily: "monospace", fontSize: "var(--text-meta)" }}>
+          <p style={{ margin: "0 0 var(--space-4)", fontFamily: "var(--font-code)", fontSize: "var(--text-meta)" }}>
             src MAC: {seg.srcMac}
           </p>
-          <p style={{ margin: 0, fontFamily: "monospace", fontSize: "var(--text-meta)" }}>
+          <p style={{ margin: 0, fontFamily: "var(--font-code)", fontSize: "var(--text-meta)" }}>
             dst MAC: {seg.dstMac}
           </p>
         </div>
@@ -195,7 +195,7 @@ export default function HopJourney() {
           background: PANEL,
           border: `var(--stroke-hair) solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
           fontSize: "var(--text-meta)",
           color: INK,
         }}
@@ -229,7 +229,7 @@ export default function HopJourney() {
             borderRadius: "var(--radius-sm)",
             background: step === SEGMENTS.length - 1 ? BORDER : TEAL,
             color: PANEL,
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
             cursor: step === SEGMENTS.length - 1 ? "not-allowed" : "pointer",
           }}
         >

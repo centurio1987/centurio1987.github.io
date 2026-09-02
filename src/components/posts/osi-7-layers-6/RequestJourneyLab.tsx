@@ -100,11 +100,11 @@ export default function RequestJourneyLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-6, 6px)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-6, 6px)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         한 줄{" "}
         <code
           style={{
-            fontFamily: "monospace",
+            fontFamily: "var(--font-code)",
             background: CODE_BG,
             padding: "var(--space-2, 2px) var(--space-4, 4px)",
             borderRadius: "var(--radius-xs)",
@@ -145,7 +145,7 @@ export default function RequestJourneyLab() {
                 opacity: !active && !done && idx > i ? 0.7 : 1,
               }}
             >
-              <strong style={{ color: TEAL, fontFamily: "monospace" }}>{s.layer}</strong>
+              <strong style={{ color: TEAL, fontFamily: "var(--font-code)" }}>{s.layer}</strong>
               <span>
                 <strong>{s.proto}</strong> · {s.title}
               </span>
@@ -165,7 +165,7 @@ export default function RequestJourneyLab() {
           borderLeft: `5px solid ${TEAL}`,
           borderRadius: "var(--radius-sm)",
           background: PANEL,
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
           marginBottom: "var(--space-14)",
         }}
       >
@@ -175,7 +175,7 @@ export default function RequestJourneyLab() {
           </strong>{" "}
           <span style={{ fontSize: "var(--text-label)", color: INK_SOFT }}>— {stage.part}에서 해부</span>
         </p>
-        <p style={{ margin: "0 0 var(--space-6, 6px)", fontFamily: "monospace", fontSize: "var(--text-meta)", color: ACCENT_INK }}>
+        <p style={{ margin: "0 0 var(--space-6, 6px)", fontFamily: "var(--font-code)", fontSize: "var(--text-meta)", color: ACCENT_INK }}>
           {stage.produces}
         </p>
         <p style={{ margin: 0, fontSize: "var(--text-meta)" }}>{stage.note}</p>
@@ -207,7 +207,7 @@ export default function RequestJourneyLab() {
             borderRadius: "var(--radius-sm)",
             background: i === STAGES.length - 1 ? BORDER : TEAL,
             color: ON_TEAL,
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
             cursor: i === STAGES.length - 1 ? "not-allowed" : "pointer",
           }}
         >

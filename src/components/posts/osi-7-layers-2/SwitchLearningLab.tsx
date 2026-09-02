@@ -94,7 +94,7 @@ export default function SwitchLearningLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-14)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-14)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         프레임을 보내며 스위치의 MAC 주소 테이블이 어떻게 채워지고, 언제 flooding이
         unicast forwarding으로 바뀌는지 관찰하세요.
       </p>
@@ -121,10 +121,10 @@ export default function SwitchLearningLab() {
                 border: `var(--stroke-hair) solid ${reached ? TEAL : BORDER}`,
                 borderRadius: "var(--radius-sm)",
                 background: reached ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : PANEL,
-                lineHeight: 1.4,
+                lineHeight: "var(--font-leading-sub)",
               }}
             >
-              <div style={{ fontWeight: 700, color: INK }}>
+              <div style={{ fontWeight: "var(--font-weight-bold)", color: INK }}>
                 Host {h.id}
                 {isSrc ? " ▶" : ""}
                 {isDst ? " ◎" : ""}
@@ -188,7 +188,7 @@ export default function SwitchLearningLab() {
             background: frame.src === frame.dst ? BORDER : TEAL,
             color: PANEL,
             cursor: frame.src === frame.dst ? "not-allowed" : "pointer",
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
           }}
         >
           프레임 전송
@@ -225,7 +225,7 @@ export default function SwitchLearningLab() {
             padding: "var(--space-12)",
           }}
         >
-          <p style={{ margin: "0 0 var(--space-8)", fontWeight: 600, color: TEAL }}>
+          <p style={{ margin: "0 0 var(--space-8)", fontWeight: "var(--font-weight-bold)", color: TEAL }}>
             스위치 MAC 주소 테이블
           </p>
           {Object.keys(table).length === 0 ? (
@@ -243,7 +243,7 @@ export default function SwitchLearningLab() {
               <tbody>
                 {Object.entries(table).map(([mac, port]) => (
                   <tr key={mac}>
-                    <td style={{ padding: "var(--space-2) var(--space-4)", fontFamily: "monospace" }}>{mac}</td>
+                    <td style={{ padding: "var(--space-2) var(--space-4)", fontFamily: "var(--font-code)" }}>{mac}</td>
                     <td style={{ padding: "var(--space-2) var(--space-4)" }}>{port}</td>
                   </tr>
                 ))}
@@ -260,7 +260,7 @@ export default function SwitchLearningLab() {
             padding: "var(--space-12)",
           }}
         >
-          <p style={{ margin: "0 0 var(--space-8)", fontWeight: 600, color: TEAL }}>
+          <p style={{ margin: "0 0 var(--space-8)", fontWeight: "var(--font-weight-bold)", color: TEAL }}>
             스위치가 한 일 (최근 순)
           </p>
           {log.length === 0 ? (
@@ -274,7 +274,7 @@ export default function SwitchLearningLab() {
                   key={i}
                   style={{
                     fontSize: "var(--text-label)",
-                    lineHeight: 1.5,
+                    lineHeight: "var(--font-leading-sub)",
                     marginBottom: "var(--space-4)",
                     color:
                       l.kind === "flood"

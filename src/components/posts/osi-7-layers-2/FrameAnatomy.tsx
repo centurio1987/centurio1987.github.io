@@ -103,7 +103,7 @@ export default function FrameAnatomy() {
           marginBottom: "var(--space-14)",
         }}
       >
-        <p style={{ margin: 0, fontWeight: 600, color: INK }}>
+        <p style={{ margin: 0, fontWeight: "var(--font-weight-bold)", color: INK }}>
           각 칸을 눌러 Ethernet II 프레임의 field를 뜯어보세요.
         </p>
         <label
@@ -144,8 +144,8 @@ export default function FrameAnatomy() {
                 color: INK,
                 cursor: "pointer",
                 fontSize: "var(--text-micro)",
-                lineHeight: 1.35,
-                fontWeight: isActive ? 700 : 500,
+                lineHeight: "var(--font-leading-title)",
+                fontWeight: isActive ? "var(--font-weight-bold)" : "var(--font-weight-medium)",
               }}
             >
               <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{f.label}</div>
@@ -167,7 +167,7 @@ export default function FrameAnatomy() {
           borderLeft: `5px solid ${active.color}`,
           borderRadius: "var(--radius-sm)",
           background: PANEL,
-          lineHeight: 1.65,
+          lineHeight: "var(--font-leading-ui)",
         }}
       >
         <p style={{ margin: "0 0 var(--space-6)" }}>
