@@ -126,7 +126,6 @@ scope: src/**, design-concept/**, scripts/lib/tokens/**, scripts/verify-tokens.t
 플랜 전문(리스크·배치 2안 포함): `~/.claude/plans/kan-080-wtq7av-snoopy-pony.md`. `plan-reviewer` 검토 10건을 전부 반영한 판이다.
 
 ## 실행 계획
-## 실행 계획
 work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 
 - [x] `S1` 글자 4축 전수 지도 — 실측을 굳힌다
