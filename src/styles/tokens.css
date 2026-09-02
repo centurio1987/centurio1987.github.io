@@ -240,6 +240,35 @@
   --text-micro: 11px;
   --text-nano: 10px;
 
+  /* 굵기 · 행간 · 자간 (DESIGN_CONCEPT.md §5)
+     크기 축만 토큰이 있었고 나머지 셋은 **토큰이 0** 이었다. 그래서 크기는 95.1% 가 var() 를
+     지나는데 굵기 204자리 · 행간 131자리 · 자간 49자리는 한 자리도 안 지나고 있었다
+     (`UI_CONSISTENCY_AUDIT.md` §7-1). **규율의 문제가 아니라 잴 자가 없던 문제**다.
+     접기 규약은 크기 축과 같다 — 동률은 작은 쪽으로. 자간에는 하나가 더 붙는다:
+     **한글이 든 자리는 한 단 아래로**(§5 「자간」 절의 실렌더 근거).
+
+     접두를 전부 `--font-` 로 두는 것은 `axis.ts` 와 `extract.ts` 가 **합치하는 유일한 접두**라서다
+     (`--text-` 는 추출 쪽에서 other 라 이미 어긋나 있다). 무단위(굵기·행간)와 em(자간)은
+     px 가 없어 `docrule.fontRoles()` 의 글자 역할값을 오염시키지 않는다 — 그 함수는
+     `--text-` 접두로도 한 번 더 좁혀 둔다(px 가 든 `--font-*` 가 생기면 하한이 무너진다). */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;    /* 링크 강조 · 배지 · 필터 · 한글 라벨 */
+  --font-weight-bold: 700;      /* h2 · h3 · strong · 시뮬 강조. 600·800 은 여기로 접는다 */
+
+  --font-leading-flat: 1;       /* 한 줄짜리 배지 · 칩 · 아이콘 라벨 */
+  --font-leading-title: 1.25;   /* 제목 · 큰 글자 */
+  --font-leading-sub: 1.45;     /* 부제 · 표 셀 */
+  --font-leading-ui: 1.6;       /* 시뮬 · UI 본문 — 화면에서 가장 많은 자리(1.55·1.6·1.65 를 모은다) */
+  --font-leading-read: 1.75;    /* 읽는 산문 */
+  --font-leading-talk: 1.9;     /* 폭신 대담 — 자기 시각 언어가 있어 별도 단이다 */
+
+  /* 자간은 단위가 em 하나다. px 를 쓰면 Meta(13px)와 Label(12px)에 같은 `0.5px` 을 준 것이
+     실제로는 다른 값(0.038em · 0.042em)을 준 것이 된다 — 예전 §5 가 그랬다. */
+  --font-track-tight: -0.02em;  /* 큰 제목 */
+  --font-track-label: 0.04em;   /* 메타 · 배지 · 버튼 · 시리즈명 — 한글이 든 라벨은 전부 여기 */
+  --font-track-wide: 0.1em;     /* 라틴 전용 캡스 라벨 (SER. · EP 01) */
+  --font-track-deco: 0.2em;     /* 스탬프 · 티켓 스텁 */
+
   /* 모티프 */
   --hatch: repeating-linear-gradient(45deg, rgba(43,63,212,.10) 0 1px, transparent 1px 11px);
   --hatch-border: rgba(43, 63, 212, .30);

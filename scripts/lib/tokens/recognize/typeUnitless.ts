@@ -121,11 +121,16 @@ export const typeUnitless: Recognizer = {
    *
    * `want` 를 값(`1.42`)으로 잡은 것이 요점이다. 옛 경로의 파편은 사유에 `(1)`·`(42)` 로
    * 들어오므로 이 검사를 통과하지 못한다 — **파편과 온전한 값을 사유로 가른다.**
-   * `판정 불가` 인 것은 `S5` 시점에 행간 규칙이 아직 없기 때문이다. `S6` 이 자를 대면
-   * 이 고장은 **`위반`(행간 단 밖)으로 올라가고**, 그때 이 줄을 함께 고친다.
+   * `S6` 이 행간 자를 대면서 이 고장은 **`위반`(행간 단 밖)으로 올라갔다.** 사유에 값이
+   * 그대로 실리므로 `want` 는 그대로 `(1.42)` 다 — 파편이면 `(1)`·`(42)` 라 통과 못 한다.
+   *
+   * 굵기 쪽 고장은 **JSX style 객체**에 심는다(`type-weight.tsx`). 그 자리가 옛 경로 셋이
+   * 전부 못 보던 자리이고, CSS 굵기는 옛 `css-decl` 이 이미 온전히 물어 이 인식기 관할이 아니다.
    */
   faults: [
-    { file: "type-unitless.astro", verdict: "판정 불가", want: "(1.42)",
+    { file: "type-unitless.astro", verdict: "위반", want: "(1.42)",
       what: "CSS 소수 행간이 파편이 아니라 온전한 값으로 인식", src: "type-unitless" },
+    { file: "type-weight.tsx", verdict: "위반", want: "굵기 단 밖",
+      what: "인라인 style 객체의 굵기가 3단 밖", src: "type-unitless" },
   ],
 };

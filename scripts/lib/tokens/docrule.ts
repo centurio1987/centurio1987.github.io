@@ -159,6 +159,13 @@ function fontRoles(dict: TokenDict): Scale {
   const names: string[] = [];
   for (const t of dict.byName.values()) {
     if (judgeTokenAxis(t.name, t.value) !== "font") continue;
+    // **역할값은 `--text-` 접두만이다** (KAN-080 S6). `judgeTokenAxis` 의 font 축은
+    // `--font-` 도 함께 담는데, 굵기·행간·자간 토큰이 서면서 그 접두에 px 가 들어올 길이
+    // 생겼다 — px 가 든 `--font-*` 가 하나만 있어도 그 값이 **글자 크기 역할값 집합에 섞여
+    // 하한(`fontMinOf`)을 끌어내린다.** 실제로 §5 는 예전에 자간을 `0.5px` 로 줬고,
+    // 그 값이 역할값이 되면 `font-size: 9px` 이 「최소치 미만」이 아니라 「역할값 밖」이 되어
+    // 게이트가 무엇을 물었는지가 조용히 바뀐다. 자가검사 픽스처가 그 오염을 한 줄로 잰다.
+    if (!t.name.startsWith("--text-")) continue;
     const found = [...t.value.matchAll(PX_ANY)].map((m) => Math.abs(Number(m[1])));
     if (!found.length) continue;   // `--font-*` 는 값이 서체 이름이라 px 가 없다 — 역할값을 안 낸다
     names.push(t.name);
@@ -168,8 +175,60 @@ function fontRoles(dict: TokenDict): Scale {
   return { set: vals, source: `--text-* 토큰 ${names.length}종의 px 값(clamp 은 끝값을 다 받는다)`, fromTokens: true };
 }
 
+// ── 굵기 · 행간 · 자간 — S3 이 세운 세 축 (KAN-080 S6).
+//
+//    이 셋은 다른 축과 판정 흐름이 하나 다르다: **드리프트도 여기서 낸다.** 공용
+//    `auditLabelOf` 의 드리프트 사유(`D1 같은 표기 — …`)를 그대로 쓰면 `baseline.judgeAxis` 가
+//    접두로 축을 못 되뽑아 셋이 전부 `font` 칸에 쌓이고, 그러면 래칫이 「어느 축이 늘었는가」를
+//    말하지 못한다. 그래서 세 축은 판정 전건을 자기가 지고 **사유를 `<축> 축 — ` 으로 시작한다**
+//    (`color.ts` 의 stroke 축이 같은 규약을 진 이유와 같다).
+
+/** 판정 축 이름 — 그대로 `baseline.judgeAxis` 의 접두이자 래칫 칸 이름이 된다. */
+type TypeAxisId = "font-weight" | "font-leading" | "font-track";
+
+/** 속성 → 세 축. `font-size` 는 §5 역할값이 이미 다스리므로 여기 없다. */
+const TYPE_AXIS = new Map<string, TypeAxisId>([
+  ["font-weight", "font-weight"], ["fontweight", "font-weight"],
+  ["line-height", "font-leading"], ["lineheight", "font-leading"],
+  ["letter-spacing", "font-track"], ["letterspacing", "font-track"],
+]);
+
+const TYPE_META: Record<TypeAxisId, { prefix: string; what: string; unit: RegExp }> = {
+  // 굵기·행간은 무단위다. 자간은 길이라 단위가 붙는다 — §5 가 `em` 하나로 못박았다.
+  "font-weight":  { prefix: "--font-weight-",  what: "굵기", unit: /^-?\d*\.?\d+$/ },
+  "font-leading": { prefix: "--font-leading-", what: "행간", unit: /^-?\d*\.?\d+$/ },
+  "font-track":   { prefix: "--font-track-",   what: "자간", unit: /^-?\d*\.?\d+(?:px|rem|em|ch|%|vw|vh)$/ },
+};
+
+const PLAIN_NUM = /^-?\d*\.?\d+$/;
+/** `1.60` 과 `1.6` 은 같은 값이다. 단위가 붙은 값은 표기 그대로 잰다. */
+const normVal = (v: string) => {
+  const t = v.trim().toLowerCase();
+  return PLAIN_NUM.test(t) ? String(Number(t)) : t;
+};
+
+interface TypeScale { id: TypeAxisId; byValue: Map<string, string>; source: string; fromTokens: boolean }
+
+/**
+ * 세 축의 자. **토큰이 없으면 판정하지 않는다** — 간격·글자 크기가 문서 상수 폴백을 두는 것과
+ * 달리 여기는 폴백할 문서 상수가 없다(§5 의 세 표가 곧 토큰이다). 없는 자로 재는 대신
+ * 「아직 토큰이 없다」를 판정 불가로 낸다.
+ */
+function typeScale(dict: TokenDict, id: TypeAxisId): TypeScale {
+  const { prefix } = TYPE_META[id];
+  const byValue = new Map<string, string>();
+  for (const t of dict.byName.values()) {
+    if (!t.name.startsWith(prefix)) continue;
+    byValue.set(normVal(t.value), t.name);
+  }
+  return {
+    id, byValue, fromTokens: byValue.size > 0,
+    source: `${prefix}* 토큰 ${byValue.size}단`,
+  };
+}
+
 // ── 감사(`s4-classify.py`)가 매긴 라벨. `토큰 미존재` 는 `types.ts` union 에 없어 여기서만 쓴다.
-type AuditLabel = "준수" | "드리프트" | "위반" | "정당한 예외" | "토큰 미존재";
+type AuditLabel = "준수" | "드리프트" | "위반" | "정당한 예외" | "토큰 미존재" | "측정 제외";
 
 /**
  * 같은 축 토큰과 값이 같은가 — 있으면 드리프트다.
@@ -272,6 +331,10 @@ export interface DocruleReport {
   auditByAxis: Record<string, number>;
   /** 이번 판정이 쓴 두 자가 어디서 왔나 — 문서 상수인가 토큰인가. 사람이 봐야 하는 값이다. */
   scales: { spacing: Scale; font: Scale };
+  /** 굵기 · 행간 · 자간 — `축 / 판정` → 건수. 진입점이 세 줄로 낸다(KAN-080 S6). */
+  typeAxes: Record<string, number>;
+  /** 세 축이 쓴 자. 토큰이 없으면 판정을 안 한다. */
+  typeScales: Record<string, TypeScale>;
 }
 
 const bump = (m: Record<string, number>, k: string) => { m[k] = (m[k] ?? 0) + 1; };
@@ -294,6 +357,25 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
   };
   // 하한도 같은 자에서 뽑는다 — 스케일만 토큰에서 오고 하한이 문서에 묶이면 둘이 어긋난다.
   const fontMin = fontMinOf(scales.font.set);
+
+  // ── 굵기 · 행간 · 자간의 자 (KAN-080 S6).
+  const typeScales: Record<string, TypeScale> = {
+    "font-weight": typeScale(ctx.dict, "font-weight"),
+    "font-leading": typeScale(ctx.dict, "font-leading"),
+    "font-track": typeScale(ctx.dict, "font-track"),
+  };
+  const typeAxes: Record<string, number> = {};
+
+  // ── 옛 경로가 소수를 파편으로 가른 자리 (KAN-080 S5·S6).
+  //   `line-height: 1.75` 를 옛 `LITERAL` 이 `1` 과 `75` 로 가른다. 그 파편에 행간 자를 대면
+  //   `1` 이 `--font-leading-flat`(1)과 값이 같아 **드리프트로**, `75` 는 **위반으로** 잡힌다 —
+  //   둘 다 그 자리에 없는 값이다. 온전한 값은 `type-unitless` 가 같은 자리에서 이미 냈으므로,
+  //   파편은 측정에서 내린다. **`verdict` 는 `판정 불가` 그대로 둔다** — 옛 판정이 움직이면
+  //   `check-recognize-invariant` 의 열 필드 키(`verdict` 포함, `reason` 제외)가 빨개진다.
+  const fragmentedAt = new Set(
+    ctx.hits.filter((h) => h.src === "type-unitless")
+            .map((h) => `${h.file}:${h.line}:${h.prop.trim().toLowerCase()}`),
+  );
 
   // ── 재현은 감사가 쓴 자로 — 드리프트 쪽도 같이 고정한다 (KAN-072).
   //   옛 정의로 돌 때 스케일만 문서 상수로 고정하면 부족하다. 드리프트는 스케일보다 **먼저**
@@ -325,6 +407,44 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
     const governed = hit.axis !== "spacing" || opts.legacySpacingAxis || group === "spacing";
     const { label, reason } = auditLabelOf(ctx.dict, hit, governed ? ignoreDrift : ignoreDriftUngoverned);
     bump(auditByAxis, `${hit.axis} / ${label}`);
+
+    // ── 굵기 · 행간 · 자간 — 판정 전건을 이 축이 진다(위 「세 축」 절).
+    const typeId = hit.axis === "font" ? TYPE_AXIS.get(prop) : undefined;
+    if (typeId) {
+      const sc = typeScales[typeId];
+      const P = `${typeId} 축 — `;
+      const put = (verdict: Verdict["verdict"], auditLabel: AuditLabel, why: string, tallyAs = verdict) => {
+        bump(typeAxes, `${typeId} / ${tallyAs}`);
+        rows.push({ hit, spacingGroup: null, auditLabel, docLabel: null, verdict, reason: why });
+      };
+      const key = `${hit.file}:${hit.line}:${prop}`;
+      if (hit.src === "css-decl" && fragmentedAt.has(key)) {
+        // 사유가 `측정 제외` 로 시작해야 `baseline.judgeAxis` 가 이것을 잡음 칸으로 보낸다.
+        // 집계는 「판정 불가」와 갈라 센다 — 파편은 **잴 수 없는 값**이 아니라
+        // **이미 다른 히트가 재고 있는 자리**다. 한 칸에 섞으면 화면이 그 구분을 못 낸다.
+        put("판정 불가", "측정 제외",
+            `측정 제외 — 옛 LITERAL 이 소수를 가른 파편(${hit.value})이다. 온전한 값은 같은 자리의 type-unitless 히트에 있다`,
+            "파편 제외");
+      } else if (hit.kind === "token") {
+        put("준수", "준수", `${P}var(${hit.token}) 을 썼다`);
+      } else if (label === "정당한 예외") {
+        put("정당한 예외", "정당한 예외", P + reason);
+      } else if (!sc.fromTokens) {
+        put("판정 불가", "토큰 미존재",
+            `${P}${TYPE_META[typeId].what} 토큰이 아직 없다 — DESIGN_CONCEPT.md §5 의 표가 tokens.css 에 서야 잰다`);
+      } else {
+        const tok = sc.byValue.get(normVal(hit.value));
+        if (tok) {
+          put("드리프트", "드리프트", `${P}D1 같은 표기 — ${tok} (tokens.css = ${ctx.dict.byName.get(tok)!.value})`);
+        } else if (!TYPE_META[typeId].unit.test(hit.value.trim().toLowerCase())) {
+          put("판정 불가", "토큰 미존재",
+              `${P}${TYPE_META[typeId].what} 단과 같은 자로 못 잰다 (${hit.value})`);
+        } else {
+          put("위반", "위반", `${P}${TYPE_META[typeId].what} 단 밖 (${hit.value}) — 잰 자: ${sc.source}`);
+        }
+      }
+      continue;
+    }
 
     // 문서 규칙은 「토큰이 없는 자리」에만 얹는다. 이미 토큰을 썼거나(준수) 근거 문서를
     // 건 자리(정당한 예외)를 스케일로 다시 재면 한 히트에 판정이 두 번 내려진다.
@@ -402,7 +522,7 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
     });
   }
 
-  return { rows, spacing, fontSize, ungoverned, auditByAxis, scales };
+  return { rows, spacing, fontSize, ungoverned, auditByAxis, scales, typeAxes, typeScales };
 }
 
 const at = (m: Record<string, number>, k: string) => m[k] ?? 0;
@@ -429,6 +549,17 @@ export const docrule: AxisModule = {
         ` — §9 는 여백 규칙이고, 좌표 상위 파일은 데코 실측값이다`,
       `문서 축 — 글자 크기 §5(font-size): 준수 ${at(now.fontSize, DOC_LABELS.fontIn)}` +
         ` · 위반 ${fViol} · 판정 대상 아님 ${at(now.fontSize, DOC_LABELS.fontNa)}`,
+      // 세 축은 각자 한 줄이다 (KAN-080 S6). 지금까지 이 자리에 **한 글자도 없었다** —
+      // 굵기·행간·자간에 토큰이 0 이라 게이트가 그 축을 아예 안 봤다.
+      ...(["font-weight", "font-leading", "font-track"] as const).map((id) => {
+        const sc = now.typeScales[id];
+        const n = (v: string) => at(now.typeAxes, `${id} / ${v}`);
+        const frag = n("파편 제외");
+        return `문서 축 — ${TYPE_META[id].what}(${id}): 준수 ${n("준수")} · 드리프트 ${n("드리프트")}` +
+          ` · 위반 ${n("위반")} · 판정 불가 ${n("판정 불가")}` +
+          (frag ? ` · 파편 제외 ${frag}(옛 LITERAL 이 소수를 가른 자리 — 온전한 값이 따로 있다)` : "") +
+          ` — 잰 자: ${sc.fromTokens ? sc.source : "토큰 없음 — 판정하지 않는다"}`;
+      }),
       `문서 축 — 그림자 ${at(now.ungoverned, "shadow")}건 · z-index ${at(now.ungoverned, "zindex")}건:` +
         ` 문서에 판정 가능한 규칙이 없다("과한 그림자 금지"는 값이 아니다)`,
       `문서 축 — 옛 축 정의(치수·좌표까지 한 통)로는 간격 위반 ${oldSViol} · 글자 위반 ${oldFViol}` +
