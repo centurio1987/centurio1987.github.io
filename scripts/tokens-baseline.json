@@ -13,8 +13,9 @@
     "font-track / 위반": 38,
     "font-track / 판정 불가": 1,
     "font-weight / 드리프트": 137,
-    "font-weight / 위반": 68,
+    "font-weight / 위반": 66,
     "font-weight / 정당한 예외": 3,
+    "font-weight / 준수": 5,
     "other / 준수": 265,
     "radius / 준수": 295,
     "shadow / 준수": 28,
@@ -28,9 +29,9 @@
   },
   "totals": {
     "드리프트": 217,
-    "위반": 209,
+    "위반": 207,
     "정당한 예외": 13,
-    "준수": 3650,
+    "준수": 3655,
     "판정 불가": 970
   },
   "files": {
@@ -97,7 +98,6 @@
     "src/layouts/PostLayout.astro": 8,
     "src/layouts/TalkLayout.astro": 10,
     "src/lib/viz/PosterHero.tsx": 1,
-    "src/pages/404.astro": 2,
     "src/pages/design/deco.astro": 35,
     "src/pages/design/frame-picks.astro": 11,
     "src/pages/design/viz-frames.astro": 7,
