@@ -148,7 +148,7 @@ work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 - [x] `S15` 공용 컴포넌트 구획 (110자리)
 - [ ] `S16` 폭신 대담 구획 (59자리)
 - [ ] `S17` viz 구획 — 로컬 3종 + 사본층 둘
-- [ ] `S18` `/graph` 구획 (45자리)
+- [x] `S18` `/graph` 구획 (45자리)
 - [ ] `S19` 정본 2차 + 수렴 확인
 
 ### 단계별 완료 기준
@@ -350,3 +350,5 @@ git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan080-be
 - 2026-09-03T01:56 · s:74abae1b · S13 done — 레이아웃·페이지 6파일 73자리 토큰화 + strong·b 규칙 신설(0건이던 자리 — bolder 는 부모 대비라 제목 안 굵게가 900 이었다). talk 단은 대담 밖으로 안 낸다: 1.85·2 를 거리(1.9)가 아니라 뜻으로 read 에 접었다. render:compare 68지면 465,842건이 움직였고 속성이 line-height·기하·letter-spacing·font-weight 뿐이다(색·테두리 0)
 - 2026-09-03T01:57 · s:74abae1b · S15 doing — 착수
 - 2026-09-03T02:25 · s:74abae1b · S15 done — 공용 컴포넌트 12파일 38자리 토큰화 — px 자간 11건 전량 em 으로. 이 구획에 px 자간 0. 섞인 자리 둘(.st-name=SER.+한글 시리즈명 · .toc-head=목차 · CONTENTS)은 §5 대로 한글 기준으로 골랐다. render:compare 47,171건, 속성이 자간·행간·굵기와 그 기하뿐
+- 2026-09-03T02:26 · s:74abae1b · S18 doing — 착수
+- 2026-09-03T02:54 · s:74abae1b · S18 done — /graph 2파일 10자리 토큰화 — px 자간 4건(0.5px·0.3px)이 크기별로 다 label 로 접혔다. 계획의 「캔버스 텍스트는 DOM 이 아니다」 리스크는 해당 없음: 이 지면에 <canvas> 가 0건이라 render:compare 가 전부 본다(34쪽 중 /graph 만 움직였고 572건, 속성이 자간·행간과 그 기하뿐)

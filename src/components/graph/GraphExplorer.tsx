@@ -1463,7 +1463,7 @@ export default function GraphExplorer({
           gap: var(--space-6);
           font: inherit;
           font-size: var(--text-label);
-          font-weight: 500;
+          font-weight: var(--font-weight-medium);
           padding: var(--space-2) var(--space-8);
           border-radius: var(--radius-sm);
           border: var(--stroke) solid var(--ink);
@@ -1479,7 +1479,7 @@ export default function GraphExplorer({
         .tok-axis {
           font-family: var(--font-mono);
           font-size: var(--text-nano);
-          letter-spacing: 0.5px;
+          letter-spacing: var(--font-track-label);
           opacity: 0.7;
         }
         .tok-dot {
@@ -1552,7 +1552,7 @@ export default function GraphExplorer({
         .graph-help p {
           margin: 0;
           font-size: var(--text-label);
-          line-height: 1.7;
+          line-height: var(--font-leading-read);
           color: var(--ink-2);
         }
 
@@ -1579,7 +1579,7 @@ export default function GraphExplorer({
         .cand-label {
           font-family: var(--font-mono);
           font-size: var(--text-nano);
-          letter-spacing: 0.5px;
+          letter-spacing: var(--font-track-label);
           color: var(--ink-3);
         }
         .gauge-read {
@@ -1661,7 +1661,7 @@ export default function GraphExplorer({
           text-align: center;
           font-family: var(--font-mono);
           font-size: var(--text-micro);
-          letter-spacing: 0.3px;
+          letter-spacing: var(--font-track-label);
           color: color-mix(in srgb, var(--ink-3) 60%, var(--paper));
           border-right: var(--stroke-hair) dashed color-mix(in srgb, var(--ink) 16%, transparent);
           transition:
@@ -1712,7 +1712,7 @@ export default function GraphExplorer({
           color: var(--accent);
           font-family: var(--font-mono);
           font-size: var(--text-micro);
-          line-height: 1;
+          line-height: var(--font-leading-flat);
           cursor: ew-resize;
           outline: none;
           transition: left 160ms var(--ease);
@@ -1746,7 +1746,7 @@ export default function GraphExplorer({
           margin: 0;
           font-family: var(--font-mono);
           font-size: var(--text-nano);
-          letter-spacing: 0.3px;
+          letter-spacing: var(--font-track-label);
           color: color-mix(in srgb, var(--ink-3) 60%, var(--paper));
         }
         .cand-group {
@@ -1767,7 +1767,7 @@ export default function GraphExplorer({
           gap: var(--space-6);
           font: inherit;
           font-size: var(--text-label);
-          font-weight: 500;
+          font-weight: var(--font-weight-medium);
           color: var(--ink-2);
           padding: var(--space-4) var(--space-10);
           border: var(--stroke) solid var(--border);
@@ -1844,7 +1844,7 @@ export default function GraphExplorer({
           place-items: center;
           font: inherit;
           font-size: var(--text-meta);
-          line-height: 1;
+          line-height: var(--font-leading-flat);
           color: var(--ink-2);
           background: var(--surface);
           border: var(--stroke-hair) solid var(--border);
