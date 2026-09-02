@@ -142,7 +142,7 @@ export default function JwtVerifyLab() {
     cursor: "pointer",
     fontSize: "var(--text-meta)",
   });
-  const label: React.CSSProperties = { fontSize: "var(--text-label)", fontWeight: 600, color: INK_SOFT };
+  const label: React.CSSProperties = { fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", color: INK_SOFT };
 
   // `#8a5a00`(위조 통과 경고색)은 매핑표 밖이다 — 최근접 토큰이 --pop-ink 인데 ΔRGB 21.0 이고
   // 그쪽은 서브 CTA 의 진한 단이라 역할이 다르다. 판정 대기로 둔다 (KAN-072 배치6 S13).
@@ -161,7 +161,7 @@ export default function JwtVerifyLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-12)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         토큰 조건을 바꿔, 6단계 검증이 어디서 막히는지 보세요.
       </p>
 
@@ -259,7 +259,7 @@ export default function JwtVerifyLab() {
               borderRadius: "var(--radius-sm)",
               // 축을 살리면 짝이 안 깨진다 — 통과는 패널, 막힘은 전략 축의 옅은 단(Δ2.2).
               background: s.ok ? PANEL : STEP_FAIL_BG,
-              lineHeight: 1.5,
+              lineHeight: "var(--font-leading-sub)",
             }}
           >
             <strong style={{ color: s.ok ? TEAL : RED }}>{s.ok ? "✔" : "✘"}{s.n}</strong>
@@ -276,7 +276,7 @@ export default function JwtVerifyLab() {
           border: `var(--stroke-hair) solid ${verdictColor}`,
           borderRadius: "var(--radius-sm)",
           background: PANEL,
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
         }}
       >
         <p style={{ margin: "0 0 var(--space-4)" }}>
@@ -285,7 +285,7 @@ export default function JwtVerifyLab() {
         <p style={{ margin: 0, fontSize: "var(--text-meta)", color: INK_SOFT }}>{result.summary}</p>
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         교육용 개념 모델입니다(실제 암호 연산 없음). RFC 8725의 검증 순서를 규칙으로 모사합니다. "취약 검증기"는
         헤더 alg를 그대로 신뢰하는 잘못된 구현으로, alg=none·HS256 혼동 시 위조가 통과하는 실제 취약점을 재현합니다.
       </figcaption>

@@ -137,7 +137,7 @@ export default function DigestChain() {
     <figure style={{ margin: "2rem 0", padding: "var(--space-16)", border: `${HAIR} solid ${C.border}`, borderRadius: "var(--radius-md)", background: C.paper }}>
       {/* 플랫폼 탭 */}
       <div style={{ marginBottom: "var(--space-12)" }}>
-        <span style={{ fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink, marginRight: "var(--space-8)" }}>플랫폼</span>
+        <span style={{ fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: C.ink, marginRight: "var(--space-8)" }}>플랫폼</span>
         {(Object.keys(PLATFORM_MANIFEST) as Platform[]).map((p) => (
           <button
             key={p}
@@ -162,12 +162,12 @@ export default function DigestChain() {
             {crumbs.map((c, i) => (
               <span key={c}>
                 {i > 0 && <span style={{ color: C.border }}> › </span>}
-                <span style={{ color: i === crumbs.length - 1 ? C.ink : C.ink3, fontWeight: i === crumbs.length - 1 ? 700 : 400 }}>{c}</span>
+                <span style={{ color: i === crumbs.length - 1 ? C.ink : C.ink3, fontWeight: i === crumbs.length - 1 ? "var(--font-weight-bold)" : "var(--font-weight-regular)" }}>{c}</span>
               </span>
             ))}
           </p>
 
-          <div style={{ ...mono, fontSize: "var(--text-label)", background: C.cream, borderRadius: "var(--radius-sm)", padding: "var(--space-8)", lineHeight: 1.7 }}>
+          <div style={{ ...mono, fontSize: "var(--text-label)", background: C.cream, borderRadius: "var(--radius-sm)", padding: "var(--space-8)", lineHeight: "var(--font-leading-read)" }}>
             {activeDigest === null ? (
               <>
                 <div><span style={{ color: C.ink3 }}>mediaType </span>…index.v1+json</div>
@@ -187,7 +187,7 @@ export default function DigestChain() {
             )}
           </div>
 
-          <p style={{ margin: "var(--space-12) 0 var(--space-6)", fontSize: "var(--text-label)", fontWeight: 700, color: C.ink }}>가리키는 곳</p>
+          <p style={{ margin: "var(--space-12) 0 var(--space-6)", fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", color: C.ink }}>가리키는 곳</p>
           {view === "index" && navBtn(`→ manifest`, "manifest", `${pm.label}`)}
           {view === "manifest" && (
             <>
@@ -213,8 +213,8 @@ export default function DigestChain() {
 
         {/* 우: blobs 디렉터리 */}
         <div style={panel}>
-          <p style={{ margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink }}>blobs/sha256/</p>
-          <p style={{ margin: "0 0 var(--space-10)", fontSize: "var(--text-micro)", color: C.ink3, lineHeight: 1.45 }}>
+          <p style={{ margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: C.ink }}>blobs/sha256/</p>
+          <p style={{ margin: "0 0 var(--space-10)", fontSize: "var(--text-micro)", color: C.ink3, lineHeight: "var(--font-leading-sub)" }}>
             디스크에는 해시 이름만 있습니다
           </p>
           {blobs.map((b) => {
@@ -242,11 +242,11 @@ export default function DigestChain() {
         </div>
       </div>
 
-      <p role="status" style={{ margin: "var(--space-12) 0 0", fontSize: "var(--text-meta)", color: C.ink, lineHeight: 1.6 }}>
+      <p role="status" style={{ margin: "var(--space-12) 0 0", fontSize: "var(--text-meta)", color: C.ink, lineHeight: "var(--font-leading-ui)" }}>
         {note}
       </p>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: C.ink3, marginTop: "var(--space-10)", lineHeight: 1.6 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: C.ink3, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         플랫폼을 바꾸면 <strong>매니페스트 다이제스트가 달라지는 것</strong>을 보세요. 그리고 오른쪽 목록에서
         선택하지 않은 blob은 <strong>해시 이름밖에 안 보입니다</strong> — 정체를 알려주는 건 가리키는 쪽의 <code>mediaType</code>입니다.
         다이제스트·크기는 OCI image-spec 문서의 예시 값입니다.

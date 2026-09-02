@@ -130,14 +130,14 @@ export default function PermissionGate() {
           fontSize: "var(--text-meta)",
           color: INK_SOFT,
           marginBottom: "var(--space-14)",
-          fontWeight: 600,
+          fontWeight: "var(--font-weight-bold)",
         }}
       >
         케이퍼빌리티 권한 게이트 — 체크박스로 permissions를 조절하고, 호출할 커맨드를 골라 판정을 관찰해 보십시오.
       </figcaption>
 
       <div style={{ marginBottom: "var(--space-16)" }}>
-        <div style={{ fontSize: "var(--text-meta)", fontWeight: 600, color: INK, marginBottom: "var(--space-8)" }}>
+        <div style={{ fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: INK, marginBottom: "var(--space-8)" }}>
           1. capabilities/default.json — permissions
         </div>
         <div
@@ -178,7 +178,7 @@ export default function PermissionGate() {
       </div>
 
       <div style={{ marginBottom: "var(--space-16)" }}>
-        <div style={{ fontSize: "var(--text-meta)", fontWeight: 600, color: INK, marginBottom: "var(--space-8)" }}>
+        <div style={{ fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: INK, marginBottom: "var(--space-8)" }}>
           2. 호출할 커맨드
         </div>
         <div role="radiogroup" aria-label="호출할 커맨드" style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-8)" }}>
@@ -210,7 +210,7 @@ export default function PermissionGate() {
       </div>
 
       <div style={{ marginBottom: "var(--space-16)" }}>
-        <div style={{ fontSize: "var(--text-meta)", fontWeight: 600, color: INK, marginBottom: "var(--space-8)" }}>
+        <div style={{ fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: INK, marginBottom: "var(--space-8)" }}>
           3. capabilities JSON 미리보기
         </div>
         <pre
@@ -223,7 +223,7 @@ export default function PermissionGate() {
             color: INK,
             fontFamily: MONO,
             fontSize: "var(--text-label)",
-            lineHeight: 1.6,
+            lineHeight: "var(--font-leading-ui)",
             overflowX: "auto",
             whiteSpace: "pre",
           }}
@@ -233,7 +233,7 @@ export default function PermissionGate() {
       </div>
 
       <div>
-        <div style={{ fontSize: "var(--text-meta)", fontWeight: 600, color: INK, marginBottom: "var(--space-8)" }}>
+        <div style={{ fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: INK, marginBottom: "var(--space-8)" }}>
           4. 판정 결과
         </div>
         <div
@@ -245,13 +245,13 @@ export default function PermissionGate() {
             color: passed ? PASS : REJECT,
             fontFamily: MONO,
             fontSize: "var(--text-meta)",
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
           }}
         >
           {resultText}
         </div>
         {resultNote && (
-          <p style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-8)", lineHeight: 1.6 }}>
+          <p style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-8)", lineHeight: "var(--font-leading-ui)" }}>
             {resultNote}
           </p>
         )}

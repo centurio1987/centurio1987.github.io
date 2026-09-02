@@ -117,7 +117,7 @@ export default function AuthRequestLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-12)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         조건을 토글해 auth_request가 어디서 막고, 어디서 뚫리는지 보세요.
       </p>
 
@@ -167,9 +167,9 @@ export default function AuthRequestLab() {
             key={idx}
             style={{
               fontSize: "var(--text-meta)",
-              lineHeight: 1.7,
+              lineHeight: "var(--font-leading-read)",
               color: lineColor(l.kind),
-              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+              fontFamily: "var(--font-code)",
             }}
           >
             {l.kind === "bad" ? "✗ " : l.kind === "ok" ? "· " : "· "}
@@ -185,7 +185,7 @@ export default function AuthRequestLab() {
           border: `var(--stroke-hair) solid ${verdictColor}`,
           borderRadius: "var(--radius-sm)",
           background: PANEL,
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
         }}
       >
         <p style={{ margin: "0 0 var(--space-4)" }}>
@@ -194,7 +194,7 @@ export default function AuthRequestLab() {
         <p style={{ margin: 0, fontSize: "var(--text-meta)", color: INK_SOFT }}>{result.summary}</p>
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         교육용 개념 모델입니다(실제 nginx 동작 재현 아님). auth_request의 2xx=허용·401=거부 규칙과, 신원 헤더
         sanitize·백엔드 직접 접근 차단이라는 신뢰 경계 원칙을 규칙으로 모사합니다.
       </figcaption>

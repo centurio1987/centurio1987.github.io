@@ -142,22 +142,22 @@ export default function OverlayLab() {
     minWidth: 0,
   };
   const colTitle: React.CSSProperties = {
-    margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink,
+    margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: C.ink,
   };
   const colHint: React.CSSProperties = {
-    margin: "0 0 var(--space-10)", fontSize: "var(--text-micro)", color: C.ink3, lineHeight: 1.45,
+    margin: "0 0 var(--space-10)", fontSize: "var(--text-micro)", color: C.ink3, lineHeight: "var(--font-leading-sub)",
   };
   const rowBase: React.CSSProperties = {
     fontFamily: MONO, fontSize: "var(--text-label)",
     padding: "var(--space-6) var(--space-8)", borderRadius: "var(--radius-sm)", marginBottom: "var(--space-4)",
-    border: `${HAIR} solid transparent`, lineHeight: 1.4,
+    border: `${HAIR} solid transparent`, lineHeight: "var(--font-leading-sub)",
   };
 
   return (
     <figure style={{ margin: "2rem 0", padding: "var(--space-16)", border: `${HAIR} solid ${C.border}`, borderRadius: "var(--radius-md)", background: C.paper }}>
       {/* 파일 선택 */}
       <div style={{ marginBottom: "var(--space-12)" }}>
-        <span style={{ fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink, marginRight: "var(--space-8)" }}>파일</span>
+        <span style={{ fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: C.ink, marginRight: "var(--space-8)" }}>파일</span>
         <span style={{ display: "inline-flex", gap: "var(--space-6)", flexWrap: "wrap" }}>
           {files.map((f) => (
             <button
@@ -257,7 +257,7 @@ export default function OverlayLab() {
             파일을 고르고 <strong>읽기 → 쓰기 → 삭제</strong> 순으로 눌러 보세요.
           </p>
         ) : (
-          <ul style={{ margin: 0, paddingLeft: "var(--space-16)", fontSize: "var(--text-label)", lineHeight: 1.6, color: C.ink }}>
+          <ul style={{ margin: 0, paddingLeft: "var(--space-16)", fontSize: "var(--text-label)", lineHeight: "var(--font-leading-ui)", color: C.ink }}>
             {log.map((line, i) => (
               <li key={`${i}-${line}`} style={{ fontFamily: MONO }}>{line}</li>
             ))}
@@ -265,7 +265,7 @@ export default function OverlayLab() {
         )}
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: C.ink3, marginTop: "var(--space-10)", lineHeight: 1.6 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: C.ink3, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         <code>app.log</code>에 <strong>쓰기</strong>를 누르면 1.0GB가 통째로 upperdir로 올라오며 사용량이 뜁니다(copy_up).
         한 번 더 누르면 사용량은 그대로입니다. <code>secret.key</code>를 <strong>삭제</strong>하면 merged에서는 사라지지만
         lowerdir에는 원본이 남고, upperdir에는 <code>c 0, 0</code> 캐릭터 디바이스가 생깁니다.
@@ -277,6 +277,6 @@ export default function OverlayLab() {
 function btn(bg: string): React.CSSProperties {
   return {
     fontSize: "var(--text-meta)", padding: "var(--space-6) var(--space-14)", borderRadius: "var(--btn-radius)", cursor: "pointer",
-    border: `${HAIR} solid ${C.border}`, background: bg, color: C.ink, fontWeight: 600,
+    border: `${HAIR} solid ${C.border}`, background: bg, color: C.ink, fontWeight: "var(--font-weight-bold)",
   };
 }

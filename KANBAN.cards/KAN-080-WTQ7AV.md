@@ -144,7 +144,7 @@ work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 - [x] `S9` 데코 실측값 재측정 — `0.426em` 이 아직 맞는가 [실측 결과 화면은 안 바뀐다]
 - [x] `S10` 시뮬 구획 1 — `osi-7-layers` (12파일)
 - [x] `S11` 시뮬 구획 2 — `vpn-anatomy` · `webrtc` (14파일)
-- [ ] `S12` 시뮬 구획 3 — `auth-authz` · `container-anatomy` · `tauri` 등 (9파일)
+- [x] `S12` 시뮬 구획 3 — `auth-authz` · `container-anatomy` · `tauri` 등 (9파일)
 - [ ] `S13` 레이아웃·페이지 구획 (212자리)
 - [ ] `S14` 데코 부품 구획 (11파일 111자리)
 - [ ] `S15` 공용 컴포넌트 구획 (110자리)
@@ -346,3 +346,5 @@ git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan080-be
 - 2026-09-03T00:32 · s:69a265ed · S10 done — osi-7-layers 12파일 79히트 전량 토큰화(굵기 43·행간 14·raw 얼굴 22) — 그 구획 글자 축 0, 시뮬 전체 228→149
 - 2026-09-03T00:32 · s:69a265ed · S11 doing — 착수
 - 2026-09-03T00:47 · s:69a265ed · S11 done — vpn-anatomy·webrtc 14파일 99히트 전량 토큰화 — 시뮬의 행간 1.9 는 talk 가 아니라 read 로 접었다(대담 자리가 아니라 --text-meta 해설문). 시뮬 전체 149→50
+- 2026-09-03T00:48 · s:69a265ed · S12 doing — 착수
+- 2026-09-03T00:59 · s:69a265ed · S12 done — auth-authz·container-anatomy·tauri-2 8파일 50히트 토큰화 — ui-monospace 스택 2자리도 --font-code 로(코드 출력 자리라 이 카드가 고치는 결함 그 자체). 시뮬 전체 부채 0
