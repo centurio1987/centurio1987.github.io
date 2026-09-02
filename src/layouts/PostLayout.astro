@@ -178,11 +178,11 @@ if (fs.existsSync(heroPath)) {
     gap: var(--space-8);
     font-size: var(--text-meta);
     color: var(--ink-3);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
   }
   .post-header h1 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: clamp(28px, 5vw, 38px);
     margin: var(--space-16) 0 var(--space-10);
   }
@@ -223,7 +223,7 @@ if (fs.existsSync(heroPath)) {
     min-width: 0;
     margin: 0;
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-h3);
     color: var(--ink-3);
   }
@@ -237,7 +237,7 @@ if (fs.existsSync(heroPath)) {
 <style is:global>
   .prose {
     font-size: var(--text-body);
-    line-height: 1.8;
+    line-height: var(--font-leading-read);
     /* 안전망: 공백 없는 초장문 인라인 런(예: `·`로 이어 붙인 코드 나열)이
        줄바꿈 기회를 못 찾아 페이지 가로 스크롤을 만드는 것을 막는다. 일반
        한글/영문은 공백에서 먼저 끊기므로 영향 없고, white-space:pre 인 <pre>
@@ -250,7 +250,7 @@ if (fs.existsSync(heroPath)) {
   .prose h2 {
     font-family: var(--font-body);
     font-size: var(--text-h2);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     margin: var(--space-48) 0 var(--space-14);
   }
   /* 목차·해시 링크로 점프했을 때 sticky 헤더가 제목을 덮지 않게 한다.
@@ -261,7 +261,7 @@ if (fs.existsSync(heroPath)) {
   .prose h3 {
     font-family: var(--font-body);
     font-size: var(--text-h3);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     margin: var(--space-32) 0 var(--space-10);
   }
   .prose p,
@@ -289,8 +289,8 @@ if (fs.existsSync(heroPath)) {
     background: none;
     border-radius: 0;
     font-size: var(--text-body);
-    font-weight: 500;
-    line-height: 1.8;
+    font-weight: var(--font-weight-medium);
+    line-height: var(--font-leading-read);
     color: var(--ink);
   }
   /* 인용 안의 첫·끝 문단은 자기 바깥 여백을 버린다.

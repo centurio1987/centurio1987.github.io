@@ -55,7 +55,7 @@ body {
   color: var(--ink);
   font-family: var(--font-body);
   font-size: var(--text-body);
-  line-height: 1.7;
+  line-height: var(--font-leading-read);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -64,8 +64,19 @@ h1,
 h2,
 h3,
 h4 {
-  line-height: 1.25;
-  font-weight: 700;
+  line-height: var(--font-leading-title);
+  font-weight: var(--font-weight-bold);
+}
+
+/* 굵게(`**…**`)에 규칙이 **0건**이던 자리다 (KAN-080 S13, DESIGN_CONCEPT.md §5 「굵기」).
+   규칙이 없으면 UA 기본 `bolder` 가 걸리는데, 그것은 절대값이 아니라 **부모 대비 한 단 위**라
+   같은 `**굵게**` 가 본문(400)에서는 700 이고 제목(700) 안에서는 900 이 된다. 900 은 §5 가
+   세운 3단 밖이고 우리가 굽는 면에도 없어서, 그 자리는 브라우저가 700 면으로 대신 그린다 —
+   `getComputedStyle` 에는 900 이 그대로 나오므로 `render:compare` 도 게이트도 못 본다.
+   절대값으로 못박아 「굵게는 어디서나 같은 굵기」로 만든다. */
+strong,
+b {
+  font-weight: var(--font-weight-bold);
 }
 
 a {
@@ -78,7 +89,7 @@ a {
 a.sketch-link {
   position: relative;
   color: var(--accent);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 .prose a::after,
 a.sketch-link::after {
@@ -128,7 +139,7 @@ pre {
      15px 일 때 실측 13.125px 였고 13px 이면 11.375px 다 — 이 파일에서 눈에 가장 크게
      띄는 변화이고, 되돌릴지는 값이 아니라 §5 의 빈칸을 어떻게 볼지의 문제다(KAN-072.2). */
   font-size: var(--text-small);
-  line-height: 1.6;
+  line-height: var(--font-leading-ui);
 }
 
 img {
@@ -171,7 +182,7 @@ td {
 
 th {
   background: var(--subtle);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: var(--ink);
 }
 

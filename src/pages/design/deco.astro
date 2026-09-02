@@ -481,28 +481,28 @@ ping: local error: message too long, mtu=1420</code></pre>
   .kicker {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.18em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-wide);
     color: var(--ink-3);
     margin: 0 0 var(--space-10);
   }
   .page-head h1 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: var(--text-h1);
     margin: 0 0 var(--space-14);
   }
   .lede {
     max-width: 640px;
     font-size: var(--text-meta);
-    line-height: 1.75;
+    line-height: var(--font-leading-read);
     color: var(--ink-2);
     margin: 0 0 var(--space-12);
   }
   code {
     font-family: var(--font-mono);
     font-size: var(--text-label);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
 
   .sec {
@@ -513,14 +513,14 @@ ping: local error: message too long, mtu=1420</code></pre>
     padding-top: var(--space-16);
     margin: var(--space-48) 0 var(--space-16);
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: var(--text-h2);
   }
   .sec .no {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.16em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-deco);
     background: var(--ink);
     color: var(--surface);
     padding: var(--space-4) var(--space-8);
@@ -534,15 +534,15 @@ ping: local error: message too long, mtu=1420</code></pre>
   .group {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.16em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-wide);
     color: var(--ink-3);
     margin: var(--space-24) 0 var(--space-12);
   }
 
   .group small {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     letter-spacing: 0;
     text-transform: none;
     margin-left: var(--space-8);
@@ -590,11 +590,11 @@ ping: local error: message too long, mtu=1420</code></pre>
     align-items: center;
     gap: var(--space-2);
     text-align: center;
-    line-height: 1.2;
+    line-height: var(--font-leading-title);
   }
   .mark-cell figcaption b {
     font-size: var(--text-micro);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     color: var(--ink-2);
   }
   .mark-cell figcaption code {
@@ -615,8 +615,8 @@ ping: local error: message too long, mtu=1420</code></pre>
   .mark-demo-h {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-label);
     color: var(--ink-3);
     margin: 0 0 var(--space-10);
   }
@@ -626,7 +626,7 @@ ping: local error: message too long, mtu=1420</code></pre>
   }
   .mark-demo li,
   .mark-demo p {
-    line-height: 1.75;
+    line-height: var(--font-leading-read);
     color: var(--ink-2);
   }
   .mark-demo h3 {
@@ -662,8 +662,8 @@ ping: local error: message too long, mtu=1420</code></pre>
     left: 11px;
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-wide);
     color: var(--ink-3);
   }
   .stage {
@@ -683,7 +683,7 @@ ping: local error: message too long, mtu=1420</code></pre>
     align-items: center;
     gap: var(--space-4);
     font-size: var(--text-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
   .cell figcaption {
     position: absolute;
@@ -691,7 +691,7 @@ ping: local error: message too long, mtu=1420</code></pre>
     left: 11px;
     right: 11px;
     font-size: var(--text-micro);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     color: var(--ink-2);
   }
   /* 부품을 헷갈릴 만한 칸에만 붙는 한 줄 주석 */
@@ -737,7 +737,7 @@ ping: local error: message too long, mtu=1420</code></pre>
     left: 13px;
     right: 13px;
     font-size: var(--text-micro);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     color: var(--ink-2);
   }
   .pf-cell figcaption small {
@@ -787,8 +787,8 @@ ping: local error: message too long, mtu=1420</code></pre>
   .pick-tag {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-label);
     padding: var(--space-2) var(--space-6);
     border-radius: var(--radius-xs);
   }
@@ -829,7 +829,7 @@ ping: local error: message too long, mtu=1420</code></pre>
   .chip b {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    letter-spacing: 0.06em;
+    letter-spacing: var(--font-track-label);
   }
   .chip i {
     font-style: normal;
@@ -945,13 +945,13 @@ ping: local error: message too long, mtu=1420</code></pre>
   }
   .int-cell figcaption {
     font-size: var(--text-label);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ink);
     text-align: center;
   }
   .int-cell figcaption small {
     display: block;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: var(--text-micro);
     color: var(--ink-3);
     margin-top: var(--space-2);
@@ -976,7 +976,7 @@ ping: local error: message too long, mtu=1420</code></pre>
   .pid {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     padding: var(--space-2) var(--space-6);
     background: color-mix(in srgb, var(--ink) 9%, transparent);
     color: var(--ink);
@@ -994,7 +994,7 @@ ping: local error: message too long, mtu=1420</code></pre>
 
   .demo-h {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: var(--text-h2);
     margin: 0;
   }
@@ -1021,13 +1021,13 @@ ping: local error: message too long, mtu=1420</code></pre>
     flex: none;
     font-family: var(--font-mono);
     font-size: var(--text-micro);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--accent);
   }
   .demo-title {
     flex: 1;
     font-size: var(--text-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     word-break: keep-all;
   }
 
@@ -1048,8 +1048,8 @@ ping: local error: message too long, mtu=1420</code></pre>
     flex: none;
     font-family: var(--font-mono);
     font-size: var(--text-micro);
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-wide);
     color: var(--ink-3);
   }
   .chip {
@@ -1060,7 +1060,7 @@ ping: local error: message too long, mtu=1420</code></pre>
     padding: var(--space-6) var(--space-14);
   }
   .chip.on {
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--accent);
     background: var(--accent-tint2);
     border: var(--stroke) solid var(--accent);
@@ -1122,7 +1122,9 @@ ping: local error: message too long, mtu=1420</code></pre>
     color: var(--cream);
     font-family: var(--font-code);
     font-size: var(--text-meta);
-    line-height: 2;
+    /* 2 이던 자리다. talk(1.9)가 더 가깝지만 그 단은 대담 전용이다 — index.astro 의
+       .hero-sub 와 같은 판단. 줄마다 0.25em 좁아진다. */
+    line-height: var(--font-leading-read);
     overflow-x: auto;
   }
 
@@ -1135,7 +1137,7 @@ ping: local error: message too long, mtu=1420</code></pre>
   }
   .foot-hand {
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-h3);
     color: var(--deco-pink-ink);
   }

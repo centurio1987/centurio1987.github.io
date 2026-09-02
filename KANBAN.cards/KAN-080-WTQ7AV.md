@@ -143,7 +143,7 @@ work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 - [x] `S10` 시뮬 구획 1 — `osi-7-layers` (12파일)
 - [x] `S11` 시뮬 구획 2 — `vpn-anatomy` · `webrtc` (14파일)
 - [x] `S12` 시뮬 구획 3 — `auth-authz` · `container-anatomy` · `tauri` 등 (9파일)
-- [ ] `S13` 레이아웃·페이지 구획 (212자리)
+- [x] `S13` 레이아웃·페이지 구획 (212자리)
 - [ ] `S14` 데코 부품 구획 (11파일 111자리)
 - [ ] `S15` 공용 컴포넌트 구획 (110자리)
 - [ ] `S16` 폭신 대담 구획 (59자리)
@@ -346,3 +346,5 @@ git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan080-be
 - 2026-09-03T00:47 · s:69a265ed · S11 done — vpn-anatomy·webrtc 14파일 99히트 전량 토큰화 — 시뮬의 행간 1.9 는 talk 가 아니라 read 로 접었다(대담 자리가 아니라 --text-meta 해설문). 시뮬 전체 149→50
 - 2026-09-03T00:48 · s:69a265ed · S12 doing — 착수
 - 2026-09-03T00:59 · s:69a265ed · S12 done — auth-authz·container-anatomy·tauri-2 8파일 50히트 토큰화 — ui-monospace 스택 2자리도 --font-code 로(코드 출력 자리라 이 카드가 고치는 결함 그 자체). 시뮬 전체 부채 0
+- 2026-09-03T01:23 · s:74abae1b · S13 doing — 착수
+- 2026-09-03T01:56 · s:74abae1b · S13 done — 레이아웃·페이지 6파일 73자리 토큰화 + strong·b 규칙 신설(0건이던 자리 — bolder 는 부모 대비라 제목 안 굵게가 900 이었다). talk 단은 대담 밖으로 안 낸다: 1.85·2 를 거리(1.9)가 아니라 뜻으로 read 에 접었다. render:compare 68지면 465,842건이 움직였고 속성이 line-height·기하·letter-spacing·font-weight 뿐이다(색·테두리 0)
