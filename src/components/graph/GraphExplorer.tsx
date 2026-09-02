@@ -1796,6 +1796,9 @@ export default function GraphExplorer({
           border: var(--stroke-hair) solid var(--ink);
         }
         .cand-n {
+          /* Space Mono 에 500 면이 없다 — 부모의 Medium 을 상속하면 브라우저가 400 으로 대체해
+             그린다(§5: --font-mono 는 400·700). 그려지는 값을 명시해 요청과 실재를 맞춘다. */
+          font-weight: var(--font-weight-regular);
           font-family: var(--font-mono);
           font-size: var(--text-nano);
           opacity: 0.6;

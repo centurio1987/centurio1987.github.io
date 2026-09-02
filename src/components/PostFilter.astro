@@ -335,6 +335,10 @@ const generatedCss = rules.join("\n");
     background: var(--paper);
   }
   .pf-ai {
+    /* Space Mono 에 500 면이 없다 — 부모 칩의 Medium 을 그대로 상속하면 브라우저가 400 으로
+       대체해 그린다(§5: --font-mono 는 400·700). 지금 그려지는 값을 명시해 요청과 실재를
+       맞춘다 — 화면은 안 바뀐다. 검사는 `bun run type:verify` 2층. */
+    font-weight: var(--font-weight-regular);
     font-family: var(--font-mono);
     font-size: var(--text-nano);
     line-height: 1;

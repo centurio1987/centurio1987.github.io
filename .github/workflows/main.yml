@@ -76,6 +76,19 @@ jobs:
         # zero this becomes a plain hard fail. Static scan, no Playwright → CI-safe.
         # Do NOT add --warn-only here: the escape hatch exists for local debugging only.
         run: bun run tokens:verify
+      - name: Type gate — declared font faces that do not exist (KAN-080)
+        # A weight the family never had ships fully green: the docs said "Gowun Dodum 700"
+        # for a year while the release had only 400, and every bold on screen was browser
+        # synthesis — which reports font-weight 700 to getComputedStyle, so render:compare
+        # cannot see it either. This compares src/lib/typeRoles.ts (the single source for
+        # which role uses which face at which weight) against what is actually fetched:
+        # the self-hosted @font-face rules (plus the woff2 files existing) and the Google
+        # URL's wght list. It also checks that the five places declaring the same set —
+        # BaseLayout, tokens.css, fonts.css, render-viz.ts, blogVizStyleGuide.ts — have not
+        # drifted apart; hero images are raster-baked, so a drift there is unrecoverable.
+        # Static only (--static): layers 2 and 3 need Playwright and this repo has no
+        # Playwright gate in CI (deco/width/render:compare are all local).
+        run: bun run type:verify -- --static
       - name: Build with Astro
         run: bunx --bun astro build
       - name: Verify rendered output has no stray emphasis markers
