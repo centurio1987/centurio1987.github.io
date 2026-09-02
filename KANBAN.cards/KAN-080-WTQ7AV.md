@@ -133,7 +133,7 @@ work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 - [x] `S2` 서체 조사와 선정 — 굵기 축이 실재하는 한국어 조합
 - [x] `S3` 타입 스케일 확정 — 10역할 × 4축
 - [x] `S4` 정본 1차 — §5 재작성 · v0.2 화석 둘 · 시뮬 템플릿
-- [ ] `S5` 인식기 둘 — `typeUnitless` + `fontFamilyStr` [기준선 갱신 #1]
+- [x] `S5` 인식기 둘 — `typeUnitless` + `fontFamilyStr` [기준선 갱신 #1]
 - [ ] `S6` 토큰 신설 + 판정층 + `fontRoles` 좁히기 [기준선 갱신 #2]
 - [ ] `S7` 폰트 파이프라인 — 굵기를 굽고 자체 호스팅으로 전환 [화면이 바뀌는 work 1/2]
 - [ ] `S8` `type:verify` 신설 — 웨이트 로드(1·2층) + **글자 덮개(3층)**
@@ -305,3 +305,5 @@ git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan080-be
 - 2026-09-01T18:13 · s:a6f43d76 · S3 done — 타입 스케일 확정: 굵기 5종→3단(400/500/700, 600·800→700) · 행간 21종→6단 · 자간 22종→4단 전부 em(px 0). 「한글이 든 자리는 한 단 아래로」 규약 신설 — 0.1em 띠의 한글 28자리를 0.04em 으로, 라틴전용 29자리는 유지. S7 이 구울 단은 셋
 - 2026-09-01T18:14 · s:a6f43d76 · S4 doing — 착수
 - 2026-09-01T18:16 · s:a6f43d76 · S4 done — 정본 1차: DESIGN_CONCEPT §5 재작성(역할표를 라틴/한글 두 칸으로 · 굵기 3단·행간 6단·자간 4단 신설 · 「Gowun Dodum 700」이 실재 웨이트가 됨) · DIAGRAM_STYLE_GUIDE·AGENTS 의 v0.2 Pretendard 화석 제거 · REACT_SIM_GUIDE 템플릿 2자리를 토큰으로 + 6번 규칙을 색에서 시각 값 전부로 확장
+- 2026-09-02T14:23 · s:845e612f · S5 doing — 착수
+- 2026-09-02T14:36 · s:845e612f · S5 done — 인식기 둘: typeUnitless(굵기 115·행간 71 JSX + CSS 소수 39) · fontFamilyStr(raw 서체 42). 옛 LITERAL 을 안 고치고 literalsOf(src) 로 새 경로에만 다른 자를 줬다 — 옛 히트 증분 0 · 겹침 0. 래칫 font/위반 0→42 · font/판정불가 244→468

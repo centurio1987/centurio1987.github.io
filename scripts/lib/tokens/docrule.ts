@@ -396,7 +396,9 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
     bump(ungoverned, hit.axis === "font" ? `font/${prop}` : hit.axis);
     rows.push({
       hit, spacingGroup: null, auditLabel: label, docLabel: null, verdict: "판정 불가",
-      reason: `${hit.axis}/${prop} — tokens.css 에 토큰이 없고 DESIGN_CONCEPT.md 에 판정 가능한 규칙도 없다`,
+      // 값을 함께 낸다 — 파편(`1`)과 온전한 값(`1.42`)이 사유에서 갈려야 자가검사가
+      // 「온전히 인식되는가」를 물을 수 있다(KAN-080 S5, `typeUnitless` 의 고장).
+      reason: `${hit.axis}/${prop} (${hit.value}) — tokens.css 에 토큰이 없고 DESIGN_CONCEPT.md 에 판정 가능한 규칙도 없다`,
     });
   }
 

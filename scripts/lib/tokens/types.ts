@@ -119,6 +119,12 @@ export interface Hit {
    * 그 속성이 `AXIS` 표에 없어서 네 형태(svg 속성 · CSS 선언 · JSX 표현식 · style 객체)가
    * 통째로 판정 밖이었고, 표에 보태는 대신 인식기를 세운 이유는 위 `Axis` 의 `stroke` 주석에 있다.
    *
+   * `type-unitless`·`font-family-str` 은 KAN-080 이 연 일곱째·여덟째 갈래다 — **무단위 글자 축**
+   * (굵기·행간)과 **raw 서체 이름**. 앞의 여섯과 다른 점은 갈래를 여는 자리가 정규식이 아니라
+   * **`classify()` 의 리터럴 패턴**이라는 것이다: 옛 `LITERAL` 은 `1.75` 를 `1`·`75` 로 가르고
+   * 서체 이름에서는 리터럴을 하나도 못 뽑는데, 그 동작이 감사 원자료 대조의 일부라 고칠 수 없다.
+   * 그래서 `extract.ts` 의 `literalsOf` 가 **`src` 로 갈라** 새 경로에만 다른 패턴을 준다.
+   *
    * `const-ref` 는 KAN-077 이 연 여섯째 갈래다 — **상수로 끌어올린 리터럴**. 앞의 다섯과
    * 다른 점은 리터럴이 **값 자리에 없다**는 것이다. 값 자리에 남는 것은 식별자뿐이라
    * 다섯이 전부 그것을 버렸고, 그래서 판정 대기 리터럴을 `const` 로 올리기만 하면
@@ -127,7 +133,8 @@ export interface Hit {
    */
   src: "css-decl" | "jsx-attr" | "style-obj"
      | "style-num" | "expr-literal" | "attr-css"
-     | "ml-decl" | "svg-stroke" | "const-ref";
+     | "ml-decl" | "svg-stroke" | "const-ref"
+     | "type-unitless" | "font-family-str";
   /**
    * 게이트 대상에서 빠지는 히트에는 사유가 붙는다(생성물·패키지 복제물 등).
    * **빼는 것이 아니라 표시만 한다** — 감사 원자료와 히트 단위로 대조하려면

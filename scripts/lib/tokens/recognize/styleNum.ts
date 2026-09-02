@@ -216,8 +216,13 @@ export function valueEnd(masked: string, from: number, limit: number): number {
  *      **가지(branch)는 값이다** — `fontSize: ok ? 13 : 15` 의 둘은 그대로 히트다.
  *
  * 실측: 이 둘을 안 지우면 색 축에 33건이 헛것으로 들어온다(전부 조건식·함수 인자).
+ *
+ * **판정만 떼어낸 `valueSlotMask` 를 `typeUnitless`·`fontFamilyStr`(KAN-080 S5)가 쓴다.**
+ * 그쪽은 지운 사본이 아니라 **원문**에서 값을 읽어야 해서(문자열 내용이 필요하다) 자리
+ * 판정과 값 읽기를 갈라야 하는데, 판정을 두 벌로 적으면 한쪽만 고쳐진다 — `scopesOf` 를
+ * `constRef` 와 공유하는 것과 같은 이유다.
  */
-function valueSlots(expr: string): string {
+export function valueSlotMask(expr: string): boolean[] {
   let depth = 0;
   let condEnd = -1;
   for (let i = 0; i < expr.length; i++) {
@@ -231,7 +236,7 @@ function valueSlots(expr: string): string {
     }
   }
 
-  const out: string[] = [];
+  const out: boolean[] = [];
   depth = 0;
   for (let i = 0; i < expr.length; i++) {
     const c = expr[i];
@@ -240,9 +245,15 @@ function valueSlots(expr: string): string {
     if (open) depth++;
     const keep = depth === 0 && !open && !close && i > condEnd;
     if (close) depth--;
-    out.push(keep ? c : c === "\n" ? "\n" : " ");
+    out.push(keep);
   }
-  return out.join("");
+  return out;
+}
+
+/** 위 판정을 그대로 적용해 지운 사본. 길이·줄바꿈이 원문과 같아 오프셋이 통한다. */
+function valueSlots(expr: string): string {
+  const keep = valueSlotMask(expr);
+  return [...expr].map((c, i) => (keep[i] ? c : c === "\n" ? "\n" : " ")).join("");
 }
 
 export const styleNum: Recognizer = {
