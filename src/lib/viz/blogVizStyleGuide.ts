@@ -77,7 +77,9 @@ const foundations: VisualizationFoundation = {
   typography: {
     ...baseVisualizationFoundation.typography,
     titleFont: "'Gowun Dodum', sans-serif", // --font-body
-    monoFont: "'Space Mono', monospace", // --font-mono
+    // 스택 끝의 본문 서체가 **한글 얼굴**이다 (KAN-080 S7) — Space Mono 는 unicode-range 에
+    // 한글이 0 이라 그 자리 한글이 OS 기본으로 떨어진다. tokens.css 의 --font-mono 와 같은 값.
+    monoFont: "'Space Mono', 'Gowun Dodum', monospace", // --font-mono
     titleWeight: 700,
   },
 };

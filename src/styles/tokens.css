@@ -212,11 +212,19 @@
   --space-96: 96px;
 
   /* 타이포 */
+  /* 얼굴은 **라틴과 한글 두 칸**이다 (KAN-080 S7, DESIGN_CONCEPT.md §5).
+     Space Mono·JetBrains Mono 는 `unicode-range` 에 한글이 **0** 이라, 그 자리의 한글은
+     설계가 고른 얼굴이 아니라 **보는 사람 OS 가 고른 얼굴**로 그려지고 있었다(지면 11곳 실측:
+     `--font-mono` 텍스트 141조각 중 57조각이 한글). 스택 **끝에 본문 서체를 놓아** 배정한다 —
+     라틴·숫자는 원래 얼굴이 그대로 그리고 한글만 떨어지며, 본문 서체가 이미 로드돼 있으므로
+     **추가 다운로드가 0** 이고 OS 와 무관하게 같은 글자가 나온다.
+     한국어 고정폭을 덧붙이는 길은 버렸다 — 열이 안 맞고(실측 −6/−12/−18/−24px)
+     +235 KB 로 KAN-060 과 충돌한다. 근거는 `UI_CONSISTENCY_AUDIT.md` §7-6. */
   --font-display: 'Jua', sans-serif;
   --font-body: 'Gowun Dodum', sans-serif;
-  --font-mono: 'Space Mono', monospace;
+  --font-mono: 'Space Mono', 'Gowun Dodum', monospace;
   --font-hand: 'Gaegu', cursive;
-  --font-code: 'JetBrains Mono', 'Space Mono', ui-monospace, monospace;
+  --font-code: 'JetBrains Mono', 'Space Mono', 'Gowun Dodum', ui-monospace, monospace;
 
   /* 글자 크기 (DESIGN_CONCEPT.md §5)
      이름은 크기가 아니라 **역할**이다 — 같은 18px 이라도 본문인지 캡션인지가 다르면 나중에

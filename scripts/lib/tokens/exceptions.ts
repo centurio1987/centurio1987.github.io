@@ -110,6 +110,17 @@ export const EXCEPTIONS: TokenException[] = [
     site: (h) => h.axis === "stroke" && h.value === "3.2px",
   },
   {
+    id: "self-hosted-font-face",
+    kind: ["verdict"],
+    what: "src/styles/fonts.css 의 @font-face 서술자 font-weight 셋",
+    why: "값이 아니라 **이 파일이 무슨 굵기인가**를 선언하는 서술자다 — @font-face 안에서는 var() 가 안 먹고, 토큰으로 바꿀 대상 자체가 아니다",
+    evidence: ["design-concept/DESIGN_CONCEPT.md:192", "src/styles/fonts.css:1"],
+    match: (f) => f === "src/styles/fonts.css",
+    // 자리 단위 — 이 파일에 나중에 진짜 규칙이 들어오면 그것은 그대로 판정한다.
+    // (파일을 가른 이유가 global.css 의 진짜 굵기 자리까지 함께 내리지 않으려는 것이다.)
+    site: (h) => h.prop.trim().toLowerCase() === "font-weight",
+  },
+  {
     id: "apply-viz-generated",
     kind: ["scan"],
     what: "AUTO-GENERATED 헤더가 붙은 apply-viz 산출물",

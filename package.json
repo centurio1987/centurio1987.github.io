@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "gen:motion": "bun scripts/gen-motion-css.ts",
+    "fonts:build": "bun scripts/build-fonts.ts",
     "viz:verify": "bun scripts/verify-viz.ts",
     "deco:verify": "bun scripts/verify-deco.ts",
     "width:verify": "bun scripts/verify-widths.ts",

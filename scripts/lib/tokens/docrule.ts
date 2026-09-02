@@ -418,6 +418,7 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
         rows.push({ hit, spacingGroup: null, auditLabel, docLabel: null, verdict, reason: why });
       };
       const key = `${hit.file}:${hit.line}:${prop}`;
+      const typeExc = verdictExceptionFor(hit.file, "", hit);
       if (hit.src === "css-decl" && fragmentedAt.has(key)) {
         // 사유가 `측정 제외` 로 시작해야 `baseline.judgeAxis` 가 이것을 잡음 칸으로 보낸다.
         // 집계는 「판정 불가」와 갈라 센다 — 파편은 **잴 수 없는 값**이 아니라
@@ -427,8 +428,12 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
             "파편 제외");
       } else if (hit.kind === "token") {
         put("준수", "준수", `${P}var(${hit.token}) 을 썼다`);
-      } else if (label === "정당한 예외") {
-        put("정당한 예외", "정당한 예외", P + reason);
+      } else if (typeExc) {
+        // **예외를 드리프트보다 먼저 본다.** 공용 `auditLabelOf` 는 드리프트를 앞에 두는데
+        // (감사 판정기의 순서다), 이 축에서 예외로 오르는 자리는 대개 **토큰과 값이 같다** —
+        // `@font-face` 서술자가 그렇다. 뒤에 두면 예외가 영영 안 걸리고 드리프트로 남는다.
+        put("정당한 예외", "정당한 예외",
+            `${P}${typeExc.why} (근거 ${typeExc.evidence.join(" · ")})`);
       } else if (!sc.fromTokens) {
         put("판정 불가", "토큰 미존재",
             `${P}${TYPE_META[typeId].what} 토큰이 아직 없다 — DESIGN_CONCEPT.md §5 의 표가 tokens.css 에 서야 잰다`);

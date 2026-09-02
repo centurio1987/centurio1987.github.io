@@ -6,12 +6,21 @@
    하나도 안 걸린다(후보 단계 — 카탈로그는 /design/viz-frames). */
 @import "./viz-frame.css";
 @import "./motion.css";
+/* 자체 호스팅 본문 서체의 @font-face 서술자 (KAN-080 S7). 파일을 가른 이유는
+   토큰 게이트다 — @font-face 안의 `font-weight: 700` 은 값이 아니라 **이 파일이 무슨
+   굵기인가**를 선언하는 서술자이고 `var()` 를 쓸 수 없는데, 한 파일에 두면 그 셋을
+   예외로 내리느라 global.css 의 진짜 굵기 자리까지 판정에서 함께 내려간다. */
+@import "./fonts.css";
 
-/* Google Fonts(한국어 전용 폰트 시스템)는 여기서 @import 하지 않는다 — CSS 안의
-   @import 는 이 파일을 다 받은 뒤에야 요청이 출발해 폰트 CSS가 직렬로 늘어선다.
+/* Google Fonts(Jua · Gaegu · Space Mono · JetBrains Mono)는 여기서 @import 하지 않는다 —
+   CSS 안의 @import 는 이 파일을 다 받은 뒤에야 요청이 출발해 폰트 CSS가 직렬로 늘어선다.
    BaseLayout.astro 의 <link rel="stylesheet"> 로 올려 HTML 파싱 시점에 바로
    출발시키고(이미 걸려 있는 preconnect 가 그때 제값을 한다), 폰트 패밀리 변경은
-   그쪽 URL 과 아래 --font-* 토큰을 함께 고쳐야 한다. */
+   그쪽 URL 과 아래 --font-* 토큰을 함께 고쳐야 한다.
+
+   **본문 서체 Gowun Dodum 만 자체 호스팅이다** (KAN-080 S7). 그 URL 에서 빠져 있는 것이
+   정상이다 — 위에서 들여온 `fonts.css` 의 @font-face 가 대신 든다. */
+
 
 *,
 *::before,
@@ -21,6 +30,15 @@
 
 html {
   scroll-behavior: smooth;
+
+  /* **굵기 합성을 끈다** (KAN-080 S7). 진짜 500·700 면이 생겼으므로, 없는 단을 브라우저가
+     조용히 메우면 「토큰을 지켰는데 화면은 가짜」인 상태가 그대로 남는다. 합성 볼드는
+     `getComputedStyle` 의 font-weight 가 700 으로 같게 나와 **어떤 자동 검사도 못 본다.**
+
+     `none` 이 아니라 `style` 인 이유는 실측이다 — 네 서체 어디에도 이탤릭 면이 없어서
+     `none` 으로 끄면 발행 글의 `<em>` 43자리가 전부 **선 채로 그려진다.** 이 카드가 고치려는
+     것은 굵기이지 기울기가 아니다. 값의 뜻: 「기울기만 합성한다 = 굵기는 합성하지 않는다」. */
+  font-synthesis: style;
 }
 
 /* 셸(헤더·푸터)이 지면 폭을 따라간다 (KAN-068). BaseLayout 의 width="wide" 가 이 클래스를

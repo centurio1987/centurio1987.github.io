@@ -135,7 +135,7 @@ work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 - [x] `S4` 정본 1차 — §5 재작성 · v0.2 화석 둘 · 시뮬 템플릿
 - [x] `S5` 인식기 둘 — `typeUnitless` + `fontFamilyStr` [기준선 갱신 #1]
 - [x] `S6` 토큰 신설 + 판정층 + `fontRoles` 좁히기 [기준선 갱신 #2]
-- [ ] `S7` 폰트 파이프라인 — 굵기를 굽고 자체 호스팅으로 전환 [화면이 바뀌는 work 1/2]
+- [x] `S7` 폰트 파이프라인 — 굵기를 굽고 자체 호스팅으로 전환 [화면이 바뀌는 work 1/2]
 - [ ] `S8` `type:verify` 신설 — 웨이트 로드(1·2층) + **글자 덮개(3층)**
 - [ ] `S9` 데코 실측값 재측정 — `--dm-shift` 스윕 [화면이 바뀌는 work 2/2]
 - [ ] `S10` 시뮬 구획 1 — `osi-7-layers` (12파일)
@@ -309,3 +309,5 @@ git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan080-be
 - 2026-09-02T14:36 · s:845e612f · S5 done — 인식기 둘: typeUnitless(굵기 115·행간 71 JSX + CSS 소수 39) · fontFamilyStr(raw 서체 42). 옛 LITERAL 을 안 고치고 literalsOf(src) 로 새 경로에만 다른 자를 줬다 — 옛 히트 증분 0 · 겹침 0. 래칫 font/위반 0→42 · font/판정불가 244→468
 - 2026-09-02T14:37 · s:845e612f · S6 doing — 착수
 - 2026-09-02T14:45 · s:845e612f · S6 done — 토큰 13개(굵기 3·행간 6·자간 4) + docrule 세 축 판정 + judgeAxis 접두 셋 + fontRoles 를 --text- 로 좁힘. 래칫 칸 여섯이 새로 섰다(굵기 드리프트137/위반68 · 행간 70/61 · 자간 10/38). CSS 소수 파편 78건은 잡음으로 내렸다(verdict 는 판정 불가 그대로). src/ 는 tokens.css 만
+- 2026-09-02T15:11 · s:845e612f · S7 doing — 착수
+- 2026-09-02T15:37 · s:845e612f · S7 done — 폰트 파이프라인 한 커밋: fonts:build(굽기·서브셋·면적 자가검사) + public/fonts 3단(87.1/105.9/107.7KB) + @font-face·font-synthesis:style + Google URL 에서 Gowun Dodum 제거 + 선언 다섯 정렬 + mono/code 스택 끝에 본문 서체. render:compare 68지면 346,163건이 움직였고 속성이 font-family·@box·기하뿐이다(색·테두리·크기 0). 계획에서 둘 비켰다 — preload 안 검(KAN-059 규약) · font-synthesis 는 none 대신 style(em 43자리)

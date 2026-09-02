@@ -9,7 +9,15 @@ A writing-focused personal blog (빵관 토니 — "Serious Work, Joyful Wit"), 
 ## Commands
 
 CI uses **Bun**; locally either works. Standard Astro scripts (`dev`/`build`/`preview`) plus
-repo-specific ones (`viz:verify`·`deco:verify`·`tokens:verify`·`graph:*`·`gen:motion`) — see `package.json`.
+repo-specific ones (`viz:verify`·`deco:verify`·`tokens:verify`·`graph:*`·`gen:motion`·`fonts:build`) — see `package.json`.
+
+**본문 서체는 자체 호스팅이고 굵기 단을 직접 굽는다 (KAN-080).** `bun run fonts:build` 가
+`scripts/build-fonts.ts` 로 Gowun Dodum 500·700 을 만들고 **빌드된 지면이 쓰는 글자로**
+서브셋해 `public/fonts/` 에 넣는다. 순서가 규약이다 — **글자 수집이 `dist/` 를 입력으로 받으므로
+`bun run build` 뒤에 온다**(빌드는 폰트에 의존하지 않아 순환이 없다). 산출물은 커밋하고 작업
+자리(`.fonts-build/`, 원본 7.2MB + 파이썬 venv)는 커밋하지 않는다. 굽기의 함정 셋과 면적
+자가검사는 `scripts/lib/fonts/bake.py` 에 있다 — **셋째(stroke 전 winding 정규화)는 「실패 0」으로
+조용히 끝나고 잉크 총량도 늘어서, 면적 말고는 아무것도 안 잡는다.**
 
 No test suite. Verify by building (`build`) and previewing.
 

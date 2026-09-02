@@ -95,7 +95,8 @@ const baseFoundation: BbangtoFoundation = makeFoundations({
   description: "빵관 토니 블로그 — 코발트+크림 에디토리얼, 한국어 폰트, subtle 모션",
   semantic,
   fontSans: "'Gowun Dodum', sans-serif", // --font-body
-  fontMono: "'Space Mono', monospace", // --font-mono
+  // 스택 끝의 본문 서체가 한글 얼굴이다 (KAN-080 S7) — tokens.css 의 --font-mono 와 같은 값.
+  fontMono: "'Space Mono', 'Gowun Dodum', monospace", // --font-mono
   radius: {
     none: "0px",
     sm: "8px", // --radius-sm
