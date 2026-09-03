@@ -354,3 +354,4 @@ git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan080-be
 - 2026-09-03T02:54 · s:74abae1b · S18 done — /graph 2파일 10자리 토큰화 — px 자간 4건(0.5px·0.3px)이 크기별로 다 label 로 접혔다. 계획의 「캔버스 텍스트는 DOM 이 아니다」 리스크는 해당 없음: 이 지면에 <canvas> 가 0건이라 render:compare 가 전부 본다(34쪽 중 /graph 만 움직였고 572건, 속성이 자간·행간과 그 기하뿐)
 - 2026-09-03T02:55 · s:74abae1b · S14 doing — 착수
 - 2026-09-03T17:17 · s:74abae1b · S14 done — 데코 11파일 55자리 토큰화 — 그 구획 글자 축 0, 예외 0. 계획이 세운 예외 후보(DoodleMark line-height:0)는 실측이 취소시켰다: .dmark-ink 가 block 이라 줄상자가 안 생겨 0↔1 이 화면을 안 바꾼다(마크 6·36개, 문서 높이 0). Tape 의 letter-spacing/text-indent 짝은 같은 토큰을 읽게 해 불변식을 코드가 지게 했고, 시안 값 0.24em·0.2em 은 deco 한 단으로 접었다(nano 에서 글자 사이 0.4px)
+- 2026-09-03T17:19 · s:74abae1b — 배치5 마감 — 176자리/31파일 닫힘(래칫 196→20). 기준선 조임: 위반 65→12 · 드리프트 131→8. 남은 파일 5개는 전부 배치6(S16 대담 16 · S17 viz 4)
