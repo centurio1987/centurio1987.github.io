@@ -58,9 +58,9 @@ const avatarOk = publicFileExists(TALK.interviewee.avatar);
   }
   .qa-title {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: var(--text-h2);
-    line-height: 1.4;
+    line-height: var(--font-leading-sub);
     color: var(--ink);
     margin: 0;
   }
@@ -97,7 +97,9 @@ const avatarOk = publicFileExists(TALK.interviewee.avatar);
   }
   .qa-text {
     font-size: var(--text-body);
-    line-height: 1.95;
+    /* 1.95 이던 자리다. --font-leading-talk(1.9)는 S3 이 **대담을 위해** 세운 단이라
+       talk 까지 0.05 · read 까지 0.20 으로 여기가 그 단의 집이다 (KAN-080 S16). */
+    line-height: var(--font-leading-talk);
     color: var(--ink-2);
   }
   .qa-text :global(p) {
