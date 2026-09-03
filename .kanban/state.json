@@ -1,6 +1,6 @@
 {
-  "next_id": 83,
-  "next_seq": 352,
+  "next_id": 84,
+  "next_seq": 353,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1334,6 +1334,26 @@
         "CLAUDE.md",
         ".gitignore"
       ]
+    },
+    "KAN-083-1EEG2W": {
+      "col": "todo",
+      "title": "발행 글 27편의 hero.webp 를 지금 서체·굵기로 다시 굽고, 이번에는 스펙을 레포에 남긴다",
+      "verbatim": "대표 그림 27장이 옛 굵기로 굳어 있는 것을 후속 카드로 미루는가 — 그림 파일로 이미 구워져 이번 변경이 안 닿습니다. 추천: 미룬다\n→ 승인 · 유저 · 2026-09-03 (KAN-080-WTQ7AV 검토서 3항 5번)",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-09-03",
+      "title_hash": "acab1e836d5bcb7fb3d3a3519fcee4ca58606460",
+      "verbatim_hash": "9c8dc7b9c13afe9664db58e7925a0d31fc40f931",
+      "short": "hero 래스터 재생성",
+      "short_hash": "5bc68b64f8e27d57d9655c78d2d7b884b64219b7",
+      "purpose": "발행 글 27편의 hero.webp 를 지금 서체·굵기로 다시 굽는다",
+      "purpose_hash": "6d7efa5a6610eddd987d0117a2c4a76b2e946ab2",
+      "reason": "그림 안 글자가 합성 볼드로 굳어 있어 같은 글의 본문과 굵기가 다르게 보인다 — KAN-080 이 굽는 코드는 고쳤지만 이미 구워진 픽셀은 안 바뀐다",
+      "reason_hash": "c268e922116480bb1c4a4b58f57af442a8841e18",
+      "goal": "27장이 새 파이프라인으로 다시 구워지고 그 스펙이 이번에는 레포에 남는다(사이드카 또는 글 안 블록)",
+      "goal_hash": "0f26f6c739f5dcd1d4ba373333ee83d9347cd0ff",
+      "memo": "KAN-080 검토서 5항 승인(유저·화면·2026-09-03)으로 분기한 카드다. 사양 정본은 design-concept/UI_CONSISTENCY_AUDIT.md:1136 (7-11 절) — 그대로 등록하라고 적혀 있다. 실측: 발행 글에 잔존 viz 블록 0건 · 사이드카 0건 · 커밋 이력 전체에 hero 스펙을 담은 파일이 미발행 draft 하나뿐(draft/pagination-anatomy-1.mdx). scripts/apply-viz.ts:163 이 저작 시점에 viz 블록을 이미지 링크로 치환해 소비했고 그 일이 draft/ 단계라 커밋에 안 남았다 — 그래서 되굽기가 「27장 스펙 재작성」이다. 범위: public/images/*/hero.webp · scripts/render-viz.ts · scripts/apply-viz.ts(스펙을 소비하지 않고 남기도록). 교훈이 목표에 박혀 있다 — 스펙이 없어 되굽기가 재작성이 된 것이 이 분기의 원인이다.",
+      "memo_hash": "3d19815e3a7f546b8fb95ed55cad18dbca77443f"
     }
   },
   "order": [
@@ -1421,9 +1441,27 @@
     "KAN-076-X1C8PY",
     "KAN-077-RA2SYG",
     "KAN-078-D44PD1",
-    "KAN-080-WTQ7AV"
+    "KAN-080-WTQ7AV",
+    "KAN-083-1EEG2W"
   ],
   "recent": [
+    {
+      "seq": 352,
+      "t": "2026-09-03T23:55",
+      "a": "ai",
+      "id": "KAN-083-1EEG2W",
+      "op": "create",
+      "w": "WTCH92",
+      "col": "todo",
+      "title": "발행 글 27편의 hero.webp 를 지금 서체·굵기로 다시 굽고, 이번에는 스펙을 레포에 남긴다",
+      "verbatim": "대표 그림 27장이 옛 굵기로 굳어 있는 것을 후속 카드로 미루는가 — 그림 파일로 이미 구워져 이번 변경이 안 닿습니다. 추천: 미룬다\n→ 승인 · 유저 · 2026-09-03 (KAN-080-WTQ7AV 검토서 3항 5번)",
+      "parent": null,
+      "short": "hero 래스터 재생성",
+      "purpose": "발행 글 27편의 hero.webp 를 지금 서체·굵기로 다시 굽는다",
+      "reason": "그림 안 글자가 합성 볼드로 굳어 있어 같은 글의 본문과 굵기가 다르게 보인다 — KAN-080 이 굽는 코드는 고쳤지만 이미 구워진 픽셀은 안 바뀐다",
+      "goal": "27장이 새 파이프라인으로 다시 구워지고 그 스펙이 이번에는 레포에 남는다(사이드카 또는 글 안 블록)",
+      "memo": "KAN-080 검토서 5항 승인(유저·화면·2026-09-03)으로 분기한 카드다. 사양 정본은 design-concept/UI_CONSISTENCY_AUDIT.md:1136 (7-11 절) — 그대로 등록하라고 적혀 있다. 실측: 발행 글에 잔존 viz 블록 0건 · 사이드카 0건 · 커밋 이력 전체에 hero 스펙을 담은 파일이 미발행 draft 하나뿐(draft/pagination-anatomy-1.mdx). scripts/apply-viz.ts:163 이 저작 시점에 viz 블록을 이미지 링크로 치환해 소비했고 그 일이 draft/ 단계라 커밋에 안 남았다 — 그래서 되굽기가 「27장 스펙 재작성」이다. 범위: public/images/*/hero.webp · scripts/render-viz.ts · scripts/apply-viz.ts(스펙을 소비하지 않고 남기도록). 교훈이 목표에 박혀 있다 — 스펙이 없어 되굽기가 재작성이 된 것이 이 분기의 원인이다."
+    },
     {
       "seq": 351,
       "t": "2026-09-03T23:48",
@@ -1992,16 +2030,6 @@
       "op": "move",
       "w": "Q4EWPR",
       "from": "backlog",
-      "to": "done"
-    },
-    {
-      "seq": 307,
-      "t": "2026-08-28T14:02",
-      "a": "ai",
-      "id": "KAN-072.2-BF75X5",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "doing",
       "to": "done"
     }
   ],
