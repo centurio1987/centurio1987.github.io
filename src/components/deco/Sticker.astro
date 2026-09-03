@@ -171,9 +171,9 @@ const hidden = decorative ? "true" : undefined;
       0 0 0 var(--deco-diecut) var(--surface-hi),
       0 3px 7px rgba(32, 38, 74, 0.16);
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-body);
-    line-height: 1.2;
+    line-height: var(--font-leading-title);
     text-align: center;
     color: var(--sp-ink);
     /* 글쓴이가 넣은 \n 을 줄바꿈으로 지킨다 — 덩어리 모양이 문구 길이에 따라
@@ -214,8 +214,8 @@ const hidden = decorative ? "true" : undefined;
     clip-path: polygon(0 0, 100% 0, 91% 50%, 100% 100%, 0 100%, 9% 50%);
     font-family: var(--font-body);
     font-size: var(--text-label);
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-label);
     color: var(--pop-ink);
     white-space: nowrap;
     /* clip-path 는 box-shadow 를 잘라내므로 그림자는 filter 로 준다 */
@@ -276,9 +276,9 @@ const hidden = decorative ? "true" : undefined;
       0 0 0 var(--deco-diecut) var(--surface-hi),
       0 3px 7px rgba(32, 38, 74, 0.16);
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-h3);
-    line-height: 1;
+    line-height: var(--font-leading-flat);
     color: var(--accent);
     text-align: center;
   }
@@ -312,8 +312,8 @@ const hidden = decorative ? "true" : undefined;
   .tag-text {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.12em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-wide);
     color: var(--ink);
     white-space: nowrap;
   }
@@ -340,8 +340,12 @@ const hidden = decorative ? "true" : undefined;
     background: var(--ink);
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.24em;
+    font-weight: var(--font-weight-bold);
+    /* 시안이 준 0.24em 이던 자리다. 시안은 이 띠에 .24em, S9 앞머리에 .2em 을 줬는데
+       (`DECO_KIT.md` 8절) 둘 다 --font-track-deco(0.2em) 로 접힌다 — nano(10px)에서
+       차이가 글자 사이 0.4px 이라 이름 하나 길이에서 2px 남짓이다. Space Mono 자리라
+       S7 의 서체 작업이 안 건드린 값이고, 여기서 움직이는 것은 서체가 아니라 자다. */
+    letter-spacing: var(--font-track-deco);
     text-align: center;
     /* 어두운 띠 위 글자는 --surface 가 아니라 스티커 흰색이다 — T4 레터링 테이프의
        on-dark 와 같은 값. */
@@ -351,9 +355,9 @@ const hidden = decorative ? "true" : undefined;
     display: block;
     padding: var(--space-6) var(--space-12) var(--space-8);
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-h3);
-    line-height: 1;
+    line-height: var(--font-leading-flat);
     text-align: center;
     color: var(--accent);
   }
@@ -378,9 +382,9 @@ const hidden = decorative ? "true" : undefined;
   }
   .np-text {
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-h3);
-    line-height: 1;
+    line-height: var(--font-leading-flat);
     color: var(--deco-pink-ink);
     white-space: nowrap;
   }
@@ -408,8 +412,8 @@ const hidden = decorative ? "true" : undefined;
     flex: none;
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.2em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-deco);
     color: var(--ink-3);
   }
   /* 밑줄은 이름 길이가 아니라 남은 칸 전체를 긋는다(flex:1) — 서식의 빈칸이라
@@ -419,9 +423,9 @@ const hidden = decorative ? "true" : undefined;
     padding-bottom: var(--space-2);
     border-bottom: var(--stroke) solid color-mix(in srgb, var(--ink) 25%, transparent);
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-h3);
-    line-height: 1;
+    line-height: var(--font-leading-flat);
     color: var(--ink);
   }
   .nb-badge {
@@ -439,9 +443,9 @@ const hidden = decorative ? "true" : undefined;
        배지보다 도드라진다. */
     box-shadow: 0 0 0 var(--space-4) var(--surface-hi);
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-meta);
-    line-height: 1;
+    line-height: var(--font-leading-flat);
     color: var(--accent);
   }
 

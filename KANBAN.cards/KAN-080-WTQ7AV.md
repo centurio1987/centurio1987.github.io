@@ -144,7 +144,7 @@ work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 - [x] `S11` 시뮬 구획 2 — `vpn-anatomy` · `webrtc` (14파일)
 - [x] `S12` 시뮬 구획 3 — `auth-authz` · `container-anatomy` · `tauri` 등 (9파일)
 - [x] `S13` 레이아웃·페이지 구획 (212자리)
-- [ ] `S14` 데코 부품 구획 (11파일 111자리)
+- [x] `S14` 데코 부품 구획 (11파일 111자리)
 - [x] `S15` 공용 컴포넌트 구획 (110자리)
 - [ ] `S16` 폭신 대담 구획 (59자리)
 - [ ] `S17` viz 구획 — 로컬 3종 + 사본층 둘
@@ -352,3 +352,5 @@ git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan080-be
 - 2026-09-03T02:25 · s:74abae1b · S15 done — 공용 컴포넌트 12파일 38자리 토큰화 — px 자간 11건 전량 em 으로. 이 구획에 px 자간 0. 섞인 자리 둘(.st-name=SER.+한글 시리즈명 · .toc-head=목차 · CONTENTS)은 §5 대로 한글 기준으로 골랐다. render:compare 47,171건, 속성이 자간·행간·굵기와 그 기하뿐
 - 2026-09-03T02:26 · s:74abae1b · S18 doing — 착수
 - 2026-09-03T02:54 · s:74abae1b · S18 done — /graph 2파일 10자리 토큰화 — px 자간 4건(0.5px·0.3px)이 크기별로 다 label 로 접혔다. 계획의 「캔버스 텍스트는 DOM 이 아니다」 리스크는 해당 없음: 이 지면에 <canvas> 가 0건이라 render:compare 가 전부 본다(34쪽 중 /graph 만 움직였고 572건, 속성이 자간·행간과 그 기하뿐)
+- 2026-09-03T02:55 · s:74abae1b · S14 doing — 착수
+- 2026-09-03T17:17 · s:74abae1b · S14 done — 데코 11파일 55자리 토큰화 — 그 구획 글자 축 0, 예외 0. 계획이 세운 예외 후보(DoodleMark line-height:0)는 실측이 취소시켰다: .dmark-ink 가 block 이라 줄상자가 안 생겨 0↔1 이 화면을 안 바꾼다(마크 6·36개, 문서 높이 0). Tape 의 letter-spacing/text-indent 짝은 같은 토큰을 읽게 해 불변식을 코드가 지게 했고, 시안 값 0.24em·0.2em 은 deco 한 단으로 접었다(nano 에서 글자 사이 0.4px)
