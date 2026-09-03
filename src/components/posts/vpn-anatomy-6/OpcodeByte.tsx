@@ -64,9 +64,9 @@ export default function OpcodeByte() {
         justifyContent: "center",
         width: 34,
         height: 42,
-        fontFamily: "monospace",
+        fontFamily: "var(--font-code)",
         fontSize: "var(--text-h3)",
-        fontWeight: 700,
+        fontWeight: "var(--font-weight-bold)",
         color: PANEL,
         background: group === "op" ? CORE : ACCENT,
         borderRadius: "var(--radius-xs)",
@@ -76,7 +76,7 @@ export default function OpcodeByte() {
     </span>
   );
 
-  const label: React.CSSProperties = { fontSize: "var(--text-meta)", color: INK, fontWeight: 600 };
+  const label: React.CSSProperties = { fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)" };
 
   return (
     <figure
@@ -128,24 +128,24 @@ export default function OpcodeByte() {
             ))}
           </div>
           <div style={{ display: "flex", gap: "var(--space-4)", fontSize: "var(--text-micro)", color: MUTED }}>
-            <span style={{ width: 34 * 5 + 16, color: CORE, fontWeight: 600 }}>opcode = {opcode}</span>
-            <span style={{ width: 34 * 3 + 8, color: ACCENT, fontWeight: 600 }}>key-id = {keyId}</span>
+            <span style={{ width: 34 * 5 + 16, color: CORE, fontWeight: "var(--font-weight-bold)" }}>opcode = {opcode}</span>
+            <span style={{ width: 34 * 3 + 8, color: ACCENT, fontWeight: "var(--font-weight-bold)" }}>key-id = {keyId}</span>
           </div>
         </div>
-        <div style={{ fontFamily: "monospace", fontSize: "var(--text-h2)", fontWeight: 700, color: INK }}>{hex}</div>
+        <div style={{ fontFamily: "var(--font-code)", fontSize: "var(--text-h2)", fontWeight: "var(--font-weight-bold)", color: INK }}>{hex}</div>
       </div>
 
-      <div style={{ fontSize: "var(--text-meta)", color: INK, lineHeight: 1.9 }}>
+      <div style={{ fontSize: "var(--text-meta)", color: INK, lineHeight: "var(--font-leading-read)" }}>
         <span style={{ marginRight: "var(--space-14)" }}>
           메시지:{" "}
-          <strong style={{ fontFamily: "monospace", color: channelColor }}>{op.name}</strong>
+          <strong style={{ fontFamily: "var(--font-code)", color: channelColor }}>{op.name}</strong>
         </span>
         <span
           style={{
             padding: "var(--space-2) var(--space-8)",
             borderRadius: "var(--btn-radius)",
             fontSize: "var(--text-label)",
-            fontWeight: 700,
+            fontWeight: "var(--font-weight-bold)",
             color: PANEL,
             background: channelColor,
           }}
@@ -162,7 +162,7 @@ export default function OpcodeByte() {
             padding: "var(--space-8) var(--space-10)",
             borderRadius: "var(--radius-sm)",
             fontSize: "var(--text-meta)",
-            lineHeight: 1.7,
+            lineHeight: "var(--font-leading-read)",
             color: OK,
             background: tint(OK, 7.1),
             border: `${HAIR} solid ${tint(OK, 26.7)}`,
@@ -172,7 +172,7 @@ export default function OpcodeByte() {
         </p>
       )}
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.75 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: "var(--font-leading-read)" }}>
         파란 다섯 칸 = opcode(메시지 종류), 금색 세 칸 = key-id(어느 키로 풀지). 둘을 이어 붙이면 패킷 맨 앞 1바이트가 됩니다. 이
         바이트는 수신자가 처리 방법을 정하려고 <strong>복호 전에</strong> 읽어야 하는 라우팅 정보라, tls-crypt로 제어 채널을
         암호화해도 <strong>평문으로 남습니다</strong>.

@@ -109,9 +109,10 @@ const {
     height: 30px;
     /* 레터링만 폭을 스스로 벌린다. `.tape` 는 `width: var(--w)` 로 호출부가 준 폭에
        묶이고 clip-path 가 자식까지 잘라내는데, 글씨는 --text-nano(10px) + 자간
-       0.34em 이라 문구가 길면 그 폭을 넘어 **마지막 글자가 잘린다**(홈 「최근 글」
-       머리의 `BAKED FRESH` 가 104px 판에서 108.6px 을 쓴다 — 실측). 호출부는 부품
-       밖이므로 부품이 스스로 맞춘다.
+       0.2em(`--font-track-deco`)이라 문구가 길면 그 폭을 넘어 **마지막 글자가 잘린다**
+       (홈 「최근 글」 머리의 `BAKED FRESH` 가 104px 판에서 108.6px 을 쓴다 — 자간이
+       0.34em 이던 때의 실측이라 지금은 그보다 좁고, 그래서 이 가드는 계속 충분하다).
+       호출부는 부품 밖이므로 부품이 스스로 맞춘다.
        `width: max(var(--w), min-content)` 는 쓰지 마라 — `min-content` 는 `max()`
        인자로 무효라 선언이 통째로 버려지고 모든 레터링 테이프가 글자 폭으로
        쪼그라든다(156.5 → 111px 실측). */
@@ -129,11 +130,14 @@ const {
   .tape-label {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.34em;
-    /* letter-spacing 이 마지막 글자 뒤에도 붙어 시각 중심이 왼쪽으로 밀린다 */
-    text-indent: 0.34em;
+    font-weight: var(--font-weight-bold);
+    line-height: var(--font-leading-flat);
+    letter-spacing: var(--font-track-deco);
+    /* letter-spacing 이 마지막 글자 뒤에도 붙어 시각 중심이 왼쪽으로 밀린다.
+       **둘은 같은 값이어야 한다** — 한쪽만 접으면 레터링이 가운데에서 벗어나고
+       `deco:verify` 는 겹침·도달성·오버플로만 봐서 그것을 안 잡는다. 그래서 두
+       선언이 같은 토큰을 읽는다(0.34em 이던 자리다 — KAN-080 S14). */
+    text-indent: var(--font-track-deco);
     color: color-mix(in srgb, var(--accent) 75%, transparent);
     white-space: nowrap;
   }

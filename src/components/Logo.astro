@@ -41,11 +41,11 @@ const faceSize = Math.round(size * 1.35);
   }
   .wordmark {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: var(--logo-size);
     /* 라인박스를 글리프에 밀착시켜(디스플레이 폰트의 큰 내부 리딩 제거) 원형 아바타
        중심과 글자 중심이 실제로 정렬되게 한다. */
-    line-height: 1;
+    line-height: var(--font-leading-flat);
   }
   /* 스파클 SVG → 토니 얼굴 크롭 아바타로 교체(디자인 피드백). 워드마크 '왼쪽'에 원형 배지로
      두고, 크림 헤더 위에 또렷하게 뜨도록 아주 옅은 잉크 링 + 소프트 섀도로 살짝 띄운다. */

@@ -197,7 +197,7 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
   .kicker {
     font-family: var(--font-mono);
     font-size: var(--text-label);
-    letter-spacing: 0.2em;
+    letter-spacing: var(--font-track-deco);
     color: var(--ink-3);
   }
   .page-head h1 {
@@ -207,7 +207,7 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
   .lede {
     max-width: 60ch;
     color: var(--ink-2);
-    line-height: 1.75;
+    line-height: var(--font-leading-read);
   }
   .lede.warn {
     margin-top: var(--space-10);
@@ -231,14 +231,14 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
   .sec small {
     margin-left: var(--space-10);
     font-size: var(--text-meta);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ink-3);
   }
   .note-p {
     max-width: 68ch;
     margin: 0 0 var(--space-24);
     color: var(--ink-2);
-    line-height: 1.75;
+    line-height: var(--font-leading-read);
     font-size: var(--text-meta);
   }
 
@@ -265,7 +265,7 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
     color: var(--accent);
     font-family: var(--font-mono);
     font-size: var(--text-micro);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
   .from {
     font-family: var(--font-mono);
@@ -276,7 +276,7 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
     margin: var(--space-8) 0 0;
     font-size: var(--text-meta);
     color: var(--ink-3);
-    line-height: 1.6;
+    line-height: var(--font-leading-ui);
   }
   /* 판 밖으로 나가는 것(테이프)이 윗칸을 물지 않게 여유를 둔다. 필요한 최소는
      실측 24.7px 이다 — 테이프가 top:-14px·-10° 라 판 밖 그만큼 올라간다(DECO_KIT §7).
@@ -298,7 +298,7 @@ const DECO_TIERED: VizFrame[] = ["polaroid", "note", "taped", "crayon"];
     gap: var(--space-8);
     margin: 0 0 var(--space-12);
     font-size: var(--text-meta);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
   .pid {
     padding: var(--space-2) var(--space-6);

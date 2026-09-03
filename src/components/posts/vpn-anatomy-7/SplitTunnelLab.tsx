@@ -90,7 +90,7 @@ export default function SplitTunnelLab() {
     flex: 1,
     padding: "var(--space-6) var(--space-10)",
     fontSize: "var(--text-meta)",
-    fontWeight: 600,
+    fontWeight: "var(--font-weight-bold)",
     cursor: "pointer",
     borderRadius: "var(--radius-sm)",
     border: `${HAIR} solid ${active ? "#8a7a56" : BORDER}`,
@@ -104,7 +104,7 @@ export default function SplitTunnelLab() {
     b: { text: string; on: boolean; set: () => void },
   ) => (
     <div style={{ marginBottom: "var(--space-10)" }}>
-      <div style={{ fontSize: "var(--text-label)", color: MUTED, marginBottom: "var(--space-4)", fontWeight: 600 }}>{label}</div>
+      <div style={{ fontSize: "var(--text-label)", color: MUTED, marginBottom: "var(--space-4)", fontWeight: "var(--font-weight-bold)" }}>{label}</div>
       <div style={{ display: "flex", gap: "var(--space-6)" }}>
         <button type="button" aria-pressed={a.on} onClick={a.set} style={btn(a.on)}>{a.text}</button>
         <button type="button" aria-pressed={b.on} onClick={b.set} style={btn(b.on)}>{b.text}</button>
@@ -139,7 +139,7 @@ export default function SplitTunnelLab() {
         </div>
 
         <div>
-          <div style={{ fontSize: "var(--text-label)", color: MUTED, marginBottom: "var(--space-6)", fontWeight: 600 }}>
+          <div style={{ fontSize: "var(--text-label)", color: MUTED, marginBottom: "var(--space-6)", fontWeight: "var(--font-weight-bold)" }}>
             트래픽이 흐르는 곳
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
@@ -161,13 +161,13 @@ export default function SplitTunnelLab() {
                   }}
                 >
                   <span style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontWeight: 700, fontSize: "var(--text-meta)", color: meta.fg }}>{c.name}</span>
+                    <span style={{ fontWeight: "var(--font-weight-bold)", fontSize: "var(--text-meta)", color: meta.fg }}>{c.name}</span>
                     <span style={{ fontSize: "var(--text-micro)", color: MUTED_3 }}>{c.note}</span>
                   </span>
                   <span
                     style={{
                       fontSize: "var(--text-label)",
-                      fontWeight: 700,
+                      fontWeight: "var(--font-weight-bold)",
                       color: meta.fg,
                       whiteSpace: "nowrap",
                       padding: "var(--space-2) var(--space-8)",
@@ -189,7 +189,7 @@ export default function SplitTunnelLab() {
         style={{
           marginTop: "var(--space-14)",
           fontSize: "var(--text-meta)",
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
           // 값이 FATE_META 의 leak.fg / blocked.fg 와 정확히 같다 — 같은 뜻이므로 같은 토큰을 쓴다.
           // 게이트는 삼항 안을 못 보지만, 리터럴로 두면 팔레트를 고칠 때 이 자리만 안 따라온다.
           color: dnsLeaking || dropLeaking ? "var(--fate-leak-fg, #8a3320)" : "var(--fate-blocked-fg, #5f5a51)",

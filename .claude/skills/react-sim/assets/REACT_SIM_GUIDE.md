@@ -17,9 +17,20 @@ ORDER가 요구한 "React simulation을 통한 설명"을 안전하게 넣는 �
 4. **빌드 안전 + 조기 타입검증.** JSX 문법 오류 1건이 **사이트 전체 빌드**를 깬다. 작성 직후 **`tsc --noEmit`(또는
    `astro check`)로 타입을 먼저 검증**하고, 최종적으로 `bun run build` 통과를 확인한다. 닫는 태그·중괄호 짝·`className`(React는 `class` 아님) 점검.
 5. **접근성·절제.** 조작 요소는 실제 `<button>`/`<input>`(키보드 가능). 과한 모션 금지.
-6. **색은 토큰을 쓴다 — `var(--x)` 문자열로.** inline `style={{…}}` 에서도 CSS 커스텀 프로퍼티가 그대로 먹는다
-   (`tokens.css` 는 `global.css:1` ← `BaseLayout.astro:2` 로 **전 페이지에 있다**). 토큰 밖 색이 필요하면
-   **근거를 문서에 적고 그 위치를 남긴다** — 적을 데가 없으면 그 색은 안 쓴다.
+6. **시각 값은 토큰을 쓴다 — `var(--x)` 문자열로.** 색만이 아니라 **글자 축 넷(서체·크기·굵기·행간·자간)과
+   간격·radius·선 굵기**가 전부 대상이다. inline `style={{…}}` 에서도 CSS 커스텀 프로퍼티가 그대로 먹는다
+   (`tokens.css` 는 `global.css:1` ← `BaseLayout.astro:2` 로 **전 페이지에 있다**). 토큰 밖 값이 필요하면
+   **근거를 문서에 적고 그 위치를 남긴다** — 적을 데가 없으면 그 값은 안 쓴다.
+
+   **글자 축이 이 규칙에 늦게 들어왔다(KAN-080).** 오랫동안 토큰이 크기 축에만 있어서 굵기·행간·자간은
+   잴 자가 없었고, 이 가이드의 템플릿이 `fontWeight: 600` 을 들고 있던 탓에 **시뮬 68자리가 그 값을 복사**했다.
+   지금은 셋 다 토큰이 있다 — 굵기 `--font-weight-{regular,medium,bold}`(400/500/700) ·
+   행간 `--font-leading-{flat,title,sub,ui,read,talk}` · 자간 `--font-track-{tight,label,wide,deco}`(전부 `em`).
+   시뮬 본문의 기본값은 **행간 `--font-leading-ui`**, 강조는 **`--font-weight-bold`** 다(`600` 은 없는 단이다).
+
+   **코드 글자는 `var(--font-code)` 다 — raw `"monospace"` 를 쓰지 마라.** 그것은 OS 기본 고정폭이라
+   기기마다 다른 서체가 나오고, **같은 글 안에서 마크다운 코드블록과 시뮬 코드가 다른 얼굴이 된다**
+   (실측: 시뮬 13파일 35자리가 그 상태였다).
 
    ```tsx
    const PASS   = "var(--cat-planning, #3E6B4F)";  // 좋은 예 — posts/tauri-2/PermissionGate.tsx:57
@@ -57,7 +68,7 @@ export default function WindowSim() {
   const segments = Array.from({ length: 8 }, (_, i) => i < win);
   return (
     <figure style={{ margin: "1.5rem 0" }}>
-      <label style={{ display: "block", marginBottom: 8, fontWeight: 600 }}>
+      <label style={{ display: "block", marginBottom: "var(--space-8)", fontWeight: "var(--font-weight-bold)" }}>
         수신 윈도우: {win} 세그먼트
         <input
           type="range" min={1} max={8} value={win}
@@ -78,7 +89,7 @@ export default function WindowSim() {
           />
         ))}
       </div>
-      <figcaption style={{ fontSize: 13, color: "#6b6357", marginTop: 8 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: "var(--ink-2)", marginTop: "var(--space-8)" }}>
         노란 칸 = ACK 없이도 보낼 수 있는 세그먼트. 윈도우를 키우면 한 번에 더 많이 흐른다.
       </figcaption>
     </figure>

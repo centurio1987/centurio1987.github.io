@@ -63,6 +63,11 @@ function judgeAxis(v: Verdict): string {
   if (r.startsWith("stroke 축")) return "stroke";
   if (r.startsWith("radius 축")) return "radius";
   if (r.startsWith("color 축")) return "color";
+  // 굵기·행간·자간 (KAN-080 S6). 셋을 접두로 가르지 않으면 전부 `font` 칸에 쌓여
+  // 래칫이 「어느 축이 늘었는가」를 못 말한다 — 크기 축의 수까지 같은 칸에 섞인다.
+  if (r.startsWith("font-weight 축")) return "font-weight";
+  if (r.startsWith("font-leading 축")) return "font-leading";
+  if (r.startsWith("font-track 축")) return "font-track";
   if (r.startsWith("측정 제외")) return "잡음";
   return v.hit.axis;
 }

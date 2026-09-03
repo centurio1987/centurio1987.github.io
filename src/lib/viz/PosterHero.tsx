@@ -38,6 +38,12 @@ export interface PosterHeroProps extends Omit<CanvasProps, "data"> {
   data?: PosterHeroData;
 }
 
+/* 아래 셋은 `--space-*`·`--text-*` 토큰으로 **바꾸면 안 된다** (KAN-080 S17).
+   viewBox 가 `0 0 600 338` 이고 이 숫자들은 그 안의 **사용자 단위**다 — 화면 px 는
+   호출자가 정하는 배율에 달려 있어서, 같은 `36` 이 지면마다 다른 px 로 그려진다.
+   토큰은 CSS px 자라 여기 대면 값이 거짓이 된다. KAN-076 이 `stroke-width` 에서
+   밟은 것과 같은 자리이고, 그래서 게이트도 이 축을 사용자 단위 자리에서는
+   「위반」이 아니라 「판정 불가」로 둔다. */
 const PAD = 36;
 /** 제목 글자 크기 후보(큰 것부터). 들어가는 첫 값을 쓴다. */
 const TITLE_SIZES = [64, 58, 52, 46, 41, 36, 32, 28];
@@ -129,7 +135,16 @@ export default function PosterHero({
           y={eyebrowBaseline}
           fontSize={13}
           fontWeight={700}
-          letterSpacing="0.18em"
+          /* 0.18em 이던 자리다. 거리로는 --font-track-deco(0.2em)인데 eyebrow 에 한글이
+             든다(`AUTH 해부 · EP1` — IMAGE_GUIDE 의 예시가 그렇다)라 §5 대로 한 단 아래,
+             곧 --font-track-wide 의 값이다.
+             **값만 맞추고 토큰은 못 쓴다.** 이 트리는 `scripts/render-viz.ts` 가
+             Playwright 에 띄우는 문서에서 그려지는데 그 문서에는 `tokens.css` 가 안 들어간다
+             (구글 폰트 @font-face + `viz.css` 심만 넣는다) — `var(--font-track-wide)` 를
+             쓰면 정의가 없어 **자간이 통째로 사라지고 빌드도 타입도 초록이다.**
+             게이트에는 자리 단위 예외로 등록돼 있다(`scripts/lib/tokens/exceptions.ts` 의
+             `poster-hero-svg-attr`). KAN-080 S17. */
+          letterSpacing="0.1em"
           fontFamily={monoFont}
           style={{ fill: accent }}
         >
@@ -144,7 +159,14 @@ export default function PosterHero({
           x={left}
           y={blockTop + i * titleLead + titleFit.size * 0.8}
           fontSize={titleFit.size}
-          fontWeight={800}
+          /* 800 이던 자리다. **우리는 400·500·700 세 단만 굽는다**(`fonts:build`) —
+             800 은 실재하지 않아 브라우저가 700 면으로 대신 그리고, 그 대체는
+             `getComputedStyle` 에 800 그대로 나와 눈으로도 render:compare 로도 안 잡힌다.
+             §5 의 「600·800 은 700 으로 접는다」 그대로다.
+             **이 자리는 두 게이트가 다 못 본다** — 토큰 게이트는 JSX 숫자 표현을 글자 축에서
+             안 물고, `type:verify` 1층은 역할표·render-viz 선언·style guide 를 보지 부품 안
+             리터럴은 안 본다. 그래서 값 옆에 적어 둔다. KAN-080 S17. */
+          fontWeight={700}
           fontFamily={titleFont}
           style={{ fill: ink }}
         >

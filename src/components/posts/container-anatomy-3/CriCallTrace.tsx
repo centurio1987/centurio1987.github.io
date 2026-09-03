@@ -149,7 +149,7 @@ export default function CriCallTrace() {
         >← 이전</button>
         <button
           type="button" onClick={() => setI((v) => Math.min(STEPS.length - 1, v + 1))} disabled={i === STEPS.length - 1}
-          style={{ fontSize: "var(--text-meta)", fontWeight: 600, padding: "var(--space-6) var(--space-14)", borderRadius: "var(--btn-radius)", border: `${HAIR} solid ${C.border}`, background: C.popTint, color: C.ink, cursor: i === STEPS.length - 1 ? "default" : "pointer", opacity: i === STEPS.length - 1 ? 0.45 : 1 }}
+          style={{ fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", padding: "var(--space-6) var(--space-14)", borderRadius: "var(--btn-radius)", border: `${HAIR} solid ${C.border}`, background: C.popTint, color: C.ink, cursor: i === STEPS.length - 1 ? "default" : "pointer", opacity: i === STEPS.length - 1 ? 0.45 : 1 }}
         >다음 단계 →</button>
         <button
           type="button" onClick={() => setI(0)}
@@ -161,7 +161,7 @@ export default function CriCallTrace() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "var(--space-10)" }}>
         {/* 좌: 호출 로그 */}
         <div style={panel}>
-          <p style={{ margin: "0 0 var(--space-10)", fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink }}>kubelet 의 CRI 호출</p>
+          <p style={{ margin: "0 0 var(--space-10)", fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: C.ink }}>kubelet 의 CRI 호출</p>
           {STEPS.map((s, n) => {
             const on = n === i;
             const done = n < i;
@@ -194,16 +194,16 @@ export default function CriCallTrace() {
 
         {/* 우: 노드 상태 */}
         <div style={panel}>
-          <p style={{ margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: 700, color: C.ink }}>노드 위의 상태</p>
+          <p style={{ margin: "0 0 var(--space-2)", fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: C.ink }}>노드 위의 상태</p>
           <p style={{ margin: "0 0 var(--space-10)", fontSize: "var(--text-micro)", color: C.ink3 }}>점선 = 아직 만들어지지 않음</p>
 
           <div style={{
             border: sandboxUp ? `${BOLD} solid ${C.teal}` : `${HAIR} dashed ${C.border}`,
             borderRadius: "var(--radius-sm)", padding: "var(--space-10)", background: sandboxUp ? C.tealTint : "transparent",
           }}>
-            <div style={{ ...mono, fontSize: "var(--text-micro)", color: sandboxUp ? C.teal : C.ink3, marginBottom: "var(--space-8)", fontWeight: 700 }}>
+            <div style={{ ...mono, fontSize: "var(--text-micro)", color: sandboxUp ? C.teal : C.ink3, marginBottom: "var(--space-8)", fontWeight: "var(--font-weight-bold)" }}>
               PodSandbox {sandboxUp ? "· IP 10.244.1.7" : "(아직 없음)"}
-              {sandboxUp && <div style={{ fontWeight: 400, color: C.ink3, marginTop: "var(--space-2)" }}>pause 가 네임스페이스를 붙잡는 중</div>}
+              {sandboxUp && <div style={{ fontWeight: "var(--font-weight-regular)", color: C.ink3, marginTop: "var(--space-2)" }}>pause 가 네임스페이스를 붙잡는 중</div>}
             </div>
             {box("nginx", nginxMade, nginxUp)}
             {box("log-agent", agentMade, agentUp)}
@@ -213,15 +213,15 @@ export default function CriCallTrace() {
 
       {/* 설명 */}
       <div role="status" style={{ marginTop: "var(--space-12)", padding: "var(--space-10)", borderRadius: "var(--radius-sm)", background: C.surface, border: `${HAIR} solid ${C.border}` }}>
-        <p style={{ margin: "0 0 var(--space-6)", fontSize: "var(--text-meta)", color: C.ink, lineHeight: 1.6 }}>
+        <p style={{ margin: "0 0 var(--space-6)", fontSize: "var(--text-meta)", color: C.ink, lineHeight: "var(--font-leading-ui)" }}>
           <strong style={mono}>{step.call}</strong> — {step.what}
         </p>
-        <p style={{ margin: 0, fontSize: "var(--text-label)", color: C.popInk, lineHeight: 1.6 }}>
+        <p style={{ margin: 0, fontSize: "var(--text-label)", color: C.popInk, lineHeight: "var(--font-leading-ui)" }}>
           이 단계가 없으면: {step.ifMissing}
         </p>
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: C.ink3, marginTop: "var(--space-10)", lineHeight: 1.6 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: C.ink3, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         <strong>1단계에서 이미 IP가 붙는 것</strong>을 보세요. 컨테이너는 하나도 없는데 파드는 벌써 주소를 가집니다.
         그리고 6단계에서 두 번째 컨테이너가 <strong>새 샌드박스를 만들지 않고</strong> 기존 샌드박스에 들어가는 것도요 —
         두 컨테이너가 같은 IP를 쓰는 이유가 여기 있습니다.

@@ -64,7 +64,7 @@ export default function EncapsulationLab() {
         })}
       </div>
 
-      <p role="status" style={{ margin: "var(--space-16) 0 var(--space-4)", lineHeight: 1.6 }}>
+      <p role="status" style={{ margin: "var(--space-16) 0 var(--space-4)", lineHeight: "var(--font-leading-ui)" }}>
         <strong>L{current.no} {current.name}</strong>: {current.header} 정보를 {verb}. 이 단계에서 보이는 전송 단위는 <strong>{current.unit}</strong>입니다.
       </p>
       <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT }}>

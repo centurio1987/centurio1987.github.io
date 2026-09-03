@@ -51,6 +51,9 @@ const BASE_CASES: FaultCase[] = [
   { file: "stroke-out.astro", verdict: "위반",     want: "stroke 축",   what: "선 굵기 토큰 밖",           src: "css-decl" },
   { file: "spacing-out.astro",verdict: "위반",     want: "§9",          what: "여백 스케일 밖",            src: "css-decl" },
   { file: "font-min.astro",   verdict: "위반",     want: "최소치",       what: "글자 최소치 미만",          src: "css-decl" },
+  // 자간은 옛 `css-decl` 이 이미 온전히 문다(단위가 붙어 있다). 못 보던 것은 자리가 아니라
+  // **자**였으므로(굵기·행간·자간에 토큰이 0 이었다) 고장도 옛 경로에 심는다 — KAN-080 S6.
+  { file: "type-track.astro", verdict: "위반",     want: "자간 단 밖",   what: "자간이 4단 밖(px 표기)",     src: "css-decl" },
 ];
 
 /** 옛 여섯 + 인식기들이 낸 것. 인식기가 비어 있으면(스텁) 여섯 그대로다. */

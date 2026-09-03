@@ -117,7 +117,7 @@
 .viz-figure[data-viz-frame="polaroid"] figcaption {
   margin-top: var(--space-12);
   font-family: var(--font-hand);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   /* 17px 이던 자리다 — §5 역할값 사이(13 ↔ 18)의 빈칸이라 이름이 없었다. 본문 크기로
      올린다: 손글씨 캡션은 그림 아래 한두 줄이라 본문보다 작을 이유가 없고, `--text-meta`
      (13px)까지 내리면 Gaegu 의 획이 뭉개진다. */
@@ -216,11 +216,13 @@
   /* 손글씨는 길어지면 못 읽는다 — 두세 줄에서 끊기게 폭을 죈다. */
   max-width: 34ch;
   font-family: var(--font-hand);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   /* F-A 캡션과 같은 값이다(17px → --text-body). 둘이 갈리면 "마테를 뗀 폴라로이드"가
      아니라 다른 액자가 된다 — 위 「판·그림칸은 F-A 와 같은 값이다」 절과 같은 사유다. */
   font-size: var(--text-body);
-  line-height: 1.3;
+  /* 1.3 이던 자리다 — title(1.25)까지 0.05 · sub(1.45)까지 0.15 다. 손글씨 쪽지는
+     두세 줄에서 끊기게 폭을 죄어 둔 자리라(위 max-width) 제목 단이 맞다 (KAN-080 S17). */
+  line-height: var(--font-leading-title);
   color: var(--ink-2);
   /* 손으로 적은 쪽지라 판과 평행하지 않다. 원점을 왼쪽 위에 두는 이유는 오른쪽
      끝이 회전으로 밖으로 밀려나면 좁은 화면에서 판을 넘기 때문이다. */

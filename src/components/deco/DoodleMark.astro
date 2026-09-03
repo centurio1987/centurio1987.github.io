@@ -105,6 +105,25 @@ const u = (n: number) => `calc(${size} * ${(n / 40).toFixed(4)})`;
  * 라는 직선이 나오고, 서로 다른 크기의 마크 둘이 같은 직선 위에 있었다.
  * 본문 폰트를 바꾸면 이 상수도 다시 재야 한다(한글 잉크가 기준선 위로 얼마나
  * 올라오는지가 폰트마다 다르다).
+ *
+ * **KAN-080 에서 다시 쟀고 값은 그대로였다.** 그 카드가 본문 서체에 500·700 단을 새로
+ * 구워 넣었으므로 위 당부에 걸리는 자리다 — 「안 쟀다」와 「재서 같았다」는 다르니 근거를
+ * 적어 둔다.
+ *
+ * - **400 아웃라인이 원본과 한 점도 다르지 않다.** `build-fonts.ts` 는 400 을 서브셋만 하고
+ *   500·700 만 확장한다. `fontTools` 로 원본 TTF 와 구운 woff2 를 대조하니 글리프 16개의
+ *   아웃라인 명령이 전부 같았고, `unitsPerEm 1000` · `hhea.ascent 1160`/`descent −288` ·
+ *   `OS/2.sxHeight 540`/`sCapHeight 775` 도 전부 같다. **이 상수의 입력이 안 움직였다.**
+ * - **잉크 중심은 굵기를 안 탄다.** 400·500·700 을 canvas `actualBoundingBox` 로 재면
+ *   중심이 `0.3755 · 0.3755 · 0.3750` 이다(한글 본문 샘플). 확장이 아웃라인 양쪽으로
+ *   균등해 ascent 와 descent 가 **같이** 커지기 때문이다(0.847/0.096 → 0.864/0.114).
+ *   그래서 **굵은 면 위에 앉는 마크도 이 상수 하나를 그대로 쓴다** — 실제로 발행 글의
+ *   그림 마크 4자리는 400 이 아니라 `th`(700) 둘 · `p`(500) 둘에 앉아 있는데, 넷의 정렬
+ *   편차가 `+0.0485 ~ +0.0487` 로 **한 값에 모인다**(어긋난 자리 0).
+ * - **`0.426` 이 무엇의 중심인지도 함께 쟀다.** 받침 없는 한글 `0.4150` · 라틴 대문자
+ *   `0.4275` · em 상자 중심 `0.4363` 사이의 값이다. 받침 유무만으로 `0.0375` 가 흔들리므로
+ *   「본문 잉크 중심」이라는 **단일 값은 없고**, 이 상수는 그 분포의 위쪽에 맞춘 것이다.
+ *   다시 잴 일이 생기면 한 샘플로 재고 끝내지 마라 — 무엇을 재는지부터 정해야 한다.
  */
 const shiftDefault =
   mark.kind === "glyph"
@@ -174,7 +193,16 @@ const svgBody = mark.kind === "svg" ? mark.body.replaceAll("{ID}", uid) : "";
     /* 기울어진 상자가 옆 글자에 닿지 않게 좌우로 한 톨씩만 띄운다 */
     margin: 0 0.06em;
     vertical-align: var(--dm-shift);
-    line-height: 0;
+    /* 0 이던 자리다. **지금 이 선언은 아무 일도 안 한다** — 자식(`.dmark-ink`)이
+       block 이라 이 상자 안에 줄상자가 안 생기고, 그래서 strut 도 없다. 실측으로
+       확인했다 — 발행 글 두 편에서 0 ↔ 1 을 바꿔 마크 6개·36개의 높이·top 과 문서
+       높이가 한 픽셀도 안 움직였다(KAN-080 S14). **`render:compare` 에는 이 자리가
+       크게 잡힌다** — `line-height` 는 상속되므로 마크 안 SVG 내부 노드까지 계산값이
+       0→1 로 바뀐다(container-anatomy-1 한 지면에서만 3,832건). 계산값이 움직인 것이지
+       화면이 움직인 것이 아니고, 그 둘을 가르는 것이 위 실측이다.
+       잉크가 언젠가 inline 이 되면 그때 이 값이 살아나는데, 그 상자는 한 줄짜리라
+       flat 이 맞는 단이다. */
+    line-height: var(--font-leading-flat);
   }
 
   .dmark-ink {
@@ -185,10 +213,10 @@ const svgBody = mark.kind === "svg" ? mark.body.replaceAll("{ID}", uid) : "";
      `line-height:1` 이라 상자 높이가 곧 글자 크기가 된다. */
   .dmark-glyph {
     font-family: var(--font-hand);
-    font-weight: 700;
-    line-height: 1;
+    font-weight: var(--font-weight-bold);
+    line-height: var(--font-leading-flat);
     /* 손으로 쓴 기호는 자간이 좁다 — ㅇㅇ·ㅠㅠ 처럼 두 글자짜리에서 티가 난다 */
-    letter-spacing: -0.03em;
+    letter-spacing: var(--font-track-tight);
     white-space: nowrap;
   }
 

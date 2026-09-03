@@ -311,7 +311,7 @@ const P2 =
   .kicker {
     margin: 0 0 var(--space-6);
     font-size: var(--text-label);
-    letter-spacing: 0.16em;
+    letter-spacing: var(--font-track-deco);
     color: var(--ink-3);
   }
   h1 {
@@ -322,7 +322,7 @@ const P2 =
     max-width: 68ch;
     margin: 0 0 var(--space-10);
     font-size: var(--text-body);
-    line-height: 1.75;
+    line-height: var(--font-leading-read);
     color: var(--ink-2);
   }
   .lede.warn {
@@ -343,18 +343,18 @@ const P2 =
   .sec .no {
     font-size: var(--text-meta);
     color: var(--ink-3);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--font-track-wide);
   }
   .sec small {
     font-size: var(--text-meta);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ink-3);
   }
   .note-p {
     max-width: 68ch;
     margin: 0 0 var(--space-16);
     font-size: var(--text-meta);
-    line-height: 1.7;
+    line-height: var(--font-leading-read);
     color: var(--ink-2);
   }
 
@@ -387,7 +387,7 @@ const P2 =
     background: var(--deco-pen-mint, #4fae94);
     color: var(--surface-hi);
     font-size: var(--text-micro);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
 
   /* 실제 지면 재현 — 종이색 위 720px 칸에 PostLayout 의 .prose 값을 그대로 쓴다. */
@@ -401,7 +401,7 @@ const P2 =
     max-width: var(--content-max);
     margin: 0 auto;
     font-size: var(--text-body);
-    line-height: 1.8;
+    line-height: var(--font-leading-read);
     color: var(--ink);
     overflow-wrap: break-word;
   }
@@ -412,7 +412,7 @@ const P2 =
     margin: 0 0 var(--space-10);
     font-family: var(--font-body);
     font-size: var(--text-h3);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
   .body p {
     margin: var(--space-16) 0;
@@ -428,13 +428,13 @@ const P2 =
   .why dt {
     margin: 0 0 var(--space-2);
     font-size: var(--text-label);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ink-3);
   }
   .why dd {
     margin: 0;
     color: var(--ink-2);
-    line-height: 1.6;
+    line-height: var(--font-leading-ui);
   }
 
   .marks {
@@ -459,7 +459,7 @@ const P2 =
   .mnote {
     margin: var(--space-8) 0 0;
     font-size: var(--text-label);
-    line-height: 1.55;
+    line-height: var(--font-leading-ui);
     color: var(--ink-3);
   }
 

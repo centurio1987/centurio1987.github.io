@@ -81,14 +81,14 @@ function Endpoint({ label, state, active }: { label: string; state: string; acti
         background: active ? TEAL_TINT : PANEL,
       }}
     >
-      <div style={{ fontWeight: 700, color: INK, fontSize: "var(--text-meta)" }}>{label}</div>
+      <div style={{ fontWeight: "var(--font-weight-bold)", color: INK, fontSize: "var(--text-meta)" }}>{label}</div>
       <div
         style={{
           marginTop: "var(--space-4)",
-          fontFamily: "monospace",
+          fontFamily: "var(--font-code)",
           fontSize: "var(--text-meta)",
           color: TEAL,
-          fontWeight: 700,
+          fontWeight: "var(--font-weight-bold)",
         }}
       >
         {state}
@@ -111,7 +111,7 @@ export default function HandshakeLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-14, 14px)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-14, 14px)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         “다음” 버튼으로 3-way handshake를 한 단계씩 진행하며, 양쪽 상태와 세그먼트의 seq/ack가
         어떻게 맞물리는지 관찰하세요.
       </p>
@@ -141,11 +141,11 @@ export default function HandshakeLab() {
               border: `${HAIR} solid ${SAND}`,
               borderRadius: "var(--btn-radius)",
               background: SEG_BG,
-              fontFamily: "monospace",
+              fontFamily: "var(--font-code)",
               fontSize: "var(--text-meta)",
             }}
           >
-            <span style={{ color: TEAL, fontWeight: 700 }}>
+            <span style={{ color: TEAL, fontWeight: "var(--font-weight-bold)" }}>
               {step.seg.dir === "c2s" ? "Client ──▶ Server" : "Client ◀── Server"}
             </span>
             <span>
@@ -165,7 +165,7 @@ export default function HandshakeLab() {
           background: PANEL,
           border: `${HAIR} solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
           fontSize: "var(--text-meta)",
           color: INK,
         }}
@@ -199,7 +199,7 @@ export default function HandshakeLab() {
             borderRadius: "var(--radius-sm)",
             background: i === STEPS.length - 1 ? BORDER : TEAL,
             color: ON_TEAL,
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
             cursor: i === STEPS.length - 1 ? "not-allowed" : "pointer",
           }}
         >

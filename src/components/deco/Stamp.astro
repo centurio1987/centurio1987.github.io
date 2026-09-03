@@ -64,9 +64,9 @@ const hidden = decorative ? "true" : undefined;
     border-radius: var(--radius-xs);
     font-family: var(--font-mono);
     font-size: var(--text-micro);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.14em;
+    font-weight: var(--font-weight-bold);
+    line-height: var(--font-leading-flat);
+    letter-spacing: var(--font-track-wide);
     color: color-mix(in srgb, var(--deco-red) 85%, transparent);
     white-space: nowrap;
   }
@@ -91,19 +91,19 @@ const hidden = decorative ? "true" : undefined;
     height: calc(var(--s) - 12px);
     border-radius: var(--radius-round);
     border: var(--stroke-hair) dashed color-mix(in srgb, var(--deco-red) 55%, transparent);
-    line-height: 1.15;
+    line-height: var(--font-leading-title);
   }
   .line-1 {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-label);
     color: color-mix(in srgb, var(--deco-red) 85%, transparent);
   }
   .line-2 {
     font-family: var(--font-body);
     font-size: var(--text-nano);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: color-mix(in srgb, var(--deco-red) 85%, transparent);
   }
 </style>

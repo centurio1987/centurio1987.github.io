@@ -30,6 +30,15 @@
  *
  * "읽는 표면은 차분하게, 가장자리는 유쾌하게" (DESIGN_CONCEPT.md 원칙 #5) —
  * 모션 예산: 개별 ≤240ms, ease = 블로그 --ease.
+ *
+ * **`typography`·`scale` 을 여기서 안 덮는다 — 그것이 판단이다 (KAN-080 S17).**
+ * `makeFoundations` 가 패키지 기본 `TypographyScale` 을 채워 넣지만 그 값은 **어떤
+ * 산출물에도 도달하지 않는다.** 이 파일을 읽는 것은 `scripts/gen-motion-css.ts` 하나뿐이고,
+ * 그것은 `foundationToCSSString(bbangtoTonyFoundation)` 을 줄 단위로 잘라
+ * **`--bbangto-motion-` 으로 시작하는 줄만** 남긴다(`gen-motion-css.ts:40-45`).
+ * 그래서 글자 축의 단일 소스는 `src/styles/tokens.css` 하나이고, 여기 덮어써 봐야
+ * **안 쓰이는 사본이 하나 더 느는 것**이다(위 「선언을 미리 세워 두면」과 같은 사유).
+ * 카드 `S17` 이 이 파일에서 `scale` 을 찾아 헤매지 않도록 그 사실을 여기 적어 둔다.
  */
 import { makeSemantic, makeFoundations } from "@centurio1987/bbangto-ui-style-guide-catalog";
 import {
@@ -95,7 +104,8 @@ const baseFoundation: BbangtoFoundation = makeFoundations({
   description: "빵관 토니 블로그 — 코발트+크림 에디토리얼, 한국어 폰트, subtle 모션",
   semantic,
   fontSans: "'Gowun Dodum', sans-serif", // --font-body
-  fontMono: "'Space Mono', monospace", // --font-mono
+  // 스택 끝의 본문 서체가 한글 얼굴이다 (KAN-080 S7) — tokens.css 의 --font-mono 와 같은 값.
+  fontMono: "'Space Mono', 'Gowun Dodum', monospace", // --font-mono
   radius: {
     none: "0px",
     sm: "8px", // --radius-sm

@@ -28,7 +28,9 @@ import { HOME_URL } from "../lib/urls";
     /* 이 숫자가 이 지면의 Display 역할이다 — 고정 64px 이던 것을 역할 토큰으로
        옮겼다. 데스크톱 60px · 390px 36px 로 좁은 화면에서는 함께 줄어든다. */
     font-size: var(--text-display);
-    font-weight: 800;
+    /* 800 이던 것을 Bold 로 접었다 — 그 면이 실재한 적이 없어 브라우저가 700 으로 대체해
+       그리고 있었다(§5 「600 과 800 은 700 으로 접는다」). 화면은 안 바뀐다. */
+    font-weight: var(--font-weight-bold);
     margin: var(--space-8) 0 0;
   }
   .msg {
@@ -36,7 +38,8 @@ import { HOME_URL } from "../lib/urls";
     margin: 0 0 var(--space-16);
   }
   .home {
-    font-weight: 600;
+    /* 600 → Bold. 위 h1 과 같은 이유다. */
+    font-weight: var(--font-weight-bold);
     color: var(--ink);
     background: var(--pop);
     border: var(--stroke-bold) solid var(--ink);

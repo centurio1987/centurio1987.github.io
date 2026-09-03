@@ -1,12 +1,18 @@
 {
   "generator": "verify-tokens@1",
-  "srcFiles": 152,
+  "srcFiles": 153,
   "counts": {
     "color / 정당한 예외": 8,
     "color / 준수": 1106,
-    "font / 준수": 610,
-    "font / 판정 불가": 244,
-    "other / 준수": 264,
+    "font / 준수": 652,
+    "font / 판정 불가": 7,
+    "font-leading / 준수": 202,
+    "font-track / 정당한 예외": 1,
+    "font-track / 준수": 47,
+    "font-track / 판정 불가": 1,
+    "font-weight / 정당한 예외": 3,
+    "font-weight / 준수": 310,
+    "other / 준수": 265,
     "radius / 준수": 295,
     "shadow / 준수": 28,
     "shadow / 판정 불가": 150,
@@ -18,10 +24,10 @@
     "잡음 / 판정 불가": 174
   },
   "totals": {
-    "정당한 예외": 10,
-    "준수": 3649,
-    "판정 불가": 1130
+    "정당한 예외": 14,
+    "준수": 4251,
+    "판정 불가": 894
   },
   "files": {},
-  "selfTestFaults": 14
+  "selfTestFaults": 18
 }

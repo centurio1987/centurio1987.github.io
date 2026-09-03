@@ -168,11 +168,11 @@ export default function PkceFlowStepper() {
           style={{
             margin: 0,
             fontSize: "var(--text-label)",
-            lineHeight: 1.55,
+            lineHeight: "var(--font-leading-ui)",
             color: INK_SOFT,
             whiteSpace: "pre-wrap",
             wordBreak: "break-all",
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+            fontFamily: "var(--font-code)",
           }}
         >
           {step.data(pkce)}
@@ -190,7 +190,7 @@ export default function PkceFlowStepper() {
             // 축을 살리면 짝이 안 깨진다 — 바로 위 border 와 같은 축의 옅은 단이다(Δ2.2 · Δ5.1).
             background: attackOutcome.ok ? OUTCOME_BAD : OUTCOME_OK,
             fontSize: "var(--text-meta)",
-            lineHeight: 1.55,
+            lineHeight: "var(--font-leading-ui)",
             color: INK,
           }}
         >
@@ -218,7 +218,7 @@ export default function PkceFlowStepper() {
         </button>
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-12)", lineHeight: "var(--font-leading-ui)" }}>
         교육용 개념 모델입니다(실제 네트워크·암호 연산 없음). RFC 6749/7636의 흐름을 규칙으로 모사하며,
         verifier/challenge 값은 RFC 7636 부록의 예시입니다. "코드 가로채기"는 프론트채널로 돌아온 코드를 공격자가
         탈취한 상황을 가정합니다 — PKCE가 켜져 있으면 원본 code_verifier가 없어 토큰 교환이 거부됩니다.

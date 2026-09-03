@@ -20,6 +20,12 @@
  *   옛 경로는 이 축(`Axis` 의 `"stroke"`)을 **영영 못 낸다** — 그것이 옛 집합 불변의 근거다.
  *   그 인식기가 `Hit.coord` 를 채우고, 판정은 그 단위를 **드리프트 검사보다 먼저** 본다.
  *
+ * **KAN-080 이 일곱째·여덟째 갈래를 열었다 — 여기서는 정규식이 아니라 `classify()` 를 갈랐다.**
+ *   무단위 글자 축(`type-unitless`)과 raw 서체 이름(`font-family-str`)은 **자리가 아니라 자가**
+ *   막고 있던 갈래다: 옛 `LITERAL` 이 `1.75` 를 `1`·`75` 로 가르고 서체 이름에서는 리터럴을
+ *   하나도 못 뽑아 히트 자체가 안 만들어진다. 옛 `LITERAL` 을 고치면 옛 집합이 통째로 움직이므로,
+ *   `literalsOf(src)` 로 **새 경로에만** 다른 패턴을 준다. 옛 경로는 언제나 `LITERAL` 이다.
+ *
  * **KAN-075 가 넷째 갈래를 열었다 — 여기서는 옛 히트가 한 건도 안 움직인다.**
  *   줄바꿈을 넘는 CSS 선언(`multilineDecl`)이고, `DECL` 을 고치는 대신 같은 구간을
  *   다시 훑는 별도 패스로 붙였다. 그래서 KAN-073 이 관문 3 에서 옛 집합을 1건 움직인 것과
@@ -41,12 +47,16 @@ import { attrCss } from "./recognize/attrCss.ts";
 import { multilineDecl } from "./recognize/multilineDecl.ts";
 import { svgStroke } from "./recognize/svgStroke.ts";
 import { constRef } from "./recognize/constRef.ts";
+import { typeUnitless } from "./recognize/typeUnitless.ts";
+import { fontFamilyStr } from "./recognize/fontFamilyStr.ts";
 
 /**
  * 새 인식층 — 갈래마다 하나. 진입점이 자가검사 고장도 여기서 모은다.
  * 순서는 보고 순서일 뿐이고 판정에는 영향이 없다.
  */
-export const RECOGNIZERS: Recognizer[] = [styleNum, exprValue, attrCss, multilineDecl, svgStroke, constRef];
+export const RECOGNIZERS: Recognizer[] = [
+  styleNum, exprValue, attrCss, multilineDecl, svgStroke, constRef, typeUnitless, fontFamilyStr,
+];
 
 // ── 축 정의는 `propAxis.ts` 가 소유한다(내용은 원본 s3-scan.py:29-46 그대로 + camelCase 생성).
 //
@@ -87,6 +97,29 @@ const STYLE_BLOCK= /<style[^>]*>([\s\S]*?)<\/style>/g;
 const COMMENT_CSS= /\/\*[\s\S]*?\*\//g;
 const TEMPLATE   = /`[^`]*`/gs;
 const LITERAL    = /(#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\)|-?\d*\.?\d+(?:px|rem|em|vh|vw|ch|%)|\b\d{1,4}\b)/g;
+
+// ── 새 경로 전용 리터럴 패턴 둘 (KAN-080 S5). **옛 `LITERAL` 은 못 고친다** — 그 동작이
+//    감사 원자료 3,539 히트 대조의 일부라, 한 글자만 달라도 이식이 맞는지 판정할 방법이 사라진다.
+//    그래서 고치는 대신 `src` 로 갈라 새 갈래에만 다른 자를 준다.
+/**
+ * 무단위 글자 축(`type-unitless`) — **소수를 온전히 문다.**
+ * 옛 `LITERAL` 의 `\b\d{1,4}\b` 는 `1.75` 를 `1`·`75` 로 가르는데, 그러면 행간 한 자리가
+ * 두 히트가 되고 `1` 이 `--font-leading-flat`(1)과 값이 같아 **엉뚱하게 준수로 접힌다.**
+ */
+const LITERAL_UNITLESS = /(#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\)|-?\d*\.?\d+(?:px|rem|em|vh|vw|ch|%)|-?\d*\.?\d+)/g;
+/**
+ * raw 서체 이름(`font-family-str`) — **값 전체가 리터럴 하나다.**
+ * 서체 이름에는 색도 길이도 맨 숫자도 없어서 옛 `LITERAL` 로는 **히트가 아예 안 만들어진다**
+ * (실측: JSX `fontFamily` 41자리가 히트 0건). 스택 전체가 토큰 값과 대조할 단위라 통째로 문다.
+ */
+const LITERAL_FAMILY   = /(\S(?:[\s\S]*\S)?)/g;
+
+/** 이 히트를 어느 자로 잴 것인가. 옛 경로는 언제나 `LITERAL` 이다. */
+function literalsOf(src: Hit["src"]): RegExp {
+  if (src === "type-unitless") return LITERAL_UNITLESS;
+  if (src === "font-family-str") return LITERAL_FAMILY;
+  return LITERAL;
+}
 const VARUSE     = /var\(\s*(--[\w-]+)/g;
 const VARCALL    = /var\([^)]*\)/g;
 
@@ -134,7 +167,7 @@ function classify(
   }
   // var() 안쪽은 리터럴이 아니다 — 지우고 남은 것만 본다.
   const stripped = raw.replace(VARCALL, " ");
-  for (const m of stripped.matchAll(LITERAL)) {
+  for (const m of stripped.matchAll(literalsOf(src))) {
     const v = m[1];
     if (axis === "zindex" && !/^-?\d{1,4}$/.test(v)) continue;
     // 단위 없는 맨 숫자는 font-weight·line-height 에서만 뜻이 있다.

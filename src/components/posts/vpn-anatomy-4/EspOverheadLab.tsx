@@ -65,7 +65,7 @@ export default function EspOverheadLab() {
   return (
     <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-sm)" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-16)", alignItems: "center", marginBottom: "var(--space-14)" }}>
-        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)" }}>
           바깥 경로 MTU: {mtu}바이트
           <input
             type="range"
@@ -77,7 +77,7 @@ export default function EspOverheadLab() {
             style={{ display: "block", width: 240, marginTop: "var(--space-6)" }}
           />
         </label>
-        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600 }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)" }}>
           암호군{" "}
           <select
             value={suiteId}
@@ -91,7 +91,7 @@ export default function EspOverheadLab() {
             ))}
           </select>
         </label>
-        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "var(--space-6)" }}>
+        <label style={{ fontSize: "var(--text-meta)", color: INK, fontWeight: "var(--font-weight-bold)", display: "inline-flex", alignItems: "center", gap: "var(--space-6)" }}>
           <input type="checkbox" checked={natt} onChange={(e) => setNatt(e.target.checked)} />
           NAT-T (UDP 4500)
         </label>
@@ -154,12 +154,12 @@ export default function EspOverheadLab() {
             style={{ flex: "1 1 150px", padding: "var(--space-8) var(--space-10)", background: PANEL, borderRadius: "var(--radius-sm)", border: `${HAIR} solid ${tint(INK, 13.3)}` }}
           >
             <div style={{ fontSize: "var(--text-label)", color: MUTED }}>{c.k}</div>
-            <div style={{ fontSize: "var(--text-body)", fontWeight: 700, color: INK }}>{c.v}</div>
+            <div style={{ fontSize: "var(--text-body)", fontWeight: "var(--font-weight-bold)", color: INK }}>{c.v}</div>
           </div>
         ))}
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.75 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: "var(--font-leading-read)" }}>
         NAT-T를 켜 보십시오 — UDP 헤더 8바이트가 붙는 순간 유효 내부 MTU가 내려앉습니다. 거기에 CBC 계열까지 고르면 16바이트
         블록에 맞추느라 붉은 패딩이 튀어나옵니다(AEAD는 4바이트 경계만 맞추면 되니 대개 0입니다). 이 표의 마지막 줄(MSS 상한)이
         뒤에 나올 MSS clamping 값의 근거입니다.

@@ -130,7 +130,7 @@ export default function AuthzMap() {
       color: INK,
       cursor: "pointer",
       textAlign: "left",
-      lineHeight: 1.4,
+      lineHeight: "var(--font-leading-sub)",
       transition: "background 0.15s, border 0.15s",
     };
   };
@@ -145,7 +145,7 @@ export default function AuthzMap() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-6)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-6)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         좌표를 눌러 무슨 질문에 답하는지, 어떤 기술이 사는지, 인접 좌표는 무엇인지 확인하세요.
       </p>
 
@@ -209,7 +209,7 @@ export default function AuthzMap() {
           border: `var(--stroke-hair) solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
           background: PANEL,
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
         }}
       >
         <p style={{ margin: "0 0 var(--space-8)" }}>
@@ -247,7 +247,7 @@ export default function AuthzMap() {
         </p>
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_SOFT, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         교육용 개념 지도입니다. 좌표와 인접 관계는 큰 그림을 잡기 위한 학습용 단순화이며, 특정 스펙(RFC·OIDC
         등)의 형식 정의가 아닙니다. 색은 인증(누구인가)·인가(해도 되나)·상태(구현) 세 축을 구분합니다.
       </figcaption>

@@ -72,7 +72,7 @@ export default function JitterBufferLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-12, 12px)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         네트워크 지터와 목표 지연(target delay)을 바꿔가며, 버퍼가 무엇을 구해내고 무엇을 놓치는지 보세요.
       </p>
 
@@ -107,7 +107,7 @@ export default function JitterBufferLab() {
       </div>
 
       <div style={{ display: "grid", gap: "var(--space-6)", marginBottom: "var(--space-10)" }}>
-        <div style={{ fontSize: "var(--text-label)", color: INK_2, fontWeight: 600 }}>도착 순서 (뒤섞일 수 있음)</div>
+        <div style={{ fontSize: "var(--text-label)", color: INK_2, fontWeight: "var(--font-weight-bold)" }}>도착 순서 (뒤섞일 수 있음)</div>
         <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: "var(--radius-sm)" }}>
           {packets.map((p) => (
             <div
@@ -127,7 +127,7 @@ export default function JitterBufferLab() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontWeight: 700,
+                fontWeight: "var(--font-weight-bold)",
               }}
             >
               {p.seq}
@@ -135,7 +135,7 @@ export default function JitterBufferLab() {
           ))}
         </div>
 
-        <div style={{ fontSize: "var(--text-label)", color: INK_2, fontWeight: 600, marginTop: "var(--space-8)" }}>
+        <div style={{ fontSize: "var(--text-label)", color: INK_2, fontWeight: "var(--font-weight-bold)", marginTop: "var(--space-8)" }}>
           재생 순서 (버퍼가 내보내는 일정한 리듬)
         </div>
         <div style={{ position: "relative", height: 34, background: TRACK, borderRadius: "var(--radius-sm)" }}>
@@ -159,7 +159,7 @@ export default function JitterBufferLab() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontWeight: 700,
+                fontWeight: "var(--font-weight-bold)",
               }}
             >
               {r.status === "on-time" ? r.seq : "×"}
@@ -176,7 +176,7 @@ export default function JitterBufferLab() {
           border: `${HAIR} solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
           background: PANEL,
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
           display: "grid",
           gap: "var(--space-4)",
         }}
@@ -192,7 +192,7 @@ export default function JitterBufferLab() {
         </p>
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         교육용 개념 모델입니다(NetEQ 등 실제 구현 재현 아님). 패킷은 20ms 간격으로 전송되고, 편도 기본 지연
         60ms + 네트워크 지터 잡음을 더해 도착합니다. 재생은 <em>목표 지연만큼 기다린 뒤 일정한 리듬</em>으로
         나가며, 재생 시각까지 도착하지 못한 패킷은 PLC(패킷 손실 은닉)로 대체된다고 가정합니다. 실제 NetEQ는

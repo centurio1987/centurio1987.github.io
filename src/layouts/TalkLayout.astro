@@ -176,7 +176,10 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   .kicker-series {
     font-family: var(--font-mono);
     font-size: var(--text-micro);
-    letter-spacing: 2px;
+    /* 2px 이던 자리다. 11px 에서 0.182em 이라 거리로는 deco 인데, 시리즈명이 한글
+       (`폭신함 외길 인생`)이라 한 단 아래다(§5). 바로 아래 .kicker-ep 은 `EP.01` 로
+       **라틴 전용이라 안 내렸다** — 값이 아니라 그 요소의 텍스트가 단을 정한다. */
+    letter-spacing: var(--font-track-wide);
     text-transform: uppercase;
     color: var(--ink-3);
   }
@@ -189,7 +192,7 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   .kicker-ep {
     font-family: var(--font-mono);
     font-size: var(--text-micro);
-    letter-spacing: 1px;
+    letter-spacing: var(--font-track-wide);
     color: var(--accent);
     background: color-mix(in srgb, var(--accent) 10%, transparent);
     padding: var(--space-2) var(--space-10);
@@ -197,7 +200,7 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   }
   .talk-hand {
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-h3);
     color: var(--accent);
     rotate: -2deg;
@@ -210,16 +213,16 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
      지면 하나짜리 별칭이 된다. 게이트는 clamp 끝값을 역할값으로 받으므로 이 표기가 준수다. */
   .talk-header h1 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: clamp(28px, 6vw, 38px);
-    line-height: 1.22;
-    letter-spacing: -1px;
+    line-height: var(--font-leading-title);
+    letter-spacing: var(--font-track-tight);
     color: var(--ink);
     margin: 0 0 var(--space-16);
   }
   .talk-lead {
     font-size: var(--text-body);
-    line-height: 1.9;
+    line-height: var(--font-leading-talk);
     color: var(--ink-2);
     max-width: 520px;
     margin: 0 auto;
@@ -312,7 +315,9 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   .toc-label {
     font-family: var(--font-mono);
     font-size: var(--text-micro);
-    letter-spacing: 1.5px;
+    /* 1.5px 이던 자리다. 11px 에서 0.136em 이라 거리로는 wide 인데, 문구가
+       `오늘의 질문 · CONTENTS` 라 한글이 들어 한 단 아래다(§5). */
+    letter-spacing: var(--font-track-label);
     text-transform: uppercase;
     color: var(--ink-3);
     margin-bottom: var(--space-16);
@@ -376,7 +381,7 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   /* 마치며 — 본문 마지막 h2("마치며") 섹션은 액센트 보더 스타일 */
   .talk-body {
     font-size: var(--text-body);
-    line-height: 1.9;
+    line-height: var(--font-leading-talk);
   }
   .talk-body > p {
     color: var(--ink-2);
@@ -384,7 +389,7 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
   }
   .talk-body h2 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: var(--text-h3);
     color: var(--ink);
     border-left: var(--stroke-bold) solid var(--accent);

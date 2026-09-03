@@ -81,3 +81,7 @@ KANBAN.cards/.*.lock
 
 # manage-kanban 다중 세션 잠금(로컬 전용)
 .kanban/locks/
+
+# 서체 굽기 작업 자리 (KAN-080) — 받아 온 원본 7.2MB 와 구운 중간 ttf 가 여기 산다.
+# 산출물(public/fonts/*.woff2)만 커밋한다.
+.fonts-build/

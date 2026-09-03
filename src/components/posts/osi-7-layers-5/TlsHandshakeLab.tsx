@@ -115,7 +115,7 @@ export default function TlsHandshakeLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-14, 14px)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-14, 14px)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         “다음”으로 TLS 1.3 handshake를 한 단계씩 진행하며, 무엇이 협상되고 어디서부터
         <strong> 암호화가 시작되는지</strong> 보세요.
       </p>
@@ -130,11 +130,11 @@ export default function TlsHandshakeLab() {
           marginBottom: "var(--space-12)",
         }}
       >
-        <span style={{ fontFamily: "monospace", fontWeight: 700, color: TEAL }}>{dirLabel}</span>
+        <span style={{ fontFamily: "var(--font-code)", fontWeight: "var(--font-weight-bold)", color: TEAL }}>{dirLabel}</span>
         <span
           style={{
             fontSize: "var(--text-label)",
-            fontWeight: 700,
+            fontWeight: "var(--font-weight-bold)",
             padding: "var(--space-2, 2px) var(--space-10, 10px)",
             borderRadius: "var(--btn-radius)",
             background: step.enc === "encrypted" ? TEAL_TINT : PLAIN_BG,
@@ -165,10 +165,10 @@ export default function TlsHandshakeLab() {
                 key={idx}
                 style={{
                   fontSize: "var(--text-meta)",
-                  lineHeight: 1.7,
-                  fontFamily: c.includes("──") ? "inherit" : "monospace",
+                  lineHeight: "var(--font-leading-read)",
+                  fontFamily: c.includes("──") ? "inherit" : "var(--font-code)",
                   color: c.includes("──") ? ACCENT_INK : INK,
-                  fontWeight: c.includes("──") ? 700 : 400,
+                  fontWeight: c.includes("──") ? "var(--font-weight-bold)" : "var(--font-weight-regular)",
                   listStyle: c.includes("──") ? "none" : "disc",
                   marginLeft: c.includes("──") ? "calc(var(--space-16) * -1)" : 0,
                 }}
@@ -188,7 +188,7 @@ export default function TlsHandshakeLab() {
           background: PANEL,
           border: `${HAIR} solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
-          lineHeight: 1.65,
+          lineHeight: "var(--font-leading-ui)",
           fontSize: "var(--text-meta)",
           color: INK,
         }}
@@ -222,7 +222,7 @@ export default function TlsHandshakeLab() {
             borderRadius: "var(--radius-sm)",
             background: i === STEPS.length - 1 ? BORDER : TEAL,
             color: ON_TEAL,
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
             cursor: i === STEPS.length - 1 ? "not-allowed" : "pointer",
           }}
         >

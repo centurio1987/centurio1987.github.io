@@ -66,7 +66,7 @@ const REASON_PREFIX: Record<string, string> = {
   }
   .related-title {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     font-size: var(--text-h3);
     margin: 0 0 var(--space-6);
   }
@@ -101,8 +101,8 @@ const REASON_PREFIX: Record<string, string> = {
   }
   .related-post-title {
     font-size: var(--text-body);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-tight);
     transition: color var(--dur) var(--ease);
   }
   .chips {

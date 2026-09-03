@@ -156,7 +156,10 @@ const show = items.length >= 2;
   .toc-head {
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    letter-spacing: 1.4px;
+    /* 1.4px(=0.14em) 이던 자리다. 거리로는 wide 인데 문구가 `목차 · CONTENTS` 라
+       한글이 들어 한 단 아래다(§5). px 를 버린 이유도 여기 있다 — 같은 0.5px 이
+       Meta 와 Nano 에서 다른 값이 된다. */
+    letter-spacing: var(--font-track-label);
     text-transform: uppercase;
     color: var(--ink-3);
     white-space: nowrap;
@@ -253,7 +256,7 @@ const show = items.length >= 2;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: var(--text-meta);
-    line-height: 1.4;
+    line-height: var(--font-leading-sub);
     color: var(--ink-2);
     opacity: 0;
     translate: 6px 0;
@@ -274,7 +277,7 @@ const show = items.length >= 2;
   /* h2 = 절의 머리. 굵고 진하고, 앞에 숨 쉴 자리를 둬 아래 h3 들을 묶는다.
      (여백은 펼침에서만 준다 — 접힘의 눈금 리듬은 균일해야 한다.) */
   .toc-list a[data-depth="2"] .toc-label {
-    font-weight: 600;
+    font-weight: var(--font-weight-bold);
     color: var(--ink);
   }
   .post-toc:hover .toc-list a[data-depth="2"],
@@ -292,7 +295,7 @@ const show = items.length >= 2;
   .toc-list a[data-depth="3"] .toc-label {
     width: calc(var(--toc-label-w) - var(--toc-indent));
     font-size: var(--text-label);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: var(--ink-3);
   }
 
@@ -310,7 +313,7 @@ const show = items.length >= 2;
   }
   .toc-list a.is-active .toc-label {
     color: var(--accent);
-    font-weight: 600;
+    font-weight: var(--font-weight-bold);
   }
 
   @media (prefers-reduced-motion: reduce) {

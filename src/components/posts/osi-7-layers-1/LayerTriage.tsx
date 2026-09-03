@@ -103,7 +103,7 @@ export default function LayerTriage() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-12)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         지금 관찰한 증상을 고르면, 어느 계층부터 의심하고 무엇을 확인할지 짚어줍니다.
       </p>
 
@@ -128,7 +128,7 @@ export default function LayerTriage() {
                 background: isActive ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : PANEL,
                 color: INK,
                 cursor: "pointer",
-                lineHeight: 1.5,
+                lineHeight: "var(--font-leading-sub)",
               }}
             >
               <strong style={{ color: TEAL }}>L{s.layerNo}?</strong>
@@ -147,7 +147,7 @@ export default function LayerTriage() {
             border: `var(--stroke-hair) solid ${BORDER}`,
             borderRadius: "var(--radius-sm)",
             background: PANEL,
-            lineHeight: 1.65,
+            lineHeight: "var(--font-leading-ui)",
           }}
         >
           <p style={{ margin: "0 0 var(--space-8)" }}>

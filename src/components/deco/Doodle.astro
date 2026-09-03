@@ -726,10 +726,10 @@ const GLYPH_HEARTS = [
     display: inline-flex;
     align-items: center;
     gap: var(--space-10);
-    line-height: 1;
+    line-height: var(--font-leading-flat);
   }
   .ht {
-    line-height: 1;
+    line-height: var(--font-leading-flat);
   }
 
   .arrow,
@@ -798,7 +798,7 @@ const GLYPH_HEARTS = [
   .balloon-text {
     position: absolute;
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--ink);
     text-align: center;
   }
@@ -822,9 +822,9 @@ const GLYPH_HEARTS = [
   .memo {
     display: inline-block;
     font-family: var(--font-hand);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--text-h3);
-    line-height: 1.25;
+    line-height: var(--font-leading-title);
     color: var(--c, var(--ink-2));
     text-align: center;
   }

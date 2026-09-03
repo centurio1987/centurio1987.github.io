@@ -2,7 +2,7 @@
 card: KAN-080-WTQ7AV
 title: 타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.
 created: 2026-09-01
-scope: src/**, design-concept/**, scripts/lib/tokens/**, scripts/verify-tokens.ts, scripts/tokens-baseline.json, scripts/fixtures/tokens/**, scripts/check-recognize-invariant.ts, scripts/compare-render.ts, scripts/render-viz.ts, .claude/skills/react-sim/assets/REACT_SIM_GUIDE.md, AGENTS.md
+scope: src/**, design-concept/**, scripts/lib/tokens/**, scripts/verify-tokens.ts, scripts/tokens-baseline.json, scripts/fixtures/tokens/**, scripts/check-recognize-invariant.ts, scripts/compare-render.ts, scripts/render-viz.ts, .claude/skills/react-sim/assets/REACT_SIM_GUIDE.md, AGENTS.md, public/fonts/**, scripts/build-fonts.ts, scripts/lib/fonts/**, scripts/verify-type.ts, package.json, .github/workflows/main.yml, CLAUDE.md, .gitignore
 ---
 
 # KAN-080-WTQ7AV — 타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.
@@ -102,7 +102,10 @@ scope: src/**, design-concept/**, scripts/lib/tokens/**, scripts/verify-tokens.t
 
 **폰트 교체를 값 치환보다 앞에 두는 것이 이 카드의 핵심 설계 판단이다.** 그러면 **서체가 바뀌는 work 가 정확히 하나**가 되어 뒤따르는 구획 work 는 `render:compare` 의 차이를 **「접기 규약이 예측한 것인가」라는 결정론적 기준**으로 읽을 수 있다. 거꾸로 두면 서체 변화와 값 접힘이 한 차분에 섞여 어느 것이 어느 쪽에서 왔는지 못 가른다.
 
-**화면이 바뀌는 work 는 둘이다 — `S7`(서체)과 `S9`(두들 마크 기준선).** 되돌림도 이 둘이 짝이다. **그리고 구획 work 도 화면을 바꾼다** — `S3` 이 접으므로 접히는 값은 움직인다. 판정은 「전후 동일」이 아니라 **「움직인 자리가 전부 `S3` 의 접기 표 안인가」** 이고, 사람 판단이 아니라 **목록 대조**여야 한다.
+**화면이 바뀌는 work 는 하나로 줄었다 — `S7`(서체) 뿐이다.** 계획은 `S9`(두들 마크 기준선)를
+짝으로 봤는데, `S2` 가 서체 교체를 접으면서 그 전제가 사라졌다: 400 아웃라인이 원본과 동일하고
+잉크 중심이 굵기를 안 타므로 `0.426em` 이 **재서 같았다**(`S9` 완료 기준의 실측 셋). 그래서
+`S9` 의 산출은 값 변경이 아니라 **기록**이고 되돌릴 화면이 없다. **그리고 구획 work 도 화면을 바꾼다** — `S3` 이 접으므로 접히는 값은 움직인다. 판정은 「전후 동일」이 아니라 **「움직인 자리가 전부 `S3` 의 접기 표 안인가」** 이고, 사람 판단이 아니라 **목록 대조**여야 한다.
 
 ### 버린 대안 일곱
 
@@ -128,35 +131,64 @@ scope: src/**, design-concept/**, scripts/lib/tokens/**, scripts/verify-tokens.t
 ## 실행 계획
 work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 
-- [ ] `S1` 글자 4축 전수 지도 — 실측을 굳힌다
-- [ ] `S2` 서체 조사와 선정 — 굵기 축이 실재하는 한국어 조합
-- [ ] `S3` 타입 스케일 확정 — 10역할 × 4축
-- [ ] `S4` 정본 1차 — §5 재작성 · v0.2 화석 둘 · 시뮬 템플릿
-- [ ] `S5` 인식기 둘 — `typeUnitless` + `fontFamilyStr` [기준선 갱신 #1]
-- [ ] `S6` 토큰 신설 + 판정층 + `fontRoles` 좁히기 [기준선 갱신 #2]
-- [ ] `S7` 폰트 교체 — 다섯 선언 동시 [화면이 바뀌는 work 1/2]
-- [ ] `S8` `type:verify` 신설 — 선언한 웨이트가 실제로 로드되는지 (2층)
-- [ ] `S9` 데코 실측값 재측정 — `--dm-shift` 스윕 [화면이 바뀌는 work 2/2]
-- [ ] `S10` 시뮬 구획 1 — `osi-7-layers` (12파일)
-- [ ] `S11` 시뮬 구획 2 — `vpn-anatomy` · `webrtc` (14파일)
-- [ ] `S12` 시뮬 구획 3 — `auth-authz` · `container-anatomy` · `tauri` 등 (9파일)
-- [ ] `S13` 레이아웃·페이지 구획 (212자리)
-- [ ] `S14` 데코 부품 구획 (11파일 111자리)
-- [ ] `S15` 공용 컴포넌트 구획 (110자리)
-- [ ] `S16` 폭신 대담 구획 (59자리)
-- [ ] `S17` viz 구획 — 로컬 3종 + 사본층 둘
-- [ ] `S18` `/graph` 구획 (45자리)
-- [ ] `S19` 정본 2차 + 수렴 확인
+- [x] `S1` 글자 4축 전수 지도 — 실측을 굳힌다
+- [x] `S2` 서체 조사와 선정 — 굵기 축이 실재하는 한국어 조합
+- [x] `S3` 타입 스케일 확정 — 10역할 × 4축
+- [x] `S4` 정본 1차 — §5 재작성 · v0.2 화석 둘 · 시뮬 템플릿
+- [x] `S5` 인식기 둘 — `typeUnitless` + `fontFamilyStr` [기준선 갱신 #1]
+- [x] `S6` 토큰 신설 + 판정층 + `fontRoles` 좁히기 [기준선 갱신 #2]
+- [x] `S7` 폰트 파이프라인 — 굵기를 굽고 자체 호스팅으로 전환 [화면이 바뀌는 work 1/2]
+- [x] `S8` `type:verify` 신설 — 웨이트 로드(1·2층) + **글자 덮개(3층)**
+- [x] `S9` 데코 실측값 재측정 — `0.426em` 이 아직 맞는가 [실측 결과 화면은 안 바뀐다]
+- [x] `S10` 시뮬 구획 1 — `osi-7-layers` (12파일)
+- [x] `S11` 시뮬 구획 2 — `vpn-anatomy` · `webrtc` (14파일)
+- [x] `S12` 시뮬 구획 3 — `auth-authz` · `container-anatomy` · `tauri` 등 (9파일)
+- [x] `S13` 레이아웃·페이지 구획 (212자리)
+- [x] `S14` 데코 부품 구획 (11파일 111자리)
+- [x] `S15` 공용 컴포넌트 구획 (110자리)
+- [x] `S16` 폭신 대담 구획 (59자리)
+- [x] `S17` viz 구획 — 로컬 3종 + 사본층 둘
+- [x] `S18` `/graph` 구획 (45자리)
+- [x] `S19` 정본 2차 + 수렴 확인
 
 ### 단계별 완료 기준
 
 **`S1`** — 굵기·행간·자간·raw 폰트·크기 px 의 각 자리마다 `(파일, 줄, 형태, 속성, 값, 구획)`. 8구획의 합 = 전체(겹침 0·빠짐 0). **조사 스크립트를 레포에 안 남긴다** — `S5` 이후 `tokens:verify --json` 으로 재현한다(KAN-076 S1 규약).
 
-**`S2`** — 기준 일곱을 실측값으로 채운다: R1 실재 웨이트 수(CSS2 응답의 `@font-face`) · R2 가변 여부 · R3 18px/행간1.7 장문 실렌더 · R4 Google Fonts 제공 · R5 서브셋 무게 · R6 라이선스(OFL) · **R7 메타 고정폭을 접을 것인가**(전략 §2 — Jua·Gaegu 와 같은 잣대로). 4역할 조합·로드 웨이트·`BaseLayout` URL 초안이 확정되고 **「Jua·Gaegu 유지 · Gowun Dodum 교체」 가설이 검증되거나 반증된다.** 코드 변경 0.
+**`S2`** — **닫혔다. 결론은 「교체하지 않는다」이다.**
+R1~R6 을 실측하고(한국어 서브셋 **38종 전수** → 굵기 축이 실재하는 것 10종) 후보 일곱을 실제 지면에
+올린 결과, **기존 타이포그래피를 이기는 후보가 없었다.** 특히 §7-5 가 추천했던 IBM Plex Sans KR 은
+IBM 의 기업 서체라 `DESIGN_CONCEPT.md` §2 의 「하지 말 것: 차가운 기업 SaaS 톤」에 정면으로 걸린다 —
+**R1~R7 에 디자인 언어 축(R8)이 없어서 그것이 후보로 올라왔다.**
+
+그래서 **서체 넷을 전부 유지하고**(Jua · Gowun Dodum · Gaegu · Space Mono/JetBrains Mono)
+**Gowun Dodum 의 굵기 단을 직접 굽는다.** OFL 에 Reserved Font Name 선언이 없어 개작이 열려 있고,
+업스트림에도 다른 굵기가 없어 굽는 것이 유일한 길이다. 실측: 500(+20u)·700(+34u) 각 12,540 글리프
+실패 0 · 18초, 사이트 전 글자(1,243자) 서브셋으로 **103.0 KB · 104.9 KB**.
+
+**함정 하나가 이 work 의 핵심 산출이다** — `stroke` 전에 원본 winding 을 정규화하지 않으면
+**글자 속이 빈다.** 굽기는 「실패 0」으로 끝나고 잉크 총량은 오히려 늘어(587k→769k) 지표가 전부
+초록인데 화면만 뿌옇다. **면적으로 잡는다**(원본 184,758 → 버그 192,229 +4% → 정상 306,883 +66%).
+점 폭증도 같은 버그였다(명령 2.9배 → **1.11배**, 파일 276→105 KB, 시간 29→18초).
+
+R7 도 결론이 바뀌었다 — **고정폭을 접는가가 아니라, 고정폭 자리의 한글에 아무 배정이 없다**는 것이
+문제였다(§7-6). Space Mono·JetBrains Mono 둘 다 `unicode-range` 에 한글이 0 이라 그 자리 한글은
+OS 기본으로 떨어지고, 그 위에 **라틴 폭에서 잰 `letter-spacing: 0.5px`** 이 얹혀 있다.
+해결은 `S3`·`S4`·`S7` 로 나눠 든다(아래).
 
 **`S3`** — 값이 실측 분포에서 수렴한다. **행간**(CSS+JSX 130자리 22종)은 이미 띠를 이룬다 — `1`(19, 라벨) · `1.15~1.3`(9) · `1.35~1.5`(18) · **`1.55~1.65`(48, 지배 구간)** · `1.7~1.8`(27) · `1.85~2`(7, 대담). 가장 큰 이득이 시각 차이 없는 `1.55·1.6·1.65` 48자리를 한 값으로 모으는 것이다. **자간**(CSS 43자리 21종)은 **em 이 이미 다수**(em 24 · px 18)이고 px→em 환산이 결정론적이다 — `0.5px` 9자리가 Meta(13px) 0.038em · Label(12px) 0.042em 이라 **둘 다 `0.04em` 으로 접힌다.** 결과: 굵기 5→4단 · 행간 22→5~6단 · 자간 21→5단, **자간은 전부 `em`.** 접는 규약을 §5 의 「동률은 작은 쪽으로」와 같은 형식으로 명시하고, 대담의 1.9/1.95 를 어느 단으로 볼지 정하며, **무효였던 `font-weight: 500` 12자리가 살아나는 것이 의도인지** 판정한다.
+**여기에 라벨 역할의 한글 값이 더해진다** — `--font-mono` 자리의 `0.5px` 은 Space Mono 의 **라틴 폭**에서
+잰 값이라 한글에 그대로 얹으면 성기다(홈 `블로그 전체 보기 →`). 그 자리 한글을 실제로 재서 라벨
+자간을 다시 정하고, 라벨 굵기를 400 으로 둘지 500 으로 둘지 정한다. **한 요소 안에서 라틴과 한글의
+자간을 나눌 수단이 CSS 에 없으므로**(`:lang()` 도 `unicode-range` 도 그 층이 아니다) 값은 하나로
+정하되 **한글이 든 자리 기준으로 잰다.** 굽는 굵기 단수(2단 400/700 인가 3단 400/500/700 인가)도
+여기서 정해진다 — 자체 호스팅이라 단마다 약 105 KB 이고, `S7` 이 그 수만큼 굽는다.
 
-**`S4`** — ① `DESIGN_CONCEPT.md` §5(`:164-219`)가 4축 표로 재작성되고 `:187-188` 의 "Gowun Dodum 700" 이 사라진다. ② `DIAGRAM_STYLE_GUIDE.md:52-56` 와 `AGENTS.md:52` 의 v0.2 Pretendard 화석이 걷힌다(같은 문서 `:128` 과의 자기모순 포함). ③ `.claude/skills/react-sim/assets/REACT_SIM_GUIDE.md:60` 의 `fontWeight: 600` 템플릿이 토큰 참조로 간다 — **시뮬 64자리의 출처라 구획 work 보다 앞이어야 실효가 있다.**
+**`S4`** — ① `DESIGN_CONCEPT.md` §5(`:164-219`)가 4축 표로 재작성되고 `:187-188` 의 "Gowun Dodum 700" 이
+**「구운 700」으로 바뀐다**(그 웨이트가 실재하게 되므로 서술이 처음으로 참이 된다).
+**①-b 역할표에 「라틴 얼굴 / 한글 얼굴」 두 칸을 만든다** — 지금은 칸이 하나라 한글 배정을 적을 자리가
+없었고, 그것이 §7-6 결함의 구조적 원인이다. `--font-mono` 는 「라틴=Space Mono · 한글=Gowun Dodum」,
+`--font-code` 는 「라틴=JetBrains Mono · 한글=Gowun Dodum」으로 적힌다. ② `DIAGRAM_STYLE_GUIDE.md:52-56` 와 `AGENTS.md:52` 의 v0.2 Pretendard 화석이 걷힌다(같은 문서 `:128` 과의 자기모순 포함). ③ `.claude/skills/react-sim/assets/REACT_SIM_GUIDE.md:60` 의 `fontWeight: 600` 템플릿이 토큰 참조로 간다 — **시뮬 64자리의 출처라 구획 work 보다 앞이어야 실효가 있다.**
 
 **`S5`** — `typeUnitless` 관할은 `UNITLESS_PROPS` 에 갇힌 `fontWeight`·`lineHeight` 세 형태(JSX style 객체·표현식 / `.astro` 인라인 `style` / **CSS 선언의 소수 `line-height` 만**). **`letterSpacing` 은 관할 밖** — `styleNum.ts:267` 이 pxify 로 잡는 것은 맞지만 실측하면 JSX `letterSpacing` 은 1건뿐(`PosterHero.tsx:132` 의 SVG 속성, 문자열이라 관할 밖)이고 자간 47자리는 전부 CSS 다. **지금 겹칠 자리는 0 이고 장래 겹침을 미리 가르는 것이다.**
 `fontFamilyStr` 은 실측으로 찾은 구멍이다 — `font-family` 히트가 **131건 전부 `css-decl`·준수**이고 JSX raw `fontFamily: "monospace"` **40여 자리는 히트 0건**이다. 없으면 `S10`~`S12` 의 완료 기준을 게이트로 증명할 수 없다.
@@ -167,15 +199,72 @@ work 하나 = 커밋 하나 = revert 단위. 태그 `kan/KAN-080-WTQ7AV/S<n>`.
 **`S6`** — `docrule.ts` 를 넓힌다(새 모듈을 안 만든다 — `auditLabelOf`·`driftToken`·`Scale` 이 모듈 지역이고, KAN-076 이 `stroke` 를 `color.ts` 에 넣은 선례가 있으며, 두 모듈이 같은 히트를 claim 하면 판정이 둘 내려간다).
 ① `--font-weight-*`·`--font-leading-*`·`--font-track-*`(em)이 선다. ② `:369` 뒤에 3갈래 분기 · `:422-445` `notes` 에 세 줄. ③ `baseline.judgeAxis()` 가 사유 접두 셋으로 갈라 **래칫 칸이 셋 는다.** ④ `fontRoles()` 를 `--text-` 접두로 좁히고 **기본 픽스처에 `--text-*` 와 오염 시도 토큰을 심어** `font-min` 이 계속 잡히는지 본다. **함정**: 픽스처에 `--text-body: 18px` 을 세우면 `Ok.astro:13` 의 `font-size: 18px` 이 드리프트가 되어 자가검사 ①이 깨진다 → `var(--text-body)` 로 함께 고친다. ⑤ **화면은 안 바뀐다** — `git diff` 가 `tokens.css` 밖 `src/` 를 안 건드린다. ⑥ 드리프트 급증분을 **같은 커밋에서** 갱신.
 
-**`S7`** — 서체 선언이 **다섯 곳**에 있다: `src/layouts/BaseLayout.astro:88` · `src/styles/tokens.css:215-219` · `scripts/render-viz.ts:50-51`(**이미 갈려 있다** — Jua·Gaegu 없고 JetBrains Mono 700 있음) · `src/lib/viz/blogVizStyleGuide.ts:79-80` · `src/lib/motion/bbangtoTonyStyleGuide.ts:97-98`. `global.css:10-15` 는 그중 **둘만** 짝지어 놨다. `S2` R7 이 「접는다」면 고정폭 교체도 여기 든다.
-**리터럴은 한 자리도 안 고친다** — `tokens:verify` 의 위반·드리프트가 안 움직인다(움직였으면 범위를 넘었다).
-**`render:compare` 는 exit 1 로 끝나는 것이 정상이다** — `compare-render.ts:97-114` 의 `endOf()` 에 「의도한 차이만」 모드가 없어 차이 1건에도 `code: 1` 이다. **판정은 종료코드가 아니라 diff 목록으로 한다**: 달라진 속성이 서체·굵기뿐이고 **자리(`width`/`height`/`top`/`left`)가 무너진 지면이 0** 인 것이 판정선. 초록을 기대하고 빨간 것을 보고 되돌리면 안 된다.
+**`S7`** — **교체가 아니라 파이프라인 도입이다. 굽기·서브셋·배관·전환이 한 커밋에 든다** —
+나누면 「선언은 있는데 파일이 없는」 또는 「파일은 있는데 아무도 안 쓰는」 중간 상태가 생기고,
+되돌릴 때 그 중간으로 떨어진다.
+
+① **굽는 스크립트를 레포에 넣는다**(`scripts/build-fonts.ts`, `bun run fonts:build`). `S1` 의 조사
+스크립트와 달리 이것은 **산출물을 만드는 도구**라 남긴다. 함정 셋을 주석으로 박는다 —
+`convertConicsToQuads` 누락 · union 전 stroke `simplify` 누락 · **`stroke` 전 원본 winding 정규화 누락**.
+셋째는 자가검사를 붙인다: 구운 글리프의 **면적이 원본보다 커야 한다**(버그 상태는 +4%, 정상은 +66%).
+
+② **서브셋은 사이트가 쓰는 글자로 굽는다** — `dist/**/*.html` 에서 고유 글자를 모은다(실측 1,243자).
+정적 빌드라 같은 자리에서 돈다. **글자 수집이 빌드 산출을 입력으로 받으므로 `astro build` 뒤에 온다.**
+
+③ **자체 호스팅 배관** — `public/fonts/` · `@font-face` · `BaseLayout` 의 preload. `KAN-059` 의 규약이
+그대로 걸린다: **preload 는 LCP 후보 딱 하나**, 폰트 스타일시트보다 위. Google Fonts `<link>` 에서
+Gowun Dodum 을 뺀다(Jua·Gaegu·Space Mono·JetBrains Mono 는 남는다).
+
+④ **선언 다섯 곳을 동시에 맞춘다**: `src/layouts/BaseLayout.astro:88` · `src/styles/tokens.css:215-219` ·
+`scripts/render-viz.ts:50-51`(**이미 갈려 있다** — Jua·Gaegu 없고 JetBrains Mono 700 있음) ·
+`src/lib/viz/blogVizStyleGuide.ts:79-80` · `src/lib/motion/bbangtoTonyStyleGuide.ts:97-98`.
+`global.css:10-15` 는 그중 **둘만** 짝지어 놨다.
+
+⑤ **`--font-mono`·`--font-code` 스택 끝에 본문 서체를 놓는다**(§7-6). `'Space Mono', 'Gowun Dodum', monospace` ·
+`'JetBrains Mono', 'Gowun Dodum', monospace`. 라틴·숫자는 원래 얼굴이 그대로 그리고 **한글은 이 블로그
+자신의 목소리를 입는다** — 본문 서체가 이미 로드돼 있으므로 **추가 다운로드 0**, OS 무관하게 결정론적.
+**한국어 고정폭을 덧붙이는 길은 버린다** — 열이 맞지 않고(실측: JB+NGC 도 −6/−12/−18/−24px) 맞추려면
+JetBrains Mono 를 버려야 하며 +235 KB 로 `KAN-060` 과 충돌한다.
+
+⑥ **`font-synthesis: none` 을 전역에 선언한다.** 지금 선언 0건이라 합성이 막을 것 없이 걸려 있고,
+진짜 면이 생긴 뒤에도 안 막으면 없는 단이 조용히 합성으로 메워진다.
+
+**`render:compare` 는 exit 1 이 정상이다** — 판정은 종료코드가 아니라 diff 목록으로 한다.
+**본문 400 은 한 픽셀도 안 움직여야 한다**(같은 아웃라인이다). 움직이는 것은 굵기가 걸린 자리와
+`--font-mono`·`--font-code` 의 한글뿐이고, 자리(`width`/`height`/`top`/`left`)가 무너진 지면은 0 이어야 한다.
 
 **`S8`** — **1층 정적(CI 에 넣는다)**: `S3` 의 역할표를 입력으로 각 역할의 `(--font-* 패밀리, --font-weight-* 값)` 짝이 `BaseLayout.astro:88` URL 의 `wght` 안에 있는지 대조한다. `render-viz.ts` 의 `FONT_IMPORT` 와 `blogVizStyleGuide.ts` 도 같은 대조에 넣어 **다섯 선언이 갈리는 것을 함께 막는다.** **시제품으로 확인한 함정**: 소스의 모든 `font-weight` 를 모든 패밀리와 대조하는 소박한 버전은 **오탐**이다(캐스케이드를 몰라 오늘 5역할 전부가 실패로 나온다) — **입력은 역할표여야 한다.** 정적으로 짝을 아는 자리는 59곳뿐이라 2층이 필요하다.
 **2층 런타임(CI 밖)**: `dist/` 를 띄워 `document.fonts.check("<w> <size> '<family>'")`. CI 에 Playwright 게이트가 하나도 없는 것과 같은 자리다.
-**죽여서 확인**: `--font-body` 를 Gowun Dodum 으로 되돌리면 1층이 빨개져야 한다.
+**3층 덮개(coverage) — 이 카드가 실측으로 찾은 결함의 그물이다(§7-6).** 렌더된 지면에서 텍스트 노드마다
+계산된 `font-family` 스택을 읽고 `document.fonts` 에서 그 패밀리들의 `unicodeRange` 를 모아,
+**그 텍스트의 코드포인트를 그릴 면이 스택 안에 하나도 없으면 위반**으로 낸다. **토큰 게이트가 절대 못 보는
+종류다** — `var(--font-mono)` 는 완벽히 준수인데 그 서체에 한글이 없었다. 정적으로는 못 하고(스택·텍스트·
+실제 로드 셋이 다 필요하다) 2층과 같은 자리다.
+**죽여서 확인 둘**: ① `--font-body` 를 구운 폰트 대신 원본 400 만 가리키게 하면 1층이 **빨개져야** 한다.
+② `--font-mono` 를 `'Space Mono', monospace` 로 되돌리면 3층이 **빨개져야** 한다.
 
-**`S9`** — 정본은 `src/components/deco/DoodleMark.astro:100-116` 이다. `0.426em` 이 "눈대중이 아니라 실측값"으로 박혀 있고 `calc(${size} * ${-mark.h/80} + 0.426em)` 로 33종 마크의 기준선을 정한다. **발행 글 13편 79자리가 이 값 위에 앉아 있다.** `--dm-shift` 스윕을 새 본문 서체로 다시 돌려 `delta = (0.426 − h/2) − shift` 로 뽑고 33종 전부가 본문 잉크 중심 ±0.04em 안에 든다. `DECO_KIT.md` 의 ×0.88 환산비·8.5px·자간 `.24em` 도 다시 잰다. **`deco:verify` 초록만으로 닫지 않는다** — 그 하네스는 겹침·도달성·오버플로만 보고 **잉크 중심 정렬은 안 본다.**
+**`S9`** — 정본은 `src/components/deco/DoodleMark.astro` 의 `shiftDefault` 다. `0.426em` 이 "눈대중이 아니라 실측값"으로 박혀 있고 `calc(size * -h/80 + 0.426em)` 로 그림 마크의 기준선을 정하며, 주석이 **「본문 폰트를 바꾸면 다시 재라」**고 적는다.
+
+**착수 시점에 전제가 뒤집혀 있었다** — 이 항은 「새 본문 서체로 다시 잰다」로 쓰였는데 `S2` 가
+**「교체하지 않는다」**로 닫혔다. 그래서 이 work 의 질문은 「새 값은 무엇인가」가 아니라
+**「S7 이 이 상수의 입력을 건드렸는가」**이고, 답은 실측으로 **아니다**였다.
+
+- **400 아웃라인이 원본과 동일하다** — `build-fonts.ts` 가 400 을 서브셋만 한다. `fontTools`
+  대조에서 글리프 16개의 아웃라인 명령과 `unitsPerEm`·`hhea.ascent/descent`·`OS/2.sxHeight/
+  sCapHeight` 가 전부 같았다.
+- **잉크 중심이 굵기를 안 탄다** — 400·500·700 이 `0.3755 · 0.3755 · 0.3750`. 확장이 아웃라인
+  양쪽으로 균등해 ascent 와 descent 가 같이 커진다. 그래서 **새로 생긴 굵은 면 위에 앉는 마크도
+  같은 상수를 쓴다.**
+- **발행 글 30편 전수** — 두들 마크 73자리 중 그림 마크는 **4자리**뿐(`th` 700 둘 · `p` 500 둘)
+  이고 넷의 정렬 편차가 `+0.0485 ~ +0.0487` 로 한 값에 모인다. 나머지 67자리는 글씨 마크라
+  보정 0 이고 이 상수와 무관하다. **「13편 79자리」는 소스 grep 이었고 실측은 이 수다.**
+
+산출은 **값 변경이 아니라 기록**이다 — 「안 쟀다」와 「재서 같았다」는 다르므로 근거를 부품
+주석과 `DECO_KIT.md` 에 남기고, `0.426` 이 무엇의 중심인지(받침 없는 한글 `0.4150` · 라틴 대문자
+`0.4275` · em 상자 중심 `0.4363` 사이)도 처음으로 적는다. `DECO_KIT.md` 의 ×0.88 환산비·8.5px·
+자간 `.24em` 은 **재지 않는다** — 각각 Gaegu 와 Space Mono 자리라 `S7` 이 안 건드린 서체다.
+그 판정도 함께 적는다. **`deco:verify` 초록만으로 닫지 않는다** — 그 하네스는 겹침·도달성·
+오버플로만 보고 **잉크 중심 정렬은 안 본다.**
 
 **`S10`~`S12`(시뮬 35파일)** — 그 구획의 굵기·행간·자간·raw 폰트가 토큰으로 간다. **크기는 이미 100% 토큰이라 안 건드린다.** `fontFamily: "monospace"` 가 `var(--font-code)` 로 가고 **같은 글 안에서 마크다운 코드블록과 시뮬 코드가 같은 서체로 뜨는 것**이 판정선이다. 그 구획 래칫 칸 0.
 **여기서도 `render:compare` 는 exit 1 이 정상이다** — `S3` 이 접으므로 `1.55` → `1.6` 처럼 값이 움직이고 `monospace` → JetBrains Mono 는 서체 자체가 바뀐다(그 속성이 `compare-render.ts:377` 대조 목록에 있다). **판정선은 「움직인 자리가 전부 `S3` 의 접기 표 안인가」** — 사람 판단이 아니라 목록 대조다. KAN-072 관례대로 **「값 동일 n · 스냅 m」을 갈라 세고**(그 카드 S9: "값 동일 21 · 스냅 77") 스냅이 표가 예측한 방향·크기인지 본다.
@@ -230,3 +319,46 @@ git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/kan080-be
 - 2026-09-01T15:04 · s:6d1364d1 — `전략` 섹션 교체
 - 2026-09-01T15:06 · s:6d1364d1 — `실행 계획` 섹션 교체
 - 2026-09-01T15:07 · s:6d1364d1 — `검증` 섹션 교체
+- 2026-09-01T15:14 · s:a6f43d76 · S1 doing — 착수
+- 2026-09-01T15:20 · s:a6f43d76 · S1 done — 글자 4축 전수 지도 — 446 고칠 자리/1059 전체를 9구획으로 갈랐다(겹침 0·빠짐 0). 굵기·행간·자간 토큰율 0%. 진단 정본 §7 신설 + 부록 B 「폰트 리터럴 0건」 반쪽 판정 정정
+- 2026-09-01T15:21 · s:a6f43d76 · S2 doing — 착수
+- 2026-09-01T18:05 · s:a6f43d76 — `실행 계획` 섹션 교체
+- 2026-09-01T18:05 · s:a6f43d76 · S2 done — 서체 조사 결론: 교체하지 않는다. 38종 전수 → 후보 7종 실지면 렌더 → 기존을 이기는 것 없음. Gowun Dodum 굵기를 직접 굽는다(OFL RFN 없음, 500/700 각 12,540글리프 실패 0, 서브셋 103/105KB). winding 정규화 누락 = 속 빈 글자 버그를 면적으로 잡았다
+- 2026-09-01T18:08 · s:a6f43d76 · S3 doing — 착수
+- 2026-09-01T18:13 · s:a6f43d76 · S3 done — 타입 스케일 확정: 굵기 5종→3단(400/500/700, 600·800→700) · 행간 21종→6단 · 자간 22종→4단 전부 em(px 0). 「한글이 든 자리는 한 단 아래로」 규약 신설 — 0.1em 띠의 한글 28자리를 0.04em 으로, 라틴전용 29자리는 유지. S7 이 구울 단은 셋
+- 2026-09-01T18:14 · s:a6f43d76 · S4 doing — 착수
+- 2026-09-01T18:16 · s:a6f43d76 · S4 done — 정본 1차: DESIGN_CONCEPT §5 재작성(역할표를 라틴/한글 두 칸으로 · 굵기 3단·행간 6단·자간 4단 신설 · 「Gowun Dodum 700」이 실재 웨이트가 됨) · DIAGRAM_STYLE_GUIDE·AGENTS 의 v0.2 Pretendard 화석 제거 · REACT_SIM_GUIDE 템플릿 2자리를 토큰으로 + 6번 규칙을 색에서 시각 값 전부로 확장
+- 2026-09-02T14:23 · s:845e612f · S5 doing — 착수
+- 2026-09-02T14:36 · s:845e612f · S5 done — 인식기 둘: typeUnitless(굵기 115·행간 71 JSX + CSS 소수 39) · fontFamilyStr(raw 서체 42). 옛 LITERAL 을 안 고치고 literalsOf(src) 로 새 경로에만 다른 자를 줬다 — 옛 히트 증분 0 · 겹침 0. 래칫 font/위반 0→42 · font/판정불가 244→468
+- 2026-09-02T14:37 · s:845e612f · S6 doing — 착수
+- 2026-09-02T14:45 · s:845e612f · S6 done — 토큰 13개(굵기 3·행간 6·자간 4) + docrule 세 축 판정 + judgeAxis 접두 셋 + fontRoles 를 --text- 로 좁힘. 래칫 칸 여섯이 새로 섰다(굵기 드리프트137/위반68 · 행간 70/61 · 자간 10/38). CSS 소수 파편 78건은 잡음으로 내렸다(verdict 는 판정 불가 그대로). src/ 는 tokens.css 만
+- 2026-09-02T15:11 · s:845e612f · S7 doing — 착수
+- 2026-09-02T15:37 · s:845e612f · S7 done — 폰트 파이프라인 한 커밋: fonts:build(굽기·서브셋·면적 자가검사) + public/fonts 3단(87.1/105.9/107.7KB) + @font-face·font-synthesis:style + Google URL 에서 Gowun Dodum 제거 + 선언 다섯 정렬 + mono/code 스택 끝에 본문 서체. render:compare 68지면 346,163건이 움직였고 속성이 font-family·@box·기하뿐이다(색·테두리·크기 0). 계획에서 둘 비켰다 — preload 안 검(KAN-059 규약) · font-synthesis 는 none 대신 style(em 43자리)
+- 2026-09-02T20:19 · s:92291825 · S8 doing — 착수
+- 2026-09-02T21:30 · s:92291825 · S8 done — type:verify 3층 신설(역할표 src/lib/typeRoles.ts 단일 소스) · 1층만 CI · 없는 웨이트 요청 5자리 수정 · 3층 죽여서 확인 99건
+- 2026-09-02T21:31 · s:92291825 · S9 doing — 착수
+- 2026-09-02T21:33 · s:92291825 — `실행 계획` 섹션 교체
+- 2026-09-02T21:34 · s:92291825 — `전략` 섹션 교체
+- 2026-09-02T21:35 · s:92291825 · S9 done — 0.426em 재측정 — 재서 같았다. 400 아웃라인 원본과 동일 · 잉크 중심 굵기 무관 · 발행 글 그림 마크 4자리 편차 +0.0485~0.0487. ×0.88·8.5px 은 Gaegu·Space Mono 자리라 안 잼
+- 2026-09-03T00:19 · s:69a265ed · S10 doing — 착수
+- 2026-09-03T00:32 · s:69a265ed · S10 done — osi-7-layers 12파일 79히트 전량 토큰화(굵기 43·행간 14·raw 얼굴 22) — 그 구획 글자 축 0, 시뮬 전체 228→149
+- 2026-09-03T00:32 · s:69a265ed · S11 doing — 착수
+- 2026-09-03T00:47 · s:69a265ed · S11 done — vpn-anatomy·webrtc 14파일 99히트 전량 토큰화 — 시뮬의 행간 1.9 는 talk 가 아니라 read 로 접었다(대담 자리가 아니라 --text-meta 해설문). 시뮬 전체 149→50
+- 2026-09-03T00:48 · s:69a265ed · S12 doing — 착수
+- 2026-09-03T00:59 · s:69a265ed · S12 done — auth-authz·container-anatomy·tauri-2 8파일 50히트 토큰화 — ui-monospace 스택 2자리도 --font-code 로(코드 출력 자리라 이 카드가 고치는 결함 그 자체). 시뮬 전체 부채 0
+- 2026-09-03T01:23 · s:74abae1b · S13 doing — 착수
+- 2026-09-03T01:56 · s:74abae1b · S13 done — 레이아웃·페이지 6파일 73자리 토큰화 + strong·b 규칙 신설(0건이던 자리 — bolder 는 부모 대비라 제목 안 굵게가 900 이었다). talk 단은 대담 밖으로 안 낸다: 1.85·2 를 거리(1.9)가 아니라 뜻으로 read 에 접었다. render:compare 68지면 465,842건이 움직였고 속성이 line-height·기하·letter-spacing·font-weight 뿐이다(색·테두리 0)
+- 2026-09-03T01:57 · s:74abae1b · S15 doing — 착수
+- 2026-09-03T02:25 · s:74abae1b · S15 done — 공용 컴포넌트 12파일 38자리 토큰화 — px 자간 11건 전량 em 으로. 이 구획에 px 자간 0. 섞인 자리 둘(.st-name=SER.+한글 시리즈명 · .toc-head=목차 · CONTENTS)은 §5 대로 한글 기준으로 골랐다. render:compare 47,171건, 속성이 자간·행간·굵기와 그 기하뿐
+- 2026-09-03T02:26 · s:74abae1b · S18 doing — 착수
+- 2026-09-03T02:54 · s:74abae1b · S18 done — /graph 2파일 10자리 토큰화 — px 자간 4건(0.5px·0.3px)이 크기별로 다 label 로 접혔다. 계획의 「캔버스 텍스트는 DOM 이 아니다」 리스크는 해당 없음: 이 지면에 <canvas> 가 0건이라 render:compare 가 전부 본다(34쪽 중 /graph 만 움직였고 572건, 속성이 자간·행간과 그 기하뿐)
+- 2026-09-03T02:55 · s:74abae1b · S14 doing — 착수
+- 2026-09-03T17:17 · s:74abae1b · S14 done — 데코 11파일 55자리 토큰화 — 그 구획 글자 축 0, 예외 0. 계획이 세운 예외 후보(DoodleMark line-height:0)는 실측이 취소시켰다: .dmark-ink 가 block 이라 줄상자가 안 생겨 0↔1 이 화면을 안 바꾼다(마크 6·36개, 문서 높이 0). Tape 의 letter-spacing/text-indent 짝은 같은 토큰을 읽게 해 불변식을 코드가 지게 했고, 시안 값 0.24em·0.2em 은 deco 한 단으로 접었다(nano 에서 글자 사이 0.4px)
+- 2026-09-03T17:19 · s:74abae1b — 배치5 마감 — 176자리/31파일 닫힘(래칫 196→20). 기준선 조임: 위반 65→12 · 드리프트 131→8. 남은 파일 5개는 전부 배치6(S16 대담 16 · S17 viz 4)
+- 2026-09-03T20:33 · s:74abae1b · S16 doing — 착수
+- 2026-09-03T21:03 · s:74abae1b · S16 done — 대담 3파일 16자리 토큰화 — 예외 0. 카드가 건 조건(1.9/1.95·px 자간이 스케일에 들어가는가)에 전부 들어갔다. 화면이 없는 구획이라(template:talk 글 0편) 전후 대조가 성립 안 해 임시 지면을 세워 계산값을 절대값으로 쟀고 접기 표와 15/15 일치. render:compare 는 34쪽 전량에서 0건 — 이 변경이 다른 지면으로 안 샜다는 증거다
+- 2026-09-03T21:03 · s:74abae1b · S17 doing — 착수
+- 2026-09-03T21:37 · s:74abae1b · S17 done — viz 4자리 닫힘 — 래칫 0. PosterHero 자간은 CSS 토큰이 안 닿는 자리라(render-viz 문서에 tokens.css 없음) 값만 자에 맞추고 poster-hero-svg-attr 예외 등록. fontWeight 800→700(두 게이트 다 못 보는 자리라 값 옆에 적었다). 카드 항 다섯 중 1은 S7 이 이미 했고 3은 viewBox 사용자 단위라 토큰이 거짓이 되며 5는 소비처가 모션 줄뿐임을 gen:motion 무변경으로 확인했다. render:compare 34쪽 중 홈 2건은 재현 안 됨 — 바뀐 셀렉터가 홈에 0개 매칭이고 격리 재실행이 0이다
+- 2026-09-03T21:38 · s:74abae1b · S19 doing — 착수
+- 2026-09-03T21:43 · s:74abae1b · S19 done — 정본 2차 + 수렴 확인. 감사 정본에 P1 문단 잠금 해제(굵기·행간·자간만 — 그림자·z-index 는 그대로 잠김) · 6절 15항 신설(글자 축 구멍 둘: JSX 숫자 굵기 표현 · clamp 끝값 맨 px) · 7-10 수렴 · 7-11 hero 27장과 후속 카드 사양. DESIGN_CONCEPT 5절과 DECO_KIT 8절은 7-10 을 가리키게 하고 현재 수는 안 적었다(문서에 박은 수는 반드시 낡는다). DECO_KIT 의 S9 실측값은 이미 들어 있어 확인만 했다
+- 2026-09-03T21:44 · s:74abae1b — 배치6 마감 — 20자리/5파일 닫힘(래칫 20→0). 기준선의 files 목록이 통째로 비었다(게이트가 선 KAN-070 이후 처음). 카드 전체 1,234→0. 감사 기준의 4는 viz.css 복제물이라 고칠 수 없는 것이고 §7-10 에 적었다

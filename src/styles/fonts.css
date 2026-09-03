@@ -1,0 +1,35 @@
+/* 자체 호스팅 본문 서체 — `bun run fonts:build` 가 굽는다 (KAN-080 S7).
+
+   배포본에는 400 한 종뿐이고 업스트림에도 다른 굵기가 없어서, §5 가 h2·h3 에 규정한 700 은
+   여태 **브라우저 합성**이었다. OFL 에 Reserved Font Name 선언이 없어 개작이 열려 있으므로
+   아웃라인을 확장해 500·700 을 직접 굽는다(근거·함정은 `UI_CONSISTENCY_AUDIT.md` §7-7).
+
+   서브셋은 **빌드된 지면이 실제로 쓰는 글자**(1,243자)로 한 벌씩이다. 구글의 빈도 구간
+   서브셋과 달리 한 번 받으면 사이트 전체가 캐시를 쓴다 — 400 한 벌만 봐도 그쪽이 더 싸다
+   (글 한 편 111.7KB → 전 사이트 86.8KB).
+
+   **preload 를 걸지 않는다.** KAN-059 가 실측으로 남긴 규약이 「preload 는 LCP 후보 딱 하나,
+   여럿 넣으면 서로 대역을 나눠 가져 아무것도 안 빨라진다」이고, 그 한 자리는 히어로 이미지가
+   쓴다. 자체 호스팅은 **같은 출처**라 크로스오리진 연결이 없어져 그 자리에서 이미 이득이고,
+   `font-display: swap` 이 도착 전 화면을 폴백으로 그린다. */
+@font-face {
+  font-family: "Gowun Dodum";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/gowun-dodum-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Gowun Dodum";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/gowun-dodum-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Gowun Dodum";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/gowun-dodum-700.woff2") format("woff2");
+}

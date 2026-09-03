@@ -68,14 +68,14 @@ function toAscii(bytes: number[]): string {
 
 // --- 스타일 ---
 
-const labelBlock: CSSProperties = { display: "grid", gap: "var(--space-6)", fontSize: "var(--text-label)", fontWeight: 600, color: INK };
+const labelBlock: CSSProperties = { display: "grid", gap: "var(--space-6)", fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", color: INK };
 
 const inputStyle: CSSProperties = {
   padding: "var(--space-8) var(--space-10)",
   border: `${HAIR} solid ${tint(INK, 20)}`,
   borderRadius: "var(--radius-sm)",
   fontSize: "var(--text-meta)",
-  fontFamily: "'JetBrains Mono', monospace",
+  fontFamily: "var(--font-code)",
   background: PANEL,
   color: INK,
   width: "100%",
@@ -100,7 +100,7 @@ function toggleStyle(active: boolean): CSSProperties {
     border: `${BOLD} solid ${active ? DANGER : ACCENT}`,
     background: active ? tint(DANGER, 12.2) : tint(ACCENT, 12.2),
     color: active ? DANGER : ACCENT,
-    fontWeight: 700,
+    fontWeight: "var(--font-weight-bold)",
     fontSize: "var(--text-meta)",
     cursor: "pointer",
   };
@@ -114,20 +114,20 @@ const panelStyle: CSSProperties = {
   background: PAPER,
 };
 
-const panelTitle: CSSProperties = { margin: "0 0 var(--space-8)", fontSize: "var(--text-meta)", fontWeight: 700, color: INK };
+const panelTitle: CSSProperties = { margin: "0 0 var(--space-8)", fontSize: "var(--text-meta)", fontWeight: "var(--font-weight-bold)", color: INK };
 
 const rowLabel: CSSProperties = {
   display: "inline-block",
   minWidth: 42,
   fontSize: "var(--text-label)",
-  fontWeight: 700,
+  fontWeight: "var(--font-weight-bold)",
   color: MUTED,
   marginRight: "var(--space-6)",
 };
 
 function HexBytes({ bytes, compareWith }: { bytes: number[]; compareWith?: number[] }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)", fontFamily: "'JetBrains Mono', monospace", fontSize: "var(--text-label)" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)", fontFamily: "var(--font-code)", fontSize: "var(--text-label)" }}>
       {bytes.map((b, i) => {
         const same = compareWith ? compareWith[i] === b : false;
         return (
@@ -190,7 +190,7 @@ export default function NonceReuseLab() {
 
   return (
     <figure style={{ margin: "2rem 0", padding: "var(--space-16)", border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-md)", background: SURFACE }}>
-      <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK, lineHeight: 1.5 }}>
+      <p style={{ margin: "0 0 var(--space-12)", fontWeight: "var(--font-weight-bold)", color: INK, lineHeight: "var(--font-leading-sub)" }}>
         P1·P2와 nonce 토글을 바꿔 가며, <strong>같은 nonce가 왜 위험한지</strong> 눈으로 확인하세요. 아래로 갈수록
         키스트림 → 암호문 → XOR 증명 → 실제 공격 순서로 이어집니다.
       </p>
@@ -315,7 +315,7 @@ export default function NonceReuseLab() {
         </p>
         <p
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "var(--font-code)",
             fontSize: "var(--text-small)",
             padding: "var(--space-8) var(--space-10)",
             background: PANEL,
@@ -342,7 +342,7 @@ export default function NonceReuseLab() {
         </div>
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: MUTED, marginTop: "var(--space-12)", lineHeight: "var(--font-leading-ui)" }}>
         ⚠ 교육용 모형입니다. 실제 ChaCha20이 아니라 (키, nonce)를 해시해 시드로 쓰는 결정론적 의사난수로
         키스트림을 대신합니다. C1 XOR C2 = P1 XOR P2 라는 XOR 성질은 어떤 키스트림을 쓰든 동일하게
         성립하므로, 이 모형만으로도 nonce 재사용의 위험은 그대로 체감됩니다.

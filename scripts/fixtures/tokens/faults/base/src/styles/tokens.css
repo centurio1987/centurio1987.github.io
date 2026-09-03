@@ -10,4 +10,33 @@
   --card-radius: 14px;
   --btn-radius: 999px;
   --font-body: 'Gowun Dodum', sans-serif;
+
+  /* 글자 역할값 — 하한(`fontMinOf`)이 이 집합의 최소값이라 `font-min.astro`(9px) 고장이
+     「최소치 미만」으로 잡힌다. 10px 이 최소다. */
+  --text-h2: 26px;
+  --text-body: 18px;
+  --text-meta: 13px;
+  --text-nano: 10px;
+
+  /* 굵기 · 행간 · 자간 (KAN-080 S6). 값은 실제 tokens.css 와 같다. */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-leading-flat: 1;
+  --font-leading-title: 1.25;
+  --font-leading-sub: 1.45;
+  --font-leading-ui: 1.6;
+  --font-leading-read: 1.75;
+  --font-leading-talk: 1.9;
+  --font-track-tight: -0.02em;
+  --font-track-label: 0.04em;
+  --font-track-wide: 0.1em;
+  --font-track-deco: 0.2em;
+
+  /* ★ 오염 시도 — px 가 든 `--font-*` 토큰. `fontRoles()` 를 `--text-` 접두로 안 좁히면
+     이 `0.5` 가 **글자 크기 역할값 집합에 섞여** 하한이 10px → 0.5px 로 내려가고,
+     `font-min.astro`(9px)가 「최소치 미만」이 아니라 「역할값 밖」이 되어 그 고장이 **안 잡힌다.**
+     좁히기가 실제로 무엇을 막는지 이 한 줄이 잰다 — 지어낸 값이 아니라 §5 가 자간을
+     `0.5px` 로 주던 시절의 값이다. */
+  --font-track-label-px: 0.5px;
 }

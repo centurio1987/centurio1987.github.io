@@ -272,7 +272,7 @@ const generatedCss = rules.join("\n");
     padding-top: var(--space-6);
     font-family: var(--font-mono);
     font-size: var(--text-micro);
-    letter-spacing: 0.5px;
+    letter-spacing: var(--font-track-label);
     color: var(--ink-3);
   }
   .pf-chips {
@@ -301,7 +301,7 @@ const generatedCss = rules.join("\n");
     align-items: center;
     gap: var(--space-6);
     font-size: var(--text-meta);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     padding: var(--space-4) var(--space-12);
     border-radius: var(--btn-radius);
     border: var(--stroke-hair) solid var(--border);
@@ -335,10 +335,14 @@ const generatedCss = rules.join("\n");
     background: var(--paper);
   }
   .pf-ai {
+    /* Space Mono 에 500 면이 없다 — 부모 칩의 Medium 을 그대로 상속하면 브라우저가 400 으로
+       대체해 그린다(§5: --font-mono 는 400·700). 지금 그려지는 값을 명시해 요청과 실재를
+       맞춘다 — 화면은 안 바뀐다. 검사는 `bun run type:verify` 2층. */
+    font-weight: var(--font-weight-regular);
     font-family: var(--font-mono);
     font-size: var(--text-nano);
-    line-height: 1;
-    letter-spacing: 0.5px;
+    line-height: var(--font-leading-flat);
+    letter-spacing: var(--font-track-label);
     color: var(--accent);
     border: var(--stroke-hair) solid var(--accent);
     border-radius: var(--btn-radius);

@@ -141,7 +141,7 @@ export default function SdpNegotiationStepper() {
             background: i === steps.length - 1 ? IDLE : ACTIVE,
             cursor: i === steps.length - 1 ? "default" : "pointer",
             color: INK,
-            fontWeight: 600,
+            fontWeight: "var(--font-weight-bold)",
           }}
         >
           다음 →
@@ -174,7 +174,7 @@ export default function SdpNegotiationStepper() {
                 color: INK,
                 cursor: "pointer",
                 fontSize: "var(--text-meta)",
-                lineHeight: 1.4,
+                lineHeight: "var(--font-leading-sub)",
               }}
             >
               <strong style={{ color: actorColor[s.actor] }}>{s.actor === "caller" ? "발신자" : "수신자"}</strong>
@@ -192,7 +192,7 @@ export default function SdpNegotiationStepper() {
           border: `${HAIR} solid ${BORDER}`,
           borderRadius: "var(--radius-sm)",
           background: PANEL,
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
         }}
       >
         <p style={{ margin: "0 0 var(--space-6, 6px)" }}>
@@ -210,7 +210,7 @@ export default function SdpNegotiationStepper() {
         </p>
       </div>
 
-      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: 1.55 }}>
+      <figcaption style={{ fontSize: "var(--text-meta)", color: INK_2, marginTop: "var(--space-10)", lineHeight: "var(--font-leading-ui)" }}>
         교육용 개념 모델입니다(실제 SDP 본문·ICE 라인을 생성하지 않음). signalingState 전이와 단계별로 채워지는
         정보의 "구조"만 단순화해 보여줍니다 — 실제 협상은 trickle ICE로 후보가 비동기로 흐르고, 재협상·glare가 끼면
         순서가 달라집니다.

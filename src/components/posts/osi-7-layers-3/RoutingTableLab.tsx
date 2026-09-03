@@ -84,7 +84,7 @@ export default function RoutingTableLab() {
         background: PANEL,
       }}
     >
-      <p style={{ margin: "0 0 var(--space-12)", fontWeight: 600, color: INK }}>
+      <p style={{ margin: "0 0 var(--space-12)", fontWeight: "var(--font-weight-bold)", color: INK }}>
         목적지 IP를 넣으면, 라우터가 이 테이블에서 <strong>가장 긴(=가장 구체적인) 프리픽스</strong>를
         골라 다음 홉을 정합니다.
       </p>
@@ -106,7 +106,7 @@ export default function RoutingTableLab() {
             spellCheck={false}
             style={{
               padding: "var(--space-4) var(--space-8)",
-              fontFamily: "monospace",
+              fontFamily: "var(--font-code)",
               border: `var(--stroke-hair) solid ${valid ? BORDER : DANGER}`,
               borderRadius: "var(--radius-sm)",
               width: 150,
@@ -129,7 +129,7 @@ export default function RoutingTableLab() {
             style={{
               padding: "var(--space-4) var(--space-10)",
               fontSize: "var(--text-label)",
-              fontFamily: "monospace",
+              fontFamily: "var(--font-code)",
               border: `var(--stroke-hair) solid ${BORDER}`,
               borderRadius: "var(--card-radius)",
               background: ip === p ? "color-mix(in srgb, var(--cat-skills) 11%, var(--surface-hi))" : PANEL,
@@ -167,15 +167,15 @@ export default function RoutingTableLab() {
                   <td
                     style={{
                       padding: "var(--space-4) var(--space-8)",
-                      fontFamily: "monospace",
-                      fontWeight: isWinner ? 700 : 400,
+                      fontFamily: "var(--font-code)",
+                      fontWeight: isWinner ? "var(--font-weight-bold)" : "var(--font-weight-regular)",
                       borderLeft: isWinner ? `var(--stroke-bold) solid ${TEAL}` : "var(--stroke-bold) solid transparent",
                     }}
                   >
                     {e.route.cidr}
                   </td>
                   <td style={{ padding: "var(--space-4) var(--space-8)" }}>{e.route.via}</td>
-                  <td style={{ padding: "var(--space-4) var(--space-8)", fontFamily: "monospace" }}>{e.route.dev}</td>
+                  <td style={{ padding: "var(--space-4) var(--space-8)", fontFamily: "var(--font-code)" }}>{e.route.dev}</td>
                   <td style={{ padding: "var(--space-4) var(--space-8)" }}>
                     {matched ? (
                       <span style={{ color: isWinner ? TEAL : INK_SOFT }}>
@@ -201,12 +201,12 @@ export default function RoutingTableLab() {
           borderLeft: `5px solid ${SAND}`,
           borderRadius: "var(--radius-sm)",
           background: PANEL,
-          lineHeight: 1.6,
+          lineHeight: "var(--font-leading-ui)",
         }}
       >
         {valid && winner ? (
           <p style={{ margin: 0 }}>
-            <code style={{ fontFamily: "monospace" }}>{ip}</code> →{" "}
+            <code style={{ fontFamily: "var(--font-code)" }}>{ip}</code> →{" "}
             <strong style={{ color: TEAL }}>
               {winner.route.cidr} ({winner.route.via}, {winner.route.dev})
             </strong>{" "}
