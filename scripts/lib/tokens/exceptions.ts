@@ -121,6 +121,16 @@ export const EXCEPTIONS: TokenException[] = [
     site: (h) => h.prop.trim().toLowerCase() === "font-weight",
   },
   {
+    id: "poster-hero-svg-attr",
+    kind: ["verdict"],
+    what: "PosterHero.tsx 의 eyebrow letter-spacing 0.1em",
+    why: "SVG 속성이고 그 트리는 render-viz.ts 가 Playwright 에 띄우는 문서에서 그려지는데 그 문서에 tokens.css 가 안 들어간다 — var() 를 쓰면 정의가 없어 자간이 통째로 사라지고 빌드도 타입도 초록이다. 값은 §5 의 자간 단(한글이 든 eyebrow 라 wide)에 맞춰 뒀다",
+    evidence: ["scripts/render-viz.ts:115", "design-concept/DESIGN_CONCEPT.md:299"],
+    match: (f) => f === "src/lib/viz/PosterHero.tsx",
+    // 자리 단위 — 이 파일의 나머지 값(크기·좌표·색)은 그대로 판정한다.
+    site: (h) => h.prop === "letterSpacing" && h.value === "0.1em",
+  },
+  {
     id: "apply-viz-generated",
     kind: ["scan"],
     what: "AUTO-GENERATED 헤더가 붙은 apply-viz 산출물",

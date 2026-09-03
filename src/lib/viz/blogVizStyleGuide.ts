@@ -80,6 +80,9 @@ const foundations: VisualizationFoundation = {
     // 스택 끝의 본문 서체가 **한글 얼굴**이다 (KAN-080 S7) — Space Mono 는 unicode-range 에
     // 한글이 0 이라 그 자리 한글이 OS 기본으로 떨어진다. tokens.css 의 --font-mono 와 같은 값.
     monoFont: "'Space Mono', 'Gowun Dodum', monospace", // --font-mono
+    // 700 은 **우리가 굽는 실재 웨이트**다 (KAN-080 S7 — `bun run fonts:build` 가
+    // Gowun Dodum 의 500·700 을 만든다). 예전에는 이 값이 없는 면을 가리켜 브라우저
+    // 합성으로 그려졌다. `bun run type:verify` 1층이 이 파일을 역할표와 대조한다.
     titleWeight: 700,
   },
 };
