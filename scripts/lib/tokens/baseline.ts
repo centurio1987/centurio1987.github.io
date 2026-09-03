@@ -83,6 +83,16 @@ export interface Baseline {
    * 0 으로 읽으면 첫 실행이 무조건 통과해 도입이 무의미해진다.
    */
   selfTestFaults?: number;
+  /**
+   * **등록된 판정 방식 검사 종수.** 줄면 실패한다 (KAN-079 S5).
+   *
+   * `selfTestFaults` 와 성질은 같고 보는 것이 다르다. 고장 픽스처는 「판정기가 리터럴을
+   * 잡는가」를 보지만 **판정 방식(래칫이냐 하드월이냐)은 안 본다** — 그래서 승격을
+   * 되돌려도 고장 검사는 전부 초록이다. 그 자리를 보는 검사가 `selftest.ts` 의 `GUARDS` 이고,
+   * 검사 자체가 배열에서 빠지는 것을 이 수가 막는다. 옛 기준선(이 필드가 없는 것)은
+   * 검사를 건너뛴다 — `selfTestFaults` 와 같은 이유다.
+   */
+  selfTestGuards?: number;
 }
 
 /** 판정 축 — `Hit.axis` 가 아니라 사유에서 되뽑는다(색 축이 stroke·잡음으로 갈리기 때문). */
@@ -126,7 +136,9 @@ export function auditBasis(classifyVerdicts: Verdict[]): Record<string, number> 
   return Object.fromEntries(Object.entries(t).sort(([a], [b]) => (a < b ? -1 : 1)));
 }
 
-export function tally(verdicts: Verdict[], srcFiles: number, selfTestFaults: number): Baseline {
+export function tally(
+  verdicts: Verdict[], srcFiles: number, selfTestFaults: number, selfTestGuards: number,
+): Baseline {
   const counts: Record<string, number> = {};
   const totals: Record<string, number> = {};
   const files: Record<string, number> = {};
@@ -139,7 +151,7 @@ export function tally(verdicts: Verdict[], srcFiles: number, selfTestFaults: num
   const sort = (o: Record<string, number>) =>
     Object.fromEntries(Object.entries(o).sort(([a], [b]) => (a < b ? -1 : 1)));
   return { generator: GENERATOR, srcFiles, counts: sort(counts), totals: sort(totals),
-           files: sort(files), selfTestFaults };
+           files: sort(files), selfTestFaults, selfTestGuards };
 }
 
 export const readBaseline = (root: string): Baseline | null => {
@@ -147,9 +159,26 @@ export const readBaseline = (root: string): Baseline | null => {
   return existsSync(p) ? (JSON.parse(readFileSync(p, "utf-8")) as Baseline) : null;
 };
 
-/** 결정론적으로 쓴다 — 두 번 돌려 바이트가 같아야 한다. */
-export const writeBaseline = (root: string, b: Baseline) =>
+/**
+ * 결정론적으로 쓴다 — 두 번 돌려 바이트가 같아야 한다.
+ *
+ * **무는 판정 칸이 실린 기준선은 쓰지 않는다** (KAN-079 S6). 부르는 쪽이 이미
+ * `refuseBaselineUpdate` 로 막고 있지만, 그 문은 진입점 배선에 달려 있고 배선은 지워질 수
+ * 있다. 여기서 한 번 더 보는 이유는 **파일 형식의 불변식**이기 때문이다 — 하드월에서
+ * 「위반이 N건 있는 것이 정상」이라고 적힌 기준선은 규칙과 반대되는 말을 하고, 다음 사람은
+ * 게이트 코드가 아니라 그 파일을 근거로 읽는다. 던지는 것이 맞다: 조용히 쓰면 그 파일이
+ * 커밋되고, 그때는 아무도 안 본다.
+ */
+export const writeBaseline = (root: string, b: Baseline) => {
+  const bad = Object.entries(b.counts).filter(([k, n]) => n > 0 && BITING.some((r) => k.endsWith(`/ ${r}`)));
+  if (bad.length || Object.keys(b.files).length) {
+    throw new Error(
+      `기준선에 무는 판정 칸이 실렸다 — ${bad.map(([k, n]) => `${k} ${n}`).join(" · ") || "files 표"}. ` +
+      `하드월에서 기준선은 위반을 굳히는 자리가 아니다(refuseBaselineUpdate 를 먼저 지나야 한다).`,
+    );
+  }
   writeFileSync(join(root, BASELINE_PATH), JSON.stringify(b, null, 2) + "\n");
+};
 
 /**
  * 무는 자리를 **전량** `파일:줄 속성: 값 — 판정` 으로 낸다 (KAN-079 S3).
@@ -236,6 +265,12 @@ export function hardwall(
       `인식기가 배열에서 빠졌거나 고장이 지워졌다. 게이트가 덜 검사하면서 통과하는 자리다.`,
     );
   }
+  if (typeof base.selfTestGuards === "number" && now.selfTestGuards! < base.selfTestGuards) {
+    failures.push(
+      `판정 방식 검사가 ${base.selfTestGuards} → ${now.selfTestGuards} 종으로 줄었다 — ` +
+      `하드월이 래칫으로 되돌아가는 것을 보는 검사가 빠졌다.`,
+    );
+  }
   if (base.srcFiles !== now.srcFiles) {
     notes.push(`스캔 파일 수가 ${base.srcFiles} → ${now.srcFiles} 로 바뀌었다 — 범위가 달라졌는지 확인해라.`);
   }
@@ -248,4 +283,32 @@ export function hardwall(
     ? `정보 집계가 움직였다 — ${moved.join(" · ")}. 인식 범위가 바뀐 것이면 \`--update-baseline\` 으로 굳혀라.`
     : "정보 집계는 기준선과 같다.");
   return { failures, notes };
+}
+
+/**
+ * 갱신 경로의 문 — **무는 판정이 있으면 기준선을 쓰지 못한다** (KAN-079 S4).
+ *
+ * 판정과 **같은 `biting()`** 을 쓴다. 여기에 판정 규칙을 다시 적으면 언젠가 한쪽만
+ * 고쳐지고, 그 어긋남은 「부채가 적다」로 읽혀 통과한다.
+ *
+ * 함수로 뽑아 둔 이유는 자가검사다. 이 문이 진입점 `if` 블록 안에만 있으면 **검사할 자리가
+ * 없고**, 그러면 다음 사람이 그 블록을 지워도 게이트는 초록이다(`selftest.ts` 의 `GUARDS`).
+ * 배선까지 검사해야 하는 이유도 같다 — 함수가 살아 있어도 진입점이 안 부르면 문이 없다.
+ */
+export function refuseBaselineUpdate(scored: Verdict[]): { refuse: boolean; lines: string[] } {
+  const bites = biting(scored);
+  if (!bites.length) return { refuse: false, lines: [] };
+  const lines = [`✗ 기준선 갱신을 거부한다 — 무는 판정이 ${bites.length}건 있다.`];
+  for (const b of bites.slice(0, SITES_PER_FILE)) {
+    const shown = b.hit.rawValue ? `${b.hit.rawValue}(→${b.hit.value})` : b.hit.value;
+    lines.push(`  ${b.hit.file}:${b.hit.line} ${b.hit.prop}: ${shown} — ${b.verdict}`);
+  }
+  if (bites.length > SITES_PER_FILE) lines.push(`  … 그리고 ${bites.length - SITES_PER_FILE}건 더`);
+  lines.push(
+    "",
+    "  이 게이트는 하드월이다 — 기준선은 위반을 굳히는 자리가 아니다.",
+    "  위에 지목된 자리를 먼저 고쳐라(또는 근거 문서 위치를 걸어 예외로 등록해라).",
+    "  그 뒤에 다시 부르면 정보 집계와 검사 종수만 갱신된다.",
+  );
+  return { refuse: true, lines };
 }

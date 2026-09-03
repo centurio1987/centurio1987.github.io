@@ -29,5 +29,6 @@
     "판정 불가": 894
   },
   "files": {},
-  "selfTestFaults": 18
+  "selfTestFaults": 18,
+  "selfTestGuards": 3
 }

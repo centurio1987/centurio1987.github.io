@@ -86,11 +86,11 @@ scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/tokens-baseline.
       · 완료 기준: 무는 판정이 있는 상태에서 그 플래그를 부르면 **기준선을 안 쓰고** 사유와
         함께 비0 으로 끝난다. 정보 집계·`selfTestFaults` 갱신은 계속 된다(결정 ②에 따라
         플래그 이름이 바뀔 수 있다).
-- [ ] `S5` 자가검사를 넓힌다 — 하드월이 실제로 무는지, 갱신 문이 실제로 닫혔는지
+- [x] `S5` 자가검사를 넓힌다 — 하드월이 실제로 무는지, 갱신 문이 실제로 닫혔는지
       · 완료 기준: 고장 둘이 등록되고 각각 다른 사유로 잡힌다 — ① 기준선에 없는 새 위반
         하나로 게이트가 빨개진다 ② 위반이 있는 트리에서 `--update-baseline` 이 거부된다.
         `selfTestFaults` 가 그만큼 오르고 기준선에 반영된다. 예외 표 자가검사는 안 건드린다.
-- [ ] `S6` 기준선 파일을 다시 쓴다 — 「지금 수」에서 「0 이어야 한다」로
+- [>] `S6` 기준선 파일을 다시 쓴다 — 「지금 수」에서 「0 이어야 한다」로 <!-- claim:s=9c8ce184 t=2026-09-04T00:50 -->
       · 완료 기준: 결정 ①이 정한 모양으로 `scripts/tokens-baseline.json` 이 다시 써지고,
         두 번 돌려 바이트가 같다(결정론). 진입점 머리주석의 「왜 하드월이 아니라 래칫인가」
         절과 `--update-baseline` 사용법 줄이 지금 동작과 일치한다.
@@ -200,3 +200,6 @@ grep -rn "래칫" CLAUDE.md design-concept/UI_CONSISTENCY_AUDIT.md scripts/verif
 - 2026-09-04T00:44 · s:9c8ce184 — `실행 계획` 섹션 교체
 - 2026-09-04T00:44 · s:9c8ce184 — `전략` 섹션 교체
 - 2026-09-04T00:44 · s:9c8ce184 — 사실 정정 — 하드월이 CI 에서 배포를 잡는 시점은 카드 브랜치 푸시가 아니라 main 병합이다(워크플로 트리거가 push:branches:[main] + workflow_dispatch 뿐). 배치1 §3·§4·머리말 · 계획 리포트 4자리 · 전략 · 실행 계획 S1 을 일괄 정정
+- 2026-09-04T00:47 · s:9c8ce184 · S5 doing — 착수
+- 2026-09-04T00:50 · s:9c8ce184 · S5 done — 자가검사 ④ 판정 방식 검사 3종 신설 — hardwall-ignores-baseline(기준선이 같은 위반을 담아도·기준선이 없어도 무는가, 드리프트 포함, 0건은 통과) · baseline-update-gate(위반/드리프트면 거부, 0건이면 허용) · entry-wires-the-gate(진입점이 writeBaseline 앞에서 그 문을 지나는가, 소스 대조). 갱신 문을 refuseBaselineUpdate() 로 뽑아 진입점과 자가검사가 같은 코드를 지나게 했고, selfTestGuards 를 기준선에 박아 검사 자체가 빠지면 실패시킨다
+- 2026-09-04T00:50 · s:9c8ce184 · S6 doing — 착수

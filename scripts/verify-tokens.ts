@@ -47,8 +47,8 @@ import { color } from "./lib/tokens/color.ts";
 import { fallback } from "./lib/tokens/fallback.ts";
 import { docrule } from "./lib/tokens/docrule.ts";
 import { EXCEPTIONS, validateExceptions } from "./lib/tokens/exceptions.ts";
-import { FAULT_COUNT, selfTest } from "./lib/tokens/selftest.ts";
-import { BASELINE_PATH, auditBasis, biting, hardwall, readBaseline, tally, writeBaseline } from "./lib/tokens/baseline.ts";
+import { FAULT_COUNT, GUARD_COUNT, selfTest } from "./lib/tokens/selftest.ts";
+import { BASELINE_PATH, auditBasis, hardwall, readBaseline, refuseBaselineUpdate, tally, writeBaseline } from "./lib/tokens/baseline.ts";
 import type { AxisModule, ScanContext } from "./lib/tokens/types.ts";
 
 const ROOT = process.cwd();
@@ -99,7 +99,7 @@ const inScope = hits.length - excluded;
 
 // ── 게이트가 무는 집합 — 제외분을 뺀 것만 센다. 생성물의 리터럴을 사람이 고칠 수는 없다.
 const scored = verdicts.filter((v) => !v.hit.excluded);
-const now = tally(scored, files.length, FAULT_COUNT);
+const now = tally(scored, files.length, FAULT_COUNT, GUARD_COUNT);
 if (UPDATE_BASELINE) {
   // **위반을 굳히는 문을 여기서 닫는다** (KAN-079 S4).
   //   래칫 시절에는 줄어든 수를 굳히는 것이 이 플래그의 일이었다. 하드월에서는 기준선이
@@ -107,19 +107,9 @@ if (UPDATE_BASELINE) {
   //   있는 상태에서 쓰기를 허용하면 **기준선 파일에 위반 칸이 생기고** 그것이 「부채가 이만큼
   //   있는 것이 정상」이라는 기록이 된다. 판정은 안 흔들리지만 파일이 규칙과 반대되는 말을
   //   하게 되고, 다음 사람은 파일을 근거로 읽는다.
-  const bites = biting(scored);
-  if (bites.length) {
-    console.error(`✗ 기준선 갱신을 거부한다 — 무는 판정이 ${bites.length}건 있다.`);
-    for (const b of bites.slice(0, 12)) {
-      const shown = b.hit.rawValue ? `${b.hit.rawValue}(→${b.hit.value})` : b.hit.value;
-      console.error(`  ${b.hit.file}:${b.hit.line} ${b.hit.prop}: ${shown} — ${b.verdict}`);
-    }
-    if (bites.length > 12) console.error(`  … 그리고 ${bites.length - 12}건 더`);
-    console.error(
-      "\n  이 게이트는 하드월이다 — 기준선은 위반을 굳히는 자리가 아니다.\n" +
-      "  위에 지목된 자리를 먼저 고쳐라(또는 근거 문서 위치를 걸어 예외로 등록해라).\n" +
-      "  그 뒤에 다시 부르면 정보 집계와 고장 종수만 갱신된다.",
-    );
+  const gate = refuseBaselineUpdate(scored);
+  if (gate.refuse) {
+    for (const l of gate.lines) console.error(l);
     process.exit(1);
   }
   writeBaseline(ROOT, now);
