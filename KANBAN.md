@@ -28,8 +28,8 @@
       - 전체 그림을 이해하기 위해 개념적 레벨 설명 포함
       - 전문성을 위해 실제 spec으로 설명 포함
     ```
-- `KAN-060` 한국어 웹폰트 3종의 첫 화면 회선 점유(~530KB) 완화 방안 검토 — 생성:ai · 최종:ai · 갱신:2026-07-31
-  - 메모: KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×).
+- `KAN-060` 한국어 웹폰트 3종의 첫 화면 회선 점유(~530KB) 완화 방안 검토 — 생성:ai · 최종:ai · 갱신:2026-09-03
+  - 메모: KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×). **KAN-080 이 이 카드로 넘긴 것(검토서 2항 승인 · 유저 의견 「넘겨」 · 2026-09-03).** 본문 서체가 구글에서 자체 호스팅으로 옮겨졌다 — public/fonts 에 Gowun Dodum 400·500·700 세 면(87.1/105.9/107.7KB, 합 약 300KB)이 있고 src/styles/fonts.css:15 가 선언한다. 구글에서 받는 것은 이제 4패밀리뿐이다(BaseLayout.astro:92 — Jua 400 · Space Mono 400·700 · Gaegu 400·700 · JetBrains Mono 400·500). 그래서 **위의 ~530KB · 서브셋 30여 개 실측값은 낡았고 착수 첫 수가 재측정이다.** 갈래 ②(self-host)는 본문 서체에 한해 이미 끝났으므로 남은 대상은 나머지 4패밀리다. 그리고 **KAN-080 은 preload 를 일부러 안 걸었다** — KAN-059 규약이 「첫 화면 큰 그림 딱 하나만」이라 자체 호스팅 3면이 늦게 도착하면 글자가 한 번 갈아 끼워지는 것이 보일 수 있는데, 그것을 잴 자리가 이 카드다(FOUT 체감·LCP 영향).
 - `KAN-061` 홈 배경 모션 아일랜드(AmbientAurora/Waves)가 끌고 오는 JS ~130KB 재검토 — 생성:ai · 최종:ai · 갱신:2026-07-31
   - 메모: KAN-059 실측에서 드러난 별건. 홈(/)이 client.js 56KB + dist.js 67KB(= bbangto-ui-core 배럴) + react 등 ~130KB 를 High 로 받아 4.5초까지 회선·메인스레드를 문다. 받아오는 값은 "아주 옅은 배경 오로라 + 푸터 파도" 하나뿐이다. 이미 client:media 로 reduced-motion 사용자는 청크 로드 0 이고(코어 배럴은 tree-shake 가 안 돼 컴포넌트 1개=67KB gzip — 그래서 전역 Footer 에 안 올린 선례가 있다), 그 판단 자체는 유효하다. 재검토할 것: ① 같은 그림을 CSS 그라디언트/SVG 애니로 대체 가능한지(그러면 JS 0) ② 못 대체하면 client:visible 이나 로드 지연으로 첫 화면 회선 다툼에서 빼기 ③ 그대로 둘 근거를 남기기. 판단 근거는 KAN-059 처럼 실측으로 — 특히 이 JS 가 푸터 저자 라인업 이미지(Low)를 얼마나 뒤로 미는지.
 - `KAN-079-1QVHJ2` 토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다 — 생성:ai · 최종:ai · 갱신:2026-08-31
@@ -74,7 +74,7 @@
   - 이유: 타이포 토큰이 폰트·크기 두 축뿐이라 행간 59자리(21종)·자간 44자리(20종)·굵기 5종이 관리 밖이고, 게이트도 UNITLESS_PROPS 로 행간·굵기를 안 본다
   - 목표: 굵기·행간·자간이 역할 토큰으로 서고 게이트 인식층에 들어가며, raw monospace 35자리가 --font-mono·--font-code 로 모여 지면마다 갈리던 글자 조합이 한 벌로 수렴한다
   - 실행 문서: KANBAN.cards/KAN-080-WTQ7AV.md (19/19 · 최근 09-03)
-  - 검토 문서: KANBAN.reviews/KAN-080-WTQ7AV.review.md (승인 0/6 · 검토 대기)
+  - 검토 문서: KANBAN.reviews/KAN-080-WTQ7AV.review.md (승인 6/6 · 추가 의견 총 2 · 승인)
   - 원문:
     ```text
     타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.
