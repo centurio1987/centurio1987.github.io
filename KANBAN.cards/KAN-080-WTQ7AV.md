@@ -2,7 +2,7 @@
 card: KAN-080-WTQ7AV
 title: 타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.
 created: 2026-09-01
-scope: src/**, design-concept/**, scripts/lib/tokens/**, scripts/verify-tokens.ts, scripts/tokens-baseline.json, scripts/fixtures/tokens/**, scripts/check-recognize-invariant.ts, scripts/compare-render.ts, scripts/render-viz.ts, .claude/skills/react-sim/assets/REACT_SIM_GUIDE.md, AGENTS.md
+scope: src/**, design-concept/**, scripts/lib/tokens/**, scripts/verify-tokens.ts, scripts/tokens-baseline.json, scripts/fixtures/tokens/**, scripts/check-recognize-invariant.ts, scripts/compare-render.ts, scripts/render-viz.ts, .claude/skills/react-sim/assets/REACT_SIM_GUIDE.md, AGENTS.md, public/fonts/**, scripts/build-fonts.ts, scripts/lib/fonts/**, scripts/verify-type.ts, package.json, .github/workflows/main.yml, CLAUDE.md, .gitignore
 ---
 
 # KAN-080-WTQ7AV — 타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.
