@@ -1,6 +1,6 @@
 {
   "next_id": 83,
-  "next_seq": 350,
+  "next_seq": 352,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -44,11 +44,11 @@
       "verbatim": "",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-07-31",
+      "갱신": "2026-09-03",
       "title_hash": "1bbcb7637c502df4138be535423ff218852eb44e",
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
-      "memo": "KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×).",
-      "memo_hash": "156b4f28acce73093816b2ebc3ff1eab872fc484"
+      "memo": "KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×). **KAN-080 이 이 카드로 넘긴 것(검토서 2항 승인 · 유저 의견 「넘겨」 · 2026-09-03).** 본문 서체가 구글에서 자체 호스팅으로 옮겨졌다 — public/fonts 에 Gowun Dodum 400·500·700 세 면(87.1/105.9/107.7KB, 합 약 300KB)이 있고 src/styles/fonts.css:15 가 선언한다. 구글에서 받는 것은 이제 4패밀리뿐이다(BaseLayout.astro:92 — Jua 400 · Space Mono 400·700 · Gaegu 400·700 · JetBrains Mono 400·500). 그래서 **위의 ~530KB · 서브셋 30여 개 실측값은 낡았고 착수 첫 수가 재측정이다.** 갈래 ②(self-host)는 본문 서체에 한해 이미 끝났으므로 남은 대상은 나머지 4패밀리다. 그리고 **KAN-080 은 preload 를 일부러 안 걸었다** — KAN-059 규약이 「첫 화면 큰 그림 딱 하나만」이라 자체 호스팅 3면이 늦게 도착하면 글자가 한 번 갈아 끼워지는 것이 보일 수 있는데, 그것을 잴 자리가 이 카드다(FOUT 체감·LCP 영향).",
+      "memo_hash": "de334c3ad6126fc94da736c0d55659018d2a894c"
     },
     "KAN-061": {
       "col": "backlog",
@@ -61,6 +61,38 @@
       "verbatim_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "memo": "KAN-059 실측에서 드러난 별건. 홈(/)이 client.js 56KB + dist.js 67KB(= bbangto-ui-core 배럴) + react 등 ~130KB 를 High 로 받아 4.5초까지 회선·메인스레드를 문다. 받아오는 값은 \"아주 옅은 배경 오로라 + 푸터 파도\" 하나뿐이다. 이미 client:media 로 reduced-motion 사용자는 청크 로드 0 이고(코어 배럴은 tree-shake 가 안 돼 컴포넌트 1개=67KB gzip — 그래서 전역 Footer 에 안 올린 선례가 있다), 그 판단 자체는 유효하다. 재검토할 것: ① 같은 그림을 CSS 그라디언트/SVG 애니로 대체 가능한지(그러면 JS 0) ② 못 대체하면 client:visible 이나 로드 지연으로 첫 화면 회선 다툼에서 빼기 ③ 그대로 둘 근거를 남기기. 판단 근거는 KAN-059 처럼 실측으로 — 특히 이 JS 가 푸터 저자 라인업 이미지(Low)를 얼마나 뒤로 미는지.",
       "memo_hash": "de21929cf694e454661d4ff1fb4f7b0ee2408cb9"
+    },
+    "KAN-079-1QVHJ2": {
+      "col": "backlog",
+      "title": "토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다",
+      "verbatim": "세워",
+      "생성": "ai",
+      "최종": "ai",
+      "갱신": "2026-08-31",
+      "title_hash": "d42d62755178229f7466eae496e461dbc2195f3b",
+      "verbatim_hash": "93bae0b761a9e9a5445da12a54fda4a9369c9102",
+      "short": "토큰 게이트 하드월",
+      "short_hash": "85c9614a1d1223574854b9fc7b4a8073d043bd20",
+      "purpose": "늘면 실패하던 게이트를 있으면 실패로 올려, 토큰 밖 값이 새로 들어오는 길을 완전히 닫는다",
+      "purpose_hash": "0bf07074715c6fea9904297d3db1b17ffab128fb",
+      "reason": "승격 조건 「인식층이 다 열린 뒤의 래칫 0」이 네 번 미뤄진 끝에 KAN-077 로 처음 갖춰졌다",
+      "reason_hash": "97ed430567a58caa0a8e2e291c848c0be9bcfbac",
+      "goal": "위반·드리프트가 하나라도 있으면 CI 가 막고, 기준선 파일이 「지금 수」가 아니라 「0」을 뜻하게 된다",
+      "goal_hash": "9cb1a0d9ecf471dd27511635cb386fcad47abea2",
+      "memo": "승격은 네 번 미뤄졌다 — KAN-072·074·075·076 이 각각 래칫을 0 으로 만들었지만 그때마다 게이트가 못 보던 인식 갈래가 새로 열려 다시 비0 이 됐다(KAN-073 셋 → 0 이 778 로, KAN-075 넷째, KAN-076 다섯째, KAN-077 여섯째). **KAN-077 이 마지막 갈래를 열었고 지금 위반 0 · 드리프트 0 이다.** 진단 정본 design-concept/UI_CONSISTENCY_AUDIT.md §6 에 남은 13항(한 줄 200자 초과 선언)은 지금 src/** 에 0건이라 열 대상이 아니다. **왜 위험한가:** .github/workflows/main.yml 에서 게이트가 build 잡 안 astro build 앞에 돌고 deploy 가 needs: build 로 물려 있어, 하드월로 올린 뒤 위반이 하나라도 들어오면 **사이트 배포까지 멈춘다.** 그래서 인식층을 넓힌 커밋과 안 섞고 별건으로 뺐다(KAN-077 검토 5항, 유저 승인 2026-08-30). **정할 것 셋:** ① 「정당한 예외 10」과 「판정 불가 1130」은 하드월 대상이 아니다 — 기준선 파일에 그 둘을 계속 둘지, 예외만 남길지 ② 승격 뒤 기준선(scripts/tokens-baseline.json)의 역할이 「지금 수」에서 「0 이어야 한다」로 바뀌므로 --update-baseline 이 위반을 굳히는 문이 되면 안 된다 ③ selfTestFaults 래칫(KAN-076 S8)과 예외 표 자가검사는 그대로 둔다. **착수 첫 수는 그 시점의 래칫이 여전히 0 인지 확인하는 것이다** — 아니면 이 카드가 CI 를 빨갛게 만들면서 착수하게 되고 그동안 배포가 멈춘다.",
+      "memo_hash": "9f6a2e49b20edfdaf3abacff17f14156f0af81cf"
+    },
+    "KAN-081-QBTAPJ": {
+      "col": "backlog",
+      "title": "빵토 대담 소재",
+      "verbatim": "빵토 대담 소재\n- 도메인 모델 관련 고민이다.\n  - 첫 번째 주제\n    - A라는 모델이 있다. 다수의 A에 대해 불변식을 적용해야 해서 AManager라는 모델을 새로 정의 했다. 하지만, AManager는 영속화 필요가 없고, 처리 맥락 안에서 하나만 존재하면 된다. 어쨌든 하나만 존재하면 된다는 자체로 식별성이 있다고 판단하면 될까? 그렇지 않다면 식별성이 필수인 Entity나 AR로는 정의할 수 없을 것 같은데 AManager는 도메인 모델에서 어떤 개념으로 상정할 수 있을까\n  - 두 번째 주제\n    - entity는 식별성이 있어야 한다. 그래서 id가 있어야 하는데, 실제 로직에서는 사용하지 않는 값이다. 그렇다면 굳이 entity에 id가 있어야할 필요가 있나",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-09-02",
+      "title_hash": "28c5dfde5d0e6a219e175669c5eb7dea6284cf46",
+      "verbatim_hash": "6e0dbf3e16a29f1d702451e46aae76b06b8aa1fc",
+      "memo": "",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-048": {
       "col": "todo",
@@ -85,6 +117,18 @@
       "verbatim_hash": "09105bc3728f261b21837781767ee95239c7802d",
       "memo": "2026-08-04 「함정」 은유 제거 + F5/D5/D8/D9/D11 전수 스윕으로 본문 27개·컴포넌트 2개의 소제목이 대량 변경됐다. src/data/graph.json 은 그 커밋에 포함하지 않았으므로 라벨이 낡은 상태다(「함정 1: command not found」 등 4건). main 워크트리에서 bun run graph:refresh 1회 → bun run graph:verify. CI 는 stale 을 감지하지 않아 빌드는 통과하지만, 푸시하면 /graph 글 지도와 연관 글에 낡은 라벨이 독자에게 보인다 — 푸시 전에 반드시 먼저 돌린다. graphify-out/cache/semantic/ 삭제 금지, manifest.json 커밋 금지.",
       "memo_hash": "a0dc5e649a9eb0a27dcb79487f17a811928cfaf0"
+    },
+    "KAN-082-ER9NJ4": {
+      "col": "todo",
+      "title": "빵토 대담 주제 추가",
+      "verbatim": "빵토 대담 주제 추가\n- 소켓을 사용해서 실시간으로 서버-클라이언트 데이터가 동기화 되어야 하는 경우, 서버에서는 데이터를 메모리에 띄워놓고, 클라이언트랑 소통할 것이다. 하지만 이 경우, 서버 장애에 대응하기 어렵다. 이에 대한 대처 방안을 알려줘. 또한, 세션이 늘어나면, 메모리 관리가 어렵다. redis 같은 캐시를 사용하면, 부담이 줄겠지만, 대신에 인스턴스 생성 비용이 발생한다. 모든 문제를 해결할 수 있는 최적의 솔루션이 있다면 알려줘.",
+      "생성": "유저",
+      "최종": "유저",
+      "갱신": "2026-09-03",
+      "title_hash": "1eb95308d137d7d291181de592863a4afd50d55a",
+      "verbatim_hash": "9c848b96c977264296660b2d19a6d3600e07504e",
+      "memo": "",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
     "KAN-001": {
       "col": "doing",
@@ -1250,37 +1294,15 @@
         "CLAUDE.md"
       ]
     },
-    "KAN-079-1QVHJ2": {
-      "col": "backlog",
-      "title": "토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다",
-      "verbatim": "세워",
-      "생성": "ai",
-      "최종": "ai",
-      "갱신": "2026-08-31",
-      "title_hash": "d42d62755178229f7466eae496e461dbc2195f3b",
-      "verbatim_hash": "93bae0b761a9e9a5445da12a54fda4a9369c9102",
-      "short": "토큰 게이트 하드월",
-      "short_hash": "85c9614a1d1223574854b9fc7b4a8073d043bd20",
-      "purpose": "늘면 실패하던 게이트를 있으면 실패로 올려, 토큰 밖 값이 새로 들어오는 길을 완전히 닫는다",
-      "purpose_hash": "0bf07074715c6fea9904297d3db1b17ffab128fb",
-      "reason": "승격 조건 「인식층이 다 열린 뒤의 래칫 0」이 네 번 미뤄진 끝에 KAN-077 로 처음 갖춰졌다",
-      "reason_hash": "97ed430567a58caa0a8e2e291c848c0be9bcfbac",
-      "goal": "위반·드리프트가 하나라도 있으면 CI 가 막고, 기준선 파일이 「지금 수」가 아니라 「0」을 뜻하게 된다",
-      "goal_hash": "9cb1a0d9ecf471dd27511635cb386fcad47abea2",
-      "memo": "승격은 네 번 미뤄졌다 — KAN-072·074·075·076 이 각각 래칫을 0 으로 만들었지만 그때마다 게이트가 못 보던 인식 갈래가 새로 열려 다시 비0 이 됐다(KAN-073 셋 → 0 이 778 로, KAN-075 넷째, KAN-076 다섯째, KAN-077 여섯째). **KAN-077 이 마지막 갈래를 열었고 지금 위반 0 · 드리프트 0 이다.** 진단 정본 design-concept/UI_CONSISTENCY_AUDIT.md §6 에 남은 13항(한 줄 200자 초과 선언)은 지금 src/** 에 0건이라 열 대상이 아니다. **왜 위험한가:** .github/workflows/main.yml 에서 게이트가 build 잡 안 astro build 앞에 돌고 deploy 가 needs: build 로 물려 있어, 하드월로 올린 뒤 위반이 하나라도 들어오면 **사이트 배포까지 멈춘다.** 그래서 인식층을 넓힌 커밋과 안 섞고 별건으로 뺐다(KAN-077 검토 5항, 유저 승인 2026-08-30). **정할 것 셋:** ① 「정당한 예외 10」과 「판정 불가 1130」은 하드월 대상이 아니다 — 기준선 파일에 그 둘을 계속 둘지, 예외만 남길지 ② 승격 뒤 기준선(scripts/tokens-baseline.json)의 역할이 「지금 수」에서 「0 이어야 한다」로 바뀌므로 --update-baseline 이 위반을 굳히는 문이 되면 안 된다 ③ selfTestFaults 래칫(KAN-076 S8)과 예외 표 자가검사는 그대로 둔다. **착수 첫 수는 그 시점의 래칫이 여전히 0 인지 확인하는 것이다** — 아니면 이 카드가 CI 를 빨갛게 만들면서 착수하게 되고 그동안 배포가 멈춘다.",
-      "memo_hash": "9f6a2e49b20edfdaf3abacff17f14156f0af81cf"
-    },
     "KAN-080-WTQ7AV": {
-      "col": "todo",
+      "col": "done",
       "title": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.",
       "verbatim": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.",
       "생성": "유저",
       "최종": "ai",
-      "갱신": "2026-08-31",
+      "갱신": "2026-09-03",
       "title_hash": "24d1a6e7b2ac4be83e486e039ec9dae7efa4019f",
       "verbatim_hash": "24d1a6e7b2ac4be83e486e039ec9dae7efa4019f",
-      "memo": "",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "short": "타이포그래피 체계 채택",
       "short_hash": "8211a9b1ccecbbeea5c082ffaa2baf7b2c83411d",
       "purpose": "폰트·크기만 있는 타이포 토큰에 굵기·행간·자간 역할을 세우고, 한 디자인 스타일을 따르는 조합을 조사해 채택한다",
@@ -1289,6 +1311,8 @@
       "reason_hash": "57f1f0dd223cfcc87367d1e144c9ff39d5657d8c",
       "goal": "굵기·행간·자간이 역할 토큰으로 서고 게이트 인식층에 들어가며, raw monospace 35자리가 --font-mono·--font-code 로 모여 지면마다 갈리던 글자 조합이 한 벌로 수렴한다",
       "goal_hash": "56d59a40b3fb9a42f21d55be3e0c42d143801098",
+      "memo": "",
+      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
       "scope": [
         "src/**",
         "design-concept/**",
@@ -1300,32 +1324,16 @@
         "scripts/compare-render.ts",
         "scripts/render-viz.ts",
         ".claude/skills/react-sim/assets/REACT_SIM_GUIDE.md",
-        "AGENTS.md"
+        "AGENTS.md",
+        "public/fonts/**",
+        "scripts/build-fonts.ts",
+        "scripts/lib/fonts/**",
+        "scripts/verify-type.ts",
+        "package.json",
+        ".github/workflows/main.yml",
+        "CLAUDE.md",
+        ".gitignore"
       ]
-    },
-    "KAN-081-QBTAPJ": {
-      "col": "backlog",
-      "title": "빵토 대담 소재",
-      "verbatim": "빵토 대담 소재\n- 도메인 모델 관련 고민이다.\n  - 첫 번째 주제\n    - A라는 모델이 있다. 다수의 A에 대해 불변식을 적용해야 해서 AManager라는 모델을 새로 정의 했다. 하지만, AManager는 영속화 필요가 없고, 처리 맥락 안에서 하나만 존재하면 된다. 어쨌든 하나만 존재하면 된다는 자체로 식별성이 있다고 판단하면 될까? 그렇지 않다면 식별성이 필수인 Entity나 AR로는 정의할 수 없을 것 같은데 AManager는 도메인 모델에서 어떤 개념으로 상정할 수 있을까\n  - 두 번째 주제\n    - entity는 식별성이 있어야 한다. 그래서 id가 있어야 하는데, 실제 로직에서는 사용하지 않는 값이다. 그렇다면 굳이 entity에 id가 있어야할 필요가 있나",
-      "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-09-02",
-      "title_hash": "28c5dfde5d0e6a219e175669c5eb7dea6284cf46",
-      "verbatim_hash": "6e0dbf3e16a29f1d702451e46aae76b06b8aa1fc",
-      "memo": "",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
-    },
-    "KAN-082-ER9NJ4": {
-      "col": "todo",
-      "title": "빵토 대담 주제 추가",
-      "verbatim": "빵토 대담 주제 추가\n- 소켓을 사용해서 실시간으로 서버-클라이언트 데이터가 동기화 되어야 하는 경우, 서버에서는 데이터를 메모리에 띄워놓고, 클라이언트랑 소통할 것이다. 하지만 이 경우, 서버 장애에 대응하기 어렵다. 이에 대한 대처 방안을 알려줘. 또한, 세션이 늘어나면, 메모리 관리가 어렵다. redis 같은 캐시를 사용하면, 부담이 줄겠지만, 대신에 인스턴스 생성 비용이 발생한다. 모든 문제를 해결할 수 있는 최적의 솔루션이 있다면 알려줘.",
-      "생성": "유저",
-      "최종": "유저",
-      "갱신": "2026-09-03",
-      "title_hash": "1eb95308d137d7d291181de592863a4afd50d55a",
-      "verbatim_hash": "9c848b96c977264296660b2d19a6d3600e07504e",
-      "memo": "",
-      "memo_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     }
   },
   "order": [
@@ -1338,7 +1346,6 @@
     "KAN-081-QBTAPJ",
     "KAN-048",
     "KAN-065",
-    "KAN-080-WTQ7AV",
     "KAN-082-ER9NJ4",
     "KAN-001",
     "KAN-002",
@@ -1413,9 +1420,31 @@
     "KAN-075-7DF37H",
     "KAN-076-X1C8PY",
     "KAN-077-RA2SYG",
-    "KAN-078-D44PD1"
+    "KAN-078-D44PD1",
+    "KAN-080-WTQ7AV"
   ],
   "recent": [
+    {
+      "seq": 351,
+      "t": "2026-09-03T23:48",
+      "a": "ai",
+      "id": "KAN-080-WTQ7AV",
+      "op": "move",
+      "w": "WT5WYG",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 350,
+      "t": "2026-09-03T23:47",
+      "a": "ai",
+      "id": "KAN-060",
+      "op": "edit",
+      "w": "WT5WYG",
+      "field": "memo",
+      "before": "KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×).",
+      "after": "KAN-059 실측에서 드러난 별건. 홈 첫 화면이 Jua·Gowun Dodum·Gaegu(+Space Mono·JetBrains Mono) 서브셋 30여 개 ~530KB를 VeryHigh 로 받아 4.2초까지 회선을 문다 — 페이지 총 전송 798KB 중 최대 항목이고, 이미지·JS가 전부 그 뒤에 줄 선다. 게다가 fonts.googleapis.com 스타일시트가 **렌더 블로킹 서드파티**라 첫 페인트 자체를 잡는다(Slow 3G 실측 FCP 3.3초 중 상당분). 검토할 갈래: ① 패밀리 수 줄이기(--font-hand 인 Gaegu 와 --font-display 인 Jua 의 역할 겹침 여부) ② self-host + 필요한 unicode-range 만 서브셋(한글 상용 2350자) ③ 스타일시트 렌더 블로킹 해제(preload+onload swap) — 단 폴백 폰트와 메트릭이 달라 레이아웃이 흔들리므로 size-adjust/ascent-override 로 메트릭을 맞춘 뒤에만. **디자인 결정이 섞여 있으므로 유저 승인 없이 패밀리를 건드리지 않는다.** 착수 시 KAN-059 와 같은 방법으로 먼저 잰다(Playwright+CDP, Slow/Fast 3G · CPU 4×). **KAN-080 이 이 카드로 넘긴 것(검토서 2항 승인 · 유저 의견 「넘겨」 · 2026-09-03).** 본문 서체가 구글에서 자체 호스팅으로 옮겨졌다 — public/fonts 에 Gowun Dodum 400·500·700 세 면(87.1/105.9/107.7KB, 합 약 300KB)이 있고 src/styles/fonts.css:15 가 선언한다. 구글에서 받는 것은 이제 4패밀리뿐이다(BaseLayout.astro:92 — Jua 400 · Space Mono 400·700 · Gaegu 400·700 · JetBrains Mono 400·500). 그래서 **위의 ~530KB · 서브셋 30여 개 실측값은 낡았고 착수 첫 수가 재측정이다.** 갈래 ②(self-host)는 본문 서체에 한해 이미 끝났으므로 남은 대상은 나머지 4패밀리다. 그리고 **KAN-080 은 preload 를 일부러 안 걸었다** — KAN-059 규약이 「첫 화면 큰 그림 딱 하나만」이라 자체 호스팅 3면이 늦게 도착하면 글자가 한 번 갈아 끼워지는 것이 보일 수 있는데, 그것을 잴 자리가 이 카드다(FOUT 체감·LCP 영향)."
+    },
     {
       "seq": 349,
       "t": "2026-09-03T23:06",
@@ -1433,6 +1462,16 @@
       "memo": ""
     },
     {
+      "seq": 349,
+      "t": "2026-09-03T23:19",
+      "a": "ai",
+      "id": "KAN-080-WTQ7AV",
+      "op": "move",
+      "w": "WT5WYG",
+      "from": "doing",
+      "to": "review"
+    },
+    {
       "seq": 348,
       "t": "2026-09-02T14:17",
       "a": "유저",
@@ -1447,6 +1486,16 @@
       "reason": "",
       "goal": "",
       "memo": ""
+    },
+    {
+      "seq": 348,
+      "t": "2026-09-01T15:14",
+      "a": "ai",
+      "id": "KAN-080-WTQ7AV",
+      "op": "move",
+      "w": "WT5WYG",
+      "from": "todo",
+      "to": "doing"
     },
     {
       "seq": 347,
@@ -1954,46 +2003,6 @@
       "w": "Q4EWPR",
       "from": "doing",
       "to": "done"
-    },
-    {
-      "seq": 306,
-      "t": "2026-08-28T14:02",
-      "a": "ai",
-      "id": "KAN-072.1-5XC1AT",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "doing",
-      "to": "done"
-    },
-    {
-      "seq": 305,
-      "t": "2026-08-27T13:56",
-      "a": "ai",
-      "id": "KAN-072.6-2YYK6V",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "backlog",
-      "to": "doing"
-    },
-    {
-      "seq": 304,
-      "t": "2026-08-27T13:56",
-      "a": "ai",
-      "id": "KAN-072.5-WQV1KT",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "backlog",
-      "to": "doing"
-    },
-    {
-      "seq": 303,
-      "t": "2026-08-27T13:56",
-      "a": "ai",
-      "id": "KAN-072.1-5XC1AT",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "todo",
-      "to": "doing"
     }
   ],
   "waivers": [
