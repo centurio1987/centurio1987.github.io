@@ -1,6 +1,6 @@
 {
   "next_id": 81,
-  "next_seq": 351,
+  "next_seq": 352,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -1271,7 +1271,7 @@
       "memo_hash": "9f6a2e49b20edfdaf3abacff17f14156f0af81cf"
     },
     "KAN-080-WTQ7AV": {
-      "col": "review",
+      "col": "done",
       "title": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.",
       "verbatim": "타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.",
       "생성": "유저",
@@ -1390,6 +1390,16 @@
     "KAN-080-WTQ7AV"
   ],
   "recent": [
+    {
+      "seq": 351,
+      "t": "2026-09-03T23:48",
+      "a": "ai",
+      "id": "KAN-080-WTQ7AV",
+      "op": "move",
+      "w": "WT5WYG",
+      "from": "review",
+      "to": "done"
+    },
     {
       "seq": 350,
       "t": "2026-09-03T23:47",
@@ -1947,16 +1957,6 @@
       "w": "Q4EWPR",
       "from": "backlog",
       "to": "doing"
-    },
-    {
-      "seq": 304,
-      "t": "2026-08-27T13:56",
-      "a": "ai",
-      "id": "KAN-072.5-WQV1KT",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "backlog",
-      "to": "doing"
     }
   ],
   "waivers": [
@@ -1979,7 +1979,7 @@
       "reason": "둘 다 scripts/lib/tokens/** 와 scripts/tokens-baseline.json 을 고친다. KAN-080 이 글자 축 셋을 게이트 판정 대상으로 열면 위반이 비0 이 되는데, KAN-079 가 먼저 하드월로 승격해 있으면 그 순간 CI 가 빨개지고 게이트가 astro build 앞에 돌며 deploy 가 needs: build 라 사이트 배포가 멈춘다. 유저 판정 2026-08-31.",
       "created": "2026-09-01T15:07",
       "by": "유저",
-      "restrategy_required": false
+      "restrategy_required": true
     }
   ]
 }
