@@ -8,6 +8,7 @@ scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/tokens-baseline.
 # KAN-079-1QVHJ2 — 토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다
 
 ## 전략
+## 전략
 <!-- 왜 이 접근인가 · 제약 · 버린 대안. 사람이 자유롭게 편집한다. -->
 
 **하드월 승격은 판정 규칙 한 줄이 아니라 넷을 함께 바꾼다.** 「늘면 실패」를 「있으면 실패」로
@@ -37,9 +38,13 @@ scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/tokens-baseline.
 `line-height:1.6` 드리프트. 제외분을 세지 않는 것은 하드월에서도 유지한다(생성물·복제물의
 리터럴을 사람이 고칠 수 없다).
 
-**CI 위험은 이 카드가 지고 간다.** `.github/workflows/main.yml:78` 에서 게이트가 `build` 잡
-안 `astro build`(93) 앞에 돌고 `deploy`(110)가 `needs: build` 로 물려 있다. 승격 뒤 위반
-하나가 **사이트 배포까지 멈춘다** — 그것이 하드월의 의도한 의미이므로 워크플로는 안 고친다.
+**CI 위험은 이 카드가 지고 간다 — 다만 그 위험이 서는 시점은 병합이다.**
+`.github/workflows/main.yml:78` 에서 게이트가 `build` 잡 안 `astro build`(93) 앞에 돌고
+`deploy`(110)가 `needs: build` 로 물려 있어, 승격 뒤 위반 하나가 **사이트 배포까지 멈춘다**
+— 그것이 하드월의 의도한 의미이므로 워크플로는 안 고친다. **그리고 워크플로 트리거가
+`push: branches: [main]` + `workflow_dispatch` 뿐이라(실측) 카드 브랜치 푸시는 CI 를 아예
+안 돌린다.** 그래서 카드가 도는 동안 CI 는 조용하고, 하드월이 실제로 배포를 잡는 것은
+`main` 에 병합된 뒤다 — 그 시점에는 `S8` 이 이미 돌아 있어야 한다.
 인식층을 넓힌 커밋과 섞지 않은 이유가 이 위험이었다(KAN-077 검토 5항, 유저 승인 2026-08-30).
 
 **버린 대안 셋.**
@@ -62,20 +67,22 @@ scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/tokens-baseline.
   이미 막혀 있다(근거 문서 위치 필수 + 예외 표 자가검사) — 판정 불가에는 그 문이 없다.
 
 ## 실행 계획
+## 실행 계획
 <!-- `S<n>`은 고정 id — 이름을 바꾸지 않는다. 체크 상태는 doc-step 이 갱신한다. -->
 - [x] `S1` 착수 조건 재확인 — 하드월이 무는 집합을 전건 대조로 실측한다
       · 완료 기준: `--json` 전건에서 제외분 뺀 위반 0 · 드리프트 0 이 확인되고, 남은 무는
         판정이 어느 파일에 왜 남는지(제외 파일) 목록으로 「전략」 절에 박힌다. 비0 이면
-        **이 카드는 착수하지 않고 그 사실을 보고한다** — 착수 자체가 CI 를 빨갛게 만든다.
-- [ ] `S2` 판정을 절대 0 으로 — `baseline.ts` 에 하드월 판정을 세우고 진입점에 배선한다
+        **이 카드는 착수하지 않고 그 사실을 보고한다** — 모르고 하드월을 세우면 병합되는
+        순간 배포가 멈추고, 그때는 배포가 멈춘 상태에서 고치게 된다.
+- [x] `S2` 판정을 절대 0 으로 — `baseline.ts` 에 하드월 판정을 세우고 진입점에 배선한다
       · 완료 기준: 무는 판정(위반·드리프트)이 하나라도 있으면 `failures` 가 서고 종료코드 1.
         무는 대상 집합은 지금과 같다(제외분 뺀 `scored`, 무는 판정 둘). `selfTestFaults`
         래칫과 `srcFiles` 알림은 그대로 남는다(카드 ③).
-- [ ] `S3` 실패 보고를 전량 지목으로 — 「어느 칸이 늘었는가」를 「무는 자리 전부」로 바꾼다
+- [x] `S3` 실패 보고를 전량 지목으로 — 「어느 칸이 늘었는가」를 「무는 자리 전부」로 바꾼다
       · 완료 기준: 무는 자리마다 `파일:줄 속성: 값 — 판정` 이 나오고, 인라인 숫자값은
         `13(→13px)` 로 원문이 병기된다(KAN-073 S5). 「고치는 법」 문단에서
         `--update-baseline` 로 넘어가라는 안내가 사라진다.
-- [ ] `S4` `--update-baseline` 의 문을 닫는다 — 위반을 굳히는 경로를 없앤다
+- [x] `S4` `--update-baseline` 의 문을 닫는다 — 위반을 굳히는 경로를 없앤다
       · 완료 기준: 무는 판정이 있는 상태에서 그 플래그를 부르면 **기준선을 안 쓰고** 사유와
         함께 비0 으로 끝난다. 정보 집계·`selfTestFaults` 갱신은 계속 된다(결정 ②에 따라
         플래그 이름이 바뀔 수 있다).
@@ -119,16 +126,42 @@ git diff --stat scripts/tokens-baseline.json              # 비어 있어야 한
 bun run tokens:verify                       # 다시 0
 ```
 
-**옛 판정이 안 움직였는가.** 인식층을 안 건드리므로 증분이 0 이어야 한다.
+**기준선을 지워도 무는가.** 래칫 시절에는 기준선이 없으면 「아무것도 안 문다」였다 —
+그 갈래를 그대로 두면 **파일을 지우는 것이 곧 게이트를 끄는 것**이 된다.
 
 ```bash
-bun run tokens:invariant                    # 종료코드 0
+mv scripts/tokens-baseline.json /tmp/bl.json
+# 위반 한 줄을 심고
+bun run tokens:verify                       # 종료코드 1 — 「기준선이 없다」는 note 로만 뜬다
+mv /tmp/bl.json scripts/tokens-baseline.json
 ```
 
-**게이트가 작아지지 않았는가.** `selfTestFaults` 가 S5 만큼 오르고 그보다 줄면 실패한다.
+**인라인 숫자값의 원문이 병기되는가.** 안 그러면 「고치는 법」이 소스에서 grep 되지 않는
+값을 가리킨다(KAN-073 S5 가 밟은 자리다).
+
+```bash
+# 임의 .tsx 에 style={{ padding: 18 }} 를 심고
+bun run tokens:verify | grep "→"            # `padding: 18(→18px)` 꼴이어야 한다
+```
+
+**옛 판정이 안 움직였는가.** 이 카드는 인식층을 안 건드리므로 증분이 정확히 0 이어야 한다.
+`--before` 는 사람이 고른 기준 커밋의 스냅샷이 필요하다(이 카드에서는 `S1` 태그).
+
+```bash
+git stash && bun scripts/verify-tokens.ts --json --no-self-test > /tmp/before.json && git stash pop
+bun run tokens:invariant -- --before /tmp/before.json --self-test    # 종료코드 0
+```
+
+**게이트가 작아지지 않았는가.** `selfTestFaults` 가 `S5` 만큼 오르고 그보다 줄면 실패한다.
 
 ```bash
 bun run tokens:verify | grep '자가검사'      # 고장 종수가 기준선과 같거나 크다
+```
+
+**갱신이 결정론인가.**
+
+```bash
+bun run tokens:verify --update-baseline && git diff --stat scripts/tokens-baseline.json
 ```
 
 **빌드 회귀.**
@@ -143,8 +176,9 @@ bun run build                                # 통과
 grep -rn "래칫" CLAUDE.md design-concept/UI_CONSISTENCY_AUDIT.md scripts/verify-tokens.ts scripts/lib/tokens/
 ```
 
-남은 「래칫」이 **이력 서술뿐**이어야 한다 — 지금 동작을 래칫이라고 말하는 자리가 하나도
-없어야 하고, 남긴 자리는 S7 이 목록으로 낸다.
+남은 「래칫」이 **이력 서술과 `selfTestFaults` 뿐**이어야 한다 — 지금의 판정 방식을 래칫이라고
+말하는 자리가 하나도 없어야 한다. `selfTestFaults` 는 승격 뒤에도 진짜 래칫이므로 예외다.
+남긴 자리는 `S7` 이 목록으로 낸다.
 
 **CI 는 안 고쳤다.** `git diff --stat .github/` 가 비어 있어야 한다 — 하드월이 배포를
 멈추는 것은 의도한 의미이므로 워크플로를 손보는 것이 이 카드의 일이 아니다.
@@ -156,3 +190,13 @@ grep -rn "래칫" CLAUDE.md design-concept/UI_CONSISTENCY_AUDIT.md scripts/verif
 - 2026-09-04T00:19 · s:9c8ce184 — `검증` 섹션 교체
 - 2026-09-04T00:20 · s:9c8ce184 · S1 doing — 착수
 - 2026-09-04T00:20 · s:9c8ce184 · S1 done — 전건 대조: 판정 5222 중 제외분 뺀 5159 에서 위반 0 · 드리프트 0 (준수 4251 · 판정 불가 894 · 정당한 예외 14). 남은 무는 4건은 전부 제외 파일 src/styles/viz.css — 착수 조건 충족
+- 2026-09-04T00:37 · s:9c8ce184 · S2 doing — 착수
+- 2026-09-04T00:42 · s:9c8ce184 — `검증` 섹션 교체
+- 2026-09-04T00:42 · s:9c8ce184 · S2 done — baseline.ts 의 ratchet() 을 hardwall() 로 교체 — 기준선과 비교하지 않고 무는 판정(위반·드리프트) 유무만 본다. base 는 selfTestFaults 래칫·srcFiles 알림·정보 집계 diff 에만 쓰이고, base===null 이어도 하드월은 그대로 문다(래칫의 「기준선 없으면 안 문다」 갈래를 없앴다 — 파일 삭제가 게이트 끄기가 되던 자리)
+- 2026-09-04T00:42 · s:9c8ce184 · S3 doing — 착수
+- 2026-09-04T00:42 · s:9c8ce184 · S3 done — 실패 보고를 전량 지목으로 — 파일별로 묶어 파일:줄 속성: 값 — 판정 을 낸다(파일당 12곳 · 파일 20개 상한). rawValue 병기 유지 실측: padding: 18(→18px). 진입점 「고치는 법」의 --update-baseline 안내 줄을 「하드월이라 넘어갈 문이 없다」로 교체
+- 2026-09-04T00:42 · s:9c8ce184 · S4 doing — 착수
+- 2026-09-04T00:42 · s:9c8ce184 · S4 done — --update-baseline 이 무는 판정 유무를 먼저 보고 있으면 거부(exit 1)한다 — 판정과 같은 biting() 을 쓴다. 실측: 위반 3건 주입 시 거부하고 기준선 diff 0, 위반 0 이면 갱신되고 두 번 돌려 바이트 동일
+- 2026-09-04T00:44 · s:9c8ce184 — `실행 계획` 섹션 교체
+- 2026-09-04T00:44 · s:9c8ce184 — `전략` 섹션 교체
+- 2026-09-04T00:44 · s:9c8ce184 — 사실 정정 — 하드월이 CI 에서 배포를 잡는 시점은 카드 브랜치 푸시가 아니라 main 병합이다(워크플로 트리거가 push:branches:[main] + workflow_dispatch 뿐). 배치1 §3·§4·머리말 · 계획 리포트 4자리 · 전략 · 실행 계획 S1 을 일괄 정정
