@@ -6,15 +6,12 @@
     "color / 준수": 1106,
     "font / 준수": 652,
     "font / 판정 불가": 7,
-    "font-leading / 드리프트": 2,
-    "font-leading / 위반": 5,
-    "font-leading / 준수": 195,
-    "font-track / 위반": 7,
-    "font-track / 준수": 41,
+    "font-leading / 준수": 202,
+    "font-track / 정당한 예외": 1,
+    "font-track / 준수": 47,
     "font-track / 판정 불가": 1,
-    "font-weight / 드리프트": 6,
     "font-weight / 정당한 예외": 3,
-    "font-weight / 준수": 304,
+    "font-weight / 준수": 310,
     "other / 준수": 265,
     "radius / 준수": 295,
     "shadow / 준수": 28,
@@ -24,21 +21,13 @@
     "stroke / 정당한 예외": 2,
     "stroke / 판정 불가": 47,
     "zindex / 판정 불가": 17,
-    "잡음 / 판정 불가": 188
+    "잡음 / 판정 불가": 174
   },
   "totals": {
-    "드리프트": 8,
-    "위반": 12,
-    "정당한 예외": 13,
-    "준수": 4232,
-    "판정 불가": 908
+    "정당한 예외": 14,
+    "준수": 4251,
+    "판정 불가": 894
   },
-  "files": {
-    "src/components/talk/PullQuote.astro": 3,
-    "src/components/talk/QA.astro": 3,
-    "src/layouts/TalkLayout.astro": 10,
-    "src/lib/viz/PosterHero.tsx": 1,
-    "src/styles/viz-frame.css": 3
-  },
+  "files": {},
   "selfTestFaults": 18
 }
