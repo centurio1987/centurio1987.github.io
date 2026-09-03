@@ -1,6 +1,6 @@
 {
   "next_id": 84,
-  "next_seq": 353,
+  "next_seq": 354,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -63,12 +63,12 @@
       "memo_hash": "de21929cf694e454661d4ff1fb4f7b0ee2408cb9"
     },
     "KAN-079-1QVHJ2": {
-      "col": "backlog",
+      "col": "doing",
       "title": "토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다",
       "verbatim": "세워",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-31",
+      "갱신": "2026-09-04",
       "title_hash": "d42d62755178229f7466eae496e461dbc2195f3b",
       "verbatim_hash": "93bae0b761a9e9a5445da12a54fda4a9369c9102",
       "short": "토큰 게이트 하드월",
@@ -1362,7 +1362,6 @@
     "KAN-032",
     "KAN-060",
     "KAN-061",
-    "KAN-079-1QVHJ2",
     "KAN-081-QBTAPJ",
     "KAN-048",
     "KAN-065",
@@ -1442,9 +1441,20 @@
     "KAN-076-X1C8PY",
     "KAN-077-RA2SYG",
     "KAN-078-D44PD1",
-    "KAN-080-WTQ7AV"
+    "KAN-080-WTQ7AV",
+    "KAN-079-1QVHJ2"
   ],
   "recent": [
+    {
+      "seq": 353,
+      "t": "2026-09-04T00:16",
+      "a": "ai",
+      "id": "KAN-079-1QVHJ2",
+      "op": "move",
+      "w": "Y33J9G",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 352,
       "t": "2026-09-03T23:55",
@@ -2020,16 +2030,6 @@
       "op": "move",
       "w": "Q4EWPR",
       "from": "doing",
-      "to": "done"
-    },
-    {
-      "seq": 308,
-      "t": "2026-08-28T14:02",
-      "a": "ai",
-      "id": "KAN-072.4-GJ9M4N",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "backlog",
       "to": "done"
     }
   ],
