@@ -1,6 +1,6 @@
 {
   "next_id": 84,
-  "next_seq": 353,
+  "next_seq": 356,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -63,12 +63,12 @@
       "memo_hash": "de21929cf694e454661d4ff1fb4f7b0ee2408cb9"
     },
     "KAN-079-1QVHJ2": {
-      "col": "backlog",
+      "col": "done",
       "title": "토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다",
       "verbatim": "세워",
       "생성": "ai",
       "최종": "ai",
-      "갱신": "2026-08-31",
+      "갱신": "2026-09-04",
       "title_hash": "d42d62755178229f7466eae496e461dbc2195f3b",
       "verbatim_hash": "93bae0b761a9e9a5445da12a54fda4a9369c9102",
       "short": "토큰 게이트 하드월",
@@ -80,7 +80,17 @@
       "goal": "위반·드리프트가 하나라도 있으면 CI 가 막고, 기준선 파일이 「지금 수」가 아니라 「0」을 뜻하게 된다",
       "goal_hash": "9cb1a0d9ecf471dd27511635cb386fcad47abea2",
       "memo": "승격은 네 번 미뤄졌다 — KAN-072·074·075·076 이 각각 래칫을 0 으로 만들었지만 그때마다 게이트가 못 보던 인식 갈래가 새로 열려 다시 비0 이 됐다(KAN-073 셋 → 0 이 778 로, KAN-075 넷째, KAN-076 다섯째, KAN-077 여섯째). **KAN-077 이 마지막 갈래를 열었고 지금 위반 0 · 드리프트 0 이다.** 진단 정본 design-concept/UI_CONSISTENCY_AUDIT.md §6 에 남은 13항(한 줄 200자 초과 선언)은 지금 src/** 에 0건이라 열 대상이 아니다. **왜 위험한가:** .github/workflows/main.yml 에서 게이트가 build 잡 안 astro build 앞에 돌고 deploy 가 needs: build 로 물려 있어, 하드월로 올린 뒤 위반이 하나라도 들어오면 **사이트 배포까지 멈춘다.** 그래서 인식층을 넓힌 커밋과 안 섞고 별건으로 뺐다(KAN-077 검토 5항, 유저 승인 2026-08-30). **정할 것 셋:** ① 「정당한 예외 10」과 「판정 불가 1130」은 하드월 대상이 아니다 — 기준선 파일에 그 둘을 계속 둘지, 예외만 남길지 ② 승격 뒤 기준선(scripts/tokens-baseline.json)의 역할이 「지금 수」에서 「0 이어야 한다」로 바뀌므로 --update-baseline 이 위반을 굳히는 문이 되면 안 된다 ③ selfTestFaults 래칫(KAN-076 S8)과 예외 표 자가검사는 그대로 둔다. **착수 첫 수는 그 시점의 래칫이 여전히 0 인지 확인하는 것이다** — 아니면 이 카드가 CI 를 빨갛게 만들면서 착수하게 되고 그동안 배포가 멈춘다.",
-      "memo_hash": "9f6a2e49b20edfdaf3abacff17f14156f0af81cf"
+      "memo_hash": "9f6a2e49b20edfdaf3abacff17f14156f0af81cf",
+      "scope": [
+        "scripts/verify-tokens.ts",
+        "scripts/check-recognize-invariant.ts",
+        "scripts/lib/tokens/**",
+        "scripts/tokens-baseline.json",
+        "scripts/fixtures/tokens/**",
+        "design-concept/UI_CONSISTENCY_AUDIT.md",
+        "design-concept/DESIGN_CONCEPT.md",
+        "CLAUDE.md"
+      ]
     },
     "KAN-081-QBTAPJ": {
       "col": "backlog",
@@ -1362,7 +1372,6 @@
     "KAN-032",
     "KAN-060",
     "KAN-061",
-    "KAN-079-1QVHJ2",
     "KAN-081-QBTAPJ",
     "KAN-048",
     "KAN-065",
@@ -1442,9 +1451,40 @@
     "KAN-076-X1C8PY",
     "KAN-077-RA2SYG",
     "KAN-078-D44PD1",
-    "KAN-080-WTQ7AV"
+    "KAN-080-WTQ7AV",
+    "KAN-079-1QVHJ2"
   ],
   "recent": [
+    {
+      "seq": 355,
+      "t": "2026-09-04T09:58",
+      "a": "ai",
+      "id": "KAN-079-1QVHJ2",
+      "op": "move",
+      "w": "Y33J9G",
+      "from": "review",
+      "to": "done"
+    },
+    {
+      "seq": 354,
+      "t": "2026-09-04T09:56",
+      "a": "ai",
+      "id": "KAN-079-1QVHJ2",
+      "op": "move",
+      "w": "Y33J9G",
+      "from": "doing",
+      "to": "review"
+    },
+    {
+      "seq": 353,
+      "t": "2026-09-04T00:16",
+      "a": "ai",
+      "id": "KAN-079-1QVHJ2",
+      "op": "move",
+      "w": "Y33J9G",
+      "from": "backlog",
+      "to": "doing"
+    },
     {
       "seq": 352,
       "t": "2026-09-03T23:55",
@@ -2000,36 +2040,6 @@
       "op": "move",
       "w": "Q4EWPR",
       "from": "doing",
-      "to": "done"
-    },
-    {
-      "seq": 310,
-      "t": "2026-08-28T14:02",
-      "a": "ai",
-      "id": "KAN-072.6-2YYK6V",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "doing",
-      "to": "done"
-    },
-    {
-      "seq": 309,
-      "t": "2026-08-28T14:02",
-      "a": "ai",
-      "id": "KAN-072.5-WQV1KT",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "doing",
-      "to": "done"
-    },
-    {
-      "seq": 308,
-      "t": "2026-08-28T14:02",
-      "a": "ai",
-      "id": "KAN-072.4-GJ9M4N",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "backlog",
       "to": "done"
     }
   ],

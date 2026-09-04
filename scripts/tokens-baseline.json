@@ -29,5 +29,18 @@
     "판정 불가": 894
   },
   "files": {},
-  "selfTestFaults": 18
+  "selfTestFaults": 18,
+  "selfTestGuards": 4,
+  "srcVerdicts": 5159,
+  "srcLabels": [
+    "attr-css",
+    "css-decl",
+    "expr-literal",
+    "jsx-attr",
+    "ml-decl",
+    "style-num",
+    "style-obj",
+    "svg-stroke",
+    "type-unitless"
+  ]
 }

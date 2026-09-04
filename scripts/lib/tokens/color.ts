@@ -249,7 +249,7 @@ export const color: AxisModule = {
     return {
       id: "color",
       verdicts,
-      // 축 모듈은 판정만 돌려준다 — 기준선 대비 래칫도, 비0 종료도 진입점이 진다
+      // 축 모듈은 판정만 돌려준다 — 하드월 판정도, 비0 종료도 진입점이 진다
       // (`verify-tokens.ts` 머리주석 「왜 파일이 여럿인가」). 임시로 비운 것이 아니다.
       failures: [],
       notes: [
