@@ -8,7 +8,6 @@ scope: scripts/verify-tokens.ts, scripts/check-recognize-invariant.ts, scripts/l
 # KAN-079-1QVHJ2 — 토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다
 
 ## 전략
-## 전략
 <!-- 왜 이 접근인가 · 제약 · 버린 대안. 사람이 자유롭게 편집한다. -->
 
 **하드월 승격은 판정 규칙 한 줄이 아니라 넷을 함께 바꾼다.** 「늘면 실패」를 「있으면 실패」로
@@ -66,7 +65,6 @@ scope: scripts/verify-tokens.ts, scripts/check-recognize-invariant.ts, scripts/l
   가장 짧은 길은 위반을 고치는 것이 아니라 **판정 불가로 재분류하는 것**이다. 예외 쪽은
   이미 막혀 있다(근거 문서 위치 필수 + 예외 표 자가검사) — 판정 불가에는 그 문이 없다.
 
-## 실행 계획
 ## 실행 계획
 <!-- `S<n>`은 고정 id — 이름을 바꾸지 않는다. 체크 상태는 doc-step 이 갱신한다. -->
 - [x] `S1` 착수 조건 재확인 — 하드월이 무는 집합을 전건 대조로 실측한다
