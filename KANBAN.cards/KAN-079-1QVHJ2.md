@@ -90,7 +90,7 @@ scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/tokens-baseline.
       · 완료 기준: 고장 둘이 등록되고 각각 다른 사유로 잡힌다 — ① 기준선에 없는 새 위반
         하나로 게이트가 빨개진다 ② 위반이 있는 트리에서 `--update-baseline` 이 거부된다.
         `selfTestFaults` 가 그만큼 오르고 기준선에 반영된다. 예외 표 자가검사는 안 건드린다.
-- [>] `S6` 기준선 파일을 다시 쓴다 — 「지금 수」에서 「0 이어야 한다」로 <!-- claim:s=9c8ce184 t=2026-09-04T00:50 -->
+- [x] `S6` 기준선 파일을 다시 쓴다 — 「지금 수」에서 「0 이어야 한다」로
       · 완료 기준: 결정 ①이 정한 모양으로 `scripts/tokens-baseline.json` 이 다시 써지고,
         두 번 돌려 바이트가 같다(결정론). 진입점 머리주석의 「왜 하드월이 아니라 래칫인가」
         절과 `--update-baseline` 사용법 줄이 지금 동작과 일치한다.
@@ -104,7 +104,7 @@ scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/tokens-baseline.
       · 완료 기준: ① 위반을 일부러 심어 `bun run tokens:verify` 가 종료코드 1 ② 되돌리면 0
         ③ `bun run tokens:invariant` 통과(옛 판정 불변) ④ `bun run build` 회귀 없음
         ⑤ 워크플로는 안 고쳤음을 diff 로 확인.
-- [ ] `S9` 판정 불가 도피처 대책 — 결정 ③ 에 달려 있다
+- [x] `S9` 판정 불가 도피처 대책 — 결정 ③ 에 달려 있다
       · 완료 기준: 결정 ③ 이 「막는다」면 판정 불가 894 가 늘어나는 것을 무엇으로
         판정할지 게이트에 박고 고장을 함께 등록한다. 「안 막는다」면 그 판단과 근거를
         진단 정본 §6 에 항목으로 적는다 — **알고 두는 것과 모르고 두는 것을 가른다**
@@ -203,3 +203,6 @@ grep -rn "래칫" CLAUDE.md design-concept/UI_CONSISTENCY_AUDIT.md scripts/verif
 - 2026-09-04T00:47 · s:9c8ce184 · S5 doing — 착수
 - 2026-09-04T00:50 · s:9c8ce184 · S5 done — 자가검사 ④ 판정 방식 검사 3종 신설 — hardwall-ignores-baseline(기준선이 같은 위반을 담아도·기준선이 없어도 무는가, 드리프트 포함, 0건은 통과) · baseline-update-gate(위반/드리프트면 거부, 0건이면 허용) · entry-wires-the-gate(진입점이 writeBaseline 앞에서 그 문을 지나는가, 소스 대조). 갱신 문을 refuseBaselineUpdate() 로 뽑아 진입점과 자가검사가 같은 코드를 지나게 했고, selfTestGuards 를 기준선에 박아 검사 자체가 빠지면 실패시킨다
 - 2026-09-04T00:50 · s:9c8ce184 · S6 doing — 착수
+- 2026-09-04T00:53 · s:9c8ce184 · S6 done — writeBaseline 이 무는 판정 칸이 실린 기준선을 throw 로 거부한다(파일 형식 불변식 — 부르는 쪽의 문은 배선에 달렸고 배선은 지워질 수 있다). 기준선 재생성: selfTestGuards 3 추가, 두 번 돌려 바이트 동일. 결정 ① 은 「정보 집계를 계속 둔다」로 구현 — 그것이 사라지면 판정 불가가 조용히 늘어나는 것을 볼 자리가 없어진다
+- 2026-09-04T00:53 · s:9c8ce184 · S9 doing — 착수
+- 2026-09-04T09:23 · s:9c8ce184 · S9 done — 판정 불가 도피처를 「무는 대신 가르는」 방식으로 처리 — 기준선이 인식 범위 잣대 셋(srcFiles·srcVerdicts·srcLabels)을 들고, 판정 불가가 늘었을 때 그 셋이 안 움직였으면 ⚠ 표식으로 「있던 판정이 옮겨갔다」고 말한다. 실패로 안 무는 이유는 평범한 px→% 작업도 그 수를 올리기 때문. 실측 둘: padding 토큰→5% 는 표식 붙고, gap:5% 를 더하면(판정 수 5159→5160) 안 붙는다. 가드 unjudged-escape-split 이 이 갈래가 죽는 것을 막는다. 남은 구멍(어느 규칙에서 나왔는가 — 사유가 산문이라 키로 못 쓴다)은 진단 정본 §6-16 에 기록

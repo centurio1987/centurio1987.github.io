@@ -93,6 +93,25 @@ export interface Baseline {
    * 검사를 건너뛴다 — `selfTestFaults` 와 같은 이유다.
    */
   selfTestGuards?: number;
+  /**
+   * **게이트 대상 판정 수**와 **인식 갈래 목록** — 「인식 범위가 넓어졌는가」의 잣대다 (KAN-079 S9).
+   *
+   * 왜 필요한가. 하드월 뒤 통과하는 가장 짧은 길은 위반을 고치는 것이 아니라
+   * **판정 불가로 재분류하는 것**이다. 예외 쪽은 근거 문서 위치를 필수로 두고 예외 표
+   * 자체를 자가검사해 막혀 있는데(`verify-tokens.ts` 의 첫 검사), 판정 불가에는 그 문이 없다.
+   *
+   * 그런데 판정 불가가 느는 것 자체는 실패로 볼 값이 **아니다** — 대개 스캔 범위나 인식층을
+   * 넓혔다는 뜻이고, `width: 200px` 을 `100%` 로 바꾸는 평범한 작업도 그 수를 올린다.
+   * 그래서 무는 대신 **가른다**: 판정 불가가 늘었는데 이 셋(파일 수 · 판정 수 · 인식 갈래)이
+   * 하나도 안 움직였으면 새 히트가 들어온 것이 아니라 **있던 판정이 옮겨간 것**이다.
+   * 그 경우에만 경고에 표식(`⚠`)을 붙여 사람이 그 자리를 보게 한다.
+   *
+   * 기계로 여기까지만 하는 이유는 진단 정본 `UI_CONSISTENCY_AUDIT.md` §6 에 적어 두었다 —
+   * 사유(`reason`)는 산문이라 판정 키로 못 쓴다(`check-recognize-invariant.ts` 가 같은
+   * 이유로 사유를 키에서 뺐다).
+   */
+  srcVerdicts?: number;
+  srcLabels?: string[];
 }
 
 /** 판정 축 — `Hit.axis` 가 아니라 사유에서 되뽑는다(색 축이 stroke·잡음으로 갈리기 때문). */
@@ -151,7 +170,9 @@ export function tally(
   const sort = (o: Record<string, number>) =>
     Object.fromEntries(Object.entries(o).sort(([a], [b]) => (a < b ? -1 : 1)));
   return { generator: GENERATOR, srcFiles, counts: sort(counts), totals: sort(totals),
-           files: sort(files), selfTestFaults, selfTestGuards };
+           files: sort(files), selfTestFaults, selfTestGuards,
+           srcVerdicts: verdicts.length,
+           srcLabels: [...new Set(verdicts.map((v) => v.hit.src))].sort() };
 }
 
 export const readBaseline = (root: string): Baseline | null => {
@@ -282,6 +303,28 @@ export function hardwall(
   notes.push(moved.length
     ? `정보 집계가 움직였다 — ${moved.join(" · ")}. 인식 범위가 바뀐 것이면 \`--update-baseline\` 으로 굳혀라.`
     : "정보 집계는 기준선과 같다.");
+
+  // ── 판정 불가가 위반의 도피처인가 (KAN-079 S9). 위 `srcVerdicts`·`srcLabels` 주석 참고.
+  //    무는 대신 **가른다** — 새 히트가 들어와 늘어난 것과 있던 판정이 옮겨간 것을.
+  const unjudgedUp = (now.totals["판정 불가"] ?? 0) - (base.totals?.["판정 불가"] ?? 0);
+  if (unjudgedUp > 0) {
+    const newLabels = (now.srcLabels ?? []).filter((l) => !(base.srcLabels ?? []).includes(l));
+    const surface = [
+      base.srcFiles !== now.srcFiles ? `파일 수 ${base.srcFiles} → ${now.srcFiles}` : null,
+      typeof base.srcVerdicts === "number" && base.srcVerdicts !== now.srcVerdicts
+        ? `판정 수 ${base.srcVerdicts} → ${now.srcVerdicts}` : null,
+      newLabels.length ? `새 인식 갈래 ${newLabels.join("·")}` : null,
+    ].filter(Boolean) as string[];
+    // 옛 기준선(이 필드가 없는 것)에서는 「안 움직였다」를 단정할 수 없다 — 그때는 잣대가 없다.
+    const measurable = typeof base.srcVerdicts === "number" && Array.isArray(base.srcLabels);
+    notes.push(surface.length
+      ? `판정 불가가 ${unjudgedUp}건 늘었고 인식 범위도 움직였다(${surface.join(" · ")}) — 새 히트가 들어온 것으로 읽힌다.`
+      : measurable
+        ? `⚠ 판정 불가가 ${unjudgedUp}건 늘었는데 인식 범위는 안 움직였다(파일 수·판정 수·인식 갈래 전부 그대로) — ` +
+          `새 히트가 들어온 것이 아니라 **있던 판정이 옮겨간 것**이다. 위반이 판정 불가로 넘어간 것이 아닌지 그 자리를 봐라: ` +
+          `\`bun scripts/verify-tokens.ts --json --no-self-test\` 로 전건을 떠 기준 커밋과 대조한다.`
+        : `판정 불가가 ${unjudgedUp}건 늘었다 — 기준선이 인식 범위 잣대(srcVerdicts·srcLabels)를 안 담고 있어 원인을 가를 수 없다. \`--update-baseline\` 으로 한 번 굳혀라.`);
+  }
   return { failures, notes };
 }
 

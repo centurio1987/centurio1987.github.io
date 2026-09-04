@@ -156,6 +156,44 @@ const GUARDS: JudgmentGuard[] = [
     },
   },
   {
+    id: "unjudged-escape-split",
+    what: "판정 불가가 늘었을 때 「새 히트」와 「옮겨간 판정」을 가르는가",
+    run: () => {
+      // 판정 불가 하나를 합성한다 — 자리는 실재하지 않으므로 파일을 만들지 않는다.
+      const un = (line: number): Verdict => ({
+        hit: {
+          axis: "spacing", kind: "literal_new", prop: "width", value: "33%",
+          token: null, sameValueOtherAxis: null,
+          file: "src/_judgment-guard.astro", line, src: "css-decl", excluded: null,
+        },
+        verdict: "판정 불가", auditLabel: "토큰 미존재", reason: "판정 방식 검사용 합성 판정",
+      });
+      const base = tally([un(1)], 1, FAULT_COUNT, GUARD_COUNT);
+
+      // ① 판정 수가 그대로인데 판정 불가만 늘었다 — 옮겨간 것이다. 표식이 붙어야 한다.
+      const moved: ReturnType<typeof tally> = {
+        ...base,
+        counts: { "spacing / 판정 불가": 2 },
+        totals: { "판정 불가": 2 },
+      };
+      const a = hardwall(moved, base, []).notes.join("\n");
+      if (!a.includes("⚠")) {
+        return "인식 범위가 안 움직였는데 판정 불가가 늘어도 표식이 없다 — 도피처가 조용해졌다";
+      }
+      // ② 히트가 늘어 판정 불가도 늘었다 — 평범한 확장이다. 표식이 붙으면 안 된다.
+      const grown = tally([un(1), un(2)], 1, FAULT_COUNT, GUARD_COUNT);
+      const b = hardwall(grown, base, []).notes.join("\n");
+      if (b.includes("⚠")) {
+        return "판정 수가 함께 늘었는데도 표식이 붙는다 — 평범한 범위 확장이 매번 경고가 된다";
+      }
+      // ③ 안 늘었으면 아무 말도 안 한다.
+      if (hardwall(base, base, []).notes.join("\n").includes("판정 불가가")) {
+        return "판정 불가가 안 늘었는데도 그 말을 한다";
+      }
+      return null;
+    },
+  },
+  {
     id: "entry-wires-the-gate",
     what: "진입점이 기준선을 쓰기 전에 그 문을 지나는가",
     run: (repoRoot) => {
