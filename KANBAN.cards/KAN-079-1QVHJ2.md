@@ -100,7 +100,7 @@ scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/tokens-baseline.
         전부 하드월을 말한다. **지금 무는 수를 문서에 박지 않는다**(CLAUDE.md 가 이미 그
         규약을 세웠다 — 문서의 수는 반드시 낡는다). `grep -rn "래칫"` 잔존이 의도한 자리
         (이력 서술)뿐임을 목록으로 확인한다.
-- [ ] `S8` 검증 — 게이트가 무는 것과 안 무는 것을 실측으로 가른다
+- [x] `S8` 검증 — 게이트가 무는 것과 안 무는 것을 실측으로 가른다
       · 완료 기준: ① 위반을 일부러 심어 `bun run tokens:verify` 가 종료코드 1 ② 되돌리면 0
         ③ `bun run tokens:invariant` 통과(옛 판정 불변) ④ `bun run build` 회귀 없음
         ⑤ 워크플로는 안 고쳤음을 diff 로 확인.
@@ -208,3 +208,5 @@ grep -rn "래칫" CLAUDE.md design-concept/UI_CONSISTENCY_AUDIT.md scripts/verif
 - 2026-09-04T09:23 · s:9c8ce184 · S9 done — 판정 불가 도피처를 「무는 대신 가르는」 방식으로 처리 — 기준선이 인식 범위 잣대 셋(srcFiles·srcVerdicts·srcLabels)을 들고, 판정 불가가 늘었을 때 그 셋이 안 움직였으면 ⚠ 표식으로 「있던 판정이 옮겨갔다」고 말한다. 실패로 안 무는 이유는 평범한 px→% 작업도 그 수를 올리기 때문. 실측 둘: padding 토큰→5% 는 표식 붙고, gap:5% 를 더하면(판정 수 5159→5160) 안 붙는다. 가드 unjudged-escape-split 이 이 갈래가 죽는 것을 막는다. 남은 구멍(어느 규칙에서 나왔는가 — 사유가 산문이라 키로 못 쓴다)은 진단 정본 §6-16 에 기록
 - 2026-09-04T09:24 · s:9c8ce184 · S7 doing — 착수
 - 2026-09-04T09:26 · s:9c8ce184 · S7 done — 래칫 전수 스윕 — 규칙 파일 기준 24자리. 고친 것 16(CLAUDE.md 4자리: 자가검사 규약·게이트 불릿 전면 재작성·인식층 확장 시 갱신 조건·invariant 설명 / DESIGN_CONCEPT 1 · UI_CONSISTENCY_AUDIT 4: 「래칫 기준」→「게이트 기준」 출력 라벨 정합 / 게이트 코드 10자리). 남긴 것 8은 전부 이력 서술 아니면 selfTestFaults·selfTestGuards 래칫(승격 뒤에도 진짜 래칫이라 예외). CLAUDE.md 에 판정 불가 도피처 규칙 불릿 신설
+- 2026-09-04T09:27 · s:9c8ce184 · S8 doing — 착수
+- 2026-09-04T09:28 · s:9c8ce184 · S8 done — 검증 12항 전부 통과 — ①초록 exit0 ②위반 주입 exit1 + PostNav.astro:115 지목 ③위반 상태의 --update-baseline exit1 + 기준선 diff 0 ④기준선 삭제 + 위반 → 여전히 뭄 ⑤되돌리면 exit0 ⑥rawValue 병기 padding: 18(→18px) ⑦tokens:invariant --before(S1 스냅샷) 판정 5222건 그대로 · 겹침 0 · 가드 셋 생존 ⑧자가검사 18+4종 ⑨갱신 두 번 바이트 동일 ⑩bun run build 46페이지 2.60s ⑪.github diff 0 ⑫남은 래칫 32자리 전부 이력 서술 또는 selfTest 래칫

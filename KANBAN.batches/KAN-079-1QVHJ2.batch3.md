@@ -3,7 +3,7 @@ card: KAN-079-1QVHJ2
 batch: 3
 created: 2026-09-04
 branch: KAN-079-1QVHJ2
-status: 계획
+status: 완료
 steps: S7, S8
 ---
 
