@@ -23,8 +23,8 @@
  * 감사의 `spacing` 축 정의(`s3-scan.py:34-38`)는 CSS 속성 26개를 한 통에 넣었다.
  * 그런데 §9 의 "기준 4px" 는 **여백 규칙**이다. 요소가 얼마나 큰지(치수)나 어디에
  * 놓이는지(절대 좌표)를 4의 배수로 맞추라고 적은 문장이 정본 어디에도 없다.
- * 한 통으로 재면 규칙이 없는 자리까지 "위반"으로 세게 되고, 그 수를 그대로 래칫에
- * 박으면 게이트가 **문서에 없는 규칙을 강제**한다. 그래서 셋으로 가른다:
+ * 한 통으로 재면 규칙이 없는 자리까지 "위반"으로 세게 되고, 그 수를 그대로 게이트에
+ * 물리면 **문서에 없는 규칙을 강제**한다. 그래서 셋으로 가른다:
  *
  *   spacing    padding* · margin* · gap · row-gap · column-gap             → §9 가 다스린다
  *   dimension  width · height · min/max-width · min/max-height · flex-basis → 안 다스린다
@@ -179,11 +179,11 @@ function fontRoles(dict: TokenDict): Scale {
 //
 //    이 셋은 다른 축과 판정 흐름이 하나 다르다: **드리프트도 여기서 낸다.** 공용
 //    `auditLabelOf` 의 드리프트 사유(`D1 같은 표기 — …`)를 그대로 쓰면 `baseline.judgeAxis` 가
-//    접두로 축을 못 되뽑아 셋이 전부 `font` 칸에 쌓이고, 그러면 래칫이 「어느 축이 늘었는가」를
+//    접두로 축을 못 되뽑아 셋이 전부 `font` 칸에 쌓이고, 그러면 게이트가 「어느 축이 무는가」를
 //    말하지 못한다. 그래서 세 축은 판정 전건을 자기가 지고 **사유를 `<축> 축 — ` 으로 시작한다**
 //    (`color.ts` 의 stroke 축이 같은 규약을 진 이유와 같다).
 
-/** 판정 축 이름 — 그대로 `baseline.judgeAxis` 의 접두이자 래칫 칸 이름이 된다. */
+/** 판정 축 이름 — 그대로 `baseline.judgeAxis` 의 접두이자 기준선 칸 이름이 된다. */
 type TypeAxisId = "font-weight" | "font-leading" | "font-track";
 
 /** 속성 → 세 축. `font-size` 는 §5 역할값이 이미 다스리므로 여기 없다. */
@@ -392,7 +392,7 @@ export function evaluateDocrule(ctx: ScanContext, opts: DocruleOptions = {}): Do
   //   검토 승인), 드리프트가 그 관할을 안 보면 같은 사고가 뒷문으로 들어온다 — `--space-14`
   //   가 서는 순간 `width: 14px` 이 「토큰이 있는데 다시 적었다」 로 잡히고, 그것을
   //   `var(--space-14)` 로 고치라는 압력이 곧 **여백 자를 데코 실측 좌표에 대는 일**이다.
-  //   실측: 이 가드가 없으면 치수·좌표 63건이 래칫에 물린다(height 19 · width 16 · top 8 …
+  //   실측: 이 가드가 없으면 치수·좌표 63건이 게이트에 물린다(height 19 · width 16 · top 8 …
   //   상위 파일이 PhotoFrame 9 · Sticker 6 · viz-frame 6 으로, 이 파일 머리주석이 지목한 그 셋이다).
   const ignoreDriftUngoverned = new Set<string>([...ignoreDrift, "spacing"]);
 
@@ -577,7 +577,7 @@ export const docrule: AxisModule = {
         ` · 글자 ${now.scales.font.source}` +
         `${now.scales.font.fromTokens ? "" : "(토큰 없음 — 문서 상수 폴백)"}` +
         ` · 글자 하한 ${fontMinOf(now.scales.font.set)}px(역할값 집합의 최소값)`,
-      // 축 모듈은 판정만 돌려준다 — 래칫도 비0 종료도 진입점이 진다
+      // 축 모듈은 판정만 돌려준다 — 하드월 판정도 비0 종료도 진입점이 진다
       // (`verify-tokens.ts` 머리주석 「왜 파일이 여럿인가」). 임시로 비운 것이 아니다.
       `문서 축 — failures 는 진입점이 진다(축 모듈은 판정만 낸다)`,
     ];

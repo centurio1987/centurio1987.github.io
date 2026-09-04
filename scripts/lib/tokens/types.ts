@@ -168,7 +168,7 @@ export type VerdictName =
 export interface Verdict {
   hit: Hit;
   /**
-   * **최종 판정** — 이 자리를 어떻게 할 것인가. 게이트가 세고 래칫이 무는 값이다.
+   * **최종 판정** — 이 자리를 어떻게 할 것인가. 게이트가 세고 하드월이 무는 값이다.
    * `토큰 미존재` 와 `측정 제외` 는 여기 안 온다(둘 다 중간 이름이라 `판정 불가` 로 접힌다).
    */
   verdict: VerdictName;
