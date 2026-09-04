@@ -2,7 +2,7 @@
 card: KAN-079-1QVHJ2
 title: 토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다
 created: 2026-09-04
-scope: scripts/verify-tokens.ts, scripts/lib/tokens/**, scripts/tokens-baseline.json, scripts/fixtures/tokens/**, design-concept/UI_CONSISTENCY_AUDIT.md, CLAUDE.md
+scope: scripts/verify-tokens.ts, scripts/check-recognize-invariant.ts, scripts/lib/tokens/**, scripts/tokens-baseline.json, scripts/fixtures/tokens/**, design-concept/UI_CONSISTENCY_AUDIT.md, design-concept/DESIGN_CONCEPT.md, CLAUDE.md
 ---
 
 # KAN-079-1QVHJ2 — 토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다

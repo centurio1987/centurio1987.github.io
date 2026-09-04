@@ -1,6 +1,6 @@
 {
   "next_id": 84,
-  "next_seq": 354,
+  "next_seq": 355,
   "cards": {
     "KAN-024": {
       "col": "backlog",
@@ -63,7 +63,7 @@
       "memo_hash": "de21929cf694e454661d4ff1fb4f7b0ee2408cb9"
     },
     "KAN-079-1QVHJ2": {
-      "col": "doing",
+      "col": "review",
       "title": "토큰 게이트를 래칫에서 하드월로 승격한다 — 조건이 KAN-077 로 처음 충족됐다",
       "verbatim": "세워",
       "생성": "ai",
@@ -83,10 +83,12 @@
       "memo_hash": "9f6a2e49b20edfdaf3abacff17f14156f0af81cf",
       "scope": [
         "scripts/verify-tokens.ts",
+        "scripts/check-recognize-invariant.ts",
         "scripts/lib/tokens/**",
         "scripts/tokens-baseline.json",
         "scripts/fixtures/tokens/**",
         "design-concept/UI_CONSISTENCY_AUDIT.md",
+        "design-concept/DESIGN_CONCEPT.md",
         "CLAUDE.md"
       ]
     },
@@ -1454,6 +1456,16 @@
   ],
   "recent": [
     {
+      "seq": 354,
+      "t": "2026-09-04T09:56",
+      "a": "ai",
+      "id": "KAN-079-1QVHJ2",
+      "op": "move",
+      "w": "Y33J9G",
+      "from": "doing",
+      "to": "review"
+    },
+    {
       "seq": 353,
       "t": "2026-09-04T00:16",
       "a": "ai",
@@ -2025,16 +2037,6 @@
       "t": "2026-08-28T14:02",
       "a": "ai",
       "id": "KAN-072.6-2YYK6V",
-      "op": "move",
-      "w": "Q4EWPR",
-      "from": "doing",
-      "to": "done"
-    },
-    {
-      "seq": 309,
-      "t": "2026-08-28T14:02",
-      "a": "ai",
-      "id": "KAN-072.5-WQV1KT",
       "op": "move",
       "w": "Q4EWPR",
       "from": "doing",
