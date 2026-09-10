@@ -138,9 +138,11 @@ const [primary, secondary] = author.links;
     max-width: 440px;
   }
   .ap-btn {
-    font-family: var(--font-mono);
+    /* 네 저자 모두 라벨이 「글 더 보기」로 순한글이다(`src/lib/authors.ts`) — KAN-081. */
+    font-family: var(--font-label-ko);
     font-size: var(--text-label);
-    letter-spacing: var(--font-track-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-label-ko);
     background: var(--accent);
     color: var(--paper);
     padding: var(--space-8) var(--space-16);

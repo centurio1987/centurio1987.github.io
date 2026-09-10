@@ -270,9 +270,13 @@ const generatedCss = rules.join("\n");
     flex: none;
     width: 52px;
     padding-top: var(--space-6);
-    font-family: var(--font-mono);
+    /* 서체·자간만 옮기고 **굵기는 안 올린다** (KAN-081). 이 범례가 견주는 상대는 본문
+       산문이 아니라 옆의 필터 칩이고, 칩이 `--font-weight-medium`(500) 이라 여기에 700 을
+       주면 「거들어 주는 말」이 「고르는 것」보다 진해진다 — 실제로 넣어 보고 되돌린 값이다.
+       .gauge-note 와 같은 판단이다. */
+    font-family: var(--font-label-ko);
     font-size: var(--text-micro);
-    letter-spacing: var(--font-track-label);
+    letter-spacing: var(--font-track-label-ko);
     color: var(--ink-3);
   }
   .pf-chips {

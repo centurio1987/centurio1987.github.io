@@ -14,7 +14,7 @@ const isPosts = path.startsWith("/posts") || path.startsWith("/categories");
       <a href={GRAPH_URL} class:list={["nav-link", { active: path.startsWith("/graph") }]}>글지도</a>
       <a
         href="https://github.com/centurio1987"
-        class="nav-link"
+        class="nav-link nav-link-latin"
         target="_blank"
         rel="noopener">GitHub</a
       >
@@ -40,11 +40,19 @@ const isPosts = path.startsWith("/posts") || path.startsWith("/categories");
     align-items: center;
     justify-content: space-between;
   }
+  /* 한글 링크 셋은 순한글이라 `--font-label-ko` 로 배정하고(공백이 Space Mono 에서 오는 것을
+     막는다), 라틴 하나만 아래 `.nav-link-latin` 이 mono 로 되돌린다. 굵기 700 은 한글·라틴
+     공통이다 — 400 이면 nav 가 본문 산문과 같은 굵기로 읽힌다(KAN-081). */
   .nav {
     display: flex;
     gap: var(--space-24);
-    font-family: var(--font-mono);
+    font-family: var(--font-label-ko);
     font-size: var(--text-meta);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-label-ko);
+  }
+  .nav-link-latin {
+    font-family: var(--font-mono);
     letter-spacing: var(--font-track-label);
   }
   .nav-link {

@@ -117,8 +117,13 @@ const thumbOf = (p: CollectionEntry<"posts">): string | null => {
     font-size: var(--text-micro);
     color: var(--accent);
   }
+  /* 부모 `.ep-num` 이 mono 를 드는 것은 `EP.02` 때문이고, 이 배지만 순한글이라
+     되돌린다(KAN-081). 10px 반전 텍스트라 굵기가 특히 필요한 자리다. */
   .ep-now {
+    font-family: var(--font-label-ko);
     font-size: var(--text-nano);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--font-track-label-ko);
     background: var(--accent);
     color: var(--paper);
     border-radius: var(--btn-radius);

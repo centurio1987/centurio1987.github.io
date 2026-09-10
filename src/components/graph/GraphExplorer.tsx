@@ -1608,8 +1608,14 @@ export default function GraphExplorer({
           color: var(--ink-3);
         }
         .gauge-clear {
-          font-family: var(--font-mono);
+          /* 순한글 라벨(「전체」) — KAN-081. 옆의 .read-count · .cand-label 은 숫자가
+             섞여 mono 가 맞는 자리라 함께 옮기지 않는다.
+             **이 블록은 템플릿 리터럴 안이라 주석에도 백틱을 못 쓴다** — 넣으면 문자열이
+             거기서 끊겨 뒤가 코드로 읽히고, 빌드가 "count is not defined" 로 죽는다. */
+          font-family: var(--font-label-ko);
           font-size: var(--text-nano);
+          font-weight: var(--font-weight-bold);
+          letter-spacing: var(--font-track-label-ko);
           color: var(--ink-2);
           padding: var(--space-2) var(--space-8);
           border: var(--stroke-hair) dashed var(--border);
@@ -1743,10 +1749,13 @@ export default function GraphExplorer({
           }
         }
         .gauge-note {
+          /* 라벨이 아니라 도움말 **문장**이라 굵기는 안 올린다 — 700 을 주면 이 판에서
+             가장 흐려야 할 줄이 가장 진해진다. 서체·자간만 옮겨 공백을 정상 폭으로
+             되돌린다(공백이 여섯 든 문장이라 실익이 가장 큰 자리다). KAN-081. */
           margin: 0;
-          font-family: var(--font-mono);
+          font-family: var(--font-label-ko);
           font-size: var(--text-nano);
-          letter-spacing: var(--font-track-label);
+          letter-spacing: var(--font-track-label-ko);
           color: color-mix(in srgb, var(--ink-3) 60%, var(--paper));
         }
         .cand-group {
