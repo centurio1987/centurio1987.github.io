@@ -90,7 +90,7 @@
 - `KAN-062` 발행된 글 14편의 본문 이모지 83건을 두들 마크로 갈아 끼운다 — 생성:ai · 최종:ai · 갱신:2026-08-04
   - 메모: 13편 77줄을 `<Mark>` 로 치환했다(`❌`→`no`, `✅`→`check`, `⚠️`→`warn`). 남은 한 편(container-anatomy-4)은 제목 하나뿐이라 마크가 아니라 말로 풀었다. **굳힌 판단 셋.** ① **제목에는 마크를 넣지 못한다** — 목차(`PostToc`)가 `render()` 의 `headings` 에서 텍스트만 뽑는데 JSX 는 텍스트를 안 남겨 `자주 틀리는 포인트 ( → 교정)` 처럼 뚫리고 앵커 slug 도 흔들린다. 그래서 `(❌ → 교정)` → `(오해 → 교정)`, `Kaniko — ⚠ 이제 고르면 안 됩니다` → `⚠` 삭제(문장이 이미 경고를 말한다). ② **볼드 앞머리는 마크를 볼드 밖으로 뺀다**(`**❌ 안티패턴**` → `<Mark name="no" /> **안티패턴**`) — 글리프 마크는 이미 굵게 그려져 보이는 건 같고, 강조 안에 JSX 를 넣지 않는다. ③ **코드블록 안의 `# ❌ …` 주석은 그대로 뒀다** — 인용한 화면이고 펜스 안에서는 JSX 가 안 산다. 표 셀·인용문·번호 목록 모두 렌더 확인(Playwright). 이어서 `check-post-markers` 의 이모지 검사를 **경고 → 하드 실패**로 올렸다(인질 게이트가 될 이유가 사라졌다). 검증: `build` 43쪽 · `deco:verify` 20회 · `viz:verify` 41개 · `tsc` 0.
 - `KAN-009` KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다. — 생성:유저 · 최종:유저 · 갱신:2026-07-23
-  - 실행 문서: KANBAN.cards/KAN-009.md (0/1)
+  - 실행 문서: KANBAN/cards/KAN-009.md (0/1)
   - 원문:
     ````text
     KAN-009 집필 ai의 퍼소나 개념을 정의하고 관리하려고 한다. 퍼소나는 고유의 voice와 캐릭터 이미지를 가진다.
@@ -134,7 +134,7 @@
     ````
 - `KAN-006` WebRTC 이해와 최적 활용 사례 — 생성:ai · 최종:ai · 갱신:2026-07-22
   - 메모: webrtc-1/2/3 전편 발행 완료
-  - 실행 문서: KANBAN.cards/KAN-006.md (0/1)
+  - 실행 문서: KANBAN/cards/KAN-006.md (0/1)
 - `KAN-014` KAN-013 배포 안정화 검증 — 생성:ai · 최종:ai · 갱신:2026-07-26
   - 메모: KAN-013 push·배포 후: GitHub Pages 빌드 green(CI packages:read 인증·미처리마커 가드 통과), viz 인라인 SVG 라이브 렌더·색 페인트 정상, hero webp/OG 카드 정상, 신규 글 파이프라인 1회 실통과 확인. 이상 없으면 다음 삭제 카드 착수 가능.
 - `KAN-015` deprecated 이미지 스크립트 3종 삭제 — 생성:ai · 최종:ai · 갱신:2026-07-26
@@ -272,7 +272,7 @@
 - `KAN-054` 시리즈 글의 경우, 글 목록에서는 어떤 시리즈의 글인지 표시되어 있지 않아, 파악이 어렵다. 목록 아이템의 레이아웃에 시리즈를 파악할 수 있는 구성 요소를 설계 및 디자인 하고, 구현 할 수 있도록 전략을 구상해라. — 생성:유저 · 최종:ai · 갱신:2026-07-29
 - `KAN-050` 헤더 레벨로 포스트 페이지 우측에 네비게이션을 보여주고, 헤더를 클릭하면 바로 스크롤해서 이동할 수 있는 기능을 추가해라. — 생성:유저 · 최종:ai · 갱신:2026-07-29
   - 메모: 포스트 목차 레일 — 오른쪽에 떠 있는 접힘/펼침 네비게이션. PostToc.astro(render() headings → 서버 렌더 앵커, h2+h3): 평소엔 눈금(tick)만 48px 폭·화면 절반 높이로 접혀 있고, 근처에 포인터가 오면 320px 패널로 펼쳐져 본문 위에 오버레이된다. 오버레이라 본문 칼럼 폭을 뺏지 않으므로 880px부터 켜진다(접힘 히트영역이 본문을 침범하지 않는 하한). 깊이 표현이 상태마다 다르다 — 접힘은 눈금 길이(h2 20px/h3 9px), 펼침은 눈금을 지우고 글자가 진다(크기·굵기·색 + h3 20px 들여쓰기 + h2 앞 여백). tocSpy.ts(scroll+rAF 스파이, 진행적 향상) + tocFloat.ts(hover 없는 입력의 첫 탭=펼치기, 펼침 완료 시 현재 절 끌어오기) + tokens.css --header-h + .prose 헤딩 scroll-margin-top. 활성 임계선은 헤딩의 scroll-margin-top에서 파생시킨다 — 임의 패딩을 쓰면 클릭 착지 지점과 8px 어긋나 직전 절이 활성으로 남는다. 본문 파일 무수정, 무JS에서도 목차 노출·클릭 점프·펼침(CSS :hover/:focus-within) 동작.
-  - 실행 문서: KANBAN.cards/KAN-050.md (0/1)
+  - 실행 문서: KANBAN/cards/KAN-050.md (0/1)
 - `KAN-047` rss 기능 추가할 수 있나, 있다면 추가 계획을 세우고 수행해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
   - 메모: 구현 완료(머지 c287f9d). @astrojs/rss 기반 정적 피드 — /rss.xml(전체 29편) + /categories/<slug>/rss.xml(9개). src/lib/feed.ts 가 채널 메타·아이템 조립·상한(FEED_MAX_ITEMS=50)의 단일 소스. 요약 피드(표지·요약·시리즈 회차·본문 링크) — 본문이 MDX 아일랜드라 리더에선 껍데기가 되므로 전문 제외, 확장 지점은 toFeedItem 하나. 저자는 dc:creator(RSS <author>는 이메일 자리), lastBuildDate 는 최신 글 pubDate(빌드 시각은 무변경 재배포에도 흔들림). 노출: 전 페이지 head 자동발견 + 푸터 RSS + 목록/카테고리 제목 옆 FeedLink 캡슐. 검증: bun run build 통과, 피드 10개 xmllint 통과. || 계획 대비 차이 2건 — ① 카테고리별 피드를 '초판 제외(YAGNI)'로 잡아뒀으나 실제로는 포함했다(카테고리가 이미 정본 분류라 getStaticPaths 재사용으로 비용이 낮았고, 글 폭이 넓어 전체 피드가 소음이 되는 문제가 실재). 되돌리려면 src/pages/categories/[category]/rss.xml.ts 삭제 + [category].astro 의 FeedLink/feeds prop 제거면 끝. ② 검증에서 W3C Feed Validator·리더 앱 실물 확인은 미수행(로컬 xmllint + XML 파싱 점검으로 대체) — 배포 후 확인 필요. || 미확인: 목록/카테고리 제목 옆 캡슐 배치의 시각 확인(브라우저 확장 미연결로 빌드 HTML 구조만 확인).
 - `KAN-049` 글지도에서 그래프가 확장 되어도 전체를 조감할 수 있도록, 확대, 축소와 캔버스 내 위치 이동 기능을 추가해라. — 생성:유저 · 최종:ai · 갱신:2026-07-30
@@ -299,18 +299,18 @@
     ```
 - `KAN-066-KK9Q50` 폭신 대담: 대화 원본 → 정형 구조화 저장 기능 (원문 보존 포함) — 생성:유저 · 최종:ai · 갱신:2026-08-18
   - 메모: 빵토교수님 대담(template: "talk", TalkLayout) 컨텐츠 제작 입력 단계. 대화 원본을 넣으면 ① 데이터 구조·파일 형식을 정형화해 저장(대담 에피소드 MDX 의 <QA n q> 골격과 어디까지 대응시킬지 포함) ② 톤앤매너·비문·맞춤법 교정 ③ 개선 방향이 바뀔 때 다시 굽을 수 있도록 대화 원문을 별도 보존 — 즉 원문/교정본 2계층. 착수 시 정할 것: 저장 위치(raws/ 인지 별도 디렉터리인지)·파일 포맷·스킬로 만들지 스크립트로 만들지·src/templates/talk-episode.mdx 및 init-post --talk 와의 접점.
-  - 실행 문서: KANBAN.cards/KAN-066-KK9Q50.md (7/7 · 최근 08-18)
-  - 계획 리포트: KANBAN.reports/KAN-066-KK9Q50.report.html (지문 없음)
-  - 검토 문서: KANBAN.reviews/KAN-066-KK9Q50.review.md (승인 5/6 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-066-KK9Q50.md (7/7 · 최근 08-18)
+  - 계획 리포트: KANBAN/reports/KAN-066-KK9Q50.report.html (지문 없음)
+  - 검토 문서: KANBAN/reviews/KAN-066-KK9Q50.review.md (승인 5/6 · 승인)
   - 원문:
     ```text
     빵토교수님과의 대담 컨텐츠를 만들기 위해, 대화 원본을 제공하면, 최적 구조화 하여 저장하는 기능이 있어야 한다. 최적 구조화 에서는 데이터 구조, 파일 형식을 정형화 하고, 대화의 톤앤 매너, 비문, 맞춤법을 교정한다. 개선 방향성 수정에 대비해서 대화 원문 또한 보존해야 한다.
     ```
 - `KAN-067-NH9SDQ` 폭신 대담에서 사용할 주제는 아래와 같다. 미리 주제에 대해 리서치를 하고, 대화를 대비한 준비를 해둬라. — 생성:유저 · 최종:ai · 갱신:2026-08-19
   - 메모: 폭신 대담(template: "talk") 에피소드용 주제 2건 + 사전 리서치 요구. 주제① 한 페이지의 여러 시각화가 대규모 aggregated 데이터를 한 번에 당겨와 생기는 반응성 문제 — 유저가 낸 갈래 셋(service worker+IndexedDB 프리패치·stale 판정 / socket 압축 스트리밍 / skeleton·loading UI)에 더해 그 외 방법까지 요구. 성능축·UX축 양쪽에서 볼 것. 주제② 요청이 영속성 데이터 조회에서 시작하면 성능이 DB 질의에 지배되어 자료구조·알고리즘 개입 여지가 없는 문제 — 버퍼로 올리는 것 말고 어떤 전략이 있는지. 착수 시 research 스킬로 두 주제를 수집한 뒤 대담 준비 노트를 만든다. 대화 원본 저장 규격은 KAN-066 과 맞물린다.
-  - 실행 문서: KANBAN.cards/KAN-067-NH9SDQ.md (10/10 · 최근 08-19)
-  - 계획 리포트: KANBAN.reports/KAN-067-NH9SDQ.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-067-NH9SDQ.review.md (승인 2/5 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-067-NH9SDQ.md (10/10 · 최근 08-19)
+  - 계획 리포트: KANBAN/reports/KAN-067-NH9SDQ.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-067-NH9SDQ.review.md (승인 2/5 · 승인)
   - 원문:
     ```text
     폭신 대담에서 사용할 주제는 아래와 같다. 미리 주제에 대해 리서치를 하고, 대화를 대비한 준비를 해둬라.
@@ -322,9 +322,9 @@
     - 프론트로부터의 요청이 영속성 데이터를 불러오는 것부터 시작하면, 성능은 db query 성능에 지배 된다. 특정 자료구조나 알고리즘을 사용하는 것이 효과적임에도 불구하고, 일반적인 백엔드 로직에서는 개입의 여지가 없다. 이를 해결 하기 위해선 어떤 전략을 구사할 수 있을까. 알고리즘이나 자료구조를 이용하려면 일단, 데이터를 버퍼 위에 올려 놓는 수 밖에는 없는 것 같은데.
     ```
 - `KAN-068-5KMRV8` UI QA — 생성:유저 · 최종:ai · 갱신:2026-08-24
-  - 실행 문서: KANBAN.cards/KAN-068-5KMRV8.md (5/5 · 최근 08-24)
-  - 계획 리포트: KANBAN.reports/KAN-068-5KMRV8.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-068-5KMRV8.review.md (승인 4/4 · 추가 의견 총 2 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-068-5KMRV8.md (5/5 · 최근 08-24)
+  - 계획 리포트: KANBAN/reports/KAN-068-5KMRV8.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-068-5KMRV8.review.md (승인 4/4 · 추가 의견 총 2 · 승인)
   - 원문:
     ```text
     UI QA
@@ -332,8 +332,8 @@
     - main 화면에서 GnB 컨텐츠 폭과 메인 컨텐츠 섹션의 폭이 서로 다르다. 일관성을 지킬 필요가 있다.
     ```
 - `KAN-069-M724GH` UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라. — 생성:유저 · 최종:ai · 갱신:2026-08-24
-  - 실행 문서: KANBAN.cards/KAN-069-M724GH.md (6/6 · 최근 08-24)
-  - 검토 문서: KANBAN.reviews/KAN-069-M724GH.review.md (승인 6/6 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-069-M724GH.md (6/6 · 최근 08-24)
+  - 검토 문서: KANBAN/reviews/KAN-069-M724GH.review.md (승인 6/6 · 승인)
   - 원문:
     ```text
     UI 일관성을 전수 검토하여 진단 및 개선 방안에 대한 레포트를 제출해라.
@@ -348,9 +348,9 @@
   - 이유: 감사 판정기가 세션 스크래치패드에만 있어 지워지면 수치 재현이 불가하고, 게이트가 없으면 치환 성과를 매번 사람이 세야 한다
   - 목표: bun run tokens:verify 가 감사 수치를 히트 단위로 재현하고, 위반이 늘면 CI 가 막는다
   - 메모: 감사 P3-1(게이트) + P3-2(react-sim 규칙 개정). 래칫으로 세운다 — 위반 1,567건이라 하드월은 첫 푸시부터 main 을 막는다
-  - 실행 문서: KANBAN.cards/KAN-070-DRF0QF.md (10/10 · 최근 08-25)
-  - 계획 리포트: KANBAN.reports/KAN-070-DRF0QF.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-070-DRF0QF.review.md (승인 7/7 · 추가 의견 총 9 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-070-DRF0QF.md (10/10 · 최근 08-25)
+  - 계획 리포트: KANBAN/reports/KAN-070-DRF0QF.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-070-DRF0QF.review.md (승인 7/7 · 추가 의견 총 9 · 승인)
   - 원문:
     ```text
     위 artifact를 보고 전략과 실행 계획을 수립해라
@@ -410,9 +410,9 @@
   - 이유: 준수율이 44.3% 이고 무너진 구획 둘(글 안 시뮬 3.6% · 마스코트 8.1%)이 발행물 안에 있다
   - 목표: 게이트 베이스라인이 0 으로 수렴해 tokens:verify 를 순수 하드월로 승격할 수 있다
   - 메모: 하위 6장으로 순서를 강제한다. 루트 넷으로 두면 scope 가 src/** 로 전부 겹쳐 루트 독립성이 그 자리에서 깨진다 — 칸반 3.6 의 상위 신설
-  - 실행 문서: KANBAN.cards/KAN-072-CPJCT1.md (16/16 · 최근 08-28)
-  - 계획 리포트: KANBAN.reports/KAN-072-CPJCT1.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-072-CPJCT1.review.md (승인 8/8 · 추가 의견 총 2 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-072-CPJCT1.md (16/16 · 최근 08-28)
+  - 계획 리포트: KANBAN/reports/KAN-072-CPJCT1.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-072-CPJCT1.review.md (승인 8/8 · 추가 의견 총 2 · 승인)
   - 원문:
     ```text
     위 artifact를 보고 전략과 실행 계획을 수립해라
@@ -429,8 +429,8 @@
   - 이유: 안 쓰이는 선언이 tokens.css 와 어긋난 값 셋을 들고 있어, 주입되는 순간 화면이 갈라진다
   - 목표: bbangtoTonyFoundation 만 남고 어긋난 값 셋이 맞춰지거나 왜 다른지 주석으로 걸린다
   - 메모: 감사 P4 의 B안 — 검토 판단 항목 2번이 승인으로 확정. 파일명은 안 바꾼다: gen-motion-css.ts:23 과 main.yml:60 이 문자열로 들고 있다
-  - 실행 문서: KANBAN.cards/KAN-071-6361MY.md (3/3 · 최근 08-28)
-  - 검토 문서: KANBAN.reviews/KAN-071-6361MY.review.md (승인 5/5 · 추가 의견 총 3 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-071-6361MY.md (3/3 · 최근 08-28)
+  - 검토 문서: KANBAN/reviews/KAN-071-6361MY.review.md (승인 5/5 · 추가 의견 총 3 · 승인)
   - 원문:
     ```text
     위 artifact를 보고 전략과 실행 계획을 수립해라
@@ -441,9 +441,9 @@
   - 이유: KAN-072 가 래칫을 0 으로 만들었지만 그 0 은 추출층이 보는 범위 안에서의 0 이다 — 안 보는 자리에 스케일 밖 값이 남아 있다
   - 목표: fontSize·borderRadius·padding 같은 숫자 스타일과 삼항 안 리터럴이 판정에 들어오고, 그때 드러나는 건수로 새 기준선이 선다
   - 메모: KAN-072-CPJCT1 검토 항목 2 승인(2026-08-28). 게이트 코드는 KAN-070 계열 소유
-  - 실행 문서: KANBAN.cards/KAN-073-CVD8X7.md (6/6 · 최근 08-28)
-  - 계획 리포트: KANBAN.reports/KAN-073-CVD8X7.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-073-CVD8X7.review.md (승인 6/6 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-073-CVD8X7.md (6/6 · 최근 08-28)
+  - 계획 리포트: KANBAN/reports/KAN-073-CVD8X7.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-073-CVD8X7.review.md (승인 6/6 · 승인)
   - 원문:
     ```text
     추출층 정규식이 큰따옴표 문자열 값만 봐서 React 인라인 숫자값(fontSize 13 · borderRadius 8 · padding 18)과 삼항·템플릿 리터럴 안을 판정에 안 넣는다. 원문: scripts/lib/tokens/extract.ts:60. 배치6 의 세 작업 단위(webrtc 구획 · auth-authz 구획 · container·tauri 구획)가 독립적으로 같은 것을 짚었고 각각 열 자리 · 열두 자리를 셌다. 옮기면 그림 액자가 2px 씩 줄고 반픽셀 글자가 정수로 접히는, 게이트가 검증 못 하는 화면 변화다. 하위 카드 KAN-072.7 은 카드 목표(이름 규칙을 하드코딩에서 데이터로)를 달성해 닫았으므로 이건 새 카드다
@@ -454,45 +454,45 @@
   - 이유: 래칫이 0 이어야 하드월로 승격하는데 지금 778 에서 버티고 있다
   - 목표: bun run tokens:verify 의 래칫 대상이 0 이 되고 화면 변화가 검증된 상태로 남는다
   - 메모: KAN-073 검토 항목 1·5 승인(2026-08-28). 대부분이 인라인 숫자값이라 옮기면 화면이 바뀐다 — 그림 액자가 2px 씩 줄고 반픽셀 글자가 정수로 접힌다. KAN-072 처럼 격리 사본 대조 하네스가 필요하고 그 하네스가 조용히 통과하는 고장 셋은 KANBAN.cards/KAN-072-CPJCT1.md:229 에 있다. 드리프트 608 은 값이 같아 화면 변화 0 이라 먼저 갚을 수 있다
-  - 실행 문서: KANBAN.cards/KAN-074-MQ9KRB.md (8/8 · 최근 08-29)
-  - 계획 리포트: KANBAN.reports/KAN-074-MQ9KRB.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-074-MQ9KRB.review.md (승인 2/2 · 추가 의견 총 2 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-074-MQ9KRB.md (8/8 · 최근 08-29)
+  - 계획 리포트: KANBAN/reports/KAN-074-MQ9KRB.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-074-MQ9KRB.review.md (승인 2/2 · 추가 의견 총 2 · 승인)
 - `KAN-075-7DF37H` 게이트 인식층 — 여러 줄에 걸쳐 쓴 CSS 선언 47건을 판정에 넣는다 — 생성:ai · 최종:ai · 갱신:2026-08-30
   - 짧은 제목: 여러 줄 선언 인식
   - 목적: 줄바꿈을 넘는 CSS 선언 안의 시각 값이 판정에 들어오게 한다
   - 이유: 선언 정규식의 값 클래스가 줄바꿈을 안 받아 box-shadow·transition·gradient 가 통째로 안 잡힌다
   - 목표: src/components/Logo.astro:58 의 세 줄짜리 box-shadow 안 값이 판정에 뜨고 옛 히트는 안 움직인다
   - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 design-concept/UI_CONSISTENCY_AUDIT.md 6절 11항. 실측 47건 · 약 12파일. 다른 갈래와 다른 점이 하나 있다 — 옛 정규식 자체를 고쳐야 해서 KAN-073 이 지킨 「옛 히트 한 건도 안 움직인다」 계약이 성립하지 않는다. 감사 원자료 3,539 히트와의 대조를 어떻게 유지할지가 이 카드의 첫 판단이다
-  - 실행 문서: KANBAN.cards/KAN-075-7DF37H.md (6/6 · 최근 08-29)
-  - 계획 리포트: KANBAN.reports/KAN-075-7DF37H.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-075-7DF37H.review.md (승인 2/2 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-075-7DF37H.md (6/6 · 최근 08-29)
+  - 계획 리포트: KANBAN/reports/KAN-075-7DF37H.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-075-7DF37H.review.md (승인 2/2 · 승인)
 - `KAN-076-X1C8PY` 게이트 인식층 — 선 굵기 81건에 viewBox 를 아는 판정 규칙을 세운다 — 생성:ai · 최종:ai · 갱신:2026-08-30
   - 짧은 제목: 선 굵기 판정 규칙
   - 목적: stroke-width 계열 81건을 단위가 맞는 자로 재게 한다
   - 이유: 축 표에 속성 자체가 없어 형태를 불문하고 안 보이는데, 넣더라도 한 자로 재면 전부 가짜 위반이 된다
   - 목표: 스케일되는 SVG 와 안 되는 SVG 를 갈라 판정하고 그 갈림선이 코드와 문서에 적힌다
   - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 감사 정본 6절 12항. 실측 81건(속성 표기 72 · JSX 3 · 인라인 3 · CSS 3, 전부 생성물 밖). 갈림선은 viewBox 유무다 — src/components/deco/Doodle.astro:437 의 stroke-width=9 는 86x74 viewBox 사용자 단위라 화면 px 로는 1~2px 이고 값 분포가 9·8·10·3.6·3.4 로 스케일이 아니라 손그림 굵기의 연속 스펙트럼이다. 반대로 src/components/graph/GraphExplorer.tsx:1308 의 strokeWidth={2} 는 안 스케일되는 인라인 SVG 라 1단위=1px 이고 --stroke-bold 와 값이 같다
-  - 실행 문서: KANBAN.cards/KAN-076-X1C8PY.md (7/7 · 최근 08-30)
-  - 계획 리포트: KANBAN.reports/KAN-076-X1C8PY.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-076-X1C8PY.review.md (승인 4/4 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-076-X1C8PY.md (7/7 · 최근 08-30)
+  - 계획 리포트: KANBAN/reports/KAN-076-X1C8PY.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-076-X1C8PY.review.md (승인 4/4 · 승인)
 - `KAN-077-RA2SYG` 게이트 회피 경로를 막는다 — 상수로 끌어올린 리터럴 15건을 판정에 넣는다 — 생성:ai · 최종:ai · 갱신:2026-08-31
   - 짧은 제목: 상수 승격 리터럴
   - 목적: const 로 빼놓은 시각 값이 게이트 시야를 벗어나는 구멍을 막는다
   - 이유: 판정 대기 리터럴을 상수로 올리기만 하면 게이트를 피할 수 있어, 「0」이 닫힌 것과 숨은 것을 섞는다
   - 목표: const 에 든 시각 값이 판정에 들어오고, 상수로 올려 게이트를 피하는 길이 닫힌다
   - 메모: KAN-073 검토 항목 5 승인(2026-08-28). 실측 15건이고 3색이 6파일에 복제돼 있다(SAND #e8c97a · TEAL_TINT #e5f0ed · MUTED #b8b0a0, 주석에 최근접 토큰과 색차까지 적혀 있는데 근거를 걸 자리가 없어 게이트가 못 본다). 다른 갈래와 기법이 다르다 — 정규식으로는 그 상수가 시각 값인지 알 수 없고 사용처를 따라가야 한다. 실측 전례: KANBAN.cards/KAN-072-CPJCT1.md:223 에서 상수로 올렸다가 시야를 벗어나 6건을 원래 인라인 자리로 되돌린 기록이 있다
-  - 실행 문서: KANBAN.cards/KAN-077-RA2SYG.md (10/10 · 최근 08-30)
-  - 계획 리포트: KANBAN.reports/KAN-077-RA2SYG.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-077-RA2SYG.review.md (승인 5/5 · 추가 의견 총 4 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-077-RA2SYG.md (10/10 · 최근 08-30)
+  - 계획 리포트: KANBAN/reports/KAN-077-RA2SYG.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-077-RA2SYG.review.md (승인 5/5 · 추가 의견 총 4 · 승인)
 - `KAN-078-D44PD1` render:compare 가 대조를 안 하고도 「전후 동일」이라고 답한다 — 거짓 통과를 막는다 — 생성:ai · 최종:ai · 갱신:2026-08-31
   - 짧은 제목: compare-render 거짓 통과
   - 목적: 화면 무변경을 증명하는 도구가 대조를 건너뛰고도 통과로 끝나는 자리를 막는다
   - 이유: KAN-077 에서 실제로 밟았다 — 「전후 동일」을 받은 뒤 옵션만 빼고 다시 돌리니 28건이 나왔다
   - 목표: 자가검사만 돌린 실행이 「전후 동일」로 끝나지 않고, 같은 거짓 통과가 다시 나면 검사가 문다
   - 메모: scripts/compare-render.ts:667 에서 SELF_TEST 갈래와 실제 전후 대조가 if/else 로 갈리는데 파일 끝의 console.log("✓ 전후 동일.") 이 두 갈래 공통이라, 자가검사만 돌린 실행이 **대조를 한 번도 안 하고** 통과로 끝난다. 실측(KAN-077 S8): S7 직후 --self-test 로 돌려 「✓ 전후 동일」을 받았고 옵션만 빼고 다시 돌리니 background-color 28건 차이가 나왔다 — 그 사이 코드는 한 글자도 안 바뀌었다. 이 도구는 「값을 바꿨는데 화면이 안 바뀌었음」을 증명하려고 만든 것이라 그 증명이 거짓으로 통과하는 것은 도구 자신이 막으려던 실패 모드다. 고칠 것은 한 줄이지만 **고치는 것으로 끝내지 않는다** — 그 거짓 통과를 재현하는 자가검사를 함께 둔다(KAN-076 S8 이 selfTestFaults 로 같은 종류의 자기 축소를 막은 선례). 갈래 후보 둘: ①자가검사 뒤에도 실제 대조를 이어서 돈다 ②자가검사만 돌았으면 마지막 줄을 「자가검사 통과(대조 안 함)」로 가른다. KAN-077 은 이 파일이 scope 밖이라 안 고치고 넘겼다(검토 4항, 유저 판정 「새카드」 2026-08-30).
-  - 실행 문서: KANBAN.cards/KAN-078-D44PD1.md (3/3 · 최근 08-31)
-  - 계획 리포트: KANBAN.reports/KAN-078-D44PD1.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-078-D44PD1.review.md (승인 5/5 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-078-D44PD1.md (3/3 · 최근 08-31)
+  - 계획 리포트: KANBAN/reports/KAN-078-D44PD1.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-078-D44PD1.review.md (승인 5/5 · 승인)
   - 원문:
     ```text
     새카드
@@ -502,8 +502,8 @@
   - 목적: 폰트·크기만 있는 타이포 토큰에 굵기·행간·자간 역할을 세우고, 한 디자인 스타일을 따르는 조합을 조사해 채택한다
   - 이유: 타이포 토큰이 폰트·크기 두 축뿐이라 행간 59자리(21종)·자간 44자리(20종)·굵기 5종이 관리 밖이고, 게이트도 UNITLESS_PROPS 로 행간·굵기를 안 본다
   - 목표: 굵기·행간·자간이 역할 토큰으로 서고 게이트 인식층에 들어가며, raw monospace 35자리가 --font-mono·--font-code 로 모여 지면마다 갈리던 글자 조합이 한 벌로 수렴한다
-  - 실행 문서: KANBAN.cards/KAN-080-WTQ7AV.md (19/19 · 최근 09-03)
-  - 검토 문서: KANBAN.reviews/KAN-080-WTQ7AV.review.md (승인 6/6 · 추가 의견 총 2 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-080-WTQ7AV.md (19/19 · 최근 09-03)
+  - 검토 문서: KANBAN/reviews/KAN-080-WTQ7AV.review.md (승인 6/6 · 추가 의견 총 2 · 승인)
   - 원문:
     ```text
     타이포그래피가 하나의 디자인 스타일 안에서 일관성 없이 정의되어 있다. 하나의 디자인 스타일을 준수하는 타이포그래피 조합을 조사하여 채택해라.
@@ -514,9 +514,9 @@
   - 이유: 승격 조건 「인식층이 다 열린 뒤의 래칫 0」이 네 번 미뤄진 끝에 KAN-077 로 처음 갖춰졌다
   - 목표: 위반·드리프트가 하나라도 있으면 CI 가 막고, 기준선 파일이 「지금 수」가 아니라 「0」을 뜻하게 된다
   - 메모: 승격은 네 번 미뤄졌다 — KAN-072·074·075·076 이 각각 래칫을 0 으로 만들었지만 그때마다 게이트가 못 보던 인식 갈래가 새로 열려 다시 비0 이 됐다(KAN-073 셋 → 0 이 778 로, KAN-075 넷째, KAN-076 다섯째, KAN-077 여섯째). **KAN-077 이 마지막 갈래를 열었고 지금 위반 0 · 드리프트 0 이다.** 진단 정본 design-concept/UI_CONSISTENCY_AUDIT.md §6 에 남은 13항(한 줄 200자 초과 선언)은 지금 src/** 에 0건이라 열 대상이 아니다. **왜 위험한가:** .github/workflows/main.yml 에서 게이트가 build 잡 안 astro build 앞에 돌고 deploy 가 needs: build 로 물려 있어, 하드월로 올린 뒤 위반이 하나라도 들어오면 **사이트 배포까지 멈춘다.** 그래서 인식층을 넓힌 커밋과 안 섞고 별건으로 뺐다(KAN-077 검토 5항, 유저 승인 2026-08-30). **정할 것 셋:** ① 「정당한 예외 10」과 「판정 불가 1130」은 하드월 대상이 아니다 — 기준선 파일에 그 둘을 계속 둘지, 예외만 남길지 ② 승격 뒤 기준선(scripts/tokens-baseline.json)의 역할이 「지금 수」에서 「0 이어야 한다」로 바뀌므로 --update-baseline 이 위반을 굳히는 문이 되면 안 된다 ③ selfTestFaults 래칫(KAN-076 S8)과 예외 표 자가검사는 그대로 둔다. **착수 첫 수는 그 시점의 래칫이 여전히 0 인지 확인하는 것이다** — 아니면 이 카드가 CI 를 빨갛게 만들면서 착수하게 되고 그동안 배포가 멈춘다.
-  - 실행 문서: KANBAN.cards/KAN-079-1QVHJ2.md (9/9 · 최근 09-04)
-  - 계획 리포트: KANBAN.reports/KAN-079-1QVHJ2.report.html (낡음)
-  - 검토 문서: KANBAN.reviews/KAN-079-1QVHJ2.review.md (승인 6/6 · 승인)
+  - 실행 문서: KANBAN/cards/KAN-079-1QVHJ2.md (9/9 · 최근 09-04)
+  - 계획 리포트: KANBAN/reports/KAN-079-1QVHJ2.report.html (낡음)
+  - 검토 문서: KANBAN/reviews/KAN-079-1QVHJ2.review.md (승인 6/6 · 승인)
   - 원문:
     ```text
     세워
