@@ -5,12 +5,12 @@ created: 2026-08-24
 branch: KAN-068-5KMRV8
 worktree: /Users/centurio/orca/workspaces/centurio1987.github.io/KAN-068-5KMRV8
 base: fed67c2
-status: 검토 대기
+status: 승인
 ---
 
 # KAN-068-5KMRV8 검토 요청 — UI QA
 
-카드: [KAN-068-5KMRV8.md](../KANBAN.cards/KAN-068-5KMRV8.md)
+카드: [KAN-068-5KMRV8.md](../cards/KAN-068-5KMRV8.md)
 
 > 이 문서는 **검토를 위한 산출물**이다. 수행 내역은 카드 실행 문서에 있고, 착수 전
 > 계획은 배치 문서에 있다. 여기 있는 것은 "지금 이 브랜치를 무엇으로 판정하는가" 뿐이다.
@@ -190,33 +190,44 @@ python3 scripts/kanban.py review-item <project-root> --card KAN-068-5KMRV8 --add
 **전체 승인은 살아있는 항목이 전부 승인일 때만 섭니다**(철회는 분모에서 빠집니다). 하나라도
 반려·추가 의견·미정이면 4항의 전체 승인도 `→ 완료` 이동도 종료코드 14로 거부됩니다.
 
-- [ ] 지적 1(홈과 블로그 탭의 폭이 다르다)을 값이 아니라 규칙으로 닫은 것을 실물로 보고도 받아들이시겠습니까 — 홈 1100px, 글 목록 720px 로 값은 그대로 다릅니다
+- [x] 지적 1(홈과 블로그 탭의 폭이 다르다)을 값이 아니라 규칙으로 닫은 것을 실물로 보고도 받아들이시겠습니까 — 홈 1100px, 글 목록 720px 로 값은 그대로 다릅니다
     - **상세** — 카드 원문 첫 줄이 "메인 컨텐츠 섹션의 폭이 main 화면과 블로그 탭이 서로 다르다. 일관성을 지킬 필요가 있다" 입니다(KANBAN.md 의 이 카드 원문 블록). 2026-08-24 에 고르신 안 1 은 값을 맞추는 대신 "한 화면 안에서 셸과 본문이 같은 선" 을 일관성으로 정의합니다. 값을 맞추는 두 안을 버린 근거는 실측입니다 — 720 통일은 홈 히어로 한 열이 294px(720 - 좌우 패딩 48x2 - 열 간격 36, 반)로 줄어 회전한 폴라로이드 바운딩 141px 이 들어갈 타이틀 우측 여백이 사라지고(실측 주석: src/pages/index.astro:169-172, 769px 에서 129px · 964px 에서 166px), 1100 통일은 design-concept/DESIGN_CONCEPT.md:106 "포스트 본문 max-width 720px" 을 뒤집고 읽는 지면 8곳이 재디자인 대상이 됩니다. 새 규칙 전문은 design-concept/DESIGN_CONCEPT.md 「6. 레이아웃 → 폭 체계」. 실물 확인: bun run preview 로 / 와 /posts 를 나란히 열어 보시면 됩니다
 
-    > **판정** — _아직 없습니다._
+    > **판정**
+    >
+    > - 승인 · 유저 · 2026-08-24
 
     > **추가 의견** — _아직 없습니다._
 
-- [ ] 푸터까지 셸에 넣어 넓힌 것을 그대로 두시겠습니까, 아니면 헤더만 지면을 따라가게 할까요 — 지금 푸터는 폭을 넓혀도 화면이 달라지지 않습니다
+- [x] 푸터까지 셸에 넣어 넓힌 것을 그대로 두시겠습니까, 아니면 헤더만 지면을 따라가게 할까요 — 지금 푸터는 폭을 넓혀도 화면이 달라지지 않습니다
     - **상세** — 카드 원문 둘째 줄은 GNB 만 말합니다("main 화면에서 GnB 컨텐츠 폭과 메인 컨텐츠 섹션의 폭이 서로 다르다", KANBAN.md 의 이 카드 원문 블록). 저는 셸을 헤더+푸터 한 벌로 보고 둘 다 var(--shell-max, var(--content-max)) 로 바꿨습니다(src/components/Header.astro:35 · src/components/Footer.astro:54). 그런데 푸터 안쪽 콘텐츠는 전부 중앙 정렬이고(src/components/Footer.astro:58-60 의 세로 flex + align-items:center), 유일하게 폭을 따라가던 저자 라인업은 다섯째 work 에서 다시 624px 로 묶었으므로(src/components/AuthorLineup.astro:173 부근의 max-width) 푸터의 넓은 판 적용은 현재 시각적으로 아무 효과가 없습니다. 남겨 둘 근거는 "셸의 정의가 한 벌이어야 다음 사람이 헷갈리지 않는다", 뺄 근거는 "효과 없는 배선은 없는 편이 낫다" 입니다
 
-    > **판정** — _아직 없습니다._
+    > **판정**
+    >
+    > - 승인 · 유저 · 2026-08-24
 
     > **추가 의견** — _아직 없습니다._
 
-- [ ] 저자 라인업 상한을 calc(var(--content-max) - var(--page-pad) * 2) 로 표현한 것을 그대로 두시겠습니까, 전용 토큰을 팔까요
+- [x] 저자 라인업 상한을 calc(var(--content-max) - var(--page-pad) * 2) 로 표현한 것을 그대로 두시겠습니까, 전용 토큰을 팔까요
     - **상세** — 값은 src/components/AuthorLineup.astro 의 .author-lineup 규칙에 있고 "읽는 판의 콘텐츠 폭"(뷰포트 1440 에서 624px)을 뜻합니다. 원 토큰은 src/styles/tokens.css:42 의 --content-max 720px 와 같은 파일의 --page-pad clamp(20px, 5vw, 48px) 입니다. px 를 직접 박지 않은 이유는 이 카드가 없애려던 하드코딩을 푸터에 되살리지 않기 위해서입니다(규칙은 design-concept/DESIGN_CONCEPT.md 「폭 체계」). 다만 이 계산식은 지금 이 한 곳에서만 쓰이고, 같은 뜻의 값이 또 필요해지면 각자 계산하게 됩니다 — 전용 토큰(예: --content-inner)을 tokens.css 에 파면 그 위험이 없어지는 대신 토큰이 하나 늘어납니다
 
-    > **판정** — _아직 없습니다._
+    > **판정**
+    >
+    > - 승인 · 유저 · 2026-08-24
 
     > **추가 의견** — _아직 없습니다._
 
-- [ ] bun run width:verify 를 CI 에 넣을까요, 로컬 게이트로 둘까요
+- [x] bun run width:verify 를 CI 에 넣을까요, 로컬 게이트로 둘까요
     - **상세** — 이번에 만든 게이트입니다(scripts/verify-widths.ts, package.json 의 width:verify). 지금 CI 가 돌리는 것은 .github/workflows/main.yml:46 check-post-markers · :51 check-emphasis · :56 check-quote-blocks · :68 astro build · :71 check-emphasis --dist 다섯이고, deco:verify 와 viz:verify 는 그 파일에 **없습니다** — 브라우저(Playwright)를 띄우는 검사는 로컬에만 두는 것이 이 레포의 현재 관례입니다. width:verify 도 scripts/verify-widths.ts 에서 playwright 를 import 합니다. 관례를 따르면 로컬에 두고, 관례를 바꾸면 셋(deco·viz·width)을 함께 올리는 것이 일관됩니다
 
-    > **판정** — _아직 없습니다._
+    > **판정**
+    >
+    > - 승인 · ai · 2026-08-24
 
-    > **추가 의견** — _아직 없습니다._
+    > **추가 의견**
+    >
+    > - 유저 · 2026-08-24 — 로컬에 둬라
+    > - ai · 2026-08-24 — 로컬로 둡니다 — 코드 변경 없음. 지금 상태가 이미 그것입니다(scripts/verify-widths.ts + package.json 의 width:verify 만 있고 .github/workflows/main.yml 에는 안 넣었습니다). deco:verify·viz:verify 와 같은 자리입니다.
 
 
 ## 4. 판정
@@ -232,9 +243,11 @@ python3 scripts/kanban.py review-item <project-root> --card KAN-068-5KMRV8 --add
      frontmatter 의 status 도 함께 고친다. 손으로 적어도 되지만, 그때는 수렴 검사를
      안 거치므로 `validate` 가 항목 판정과 어긋난 승인을 error 로 잡는다. -->
 
-**판정**: (아직 없습니다)
+**판정**: 승인
 
 **판정 이력**:
+
+- 승인 · ai · 2026-08-24
 
 - 승인이면 → `apply --op move --id KAN-068-5KMRV8 --to done` 뒤에 `main` 병합과 워크트리 정리(출력의 `cleanup`)
 - 반려면 → `apply --op move --id KAN-068-5KMRV8 --to doing` 뒤에 `doc-log --entry "<반려 사유>"`.

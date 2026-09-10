@@ -5,12 +5,12 @@ created: 2026-08-29
 branch: KAN-074-MQ9KRB
 worktree: /Users/centurio/orca/workspaces/centurio1987.github.io/KAN-074-MQ9KRB
 base: d082433b
-status: 검토 대기
+status: 승인
 ---
 
 # KAN-074-MQ9KRB 검토 요청 — 토큰 게이트 부채 상환 — 인식층 확장으로 드러난 778건을 옮긴다
 
-카드: [KAN-074-MQ9KRB.md](../KANBAN.cards/KAN-074-MQ9KRB.md)
+카드: [KAN-074-MQ9KRB.md](../cards/KAN-074-MQ9KRB.md)
 
 > 이 문서는 **검토를 위한 산출물**이다. 수행 내역은 카드 실행 문서에 있고, 착수 전
 > 계획은 배치 문서에 있다. 여기 있는 것은 "지금 이 브랜치를 무엇으로 판정하는가" 뿐이다.
@@ -207,19 +207,27 @@ python3 scripts/kanban.py review-item <project-root> --card KAN-074-MQ9KRB --add
 **전체 승인은 살아있는 항목이 전부 승인일 때만 섭니다**(철회는 분모에서 빠집니다). 하나라도
 반려·추가 의견·미정이면 4항의 전체 승인도 `→ 완료` 이동도 종료코드 14로 거부됩니다.
 
-- [ ] 비활성 글자 한 자리가 이름이 어긋난 토큰을 가리킵니다 — 값을 지킬까요, 이름을 지킬까요
+- [x] 비활성 글자 한 자리가 이름이 어긋난 토큰을 가리킵니다 — 값을 지킬까요, 이름을 지킬까요
     - **상세** — src/components/posts/osi-7-layers-3/HopJourney.tsx:213 은 step===0 일 때의 버튼 글자색이고 바로 옆 줄이 cursor: not-allowed 입니다. 곧 비활성 글자이고, 그것은 --ink-muted 의 문서상 역할과 정확히 같습니다(DESIGN_CONCEPT.md:72 「흐린·비활성 글자」). 그런데 지금은 --fate-blocked-border 를 가리킵니다. 게이트는 리터럴 값이 어떤 토큰의 값과 한 글자도 다르지 않으면 그 토큰을 가리키는데, #b8b0a0 이 그 토큰 값과 정확히 같았기 때문입니다. 치환기는 값이 같은 자리만 옮기므로 화면 변화는 0 이었습니다. --fate-blocked-border 는 구분 팔레트 --fate-blocked-* 세 색(배경·글자·테두리) 중 테두리이고(DESIGN_CONCEPT.md:127), 원래 쓰임은 SplitTunnelLab.tsx:51 의 border 입니다. --ink-muted 로 옮기면 색차 34.7 이라 눈에 보이게 흐려집니다. 같은 갈래를 이미 한 번 판정하셨습니다 — #a9a294 는 색차 11.5 라 --ink-muted 로 모으기로 했고, DESIGN_CONCEPT.md:85 는 #b8b0a0 6자리가 아직 남았다고 적고 있습니다(그중 게이트가 보는 것은 이 한 자리뿐입니다). 이 카드가 심은 823자리를 전수로 훑어 이름과 쓰인 자리가 어긋난 것은 이 하나뿐임을 확인했습니다
 
-    > **판정** — _아직 없습니다._
+    > **판정**
+    >
+    > - 승인 · 유저 · 2026-08-29
 
-    > **추가 의견** — _아직 없습니다._
+    > **추가 의견**
+    >
+    > - 유저 · 2026-08-29 — 화면에 변화가 없어야 한다.
 
-- [ ] scripts/compare-render.ts 를 레포에 남길까요, 지울까요
+- [x] scripts/compare-render.ts 를 레포에 남길까요, 지울까요
     - **상세** — 670줄이고 CI 에 안 물립니다(main.yml 언급 0). 남기는 값은 KAN-075·076·077 이 같은 대조를 다시 필요로 한다는 것입니다 — KAN-072 의 하네스는 스크래치패드에만 있어 사라졌고, 이 카드가 다시 지으면서 조용히 통과하는 고장 셋을 실제로 밟았습니다(하드링크 사본이 원본 레포를 덮음 · 시간에 끌려다니는 값 · 브라우저가 죽어도 안 끝나는 대기). 지우는 값은 scripts/ 가 670줄만큼 가벼워진다는 것이고, 그때 세 카드는 각자 다시 지어야 합니다. 게이트 다섯(verify-tokens 142줄 · verify-deco 360줄 등)과 달리 이것은 판정을 안 하는 개발 도구라 CLAUDE.md 의 게이트 규약 대상도 아닙니다. 원문: scripts/compare-render.ts:1 머리주석 · package.json:16 · 고장 셋의 출처 KANBAN.cards/KAN-072-CPJCT1.md:229
 
-    > **판정** — _아직 없습니다._
+    > **판정**
+    >
+    > - 승인 · 유저 · 2026-08-29
 
-    > **추가 의견** — _아직 없습니다._
+    > **추가 의견**
+    >
+    > - 유저 · 2026-08-29 — 남겨둬
 
 
 ## 4. 판정
@@ -235,9 +243,12 @@ python3 scripts/kanban.py review-item <project-root> --card KAN-074-MQ9KRB --add
      frontmatter 의 status 도 함께 고친다. 손으로 적어도 되지만, 그때는 수렴 검사를
      안 거치므로 `validate` 가 항목 판정과 어긋난 승인을 error 로 잡는다. -->
 
-**판정**: (아직 없습니다)
+**판정**: 승인
 
 **판정 이력**:
+
+- 승인 · 유저 · 2026-08-29
+- 승인 · 유저 · 2026-08-29
 
 - 승인이면 → `apply --op move --id KAN-074-MQ9KRB --to done` 뒤에 `main` 병합과 워크트리 정리(출력의 `cleanup`)
 - 반려면 → `apply --op move --id KAN-074-MQ9KRB --to doing` 뒤에 `doc-log --entry "<반려 사유>"`.

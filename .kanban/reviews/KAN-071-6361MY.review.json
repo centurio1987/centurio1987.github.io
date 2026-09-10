@@ -12,8 +12,8 @@
   "worktree": "/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-071-6361MY"
  },
  "inherited_md": "",
- "md_fp": "68f76dbdd64517ea9d68fb11ec20c8e49a287e40",
- "md_src_fp": "96ee930203268430cfb7a99cb042ad155dc8f1b9",
+ "md_fp": "41edd6243a6df522c94ecb93690fd0bacdba27e0",
+ "md_src_fp": "1aa5583c013a229ac49291bf6765d2f57a692680",
  "schema": 1,
  "target_md": "| 항목 | 값 |\n|---|---|\n| 브랜치 | `KAN-071-6361MY` |\n| 워크트리 | `/Users/centurio/orca/workspaces/centurio1987.github.io/KAN-071-6361MY` |\n| 베이스 | `49f3e43` |\n| 변경 훑기 | `git diff 49f3e43...HEAD` |\n\n**커밋 4건**\n\n```text\n8ab8b36 KAN-071-6361MY S3: CI 주석이 없어진 심볼을 안 가리키게 한다 — 소비 심볼과 소스 파일을 갈라 적는다\n1884229 KAN-071-6361MY S2: 어긋난 값 셋을 tokens.css 에 맞춘다 — motion 3자리 · viz 2자리\n9fc6ea7 KAN-071-6361MY S1: StyleGuide export 를 걷는다 — 소비처 0건이던 선언과 Phase C 예고 제거\ncd76c12 kanban: KAN-071-6361MY 진행 중으로 이동 — 선언 층 처분 착수\n```\n\n**변경 파일 9개 (+62 −52)**\n\n| 파일 | 상태 | 추가 | 삭제 |\n|---|:--:|---:|---:|\n| `.github/workflows/main.yml` | M | 3 | 1 |\n| `.kanban/archive.jsonl` | M | 1 | 0 |\n| `.kanban/log.md` | M | 1 | 1 |\n| `.kanban/state.json` | M | 15 | 15 |\n| `KANBAN.board.html` | M | 4 | 4 |\n| `KANBAN.cards/KAN-071-6361MY.md` | M | 10 | 3 |\n| `KANBAN.md` | M | 11 | 11 |\n| `src/lib/motion/bbangtoTonyStyleGuide.ts` | M | 15 | 15 |\n| `src/lib/viz/blogVizStyleGuide.ts` | M | 2 | 2 |\n\n**롤백 태그 3개**\n\n```text\nkan/KAN-071-6361MY/S1\nkan/KAN-071-6361MY/S2\nkan/KAN-071-6361MY/S3\n```",
  "verdicts": [
