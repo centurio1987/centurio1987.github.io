@@ -15,6 +15,7 @@ export const CATEGORIES: CategoryMeta[] = [
   { slug: "research", label: "리서치", color: "#B07A2E" },
   { slug: "quality", label: "품질", color: "#6B6B3E" },
   { slug: "leadership", label: "리더십", color: "#B5602E" },
+  { slug: "daily", label: "일상", color: "#9C5F73" },
 ];
 
 export const CATEGORY_SLUGS = CATEGORIES.map((c) => c.slug) as [
