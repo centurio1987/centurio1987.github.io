@@ -178,7 +178,8 @@ KAN-072 가 `--state-*` 를 안 세운 근거는 「같은 값에 이름이 둘�
 | `--font-mono` | Space Mono | **Gowun Dodum** | 라틴이 섞인 레이블 — 날짜, EP 네비, 저자 역할, 글 수 |
 | `--font-label-ko` | Gowun Dodum | Gowun Dodum | **순한글** UI 라벨 — nav, 버튼, 필터 범례, 회차 배지 |
 | `--font-hand` | Gaegu | Gaegu | 손글씨 포인트 텍스트 (홈 hero 인트로) |
-| `--font-code` | JetBrains Mono | **Gowun Dodum** | 코드 블록 전용 |
+| `--font-code` | JetBrains Mono | **Gowun Dodum** | 인라인 `code` · 시뮬의 고정폭 텍스트 |
+| `--font-code-grid` | JetBrains Mono | **Code Grid** (Gowun Dodum 글리프를 두 칸 폭에) | 코드 블록(`<pre>`) |
 
 **이 표의 기계 정본은 `src/lib/typeRoles.ts` 다 (KAN-080 S8).** 역할마다 두 얼굴과 **허용 굵기**를
 적고, `bun run type:verify` 가 그것을 실재하는 면(자체 호스팅 `@font-face` · 구글 URL 의 `wght`)과
@@ -208,6 +209,21 @@ KAN-072 가 `--state-*` 를 안 세운 근거는 「같은 값에 이름이 둘�
 **한국어 고정폭을 덧붙이는 길은 버렸다.** 열이 맞을 것 같지만 라틴 셀과 한글 셀이 다른 그리드가
 되어 안 맞고(실측: 한글 2·4·6·8자에서 −6·−12·−18·−24px), 맞추려면 JetBrains Mono 를 **버려야**
 하며 +235 KB 로 `KAN-060` 과 충돌한다. 근거는 `UI_CONSISTENCY_AUDIT.md` §7-6.
+
+**코드블록만은 칸을 산다 — 다른 서체를 덧붙이지 않고 같은 글리프의 폭을 다시 정해서.**
+코드블록의 상자 선 도식과 한글 셀이 든 표는 열이 맞아야 읽힌다. 그런데 위 배정대로면 구글
+JetBrains Mono 에 없는 글자가 전부 본문 서체로 떨어지고, 본문 서체는 고정폭이 아니다 — 13.125px
+실측으로 칸 하나가 7.87px 인데 `─`·`│` 은 1.67칸, `가` 1.52칸 · `한` 1.55칸(글자마다 다르다),
+`①` 1.83칸이었다. 글 12편의 도식 44개가 한 줄도 안 맞았다. 상자 선이 그쪽으로 떨어진 것은 위
+배정(`--font-code` 스택 중간에 본문 서체를 끼운 것)의 부작용이다 — 그전에는 OS 고정폭이 칸에
+맞게 그렸다. 「한국어 고정폭을 덧붙이는 길」이 안 맞았던 이유는 **덧붙인 서체의 한글 폭이 JetBrains
+Mono 칸의 두 배가 아니어서**였다. 그래서 `bun run fonts:build` 가 보조 면 `Code Grid` 를 굽는다
+(`scripts/lib/fonts/code_grid.py`): 한글은 **Gowun Dodum 글리프를 크기 그대로 정확히 두 칸(1200/1000em)
+폭에 가운데 앉히고**, 상자 선·화살표·도형은 JetBrains Mono 원본의 한 칸 글리프를 가져온다. 얼굴은
+본문 서체 그대로이고 JetBrains Mono 도 그대로다. `<pre>` 안에 실제로 나온 글자로만 서브셋해 46 KB 이고,
+앞 면에 없는 글자가 나오는 지면에서만 받는다. **인라인 `code` 와 시뮬은 대상이 아니다** — 문장 안
+한글을 두 칸으로 벌리면 낱말이 성기게 읽히고 시뮬 라벨 폭이 바뀐다. 칸이 맞는지는 눈이 아니라
+`bun run layout:verify` 가 본다.
 
 **Jua 남용 주의**: Jua는 장식적·둥근 서체라 본문 h2/h3에 쓰면 가독성이 낮아진다. 포스트 본문 내부 소제목(h2~h4)은 `Gowun Dodum`을 명시적으로 사용한다.
 

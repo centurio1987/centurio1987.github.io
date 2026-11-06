@@ -206,6 +206,10 @@ export default function ObserverView() {
           borderCollapse: "collapse",
           fontSize: "var(--text-meta)",
           tableLayout: "fixed",
+          // 전역 `table { white-space: nowrap }` 은 `.table-wrap`(가로 스크롤) 안의 마크다운 표를
+          // 위한 값이다. 이 표는 스크롤 상자 없이 칸 폭이 고정이라 그대로 두면 390px 에서
+          // `HTTPS면 암호문 (TLS가 가림)` 이 칸을 넘어 지면을 402px 로 민다 — 칸 안에서 접는다.
+          whiteSpace: "normal",
         }}
       >
         <caption style={{ captionSide: "top", textAlign: "left", padding: "0 0 var(--space-6)", fontSize: "var(--text-meta)", color: MUTED }}>

@@ -89,6 +89,14 @@ const avatarOk = publicFileExists(TALK.interviewee.avatar);
     font-size: var(--text-small);
     color: var(--accent);
   }
+  /* `min-width: 0` 이 없으면 flex 자식의 최소 폭이 내용물의 최소 폭이 된다 — 답변 안에
+     줄바꿈 기회가 없는 코드블록(상자 선 도식)이 하나만 있어도 이 칸이 그 폭까지 늘어나
+     문단까지 끌고 화면 밖으로 나간다. 390px 에서 지면이 779px 로 벌어진 실측이 있다
+     (talk-crdt-room-optimization). 코드블록은 자기 안에서 가로로 스크롤한다. */
+  .qa-body {
+    flex: 1;
+    min-width: 0;
+  }
   .qa-speaker {
     font-family: var(--font-mono);
     font-size: var(--text-micro);

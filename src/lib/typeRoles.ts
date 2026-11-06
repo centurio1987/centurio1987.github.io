@@ -37,7 +37,7 @@ export type TypeRole = {
 };
 
 /**
- * 역할 다섯. 순서는 `DESIGN_CONCEPT.md` §5 표와 같다.
+ * 역할 일곱. 순서는 `DESIGN_CONCEPT.md` §5 표와 같다.
  *
  * 굵기 배정의 근거(§5 「굵기 — 3단」):
  * - Regular 400 = 본문 기본값 · Medium 500 = 링크 강조·배지·필터·한글 라벨 ·
@@ -94,7 +94,16 @@ export const TYPE_ROLES: TypeRole[] = [
     latin: "JetBrains Mono",
     hangul: "Gowun Dodum",
     weights: [400, 500],
-    use: "코드 블록 전용",
+    use: "인라인 code · 시뮬의 고정폭 텍스트",
+  },
+  {
+    // 한글 칸에 본문 서체가 아니라 「Code Grid」가 온다 — 같은 글리프를 두 칸 폭에 다시
+    // 앉힌 보조 면이라 얼굴은 본문 서체 그대로이고 폭만 칸에 맞는다(`fonts.css`).
+    token: "--font-code-grid",
+    latin: "JetBrains Mono",
+    hangul: "Code Grid",
+    weights: [400],
+    use: "코드 블록(<pre>) — 상자 선 도식과 한글이 열로 서야 하는 자리",
   },
 ];
 

@@ -1,0 +1,11 @@
+{
+  "exhaustive_range_checks": 100980,
+  "seed": 20260914,
+  "wide_domain_slots": 4294967296,
+  "allocated_nodes_for_two_far_leaves": 65,
+  "point_update_sibling_reads": 32,
+  "point_update_node_writes": 33,
+  "whole_domain_summary_reads": 1,
+  "worst_example_cover_nodes": 62,
+  "status": "PASS"
+}

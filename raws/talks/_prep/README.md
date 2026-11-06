@@ -41,6 +41,9 @@
 | --- | --- | --- |
 | `dashboard-bulk-fetch.md` | 한 페이지의 여러 시각화가 대규모 집계를 한 번에 당겨올 때의 반응성 | `~/blog-research/raws/012` · angle `dashboard-aggregated-fetch-talk` |
 | `db-bound-performance.md` | 성능이 DB 질의에 지배될 때 자료구조·알고리즘의 개입 지점 | `~/blog-research/raws/013` · angle `db-bound-query-strategies` |
+| `nonpersistent-invariant-holder.md` | 여러 인스턴스에 걸친 불변식을 지키려 만든 객체가 영속화도 안 되고 맥락 안에 하나만 있으면 될 때의 도메인 자리 | `~/blog-research/raws/015` · angle `ddd-invariant-holder-talk` |
+| `entity-identity-necessity.md` | 로직이 한 번도 참조하지 않는 Entity 식별자를 그래도 두어야 하는가 | `~/blog-research/raws/016` · angle `ddd-entity-identity-talk` |
+| `realtime-sync-server-state.md` | 소켓 실시간 동기화에서 서버 메모리에 띄운 상태를 장애·규모·비용 앞에서 어디에 두어야 하는가 | `~/blog-research/raws/017` · angle `realtime-sync-server-state-talk` |
 
 리서치 원본과 위키는 이 저장소가 아니라 `~/blog-research/` 에 있다. 같은 자료를 두 저장소가
 각자 들면 갈라지기 때문이다.

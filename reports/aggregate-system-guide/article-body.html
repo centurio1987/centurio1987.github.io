@@ -1,0 +1,134 @@
+<header><div class="eyebrow">폭신 대담 · 실전 설계 가이드 · 개정 2</div><h1>136년치 시간 범위에서<br>33개 노드만 고치는 법</h1><p class="lead">원본과 구간 집계를 함께 제공하는 시스템: 저장 형태, CRUD의 실제 접근 경로, 동시성, 대량 삭제까지.</p><p>아래 수치는 설계를 설명하기 위한 데이터와 알고리즘 연산 수다. 실서비스 처리량을 측정한 벤치마크가 아니다. 모든 범위는 시작 포함·끝 제외인 <code>[begin,end)</code>다.</p></header>
+<nav aria-label="목차"><a href="#premise">01 문제 분해</a><a href="#storage">02 저장 구조</a><a href="#sparse">03 희소 구간</a><a href="#read">04 집계 조회</a><a href="#raw">05 원본 조회</a><a href="#create">06 삽입</a><a href="#update">07 수정</a><a href="#delete">08 삭제</a><a href="#move">09 시각 이동</a><a href="#txn">10 동시성</a><a href="#bulk">11 범위 변경</a><a href="#immutable">12 불변 데이터</a><a href="#delivery">13 전송·분리</a><a href="#code">14 참조 코드</a><a href="#decision">15 도입 판단</a></nav>
+<section id="premise"><h2>01 · range가 크다는 말에는 세 가지 비용이 있다</h2><p>예를 들어 고객별 계측 이벤트를 10년간 보관한다고 하자. 이벤트에는 ID, 발생 시각, 정수 측정값, 원본 payload가 있다. 늦게 도착한 이벤트도 추가하며, 잘못 기록한 값·시각을 수정하고 특정 이벤트를 삭제한다. 조회는 합계·개수·최대값과 전체 원본을 모두 지원한다.</p><div class="table"><table><tr><th>무엇이 큰가</th><th>예시</th><th>줄여야 할 비용</th></tr><tr><td>가능한 키 공간 U</td><td>136년의 모든 초</td><td>빈 초마다 배열·행을 만들지 않기</td></tr><tr><td>실제 저장량 N</td><td>존재하는 이벤트 10억 건</td><td>ID·시간 인덱스로 해당 위치를 찾기</td></tr><tr><td>반환량 K</td><td>조회 결과 원본 100만 건</td><td>전체 메모리 적재 없이 순서대로 출력</td></tr></table></div><p><strong>U가 커도 특정 이벤트 한 건의 수정은 전체 시간대를 읽을 이유가 없다.</strong> 다만 원본 K건을 실제로 반환하거나 물리적으로 변경하겠다면, K에 비례하는 작업이 남는다. 이 차이를 구간 트리 하나로 뭉뚱그리면 성능 약속이 틀린다.</p><p>권장 출발점은 <strong>원본 B-tree 인덱스 + 필요할 때만 추가하는 희소 구간 집계</strong>다. 이 글에서는 동작을 끝까지 추적하기 위해 원본과 집계가 같은 PostgreSQL DB 안에서 원자적으로 바뀌는 기준 구현을 먼저 설명한다. 높은 쓰기 처리량이 필요할 때 비동기 투영으로 바꾸는 순서는 10·13절에서 다룬다.</p><!-- VIZ:architecture --><div class="note">앞선 가이드에서 비동기 집계를 기본안으로 단정한 부분을 수정한다. 허용 지연이 정해지지 않았으므로 먼저 정확한 동기 기준 구현을 세우고, 실측한 잠금 대기·쓰기 비용을 근거로 비동기화를 선택한다.</div></section>
+<section id="storage"><h2>02 · 저장한 행을 직접 보자</h2><p>전체 시스템의 기준 시각은 <code>2000-01-01T00:00:00Z</code>다. <code>second_slot = floor((occurred_at − epoch) / 1초)</code>로 변환한다. 원본의 마이크로초 정밀도는 그대로 보관하고, 집계 리프만 초 단위로 묶는다. 다음 표는 시계열 A의 작은 독립 예제다. 각 CRUD 사례는 별도 설명이 없으면 이 초기 상태에서 시작한다.</p><div class="table"><table><tr><th>ID</th><th>slot</th><th>실제 시각의 소수 초</th><th>value</th><th>revision</th></tr><tr><td>e1</td><td>1</td><td>.100</td><td>4</td><td>1</td></tr><tr><td>e2</td><td>3</td><td>.200</td><td>9</td><td>1</td></tr><tr><td>e3</td><td>3</td><td>.800</td><td>6</td><td>1</td></tr><tr><td>e4</td><td>10</td><td>.100</td><td>11</td><td>1</td></tr><tr><td>e5</td><td>14</td><td>.300</td><td>5</td><td>1</td></tr></table></div><p>slot 3은 값 9 하나의 리프가 아니라, 두 행을 묶은 <code>(sum=15,count=2,max=9)</code>다. 최대값 삭제의 어려움은 여기에서 생긴다.</p><pre><code>CREATE TABLE series_guard (
+  series_id text PRIMARY KEY,
+  revision bigint NOT NULL DEFAULT 0
+);
+
+CREATE TABLE events (
+  series_id text NOT NULL REFERENCES series_guard(series_id),
+  event_id text NOT NULL,
+  occurred_at timestamptz NOT NULL,
+  second_slot bigint NOT NULL CHECK (second_slot &gt;= 0 AND second_slot &lt; 4294967296),
+  value bigint NOT NULL,
+  payload jsonb NOT NULL,
+  revision bigint NOT NULL,
+  PRIMARY KEY (series_id, event_id)
+);
+CREATE INDEX events_by_time ON events
+  (series_id, occurred_at, event_id);
+CREATE INDEX events_by_bucket_max ON events
+  (series_id, second_slot, value DESC, event_id);
+
+CREATE TABLE aggregate_nodes (
+  series_id text NOT NULL REFERENCES series_guard(series_id),
+  level smallint NOT NULL CHECK (level BETWEEN 0 AND 32),
+  slot bigint NOT NULL,
+  sum_value numeric NOT NULL,
+  row_count bigint NOT NULL CHECK (row_count &gt; 0),
+  max_value bigint NOT NULL,
+  PRIMARY KEY (series_id, level, slot)
+);</code></pre><p>DDL은 PostgreSQL 설계 예제이며 이 가이드에서 실제 DB 적용·실행 계획은 검증하지 않았다. 애플리케이션은 시각과 second_slot의 일치, level별 slot 상한, revision을 검증한다. 쓰기 경로를 일원화해 직접 SQL 수정으로 집계만 낡아지는 상태를 막는다.</p><p>인덱스는 세 질문에 답한다. “ID의 원본은 어디인가”, “기간 내 다음 행은 어디인가”, “이 1초의 최대값은 무엇인가”. 마지막 인덱스는 series_id와 second_slot을 등치 조건으로 고정한 뒤 value의 첫 후보로 접근한다. MVCC 때문에 보이지 않는 과거 행이 있으면 여러 후보를 확인하므로 물리적으로 반드시 한 페이지만 읽는다고 약속하지 않는다.</p><p>이 DDL은 파티션 없는 기준 형태다. 날짜 파티션을 도입하면 ID만 아는 검색과 유일성 제약이 달라진다. <code>(series_id,event_id) → partition_id,occurred_at</code> 로케이터 표를 같은 트랜잭션에서 유지하거나 ID에 불변의 라우팅 정보를 담는다. 단순히 PARTITION BY만 추가하면 나머지가 모두 같다고 볼 수 없다.</p></section>
+<section id="sparse"><h2>03 · 빈 시간대는 저장하지 않는다</h2><p>노드 주소는 <code>(level,slot)</code> 두 숫자로 정한다. 해당 노드의 시간 범위는 <code>[slot × 2^level, (slot+1) × 2^level)</code>이다. 따라서 부모·자식 주소는 DB 조회 없이 산술로 구할 수 있다.</p><pre><code>리프 (0,3) : [3,4)
+부모 (1,1) : [2,4)
+부모 (2,0) : [0,4)
+부모 (3,0) : [0,8)
+부모 (4,0) : [0,16)
+
+parent(level, slot) = (level+1, floor(slot/2))
+children(level, slot) = (level-1, 2*slot), (level-1, 2*slot+1)</code></pre><p>0~15의 예제에서 저장되는 노드는 14개다. 가능한 모든 노드를 만든 완전 이진 트리는 31개지만, count가 0인 구간은 아예 행을 만들지 않는다. 빈 노드를 읽으면 항등원 <code>(0,0,null)</code>로 해석한다. 이 해석은 집계가 정상적으로 구축·커밋돼 있다는 전제에서만 유효하다. 구축 중인 세대의 누락을 빈 데이터로 오인하면 안 된다.</p><!-- VIZ:sparse --><p>실제 도메인을 <code>[0,2^32)</code>초로 잡으면 약 136년을 표현한다. 한 이벤트는 리프 1개와 조상 32개만 필요하다. slot 3과 slot 3,000,000,000처럼 멀리 떨어진 두 리프를 저장하는 예제에서는 65개 노드만 생성된다. 그 사이 30억 개의 빈 초를 만들거나 순회하지 않는다.</p><div class="note">희소 구조가 무조건 작다는 뜻은 아니다. 서로 다른 초에 이벤트가 촘촘히 쌓이면 리프 M개에 대한 노드 수는 증가한다. 상한은 완전 트리 2U−1과 M(H+1) 중 작은 쪽이며, 조상 공유 정도에 따라 달라진다. SQL 행·인덱스·WAL 비용도 든다. 1초보다 1분 버킷이 적합한지 실측해야 한다.</div><p>배열 인덱스는 시간 좌표와 고정적으로 대응한다. 과거의 빈 초에 새 데이터가 들어와도 기존 리프 번호를 밀지 않는다. 범위를 넘는 시각은 거부하거나 새 epoch 파티션으로 라우팅한다. 트리의 height나 epoch를 조회 도중 몰래 변경하지 않는다.</p></section>
+<section id="read"><h2>04 · 실전 조회: [2,12)의 집계는 세 주소면 된다</h2><p>초기 데이터의 2초부터 12초 직전까지 집계를 요청한다. 원본에는 e2·e3·e4가 해당한다. 전체 원본을 읽어 합치지 않고, 겹치지 않는 최대 정렬 구간들로 요청을 분해한다.</p><!-- VIZ:range --><div class="table"><table><tr><th>읽을 주소</th><th>담당 범위</th><th>저장된 상태</th></tr><tr><td>(1,1)</td><td>[2,4)</td><td>15 / 2 / 9</td></tr><tr><td>(2,1)</td><td>[4,8)</td><td>행 없음 → 0 / 0 / null</td></tr><tr><td>(2,2)</td><td>[8,12)</td><td>11 / 1 / 11</td></tr></table></div><pre><code>WITH wanted(level, slot) AS (
+  VALUES (1,1::bigint), (2,1::bigint), (2,2::bigint)
+)
+SELECT w.level, w.slot,
+       COALESCE(n.sum_value,0) AS sum_value,
+       COALESCE(n.row_count,0) AS row_count,
+       n.max_value
+FROM wanted w
+LEFT JOIN aggregate_nodes n
+  ON n.series_id = 'A' AND n.level = w.level AND n.slot = w.slot;
+
+-- 병합: sum = 15+0+11 = 26, count = 2+0+1 = 3, max = 11</code></pre><p><strong>전체 저장 데이터의 크기와 무관하게 요청의 분해 목록부터 계산한다.</strong> level마다 좌우 경계에서 조금씩 잘라내므로 높이 H에 대해 O(H)개의 구간이 나온다. H=32의 <code>[1,2^32−1)</code>은 62개, 전체 도메인 <code>[0,2^32)</code>은 루트 하나다. 이것은 논리적인 노드 주소 개수이고 DB 내부의 B-tree 탐색·페이지 캐시 미스는 별도 비용이다.</p><p>SQL 한 문장이 원본 요약을 읽으면 동일 문장 스냅샷으로 조회된다. 서비스에서 여러 배치로 나누면 Repeatable Read 트랜잭션으로 기준 시점을 고정한다. 캐시의 최신 노드와 DB의 과거 노드를 섞으면 이 보장이 깨진다.</p><h3>초 경계가 맞지 않는 요청</h3><p><code>[3.500초,10.050초)</code>을 요청하면 양 끝을 원본으로 처리한다. 왼쪽 <code>[3.500,4)</code>에는 e3=6, 내부 <code>[4,10)</code>에는 데이터가 없고, 오른쪽 <code>[10,10.050)</code>에는 e4가 아직 포함되지 않는다. 정답은 6 / 1 / 6이다. 3초·10초의 요약을 통째로 쓰면 오답이다.</p><pre><code>왼쪽 경계 원본: [begin, ceil(begin))
+완전한 내부 초: [ceil(begin), floor(end)) → 구간 인덱스
+오른쪽 경계 원본: [floor(end), end)
+
+begin과 end가 같은 초 안이면 원본 [begin,end)만 한 번 읽는다.
+경계가 정수 초이면 해당 조각은 비어 있다.</code></pre><p>경계 원본은 events_by_time 인덱스로 좁힌다. 조회의 전체 비용은 O(H) 요약 읽기에 <strong>최대 두 불완전 버킷의 원본 집계 비용</strong>이 더해진다. 한 초에 수백만 행이면 경계도 비싸다. 더 작은 버킷, 경계 전용 하위 인덱스, 또는 API의 정렬된 경계 계약이 필요하다. 이 비용을 숨기지 않는다.</p></section>
+<section id="raw"><h2>05 · 실전 조회: 같은 범위의 원본 세 건</h2><p>전체 데이터 요청은 집계 노드를 사용하지 않는다. 시간 인덱스로 2초 위치를 찾고 12초 직전까지 순서대로 읽는다. 원본이 큰 payload를 갖더라도, 범위 밖의 모든 payload를 미리 로드할 이유는 없다.</p><pre><code>SELECT event_id, occurred_at, value, payload
+FROM events
+WHERE series_id = 'A'
+  AND occurred_at &gt;= :begin AND occurred_at &lt; :end
+ORDER BY occurred_at, event_id
+LIMIT 2;
+
+-- 첫 페이지: e2(3.200), e3(3.800)
+-- 다음 요청에 마지막 occurred_at, event_id를 전달한다.
+-- 같은 WHERE에 다음 조건 추가:
+AND (occurred_at, event_id) &gt; (:last_time, :last_id)
+-- 다음 페이지: e4(10.100)</code></pre><p>위 AND는 ORDER BY 앞의 WHERE에 추가한다. 한 일시에 여러 이벤트가 있으므로 event_id까지 정렬해야 페이지 경계가 유일하다. 커서에는 series·범위·필터·정렬 조건을 결합하고 서명한다. K건 반환 비용은 일반적인 인덱스 범위 탐색 관점에서 O(log N + K)이며, 실제 페이지 I/O·정렬 선택·행 가시성에 따라 달라진다.</p><p>페이지 사이에 e2의 시각이 11초로 바뀌면 다시 보일 수 있다. 최신 화면 탐색은 이를 허용할 수 있지만 정확한 전체 다운로드에는 고정 스냅샷이나 완료 파일이 필요하다. event_id만 알고 단건을 읽을 때는 시간 인덱스 대신 PK (series_id,event_id)를 사용한다.</p><!-- VIZ:lookup --></section>
+<section id="create"><h2>06 · 실전 삽입: 7초에 값 8을 추가한다</h2><p>초기 상태에서 <code>e6, slot=7, value=8</code>을 추가한다. 작업은 “리프 찾기 → 새 리프 상태 만들기 → 그 조상만 계산하기”다. 1초·3초·10초·14초의 원본은 읽지 않는다.</p><ol><li>시계열 A의 writer guard를 잠근다. 동일 시계열의 다른 쓰기를 먼저 끝내게 한다.</li><li>PK로 중복 event_id를 확인하고 새 원본을 삽입한다. 재시도 요청은 별도 command_id로 중복 적용을 막는다.</li><li>(0,7)을 읽는다. 없으므로 기존 상태는 0 / 0 / null이다. 새 상태는 8 / 1 / 8이다.</li><li>변경하지 않는 형제 주소를 미리 계산해 한 번에 읽는다: (0,6), (1,2), (2,0), (3,1).</li><li>아래에서 위로 병합한 다음 새 리프와 조상 4개를 일괄 저장한다. 원본과 함께 커밋한다.</li></ol><!-- VIZ:insert --><div class="table"><table><tr><th>갱신 노드</th><th>계산</th><th>새 sum / count / max</th></tr><tr><td>(0,7) [7,8)</td><td>새 원본</td><td>8 / 1 / 8</td></tr><tr><td>(1,3) [6,8)</td><td>빈 [6,7) + 새 리프</td><td>8 / 1 / 8</td></tr><tr><td>(2,1) [4,8)</td><td>빈 [4,6) + 새 [6,8)</td><td>8 / 1 / 8</td></tr><tr><td>(3,0) [0,8)</td><td>기존 [0,4)=19/3/9 + 8/1/8</td><td>27 / 4 / 9</td></tr><tr><td>(4,0) [0,16)</td><td>새 왼쪽 + 기존 오른쪽 16/2/11</td><td>43 / 6 / 11</td></tr></table></div><h3>계산한 노드를 한 번에 저장하기</h3><p>원본 삽입과 같은 트랜잭션에서 다음 묶음을 저장한다. 이 값들은 위 초기 데이터에 e6를 추가한 결과다. 실제 서비스에서는 읽어 온 상태로 계산한 행 목록을 파라미터로 전달한다.</p><pre><code>INSERT INTO aggregate_nodes
+  (series_id, level, slot, sum_value, row_count, max_value)
+VALUES
+  ('A',0,7,8,1,8),
+  ('A',1,3,8,1,8),
+  ('A',2,1,8,1,8),
+  ('A',3,0,27,4,9),
+  ('A',4,0,43,6,11)
+ON CONFLICT (series_id,level,slot) DO UPDATE SET
+  sum_value = EXCLUDED.sum_value,
+  row_count = EXCLUDED.row_count,
+  max_value = EXCLUDED.max_value;</code></pre><p>빈 결과는 이 테이블의 row_count 조건 때문에 UPSERT하지 않는다. 삭제할 주소 목록을 VALUES로 넘겨 같은 트랜잭션의 DELETE로 제거한다. 원본과 요약을 별도로 커밋해서는 안 된다.</p><p>메모리에 필요한 것은 새 경로와 형제 요약뿐이다. 높이 32에서는 <strong>형제 주소 32개 + 기존 리프 1개 조회, 경로 최대 33개 쓰기</strong>다. 기존 리프 조회는 리프 차분을 계산할 때 필요하고, 형제 읽기 32개와 구분한다. raw INSERT와 보조 인덱스 쓰기도 별도 비용이다.</p><p>배치로 100개 이벤트가 같은 초에 들어오면 매번 조상 32개를 쓰지 말고, 배치 안에서 리프 변화량을 모아 한 번 갱신할 수 있다. 이때 배치 커밋까지의 지연과 실패 시 재시도 범위가 커진다.</p></section>
+<section id="update"><h2>07 · 실전 수정: e2의 값 9를 2로 낮춘다</h2><p>PK로 e2를 읽으면 slot=3, oldValue=9를 바로 얻는다. 날짜 범위 검색으로 이벤트를 찾지 않는다. 원본의 payload만 바뀌고 집계 대상 필드·필터 차원이 같다면 집계 트리는 아예 건드릴 필요가 없다.</p><p>값을 바꾸면 기존 리프 15 / 2 / 9에서 sum은 <code>15−9+2=8</code>, count는 2 그대로다. 그러나 max를 <code>9−9+2</code>로 구할 수는 없다. e3의 값 6이 남아 있기 때문이다. 원본 UPDATE 후 다음 인덱스 조회로 리프 최대를 얻는다.</p><pre><code>SELECT value
+FROM events
+WHERE series_id = 'A' AND second_slot = 3
+ORDER BY value DESC, event_id
+LIMIT 1;
+-- e3의 6. 새 리프: 8 / 2 / 6</code></pre><p>이후 [2,4)→[0,4)→[0,8)→[0,16)만 재계산한다. 전체 집계는 28 / 5 / 11이고, [0,8)은 12 / 3 / 6이다. 10초·14초의 원본은 읽지 않고 오른쪽 구간 요약만 재사용한다.</p><p>증가 수정이라면 max는 <code>max(oldMax,newValue)</code>로 끝낼 수 있다. 감소 수정도 oldValue가 oldMax보다 작으면 기존 max가 살아 있다. 기준 구현은 모든 값 수정에서 버킷 최대 인덱스를 한 번 조회해 분기 오류를 줄이고, 병목이 확인되면 이 최적화를 추가한다.</p><p>revision이 1이라고 읽은 사용자가 revision 2로 이미 바뀐 행을 덮어쓰지 않도록 expected_revision을 비교한다. 일치하지 않으면 충돌 응답을 보내 다시 읽게 한다. guard는 서버 내부 쓰기 순서를 지키고, revision은 사용자의 낡은 명령을 막는다. 목적이 다르다.</p></section>
+<section id="delete"><h2>08 · 실전 삭제: 최대값이 사라져도 전체를 재조회하지 않는다</h2><p>초기 상태에서 e2(9)를 삭제한다. 원본 PK 조회에서 slot=3과 값 9를 얻은 뒤 DELETE한다. 기존 리프 sum에서 9를 빼고 count에서 1을 뺀다. 최대 인덱스의 다음 값은 6이다. 새 리프는 6 / 1 / 6이다.</p><!-- VIZ:delete --><p>리프와 조상 네 개를 바꾸면 루트는 26 / 4 / 11이 된다. 같은 3초의 e3만 최대 후보로 확인하고 다른 모든 시간의 원본을 재집계하지 않는다. 이제 e3까지 삭제하면 리프 count=0이므로 (0,3) 행을 삭제한다. 부모 [2,4)도 비어서 삭제되지만 [0,4)는 e1 때문에 4 / 1 / 4로 남는다.</p><p><strong>값 0과 빈 구간은 다르다.</strong> 값 0인 행 하나는 0 / 1 / 0이고, 비어 있는 상태는 0 / 0 / null이다. 음수도 허용하므로 빈 max를 0으로 두면 음수 최대값을 잘못 덮어쓴다.</p><h3>왜 max를 저장해도 보조 인덱스가 필요한가</h3><p>9가 유일한 최대인지, 9가 두 건인지, 그다음 값이 6인지 요약만으로 알 수 없다. 리프에 모든 정렬 값을 넣으면 사실상 추가 인덱스를 직접 만드는 셈이다. 기존 DB의 (series,second,value DESC,id) 인덱스를 활용하는 것이 구현·복구 면에서 단순하다. 반면 집계 리프를 이벤트 한 건씩 만들면 이 문제는 줄지만 트리가 더 커지고 동적 키 관리가 필요하다.</p></section>
+<section id="move"><h2>09 · 실전 시각 수정: 3초의 이벤트를 10초로 이동</h2><p>초기 상태에서 e2=9를 3.200초에서 10.200초로 옮긴다. 기존 리프는 6 / 1 / 6, 목적 리프는 20 / 2 / 11이 된다. 전체 합계·개수는 바뀌지 않지만 두 구간별 결과는 달라진다.</p><!-- VIZ:move --><p>두 경로를 따로 커밋하면 원본은 이동했는데 이전 구간에서 아직 보이거나, 양쪽에서 두 번 집계되는 순간이 생긴다. <code>changes={3:newOldLeaf,10:newNewLeaf}</code>를 만들어 한 번의 재계산·커밋으로 처리한다.</p><pre><code>변경 경로 합집합 (작은 높이 4 예제)
+(0,3), (0,10)
+(1,1), (1,5)
+(2,0), (2,2)
+(3,0), (3,1)
+(4,0)              ← 공통 루트는 한 번만 계산
+
+읽을 미변경 형제 6개
+(0,2), (0,11), (1,0), (1,4), (2,1), (2,3)</code></pre><p>원래는 경로마다 리프 포함 5개이므로 10개지만 공통 루트가 겹쳐 9개만 쓴다. dirty 집합에 들어간 자식은 새 상태를 사용하고, 집합 밖의 형제만 DB에서 읽는다. 미래 슬롯에도 같은 규칙을 적용하므로 범위 전체를 미리 생성할 필요가 없다.</p></section>
+<section id="txn"><h2>10 · 이 계산을 DB에서 안전하게 묶는 순서</h2><p>다음은 단일 시계열 writer를 직렬화하는 기준 프로토콜이다. 운영 코드는 트랜잭션 재시도·타임아웃·권한 검사를 포함해야 한다. READ COMMITTED에서 guard를 얻고, 이후 원본과 집계를 읽는 순서로 실행한다. guard 대기 전에 읽어 둔 리프 상태를 재사용하지 않는다.</p><pre><code>BEGIN;
+SELECT revision FROM series_guard
+WHERE series_id = :series FOR UPDATE;
+
+-- 1. command_id 중복 확인 (명령 기록도 이 트랜잭션에 저장)
+-- 2. PK로 기존 원본과 expected_revision 확인
+-- 3. 영향받는 기존 리프만 조회
+-- 4. 원본 INSERT/UPDATE/DELETE
+-- 5. 리프 sum/count 차분 + 버킷 최대 인덱스 조회
+-- 6. dirty 조상 합집합과 미변경 형제 주소 계산
+-- 7. 형제들 한 번에 SELECT, 메모리에서 bottom-up 병합
+-- 8. count &gt; 0인 dirty 노드 일괄 UPSERT
+--    count = 0인 dirty 노드 일괄 DELETE
+UPDATE series_guard SET revision=revision+1 WHERE series_id=:series;
+COMMIT;</code></pre><p>여기서 “일괄”은 미리 계산한 주소 목록을 VALUES/배열/임시 입력 테이블로 넘긴다는 뜻이다. 트리 레벨마다 새 네트워크 요청을 보내는 방식이 아니다. 보통 원본 읽기·쓰기, 리프/최대 조회, 형제 조회, 노드 쓰기라는 몇 단계의 왕복이 남는다. 상태 계산을 DB 함수에 넣으면 왕복은 줄지만 배포·테스트 책임이 커진다.</p><!-- VIZ:write --><p>시계열 A의 다른 쓰기는 guard 때문에 대기한다. 독자는 MVCC 스냅샷에서 이전 커밋 또는 새 커밋의 원본·집계를 본다. 한 SQL 또는 같은 Repeatable Read 트랜잭션이어야 하며, 독립적인 HTTP 요청 두 번이 자동으로 같은 스냅샷을 공유하지는 않는다.</p><p>전역 한 개의 잠금이 아니라 시계열별 잠금이다. 그래도 특정 시계열이 매우 뜨거우면 병목이 된다. 시계열을 shard별 부분 집계로 나누고 조회 때 합치거나, 배치 적용을 쓰거나, 변경 로그 기반 비동기 투영으로 옮긴다. shard 수만큼 읽기·병합 비용과 일관성 관리가 늘어난다.</p><!-- VIZ:consistency --><p>비동기화할 때 원본+outbox를 같은 트랜잭션에 기록한다. 소비자는 중복 전달에 대비하고 파티션 순서대로 적용한 뒤 집계 상태+체크포인트를 원자적으로 저장한다. 최신 원본으로 리프를 재계산하면서 오래된 이벤트 delta도 더하면 이중 적용될 수 있다. 이벤트 before/after로 순서대로 반영할지, 특정 스냅샷에서 버킷을 다시 만들지 하나의 일관된 방식을 선택한다.</p><p>초기 구축에서는 원본 전체 스캔이 한 번 필요할 수 있다. 임의의 정확한 집계를 아무 데이터도 읽지 않고 만들 수는 없다. 온라인 재구축은 스냅샷에 대응하는 변경 로그 위치를 확보하고, 새 세대를 만든 뒤 그 위치 이후 변경을 재생한다. 따라잡은 다음 조회 세대를 전환한다.</p></section>
+<section id="bulk"><h2>11 · 넓은 범위 전체를 수정·삭제한다면</h2><p>점 CRUD를 O(H) 집계 갱신으로 처리하는 것과 “5년치 원본 2억 행을 삭제”하는 것은 다르다. 아래에서는 조회 비용을 줄이는 것과 물리적 변경을 미루는 것을 구분한다.</p><!-- VIZ:bulk --><h3>A. 정확한 원본 물리 삭제: 대상 K행은 처리한다</h3><p>시간 인덱스·파티션 가지치기로 삭제 범위 밖의 데이터를 제외한다. 대상 ID를 안정된 순서로 제한된 배치에 읽어 삭제하고, 각 배치에서 영향 버킷별 변화량을 모아 집계한다. 같은 버킷의 조상은 배치당 한 번만 갱신한다. 전체 N행을 조회하지 않아도 K행의 인덱스 정리·WAL·후속 vacuum 비용은 남는다.</p><p>여러 배치의 커밋 사이에 일부 삭제 상태가 보이는 것은 API 계약으로 드러내야 한다. 작업 ID·진행 상태를 제공하고, 한 번에 사라져야 한다면 별도 논리 게시 단위가 필요하다. 단일 거대 트랜잭션은 원자적이지만 잠금·로그·복구 비용이 커진다.</p><h3>B. 보존 기간 만료: 파티션 경계와 맞추면 유리하다</h3><p>원본이 월별 파티션이고 모든 고객의 2020년 전체를 만료시키는 정책이라면, 12개 파티션을 detach/drop하는 경로를 검토한다. 행별 DELETE보다 효율적이지만 잠금·의존성·파일 정리·기존 독자 때문에 지연이 생길 수 있다. 고객 A만 지울 때 같은 월의 다른 고객까지 들어 있는 파티션을 통째로 버릴 수는 없다.</p><p>상위 요약도 그 12개 월을 제외해야 한다. 삭제될 파티션의 요약을 읽어 새 상위 요약을 계산하고 게시하는 절차를 둔다. 운영 DDL로 원본만 없애고 집계가 남는 상태를 방치하지 않는다. concurrent detach는 일반 트랜잭션과 같은 방식으로 묶을 수 없는 제약이 있으므로 정책 작업의 상태 전이와 읽기 제외를 따로 설계한다.</p><h3>C. 즉시 안 보이게 만들기: 범위 tombstone</h3><p>대상 레코드를 당장 지우지 않고 <code>(series=A,begin,end,cutoff_sequence)</code>라는 삭제 표식을 저장하는 방법이다. “삭제 명령 전에 존재한 이벤트만 삭제”라면 cutoff를 포함해야 뒤늦게 생성한 새 이벤트까지 영원히 가려지지 않는다. 일반 revision 숫자는 모든 이벤트를 정렬하는 생성 순번이 아니므로 이 용도로 섞어 쓰지 않는다.</p><p>이 방법을 고르면 원본 조회가 tombstone을 필터링하고, 집계 조회도 같은 삭제 의미를 반영해야 한다. 트리 루트를 0으로만 바꾸고 원본 API를 그대로 두면 서로 모순된다. 여러 overlapping tombstone의 병합·인덱싱, 새 입력의 재등장 규칙, 삭제된 ID의 재사용, background GC까지 구현해야 한다. 본 가이드의 점 CRUD 테이블에 표식 한 칸만 더하면 완성되는 기능이 아니다.</p><h3>D. lazy propagation은 언제 유효한가</h3><p>트리 노드에 “이 구간은 비었다”라는 지연 표식을 두면 완전히 포함된 구간의 집계 상태를 한 번에 비울 수 있다. 이후 하위 조회·점 수정은 가장 가까운 삭제 표식을 먼저 확인하고 필요한 경로에만 내려보낸다. 이론상 구간 집계의 삭제 표시는 O(log U)로 처리할 수 있지만, 오래된 자식 행을 그대로 믿는 기존 일괄 주소 조회 코드는 더 이상 맞지 않는다. 조상의 표식·세대 정보를 같이 읽어야 한다.</p><p>또 “모든 값에 +5”는 고정된 행 집합에서 <code>sum += 5×count, max += 5</code>로 요약을 갱신할 수 있다. 그러나 원본 payload 속 value도 즉시 바꿔 저장해야 한다면 해당 행을 실제로 수정해야 한다. 가상 보정값을 읽을 때 적용하는 별도 원본 모델을 도입할 때만 물리 쓰기를 미룰 수 있다. 임의의 함수·조건 변경이 항상 작은 집계 상태로 계산되는 것도 아니다.</p><div class="note">현재 권장안: 일상적인 점 CRUD는 희소 집계 경로로, 보존 기간 만료는 파티션 설계로, 임의 범위의 물리 변경은 작업 큐와 배치로 처리한다. 강한 “즉시 논리 삭제” 요구가 실제로 있을 때 tombstone·lazy 세대를 추가한다.</div></section>
+<section id="immutable"><h2>12 · 수정·삭제가 없다면 무엇을 덜 만들 수 있나</h2><!-- VIZ:immutable --><p>엄격하게 시간순 추가되고 과거가 확정됐다면 sum/count는 누적합 차분이 단순하다. 마지막 누적값에 새 값을 더해 저장하고, 조회는 시작 직전과 끝 직전의 누적값을 찾는다. 시간 경계 위치를 찾는 인덱스 탐색은 남지만 내부 원본을 읽지 않는다.</p><p>max는 누적 최대끼리 빼지 못하므로 블록별 최대의 계층 요약이나 정적 구간 자료구조가 필요하다. 모든 기능을 한 구조에 맞추기 위해 sum에도 복잡한 트리를 강요할 필요는 없다. 반대로 sum/count/max를 항상 함께 읽는다면 복합 요약이 I/O를 공유하는 장점이 있다.</p><p>기존 행이 불변이어도 과거 시각의 늦은 이벤트가 추가되면 그 이후 누적합들이 바뀐다. 이때 누적 배열을 매번 뒤까지 수정하는 방식은 좋지 않다. 최근 미확정 구간은 변경 가능 요약으로, 확정 블록은 불변 누적·최대 요약으로 나누고 늦은 정정은 새 블록 버전으로 교체한다. 마감 기준은 시간 경과의 추측이 아니라 업무 정책이다.</p></section>
+<section id="delivery"><h2>13 · 결과가 클 때: 계산을 줄여도 전송은 남는다</h2><p>고객이 “10년치 최대값”을 요청하면 요약 몇 개에서 숫자 하나를 반환한다. “10년치 전체 데이터”를 요청하면 K행을 보내야 한다. 압축은 바이트 수를 줄이고 스트리밍은 메모리와 첫 전달 지연을 줄이지만, 필요한 원본을 읽는 일을 없애지 않는다.</p><!-- VIZ:export --><p>100만 행 × 직렬화 평균 500바이트라면 500MB다. 압축 후 25%라는 가정에서는 125MB이고, 실효 10MB/s라면 전송만 12.5초다. 이 값들은 가정이며 압축률·디스크·회선·동시 사용자 수를 실제 데이터로 재야 한다.</p><ol><li>화면 목록은 커서로 제한된 페이지를 반환한다. 결과가 많은 차트는 사용자가 동의한 해상도의 버킷 API를 쓴다.</li><li>중간 크기는 DB 커서 → NDJSON → 연속 압축 → HTTP로 흘린다. DB 드라이버도 제한된 배치로 읽어야 한다.</li><li>대량 내보내기는 작업 ID를 발급하고 스냅샷에서 파일을 만든다. 완료 표식·행 수·체크섬을 검증한 뒤 다운로드를 공개한다.</li></ol><pre><code>// Node.js의 연결 흐름. import·에러 처리·커서 생성은 생략한 예제.
+await pipeline(
+  Readable.from(encodeNDJSON(cursor), { objectMode: false }),
+  createGzip(),
+  response,
+  { signal }
+);</code></pre><p>실제 구현에서는 Accept-Encoding 협상, Content-Encoding·Vary, 실패 시 커서 finally 종료, 취소 signal의 DB 전파가 필요하다. 프록시 버퍼링과 압축 flush 정책도 첫 응답 시간을 바꾼다. NDJSON 클라이언트는 UTF-8 증분 디코딩 후 미완성 줄을 보관한다. 연결이 끝났다는 이유만으로 전체 성공으로 간주하지 말고 마지막 완료 레코드를 확인한다.</p><h3>쿼리 서버를 추가할 명확한 이유</h3><p>노드 33개의 읽기/쓰기를 DB와 몇 번 왕복하는 비용이 지배적이고 핫 집계 상태가 반복 재사용된다면 상주 쿼리 서버가 유리할 수 있다. 하지만 상태 전체를 요청마다 로드하는 중계 서버는 효과가 없다. 압축 CPU가 일반 API를 막는다면 집계 서버보다 내보내기 작업자를 분리한다. 원본 I/O가 병목이면 쿼리 서버 수만 늘리지 말고 저장 배치·읽기 복제·파티션부터 본다.</p><p>상주 상태는 DB와 별도의 정본으로 만들지 않는다. 스냅샷+변경 로그에서 복원할 수 있어야 하며, 캐시 키에는 시계열·범위·필터·집계 세대를 포함한다. 히트율뿐 아니라 워밍 시간, 상태 메모리 상한, 로그 지연, 재시작 복구 시간을 측정한다.</p></section>
+<section id="code"><h2>14 · 주소 계산과 경로 갱신을 실행해 보기</h2><p>아래 Python 코드는 실제 DB 대신 사전을 사용하지만, DB에서 읽을 형제 주소와 쓸 경로를 정확하게 구한다. 원본 CRUD·리프 최대 조회·DB 트랜잭션은 포함하지 않는다. 따라서 실행 결과는 알고리즘 검증이며 PostgreSQL 성능 검증이 아니다.</p><p><a href="sparse_tree.py" download>참조 구현 내려받기</a> · <a href="test_sparse_tree.py" download>검증 코드 내려받기</a>. 전체 코드는 HTML에도 포함했다.</p><!-- CODE:SPARSE --><p>초기 데이터처럼 한 리프에 여러 이벤트가 있으면 원본 변경 뒤 계산한 <code>Stats</code>를 전달한다. 시각 이동은 두 새 리프를 함께 전달한다.</p><pre><code>tree = SparseRangeIndex(height=4)
+tree.replace_leaves({
+  1: Stats(4,1,4), 3: Stats(15,2,9),
+  10: Stats(11,1,11), 14: Stats(5,1,5)
+})
+assert tree.query(2,12) == Stats(26,3,11)
+# e2=9를 3초에서 10초로 이동
+tree.replace_leaves({3: Stats(6,1,6), 10: Stats(20,2,11)})
+assert tree.query(2,12) == Stats(26,3,11)
+print(sorted(tree.last_reads))  # query를 실행했으므로 조회 분해 키
+</code></pre><p>수정 직후의 <code>last_reads / last_writes</code>를 보면 변경하지 않은 형제와 갱신 경로를 확인할 수 있다. 그 뒤 query를 부르면 last_reads는 조회 주소로 바뀐다. 읽지 않는 데이터를 읽었다고 보고하는 계측 혼동을 피한다.</p></section>
+<section id="decision"><h2>15 · 이 구조를 실제로 도입할 때의 판단표</h2><div class="table"><table><tr><th>요청</th><th>접근하는 대상</th><th>피할 수 없는 대가</th></tr><tr><td>ID 하나 읽기</td><td>원본 PK</td><td>원본 페이지 I/O</td></tr><tr><td>점 삽입·값 수정·삭제</td><td>원본·기존 리프·형제 H개·경로 H+1개</td><td>보조 인덱스·WAL·잠금</td></tr><tr><td>시각 이동</td><td>두 리프 경로의 합집합</td><td>두 위치 원자적 갱신</td></tr><tr><td>정렬된 경계의 집계</td><td>O(H) 구간 요약</td><td>DB 주소 탐색·스냅샷</td></tr><tr><td>임의 소수 초 집계</td><td>요약 + 양 끝 원본</td><td>경계 버킷 밀도</td></tr><tr><td>전체 원본 K건</td><td>시간 인덱스와 K행</td><td>K행 출력·압축·회선</td></tr><tr><td>범위 K건 물리 삭제</td><td>범위 내 K행 또는 정렬된 파티션</td><td>삭제·GC·일관성 게시</td></tr></table></div><!-- VIZ:rollout --><p>순서는 원본 SQL을 정확성 기준으로 두고, 단순 버킷 집계와 희소 계층을 동일 워크로드로 비교하는 것이다. 실제 운영의 원본 N, 활성 초 M, 읽기/쓰기 비율, 경계 요청 비율, 핫 시계열 편중을 사용한다. 가상의 QPS나 p99 목표를 충족했다고 주장하지 않는다.</p><p>참조 구현 검증에서는 수정·삭제·두 리프 변경 뒤 모든 작은 범위를 반복 비교해 <strong>100,980건</strong>을 통과했다. 큰 도메인의 멀리 떨어진 두 리프, 형제 32개 읽기, 경로 33개 쓰기, 전체 도메인 루트 1개 조회, 62개 구간 분해도 확인했다. DB 동시성·실제 I/O·장애 복구·대용량 전송은 별도의 통합 검증 과제다.</p><p>합계의 저장 타입, NULL·음수·distinct count·추가 필터 차원도 명시해야 한다. 이 글의 count는 행 개수이고 값은 NOT NULL 정수다. 평균은 sum/count로 파생할 수 있지만 distinct count·중앙값·분위수는 별도 상태와 정확도 계약이 필요하다. 버려진 필터 차원을 작은 요약에서 복원할 수는 없다.</p></section>
+<footer><strong>근거와 검증 범위</strong><ul><li><a href="https://www.postgresql.org/docs/18/indexes-multicolumn.html">PostgreSQL: 다중 컬럼 B-tree와 선행 등치 조건</a> — 버킷 최대 인덱스와 시간 조회의 근거.</li><li><a href="https://www.postgresql.org/docs/15/transaction-iso.html">PostgreSQL: 트랜잭션 격리와 스냅샷</a> — 여러 노드 조회의 기준 시점.</li><li><a href="https://www.postgresql.org/docs/17/ddl-partitioning.html">PostgreSQL: 파티션 제거와 제약</a> — 기간 만료를 행별 DELETE와 구분.</li><li><a href="https://www.postgresql.org/docs/17/sql-altertable.html">PostgreSQL: DETACH PARTITION의 잠금·동시 실행 제약</a>.</li><li><a href="https://nodejs.org/api/stream.html">Node.js Stream</a> · <a href="https://nodejs.org/api/zlib.html">Zlib</a> — 압축 스트림과 백프레셔.</li></ul><p>실제 DB에 적용하기 전 SQL 실행계획·격리·재시도·용량을 검증해야 한다. 도식은 ~/resume의 viz 컴포넌트와 실제 렌더러로 생성했다. 본문·서체·도식·참조 구현은 HTML에 포함했다. 모바일의 넓은 그림과 코드는 가로로 이동해 읽는다.</p></footer>

@@ -13,6 +13,7 @@
     "viz:verify": "bun scripts/verify-viz.ts",
     "deco:verify": "bun scripts/verify-deco.ts",
     "width:verify": "bun scripts/verify-widths.ts",
+    "layout:verify": "bun scripts/verify-layout.ts",
     "tokens:verify": "bun scripts/verify-tokens.ts",
     "tokens:invariant": "bun scripts/check-recognize-invariant.ts",
     "type:verify": "bun scripts/verify-type.ts",

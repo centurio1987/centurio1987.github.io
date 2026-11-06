@@ -20,6 +20,11 @@
  *   글자 수집이 `dist/**\/*.html` 을 입력으로 받기 때문이다. `dist/` 가 없으면 여기서 끝낸다.
  *   빌드는 이 스크립트에 의존하지 않으므로(폰트 파일이 없어도 46쪽이 그대로 나온다) 순환이 없다.
  *
+ * 코드블록 보조 서체 「Code Grid」도 여기서 굽는다 — `scripts/lib/fonts/code_grid.py`.
+ *   구글 JetBrains Mono 에 상자 선·화살표·한글이 없어 그 글자가 고정폭이 아닌 본문 서체로
+ *   떨어지고, 그래서 코드블록의 도식이 한 줄도 안 맞았다. 라틴 밖 글자를 칸에 맞춰 다시 앉힌
+ *   보조 서체를 `<pre>` 안에 실제로 나온 글자로만 서브셋한다. 근거는 그 파일 머리주석.
+ *
  * 굽는 함정 셋과 그 자가검사는 `scripts/lib/fonts/bake.py` 에 있다 — 셋째(stroke 전 winding
  * 정규화)가 **조용히 지나가는** 종류라 면적으로 잡는다. 이 진입점은 규약만 진다.
  *
@@ -33,6 +38,7 @@ import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { FIXTURE_CHARS } from "./lib/layout/selftest.ts";
 
 const ROOT = process.cwd();
 const args = new Set(process.argv.slice(2));
@@ -52,6 +58,12 @@ const OUT_DIR = join(ROOT, "public/fonts");
  */
 const SRC_URL = "https://raw.githubusercontent.com/google/fonts/main/ofl/gowundodum/GowunDodum-Regular.ttf";
 const SRC_SHA256 = "a6e457933227483a11758fd0947bc74422a106d46f0bf057fdaa5af94a30067d";
+
+/** 코드블록 보조 서체의 라틴 칸 원본. 변수 서체 한 벌에서 400 을 인스턴스로 뽑는다. */
+const JBM_TTF = join(WORK, "JetBrainsMono[wght].ttf");
+const JBM_URL = "https://raw.githubusercontent.com/google/fonts/main/ofl/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf";
+const JBM_SHA256 = "48715a42ec242c21e9f02692891e147d022299a52e48d5e413e1a942193ffeda";
+const CODE_OUT = join(OUT_DIR, "code-grid-400.woff2");
 
 /** 파이썬 의존. 굽기는 `skia-pathops`, 서브셋·woff2 는 `fonttools[woff]` 다. */
 const PY_DEPS = ["fonttools[woff]==4.64.0", "skia-pathops==0.9.2"];
@@ -93,25 +105,31 @@ function ensureVenv(): boolean {
 }
 
 // ── ② 원본. 받아서 지문을 대조한다.
-function ensureSource(): boolean {
-  if (!existsSync(SRC_TTF)) {
+function fetchPinned(file: string, url: string, sha: string, label: string): boolean {
+  if (!existsSync(file)) {
     try {
-      sh("curl", ["-sSL", "-o", SRC_TTF, SRC_URL]);
+      sh("curl", ["-sSL", "-o", file, url]);
     } catch (e) {
-      failures.push(`원본 서체를 못 받았다 — ${SRC_URL}: ${String(e).slice(0, 120)}`);
+      failures.push(`${label} 원본을 못 받았다 — ${url}: ${String(e).slice(0, 120)}`);
       return false;
     }
   }
-  const got = createHash("sha256").update(readFileSync(SRC_TTF)).digest("hex");
-  if (got !== SRC_SHA256) {
+  const got = createHash("sha256").update(readFileSync(file)).digest("hex");
+  if (got !== sha) {
     failures.push(
-      `원본 서체의 sha256 이 다르다 — 박아 둔 값 ${SRC_SHA256.slice(0, 16)}… , 받은 값 ${got.slice(0, 16)}… . ` +
-      `업스트림이 바뀐 것이므로 무엇이 바뀌었는지 먼저 보고 SRC_SHA256 을 고친다.`,
+      `${label} 원본의 sha256 이 다르다 — 박아 둔 값 ${sha.slice(0, 16)}… , 받은 값 ${got.slice(0, 16)}… . ` +
+      `업스트림이 바뀐 것이므로 무엇이 바뀌었는지 먼저 보고 상수를 고친다.`,
     );
     return false;
   }
-  notes.push(`원본 400 — ${(statSync(SRC_TTF).size / 1024).toFixed(0)} KB (sha256 대조 통과)`);
+  notes.push(`${label} 원본 — ${(statSync(file).size / 1024).toFixed(0)} KB (sha256 대조 통과)`);
   return true;
+}
+
+function ensureSource(): boolean {
+  const gowun = fetchPinned(SRC_TTF, SRC_URL, SRC_SHA256, "Gowun Dodum 400");
+  const jbm = fetchPinned(JBM_TTF, JBM_URL, JBM_SHA256, "JetBrains Mono");
+  return gowun && jbm;
 }
 
 // ── ③ 사이트가 쓰는 글자. 빌드 산출물에서 모은다.
@@ -162,6 +180,33 @@ function collectGlyphs(): string | null {
   return file;
 }
 
+// ── ④ 코드블록이 쓰는 글자. `<pre>` 안만 모은다 — 보조 서체는 거기서만 쓰인다.
+const PRE = /<pre\b[^>]*>([\s\S]*?)<\/pre>/g;
+
+function collectCodeGlyphs(): string | null {
+  const chars = new Set<string>();
+  const walk = (dir: string) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (e.name.endsWith(".html")) {
+        for (const m of readFileSync(p, "utf-8").matchAll(PRE)) {
+          for (const ch of m[1].replace(TAG, "").replace(ENTITY, " ")) if (ch.codePointAt(0)! > 0x7f) chars.add(ch);
+        }
+      }
+    }
+  };
+  walk(join(ROOT, "dist"));
+  // `layout:verify` 자가검사 픽스처의 글자는 늘 담는다 — 글이 바뀌어 그 글자가 빠지면
+  // 깨끗한 픽스처가 칸을 벗어나 게이트가 잡음으로 실패한다.
+  for (const ch of FIXTURE_CHARS) if (ch.codePointAt(0)! > 0x7f) chars.add(ch);
+  const file = join(WORK, "code-glyphs.txt");
+  writeFileSync(file, [...chars].sort().join(""), "utf-8");
+  const hangul = [...chars].filter((c) => c >= "가" && c <= "힣").length;
+  notes.push(`코드블록 글자 — 라틴 밖 고유 ${chars.size}자(완성형 한글 ${hangul})`);
+  return file;
+}
+
 // ── 실행.
 mkdirSync(OUT_DIR, { recursive: true });
 const ready = ensureVenv() && ensureSource();
@@ -189,6 +234,24 @@ if (ready && glyphFile && !CHECK_ONLY) {
   } catch (e) {
     failures.push(`굽기가 죽었다 — ${String(e).slice(0, 400)}`);
   }
+
+  const codeGlyphs = collectCodeGlyphs();
+  if (codeGlyphs) {
+    const codeCfg = { jbm: JBM_TTF, gowun: SRC_TTF, glyph_file: codeGlyphs, work: WORK, out: CODE_OUT };
+    try {
+      const out = sh(PY, [join(ROOT, "scripts/lib/fonts/code_grid.py"), JSON.stringify(codeCfg)]);
+      const report = JSON.parse(out.trim().split("\n").at(-1)!);
+      failures.push(...(report.failures ?? []));
+      const g = report.glyphs ?? {};
+      const size = existsSync(CODE_OUT) ? (statSync(CODE_OUT).size / 1024).toFixed(1) : "?";
+      notes.push(
+        `Code Grid 400 — 글자 ${g.total ?? 0}개(JetBrains Mono ${g.jbm ?? 0} · 본문 서체를 칸에 앉힘 ${g.gowun ?? 0}) · ${size} KB`,
+      );
+      if (g.missing) notes.push(`Code Grid 가 못 그리는 글자(두 원본 모두에 없다) — ${g.missing}`);
+    } catch (e) {
+      failures.push(`코드 칸 서체 굽기가 죽었다 — ${String(e).slice(0, 400)}`);
+    }
+  }
 }
 
 console.log(`빵토 서체 파이프라인 — 출력 ${OUT_DIR.replace(ROOT + "/", "")}`);
@@ -205,4 +268,4 @@ if (failures.length) {
   );
   process.exit(1);
 }
-console.log(CHECK_ONLY ? "\n✓ 준비 상태 이상 없음(굽지 않았다)." : "\n✓ 서체 3단을 구웠다.");
+console.log(CHECK_ONLY ? "\n✓ 준비 상태 이상 없음(굽지 않았다)." : "\n✓ 서체 3단과 코드 칸 서체를 구웠다.");

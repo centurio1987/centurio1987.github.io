@@ -1,0 +1,69 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>협업 서버와 소유권 디렉터리의 실체</title><link rel="stylesheet" href="detail-style.css"></head><body><main>
+<header><div class="eyebrow">IMPLEMENTATION SCENARIOS · 2026.09.14</div><h1>room의 주인은<br>누가 정하는가.</h1><p class="lead">협업 서버는 독립적으로 운영한다. backend 안의 배치 모듈이 서버를 고르고, 공유 DB에 소유권을 확정한다. 관리 기능은 필요하지만, 전용 관리 인스턴스가 처음부터 필요한 것은 아니다.</p><p><a href="index.html">← 기존 CRDT 최적화 설계 보고서</a></p></header>
+<nav aria-label="목차"><a href="#physical">실제 구성</a><a href="#directory">디렉터리의 실체</a><a href="#first">첫 접속</a><a href="#change">변경 보고</a><a href="#concurrency">경쟁과 잠금</a><a href="#failure">장애와 이전</a><a href="#operations">운영 책임</a></nav>
+<section id="physical"><span class="num">01 / PHYSICAL COMPONENTS</span><h2>예시 배포: backend 2개, 협업 서버 3개, 공유 DB</h2><p>아래 이름과 개수는 설명용 예시다. backend B1·B2는 같은 애플리케이션 복제본이고, 협업 서버 C1·C2·C3는 별도 프로세스다. room은 협업 서버 프로세스 안에 있는 상태 객체와 처리 큐다. 서버 풀은 C1~C3의 집합이며, 미리 만들어 둔 빈 room의 집합이 아니다.</p>
+<div class="architecture" role="img" aria-label="인프라 제어기가 협업 서버를 운영한다. backend 두 복제본에 배치 모듈이 있고 공유 DB를 조회한다. 클라이언트는 선택된 협업 서버로 연결한다."><div class="layer"><div class="node"><strong>인프라 제어기</strong><small>프로세스 시작·재시작·복제 수 조절</small></div></div><div class="arrow">배포와 확장 ↓</div><div class="layer"><div class="node owner"><strong>C1</strong><small>room A · room B</small></div><div class="node owner"><strong>C2</strong><small>room C</small></div><div class="node owner"><strong>C3</strong><small>신규 할당 여유</small></div></div><div class="arrow">내부 등록·heartbeat·ready 보고 ↕</div><div class="layer"><div class="node"><strong>Backend B1</strong><small>인증 + RoomAllocator 모듈</small></div><div class="node"><strong>Backend B2</strong><small>인증 + RoomAllocator 모듈</small></div></div><div class="arrow">모든 복제본이 같은 정본을 사용 ↕</div><div class="layer"><div class="node"><strong>PostgreSQL</strong><small>서버 레지스트리 · 소유권 · 변경 로그 · 체크포인트</small></div></div><div class="arrow">클라이언트: backend에서 경로 조회 → 서버별 WSS 경로로 새 연결</div></div>
+<div class="grid two"><article class="card"><h3>누가 서버를 띄우는가?</h3><p>권장안에서는 배포 시스템이 띄운다. 예를 들어 Kubernetes Deployment가 프로세스 복제본을 유지하고 HPA가 지표에 따라 수를 조절한다. 소규모라면 고정 VM과 프로세스 관리자로 시작해도 된다. backend는 사용자 접속마다 인스턴스를 생성하지 않는다.</p></article><article class="card"><h3>관리 인스턴스가 필요한가?</h3><p>RoomAllocator라는 관리 기능은 필요하다. 처음에는 backend 내부 모듈로 구현하고 B1·B2 어디서든 실행한다. DB의 트랜잭션이 경쟁을 조정하므로 “단 하나의 관리자 프로세스”가 필수는 아니다.</p></article></div><p>backend가 서버 주소만 정적으로 아는 것으로는 부족하다. 준비 상태, 마지막 생존 보고, 배치 중인 예약량, 기존 room 소유권도 조회해야 한다. API 부하와 배치 부하의 수명·확장 요구가 달라졌을 때 RoomAllocator를 별도 서비스로 분리한다.</p><p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">Deployment</a>와 <a href="https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/">HPA</a>는 실행 자원을 관리한다. 어떤 문서를 어떤 협업 서버가 맡을지는 이 애플리케이션의 RoomAllocator가 정한다.</p></section>
+<section id="directory"><span class="num">02 / DIRECTORY IS DATA</span><h2>소유권 디렉터리는 공유 DB의 테이블과 갱신 규칙이다</h2><p>이 설계에서 “소유권 디렉터리”는 특별한 제품 이름이 아니다. PostgreSQL 테이블 <code>room_ownership</code>과 이를 읽고 갱신하는 서비스 코드를 가리킨다. backend 메모리에만 저장한 Map이 정본이면 B1과 B2의 판단이 갈라질 수 있다.</p>
+<div class="table-wrap"><table><thead><tr><th>테이블</th><th>주요 필드</th><th>책임</th></tr></thead><tbody><tr><td>collab_servers</td><td>server_id, boot_id, internal_url, public_route, status, heartbeat_at, reserved_slots, slot_limit</td><td>어떤 서버 실행이 살아 있고 신규 room을 받을 수 있는가</td></tr><tr><td>room_ownership</td><td>room_id, owner_server_id, owner_boot_id, epoch, state, lease_until, last_sequence</td><td>현재 어느 실행이 해당 room을 담당하며 어느 세대의 쓰기가 유효한가</td></tr><tr><td>room_updates</td><td>room_id, sequence, update_id, payload_hash, payload</td><td>영속화된 CRDT 변경. room별 update_id와 sequence에 유일성 제약</td></tr><tr><td>room_checkpoints</td><td>room_id, through_sequence, state_bytes</td><td>복구 가능한 전체 상태와 정확히 포함된 로그 경계</td></tr></tbody></table></div>
+<pre><code>-- 필드와 제약을 보여주는 예시. 완성 마이그레이션은 아니다.
+CREATE TABLE room_ownership (
+  room_id text PRIMARY KEY,
+  owner_server_id text,
+  owner_boot_id uuid,
+  epoch bigint NOT NULL DEFAULT 0,
+  state text NOT NULL DEFAULT 'idle'
+    CHECK (state IN ('idle','loading','ready','draining')),
+  lease_until timestamptz,
+  last_sequence bigint NOT NULL DEFAULT 0
+);
+
+-- 예: workspace W17의 문서 D8
+-- room_id = 'W17/D8'
+-- owner_server_id = 'C2', owner_boot_id = '부팅별 UUID'
+-- epoch = 12, state = 'ready'
+-- lease_until = DB 시각 기준 만료 시각</code></pre>
+<p><strong>server_id</strong>는 논리 서버, <strong>boot_id</strong>는 이번 프로세스 실행을 식별한다. C2가 재시작돼 같은 이름을 쓰더라도 메모리의 room은 사라졌기 때문에, 이전 부팅의 소유권을 자동 재사용하면 안 된다. <strong>epoch</strong>는 room을 재할당할 때 증가하며 idle로 돌아가도 삭제·초기화하지 않는다.</p><div class="callout"><strong>heartbeat와 lease는 다르다.</strong> heartbeat는 서버 선택을 위한 생존·부하 정보다. lease는 특정 room의 담당 권한을 갱신하는 약속이다. 서버가 살아 있다는 보고만으로 모든 room의 lease를 무조건 연장하지 않는다.</div><p>여기서는 backend의 내부 API가 레지스트리와 소유권의 관리 변경을 수행한다. 협업 서버는 변경 로그를 DB의 제한된 쓰기 함수로 저장한다. 일반적인 임의 INSERT 권한으로 소유권 검사를 우회하지 못하게 구성한다.</p></section>
+<section id="first"><span class="num">03 / FIRST REQUEST</span><h2>실물 시나리오: W17의 D8에 처음 두 사람이 들어온다</h2><div class="steps"><div class="step"><b>1</b><strong>접속 요청</strong><small>클라이언트 → B1</small></div><div class="step"><b>2</b><strong>C2 예약</strong><small>DB 트랜잭션</small></div><div class="step"><b>3</b><strong>복원 요청</strong><small>B1 → C2</small></div><div class="step"><b>4</b><strong>ready 확정</strong><small>C2 → 내부 API → DB</small></div><div class="step"><b>5</b><strong>주소 반환</strong><small>클라이언트 → C2</small></div></div>
+<ol><li><strong>서버가 먼저 등록된다.</strong> C2가 부팅되면 자신의 boot_id, 내부 RPC 주소, 외부 접속 경로를 인증된 내부 API에 등록한다. 인프라가 제공하는 실행 신원을 확인하고 임의 주소 등록을 허용하지 않는다. 준비가 끝나면 서버 상태를 ready로 보고한다.</li><li><strong>첫 사용자가 backend에 요청한다.</strong> <code>POST /api/rooms/W17%2FD8/route</code>. B1이 문서 접근 권한을 확인한다. room은 이미 존재하는 업무 문서의 동기화 채널이지, 이 요청이 임의 문서를 생성하는 기능은 아니다.</li><li><strong>B1이 배치 트랜잭션을 실행한다.</strong> 소유권 행이 없으면 먼저 INSERT ON CONFLICT로 만들고 행을 잠근다. 유효한 owner가 없으면 ready이면서 heartbeat가 최근이고 수용량이 남은 서버를 선택한다. C2의 예약량도 잠금·조건부 갱신으로 증가시킨다.</li><li><strong>소유권을 먼저 확정한다.</strong> room 상태 loading, owner C2/boot_id, epoch 12, lease_until을 DB에 저장하고 커밋한다. DB 트랜잭션 안에서 네트워크 복원을 기다리지 않는다.</li><li><strong>B1이 C2에 활성화를 요청한다.</strong> <code>POST /internal/rooms/activate</code>에 roomId와 epoch를 전달한다. C2는 DB에서 자신이 여전히 owner인지 확인하고 복원한다. 같은 roomId+epoch의 중복 요청은 같은 Promise를 반환한다.</li><li><strong>두 번째 사용자가 B2에 도착한다.</strong> B2는 loading인 C2/epoch 12를 읽는다. 다른 서버에 새 room을 만들지 않고 진행 상태를 기다리거나 같은 활성화 요청을 재시도한다.</li><li><strong>C2가 복원을 마친다.</strong> 내부 API에 ready를 보고한다. API는 owner·boot_id·epoch·lease가 아직 유효한 경우에만 ready로 변경한다. 늦게 도착한 이전 세대의 완료 보고는 거부한다.</li><li><strong>backend가 접속 정보를 반환한다.</strong> 짧은 수명의 문서별 티켓과 C2를 가리키는 WSS 경로를 전달한다. 클라이언트는 새 WebSocket을 열고 C2가 티켓과 현재 소유권을 검증한 후 CRDT 동기화를 시작한다.</li></ol>
+<pre><code>// 복원이 아직 진행 중인 응답 예
+HTTP 202
+{ "status": "loading", "retryAfterMs": 500 }
+
+// 준비 완료 응답 예 — 주소는 설명용
+HTTP 200
+{
+  "url": "wss://collab.example.com/nodes/C2/rooms/W17-D8",
+  "ticket": "짧은 수명의 서명 티켓",
+  "epoch": 12
+}</code></pre><p>500ms는 예시값이다. 클라이언트는 무작위 지연을 추가해 재조회 폭주를 피한다. 주소의 <code>/nodes/C2</code>는 프록시가 C2로 고정 라우팅하도록 운영 측에서 등록한 경로다. 일반 부하 분산이 아무 서버로나 보내면 이 설계는 성립하지 않는다. 프록시는 최초 연결 목적지를 선택하고, 열린 연결은 그 서버에 유지한다.</p><div class="callout warn"><strong>DB 커밋 뒤 B1이 죽으면?</strong> loading 행은 남는다. 다음 route 요청이나 backend의 주기적인 정합성 점검 작업이 같은 epoch의 activate를 재전송한다. 장시간 복원이 멈추면 기한 내 실패 처리 후 새 epoch로 재할당한다. 점검 작업은 여러 backend에서 실행돼도 조건부 갱신과 멱등 요청으로 안전해야 한다.</div></section>
+<section id="change"><span class="num">04 / WHO REPORTS WHAT</span><h2>협업 서버가 room을 바꾸면 backend를 호출하는가?</h2><p><strong>데이터 편집과 room 수명 변경을 나누면 답이 명확하다.</strong> 글자 입력마다 backend의 room 정보를 갱신하지 않는다. 담당 서버·준비 상태·임대·해제는 관리 정보이므로 내부 API를 거친다. 다만 최종 정본은 backend의 메모리가 아니라 공유 DB다.</p><div class="table-wrap"><table><thead><tr><th>발생한 일</th><th>호출 / 기록</th><th>소유권 변화</th></tr></thead><tbody><tr><td>본문 CRDT 변경</td><td>C2 → DB의 append 함수 → 참여자 전파</td><td>owner는 그대로. 로그 위치만 증가</td></tr><tr><td>커서·접속 표시</td><td>C2 안의 presence와 전송 채널</td><td>없음. 본문 로그에 넣지 않음</td></tr><tr><td>room 복원 완료</td><td>C2 → 내부 ready API</td><td>동일 epoch의 loading → ready</td></tr><tr><td>임대 연장</td><td>C2 → 내부 renew API. 여러 room을 묶어 요청 가능</td><td>현재 owner·epoch만 기한 연장</td></tr><tr><td>세션 0, 유예 만료</td><td>C2가 신규 입장을 막고 진행 중 작업 완료 → release API</td><td>조건부로 idle. epoch 기록은 유지</td></tr><tr><td>부하로 C3에 이동 요청</td><td>C2가 부하 보고 / 이동 요청 → RoomAllocator 결정</td><td>C2가 독단적으로 owner를 C3으로 덮어쓰지 않음</td></tr></tbody></table></div><p>release와 새 접속이 경쟁하면 room의 로컬 큐가 입장·해제 상태를 직렬화한다. 이미 closing인 room에는 재조회 응답을 보내고, release 성공 뒤 메모리를 해제한다. 서버가 복원·퇴장 중이라는 정보를 단순한 성공 콜백만으로 추정하지 않는다.</p></section>
+<section id="concurrency"><span class="num">05 / ATOMIC OWNERSHIP</span><h2>backend가 두 개여도 한 room을 두 번 배치하지 않는 방법</h2><p>모든 할당·갱신·해제·로그 쓰기가 같은 소유권 행의 잠금 규칙을 따른다. PostgreSQL의 행 잠금은 해당 행을 변경하려는 다른 트랜잭션을 기다리게 한다. 없는 행을 SELECT FOR UPDATE만 한다고 잠글 수 없으므로, 첫 생성의 충돌은 기본 키와 INSERT ON CONFLICT로 다룬다. <a href="https://www.postgresql.org/docs/17/explicit-locking.html">PostgreSQL 행 잠금</a></p>
+<pre><code>BEGIN;
+INSERT INTO room_ownership(room_id)
+VALUES (:room_id) ON CONFLICT DO NOTHING;
+SELECT * FROM room_ownership
+WHERE room_id = :room_id FOR UPDATE;
+
+-- 유효한 loading/ready owner가 있으면 그대로 사용하고 종료.
+-- 없으면 ready 서버를 선택하고 그 서버의 예약 슬롯을 잠금·확보.
+-- heartbeat와 수용량을 잠금 획득 후 다시 확인.
+-- owner, boot_id, epoch = epoch + 1, state = loading,
+-- lease_until을 갱신. 서버 예약량도 같은 트랜잭션에서 반영.
+COMMIT;
+-- 커밋 후 activate RPC. 재시도 가능하게 구현.</code></pre>
+<p>슬롯은 단순한 초기 수용량 모델이다. 실제 room 메모리는 제각각이므로 보고된 메모리·CPU·복원 중 작업량도 선택에 활용하고 서버 자체의 수락 제한을 둔다. 동시에 서로 다른 room을 배치할 때 마지막 슬롯을 함께 사용하는 일을 막기 위해 서버 예약량도 원자적으로 갱신한다. 예약 해제는 epoch별로 한 번만 처리하고 주기적으로 정합성을 확인한다.</p>
+<h3>오래된 서버의 쓰기는 저장소에서 막는다</h3><pre><code>BEGIN;
+SELECT * FROM room_ownership
+WHERE room_id = :room_id FOR UPDATE;
+
+-- DB 시각으로 lease를 확인한다.
+-- owner_server_id, owner_boot_id, epoch가 호출자와 일치해야 한다.
+-- ready 상태인지 확인한다. 불일치/만료면 ROLLBACK.
+-- 같은 update_id가 있으면 hash를 확인하고 기존 결과를 반환.
+-- 새 변경이면 last_sequence + 1로 로그 INSERT 후 위치 갱신.
+COMMIT;
+-- 이 커밋 뒤에만 저장 ACK.</code></pre><p>위 코드는 알고리즘 의사 SQL이며 그대로 실행하는 완성 함수는 아니다. 검사·INSERT·위치 갱신은 하나의 트랜잭션 또는 제한된 저장 함수 안에서 실행한다. 임대 연장도 만료 전 현재 세대에 대해서만 허용한다. 만료된 프로세스가 이전 epoch로 임대를 되살리지 못하게 한다.</p><div class="callout"><strong>임대 시각을 지났는데 이미 진행 중인 쓰기가 있다면?</strong> 짧은 쓰기 트랜잭션이 소유권 잠금을 보유한 동안 재할당은 기다린다. 이전 쓰기가 커밋된 다음 새 epoch를 부여하므로 새 owner가 그 로그를 복구한다. 정확한 경계는 벽시계 한 순간의 강제 종료가 아니라 DB에서 직렬화된 세대 전환이다. 긴 트랜잭션에는 제한 시간을 둔다.</div><p>행 잠금은 문서별 쓰기를 직렬화한다. 관리 동작뿐 아니라 쓰기에도 같은 행을 잠그는 이 기본안은 단순하지만 뜨거운 문서에서는 비용이 된다. 변경 묶음 커밋과 실제 부하를 먼저 측정하고, 별도 로그 시스템으로 옮긴다면 그 시스템에서도 세대 검사와 쓰기가 원자적이어야 한다.</p></section>
+<section id="failure"><span class="num">06 / FAILURE & TRANSFER</span><h2>C2가 죽거나, C3로 옮겨야 할 때</h2><div class="grid two"><article class="card"><h3>갑작스러운 장애</h3><ol><li>C2 소켓이 끊기고 heartbeat·lease 갱신이 멈춘다.</li><li>lease가 유효한 동안 곧바로 중복 소유자를 만들지 않는다.</li><li>기한이 지나면 RoomAllocator가 잠금을 잡고 C3/epoch 13으로 재할당한다.</li><li>C3가 커밋 로그를 복원하고 ready를 보고한다.</li><li>클라이언트가 새 경로로 연결하고 미확인 변경을 재전송한다.</li><li>C2가 복귀해 epoch 12로 저장을 시도하면 DB에서 거부한다.</li></ol></article><article class="card"><h3>계획된 이동 / 배포</h3><ol><li>C2를 신규 할당 제외 상태로 둔다.</li><li>room별로 새 편집 수락을 멈추고 이미 수락한 변경을 저장한다.</li><li>담당자가 quiesced 상태임을 확인한 뒤 소유권을 C3/epoch 13으로 바꾼다. 확인 실패 시 lease 만료 경로를 따른다.</li><li>C3가 복원하고 ready가 되면 경로 조회가 C3를 반환한다.</li><li>이전 소켓을 종료해 재접속을 유도한다. 메모리 객체나 소켓을 통째로 보내지 않는다.</li></ol></article></div><p>quiesced는 “새 업무를 받지 않고 이미 받은 일을 완료했다”는 이동 절차상의 확인이다. 위 최소 테이블의 별도 상태값으로 반드시 저장해야 하는 것은 아니지만, 실행 중 이동을 관리할 작업 레코드와 epoch별 확인은 필요하다. 강제 종료 시간을 넘으면 로그와 재전송으로 복구하는 장애 경로로 전환한다.</p><div class="callout warn"><strong>backend 또는 DB가 잠깐 끊겼다면?</strong> backend 한 복제본의 장애는 다른 복제본이 이어받는다. 내부 renew API 전체가 중단되면 lease가 만료되는 room은 쓰기를 중단한다. DB가 불가하면 내구성 저장 ACK를 보낼 수 없다. 클라이언트는 미확인 편집을 로컬에 보관하며 복구를 기다린다.</div><p>기존 연결 유지가 절대 요구사항이면 메시지 게이트웨이가 내부 재배치를 흡수하도록 설계를 바꿀 수 있다. 이 보고서의 기본안은 운영 복잡도를 낮추기 위해 재접속을 허용한다.</p></section>
+<section id="operations"><span class="num">07 / OPERATING MODEL</span><h2>관리 기능을 어디에 놓을지에 대한 최종 답</h2><div class="table-wrap"><table><thead><tr><th>일</th><th>실행 주체</th><th>정본 / 결과</th></tr></thead><tbody><tr><td>협업 프로세스 시작·재시작</td><td>배포 시스템 / 인프라 제어기</td><td>실행 중인 서버 인스턴스</td></tr><tr><td>서버 등록·생존 보고</td><td>협업 서버 → backend 내부 API</td><td>collab_servers</td></tr><tr><td>첫 room 배치</td><td>backend의 RoomAllocator</td><td>room_ownership + 예약량</td></tr><tr><td>room 활성화·복원</td><td>선택된 협업 서버</td><td>메모리 객체. 완료 상태는 DB에 조건부 보고</td></tr><tr><td>변경 영속화</td><td>협업 서버 → 제한된 DB 쓰기 함수</td><td>room_updates</td></tr><tr><td>lease 연장·해제</td><td>협업 서버 요청 → 내부 API</td><td>현재 epoch에 한정한 조건부 갱신</td></tr><tr><td>멈춘 활성화 재시도·예약 정리</td><td>backend의 주기적 점검 작업</td><td>공유 DB를 기준으로 멱등 복구</td></tr><tr><td>서버 풀 크기 조절</td><td>확장 제어기 또는 초기 수동 운영</td><td>신규 서버 등록 후 배치 가능</td></tr></tbody></table></div><p><strong>관리 역할은 필수다. 전용 관리 머신은 선택이다.</strong> 처음에는 backend 안의 모듈·내부 API·주기적 작업으로 구현하고 공유 DB로 경쟁을 조정한다. 관리 부하가 커지면 같은 계약을 유지한 채 별도 서비스로 분리한다. 분리하더라도 관리자 하나에만 메모리 상태를 몰아넣지 않는다.</p><h3>구현 전에 확인할 경계 사례</h3><ul><li>B1·B2에 동일 문서 첫 요청이 동시에 도착해도 유효한 소유권이 하나인가.</li><li>할당 커밋 직후 backend가 종료돼도 activate가 다시 실행되는가.</li><li>activate 중복·늦은 ready·늦은 release가 현재 세대를 훼손하지 않는가.</li><li>마지막 슬롯을 서로 다른 room이 동시에 예약하지 않는가.</li><li>이전 owner 쓰기와 재할당이 경쟁할 때 로그에 빠진 변경이 없는가.</li><li>외부 WSS 경로가 지정한 서버에 도착하고 일반 랜덤 분산으로 바뀌지 않는가.</li><li>서버 재시작 시 같은 server_id라도 boot_id가 달라 이전 소유권을 재사용하지 않는가.</li></ul></section>
+<footer class="footer"><p>이 문서는 이전 설계를 구체화한 하나의 구현안이다. PostgreSQL·backend 내부 배치 모듈을 선택했으며, 범용 제품의 자동 기능으로 주장하는 내용이 아니다. 예시 서버 개수·주소·재시도 간격은 배포 권장 수치가 아니다.</p><p><a href="index.html">기존 보고서로 돌아가기</a> · 외부 스크립트 없이 열람 가능. 다른 곳으로 복사할 때 <code>detail-style.css</code>를 함께 복사한다.</p></footer></main></body></html>

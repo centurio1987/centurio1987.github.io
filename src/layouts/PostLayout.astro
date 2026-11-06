@@ -185,6 +185,9 @@ if (fs.existsSync(heroPath)) {
     font-weight: var(--font-weight-regular);
     font-size: clamp(28px, 5vw, 38px);
     margin: var(--space-16) 0 var(--space-10);
+    /* 끊을 자리가 없는 긴 런(`command·state·channel·capability·sidecar를`)이 제목 칸을 넘어
+       390px 지면을 524px 로 밀었다(tauri-2). 끊을 자리가 없을 때만 그 자리에서 끊는다. */
+    overflow-wrap: anywhere;
   }
   .lead {
     font-size: var(--text-body);
@@ -240,8 +243,9 @@ if (fs.existsSync(heroPath)) {
     line-height: var(--font-leading-read);
     /* 안전망: 공백 없는 초장문 인라인 런(예: `·`로 이어 붙인 코드 나열)이
        줄바꿈 기회를 못 찾아 페이지 가로 스크롤을 만드는 것을 막는다. 일반
-       한글/영문은 공백에서 먼저 끊기므로 영향 없고, white-space:pre 인 <pre>
-       코드블록도 래핑을 안 하므로 그대로 내부 가로 스크롤을 유지한다. */
+       한글/영문은 공백에서 먼저 끊기므로 영향 없다. <pre> 코드블록은 이 값과 무관하다 —
+       일반 코드는 shiki 가 pre-wrap 으로 접고, 도식은 접지 않고 블록 안에서 가로로
+       스크롤한다(`src/lib/shiki-diagram-blocks.mjs`). */
     overflow-wrap: break-word;
   }
   .prose > * {

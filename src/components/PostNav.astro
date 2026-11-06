@@ -59,7 +59,9 @@ const nextLabel = (p: CollectionEntry<"posts">) =>
 <style>
   .post-nav {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* `1fr` 의 최소는 내용물의 최소 폭이라, 끊을 자리 없는 긴 제목이 카드를 지면 밖으로
+       민다(tauri-1: 390px 지면이 392px). 칸은 0 까지 줄 수 있게 두고 제목을 접는다. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--space-16);
     margin-top: var(--space-32);
   }
@@ -97,13 +99,14 @@ const nextLabel = (p: CollectionEntry<"posts">) =>
     font-size: var(--text-body);
     color: var(--ink);
     line-height: var(--font-leading-sub);
+    overflow-wrap: anywhere;
   }
   .nav-next .nav-title {
     color: var(--paper);
   }
   @media (max-width: 560px) {
     .post-nav {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .nav-empty {
       display: none;

@@ -33,3 +33,18 @@
   font-display: swap;
   src: url("/fonts/gowun-dodum-700.woff2") format("woff2");
 }
+
+/* 코드블록 보조 서체 — `bun run fonts:build` 가 `scripts/lib/fonts/code_grid.py` 로 굽는다.
+
+   구글 JetBrains Mono 에는 상자 선·화살표·도형·한글이 없어서 그 글자가 고정폭이 아닌 본문
+   서체로 떨어졌다(`─` 1.67칸 · `가` 1.52칸 · `①` 1.83칸). 이 면은 그 글자만 담고 폭을 칸에
+   맞춰 다시 정했다 — 한글은 두 칸, 나머지는 한 칸. `--font-code-grid` 스택에서 JetBrains Mono
+   바로 뒤에 놓여 라틴은 건드리지 않는다. 브라우저는 앞 면에 없는 글자가 나올 때만 이 파일을
+   받으므로, 라틴만 있는 코드블록 지면은 다운로드가 0 이다. */
+@font-face {
+  font-family: "Code Grid";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/code-grid-400.woff2") format("woff2");
+}

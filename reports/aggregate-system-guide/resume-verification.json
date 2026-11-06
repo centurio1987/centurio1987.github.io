@@ -1,0 +1,21 @@
+{
+  "diagrams": 13,
+  "svgTextOverflow": [],
+  "roleBoxes": 6,
+  "viewports": [
+    {
+      "width": 1280,
+      "overflow": false,
+      "images": 13,
+      "loaded": true,
+      "font": "\"IBM Plex Sans KR\", \"IBM Plex Sans\", system-ui, -apple-system, sans-serif"
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "images": 13,
+      "loaded": true,
+      "font": "\"IBM Plex Sans KR\", \"IBM Plex Sans\", system-ui, -apple-system, sans-serif"
+    }
+  ]
+}

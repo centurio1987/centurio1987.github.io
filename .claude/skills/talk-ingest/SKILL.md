@@ -99,12 +99,20 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/authoring.py resolve \
 bun run talk:build <slug>     # → src/content/posts/talk-<slug>.mdx
 bun run talk:verify           # 3계층이 어긋나지 않았는지
 bun run build                 # 실제로 렌더되는지
+bun run layout:verify         # 화면에 들어오는지 · 코드블록이 칸에 서는지
 bun scripts/check-post-markers.ts
 bun scripts/check-emphasis.ts && bun scripts/check-emphasis.ts --dist
 ```
 
 `talk:build` 가 거부하면 `talk.md` 를 고쳐서 다시 부른다 — **발행물을 손으로 고치지
 않는다.** 고치면 `talk:verify` 가 다음 실행에서 잡는다.
+
+**`layout:verify` 를 건너뛰지 않는다.** 앞의 넷은 글자와 계층만 보고 화면은 안 본다 —
+`talk-crdt-room-optimization` 이 모바일에서 지면 779px · 도식 전부 어긋난 채로 그 넷을 다
+통과했다. 대화 원본의 ASCII 도식은 AI 가 그린 것이라 세로선이 한 칸씩 꺾여 있기 쉽다.
+「세로선이 한 칸 꺾인 도식」이 나오면 `talk.md` 에서 그 줄의 공백을 고치고 다시 굽는다
+(한글은 두 칸, 상자 선·화살표·`①` 은 한 칸으로 센다). 「칸을 벗어난 글자」가 나오면 코드블록에
+새 글자가 들어온 것이니 `bun run fonts:build && bun run build` 뒤 다시 돌린다.
 
 발행물은 `draft: true` 로 나온다. 발행 준비가 되면 `talk.md` 의 `draft` 를 `false` 로
 바꾸고 다시 굽는다.

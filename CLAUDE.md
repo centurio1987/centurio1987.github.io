@@ -9,11 +9,11 @@ A writing-focused personal blog (빵관 토니 — "Serious Work, Joyful Wit"), 
 ## Commands
 
 CI uses **Bun**; locally either works. Standard Astro scripts (`dev`/`build`/`preview`) plus
-repo-specific ones (`viz:verify`·`deco:verify`·`tokens:verify`·`graph:*`·`gen:motion`·`fonts:build`) — see `package.json`.
+repo-specific ones (`viz:verify`·`deco:verify`·`tokens:verify`·`layout:verify`·`graph:*`·`gen:motion`·`fonts:build`) — see `package.json`.
 
 **본문 서체는 자체 호스팅이고 굵기 단을 직접 굽는다 (KAN-080).** `bun run fonts:build` 가
 `scripts/build-fonts.ts` 로 Gowun Dodum 500·700 을 만들고 **빌드된 지면이 쓰는 글자로**
-서브셋해 `public/fonts/` 에 넣는다. 순서가 규약이다 — **글자 수집이 `dist/` 를 입력으로 받으므로
+서브셋해 `public/fonts/` 에 넣는다. 코드블록 칸 서체 `Code Grid` 도 같이 굽는다(아래 Design). 순서가 규약이다 — **글자 수집이 `dist/` 를 입력으로 받으므로
 `bun run build` 뒤에 온다**(빌드는 폰트에 의존하지 않아 순환이 없다). 산출물은 커밋하고 작업
 자리(`.fonts-build/`, 원본 7.2MB + 파이썬 venv)는 커밋하지 않는다. 굽기의 함정 셋과 면적
 자가검사는 `scripts/lib/fonts/bake.py` 에 있다 — **셋째(stroke 전 winding 정규화)는 「실패 0」으로
@@ -251,6 +251,17 @@ Space Mono 쪽에 남는다(13px 실측 7.97px, 본문 서체 공백의 2.3배) 
 ③ **데코 부품과 폭신 대담은 대상이 아니다** — 자기 시각 언어가 따로 있다. 새 서체 토큰을 만들면
 `src/lib/typeRoles.ts` 에도 올려라(`bun run type:verify` 의 「토큰 스택 N · 역할 M」이 어긋난 채
 통과한다). 근거·실측은 `UI_CONSISTENCY_AUDIT.md` §7-6.
+
+**코드블록은 칸 서체로 그리고, 화면은 `bun run layout:verify` 가 본다.** 구글 JetBrains Mono 에는
+상자 선·화살표·한글이 없어 그 글자가 고정폭이 아닌 본문 서체로 떨어졌고(`─` 1.67칸 · `가` 1.52칸),
+글 12편의 도식 44개가 한 줄도 안 맞았다. `<pre>` 는 `--font-code-grid` 를 쓴다 — `Code Grid` 는 같은
+본문 서체 글리프를 **정확히 두 칸** 폭에 앉힌 보조 면이다(근거 `DESIGN_CONCEPT.md` §5). 셋만 기억하면 된다.
+① **새 글자가 코드블록에 들어오면 `fonts:build` 뒤 `build` 를 한 번 더** 돈다 — 굽기는 `dist/` 에서
+글자를 모으고, 구운 파일은 다음 빌드에서야 `dist/` 로 간다. ② 상자 선이 든 코드블록은 **줄을 접지
+않는다**(`src/lib/shiki-diagram-blocks.mjs` — `wrap: true` 의 예외). ③ `layout:verify` 는 전 지면을
+데스크톱·모바일로 열어 **지면 넘침 · 칸 · 도식(접힘·꺾인 세로선)** 셋을 본다 —
+`talk-crdt-room-optimization` 이 모바일 779px · 도식 전부 어긋난 채로 빌드·타입·토큰·폭 게이트를 다
+통과했던 자리다. 브라우저가 필요해 CI 밖이고, `ship-post` 와 `talk-ingest` 의 확인 단계가 부른다.
 
 **데코 키트** — 마스킹테이프·스티커·두들·포스트잇을 부품(`src/components/deco/`)과 적용 패턴으로
 굳힌 **선택 레이어**. 부품 목록·지면별 강도·굳힌 판단·실측 좌표는 **`deco-kit` 스킬**에 있다 —

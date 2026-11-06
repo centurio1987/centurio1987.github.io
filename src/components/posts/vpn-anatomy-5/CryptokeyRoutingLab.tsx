@@ -117,7 +117,9 @@ export default function CryptokeyRoutingLab() {
     <figure style={{ margin: "1.75rem 0", padding: "var(--space-16)", background: PAPER, border: `${HAIR} solid ${tint(INK, 13.3)}`, borderRadius: "var(--radius-sm)" }}>
       {/* 표 */}
       <div style={{ fontSize: "var(--text-label)", color: MUTED, marginBottom: "var(--space-6)" }}>Cryptokey Routing 표 (백서 Configuration 1a 재구성)</div>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--text-meta)", marginBottom: "var(--space-16)" }}>
+      {/* 공개키가 끊을 자리 없는 긴 문자열이라 좁은 화면에서 표가 지면을 민다 — 표 안에서 스크롤한다. */}
+      <div style={{ overflowX: "auto", marginBottom: "var(--space-16)" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "var(--text-meta)" }}>
         <thead>
           <tr style={{ color: MUTED, textAlign: "left" }}>
             <th style={{ padding: "var(--space-2) var(--space-6)", fontWeight: "var(--font-weight-bold)" }}>피어</th>
@@ -160,6 +162,7 @@ export default function CryptokeyRoutingLab() {
           })}
         </tbody>
       </table>
+      </div>
 
       {/* 모드 토글 */}
       <div style={{ display: "flex", gap: "var(--space-8)", marginBottom: "var(--space-14)" }}>

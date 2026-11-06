@@ -1,0 +1,162 @@
+---
+import AiTag from "./AiTag.astro";
+
+/**
+ * FilterChip — 필터 한 칸. 눈에서 감춘 `<input type="radio">` 와 그 `<label>` 이 한 쌍이다.
+ *
+ * ── 왜 부품인가
+ * 이 칩은 `PostFilter` 안에서만 사는 임의의 버튼이었고, 축(카테고리·글쓴이)마다
+ * 클래스를 **덧발라서** 모양을 갈랐다. 그 덧칠이 정확히 결함의 원인이다 —
+ * `.pf-chip--author` 가 글쓴이 축 **전체**의 왼쪽 여백을 아바타 몫(4px)으로 낮췄는데
+ * 그 축의 「전체」 칩에는 아바타가 없어 좌 4 · 우 12 로 치우쳤다 — 바로 위 카테고리 축에
+ * 글자까지 똑같은 「전체」 칩이 서 있는데 그것보다 8px 좁았다(67.3 대 59.3 — 실측).
+ * 모양이 **축이 아니라 prop 에서** 갈리면 축을 하나 더 늘려도 같은 어긋남이 안 생긴다.
+ *
+ * 디자인 시스템(`@centurio1987/bbangto-ui-core`)의 `Chip` 을 안 쓴 이유는 무게가 아니라
+ * 태그다 — 그쪽은 `ButtonHTMLAttributes<HTMLButtonElement>` 를 확장한 React `<button>` 이고
+ * 상태를 JS 로 든다. 여기 필터는 숨은 라디오 + `:has()` 로 **JS 없이** 도는 것이 계약이라
+ * (`PostFilter` 머리주석) `<button>` 은 그 자리에 못 선다.
+ *
+ * ── 기하 계약: 칩 높이는 내용물이 아니라 이 파일이 정한다
+ * 높이를 안 박아 두면 칩마다 **들어 있는 것이** 높이를 정한다 — 아바타가 있는 칩은
+ * 22px 그림이, 없는 칩은 글자 라인박스가 잡는다. 지금까지 두 값이 22 대 22.75 로
+ * 우연히 붙어 있어 두 축이 같은 높이로 보였을 뿐이고(실측 32.8px), 그 22.75 는 칩이
+ * 읽는 산문용 행간(`--font-leading-read` 1.75)을 상속한 결과였다. 토큰 문서가
+ * 한 줄짜리 칩·배지에 지정한 자는 `--font-leading-flat` 이다. 둘을 함께 고친다:
+ *
+ *   · `line-height: var(--font-leading-flat)` — 글자 라인박스를 글자 크기(13px)로 되돌리고,
+ *   · `min-height: var(--space-32)` — 높이를 계약으로 못 박는다.
+ *
+ * 그러면 콘텐츠 칸이 32 − 테두리 2 − 위아래 여백 8 = 22px 이라 아바타와 정확히 맞고,
+ * 알약 끝 캡의 반지름 16 에서 아바타 반지름 11 을 뺀 5px 이 곧 왼쪽 인셋(테두리 1 +
+ * 여백 4)이라 **아바타 원과 캡 곡선이 동심원**이 된다. 행간만 고치고 높이를 안 박으면
+ * 두 축이 23px 대 32px 으로 갈라지므로 둘은 나눌 수 없는 한 벌이다.
+ *
+ * ── 바깥과의 계약 둘 (쓰는 쪽이 CSS 를 만들어 넣는다)
+ *   · 카운트는 `--chip-count` 로 흘려 넣는다 — 필터 상태에 따라 값이 바뀌므로 여기서
+ *     못 정하고, 쓰는 쪽이 조합별 규칙을 방출한다(`content: var(--chip-count)`).
+ *     자리는 값이 없어도 있으므로, 안 넘기면 오른쪽에 빈 칸 하나(gap 4px)가 남는다.
+ *   · 걸러내기·흐리게는 바깥이 `#id:checked` · `#id:not(:checked) + label` 로 건다.
+ *     그래서 라디오와 라벨은 **반드시 인접 형제**여야 한다 — 사이에 아무것도 두지 마라.
+ */
+interface Props {
+  /** 라디오 그룹 이름. 같은 축의 칩끼리 같은 값을 쓴다 — 화살표 키 이동이 여기서 공짜로 나온다. */
+  name: string;
+  /** `<input id>` 이자 `<label for>`. 바깥에서 만든 CSS 가 이 id 로 칩을 집는다. */
+  id: string;
+  value: string;
+  checked?: boolean;
+  label: string;
+  /** 리딩 아바타(22px) 경로. 있는 칩만 왼쪽 여백을 아바타 몫으로 내준다. */
+  avatar?: string;
+  /** 선택 상태를 채울 색. 없으면 `--accent`. */
+  accent?: string;
+  /** 라벨 뒤 「AI」 표식 */
+  ai?: boolean;
+}
+const { name, id, value, checked = false, label, avatar, accent, ai = false } = Astro.props;
+---
+
+<input
+  class="chip-radio"
+  type="radio"
+  name={name}
+  id={id}
+  value={value}
+  checked={checked}
+/>
+<label
+  class:list={["chip", { "chip--lead": !!avatar }]}
+  for={id}
+  style={accent ? `--chip-accent:${accent}` : undefined}
+>
+  {
+    avatar && (
+      <img class="chip-avatar" src={avatar} alt="" width="22" height="22" decoding="async" />
+    )
+  }
+  {label}
+  {ai && <AiTag />}
+  <span class="chip-count" aria-hidden="true" />
+</label>
+
+<style>
+  /* 라디오는 눈에서만 감춘다 — 포커스·키보드 화살표 이동은 그대로 산다.
+     margin 이 0 인 것은 스케일에 맞춘 결과가 아니라 **원래 필요 없던 값**이라서다:
+     -1px 은 `clip: rect(0 0 0 0)` 시절 1px 짜리 잔상을 흐름 밖으로 밀던 손잡이인데,
+     여기는 position:absolute + clip-path 라 애초에 흐름에 자리를 안 잡는다. */
+  .chip-radio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    /* 안쪽 간격은 위계가 있다 — 아바타는 별개의 덩어리라 6px(아래 margin 이 2px 을
+       보탠다), 카운트는 라벨에 딸린 값이라 4px 로 붙인다. 옛 코드는 셋 다 6px 이라
+       카운트가 이름과 같은 무게로 떨어져 있었다. */
+    gap: var(--space-4);
+    /* 높이 계약 — 머리주석 「기하 계약」 절. 이 둘은 한 벌이라 따로 못 뗀다. */
+    min-height: var(--space-32);
+    line-height: var(--font-leading-flat);
+    font-size: var(--text-meta);
+    font-weight: var(--font-weight-medium);
+    padding: var(--space-4) var(--space-12);
+    border-radius: var(--btn-radius);
+    border: var(--stroke-hair) solid var(--border);
+    color: var(--ink-2);
+    background: var(--surface);
+    cursor: pointer;
+    transition:
+      transform var(--dur) var(--ease),
+      background var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+  /* 아바타가 있는 칩만 왼쪽을 내준다. 축으로 걸면 아바타 없는 「전체」 칩까지
+     끌려들어와 좌우가 어긋난다(머리주석). */
+  .chip--lead {
+    padding-left: var(--space-4);
+  }
+  .chip:hover {
+    transform: translateY(-1px);
+  }
+  /* 22px = 콘텐츠 칸 높이(32 − 테두리 2 − 위아래 여백 8). 이 값이 곧 `<img>` 의
+     width/height 속성이기도 하다 — 한쪽만 고치면 첫 페인트에서 칩이 흔들린다. */
+  .chip-avatar {
+    flex: none;
+    /* 위 gap 4px + 이 2px = 아바타와 이름 사이 6px */
+    margin-right: var(--space-2);
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-round);
+    object-fit: cover;
+    background: var(--paper);
+  }
+  .chip-count::after {
+    content: var(--chip-count, "");
+    font-family: var(--font-mono);
+    font-size: var(--text-nano);
+    color: var(--ink-3);
+  }
+  /* 선택 상태 — 색을 넘겨받았으면 그 색으로, 아니면 포인트 색으로 채운다 */
+  .chip-radio:checked + .chip {
+    border-color: var(--ink);
+    color: color-mix(in srgb, var(--chip-accent, var(--accent)) 78%, var(--ink));
+    background: color-mix(in srgb, var(--chip-accent, var(--accent)) 14%, var(--surface));
+  }
+  .chip-radio:checked + .chip .chip-count::after {
+    color: inherit;
+  }
+  .chip-radio:focus-visible + .chip {
+    outline: var(--stroke-bold) solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>

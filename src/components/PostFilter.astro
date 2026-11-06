@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import PostList from "./PostList.astro";
+import FilterChip from "./FilterChip.astro";
 import ClippedCard from "./deco/patterns/ClippedCard.astro";
 import { getCategory } from "../lib/categories";
 import { getAuthor, AUTHORS } from "../lib/authors";
@@ -24,7 +25,7 @@ import "../styles/deco.css";
  * 시각적으로 숨긴 라디오 + <label> 칩이고, 걸러내기는 `:has()` 기반 CSS 다.
  * 따라서 무JS·하이드레이션 0 에서도 필터가 그대로 동작한다(이 블로그의 콘텐츠
  * 무JS 원칙). JS 는 URL 쿼리(?cat=&author=) 동기화라는 진행적 향상만 맡는다.
- * 필터 상태에 따라 값이 바뀌는 카운트는 CSS 커스텀 프로퍼티(--pf-n)를 content 로
+ * 필터 상태에 따라 값이 바뀌는 카운트는 CSS 커스텀 프로퍼티(--chip-count)를 content 로
  * 흘려보내 처리한다 — 실제 존재하는 조합만 규칙으로 방출한다.
  */
 interface Props {
@@ -90,12 +91,12 @@ for (const a of authors) {
 //    인라인 우선순위가 아래 오버라이드를 이겨 숫자가 영영 안 바뀐다.
 for (const c of catOptions) {
   rules.push(
-    `.pf-wrap label[for="${catId(c.value)}"]{--pf-n:${q(count(c.value, ALL))}}`,
+    `.pf-wrap label[for="${catId(c.value)}"]{--chip-count:${q(count(c.value, ALL))}}`,
   );
 }
 for (const a of authorOptions) {
   rules.push(
-    `.pf-wrap label[for="${authorId(a.value)}"]{--pf-n:${q(count(ALL, a.value))}}`,
+    `.pf-wrap label[for="${authorId(a.value)}"]{--chip-count:${q(count(ALL, a.value))}}`,
   );
 }
 // 아래 오버라이드는 :has(#id) 덕에 위 기본값보다 특이도가 높다(ID 1 vs 0).
@@ -103,7 +104,7 @@ for (const a of authorOptions) {
   if (a.value === ALL) continue;
   for (const c of catOptions) {
     rules.push(
-      `.pf-wrap:has(#${authorId(a.value)}:checked) label[for="${catId(c.value)}"]{--pf-n:${q(count(c.value, a.value))}}`,
+      `.pf-wrap:has(#${authorId(a.value)}:checked) label[for="${catId(c.value)}"]{--chip-count:${q(count(c.value, a.value))}}`,
     );
   }
 }
@@ -111,7 +112,7 @@ for (const c of catOptions) {
   if (c.value === ALL) continue;
   for (const a of authorOptions) {
     rules.push(
-      `.pf-wrap:has(#${catId(c.value)}:checked) label[for="${authorId(a.value)}"]{--pf-n:${q(count(c.value, a.value))}}`,
+      `.pf-wrap:has(#${catId(c.value)}:checked) label[for="${authorId(a.value)}"]{--chip-count:${q(count(c.value, a.value))}}`,
     );
   }
 }
@@ -164,24 +165,14 @@ const generatedCss = rules.join("\n");
       <div class="pf-chips">
         {
           catOptions.map((o) => (
-            <>
-              <input
-                class="pf-radio"
-                type="radio"
-                name="cat"
-                id={catId(o.value)}
-                value={o.value === ALL ? "" : o.value}
-                checked={o.value === ALL}
-              />
-              <label
-                class="pf-chip"
-                for={catId(o.value)}
-                style={o.color ? `--cat:${o.color}` : undefined}
-              >
-                {o.label}
-                <span class="pf-count" aria-hidden="true" />
-              </label>
-            </>
+            <FilterChip
+              name="cat"
+              id={catId(o.value)}
+              value={o.value === ALL ? "" : o.value}
+              checked={o.value === ALL}
+              label={o.label}
+              accent={o.color || undefined}
+            />
           ))
         }
       </div>
@@ -192,24 +183,15 @@ const generatedCss = rules.join("\n");
       <div class="pf-chips">
         {
           authorOptions.map((o) => (
-            <>
-              <input
-                class="pf-radio"
-                type="radio"
-                name="author"
-                id={authorId(o.value)}
-                value={o.value === ALL ? "" : o.value}
-                checked={o.value === ALL}
-              />
-              <label class="pf-chip pf-chip--author" for={authorId(o.value)}>
-                {o.avatar && (
-                  <img class="pf-avatar" src={o.avatar} alt="" width="22" height="22" decoding="async" />
-                )}
-                {o.label}
-                {o.isAI && <span class="pf-ai">AI</span>}
-                <span class="pf-count" aria-hidden="true" />
-              </label>
-            </>
+            <FilterChip
+              name="author"
+              id={authorId(o.value)}
+              value={o.value === ALL ? "" : o.value}
+              checked={o.value === ALL}
+              label={o.label}
+              avatar={o.avatar}
+              ai={o.isAI}
+            />
           ))
         }
       </div>
@@ -285,86 +267,10 @@ const generatedCss = rules.join("\n");
     gap: var(--space-8);
     min-width: 0;
   }
-  /* 라디오는 눈에서만 감춘다 — 포커스·키보드 화살표 이동은 그대로 산다.
-     margin 이 0 인 것은 스케일에 맞춘 결과가 아니라 **원래 필요 없던 값**이라서다:
-     -1px 은 `clip: rect(0 0 0 0)` 시절 1px 짜리 잔상을 흐름 밖으로 밀던 손잡이인데,
-     여기는 position:absolute + clip-path 라 애초에 흐름에 자리를 안 잡는다. */
-  .pf-radio {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-  .pf-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-6);
-    font-size: var(--text-meta);
-    font-weight: var(--font-weight-medium);
-    padding: var(--space-4) var(--space-12);
-    border-radius: var(--btn-radius);
-    border: var(--stroke-hair) solid var(--border);
-    color: var(--ink-2);
-    background: var(--surface);
-    cursor: pointer;
-    transition:
-      transform var(--dur) var(--ease),
-      background var(--dur) var(--ease),
-      border-color var(--dur) var(--ease),
-      color var(--dur) var(--ease);
-  }
-  .pf-chip--author {
-    padding-left: var(--space-4);
-  }
-  .pf-chip:hover {
-    transform: translateY(-1px);
-  }
-  .pf-count::after {
-    content: var(--pf-n, "");
-    font-family: var(--font-mono);
-    font-size: var(--text-nano);
-    color: var(--ink-3);
-  }
-  .pf-avatar {
-    flex: none;
-    width: 22px;
-    height: 22px;
-    border-radius: var(--radius-round);
-    object-fit: cover;
-    background: var(--paper);
-  }
-  .pf-ai {
-    /* Space Mono 에 500 면이 없다 — 부모 칩의 Medium 을 그대로 상속하면 브라우저가 400 으로
-       대체해 그린다(§5: --font-mono 는 400·700). 지금 그려지는 값을 명시해 요청과 실재를
-       맞춘다 — 화면은 안 바뀐다. 검사는 `bun run type:verify` 2층. */
-    font-weight: var(--font-weight-regular);
-    font-family: var(--font-mono);
-    font-size: var(--text-nano);
-    line-height: var(--font-leading-flat);
-    letter-spacing: var(--font-track-label);
-    color: var(--accent);
-    border: var(--stroke-hair) solid var(--accent);
-    border-radius: var(--btn-radius);
-    padding: var(--space-2) var(--space-4);
-  }
-  /* 선택 상태 — 카테고리 칩은 자기 색, 글쓴이 칩은 포인트 색으로 채운다 */
-  .pf-radio:checked + .pf-chip {
-    border-color: var(--ink);
-    color: color-mix(in srgb, var(--cat, var(--accent)) 78%, var(--ink));
-    background: color-mix(in srgb, var(--cat, var(--accent)) 14%, var(--surface));
-  }
-  .pf-radio:checked + .pf-chip .pf-count::after {
-    color: inherit;
-  }
-  .pf-radio:focus-visible + .pf-chip {
-    outline: var(--stroke-bold) solid var(--accent);
-    outline-offset: 2px;
-  }
+  /* 칩 자체(숨은 라디오 · 라벨 · 아바타 · 카운트 · 선택 상태)는 FilterChip 이 소유한다.
+     여기 남는 것은 **칩을 늘어놓는 자리**뿐이다 — 축 라벨과의 정렬, 줄바꿈 간격.
+     칩 안쪽을 여기서 다시 손대려 하면 부모 scoped CSS 가 자식 루트에 안 닿는다는 규칙에
+     걸려 조용히 무시된다(CLAUDE.md 「부모 scoped CSS 로 부품을 못 고친다」). */
   .pf-empty {
     display: none;
     margin: var(--space-24) 0 0;

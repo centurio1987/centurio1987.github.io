@@ -219,6 +219,8 @@ const ogImage = bannerOk ? TALK.banner : `/images/${slug}/hero.webp`;
     letter-spacing: var(--font-track-tight);
     color: var(--ink);
     margin: 0 0 var(--space-16);
+    /* 글 상세 제목과 같은 안전망 — 끊을 자리 없는 긴 런이 지면을 밀지 않게 한다. */
+    overflow-wrap: anywhere;
   }
   .talk-lead {
     font-size: var(--text-body);

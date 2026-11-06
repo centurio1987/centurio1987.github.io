@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "slug": "crdt-room-optimization",
+  "adapter": "plain-conversation-with-artifacts",
+  "origin": {
+    "tool": "Codex 대화",
+    "model": "Codex",
+    "conversedAt": "2026-09-10/2026-09-16",
+    "capturedAt": "2026-09-16",
+    "note": "CRDT room 최적화 설계, 협업 서버 풀, 소유권 디렉터리 실물 시나리오"
+  },
+  "files": [
+    { "path": "source/conversation-2026-09-10-to-2026-09-16.md", "bytes": 8106, "sha256": "14fc50c9f342303e7ed3d563e2c584bd109c54edbc6643ef5bffd79663ab4f55" },
+    { "path": "source/artifacts/index.html", "bytes": 33045, "sha256": "bee673cd70baecc314832bdfbb3bbe57f01f8526ce38b3327e60ff7b1c4c8ca7" },
+    { "path": "source/artifacts/server-ownership.html", "bytes": 21953, "sha256": "4a51bbd5bd7ccaabe34ec3c5c9c87b4dcf8140d382490ba46103dc895e9c6f8d" },
+    { "path": "source/artifacts/detail-style.css", "bytes": 4674, "sha256": "2314ed6c9d391cfa6f965bed096fdb96154b3b8e1b9bee0cd8536664e8f968be" }
+  ],
+  "integrity": {
+    "usable": true,
+    "truncatedNodes": 0,
+    "truncatedBytes": 0,
+    "keptUtterances": 9,
+    "reason": "대화 원문과 생성 아티팩트를 함께 봉인함"
+  }
+}

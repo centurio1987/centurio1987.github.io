@@ -8,6 +8,7 @@ import { unified } from "@astrojs/markdown-remark";
 
 import { rehypeWrapTables } from "./src/lib/rehype-wrap-tables.mjs";
 import { rehypeInternalLinks } from "./src/lib/rehype-internal-links.mjs";
+import { shikiDiagramBlocks } from "./src/lib/shiki-diagram-blocks.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -38,6 +39,8 @@ export default defineConfig({
     shikiConfig: {
       theme: "github-light",
       wrap: true,
+      // 도식(상자 선·화살표가 든 블록)만 줄바꿈을 끈다 — 근거는 변환기 머리주석.
+      transformers: [shikiDiagramBlocks],
     },
   },
 });

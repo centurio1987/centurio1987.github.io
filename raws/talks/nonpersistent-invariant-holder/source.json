@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "slug": "nonpersistent-invariant-holder",
+  "adapter": "plain-conversation",
+  "origin": {
+    "tool": "Claude Code 세션",
+    "model": "Claude Fable 5.1 (claude-fable-5-1)",
+    "conversedAt": "2026-09-16",
+    "capturedAt": "2026-09-16",
+    "note": "KAN-081 첫 주제. 준비 노트 raws/talks/_prep/nonpersistent-invariant-holder.md 의 질문 순서·판정·되받기를 글쓴이 발화로 삼아 교수님 역할의 AI 가 답한 대화. 글쓴이가 직접 나눈 대화가 아니다"
+  },
+  "files": [
+    {
+      "path": "source/conversation-2026-09-16.md",
+      "bytes": 19812,
+      "sha256": "54304caee39cf394a0bfa28a1c2dd583803baf1fb3426e9ae16070862669f5c6"
+    }
+  ],
+  "integrity": {
+    "usable": true,
+    "truncatedNodes": 0,
+    "truncatedBytes": 0,
+    "keptUtterances": 12,
+    "reason": null
+  }
+}
