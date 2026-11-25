@@ -111,9 +111,9 @@
 
 ## 3. 그 밖에 알아 둘 것
 
-- 로컬 브랜치 `centurio1987/kan-008` 에 원격에 없는 커밋이 하나 있습니다
-  (`d47ea55` — 같은 브랜치의 KAN-024 카드 추가를 되돌린 커밋). `KAN-008` 은 이미 완료 칸이고
-  그 글 네 편은 `main` 에 들어와 있어서 진행 중 작업으로 보지 않았습니다. 올릴지 버릴지는 주인 판단입니다.
+- 브랜치 `centurio1987/kan-008` 의 마지막 커밋 `d47ea55`(같은 브랜치의 KAN-024 카드 추가를
+  되돌린 커밋)는 2026-11-26 원격 `origin/centurio1987/kan-008` 에 올렸습니다. `KAN-008` 은 이미 완료 칸이고
+  그 글 네 편은 `main` 에 들어와 있어서 진행 중 작업으로 보지 않았습니다. 이 브랜치를 남길지 지울지는 주인 판단입니다.
 - 「할 일」 칸에는 시작 전 카드 넷이 있습니다: `KAN-048`(좋아요 기능), `KAN-065`(위 2절),
   `KAN-082-ER9NJ4`(실시간 동기화 서버 상태 대담 — 리서치와 준비 노트
   `raws/talks/_prep/realtime-sync-server-state.md` 는 끝났고, 남은 것은 대화 → export → `talk-ingest`),
@@ -140,7 +140,6 @@ bun run graph:hooks      # 클론마다 한 번. 자동 갱신 갈고리를 연�
   `graphify-out/.graphify_semantic_marker`, `graphify-out/cache/semantic/` 의 삭제 54건·추가 7건(2절).
 - gitignore 된 자동 갱신 상태: `graphify-out/.autorefresh/`(예약 표식 `pending` 2026-10-23 · 실패 표식),
   `graphify-out/logs/`, 실패 직전 백업 `graphify-out/2026-11-06/`.
-- 로컬 브랜치 `centurio1987/kan-008` 의 커밋 `d47ea55`.
 - 세션 기록: `~/.claude/projects/-Users-centurio-centurio1987-github-io/`.
 - 글감 리서치 저장소 `~/blog-research/` 는 별도 저장소입니다.
 
